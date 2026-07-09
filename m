@@ -4,149 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3451BC43458
-	for <ltp@archiver.kernel.org>; Thu,  9 Jul 2026 05:01:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6A3C4C43458
+	for <ltp@archiver.kernel.org>; Thu,  9 Jul 2026 06:53:03 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 625EF3E28B7
-	for <ltp@archiver.kernel.org>; Thu,  9 Jul 2026 07:01:42 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id A09513E292D
+	for <ltp@archiver.kernel.org>; Thu,  9 Jul 2026 08:53:01 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C025F3E248E
- for <ltp@lists.linux.it>; Thu,  9 Jul 2026 07:01:25 +0200 (CEST)
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id B92073C56DA
+ for <ltp@lists.linux.it>; Thu,  9 Jul 2026 08:52:46 +0200 (CEST)
+Received: from mail-pj2-x04.google.com (mail-pj2-x04.google.com
+ [IPv6:2607:f8b0:4864:39::4])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 06C171A00782
- for <ltp@lists.linux.it>; Thu,  9 Jul 2026 07:01:21 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1783573283; x=1815109283;
- h=date:from:to:cc:subject:message-id:in-reply-to: mime-version;
- bh=XimaVBohseAywOgGHyf7YqHXKOwxfgNY+fxzdRPF5JE=;
- b=JWrhNNrpMnQDMhZ9991xsTDGskw9EKfQBP0TuYuXk/8CeGMdvqQx5b70
- QS7KhJfLvke170FzbQEARGYK9Fe5rXZcJwIU7Cp6bcBUDCpZY0XVZrPsS
- uXV9YR8J+UL5vD+BsBShN1DghYcB2xCq7pbrL0MFUY5Mpit1K2RlE2KnA
- 2Ki1tvjHgfkdnxDmQ3vpA/zBmTAmmtZVpW4Wmsr3BuM9flm5qjZFEQftw
- MNKtQyfm4OOP72x6c3NsPqGoRgI1RgMSEd/ZQXkPIqcnt0E1+oyRe5bZd
- Z3M/pSvC2S6+tvd2gH+n9tBWE/bGEUQ1kMoZjAYmFSIC4fGc3ZweZ0CNt Q==;
-X-CSE-ConnectionGUID: btNVsziyQ2e2Oep1GnSr4Q==
-X-CSE-MsgGUID: BYNPUj65RDqoOl2IqQp5Aw==
-X-IronPort-AV: E=McAfee;i="6800,10657,11841"; a="71766387"
-X-IronPort-AV: E=Sophos;i="6.25,154,1779174000"; d="scan'208";a="71766387"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
- by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 08 Jul 2026 22:01:18 -0700
-X-CSE-ConnectionGUID: 9pGLt1cxQGi7j96ZaWpG4w==
-X-CSE-MsgGUID: ADkoM9ZqR2OjsFsD2t7EnA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.25,154,1779174000"; d="scan'208";a="278868975"
-Received: from fmsmsx901.amr.corp.intel.com ([10.18.126.90])
- by fmviesa001.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 08 Jul 2026 22:01:18 -0700
-Received: from FMSMSX902.amr.corp.intel.com (10.18.126.91) by
- fmsmsx901.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.43; Wed, 8 Jul 2026 22:01:17 -0700
-Received: from fmsedg903.ED.cps.intel.com (10.1.192.145) by
- FMSMSX902.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.43 via Frontend Transport; Wed, 8 Jul 2026 22:01:17 -0700
-Received: from CO1PR03CU002.outbound.protection.outlook.com (52.101.46.57) by
- edgegateway.intel.com (192.55.55.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.43; Wed, 8 Jul 2026 22:01:16 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=KhFJcaCJq8huuwcDRe1RIIdCHRk5RWMk9WzwjkHnXvfq/D//1XdwxQAtIy2YyMSvGKfedw/4trEPxkXgcskIxnncClXx6Fj9Jhvu2Y+SxkUbB5jh4X6jn8Vvi7hbWZHCKQAibgZhKoZtC8CqnKR+EsyDHC15ru3ouvsgAZaj3xlSQs6f1VE9szgEkubkyUyRfJ5xhauhqvFGgNDXlIGsKS+Dq7JvDng/6r9JghAS7o3lbJGToFI7UrUzPPAzJJj2uBV5uylN6EPxystYa47oa+z8EpwAE4NJfI4Og6st7usfeSGzqWvHDIUisLIK2JVKA/CVc4Eo0JLPF0x+QVTIdQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=nZJonRnehsv5eF8jfZwYtvZHxz3BJl/2hpnVP0pLFOk=;
- b=g8+oaMR1Uh9A5bJc7IbgtGp0y+HCaOFaTwlDI9uRWmNKzJYZdrkOaRdnlHhAoWltdz6JM6qACC6jyqLFlM5qhdD8ufxqR9/oxfTi50oRLZvBOKyL/NZjIdMmq+LDAMzcPze3CZHftSsSW1ytfLse8Cjyl4XbMh/iIUS6bCQmaPYib8ne8dz9Xwxdmnt/L8Rtgkf5NnZElqAc5YYr7AMt8W+85NY/H/qtIGY+jLuOCDDL33P+e9sA9WdQmKVB11GMvm1Oh61g+taGko08ySTwVuU9OIP+W9fp3hp++NyE69Hnea1Qgc0UbFtMkJNhRi54rXlwcefdd3jUGwGswMoJdg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from PH0PR11MB5832.namprd11.prod.outlook.com (2603:10b6:510:141::7)
- by PH7PR11MB7124.namprd11.prod.outlook.com (2603:10b6:510:20f::6)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.181.8; Thu, 9 Jul 2026
- 05:01:10 +0000
-Received: from PH0PR11MB5832.namprd11.prod.outlook.com
- ([fe80::106e:78dd:4c96:d707]) by PH0PR11MB5832.namprd11.prod.outlook.com
- ([fe80::106e:78dd:4c96:d707%5]) with mapi id 15.21.0181.008; Thu, 9 Jul 2026
- 05:01:09 +0000
-Date: Thu, 9 Jul 2026 13:00:58 +0800
-From: kernel test robot <oliver.sang@intel.com>
-To: Eric Dumazet <edumazet@google.com>
-Message-ID: <202607091154.8fb0e88c-lkp@intel.com>
-Content-Disposition: inline
-In-Reply-To: <20260624073209.3703492-1-edumazet@google.com>
-X-ClientProxiedBy: KU2P306CA0045.MYSP306.PROD.OUTLOOK.COM
- (2603:1096:d10:3c::17) To PH0PR11MB5832.namprd11.prod.outlook.com
- (2603:10b6:510:141::7)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 28CF22005F7
+ for <ltp@lists.linux.it>; Thu,  9 Jul 2026 08:52:46 +0200 (CEST)
+Received: by mail-pj2-x04.google.com with SMTP id
+ d9443c01a7336-2ccc2e84048so4133245ad.1
+ for <ltp@lists.linux.it>; Wed, 08 Jul 2026 23:52:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20251104; t=1783579964; x=1784184764; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to:content-type;
+ bh=H0tH8JtjneqcowRpVSmA416kqoOfwi9VyqRB3JtAzEk=;
+ b=hOt9UJzusZSNMrPEAksCoyBxlnxXQdWnI4k7EnPHhPfdYm+DhlNUTZhHTEV2FqeUtI
+ Jf8vO8/I1NFzGcm+uwoHDoo+82q2XSiAW9VtN9eAOF/MaCGKYyLQhzgdOGrWALlhlWHZ
+ MZhjZe6ZwRR8PTC4DiChUfWwCQWw6mvJQ3fgUDM2HZeCcwefGMVdzAWjyzNVP9Steq6G
+ 3BzNXjErOoKEHe0p13SdrEM6TQJuL/iYAwdu1888AuqVya6zGC6TKuAnvvf5JejNbYcA
+ 8cHl4nT9kylztYpEgYDFtL+OcllP+q5joiEGf1UTyP/XYpEB4mZ7Y9Xav3m1uBx2jGm+
+ EkxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1783579964; x=1784184764;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to:content-type;
+ bh=H0tH8JtjneqcowRpVSmA416kqoOfwi9VyqRB3JtAzEk=;
+ b=jOJfKvd4JfYuvonisNRyOkgOZceOwiCUsn41bCYSkLrwmxk0D/OCpDCDgmOVBD8Wtj
+ gpFzP+vtUQDj+0DvimaU3WoqnWqbWo7auyY4ZGrvox5CgsqFVWlUAI3N/0cz5Mum/aNS
+ wCooZP+ONG4q5uqca8hdJVNpZ7o2RZJrFFg6nFtkXqEaRyiYJVrlXmwFN2ny/w9oG2lm
+ mLh9pbAms2N4mt7CBoy6Ple3Vbqg78BCnAGzPRCfnW/Mbs1fWkOG91PCYPjEKItYPRyU
+ Onbz4Gcwi07UV7i0Zgduc7cMeuAp7C/crBzbi92TpmhcgckFlz+LD7LZDRZM5isuSv44
+ gMeQ==
+X-Gm-Message-State: AOJu0YydL40VaMzMWwXlkNq1tumTBO3VnlMlzUGu4yr0Z0WPbLuWD/t6
+ yJJ2Q/CvhL4u17C3OXgdd3wB+TRX2hMJgx8vTAslgIsOcA4nNIfmpoDKaydxaT5GPLc=
+X-Gm-Gg: AfdE7cmgYAc4x7lC+hjz0oAkv2qBFoOgb2nF4Wq+hON2DSjYHhKG7Lp/QmGta80Bbyi
+ OC4095qX/qj2ZmcKGyWVq/Z8mIxR9I7vA9VBNasYTg4Yh0Oisat6lGl087LYhWD+J9unEBVk9c/
+ DWRGT6XO8V1GNOQ0Xz7u7MFLONyXyIy0Q9d/TV1LLVAPqpwyRp0Vbyv4y2z9JH0g+/84WwpSpS3
+ 3IPipq+MPnQvjIQuqQknByZCwFm4btHLkDAA1m4jc+UaM4kGWhLB1N5A9DHtKno0HxzRnB/oAF/
+ z3m2goyuQhxaLUATs7sezRRsFd8kqQcCDFF8e/MUiOwTcNQuf7jKdi3nHJFuIEmJrI8kaDbdwEu
+ 3CiplwDwxxmDn5YYcw0cYbiqD7xwDuG8A4vsZxjiPTxtYmVjanBQ+XmsqzwZ0CgSZ1kHXrEg3V+
+ bbQ6UkpdCHwQpr8Nz7LYupqVxRbgVB0KIqLZ3TwOk8fMU4003cfRl1ns34NE6i7Qa+uwvTV3LUU
+ YncwSSNnmlyYDdNEK36Q5mcaLA9
+X-Received: by 2002:a05:6a20:3c8e:b0:3c0:9c18:d5ab with SMTP id
+ adf61e73a8af0-3c0bd231db0mr8022531637.72.1783579963670; 
+ Wed, 08 Jul 2026 23:52:43 -0700 (PDT)
+Received: from
+ runnervm5mmn9.2egbwc2figsurhoyketqa1qpfb.dx.internal.cloudapp.net
+ ([104.209.7.208]) by smtp.gmail.com with ESMTPSA id
+ a92af1059eb24-13b659d8da9sm43514009c88.14.2026.07.08.23.52.43
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 08 Jul 2026 23:52:43 -0700 (PDT)
+From: linuxtestproject.agent@gmail.com
+To: Sachin Sant <sachinp@linux.ibm.com>
+Date: Thu,  9 Jul 2026 06:52:41 +0000
+Message-ID: <20260709065241.3960-1-linuxtestproject.agent@gmail.com>
+X-Mailer: git-send-email 2.54.0
+In-Reply-To: <20260709041323.107-1-sachinp@linux.ibm.com>
+References: <20260709041323.107-1-sachinp@linux.ibm.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR11MB5832:EE_|PH7PR11MB7124:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4a050934-1817-4c69-c113-08dedd7716da
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
- ARA:13230040|7416014|23010399003|366016|1800799024|376014|22082099003|18002099003|3023799007|11063799006|56012099006|6133799003;
-X-Microsoft-Antispam-Message-Info: aSAdVzSwFtv7kvhAEIYmjYPL8cds2sX25pChHb/DYGu5gj1GbUjdDRU7BPmRmwk1UmTAijN6X3NinyW3OqhpFu67hxFOVrghlJKSsk/MvoxRF84dMSQss+eoXqe85oI/ER7IWruvx1OrxBB6B5QB2unJ/bCNTkusm9UTgp8XKFVxcM2AW7uCJL8G++RS9l9iPP9/R7enXyBd5lW73vAlQvzYM7P+iU2y7KEcLrdYyOy8k/hdYxa3+BaXr3PZQfMI0sF5v7Jc1ZEyzJ57ULWcac69S+mzJ143/J3PU/90+ZbHk4hSKjw0HpzjmMpX07UdQxr1wEf7DeMHPO0JTEuc2NpjjLJpxxXD387RQ4+njM4M3QESOouPy+R+qPhJIWGRjn//E+lNv5gLeycT/o3ABtnfhamQJJG/j7Q3OZGBIPfuIYm5gFQc6jGy6EpR9EeCpBMZzRBDAVtDuKEp3uPxvkUvPrO+qIOanYKbBNl7yXHz/wzHBNgjt//ifba5xodVFvsRWsAlUVbq5K0dEJowWeQGmiYJ5jkEuql9oSu3RYzRV80CpGG/TmvYWrz1LdKuwMZCRvQVphWxT/yvK3vi2IlnztqwAs4wsuFBhTSOjoY=
-X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:PH0PR11MB5832.namprd11.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(13230040)(7416014)(23010399003)(366016)(1800799024)(376014)(22082099003)(18002099003)(3023799007)(11063799006)(56012099006)(6133799003);
- DIR:OUT; SFP:1101; 
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?k2qCLuaChqt22w608YovCCccVDdxNN4IS1RLLNBltYKzLwJlfIz5PAB3wLt9?=
- =?us-ascii?Q?JsrrdbdJCAI2S58D/cN35ojeKCZ6BAE8QP5UrXLB/6cSEAJcIC23rkk9T71d?=
- =?us-ascii?Q?bTmFF+kALN0fZQdnCPScCa/RW/SWSCuGkMTbj6JDo0EO6MUY8QMc8hlcqYPE?=
- =?us-ascii?Q?arFaapn7aHZwPFz3A4iG3DG/LoQnkyMz4Syojep+9+aPTXVxcHiDxz+KzAOl?=
- =?us-ascii?Q?lXlnd+eQXD4p15UoYC6ov84A/mgz9ZVC/CVpFF1lh+cxNCzeKMI4Azltrjbw?=
- =?us-ascii?Q?y8fgDXVDmlM+P3CsQlnf7h0AfJUM0yPA4BNtEuwiT7+J86QZnXqMe9TykdcL?=
- =?us-ascii?Q?uCKJJ/sFH2pEbey9SCekjNk+0qvBI6vj0lO3X/a6HjRDdRbsFv3uHjxh42wS?=
- =?us-ascii?Q?BL4HWpYV4Ves6PT3GT8NYM267jy0tAtKg2dM+zp0KdxnQf4Lc9LQmL+lfD09?=
- =?us-ascii?Q?47RvVniKDRCeoS98G1b7HvdAV1mj19+UtHAjVoAPMC72QadQHGR99+CnNwji?=
- =?us-ascii?Q?uuONIzbfjbN5RbM609sXXW+lhRnMpmxkfhsCg7YJUPM+/3gfjTXkut1Gn8LU?=
- =?us-ascii?Q?db97CUTdoP3q8UpSxjHSNacXTGDbcsr4+X6wkqNNO+mgEetshHPYrBwlbsLs?=
- =?us-ascii?Q?F7WdixGtrjYQzCfg3N4m4wdhKsMlMS10FmGRTluu7bhgwuS/qtezuyjXMnHy?=
- =?us-ascii?Q?4tgDOMg3izswdHoi+JQo9cR9DwOZAMfbYAl9fF0Qa2QQnPsq9jW5VnwvpsoB?=
- =?us-ascii?Q?qjycr+sEvAFCywg9MXk6MLP/7XPhsUzzqrx/TjjW+w6BNnXzjcmOpRfQbzZU?=
- =?us-ascii?Q?VK6ZwixOT5PqbbMf/aNU+kYNpc5lCY22wBzH1Y3SvFFeHC1rwHiAAkzvyUE9?=
- =?us-ascii?Q?Igo25T7D5dbBvfAXdiCHtjd1plgefNZagw0CRfHP+/K7ahk3b5k6z3M4hgq2?=
- =?us-ascii?Q?zYkD1NTnZ0IMSdb9SNHJOJdTkv6QdsLpJ9SIveeCkMvcy75/CqxgfmexlgkQ?=
- =?us-ascii?Q?Ofz+MBGGL6B6P7QU6hotbrRo2R6H6oFTXJbJtFHOd4XkLS2nszu5LuBVIzOD?=
- =?us-ascii?Q?EC6UlFFU5lFIcGE8d5Ex8cweb4wczZ5wCluZyl0T/3mEU8do/o2YEesHARkf?=
- =?us-ascii?Q?JKWWGHsv7y2W4EyX/h5PZ3W30l+vCtdUJGE/35BC3rUH1Z10bqaV2o/3gsuX?=
- =?us-ascii?Q?/aHTNkb2z1FoFPSUWl9GGzi5aHvEuBlt5WkoUMA/J7RiJxi7mHkrimkKvgr7?=
- =?us-ascii?Q?1OLxIMQUQfNOZpySnkNCXYeTbua8c4pU5XaqtsE0qIHGQkj9rVPjNkG18Ina?=
- =?us-ascii?Q?XJZ3breEXicAhYdTMf6/DjCNOeeADAQqIl2wqY7Tx4RFFA17lCfiLjQN/bBa?=
- =?us-ascii?Q?/IpnBdryU+X3tL2eW77qcHmPyIwAzI37stgzuzNjC9hvV/5lN33vPXwyp5Oq?=
- =?us-ascii?Q?z9cTt1wXTUZiM6yIk1AwSBShd3AnbiPkfJ8kGYzZjXV5q8Se+KuSyvnBkNsf?=
- =?us-ascii?Q?xzmip6Aejf82VE4zBKnvIneVGm4+e/D5GfztN/RltwlSrAUFbvLxv78/30G6?=
- =?us-ascii?Q?ewrmz6FSK9O457WFpI3yzseKtYfUyQUekCee3D7NHQRforMsF5DTK6fP4YIB?=
- =?us-ascii?Q?ZRURbLCOJiHzdttMfi/0hDDVIUzMzj6/2J4z8qrkb6R/UdI5svFveUCU1xWU?=
- =?us-ascii?Q?YEw8DzUPqP4vAnL6TH/HkLy1fgmDCYc9z2RoJ6KJpsptk5QvzIOPa1lUlu+N?=
- =?us-ascii?Q?WHMkNbrZHw=3D=3D?=
-X-Exchange-RoutingPolicyChecked: FJhcyZlT3SmblmxCNQNwWQaTOqpIOjip5iS7FXJzQ8naVeR/oQmMkaJ4ZO84bJ1jtbsWzXboXQjdQXiNQvwW81v8QBHCpN9/IQ0uTqV3aPLOO9ssq7iIq4r1ZgqA/40cDTpr6NQMhKeRBQN51oalW2qUlJA3QQ8rmd7T01JXF3/3qc0e5UqbioVNqIypZtbqiybb9f6cYIqbJRhbaT9oGO5lv8IvBNYEF9cpE9phe4pBbJEmwAKUbMKCwgFRgRH1YLls4zuZMS594TXw64AFIdSccZ59Avgzqy+WPxSMkaQPCwGY0SFKjy7x5DJeL533y2GuOO0G5mWnR43YqO26Yg==
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4a050934-1817-4c69-c113-08dedd7716da
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB5832.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Jul 2026 05:01:09.2477 (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: rmmTLxDgScGEHh5voqLHEaxJGasJuJ99ynYfD8YTpUrm4ZRyDPeB4RUOlnE0X6m12E2rw1nRDNThqlb8IQvhCw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB7124
-X-OriginatorOrg: intel.com
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH net] net: clear transport header during tunnel
- decapsulation
+Subject: Re: [LTP] mem/min_free_kbytes: Fix incorrect pass/fail accounting
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -158,273 +90,40 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: lkp@intel.com, eric.dumazet@gmail.com, netdev@vger.kernel.org,
- David Ahern <dsahern@kernel.org>,
- syzbot+d5d0d598a4cfdfafdc3b@syzkaller.appspotmail.com,
- Eric Dumazet <edumazet@google.com>, oliver.sang@intel.com,
- Simon Horman <horms@kernel.org>, Ido Schimmel <idosch@nvidia.com>,
- oe-lkp@lists.linux.dev, Jakub
- Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- "David S . Miller" <davem@davemloft.net>, ltp@lists.linux.it
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
+Hi Sachin,
 
+On Thu Jul 9 09:43:23 2026 +0530, Sachin Sant wrote:
+> mem/min_free_kbytes: Fix incorrect pass/fail accounting
 
-Hello,
+Verdict - Reviewed
 
-kernel test robot noticed "KASAN:slab-use-after-free_in_vxlan_rcv[vxlan]" on:
+---
+Pre-existing issues:
 
-commit: 35913c60d9c1072bf8c8d4e626bde513eeffcc45 ("[PATCH net] net: clear transport header during tunnel decapsulation")
-url: https://github.com/intel-lab-lkp/linux/commits/Eric-Dumazet/net-clear-transport-header-during-tunnel-decapsulation/20260624-153313
-base: https://git.kernel.org/cgit/linux/kernel/git/davem/net.git d87363b0edfc7504ff2b144fe4cdd8154f90f42e
-patch link: https://lore.kernel.org/all/20260624073209.3703492-1-edumazet@google.com/
-patch subject: [PATCH net] net: clear transport header during tunnel decapsulation
+In check_monitor(), the flag variable used for signal-handler
+communication is declared as:
 
-in testcase: ltp
-version: 
-with following parameters:
+  volatile int end;
 
-	test: net.features
+Strict C (C99 and later) requires volatile sig_atomic_t for variables
+read/written by a signal handler.  This is pre-existing and harmless on
+common architectures, but worth fixing in a follow-up.
 
+---
+Note:
 
+The agent can sometimes produce false positives although often its
+findings are genuine. If you find issues with the review, please
+comment this email or ignore the suggestions.
 
-config: x86_64-rhel-9.4-ltp
-compiler: gcc-14
-test machine: 8 threads 1 sockets Intel(R) Core(TM) i7-4790T CPU @ 2.70GHz (Haswell) with 16G memory
-
-(please refer to attached dmesg/kmsg for entire log/backtrace)
-
-
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <oliver.sang@intel.com>
-| Closes: https://lore.kernel.org/oe-lkp/202607091154.8fb0e88c-lkp@intel.com
-
-
-The kernel config and materials to reproduce are available at:
-https://download.01.org/0day-ci/archive/20260709/202607091154.8fb0e88c-lkp@intel.com
-
-
-below decoded stack trace FYI:
-
-
-kern  :err   : [  836.649020] [      C2] ==================================================================
-kern  :err   : [  836.657473] [      C2] BUG: KASAN: slab-use-after-free in vxlan_rcv (kbuild/src/drivers/net/vxlan/vxlan_core.c:1567 kbuild/src/drivers/net/vxlan/vxlan_core.c:1745) vxlan
-kern  :err   : [  836.665872] [      C2] Read of size 4 at addr ffff888414b94787 by task kworker/u32:14/3114
-
-kern  :err   : [  836.677034] [      C2] CPU: 2 UID: 0 PID: 3114 Comm: kworker/u32:14 Tainted: G S                  7.1.0+ #1 PREEMPT(lazy)
-kern  :err   : [  836.677039] [      C2] Tainted: [S]=CPU_OUT_OF_SPEC
-kern  :err   : [  836.677041] [      C2] Hardware name: Gigabyte Technology Co., Ltd. Z97X-UD5H/Z97X-UD5H, BIOS F9 04/21/2015
-kern  :err   : [  836.677043] [      C2] Workqueue: ipv6_addrconf addrconf_dad_work
-kern  :err   : [  836.677051] [      C2] Call Trace:
-kern  :err   : [  836.677053] [      C2]  <IRQ>
-kern  :err   : [  836.677055] [      C2]  dump_stack_lvl (kbuild/src/lib/dump_stack.c:94 kbuild/src/lib/dump_stack.c:120)
-kern  :err   : [  836.677060] [      C2]  print_address_description+0x70/0x300
-kern  :err   : [  836.677066] [      C2]  ? vxlan_rcv (kbuild/src/drivers/net/vxlan/vxlan_core.c:1567 kbuild/src/drivers/net/vxlan/vxlan_core.c:1745) vxlan
-kern  :err   : [  836.677074] [      C2]  print_report (kbuild/src/mm/kasan/report.c:482)
-kern  :err   : [  836.677078] [      C2]  ? __virt_addr_valid (kbuild/src/include/linux/mmzone.h:2198 (discriminator 1) kbuild/src/include/linux/mmzone.h:2280 (discriminator 1) kbuild/src/arch/x86/mm/physaddr.c:54 (discriminator 1))
-kern  :err   : [  836.677093] [      C2]  ? vxlan_rcv (kbuild/src/drivers/net/vxlan/vxlan_core.c:1567 kbuild/src/drivers/net/vxlan/vxlan_core.c:1745) vxlan
-kern  :err   : [  836.677102] [      C2]  kasan_report (kbuild/src/mm/kasan/report.c:595)
-kern  :err   : [  836.677105] [      C2]  ? vxlan_rcv (kbuild/src/drivers/net/vxlan/vxlan_core.c:1567 kbuild/src/drivers/net/vxlan/vxlan_core.c:1745) vxlan
-kern  :err   : [  836.677115] [      C2] vxlan_rcv (kbuild/src/drivers/net/vxlan/vxlan_core.c:1567 kbuild/src/drivers/net/vxlan/vxlan_core.c:1745) vxlan
-kern  :err   : [  836.677146] [      C2]  ? __pfx_vxlan_rcv (kbuild/src/drivers/net/vxlan/vxlan_core.c:2327) vxlan
-kern  :err   : [  836.677153] [      C2]  ? ip6_list_rcv_finish+0x8d2/0xc30
-kern  :err   : [  836.677156] [      C2]  ? __pfx_ip6_list_rcv_finish+0x10/0x10
-kern  :err   : [  836.677158] [      C2]  ? ip6_parse_tlv (kbuild/src/net/ipv6/exthdrs.c:175)
-kern  :err   : [  836.677162] [      C2]  ? __pfx_vxlan_rcv (kbuild/src/drivers/net/vxlan/vxlan_core.c:2327) vxlan
-kern  :err   : [  836.677169] [      C2]  udp_queue_rcv_one_skb (kbuild/src/net/ipv4/udp.c:2388)
-kern  :err   : [  836.677174] [      C2]  ? ipv6_parse_hopopts (kbuild/src/net/ipv6/exthdrs.c:1081)
-kern  :err   : [  836.677177] [      C2]  udp_unicast_rcv_skb (kbuild/src/net/ipv4/udp.c:2574)
-kern  :err   : [  836.677180] [      C2]  udp_rcv (kbuild/src/net/ipv4/udp.c:2640)
-kern  :err   : [  836.677184] [      C2]  ? __pfx_udp_rcv (kbuild/src/net/ipv4/udp.c:2451 (discriminator 1))
-kern  :err   : [  836.677187] [      C2]  ? ip_mc_validate_source (kbuild/src/include/net/ip_fib.h:460 kbuild/src/net/ipv4/route.c:1729 kbuild/src/net/ipv4/route.c:1705)
-kern  :err   : [  836.677193] [      C2]  ip_protocol_deliver_rcu (kbuild/src/net/ipv4/ip_input.c:207 (discriminator 4))
-kern  :err   : [  836.677196] [      C2]  ip_local_deliver_finish (kbuild/src/net/ipv4/ip_input.c:241 (discriminator 1))
-kern  :err   : [  836.677199] [      C2]  ip_local_deliver (kbuild/src/include/linux/netfilter.h:318 kbuild/src/include/linux/netfilter.h:312 kbuild/src/net/ipv4/ip_input.c:262)
-kern  :err   : [  836.677201] [      C2]  ? __pfx_ip_local_deliver (kbuild/src/include/linux/skbuff.h:4508 (discriminator 1))
-kern  :err   : [  836.677204] [      C2]  ? ip_rcv_finish_core (kbuild/src/net/ipv4/ip_input.c:391)
-kern  :err   : [  836.677206] [      C2]  ? netif_receive_skb_list_internal (kbuild/src/include/linux/rcupdate.h:873 kbuild/src/net/core/dev.c:6440)
-kern  :err   : [  836.677210] [      C2]  ip_rcv (kbuild/src/include/net/dst.h:480 (discriminator 6) kbuild/src/net/ipv4/ip_input.c:492 (discriminator 6) kbuild/src/include/linux/netfilter.h:318 (discriminator 6) kbuild/src/include/linux/netfilter.h:312 (discriminator 6) kbuild/src/net/ipv4/ip_input.c:612 (discriminator 6))
-kern  :err   : [  836.677212] [      C2]  ? __pfx_netif_receive_skb_list_internal (kbuild/src/net/core/dev.c:6662 (discriminator 2))
-kern  :err   : [  836.677215] [      C2]  ? __pfx_ip_rcv (kbuild/src/include/net/dst.h:480 (discriminator 1))
-kern  :err   : [  836.677218] [      C2]  ? __pfx_ip_rcv (kbuild/src/include/net/dst.h:480 (discriminator 1))
-kern  :err   : [  836.677221] [      C2]  __netif_receive_skb_one_core (kbuild/src/net/core/dev.c:6206 (discriminator 4))
-kern  :err   : [  836.677223] [      C2]  ? napi_complete_done (kbuild/src/include/linux/instrumented.h:55 kbuild/src/net/core/dev.c:6831)
-kern  :err   : [  836.677226] [      C2]  ? __pfx___netif_receive_skb_one_core (kbuild/src/net/core/dev.c:6248)
-kern  :err   : [  836.677229] [      C2]  ? _raw_spin_lock_irq (kbuild/src/include/linux/instrumented.h:55 kbuild/src/include/linux/atomic/atomic-instrumented.h:1301 kbuild/src/include/asm-generic/qspinlock.h:111 kbuild/src/include/linux/spinlock.h:187 kbuild/src/include/linux/spinlock_api_smp.h:143 kbuild/src/kernel/locking/spinlock.c:174)
-kern  :err   : [  836.677235] [      C2]  process_backlog (kbuild/src/net/core/dev.c:6670)
-kern  :err   : [  836.677238] [      C2]  __napi_poll (kbuild/src/net/core/dev.c:7729)
-kern  :err   : [  836.677241] [      C2]  net_rx_action (kbuild/src/net/core/dev.c:7792 kbuild/src/net/core/dev.c:7949)
-kern  :err   : [  836.677245] [      C2]  ? __pfx_net_rx_action (kbuild/src/include/net/gro.h:525)
-kern  :err   : [  836.677248] [      C2]  ? __pfx_hrtimer_update_next_event (kbuild/src/kernel/time/hrtimer.c:195)
-kern  :err   : [  836.677253] [      C2]  ? __pfx_sched_clock_cpu (kbuild/src/include/linux/list.h:226)
-kern  :err   : [  836.677257] [      C2]  ? sched_clock (kbuild/src/arch/x86/kernel/tsc.c:297)
-kern  :err   : [  836.677261] [      C2]  ? sched_clock_cpu (kbuild/src/kernel/sched/clock.c:400)
-kern  :err   : [  836.677265] [      C2]  handle_softirqs (kbuild/src/kernel/softirq.c:622)
-kern  :err   : [  836.677269] [      C2]  do_softirq (kbuild/src/kernel/softirq.c:523 (discriminator 20) kbuild/src/kernel/softirq.c:510 (discriminator 20))
-kern  :err   : [  836.677272] [      C2]  </IRQ>
-kern  :err   : [  836.677273] [      C2]  <TASK>
-kern  :err   : [  836.677274] [      C2]  __local_bh_enable_ip (kbuild/src/kernel/softirq.c:450)
-kern  :err   : [  836.677276] [      C2]  __dev_queue_xmit (kbuild/src/include/linux/bottom_half.h:33 kbuild/src/include/linux/rcupdate.h:914 kbuild/src/net/core/dev.c:4907)
-kern  :err   : [  836.677280] [      C2]  ? unwind_next_frame (kbuild/src/include/linux/rcupdate.h:873 kbuild/src/include/linux/rcupdate.h:1183 kbuild/src/arch/x86/kernel/unwind_orc.c:495)
-kern  :err   : [  836.677284] [      C2]  ? arch_stack_walk (kbuild/src/arch/x86/include/asm/unwind.h:64 kbuild/src/arch/x86/kernel/stacktrace.c:24)
-kern  :err   : [  836.677287] [      C2]  ? kasan_save_track (kbuild/src/mm/kasan/common.c:78)
-kern  :err   : [  836.677293] [      C2]  ? __pfx___dev_queue_xmit (kbuild/src/net/core/dev.c:4735)
-kern  :err   : [  836.677296] [      C2]  ? __pfx__raw_spin_lock_bh (kbuild/src/kernel/locking/spinlock.c:159)
-kern  :err   : [  836.677299] [      C2]  ? _raw_write_lock_bh (kbuild/src/include/linux/instrumented.h:55 kbuild/src/include/linux/atomic/atomic-instrumented.h:1301 kbuild/src/include/asm-generic/qrwlock.h:98 kbuild/src/include/linux/rwlock_api_smp.h:222 kbuild/src/kernel/locking/spinlock.c:338)
-kern  :err   : [  836.677302] [      C2]  ? __asan_memcpy (kbuild/src/mm/kasan/shadow.c:106 (discriminator 1))
-kern  :err   : [  836.677306] [      C2]  ? eth_header (kbuild/src/net/ethernet/eth.c:99 (discriminator 6))
-kern  :err   : [  836.677311] [      C2]  ? neigh_resolve_output (kbuild/src/include/linux/netdevice.h:3493 kbuild/src/net/core/neighbour.c:1611 kbuild/src/net/core/neighbour.c:1596)
-kern  :err   : [  836.677316] [      C2]  ip6_finish_output2 (kbuild/src/include/net/neighbour.h:560 (discriminator 2) kbuild/src/net/ipv6/ip6_output.c:136 (discriminator 2))
-kern  :err   : [  836.677320] [      C2]  ? __pfx_ip6_finish_output2 (kbuild/src/include/net/xfrm.h:1303)
-kern  :err   : [  836.677324] [      C2]  ? kasan_save_track (kbuild/src/mm/kasan/common.c:78)
-kern  :err   : [  836.677327] [      C2]  ? __kasan_kmalloc (kbuild/src/mm/kasan/common.c:398 kbuild/src/mm/kasan/common.c:415)
-kern  :err   : [  836.677330] [      C2]  ? dst_cow_metrics_generic (kbuild/src/include/linux/slab.h:969 kbuild/src/net/core/dst.c:194)
-kern  :err   : [  836.677333] [      C2]  ? icmp6_dst_alloc (kbuild/src/include/net/dst.h:136 kbuild/src/include/net/dst.h:197 kbuild/src/net/ipv6/route.c:3359)
-kern  :err   : [  836.677336] [      C2]  ? ndisc_send_skb (kbuild/src/net/ipv6/ndisc.c:491)
-kern  :err   : [  836.677339] [      C2]  ? addrconf_dad_completed (kbuild/src/net/ipv6/addrconf.c:4395)
-kern  :err   : [  836.677342] [      C2]  ? addrconf_dad_begin (kbuild/src/net/ipv6/addrconf.c:4157)
-kern  :err   : [  836.677345] [      C2]  ? addrconf_dad_work (kbuild/src/net/ipv6/addrconf.c:4262)
-kern  :err   : [  836.677348] [      C2]  ? process_one_work (kbuild/src/kernel/workqueue.c:3314)
-kern  :err   : [  836.677350] [      C2]  ? worker_thread (kbuild/src/kernel/workqueue.c:3397 kbuild/src/kernel/workqueue.c:3478)
-kern  :err   : [  836.677352] [      C2]  ? kthread (kbuild/src/kernel/kthread.c:436)
-kern  :err   : [  836.677356] [      C2]  ? ret_from_fork (kbuild/src/arch/x86/kernel/process.c:158)
-kern  :err   : [  836.677358] [      C2]  ? ret_from_fork_asm (kbuild/src/arch/x86/entry/entry_64.S:245)
-kern  :err   : [  836.677361] [      C2]  ? addrconf_dad_work (kbuild/src/net/ipv6/addrconf.c:4262)
-kern  :err   : [  836.677364] [      C2]  ? process_one_work (kbuild/src/kernel/workqueue.c:3314)
-kern  :err   : [  836.677366] [      C2]  ? worker_thread (kbuild/src/kernel/workqueue.c:3397 kbuild/src/kernel/workqueue.c:3478)
-kern  :err   : [  836.677369] [      C2]  ip6_finish_output (kbuild/src/net/ipv6/ip6_output.c:208 kbuild/src/net/ipv6/ip6_output.c:219)
-kern  :err   : [  836.677372] [      C2]  ip6_output (kbuild/src/include/linux/netfilter.h:307 kbuild/src/net/ipv6/ip6_output.c:246)
-kern  :err   : [  836.677375] [      C2]  ? __pfx_ip6_output (kbuild/src/net/ipv6/ip6_output.c:169)
-kern  :err   : [  836.677379] [      C2]  ? _raw_spin_lock_irqsave (kbuild/src/include/linux/instrumented.h:55 kbuild/src/include/linux/atomic/atomic-instrumented.h:1301 kbuild/src/include/asm-generic/qspinlock.h:111 kbuild/src/include/linux/spinlock.h:187 kbuild/src/include/linux/spinlock_api_smp.h:133 kbuild/src/kernel/locking/spinlock.c:166)
-kern  :err   : [  836.677382] [      C2]  ? __pfx__raw_spin_lock_irqsave (kbuild/src/kernel/locking/spinlock.c:273)
-kern  :err   : [  836.677385] [      C2]  NF_HOOK+0xda/0x1f0
-kern  :err   : [  836.677388] [      C2]  ? __pfx_NF_HOOK+0x10/0x10
-kern  :err   : [  836.677391] [      C2]  ? rt6_uncached_list_add (kbuild/src/include/linux/list.h:96 kbuild/src/include/linux/list.h:158 kbuild/src/include/linux/list.h:191 kbuild/src/net/ipv6/route.c:145)
-kern  :err   : [  836.677394] [      C2]  ndisc_send_skb (kbuild/src/net/ipv6/ndisc.c:512)
-kern  :err   : [  836.677396] [      C2]  ? __pfx_ndisc_send_skb (kbuild/src/include/net/dst.h:470 (discriminator 1))
-kern  :err   : [  836.677400] [      C2]  ? ndisc_send_rs (kbuild/src/net/ipv6/ndisc.c:171 (discriminator 1) kbuild/src/net/ipv6/ndisc.c:719 (discriminator 1))
-kern  :err   : [  836.677402] [      C2]  addrconf_dad_completed (kbuild/src/net/ipv6/addrconf.c:4395)
-kern  :err   : [  836.677406] [      C2]  ? __pfx_addrconf_dad_completed (kbuild/src/net/ipv6/addrconf.c:4091 (discriminator 10))
-kern  :err   : [  836.677409] [      C2]  ? _raw_spin_lock (kbuild/src/include/linux/instrumented.h:55 kbuild/src/include/linux/atomic/atomic-instrumented.h:1301 kbuild/src/include/asm-generic/qspinlock.h:111 kbuild/src/include/linux/spinlock.h:187 kbuild/src/include/linux/spinlock_api_smp.h:159 kbuild/src/kernel/locking/spinlock.c:158)
-kern  :err   : [  836.677412] [      C2]  ? __pfx__raw_spin_lock (kbuild/src/kernel/locking/spinlock.c:331)
-kern  :err   : [  836.677416] [      C2]  ? addrconf_dad_begin (kbuild/src/net/ipv6/addrconf.c:4157)
-kern  :err   : [  836.677419] [      C2]  addrconf_dad_begin (kbuild/src/net/ipv6/addrconf.c:4157)
-kern  :err   : [  836.677422] [      C2]  ? __pfx_sched_balance_newidle (kbuild/src/kernel/sched/fair.c:13237 (discriminator 1))
-kern  :err   : [  836.677425] [      C2]  ? __pfx_addrconf_dad_begin (kbuild/src/include/net/ipv6.h:459 (discriminator 2))
-kern  :err   : [  836.677428] [      C2]  ? __pfx__raw_spin_lock_bh (kbuild/src/kernel/locking/spinlock.c:159)
-kern  :err   : [  836.677432] [      C2]  addrconf_dad_work (kbuild/src/net/ipv6/addrconf.c:4262)
-kern  :err   : [  836.677435] [      C2]  ? __pfx_addrconf_dad_work (kbuild/src/net/ipv6/addrconf.c:1568 (discriminator 2))
-kern  :err   : [  836.677438] [      C2]  ? __schedule (kbuild/src/kernel/sched/core.c:5507 kbuild/src/kernel/sched/core.c:7228)
-kern  :err   : [  836.677443] [      C2]  process_one_work (kbuild/src/kernel/workqueue.c:3314)
-kern  :err   : [  836.677446] [      C2]  ? assign_work (kbuild/src/kernel/workqueue.c:1233)
-kern  :err   : [  836.677451] [      C2]  worker_thread (kbuild/src/kernel/workqueue.c:3397 kbuild/src/kernel/workqueue.c:3478)
-kern  :err   : [  836.677454] [      C2]  ? __pfx_worker_thread (kbuild/src/kernel/workqueue.c:3405 (discriminator 1))
-kern  :err   : [  836.677456] [      C2]  kthread (kbuild/src/kernel/kthread.c:436)
-kern  :err   : [  836.677459] [      C2]  ? recalc_sigpending (kbuild/src/include/linux/instrumented.h:97 kbuild/src/include/asm-generic/bitops/instrumented-atomic.h:41 kbuild/src/include/linux/thread_info.h:109 kbuild/src/kernel/signal.c:181)
-kern  :err   : [  836.677463] [      C2]  ? __pfx_kthread (kbuild/src/include/linux/list.h:404 (discriminator 2))
-kern  :err   : [  836.677466] [      C2]  ret_from_fork (kbuild/src/arch/x86/kernel/process.c:158)
-kern  :err   : [  836.677468] [      C2]  ? __pfx_ret_from_fork (kbuild/src/arch/x86/include/asm/entry-common.h:54)
-kern  :err   : [  836.677470] [      C2]  ? switch_fpu (kbuild/src/include/linux/instrumented.h:82 kbuild/src/include/asm-generic/bitops/instrumented-non-atomic.h:141 kbuild/src/include/linux/thread_info.h:133 kbuild/src/include/linux/sched.h:2084 kbuild/src/arch/x86/include/asm/fpu/sched.h:34)
-kern  :err   : [  836.677475] [      C2]  ? __switch_to (kbuild/src/arch/x86/kernel/process_64.c:403 kbuild/src/arch/x86/kernel/process_64.c:663)
-kern  :err   : [  836.677478] [      C2]  ? __switch_to_asm (kbuild/src/arch/x86/entry/entry_64.S:206)
-kern  :err   : [  836.677481] [      C2]  ? __pfx_kthread (kbuild/src/include/linux/list.h:404 (discriminator 2))
-kern  :err   : [  836.677484] [      C2]  ret_from_fork_asm (kbuild/src/arch/x86/entry/entry_64.S:245)
-kern  :err   : [  836.677488] [      C2]  </TASK>
-
-kern  :err   : [  837.303842] [      C2] Allocated by task 121763:
-kern  :warn  : [  837.308450] [      C2]  kasan_save_stack (kbuild/src/mm/kasan/common.c:57)
-kern  :warn  : [  837.313267] [      C2]  kasan_save_track (kbuild/src/mm/kasan/common.c:78)
-kern  :warn  : [  837.318040] [      C2]  __kasan_slab_alloc (kbuild/src/mm/kasan/common.c:340 kbuild/src/mm/kasan/common.c:366)
-kern  :warn  : [  837.322991] [      C2]  kmem_cache_alloc_node_noprof (kbuild/src/include/linux/kasan.h:253 kbuild/src/mm/slub.c:4610 kbuild/src/mm/slub.c:4939 kbuild/src/mm/slub.c:4991)
-kern  :warn  : [  837.328984] [      C2]  __alloc_skb (kbuild/src/net/core/skbuff.c:704 (discriminator 2))
-kern  :warn  : [  837.333421] [      C2]  __tcp_send_ack (kbuild/src/net/ipv4/tcp_output.c:4467)
-kern  :warn  : [  837.338725] [      C2]  tcp_rcv_established (kbuild/src/net/ipv4/tcp_input.c:6168 kbuild/src/net/ipv4/tcp_input.c:6162 kbuild/src/net/ipv4/tcp_input.c:6662)
-kern  :warn  : [  837.344030] [      C2]  tcp_v6_do_rcv (kbuild/src/net/ipv6/tcp_ipv6.c:1625)
-kern  :warn  : [  837.348812] [      C2]  tcp_v6_rcv (kbuild/src/net/ipv6/tcp_ipv6.c:1902)
-kern  :warn  : [  837.353415] [      C2]  ip6_protocol_deliver_rcu (kbuild/src/net/ipv6/ip6_input.c:479 (discriminator 1))
-kern  :warn  : [  837.359180] [      C2]  ip6_input_finish (kbuild/src/net/ipv6/ip6_input.c:534)
-kern  :warn  : [  837.364172] [      C2]  ip6_input (kbuild/src/include/linux/netfilter.h:318 kbuild/src/include/linux/netfilter.h:312 kbuild/src/net/ipv6/ip6_input.c:545)
-kern  :warn  : [  837.368432] [      C2]  ip6_list_rcv_finish+0x80c/0xc30
-kern  :warn  : [  837.374685] [      C2]  ip6_sublist_rcv (kbuild/src/net/ipv6/ip6_input.c:361)
-kern  :warn  : [  837.379465] [      C2]  ipv6_list_rcv (kbuild/src/net/ipv6/ip6_input.c:395)
-kern  :warn  : [  837.384188] [      C2]  __netif_receive_skb_list_core (kbuild/src/net/core/dev.c:6249 (discriminator 1) kbuild/src/net/core/dev.c:6296 (discriminator 1))
-kern  :warn  : [  837.390302] [      C2]  netif_receive_skb_list_internal (kbuild/src/net/core/dev.c:6348 kbuild/src/net/core/dev.c:6439)
-kern  :warn  : [  837.396561] [      C2]  napi_complete_done (kbuild/src/include/net/gro.h:523 kbuild/src/include/net/gro.h:519 kbuild/src/include/net/gro.h:531 kbuild/src/net/core/dev.c:6807)
-kern  :warn  : [  837.401691] [      C2]  gro_cell_poll (kbuild/src/net/core/gro_cells.c:74)
-kern  :warn  : [  837.406397] [      C2]  __napi_poll (kbuild/src/net/core/dev.c:7729)
-kern  :warn  : [  837.410830] [      C2]  net_rx_action (kbuild/src/net/core/dev.c:7792 kbuild/src/net/core/dev.c:7949)
-kern  :warn  : [  837.415519] [      C2]  handle_softirqs (kbuild/src/kernel/softirq.c:622)
-kern  :warn  : [  837.420390] [      C2]  do_softirq (kbuild/src/kernel/softirq.c:523 (discriminator 20) kbuild/src/kernel/softirq.c:510 (discriminator 20))
-kern  :warn  : [  837.424643] [      C2]  __local_bh_enable_ip (kbuild/src/kernel/softirq.c:450)
-kern  :warn  : [  837.429767] [      C2]  __dev_queue_xmit (kbuild/src/include/linux/bottom_half.h:33 kbuild/src/include/linux/rcupdate.h:914 kbuild/src/net/core/dev.c:4907)
-kern  :warn  : [  837.434801] [      C2]  ip6_finish_output2 (kbuild/src/include/net/neighbour.h:558 kbuild/src/net/ipv6/ip6_output.c:136)
-kern  :warn  : [  837.440010] [      C2]  ip6_finish_output (kbuild/src/net/ipv6/ip6_output.c:208 kbuild/src/net/ipv6/ip6_output.c:219)
-kern  :warn  : [  837.445045] [      C2]  ip6_output (kbuild/src/include/linux/netfilter.h:307 kbuild/src/net/ipv6/ip6_output.c:246)
-kern  :warn  : [  837.449472] [      C2]  ip6_xmit (kbuild/src/include/net/dst.h:470 (discriminator 3) kbuild/src/include/linux/netfilter.h:318 (discriminator 3) kbuild/src/include/linux/netfilter.h:312 (discriminator 3) kbuild/src/net/ipv6/ip6_output.c:379 (discriminator 3))
-kern  :warn  : [  837.453809] [      C2]  inet6_csk_xmit (kbuild/src/net/ipv6/inet6_connection_sock.c:121 (discriminator 2))
-kern  :warn  : [  837.458578] [      C2]  __tcp_transmit_skb (kbuild/src/net/ipv4/tcp_output.c:1716 (discriminator 1))
-kern  :warn  : [  837.463872] [      C2]  tcp_write_xmit (kbuild/src/net/ipv4/tcp_output.c:1734 kbuild/src/net/ipv4/tcp_output.c:3062)
-kern  :warn  : [  837.468814] [      C2]  __tcp_push_pending_frames (kbuild/src/net/ipv4/tcp_output.c:3245 (discriminator 1))
-kern  :warn  : [  837.474459] [      C2]  tcp_sendmsg_locked (kbuild/src/net/ipv4/tcp.c:1414)
-kern  :warn  : [  837.479755] [      C2]  tcp_sendmsg (kbuild/src/net/ipv4/tcp.c:1451)
-kern  :warn  : [  837.484124] [      C2]  __sys_sendto (kbuild/src/net/socket.c:775 (discriminator 1) kbuild/src/net/socket.c:790 (discriminator 1) kbuild/src/net/socket.c:2252 (discriminator 1))
-kern  :warn  : [  837.488724] [      C2]  __x64_sys_sendto (kbuild/src/net/socket.c:2259 kbuild/src/net/socket.c:2255 kbuild/src/net/socket.c:2255)
-kern  :warn  : [  837.493587] [      C2]  do_syscall_64 (kbuild/src/arch/x86/entry/syscall_64.c:63 kbuild/src/arch/x86/entry/syscall_64.c:94)
-kern  :warn  : [  837.498221] [      C2]  entry_SYSCALL_64_after_hwframe (kbuild/src/arch/x86/entry/entry_64.S:121)
-
-kern  :err   : [  837.506678] [      C2] Freed by task 121763:
-kern  :warn  : [  837.510939] [      C2]  kasan_save_stack (kbuild/src/mm/kasan/common.c:57)
-kern  :warn  : [  837.515714] [      C2]  kasan_save_track (kbuild/src/mm/kasan/common.c:78)
-kern  :warn  : [  837.520491] [      C2]  kasan_save_free_info (kbuild/src/mm/kasan/generic.c:584)
-kern  :warn  : [  837.525618] [      C2]  __kasan_slab_free (kbuild/src/mm/kasan/common.c:253 kbuild/src/mm/kasan/common.c:285)
-kern  :warn  : [  837.530482] [      C2]  kmem_cache_free (kbuild/src/include/linux/kasan.h:235 kbuild/src/mm/slub.c:2700 kbuild/src/mm/slub.c:6310 kbuild/src/mm/slub.c:6437)
-kern  :warn  : [  837.535295] [      C2]  tcp_rcv_established (kbuild/src/net/ipv4/tcp_input.c:6560)
-kern  :warn  : [  837.540686] [      C2]  tcp_v6_do_rcv (kbuild/src/net/ipv6/tcp_ipv6.c:1625)
-kern  :warn  : [  837.545468] [      C2]  __release_sock (kbuild/src/include/net/sock.h:1190 (discriminator 1) kbuild/src/net/core/sock.c:3258 (discriminator 1))
-kern  :warn  : [  837.550288] [      C2]  release_sock (kbuild/src/net/core/sock.c:3857)
-kern  :warn  : [  837.554899] [      C2]  tcp_sendmsg (kbuild/src/net/ipv4/tcp.c:1452)
-kern  :warn  : [  837.559281] [      C2]  __sys_sendto (kbuild/src/net/socket.c:775 (discriminator 1) kbuild/src/net/socket.c:790 (discriminator 1) kbuild/src/net/socket.c:2252 (discriminator 1))
-kern  :warn  : [  837.563883] [      C2]  __x64_sys_sendto (kbuild/src/net/socket.c:2259 kbuild/src/net/socket.c:2255 kbuild/src/net/socket.c:2255)
-kern  :warn  : [  837.568744] [      C2]  do_syscall_64 (kbuild/src/arch/x86/entry/syscall_64.c:63 kbuild/src/arch/x86/entry/syscall_64.c:94)
-kern  :warn  : [  837.573365] [      C2]  entry_SYSCALL_64_after_hwframe (kbuild/src/arch/x86/entry/entry_64.S:121)
-
-kern  :err   : [  837.581815] [      C2] The buggy address belongs to the object at ffff888414b94780
-which belongs to the cache skbuff_head_cache of size 232
-kern  :err   : [  837.596736] [      C2] The buggy address is located 7 bytes inside of
-freed 232-byte region [ffff888414b94780, ffff888414b94868)
-
-kern  :err   : [  837.613201] [      C2] The buggy address belongs to the physical page:
-kern  :warn  : [  837.619738] [      C2] page: refcount:0 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x414b94
-kern  :warn  : [  837.628704] [      C2] head: order:1 mapcount:0 entire_mapcount:0 nr_pages_mapped:0 pincount:0
-kern  :warn  : [  837.637367] [      C2] flags: 0x17ffffc0000040(head|node=0|zone=2|lastcpupid=0x1fffff)
-kern  :warn  : [  837.645332] [      C2] page_type: f5(slab)
-kern  :warn  : [  837.649452] [      C2] raw: 0017ffffc0000040 ffff8881003a2000 dead000000000100 dead000000000122
-kern  :warn  : [  837.658208] [      C2] raw: 0000000000000000 0000000800190019 00000000f5000000 0000000000000000
-kern  :warn  : [  837.666938] [      C2] head: 0017ffffc0000040 ffff8881003a2000 dead000000000100 dead000000000122
-kern  :warn  : [  837.675756] [      C2] head: 0000000000000000 0000000800190019 00000000f5000000 0000000000000000
-kern  :warn  : [  837.684572] [      C2] head: 0017ffffc0000001 ffffffffffffff81 00000000ffffffff 00000000ffffffff
-kern  :warn  : [  837.693424] [      C2] head: ffffffffffffffff 0000000000000000 00000000ffffffff 0000000000000002
-kern  :warn  : [  837.702280] [      C2] page dumped because: kasan: bad access detected
-
-kern  :err   : [  837.711381] [      C2] Memory state around the buggy address:
-kern  :err   : [  837.717212] [      C2]  ffff888414b94680: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-kern  :err   : [  837.725465] [      C2]  ffff888414b94700: fb fb fb fb fb fc fc fc fc fc fc fc fc fc fc fc
-kern  :err   : [  837.733699] [      C2] >ffff888414b94780: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-kern  :err   : [  837.741937] [      C2]                    ^
-kern  :err   : [  837.746228] [      C2]  ffff888414b94800: fb fb fb fb fb fb fb fb fb fb fb fb fb fc fc fc
-kern  :err   : [  837.754492] [      C2]  ffff888414b94880: fc fc fc fc fc fc fc fc fa fb fb fb fb fb fb fb
-kern  :err   : [  837.762743] [      C2] ==================================================================
-
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
-
+Regards,
+LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
