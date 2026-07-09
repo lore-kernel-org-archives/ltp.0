@@ -4,102 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 495ECC43458
-	for <ltp@archiver.kernel.org>; Thu,  9 Jul 2026 15:07:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 084CBC43458
+	for <ltp@archiver.kernel.org>; Thu,  9 Jul 2026 15:48:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1783612080; h=to : date :
+ message-id : mime-version : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : content-type : content-transfer-encoding : sender : from;
+ bh=8IPldw4ReR8T0GL4OWfFQsCyZ0VhUIRAbXcNQ/MVTi4=;
+ b=O8JcODeRHn4vBeZBDg+MRy1XKJ8Bbx9Y4dRD8SyU/a/LPRgz9YCWUEnIPvgN3vJ2bigU6
+ pZiZix4MmzcUkIhYQOkt1ag5TtIxqonezf7QSJOE7qwuWEAFEZOygEj82vneadjGhZM6cJM
+ uUorL2yiu+Nt4CXWu3sKnJ/IrY84kGE=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B4BB83E5CE1
-	for <ltp@archiver.kernel.org>; Thu,  9 Jul 2026 17:07:38 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 2CEAC3E72D1
+	for <ltp@archiver.kernel.org>; Thu,  9 Jul 2026 17:48:00 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 748B83E5C9D
- for <ltp@lists.linux.it>; Thu,  9 Jul 2026 17:07:24 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ by picard.linux.it (Postfix) with ESMTPS id A8F443E28F1
+ for <ltp@lists.linux.it>; Thu,  9 Jul 2026 17:40:18 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 704231400DC8
- for <ltp@lists.linux.it>; Thu,  9 Jul 2026 17:07:23 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id DA9C31400104
+ for <ltp@lists.linux.it>; Thu,  9 Jul 2026 17:40:17 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1783611616;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=R1G3QNqzikeUthUZHx7bKJBg5tfbQpQu8QDYF1fuWUI=;
+ b=XnelpgGSAVdRW8mXJbzceq/0n0Ah1AxSwvML4Eb9kZ4pOVNimHQD7U4BXMm+Xub8+PVOqe
+ QLdcc0Kf53VATUSiBrMPaPlVBMomVInhmzPlwmD98rrXzy2NlepIMxoXNCwTdlX6aamCzx
+ 1Ri3K4KU4SYW/FPVku+pbtuDuP0W+zY=
+Received: from mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-52-R9gFaVXONhW8eCUQKXd2qg-1; Thu,
+ 09 Jul 2026 11:40:14 -0400
+X-MC-Unique: R9gFaVXONhW8eCUQKXd2qg-1
+X-Mimecast-MFC-AGG-ID: R9gFaVXONhW8eCUQKXd2qg_1783611613
+Received: from mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com
+ (mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id B4E5576274;
- Thu,  9 Jul 2026 15:07:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1783609642;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=9HPVSPxADEFEH2mLhKiMf9krVCCugAPrOf0tDpsM+oI=;
- b=a0mBkXeW8M06fzaK9TsEfT276Ak2VEU5o58jDBVVaucqikUkLcSbM9spu4wDe1Zw5bXgjZ
- QEq2sSWNXusP5/zLE7Xz4S1hbF3ElpsFSwOoX1T03RASzZOvBuC5qzCT/SZIT6ixrsBgNc
- tys3MfNHHAJC8K/WQihkuVL0/pajNs0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1783609642;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=9HPVSPxADEFEH2mLhKiMf9krVCCugAPrOf0tDpsM+oI=;
- b=ORkJMprVEZUYdbCuEcKtuSv24usor0X5ivxXnDbyS4u4Q1oLlPwHadOrS2tttNvxUjOQb/
- IRfFeXUQJatBytCw==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1783609642;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=9HPVSPxADEFEH2mLhKiMf9krVCCugAPrOf0tDpsM+oI=;
- b=a0mBkXeW8M06fzaK9TsEfT276Ak2VEU5o58jDBVVaucqikUkLcSbM9spu4wDe1Zw5bXgjZ
- QEq2sSWNXusP5/zLE7Xz4S1hbF3ElpsFSwOoX1T03RASzZOvBuC5qzCT/SZIT6ixrsBgNc
- tys3MfNHHAJC8K/WQihkuVL0/pajNs0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1783609642;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=9HPVSPxADEFEH2mLhKiMf9krVCCugAPrOf0tDpsM+oI=;
- b=ORkJMprVEZUYdbCuEcKtuSv24usor0X5ivxXnDbyS4u4Q1oLlPwHadOrS2tttNvxUjOQb/
- IRfFeXUQJatBytCw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9827C779AA;
- Thu,  9 Jul 2026 15:07:21 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id nTkZGym5T2oHEgAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Thu, 09 Jul 2026 15:07:21 +0000
-Date: Thu, 9 Jul 2026 17:07:19 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: linuxtestproject.agent@gmail.com
-Message-ID: <20260709150719.GA999562@pevik>
-References: <20260709130135.927868-2-pvorel@suse.cz>
- <20260709135357.4124-1-linuxtestproject.agent@gmail.com>
+ by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
+ id 4C1E11955E78
+ for <ltp@lists.linux.it>; Thu,  9 Jul 2026 15:40:13 +0000 (UTC)
+Received: from tdzik-thinkpadt14gen6.tpbc.com (unknown [10.44.49.228])
+ by mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP
+ id 947AC3000C14
+ for <ltp@lists.linux.it>; Thu,  9 Jul 2026 15:40:12 +0000 (UTC)
+To: ltp@lists.linux.it
+Date: Thu,  9 Jul 2026 17:40:03 +0200
+Message-ID: <cover.1783610933.git.tdzik@redhat.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20260709135357.4124-1-linuxtestproject.agent@gmail.com>
-X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- TAGGED_RCPT(0.00)[]; FUZZY_RATELIMITED(0.00)[rspamd.com];
- RCVD_VIA_SMTP_AUTH(0.00)[]; MISSING_XM_UA(0.00)[];
- ARC_NA(0.00)[]; TO_DN_SOME(0.00)[]; MIME_TRACE(0.00)[0:+];
- FREEMAIL_TO(0.00)[gmail.com];
- FREEMAIL_ENVRCPT(0.00)[gmail.com]; RCPT_COUNT_THREE(0.00)[3];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RCVD_TLS_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,imap1.dmz-prg2.suse.org:helo]; 
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- REPLYTO_EQ_FROM(0.00)[]
+X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.4
+X-Mimecast-Spam-Score: 0
+X-Mimecast-MFC-PROC-ID: cX4z6rX581drgPPRbg2lOfyBJ3mQHfA_DtdrCFiu0ZY_1783611613
+X-Mimecast-Originator: redhat.com
 X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] build.sh: Add support for test-metadata
+X-Mailman-Approved-At: Thu, 09 Jul 2026 17:47:41 +0200
+Subject: [LTP] [PATCH 0/3] Fix to float_trigo core dump and related
+ enhancements
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -111,61 +83,41 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it
+From: Tomas Dzik via ltp <ltp@lists.linux.it>
+Reply-To: Tomas Dzik <tdzik@redhat.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> Hi Petr,
+Hi all,
+following 3 patches fix a core dump we observed during testing. Because
+failed malloc() was contributing factor to it I added also some checks
+to malloc() return value. And since I was editing these files I spotted
+that they use sprintf() and I replaced it with snprintf() which is IMHO
+safer and can make debugging test failures easier.
+I would be grateful for review.
 
-> On Thu, Jul 09, 2026 at 15:01:33 +0200, Petr Vorel wrote:
-> > build.sh: Add support for test-metadata
+Best regards,
+Tomas D.
 
-> --- [PATCH 1/3] ---
+Tomas Dzik (3):
+  LTP/Lite test float_trigo core dumps due to free(): invalid pointer
+  Add some checks for malloc() returning NULL
+  Replace sprintf() with more secure snprintf() variant in float tests
 
-> The commit body is empty. Is there anything worth saying about why
-> test-metadata deserves its own run-type, or why it is being added now?
-> Even one sentence would help readers understand the motivation without
-> having to read the whole series.
+ testcases/misc/math/float/bessel/genbessel.c  | 10 +++---
+ .../misc/math/float/exp_log/genexp_log.c      | 24 +++++++++----
+ testcases/misc/math/float/iperb/geniperb.c    | 10 ++++--
+ testcases/misc/math/float/main.c              | 18 +++++++---
+ testcases/misc/math/float/power/genpower.c    | 21 ++++++++----
+ testcases/misc/math/float/thread_code.c       | 34 +++++++++++++------
+ testcases/misc/math/float/trigo/gentrigo.c    | 24 +++++++++----
+ 7 files changed, 99 insertions(+), 42 deletions(-)
 
-> --- [PATCH 3/3] ---
+-- 
+2.55.0
 
-> >  	printf "* $i "
-
-> $i is expanded directly into printf's format string. If a .c file
-> is ever added whose name contains a percent sign, printf will interpret
-> it as a format specifier and produce garbled output.
-
-> The portable form is:
-
->     printf '* %s ' "$i"
-
-I would say printf "* $i " is portable enough.
-
-> Verdict - Needs revision
-
-Yes, but not due the above problems but due out-of-tree build problems.
-
-Unfortunately $(abs_builddir) is working only when called on the top level
-Makefile, which is visible in lib/newlib_tests/runtest.sh which just tries to
-detect this problem:
-
-		case $res in
-			0) tpass="$tpass $i";;
-			1) tfail="$tfail $i";;
-			2) tbrok="$tbrok $i";;
-			4) twarn="$twarn $i";;
-			32) tconf="$tconf $i";;
-			127) runtest_brk TBROK "Error: file not found (wrong PATH? out-of-tree build without -b?), exit code: $res";;
-			*) runtest_brk TBROK "Error: unknown failure, exit code: $res";;
-		esac
-
-I'll do handling like this as well into metadata/tests/test.sh.
-
-Kind regards,
-Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
