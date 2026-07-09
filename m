@@ -4,105 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 189C3C43458
-	for <ltp@archiver.kernel.org>; Thu,  9 Jul 2026 18:00:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C4DB0C43458
+	for <ltp@archiver.kernel.org>; Thu,  9 Jul 2026 18:57:17 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 98E873E28CF
-	for <ltp@archiver.kernel.org>; Thu,  9 Jul 2026 20:00:24 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 4A3AF3E29CF
+	for <ltp@archiver.kernel.org>; Thu,  9 Jul 2026 20:57:16 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 110EA3E1EBA
- for <ltp@lists.linux.it>; Thu,  9 Jul 2026 20:00:05 +0200 (CEST)
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
- [148.163.158.5])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 9F8A73D900A
+ for <ltp@lists.linux.it>; Thu,  9 Jul 2026 20:57:00 +0200 (CEST)
+Received: from mail-qk2-x04.google.com (mail-qk2-x04.google.com
+ [IPv6:2607:f8b0:4864:34::4])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id EEC051000486
- for <ltp@lists.linux.it>; Thu,  9 Jul 2026 20:00:04 +0200 (CEST)
-Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id
- 669HmkWP1949216
- for <ltp@lists.linux.it>; Thu, 9 Jul 2026 18:00:03 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
- :content-type:date:from:in-reply-to:message-id:mime-version
- :references:subject:to; s=pp1; bh=RzoprOBRoI/fxxDYR1Uo/OQoAC8zGJ
- moLpQgsXE+GQ4=; b=ShTieijJyy+gM/7m2aAFxmDjhlpmxVgMpJof6QKs/xrHDr
- yyvm7OgSHCYWyPdpipil4Y7Nj3Pm8goNl896X5s1b3IiW2fzSX0IVzAOv25P7rzw
- 1dD83qqB9Xnq9iVj55kJqVV2H7SAJ/3yGoSTL8HQJRoo8KrM6DLB1UsAJw5MewC4
- FqkDISHxMeWhatPjM092xvZ93yQQ+Azlpdx743gRAVXUhqMHJFmV5T5JRCz68IcZ
- zbM4W5fIc8Xm5Yn3yoGH+LSXCHhQOfUZ7dQZd+TQ+iaxv1hL9zoHyLAFK8MrmERQ
- 82RLVoJxFGXlaJjD2bhQ3qBRZPComd0YOK5300FA==
-Received: from ppma11.dal12v.mail.ibm.com
- (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4f6stt38na-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Thu, 09 Jul 2026 18:00:03 +0000 (GMT)
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
- by ppma11.dal12v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 669HncwU027841;
- Thu, 9 Jul 2026 18:00:02 GMT
-Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
- by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 4f7f6ydym8-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Thu, 09 Jul 2026 18:00:02 +0000 (GMT)
-Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com
- [10.20.54.106])
- by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 669I008C48300420
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Thu, 9 Jul 2026 18:00:00 GMT
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 43F302004D;
- Thu,  9 Jul 2026 18:00:00 +0000 (GMT)
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 30BBC2004E;
- Thu,  9 Jul 2026 18:00:00 +0000 (GMT)
-Received: from li-276bd24c-2dcc-11b2-a85c-945b6f05615c.ibm.com (unknown
- [9.224.74.129])
- by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTPS;
- Thu,  9 Jul 2026 18:00:00 +0000 (GMT)
-Date: Thu, 9 Jul 2026 19:59:58 +0200
-From: Jan Polensky <japo@linux.ibm.com>
-To: linuxtestproject.agent@gmail.com
-Message-ID: <ak_hnlOxRuNKpapG@li-276bd24c-2dcc-11b2-a85c-945b6f05615c.ibm.com>
-References: <20260709143551.147268-1-japo@linux.ibm.com>
- <20260709163754.4041-1-linuxtestproject.agent@gmail.com>
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 245EA600A16
+ for <ltp@lists.linux.it>; Thu,  9 Jul 2026 20:57:00 +0200 (CEST)
+Received: by mail-qk2-x04.google.com with SMTP id
+ af79cd13be357-92e84efd807so2776985a.1
+ for <ltp@lists.linux.it>; Thu, 09 Jul 2026 11:57:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20251104; t=1783623419; x=1784228219; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to:content-type;
+ bh=5PJHk6x9ax2NLYvaws6x04UIpUY0eCXZT+GiVp/JIHk=;
+ b=Hy13YW3dCC94CNhrstYOyL3JvmMikgEsXQ/CE/H4gztBIGv39PifDpWYZ1e2yjNkdW
+ V9viGjQCejUIg7LLTIJmRpbhwQECehJswJOjqgMxSgScgCjIubDAVzKF9VW/DLzxQ4+z
+ Vq0kywjhiFRySpeE1Eksm/AfbKG+Ur3WNH9rAP4lqorj1/+t6V1XznU+i1DNJhIHgdlB
+ gTiAvlS6Cvd+BGAivGHVG7PUL9A2u4Z7EsZhsEdQcTQ5slVKpkQnhGyDyVzV8Xx3gGdi
+ 8Bn7puTM7tcQMTlYHb2BHNaLIxeNZpWJIy2z7k//FyFe9oPdoNcNBNGagHpHlp68cAjp
+ GZTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1783623419; x=1784228219;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to:content-type;
+ bh=5PJHk6x9ax2NLYvaws6x04UIpUY0eCXZT+GiVp/JIHk=;
+ b=MQ/bPfnAqaM/WkNYja5h1sCtS6zrtvX5O5sr1VxmpZVZDPH0hW5bW1Y/hgM3WasAbd
+ C6M069FVEUXDrA7HcOPVrIvJO5Vhsuasi8xOKq/AB82IRLPWyK83CVAeMdS2woP7w5d/
+ /oPaZXNjpGwwAkNc2+zRNDCXIkJvRYw2ludXnlI6Ok2iMOjxcxzN2g6tlNikwHaEslm6
+ E8G59UVRCEeQxthElDoFTDEdA8pU9vcRVdf9R0D84j5CnEYwibvAyaOYH7nWPnK3rP7o
+ ndx1ZvPZIEv8wAqrhzIIao8al5B+kz6eGPmt7nOpvVQ3RtY12I04SXOKkAgNGrDSODZ/
+ h5EQ==
+X-Gm-Message-State: AOJu0Yzgi+AfxHV8mQNFbFgBI8r1ojdPy6TpnD3TKFvU7xtKz03XUEov
+ GASUaOW6h6hhV65qef68CTjxcmH5fLHG3lW/HHaRed0t47hhNCfujIJ0
+X-Gm-Gg: AfdE7cnT4yqV1LIJJ+xxAmLvPZcdpNUGOS0UoC8Q211BSWof/Ybl3djdAd082Zb8zRi
+ jf7s5NyQuKBab3E+yPJ9YP1OGU7wKvDT+hNrZXDehYRJbgHK8gv0Kz7U72yfeg4JgsKsEleL9qb
+ 1SM5Ij/ntnLB5G2uQXWU+E+Ov5ZNR0J2diDvNTMUbRPCtWNzQj/c3eoG/09A4Iu0n3WWiyas1wD
+ xkfXYnAayN8ghlg20rZh0jK+6+Y1syEjngW6IZ0FkjvU+HRCzR1GtZ9jln2RqVkjHStvaaZRSuc
+ D4ks1JzDxG2QlMTf8Hayv52GOcBjbqcMG9Bwqunr2UWpSxSlhdE8GC7UR3Lz/ooQPxYAYpzFvDa
+ JjTKyytZ2LGnOh/oBRUvxV4NwkQFbxORJ2KYYmB/tSmRiG9J9DQ4aX6N1l5lhaVqRE5KpherEMt
+ uiT74xkJisGJskI1fZHyG0LTnQ+7v8qLtVOoueenhAFXvLZAy3ZmQmvcg3nhYGSITEoLxCJJ6GZ
+ NtdTRGhAuQEBJUysyfzlGCO0NLs
+X-Received: by 2002:a05:620a:8904:b0:92e:6f45:dfdb with SMTP id
+ af79cd13be357-92ecf490401mr850613385a.0.1783623418823; 
+ Thu, 09 Jul 2026 11:56:58 -0700 (PDT)
+Received: from
+ runnervm5mmn9.xoxzbnckc3tuvhtfp2zpexthsa.bx.internal.cloudapp.net
+ ([20.83.175.232]) by smtp.gmail.com with ESMTPSA id
+ af79cd13be357-92ee5b86276sm13796485a.11.2026.07.09.11.56.58
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Thu, 09 Jul 2026 11:56:58 -0700 (PDT)
+From: linuxtestproject.agent@gmail.com
+To: Jan Polensky <japo@linux.ibm.com>
+Date: Thu,  9 Jul 2026 18:56:57 +0000
+Message-ID: <20260709185658.3978-1-linuxtestproject.agent@gmail.com>
+X-Mailer: git-send-email 2.54.0
+In-Reply-To: <20260709175927.268677-1-japo@linux.ibm.com>
+References: <20260709175927.268677-1-japo@linux.ibm.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20260709163754.4041-1-linuxtestproject.agent@gmail.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Reinject: loops=2 maxloops=12
-X-Proofpoint-ORIG-GUID: 6YDMktgdWKjzwHi7iXL7YwWNWbiFXHxQ
-X-Proofpoint-Spam-Info: AW1haW4tMjYwNzA5MDE3NSBTYWx0ZWRfX/zC0687nncE8
- i2XjVH0ct63+EEgoiC15yPHYqpqB/M8VEgvE8J3ocjCfEWowZEznZR4oRof9zORRI5Y6l0ULpKL
- 1T2b1ULwxrroau0PB645XvPf7ida168=
-X-Authority-Analysis: v=2.4 cv=DKW/JSNb c=1 sm=1 tr=0 ts=6a4fe1a3 cx=c_pps
- a=aDMHemPKRhS1OARIsFnwRA==:117 a=aDMHemPKRhS1OARIsFnwRA==:17
- a=kj9zAlcOel0A:10 a=RAioF0-LDSMA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=RnoormkPH1_aCDwRdu11:22 a=RzCfie-kr_QcCd8fBx8p:22 a=pGLkceISAAAA:8
- a=oMCQ3PywB9bRQt1jbQkA:9 a=CjuIK1q_8ugA:10
-X-Proofpoint-GUID: ykCCUnv0wFV1ZXu90dUaTypkmr0PYH3Y
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNzA5MDE3NSBTYWx0ZWRfX87Nt1s7JX5Hs
- Hp2Hlg8Wb6jnlcHQPdBbLczN11p+DnFEc/pIVSC/6ly2Rre3p6PKX5TbQiQf7KOWI+zxJHNpSiD
- AkMoxTp9zd3Fy4fZ4WwwslX+I9ANgMVCm+Rq0+6Wha8MOip5Juw+67r3Et9kZ0M5SXy6WwnHNtY
- CSBUaj3nSFSdYUG4T454tjOsT+nwg7rCXFppc5dWvtot8yLfnDDlJv/iXCtf+7na3wrgPVDHUr/
- Cb96YT67PEICxbyH1VeIh4sMAfgiZn5poPOrz7kbG5UWd32BAjfdf5m4pM6hyphDwqOL5RgrJ2d
- a7YtKCz5GNj7Jm7E94baCk8tQYBHqYofUQz2ufy15ar6nbLQxJnbv5eMLrM2a2UQ8pUyYPKdhEr
- aafHUjNqgvTkUK3nmUMI7R02lZx1R5iUMqhWezcgzR8zpC5Gp8pcX1vvuv2oUanx4qnxUEuXyTT
- ywbRMveqMHhIA3+odHw==
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.134,FMLib:17.12.100.49
- definitions=2026-07-09_04,2026-07-09_04,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- spamscore=0 bulkscore=0 clxscore=1015 phishscore=0 impostorscore=0
- priorityscore=1501 adultscore=0 lowpriorityscore=0 suspectscore=0
- malwarescore=0 classifier=typeunknown authscore=0 authtc= authcc=
- route=outbound adjust=0 reason=mlx scancount=1 engine=8.22.0-2606150000
- definitions=main-2607090175
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] thp04: Add ptrace mode and fix tracee stop synchronization
 X-BeenThere: ltp@lists.linux.it
@@ -122,91 +97,78 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Thu, Jul 09, 2026 at 04:37:54PM +0000, linuxtestproject.agent@gmail.com wrote:
-> Hi Jan,
->
-> On July 09, 2026, Jan Polensky wrote:
-> > thp04: Add ptrace mode and fix tracee stop synchronization
->
-> > +	effective_mode = user_mode;
-> > +
-> > +	/* Probe direct /proc/self/mem writes only if not explicitly set to ptrace */
-> > +	if (!explicit_mode || user_mode == PROC_MEM_ALWAYS) {
-> > +		...
-> > +		effective_mode = PROC_MEM_PTRACE;
-> > +	}
-> > +
-> > +	/* Ptrace mode: tracee will be spawned in run() for each iteration */
-> > +	if (effective_mode == PROC_MEM_PTRACE)
-> > +		return;
-> > +
-> > +	tst_brk(TCONF, "Writes to /proc/self/mem disabled in kernel policy");
->
-> The final tst_brk() appears unreachable. Every code path through setup()
-> either returns or calls tst_brk() before reaching this line:
->
-> - Probe succeeds (PROC_MEM_ALWAYS path): early return inside the block.
-> - Probe fails with non-EIO: tst_brk(TBROK) inside the block.
-> - Probe fails with EIO and explicit_mode && user_mode==PROC_MEM_ALWAYS:
->   tst_brk(TCONF) inside the block.
-> - Probe fails with EIO otherwise: effective_mode is set to PROC_MEM_PTRACE
->   inside the block, then the "if (PROC_MEM_PTRACE) return" fires.
-> - Explicit ptrace mode (block skipped): effective_mode==PROC_MEM_PTRACE
->   was set before the block, so "if (PROC_MEM_PTRACE) return" fires.
-> - Explicit never mode: tst_brk(TCONF, "...on kernel cmdline") fires
->   inside the params[0].found block; execution does not continue.
->
-> Is there a case this was intended to handle that is now missing?
->
-> > +	for (i = 0; i < PTRACE_TEST_ITERATIONS; i++) {
-> > +		...
-> > +		/* Wait for tracee to stop itself with raise(SIGSTOP) */
-> > +		SAFE_WAITPID(tracee_pid, &status, 0);
-> > +
-> > +		if (!WIFSTOPPED(status) || WSTOPSIG(status) != SIGSTOP)
-> > +			tst_brk(TBROK, "Tracee did not stop with SIGSTOP: %s",
-> > +				tst_strstatus(status));
-> > +	}
->
-> When the tracee detects page pollution it calls:
->   tst_res(TFAIL, "Huge zero page was polluted");
->   child_cleanup();
->   exit(1);
->
-> The SAFE_WAITPID above then returns with WIFEXITED(status)=true, which
-> triggers tst_brk(TBROK, "Tracee did not stop with SIGSTOP: exited, status=1").
->
-> The test output becomes:
->   TFAIL: Huge zero page was polluted
->   TBROK: Tracee did not stop with SIGSTOP: exited, status=1
->
-> The TFAIL is propagated correctly via the LTP result mechanism.
-> However, the TBROK message "Tracee did not stop with SIGSTOP" describes
-> an infrastructure anomaly rather than the actual failure (page pollution).
-> Would it be clearer to check WIFEXITED explicitly and omit the TBROK when
-> the tracee has already reported a result?
->
-> Verdict - Needs revision
->
-> Pre-existing issues:
->
-> thread_run_always(), line visible in context (unchanged from original):
->   /* Wait for dirty page handling before next madvise() */
->   usleep(10);
-> This is sleep-based synchronization. It was present before this patch and
-> is not introduced here, but worth noting for a follow-up cleanup.
->
-> ---
-> Note:
->
-> The agent can sometimes produce false positives although often its
-> findings are genuine. If you find issues with the review, please
-> comment this email or ignore the suggestions.
->
-> Regards,
-> LTP AI Reviewer
-Prepare v6.
-Thanks
+Hi Jan,
+
+On Thu Jul 9 2026, Jan Polensky wrote:
+> thp04: Add ptrace mode and fix tracee stop synchronization
+
+The subject says "fix tracee stop synchronization". The original test
+had no tracee or ptrace code at all -- this is entirely new logic.
+"fix" suggests something broken was corrected. "add" would be more
+accurate here.
+
+> +static void tracee_main(void)
+> +{
+> ...
+> +	/*
+> +	 * Run indefinitely - parent controls termination via PTRACE_DETACH.
+> +	 */
+
+The actual termination sequence in run_proc_mem_ptrace_serialized() is
+PTRACE_DETACH followed by SIGKILL. PTRACE_DETACH alone does not stop
+the tracee; the parent then sends SIGKILL explicitly. The comment
+should say "via SIGKILL (after PTRACE_DETACH)".
+
+> +		if (*child->read_ptr != 0) {
+> +			tst_res(TFAIL, "Huge zero page was polluted");
+> +			child_cleanup();
+> +			exit(1);
+> +		}
+
+> +	if (WEXITSTATUS(status) != 0) {
+> +		/* Tracee reported result and exited early - already handled */
+> +		tracee_pid = 0;
+> +		free_child_state();
+> +		return 1;
+> +	}
+
+> +		if (WIFEXITED(status)) {
+> +			if (WEXITSTATUS(status) == 0)
+> +				tst_brk(TBROK, "Tracee exited unexpectedly: %s",
+> +						tst_strstatus(status));
+> +
+> +			/* Tracee reported result and exited, this is expected for TFAIL */
+> +			tracee_exited = 1;
+> +			break;
+> +		}
+
+The exit code is used to convey "tracee reported a failure" (exit 1)
+vs "unexpected exit" (exit 0). LTP rule: never encode pass/fail as a
+child exit code; use tst_res() only, and let the framework propagate
+the result.
+
+A cleaner approach: add a result_reported field (or similar) to
+child_state, set it in the tracee before calling exit(0) on the
+failure path, and check that flag in the parent after reaping. The
+tracee always exits with 0; the parent distinguishes "reported failure"
+from "unexpected exit" via the shared flag.
+
+> +	char path[64];
+> +	snprintf(path, sizeof(path), "/proc/%d/mem", tracee_pid);
+
+Path buffers must use PATH_MAX, not a fixed-size literal.
+
+Verdict - Needs revision
+
+---
+Note:
+
+The agent can sometimes produce false positives although often its
+findings are genuine. If you find issues with the review, please
+comment this email or ignore the suggestions.
+
+Regards,
+LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
