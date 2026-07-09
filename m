@@ -4,110 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1F9D3C43458
-	for <ltp@archiver.kernel.org>; Thu,  9 Jul 2026 08:56:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9E91CC44501
+	for <ltp@archiver.kernel.org>; Thu,  9 Jul 2026 08:56:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1783587381; h=to : date :
+ message-id : mime-version : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : cc : content-type : content-transfer-encoding : sender :
+ from; bh=+VQACMQvxsLd7fzHzBncNqtR+Iy0YnapXSpa0vnpFLs=;
+ b=Kr5rK0kHr1fBnH4XAJ/a01qauO0yneIF1UeYAxlrpONXv3z18rfH24unLDbrqDcT9IQPi
+ 81Pnk27A30OQOLNt9IbQSCb+W7AJlZJej5aVjcGxBMx4py914foUcDNxjw/IWuW309Rc0ML
+ JvhpV3xVs0jFcqzLDnIKOqeENqnoIk8=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9F1B73E291E
-	for <ltp@archiver.kernel.org>; Thu,  9 Jul 2026 10:56:02 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 2C6F83E292D
+	for <ltp@archiver.kernel.org>; Thu,  9 Jul 2026 10:56:21 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A27D23E5C67
- for <ltp@lists.linux.it>; Thu,  9 Jul 2026 10:54:25 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id B5F933E28D7
+ for <ltp@lists.linux.it>; Thu,  9 Jul 2026 09:49:34 +0200 (CEST)
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com
+ [IPv6:2607:f8b0:4864:20::635])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 11CC31400967
- for <ltp@lists.linux.it>; Thu,  9 Jul 2026 10:54:24 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 8BA8475DCE;
- Thu,  9 Jul 2026 08:54:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1783587250; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=80Of4+Cm3l1sULvt8PLDY6dU5ZcZwlFizxSiyJG99Uw=;
- b=tMInf2SayxMvAg/eTV3m+Dlpb+SBvjmmbXVrXxutxa6RjFDYHV3+7jATaXZErhknuiEr6A
- 4ddXF3y7xdkd7GtPGjzmgtARM3x4WepK7SuZsRRDK6eGbB7aWj0niAwXUIDj26Hc4KcKt1
- WZQg7g8Ow28RQlULCq4QDSwrcxVXjd8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1783587250;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=80Of4+Cm3l1sULvt8PLDY6dU5ZcZwlFizxSiyJG99Uw=;
- b=Alb02T9tXAFKfvDOXjJa9repmNz3uQdoFGtWkk7aF0D8mt9pw8q6SWWoWg3SjPWTDY4L0w
- ty3YF0f8rL5YenDA==
-Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=tMInf2Sa;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=Alb02T9t
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1783587250; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=80Of4+Cm3l1sULvt8PLDY6dU5ZcZwlFizxSiyJG99Uw=;
- b=tMInf2SayxMvAg/eTV3m+Dlpb+SBvjmmbXVrXxutxa6RjFDYHV3+7jATaXZErhknuiEr6A
- 4ddXF3y7xdkd7GtPGjzmgtARM3x4WepK7SuZsRRDK6eGbB7aWj0niAwXUIDj26Hc4KcKt1
- WZQg7g8Ow28RQlULCq4QDSwrcxVXjd8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1783587250;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=80Of4+Cm3l1sULvt8PLDY6dU5ZcZwlFizxSiyJG99Uw=;
- b=Alb02T9tXAFKfvDOXjJa9repmNz3uQdoFGtWkk7aF0D8mt9pw8q6SWWoWg3SjPWTDY4L0w
- ty3YF0f8rL5YenDA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7A93A779AC;
- Thu,  9 Jul 2026 08:54:10 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id SLrPHLJhT2oaHgAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Thu, 09 Jul 2026 08:54:10 +0000
-From: Cyril Hrubis <chrubis@suse.cz>
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id BF38D600650
+ for <ltp@lists.linux.it>; Thu,  9 Jul 2026 09:49:33 +0200 (CEST)
+Received: by mail-pl1-x635.google.com with SMTP id
+ d9443c01a7336-2ccf2360620so12570755ad.3
+ for <ltp@lists.linux.it>; Thu, 09 Jul 2026 00:49:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=shopee.com; s=shopee.com; t=1783583372; x=1784188172; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+ bh=FWcTQjnqdZ1FBuITjeU/3FQtKem9tB+8PLI1K91110s=;
+ b=as/QefClyeRaf/crzhr5fRZf8+vGNC+4nhl596stHK9O/Z2fn8s96lGAAn6h5mN6IH
+ 454Sq4roA+r3/P3/vmmIs2vUTenikQfSO9Otlx6BVfGiv+vTtlBQPd8/G4jH9PnjzvNS
+ 5Eo22RwAongJDnw6Ylwhmg0qIAEn4kuJxNNKLR3xA1JwMKEK0jZ1u/cjcy2J/S7/lpfy
+ jpWkV+865cVNlfaMUN0ziwzRBG0LPKlKAe/Ut2zd3wQLPHdMnfWCXNyAXIyaTFXnjxYf
+ RCpPUmB8TK0kvT4pzqmDG2vSiHfcDzallUJhl/fOG9MCia2Z9G5TsyxJrjpByT1DX1k8
+ m2mw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1783583372; x=1784188172;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to:content-type;
+ bh=FWcTQjnqdZ1FBuITjeU/3FQtKem9tB+8PLI1K91110s=;
+ b=GLPrkVLpuz8f+35RfpXW+p+Y2AHj5HYXAyyTqrudNKy7EiNfoRtg3RSH04Uy2YF9Y2
+ VbtlxrLwgvF7G0sFe55wWUuJG3uqBl528Wfc9vBZ9GK9akD8O/HNnyWoZbduKCVWJ0Ox
+ qdD9bDOuP/8JsJWYR4HoZyghq6pwC0ciGln8JK9CUvPisvX/JdUlRCdIk+zjZOlHakY5
+ 2lORujN6Xuso93lJ97ApbQmTq1W1OjyWcjJ9iEDEPoRo+THXOhQ26qkvXAfwqX74qJK+
+ J0l3n16989Mfh0N/D5B/jnJ/poje+8ztlZbX6FDwB9+Xe9oDsZfD/Sb6hKj8ER2+aFoJ
+ xn0g==
+X-Gm-Message-State: AOJu0YxqFACLtUuTmtYywAWFbijvbUj9pdIbzO3NUpW4x7zCUFKtMgBZ
+ 9BkXy/frAWLsg00CIVge2fzrx0zlRXPFOFtvGdpxq8ga8rxWfJMRvKN0lZ4PS/ZkvCtHgNLmOVe
+ albVtrd2k9JX6K7dKfTrIN5p7G/SN2QgqPuEdhjpIxPe83kPVHdzd2fS4kJMhAzATT30R0ssRId
+ J1JQYkH2DnXxnISePY2bdOZrvjTUjPMnOqB437pVc=
+X-Gm-Gg: AfdE7cn5IzbUM0PfNi5sldTDRr0/n8xtPn53qyKvDMXvfQWb0LpTJY/ZFHOxShCKgKs
+ 4xpgkMHcjGU6OAL76PTXxHWEEPHr98cNiyZqAuKYMJx4Ay0ogAcYhNIpfBClBBWZx5x++NjWNFJ
+ 3nrcPiYqP9lFkH8DPRft9cTn5/uLY/EsTYYLcHHSkmWonmZfDpapoa+Brs+0qxGICEO2+NjNeI4
+ oGm8vPm5IT1W/h3aqok9ceJjGXCNup4fCFTwx2oWuMU9rJflSe9E0FKclDi1Uum9ndYgObA+4Is
+ NHsVDmlo+Q5ebQjjxKRXBowmg/8gaIXpe9d1/zy+Yrh76sEmol5nbgWbZMZ+61jkvVgaw+odA7+
+ bWw1XQGI9RnO4cq98ny6tqUcF2Ir1d+4WIxV8mBiK9pAHPHCAwthe0Nn/nMS/7EyVackz5QqVJY
+ b6XmNNKfTJLHcAbPm+2oTRkiSt+4Wp3pL5CHoNEhZTwRLz7Kyis+WTUg==
+X-Received: by 2002:a17:903:380e:b0:2c9:c083:cd50 with SMTP id
+ d9443c01a7336-2ccea36d9demr60652615ad.17.1783583372053; 
+ Thu, 09 Jul 2026 00:49:32 -0700 (PDT)
+Received: from LPMV6FJ9FM.cn.corp.seagroup.com ([143.92.118.25])
+ by smtp.gmail.com with ESMTPSA id
+ d9443c01a7336-2ccc9bf8d80sm39950715ad.25.2026.07.09.00.49.30
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Thu, 09 Jul 2026 00:49:31 -0700 (PDT)
 To: ltp@lists.linux.it
-Date: Thu,  9 Jul 2026 10:53:49 +0200
-Message-ID: <20260709085353.345957-6-chrubis@suse.cz>
-X-Mailer: git-send-email 2.53.0
-In-Reply-To: <20260709085353.345957-1-chrubis@suse.cz>
-References: <20260709085353.345957-1-chrubis@suse.cz>
+Date: Thu,  9 Jul 2026 15:49:23 +0800
+Message-ID: <20260709074923.73372-1-mingyu.he@shopee.com>
+X-Mailer: git-send-email 2.47.0
 MIME-Version: 1.0
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: 8BA8475DCE
-X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
- R_MISSING_CHARSET(0.50)[];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- ARC_NA(0.00)[]; MIME_TRACE(0.00)[0:+];
- FUZZY_RATELIMITED(0.00)[rspamd.com];
- RCVD_VIA_SMTP_AUTH(0.00)[];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- RCPT_COUNT_TWO(0.00)[2];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- TO_DN_SOME(0.00)[]; RCVD_TLS_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.cz:dkim,suse.cz:email,suse.cz:mid,suse.com:email];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DKIM_TRACE(0.00)[suse.cz:+]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3 5/9] syscalls: Add epoll_wait10
+X-Mailman-Approved-At: Thu, 09 Jul 2026 10:56:00 +0200
+Subject: [LTP] [PATCH] pty09: Cap RLIMIT_NOFILE-based slave PTY opens
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -119,155 +97,55 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+From: Runli via ltp <ltp@lists.linux.it>
+Reply-To: Runli <mingyu.he@shopee.com>
+Cc: littleswimmingwhale@gmail.com, Runli <mingyu.he@shopee.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Functional test for EPOLLPRI using /proc/mounts that produces POLLPRI
-when a filesystem is mounted/umounted.
+pty09 derives the number of slave PTY opens from RLIMIT_NOFILE. When the
+limit is very large, for example 1048576, the test tries to open nearly
+one million slave PTYs on the same master. That makes the workload depend
+on the caller's file descriptor limit instead of the PTY behavior being
+tested, and can turn a working PTY open path into a timeout-driven TBROK.
 
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
-Reviewed-by: Andrea Cervesato <andrea.cervesato@suse.com>
+The test only needs to verify that a slave pseudo-terminal can be opened
+multiple times in parallel. Cap the number of slave opens at 4096 so the
+test remains representative and deterministic even when RLIMIT_NOFILE is
+set unusually high.
+
+Fixes: 20aa13dbd8a68 ("Add pty09 test")
+Signed-off-by: Runli <mingyu.he@shopee.com>
 ---
- runtest/syscalls                              |   1 +
- .../kernel/syscalls/epoll_wait/.gitignore     |   1 +
- .../kernel/syscalls/epoll_wait/epoll_wait10.c | 103 ++++++++++++++++++
- 3 files changed, 105 insertions(+)
- create mode 100644 testcases/kernel/syscalls/epoll_wait/epoll_wait10.c
+ testcases/kernel/pty/pty09.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index b78d565fb..08b31c9f5 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -198,6 +198,7 @@ epoll_wait06 epoll_wait06
- epoll_wait07 epoll_wait07
- epoll_wait08 epoll_wait08
- epoll_wait09 epoll_wait09
-+epoll_wait10 epoll_wait10
+diff --git a/testcases/kernel/pty/pty09.c b/testcases/kernel/pty/pty09.c
+index f3ade2381..7eff1ad54 100644
+--- a/testcases/kernel/pty/pty09.c
++++ b/testcases/kernel/pty/pty09.c
+@@ -14,6 +14,8 @@
  
- epoll_pwait01 epoll_pwait01
- epoll_pwait02 epoll_pwait02
-diff --git a/testcases/kernel/syscalls/epoll_wait/.gitignore b/testcases/kernel/syscalls/epoll_wait/.gitignore
-index f32ec535b..30139375d 100644
---- a/testcases/kernel/syscalls/epoll_wait/.gitignore
-+++ b/testcases/kernel/syscalls/epoll_wait/.gitignore
-@@ -7,3 +7,4 @@ epoll_wait06
- epoll_wait07
- epoll_wait08
- epoll_wait09
-+epoll_wait10
-diff --git a/testcases/kernel/syscalls/epoll_wait/epoll_wait10.c b/testcases/kernel/syscalls/epoll_wait/epoll_wait10.c
-new file mode 100644
-index 000000000..fbc3c2ce8
---- /dev/null
-+++ b/testcases/kernel/syscalls/epoll_wait/epoll_wait10.c
-@@ -0,0 +1,103 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2026 Cyril Hrubis <chrubis@suse.cz>
-+ */
+ static int masterfd = -1;
+ 
++#define MAX_SLAVE_OPENS 4096
 +
-+/*\
-+ * Verify that :manpage:epoll_wait() with EPOLLPRI detects changes to
-+ * /proc/mounts.
-+ *
-+ * The kernel generates a poll notification (POLLPRI/EPOLLERR) on
-+ * /proc/mounts whenever the mount namespace changes. This test verifies
-+ * that epoll can observe these notifications.
-+ *
-+ * [Algorithm]
-+ *
-+ * - Open /proc/mounts and register it with an epoll instance for EPOLLPRI.
-+ * - Fork a child that mounts and then unmounts a tmpfs filesystem, using
-+ *   checkpoints to synchronize with the parent.
-+ * - After each mount namespace change the parent calls epoll_wait and verifies
-+ *   it returns an event.
-+ *
-+ * Needs root to call mount/umount.
-+ */
-+
-+#include <sys/epoll.h>
-+
-+#include "tst_test.h"
-+#include "tst_epoll.h"
-+
-+#define MNTPOINT "mnt_epoll"
-+
-+static int efd = -1, mnt_fd = -1;
-+
-+static void setup(void)
-+{
-+	SAFE_MKDIR(MNTPOINT, 0777);
-+
-+	mnt_fd = SAFE_OPEN("/proc/mounts", O_RDONLY);
-+
-+	efd = SAFE_EPOLL_CREATE1(0);
-+
-+	struct epoll_event ev = {
-+		.events = EPOLLPRI,
-+		.data.fd = mnt_fd,
-+	};
-+
-+	SAFE_EPOLL_CTL(efd, EPOLL_CTL_ADD, mnt_fd, &ev);
-+}
-+
-+static void check_epoll_event(const char *desc)
-+{
-+	struct epoll_event ret_ev;
-+	char buf[1024];
-+
-+	TEST(epoll_wait(efd, &ret_ev, 1, 1000));
-+	if (TST_RET < 1) {
-+		tst_res(TFAIL | TTERRNO,
-+			"epoll_wait() after %s returned %li", desc, TST_RET);
-+	} else {
-+		TST_EXP_EXPR(ret_ev.events & EPOLLPRI);
-+	}
-+
-+	/* Re-read /proc/self/mounts to clear the notification */
-+	SAFE_LSEEK(mnt_fd, 0, SEEK_SET);
-+	while (SAFE_READ(0, mnt_fd, buf, sizeof(buf)) > 0)
-+		;
-+}
-+
-+static void run(void)
-+{
-+	if (!SAFE_FORK()) {
-+		SAFE_MOUNT("none", MNTPOINT, "tmpfs", 0, NULL);
-+		TST_CHECKPOINT_WAKE_AND_WAIT(0);
-+		SAFE_UMOUNT(MNTPOINT);
-+		TST_CHECKPOINT_WAKE(0);
-+		exit(0);
-+	}
-+
-+	TST_CHECKPOINT_WAIT(0);
-+	check_epoll_event("mount");
-+
-+	TST_CHECKPOINT_WAKE_AND_WAIT(0);
-+	check_epoll_event("umount");
-+}
-+
-+static void cleanup(void)
-+{
-+	if (efd != -1)
-+		SAFE_CLOSE(efd);
-+
-+	if (mnt_fd != -1)
-+		SAFE_CLOSE(mnt_fd);
-+}
-+
-+static struct tst_test test = {
-+	.test_all = run,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.needs_root = 1,
-+	.forks_child = 1,
-+	.needs_checkpoints = 1,
-+	.needs_tmpdir = 1,
-+};
+ static unsigned int count_avail_pid(void)
+ {
+ 	DIR *dir;
+@@ -31,6 +33,8 @@ static unsigned int count_avail_pid(void)
+ 	SAFE_CLOSEDIR(dir);
+ 
+ 	max_pid_num = limit.rlim_cur - count;
++	if (max_pid_num > MAX_SLAVE_OPENS)
++		max_pid_num = MAX_SLAVE_OPENS;
+ 
+ 	tst_res(TINFO, "Available number of pids: %u", max_pid_num);
+ 
 -- 
-2.53.0
+2.47.0
 
 
 -- 
