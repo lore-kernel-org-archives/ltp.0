@@ -4,102 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9160BC43458
-	for <ltp@archiver.kernel.org>; Thu,  9 Jul 2026 13:02:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8532DC43458
+	for <ltp@archiver.kernel.org>; Thu,  9 Jul 2026 13:40:52 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 207E13E5C64
-	for <ltp@archiver.kernel.org>; Thu,  9 Jul 2026 15:02:56 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id EF7023E294E
+	for <ltp@archiver.kernel.org>; Thu,  9 Jul 2026 15:40:50 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 630C13E5C62
- for <ltp@lists.linux.it>; Thu,  9 Jul 2026 15:01:58 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id D1CB13CD4AD
+ for <ltp@lists.linux.it>; Thu,  9 Jul 2026 15:40:35 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de
  [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id A8E136009FD
- for <ltp@lists.linux.it>; Thu,  9 Jul 2026 15:01:57 +0200 (CEST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id E0DDA1400DC0
+ for <ltp@lists.linux.it>; Thu,  9 Jul 2026 15:40:34 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id DF2FA761EF;
- Thu,  9 Jul 2026 13:01:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1783602107; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=v2TaFvI49LZgAVVaTz28r8i0u5k5Hw/QXZKd2MAS0eM=;
- b=0PKBwB++X7j8XQPa1TmrQOQOCLaSTlAi6VEJ7ykaQp7BALvTtnWZfBcIJ6Uozj85wFxt9K
- RV160YHjAsVOWVhpnDGR0ZG8ycraXX+UFTLNZNbl9IS4920iYX3ROOj3nhO2axN3hukgxL
- OK76Vio3DCTTN+ShRaLjfPYZSaaH4wE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1783602107;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=v2TaFvI49LZgAVVaTz28r8i0u5k5Hw/QXZKd2MAS0eM=;
- b=Bkr0t4DPdSI1oiOGmXtVroAdCTTPXnza/UpKtcIzD5PNG/ycorRkJj534VUYJkpTP6GcUR
- F/0dgSFwkRQMrDDA==
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 7E78D7621A;
+ Thu,  9 Jul 2026 13:40:33 +0000 (UTC)
 Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="mzsFB/gH";
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=HUIN3wx7
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1783602105; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=v2TaFvI49LZgAVVaTz28r8i0u5k5Hw/QXZKd2MAS0eM=;
- b=mzsFB/gHFlYyksl8Hd06PWbKALxPnKyhSBkq+q+vUGjnQtCIWb9FG95rlrswXpx1Kapgsy
- xtgzl8fYyue6hemR4XaANNEmSNAHxBjcEQt8RQ7pS8u6GKV3seNNsMmf9j1Vr715OCa++p
- kwHxl1yxUGK78eFp9GWGLRQ0j2Ppz1I=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1783602105;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=v2TaFvI49LZgAVVaTz28r8i0u5k5Hw/QXZKd2MAS0eM=;
- b=HUIN3wx7xyczPn6zoQdwfpXoFM5kVbLzyrGG41/O21th7C8GKLA6birXukQo9abZRuG3GH
- RRLBPTgLxWal8FAw==
+	none
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4FC70779AA;
- Thu,  9 Jul 2026 13:01:45 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6DBC5779AA;
+ Thu,  9 Jul 2026 13:40:33 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 6GcrELmbT2rtFgAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Thu, 09 Jul 2026 13:01:45 +0000
-From: Petr Vorel <pvorel@suse.cz>
-To: ltp@lists.linux.it
-Date: Thu,  9 Jul 2026 15:01:32 +0200
-Message-ID: <20260709130135.927868-1-pvorel@suse.cz>
-X-Mailer: git-send-email 2.54.0
+ by imap1.dmz-prg2.suse.org with ESMTPSA id +X/DGdGkT2p7PAAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Thu, 09 Jul 2026 13:40:33 +0000
+Date: Thu, 9 Jul 2026 15:40:19 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Petr Vorel <pvorel@suse.cz>
+Message-ID: <ak-kwx287miu1Bki@yuki.lan>
+References: <20260709085353.345957-1-chrubis@suse.cz>
+ <20260709085353.345957-2-chrubis@suse.cz>
+ <20260709105159.GA874350@pevik>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20260709105159.GA874350@pevik>
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Rspamd-Queue-Id: 7E78D7621A
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[99.99%];
- MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
- R_MISSING_CHARSET(0.50)[];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; FUZZY_RATELIMITED(0.00)[rspamd.com];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- ARC_NA(0.00)[]; RCPT_COUNT_TWO(0.00)[2]; MIME_TRACE(0.00)[0:+];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- FROM_HAS_DN(0.00)[];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- FROM_EQ_ENVFROM(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- RCVD_TLS_ALL(0.00)[]; DKIM_TRACE(0.00)[suse.cz:+];
- TO_DN_SOME(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,
- imap1.dmz-prg2.suse.org:rdns]
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: DF2FA761EF
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	REPLY(-4.00)[]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 0/3] CI: Run metadata tests
+Subject: Re: [LTP] [PATCH v3 1/9] syscalls: Add epoll_create03
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -111,28 +74,61 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi,
+Hi!
+> > +static void setup(void)
+> > +{
+> > +	int fd;
+> > +
+> > +	variant_info();
+> > +
+> > +	maxfds = SAFE_SYSCONF(_SC_OPEN_MAX);
+> > +	fds = SAFE_MALLOC(maxfds * sizeof(int));
+> > +	memset(fds, -1, maxfds * sizeof(int));
+> > +
+> > +	fds[0] = SAFE_OPEN("dummy", O_RDWR | O_CREAT, 0700);
+> > +	nfds = 1;
+> > +
+> > +	for (int i = 1; i < maxfds; i++) {
+> > +		fd = dup(fds[0]);
+> > +		if (fd == -1)
+> > +			break;
+> > +		fds[nfds++] = fd;
+> > +	}
+> 
+> How many files are created is done via `ulimit -n`, right? (not sure if there
+> is file for it in /proc/sys).
 
-trivial patchset to run metadata tests in the CI.
+It's not about created files. There is a per-process limit on the number
+of file descriptors. That can be accessed either via sysconf() or via
+rlimit() and the values are also exported into /proc/$PID/limits.
 
-Petr Vorel (3):
-  build.sh: Add support for test-metadata
-  ci: Test metadata in docker build testing
-  metadata: test.sh: Print the test name and result
+> Would it be worth we check that? Or at least check that at least 2 files were
+> opened? Maybe this check should be rather put into dup03.c.
 
- .github/workflows/ci-docker-build.yml | 5 +++++
- build.sh                              | 5 +++--
- metadata/tests/test.sh                | 6 ++++--
- 3 files changed, 12 insertions(+), 4 deletions(-)
+I guess that it would make more sense to put such check into dup03.c.
+However we would have to scan the whole file descriptor table first to
+check on how many fds are already open.
+
+Something as;
+
+	int used_fds = 0;
+
+	for (i = 0; i < maxfds; i++) {
+		if (fcntl(i, F_GETFD) != -1)
+			used_fds++;
+	}
+
+Then we can expect that the limit for the test is maxfds - used_fd
 
 -- 
-2.54.0
-
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
