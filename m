@@ -4,82 +4,101 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9E32CC43458
-	for <ltp@archiver.kernel.org>; Thu,  9 Jul 2026 10:44:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CE7FCC43458
+	for <ltp@archiver.kernel.org>; Thu,  9 Jul 2026 10:52:26 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 132E73E28CF
-	for <ltp@archiver.kernel.org>; Thu,  9 Jul 2026 12:44:22 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 3AF9C3E5C63
+	for <ltp@archiver.kernel.org>; Thu,  9 Jul 2026 12:52:25 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 4AA853E28CF
- for <ltp@lists.linux.it>; Thu,  9 Jul 2026 12:44:07 +0200 (CEST)
-Received: from mail-pj2-x00.google.com (mail-pj2-x00.google.com
- [IPv6:2607:f8b0:4864:39::])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 0C18A3C0F6F
+ for <ltp@lists.linux.it>; Thu,  9 Jul 2026 12:52:08 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 9D083200770
- for <ltp@lists.linux.it>; Thu,  9 Jul 2026 12:44:06 +0200 (CEST)
-Received: by mail-pj2-x00.google.com with SMTP id
- d9443c01a7336-2cc6207127aso9544505ad.1
- for <ltp@lists.linux.it>; Thu, 09 Jul 2026 03:44:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1783593845; x=1784198645; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to:content-type;
- bh=UDIOCklhspzc++tviDvPT+g/C6QQ4oaAuTUSZaHu97s=;
- b=DSNqZgoaUXBNnUa+jK2oBd4i32YFyf2Wjvb91IsCFGwmhoQwT/hZ4H5NpHIn4aVTYP
- uuHes30DeGQTzeuBbL7G043HMxkVHNMD25vIDKPfDCHEAX131LBhx9/FxEtrc8F8Le16
- JlXTVG7Pvb83YE6X/FwSOtXF0tHdeKUXUXisKkmietezJoTeZjFHIl5ZJTU5W17ICeix
- 4yGDqgw8FvxUA95sNdrWDxivO9+bjB/y66lGL50TULf4XRajkLRGsU1pe6x/ZHnt+IS9
- x737gWrZYvOfyXnIYvyyidS7gykv+uyYQ5RB246SczitGmjY1AZk7vpoD38Q8OOSHfez
- x2mQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1783593845; x=1784198645;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to:content-type;
- bh=UDIOCklhspzc++tviDvPT+g/C6QQ4oaAuTUSZaHu97s=;
- b=VFCLeoEaBgamOn3PwFEUHo191Ryh3EGshn45rZeqZ2sQ7OCfdLE2GbKoGh3rtORObU
- SKRn6GxU/BYCWS0SSbfEkNFapnwmJvcK90NY4/77R/K3a7f0RBjIoO5f667hkcbVdGkQ
- PqsXzCQ2As/6bFnxKGKFLfW24sRqSGhOSDBq+rjzwXl55DWN2uyed44LmOmIx+aVtX8O
- Sa/GMnz2vTQAt/6sZiOigFp1swgzKuoFKYjE5VfJpPJtgXlGjB/OqANqWGfRskESIl9Y
- 8oeteQEsPtqDIJoSxrycVETWvW4GHTHcwa588Tz17nwbNQByRY4QARySG8sh8F1rPeWu
- Ht6Q==
-X-Gm-Message-State: AOJu0YwinB40uTo7rKjAx3xHLsCJm8rx61ec1p90avZmKbBdGgbM71vF
- wN4f9ycEcbNFm4b4gre4qyojoea66FgXYTC+PC/BOinPnOa5c/KCZyr4
-X-Gm-Gg: AfdE7ckBgSX4dwDFkDeqxUThLkczg2HUQ1XyzZELrQx51Lom8TO7Hk8daoDPZTDvYnC
- NYRlJ0e4BmMgJOEgNfpaMbQd5Mbd1vLQQAJbyeAIji0aRm6Q9hKaOkUKpvhOXZseiwXyXEptM5r
- Od6lU5ZrtqhnuVdWdKZYPxwAV+C7ChHib8KhwQxnlWayMgnWScG4swAsS40RxmVAG+qP0B04PIO
- /IuT+7BLUJorxFaImSmwY5obDwN7blHlpIsTkO2lh5FqS5O/dxwnKnKggj/iQjsV7ajxlFnrwhP
- G92kLMFMl7nJOw+FXccqB1jg1t3QtqvwEL8N5ZXEo7WPrxi1jbytDmxIbk8FXZDlB7QGQPvqvwk
- YptSaG7dxB9rgk2IDwZ4V6/6hIHOiG4Yjd99pmTiodWzKQV/IIEm+Ztd69sL5No1AmoBkt40xCB
- 5zWUPS2UPDZdTs9Hb7VGuu+HwLsKCUHdGYyu6Cp70SzcTrCMDSwnHYC4rdpsHw7Kr3Sph+h1Enk
- kMxt6OkJ2z5WvKkyoAjUeE62XDRaQGFOO4faiY=
-X-Received: by 2002:a05:6a21:1493:b0:3b7:d8d5:2326 with SMTP id
- adf61e73a8af0-3c0bcf49541mr8090432637.1.1783593844908; 
- Thu, 09 Jul 2026 03:44:04 -0700 (PDT)
-Received: from
- runnervm5mmn9.mhuo5aufw0zudj5rd413yb3ebd.dx.internal.cloudapp.net
- ([68.220.61.178]) by smtp.gmail.com with ESMTPSA id
- a92af1059eb24-13b659c865asm31535208c88.11.2026.07.09.03.44.04
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 09 Jul 2026 03:44:04 -0700 (PDT)
-From: linuxtestproject.agent@gmail.com
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 8FC2F60087C
+ for <ltp@lists.linux.it>; Thu,  9 Jul 2026 12:52:07 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 26C4B75E5E;
+ Thu,  9 Jul 2026 10:52:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1783594326;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=w7XH3moUKysKe3Ha04MsgCiUXrD/2Qjf1C5kWWZj/k8=;
+ b=auQaIc2pxHfHNDT+6lnAymgZGndgCADhVLzlBxxUThlqnBZ/b3fZwNzV4M8LBNIZuedMZq
+ /VDxiQjLwIRfqr9B0lZiabop5CycdCj7oiGSwywq7kiRPWxzVrM/6HeLuC//RupQ6lcMOB
+ vr88KTz4mU6q/K38mA+6rA3ZwO/x6pc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1783594326;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=w7XH3moUKysKe3Ha04MsgCiUXrD/2Qjf1C5kWWZj/k8=;
+ b=pqnx505mvh68/OSP9kYdj5wFRuKZ/QH0ruWKnQo08wZ0Vhh3v8gkI3MKKWBcCTd+Ic/og4
+ 2el/UEcassZGRRDw==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1783594326;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=w7XH3moUKysKe3Ha04MsgCiUXrD/2Qjf1C5kWWZj/k8=;
+ b=auQaIc2pxHfHNDT+6lnAymgZGndgCADhVLzlBxxUThlqnBZ/b3fZwNzV4M8LBNIZuedMZq
+ /VDxiQjLwIRfqr9B0lZiabop5CycdCj7oiGSwywq7kiRPWxzVrM/6HeLuC//RupQ6lcMOB
+ vr88KTz4mU6q/K38mA+6rA3ZwO/x6pc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1783594326;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=w7XH3moUKysKe3Ha04MsgCiUXrD/2Qjf1C5kWWZj/k8=;
+ b=pqnx505mvh68/OSP9kYdj5wFRuKZ/QH0ruWKnQo08wZ0Vhh3v8gkI3MKKWBcCTd+Ic/og4
+ 2el/UEcassZGRRDw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 55317779AA;
+ Thu,  9 Jul 2026 10:52:05 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id KOxMD1V9T2poFQAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Thu, 09 Jul 2026 10:52:05 +0000
+Date: Thu, 9 Jul 2026 12:51:59 +0200
+From: Petr Vorel <pvorel@suse.cz>
 To: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu,  9 Jul 2026 10:44:03 +0000
-Message-ID: <20260709104403.4345-1-linuxtestproject.agent@gmail.com>
-X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260709085353.345957-2-chrubis@suse.cz>
-References: <20260709085353.345957-2-chrubis@suse.cz>
+Message-ID: <20260709105159.GA874350@pevik>
+References: <20260709085353.345957-1-chrubis@suse.cz>
+ <20260709085353.345957-2-chrubis@suse.cz>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20260709085353.345957-2-chrubis@suse.cz>
+X-Spamd-Result: default: False [-7.50 / 50.00]; REPLY(-4.00)[];
+ BAYES_HAM(-3.00)[100.00%]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ MID_RHS_NOT_FQDN(0.50)[]; HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:email,suse.cz:replyto];
+ FUZZY_RATELIMITED(0.00)[rspamd.com]; ARC_NA(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ TO_DN_SOME(0.00)[]; MIME_TRACE(0.00)[0:+];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_TLS_ALL(0.00)[];
+ MISSING_XM_UA(0.00)[]; FROM_HAS_DN(0.00)[];
+ RCPT_COUNT_THREE(0.00)[3]; FROM_EQ_ENVFROM(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ REPLYTO_EQ_FROM(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] syscalls: Add epoll_create03
+Subject: Re: [LTP] [PATCH v3 1/9] syscalls: Add epoll_create03
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,6 +110,7 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Reply-To: Petr Vorel <pvorel@suse.cz>
 Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -99,162 +119,84 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi Cyril,
 
-On Thu, 09 Jul 2026 10:53:45 +0200, Cyril Hrubis wrote:
-> syscalls: Add epoll_create03
+> Test that checks that we get EMFILE when limit on per-process file
+> descriptors is hit.
 
---- [PATCH 1/9] ---
++1.
 
-> /*\
->  * Verify that :manpage:epoll_create() fails with EMFILE when the per-process
->  * limit on the number of open file descriptors has been reached.
->  */
+...
+> +++ b/testcases/kernel/syscalls/epoll_create/epoll_create03.c
+> @@ -0,0 +1,72 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Copyright (c) 2026 Cyril Hrubis <chrubis@suse.cz>
+> + */
+> +
+> +/*\
+> + * Verify that :manpage:epoll_create() fails with EMFILE when the per-process
+Please add 2 to the manpage link.
 
-The :manpage: role is missing backticks and the section number. Should
-be :manpage:`epoll_create(2)`.
+:manpage:epoll_create(2)
 
---- [PATCH 2/9] ---
+Without it it's not working (plain text instead of link).
+Can be changed before merge.
 
-> /*\
->  * Verify that :manpage:epoll_wait() fails with EINTR when a signal arrives
->  * while waiting for events.
->  *
->  * [Algorithm]
->  *
->  * - Create an epoll instance
->  * - Fork a child that waits in the :manpage:epoll_wait(), parents sends
->  *   SIGUSR1 to interrupt it.
->  * - Verify that :manpage:epoll_wait() returns -1 with errno set to EINTR.
->  */
+> + * limit on the number of open file descriptors has been reached.
+> + */
+> +
+> +#include <stdlib.h>
+> +#include <sys/epoll.h>
+> +
+> +#include "tst_test.h"
+> +#include "lapi/epoll.h"
+> +#include "lapi/syscalls.h"
+> +
+> +#include "epoll_create.h"
+> +
+> +static int *fds;
+> +static int nfds;
+> +static long maxfds;
+> +
+> +static void setup(void)
+> +{
+> +	int fd;
+> +
+> +	variant_info();
+> +
+> +	maxfds = SAFE_SYSCONF(_SC_OPEN_MAX);
+> +	fds = SAFE_MALLOC(maxfds * sizeof(int));
+> +	memset(fds, -1, maxfds * sizeof(int));
+> +
+> +	fds[0] = SAFE_OPEN("dummy", O_RDWR | O_CREAT, 0700);
+> +	nfds = 1;
+> +
+> +	for (int i = 1; i < maxfds; i++) {
+> +		fd = dup(fds[0]);
+> +		if (fd == -1)
+> +			break;
+> +		fds[nfds++] = fd;
+> +	}
 
-Three occurrences of :manpage:epoll_wait() are missing backticks and
-the section number. Each should be :manpage:`epoll_wait(2)`.
+How many files are created is done via `ulimit -n`, right? (not sure if there
+is file for it in /proc/sys).
+Would it be worth we check that? Or at least check that at least 2 files were
+opened? Maybe this check should be rather put into dup03.c.
 
-"parents sends" should be "parent sends".
+Or maybe to print how many descriptors was created?
+tst_res(TINFO, "Created %d file descriptors", nfds);
 
-> 	TST_EXP_FAIL(epoll_wait(efd, &ev, 1, -1), EINTR,
-> 		     "epoll_wait() interrupted by signal");
+> +}
+> +
+> +static void run(void)
+> +{
+> +	TST_EXP_FAIL2(do_epoll_create(1), EMFILE,
+> +		      "epoll_create(1) with exhausted fds");
 
-TST_EXP_FAIL is for syscalls that return 0 on success. epoll_wait()
-returns a non-negative event count on success, so TST_EXP_FAIL2 is
-the appropriate macro here.
+Otherwise LGTM.
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
 
-In this particular setup it makes no practical difference (no fds
-registered, infinite timeout), but using the wrong variant produces a
-misleading error message if the expectation is ever violated.
-
---- [PATCH 3/9] ---
-
-> /*\
->  * Verify that :manpage:epoll_wait() works with nested epoll instances up to
->  * the maximum nesting depth of 5 allowed by the kernel (EP_MAX_NESTS).
->  *
->  * [Algorithm]
->  *
->  * ...
->  * - Call :manpage:epoll_wait() on the outermost epoll instance and verify it
-
-Two occurrences of :manpage:epoll_wait() are missing backticks and the
-section number. Should be :manpage:`epoll_wait(2)`.
-
---- [PATCH 4/9] ---
-
-> /*\
->  * Verify :manpage:epoll_ctl() EPOLL_CTL_ADD behavior across all file
->  * descriptor types.
-
-The :manpage: role is missing backticks and the section number. Should
-be :manpage:`epoll_ctl(2)`.
-
---- [PATCH 5/9] ---
-
-> /*\
->  * Verify that :manpage:epoll_wait() with EPOLLPRI detects changes to
->  * /proc/mounts.
-
-The :manpage: role is missing backticks and the section number. Should
-be :manpage:`epoll_wait(2)`.
-
---- [PATCH 6/9] ---
-
-> /*\
->  * Verify that :manpage:epoll_wait() reports EPOLLHUP when the write end of a
->  * pipe is closed while a child process is blocked in epoll_wait.
->  *
->  * [Algorithm]
->  *
->  * ...
->  * - The child's :manpage:epoll_wait() should return with EPOLLHUP.
-
-Two occurrences of :manpage:epoll_wait() are missing backticks and the
-section number. Should be :manpage:`epoll_wait(2)`.
-
---- [PATCH 7/9] ---
-
-> 	rval = poll(fds, nfds, timeout);
-> 	if (rval == -1) {
-> 		tst_brk_(file, lineno, TBROK | TERRNO,
-> 			"poll(%p, %li, %i) failed", fds, (long)nfds, timeout);
-> 	} else if (rval < -1) {
-> 		tst_brk_(file, lineno, TBROK | TERRNO,
-> 			"Invalid poll(%p, %li, %i) return value %i",
-> 			fds, (long)nfds, timeout, rval);
-> 	}
-
-poll() returns -1 on error or >= 0 on success; it cannot return a
-value less than -1. The else-if branch is dead code.
-
-The nearby safe_statvfs() uses "else if (rval)" to catch unexpected
-non-zero returns for a function that is 0 on success. poll() returns
-0 (timeout) and positive values (events ready) as normal outcomes, so
-no such secondary check applies here. The body should just have the
-rval == -1 guard and return rval.
-
-> int safe_poll(const char *const file, const int lineno, struct pollfd *fds,
-> 		nfds_t nfds, int timeout);
-> #define SAFE_POLL(fds, nfds, timeout) \
-> 	safe_poll(__FILE__, __LINE__, (fds), (nfds), (timeout))
-
-New public functions in include/ must be documented with kernel-doc
-syntax. A /** ... */ block covering the parameters and return value
-is required.
-
---- [PATCH 8/9] ---
-
-> /*\
->  * Verify that :manpage:epoll_wait() reports EPOLLERR when the read end of a
->  * pipe is closed while a child process is blocked in epoll_wait on the write
->  * end.
->  *
->  * [Algorithm]
->  *
->  * ...
->  * - The child's :manpage:epoll_wait() should return with EPOLLERR set.
-
-Two occurrences of :manpage:epoll_wait() are missing backticks and the
-section number. Should be :manpage:`epoll_wait(2)`.
-
---- [PATCH 9/9] ---
-
-> Now that the epoll coverate is greater than it ever was we can remove
-
-"coverate" should be "coverage".
-
-> Fixes: https://github.com/linux-test-project/ltp/issues/860
-
-The Fixes: tag must reference a commit hash in the local git history,
-not a URL. For a GitHub issue reference use Closes: instead.
-
-Verdict - Needs revision
-
----
-Note:
-
-The agent can sometimes produce false positives although often its
-findings are genuine. If you find issues with the review, please
-comment this email or ignore the suggestions.
-
-Regards,
-LTP AI Reviewer
+Kind regards,
+Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
