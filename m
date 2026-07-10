@@ -4,64 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B0D7DC43458
-	for <ltp@archiver.kernel.org>; Fri, 10 Jul 2026 11:27:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 55E84C43458
+	for <ltp@archiver.kernel.org>; Fri, 10 Jul 2026 11:39:23 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6CBC23E5BA7
-	for <ltp@archiver.kernel.org>; Fri, 10 Jul 2026 13:27:32 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 5A4943E28B9
+	for <ltp@archiver.kernel.org>; Fri, 10 Jul 2026 13:39:21 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 4CD7A3E5BA1
- for <ltp@lists.linux.it>; Fri, 10 Jul 2026 13:27:15 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+ by picard.linux.it (Postfix) with ESMTPS id 528593E28B9
+ for <ltp@lists.linux.it>; Fri, 10 Jul 2026 13:39:07 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id EDC49200AC1
- for <ltp@lists.linux.it>; Fri, 10 Jul 2026 13:27:14 +0200 (CEST)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 981F61000993
+ for <ltp@lists.linux.it>; Fri, 10 Jul 2026 13:39:06 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id C43D876748;
- Fri, 10 Jul 2026 11:27:13 +0000 (UTC)
-Authentication-Results: smtp-out1.suse.de;
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 8155D7646B;
+ Fri, 10 Jul 2026 11:39:05 +0000 (UTC)
+Authentication-Results: smtp-out2.suse.de;
 	none
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id AAF49779BD;
- Fri, 10 Jul 2026 11:27:13 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 53682779BD;
+ Fri, 10 Jul 2026 11:39:05 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id /xbVKBHXUGoTEwAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Fri, 10 Jul 2026 11:27:13 +0000
-Date: Fri, 10 Jul 2026 13:26:27 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Jan Polensky <japo@linux.ibm.com>
-Message-ID: <alDW49sRfwx0eBw5@rei>
-References: <20260709175927.268677-1-japo@linux.ibm.com>
+ by imap1.dmz-prg2.suse.org with ESMTPSA id RbRiE9nZUGqgHgAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Fri, 10 Jul 2026 11:39:05 +0000
+Date: Fri, 10 Jul 2026 13:39:04 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20260710113904.GA1189007@pevik>
+References: <20260710055556.1109220-1-pvorel@suse.cz>
+ <20260710055556.1109220-5-pvorel@suse.cz> <alC04_YPyPr0ai_z@rei>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20260709175927.268677-1-japo@linux.ibm.com>
+In-Reply-To: <alC04_YPyPr0ai_z@rei>
 X-Rspamd-Pre-Result: action=no action; module=replies;
  Message is reply to one we originated
+X-Rspamd-Queue-Id: 8155D7646B
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 X-Rspamd-Pre-Result: action=no action; module=replies;
  Message is reply to one we originated
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
 X-Spamd-Result: default: False [-4.00 / 50.00];
 	REPLY(-4.00)[]
-X-Rspamd-Queue-Id: C43D876748
-X-Rspamd-Action: no action
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v6 1/1] thp04: Add ptrace mode and fix tracee stop
- synchronization
+Subject: Re: [LTP] [PATCH v2 4/8] metadata: test.sh: Add support for
+ building out-of-tree
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -73,22 +73,28 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Reply-To: Petr Vorel <pvorel@suse.cz>
 Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> - Note: Serialization eliminates the race; tests write functionality
+Hi Cyril, Martin, Andrea,
 
-I'm a bit puzzled by this line. If there is no chance of hitting the
-race wouldn't it make much more sense to write a separate ptrace test
-that would excercise the parent being able to write into child memory?
+> Hi!
+> We keep fixing the out-of-tree build but is it worth the amout of work
+> we put into it? Is that even used? Wouldn't it make more sense to strip
+> it completely, which would simplify our build system greatly?
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+I remember Martin asked to keep it because he's using it.
+
+I would say no, it's not worth of that trouble. I would either live without
+out-of-tree build or reevaluate what is blocking for switching to meson.
+(I don't remember what Andrea found in his POC some years ago.)
+
+Kind regards,
+Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
