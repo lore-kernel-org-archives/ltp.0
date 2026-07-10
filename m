@@ -4,97 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B84B0C43458
-	for <ltp@archiver.kernel.org>; Fri, 10 Jul 2026 14:32:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 761D0C43458
+	for <ltp@archiver.kernel.org>; Fri, 10 Jul 2026 15:15:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1783693964; h=to : date :
- message-id : mime-version : subject : list-id : list-unsubscribe :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1783696534; h=message-id :
+ to : in-reply-to : date : subject : list-id : list-unsubscribe :
  list-archive : list-post : list-help : list-subscribe : from :
- reply-to : cc : content-type : content-transfer-encoding : sender :
- from; bh=nA4r5tKY2Emthh75oDUlhyttt1WUF2Dtk8jkZ0yTKm0=;
- b=qzP4oKIsv9CDqFBa62BR4L3iZj9wAUVzp/6erniJPv7aowGkd4awxij7413cPNgloPCyP
- iUP+KXwl9H104uZU+OOHAcIa36Xh9vIn6Q8OXx2/iAjA+fsfnOpF2VlbW33f/qJ0LyFMXBR
- dGT3NzEolEqicQrEJoXrhS68xUd6Kog=
+ reply-to : cc : mime-version : content-type :
+ content-transfer-encoding : sender : from;
+ bh=oNvvLUnAEZdgvhGQt5hEPGSyn74tA4xlgCrqCmsl0DE=;
+ b=J7bfIXmQ/qYxHb6VZ0pWtE44sCiZ80ypyfk1npLa46ftjVn43SfnisdH/hIClfmlUZf2A
+ kYL9ME8bojj0VI6P2LSm/MDJ0VZAoD1bb9uQBucYiqM6GEDgLxE54lF2yooopho5RWZrY2x
+ 7tFvCSDmsmQ459OW0xnEVUkmEmKiJxk=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 09A943E5C5E
-	for <ltp@archiver.kernel.org>; Fri, 10 Jul 2026 16:32:44 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id D4B983E5C5C
+	for <ltp@archiver.kernel.org>; Fri, 10 Jul 2026 17:15:34 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0DC8F3C8231
- for <ltp@lists.linux.it>; Fri, 10 Jul 2026 16:32:22 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 6F5083E293D
+ for <ltp@lists.linux.it>; Fri, 10 Jul 2026 17:15:14 +0200 (CEST)
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com
+ [IPv6:2a00:1450:4864:20::32b])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 2ACF4200AE9
- for <ltp@lists.linux.it>; Fri, 10 Jul 2026 16:32:21 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1783693940;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=K5IJytPC1PNTswVmxg6bWjlSKzAFvgYYjdJ8D8aJSEI=;
- b=JJ3fIVfCIR6xrAxAPBCSEmHf+rzh9PKWWrGZqLwf9+9q/5d3zENh/nCQrmumABeQ0GHA33
- gUxEZO+c4sBFOrPt3VgJ7PLRzdH97VY/lbAO7nYx0V6CVnbpYrY0BSc7/xWiHT9kNiWXRV
- oECxz8EtwP0wHfLUuaICfmBYkkWDJuo=
-Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
- [209.85.219.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-246-IXNaZpRXOL-F6x2fVLswlw-1; Fri, 10 Jul 2026 10:32:18 -0400
-X-MC-Unique: IXNaZpRXOL-F6x2fVLswlw-1
-X-Mimecast-MFC-AGG-ID: IXNaZpRXOL-F6x2fVLswlw_1783693938
-Received: by mail-qv1-f71.google.com with SMTP id
- 6a1803df08f44-8dc607c8a54so20945286d6.2
- for <ltp@lists.linux.it>; Fri, 10 Jul 2026 07:32:18 -0700 (PDT)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id DB956200AF8
+ for <ltp@lists.linux.it>; Fri, 10 Jul 2026 17:15:13 +0200 (CEST)
+Received: by mail-wm1-x32b.google.com with SMTP id
+ 5b1f17b1804b1-493f4638f4aso8038135e9.3
+ for <ltp@lists.linux.it>; Fri, 10 Jul 2026 08:15:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1783696513; x=1784301313; darn=lists.linux.it;
+ h=date:content-transfer-encoding:content-type:subject:in-reply-to:cc
+ :to:from:message-id:from:to:cc:subject:date:message-id:reply-to
+ :content-type; bh=ilVIblEASelruSTsGBVGMgv2Gb3RabZ0ToSH2znJQGc=;
+ b=MkQ8iRbMz/ROzxTgnx75Z2PdeMmqJw1o2AnX4sjCvEivq0ZKx0tx6cByW47q+obfAK
+ JcjxYedqQTDKbBBKMhSGfVFrV6kDH3BR2y2wXVVM3AXSNr98sGIK4c1WS33X3quk5MJp
+ UKQorKRqPlZK7odOg0oRASXpD0HFf3/HckZKJib9EzxiL3h9daA+w0kCqNCEiHmC/ryK
+ ydF/nCKt1YTS2+ZzcC8hMagL6Ez7QnFsWH+/87NDsMmEJce6S6Vw5optiiuVhXXRgfbN
+ fohl7wS2V4JmA6BGpPrmBZhlInT26CbFcja9jWQ5hYleJ9mneDsipnHz8uFSXxYfe8ew
+ MLeg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1783693938; x=1784298738;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
- :message-id:reply-to:content-type;
- bh=K5IJytPC1PNTswVmxg6bWjlSKzAFvgYYjdJ8D8aJSEI=;
- b=r7eg+X9bLiWxEvKmzqcRTQaoDSNxVICO1m3zmBnaRNGasZ9pHj5XZx/kvmlbJaPdax
- rAxQ1Cylu5YAp1cuoN5eLzKDHvSwir76fBW5c3vrJbyrG4iECJIngaM9yNfpva0rF8yC
- 2ZALjRJzetha9nuvd0ukWcMBo7w9vfi1lqurjzTKgyZAX4BPi4EBBqFbQTYuSewLxHjc
- KXSV+25oO0dmMEHFeNK0dUUEVtFaFk2oeFigsLyPTOcyxej3jhBD7lLFv0gykOF6mjjs
- aXCfVy43ZJMJA9xkGfkGfa2CYFpG/hbdJ84ih/Gy4stiB3uzxuie0ngNByowMh5+G4GM
- c+XQ==
-X-Gm-Message-State: AOJu0YyxU4Cp4i+gYkwWxZs+yFH/K+vIjpYUukQ08rMHazQ3r6vDXLNJ
- NPxFdEX9jcvgRmOtyEEjT02+w8CFdXzqa9rqBz+8bHrl6OCx5Xx804O0oL9ySOxI09cXeKBMn0a
- YD+/gSEGdSBGq0Loubfdyrfg3K7ryEmRadYev1axZ6BNUSG6npH08xFQBeO9vh6CytluLKUn9UB
- bj5+gP2JX4UiD8FRnFzAolqutvyccssCehPzPG
-X-Gm-Gg: AfdE7cnyiTP3Ma8tI8Ph731ebxDX71Qx8CxD4N98jjqBWbKBNguCOAs8bRlVdTaCdkl
- WzKZyfGLuYrgRj2GH7ZOTBsZxxhRAzcBBZjlI7ytcwrjyBAhs3HyihauDGLCw62TokvlVZ24MXo
- KbTxWEZt4LFRdpG+lDvEHgRSRaRfE+DqgbALeess3LD9icfmvYYZLneAK4npfhvLOSMz889Ebyv
- HuUZk4OviICjQE3BLFidOVkon/kMT5Ew89lHBdUyC3Scjkz+VdffylZfa4mJsjMCyOuMQfmnbJ/
- luVv1MoJdQ6pODHszfjikupHpjtDlvfz8YLyZLW7MBRGbByjvwqKr4COzep+pRJxdberSmW/sRF
- JI0M6PpbOTSNlMIl+yHt09qI/5c56l/u2Pj30
-X-Received: by 2002:a05:6214:410:b0:8ee:d9e7:be2d with SMTP id
- 6a1803df08f44-8fec04e89f8mr148375336d6.7.1783693938007; 
- Fri, 10 Jul 2026 07:32:18 -0700 (PDT)
-X-Received: by 2002:a05:6214:410:b0:8ee:d9e7:be2d with SMTP id
- 6a1803df08f44-8fec04e89f8mr148374646d6.7.1783693937318; 
- Fri, 10 Jul 2026 07:32:17 -0700 (PDT)
-Received: from sbertram-thinkpadp1gen5.bos.com ([67.189.222.97])
+ d=1e100.net; s=20251104; t=1783696513; x=1784301313;
+ h=date:content-transfer-encoding:content-type:subject:in-reply-to:cc
+ :to:from:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject
+ :date:message-id:reply-to:content-type;
+ bh=ilVIblEASelruSTsGBVGMgv2Gb3RabZ0ToSH2znJQGc=;
+ b=gc+lTUh3auy9tThaMNcMdlrvtlCSD2ILXMKuDvJYZGwfjYY5J6t0zgwEVdQDJt0ot5
+ wrGGVGjdHPeOJ9/5e7B4SUkqYtHXTnfxp/qKttoTCyRcNNrcug3VQy4M/PBoVcm42y4v
+ no0ui9U88Ska01n1hWh8uhthAJKkATUtyN3mOvSD6A3YSc96RnfXWy5OBEKQv7uv/DoK
+ FPXWBnxZ2yXUR9TXGltvGFtiu1idDULDOkOF7MH0r4jtphRrmSHhJoF/tCGTJ+PLRsOc
+ mXn1g4gGYUJ57ccBDH0bN3k4CgO7y+bO3qU1ZuVrVXFW/+mdIVJKGjl7qElLXYPKJkq4
+ Jd2w==
+X-Forwarded-Encrypted: i=1;
+ AHgh+RogUw78d/oXZE4iJJGF1o9By1/gBxTyAEMIby3xzlHHOE+FG7+oCGOEDgqYllgV92cnflg=@lists.linux.it
+X-Gm-Message-State: AOJu0YwbOZBcYj0pQCYOZsylnWwpy+HUTehyPJcPPx0YDaUtbn80dJCj
+ Mlk6sY34U7yIdDGQxNTIHiUhriogL2lTqdked/m+5FwC+HD4jE2kay5FEoEO2NrhnIs=
+X-Gm-Gg: AfdE7clu4e0vHOdMgYUQCf3jMSfMUKlvHycUtRWACR9ZhY1wQVhzZKJ/Rhxn71fowzW
+ JDq3AV/Ay6UgGPE3XtpgzrnhfA7PbgzvUMC1YFDoewc6XaOcG85b98aRIxnAyUcnc86kwhh4qqj
+ uJ5OY1Cz8HIHrKJOQIdljjk4YduvZN48dLwWdQ5xjno9DYStb7Aa1Dk2s5PV2mhcXcfUYguU+zA
+ vq1zKQfFqS0fF5R4jhQI+zE1i3d9NTCpKl8hCyO5tZG3gJWgkudqogz22d0l8CyMJlFX18V1LS9
+ yC0MvI0XQlZBNZtZ/Ex2k+n1L/NqZqNBrln+7NkjzD+TuLYEXkboOV7tt6g56dE9GP1wtakUzuu
+ TTo7OhwhJRmuY06gyViB3ifZ9SToVV1pLcwPSQBxnuOrsHF+uAhiSAXCaimRI42a5kPfYVeyQBW
+ 50B9yrFr6HscdAv5ot4YIo9KxwK5vJvNGHSFhi
+X-Received: by 2002:a05:600c:6206:b0:493:bc92:ba9a with SMTP id
+ 5b1f17b1804b1-493e68bee61mr129252755e9.13.1783696513160; 
+ Fri, 10 Jul 2026 08:15:13 -0700 (PDT)
+Received: from localhost.localdomain
+ ([2a02:a31b:84a1:b780:6f4e:21d6:82d2:5333])
  by smtp.gmail.com with ESMTPSA id
- 6a1803df08f44-8ffd7c1e8aesm41801176d6.28.2026.07.10.07.32.16
+ 5b1f17b1804b1-493eb6f3b85sm236121895e9.2.2026.07.10.08.15.12
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 10 Jul 2026 07:32:17 -0700 (PDT)
-To: ltp@lists.linux.it
-Date: Fri, 10 Jul 2026 10:31:19 -0400
-Message-ID: <20260710143155.588390-1-sbertram@redhat.com>
-X-Mailer: git-send-email 2.54.0
-MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: xLnByAwTp4CfEoF8pekyerxi3W8sImq8y6yoGNxGIvs_1783693938
-X-Mimecast-Originator: redhat.com
+ Fri, 10 Jul 2026 08:15:12 -0700 (PDT)
+Message-ID: <6a510c80.fc4d87c3.115da4.55fa@mx.google.com>
+To: "Cyril Hrubis" <chrubis@suse.cz>
+In-Reply-To: <alDtz7CMmysJtlAp@rei>
+Date: Fri, 10 Jul 2026 15:15:11 +0000
 X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v1] pipe13: Scale child reap window with
- LTP_TIMEOUT_MUL
+Subject: Re: [LTP] [PATCH v2 1/1] kill11: Skip pipe-based core dumps per
+ signal
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -106,64 +97,39 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Stephen Bertram via ltp <ltp@lists.linux.it>
-Reply-To: Stephen Bertram <sbertram@redhat.com>
-Cc: Stephen Bertram <sbertram@redhat.com>
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Cc: ltp@lists.linux.it
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-The post-close wait used a fixed 1000000 us cap on exponential backoff
-(~524 ms total). Scale that cap with tst_multiply_timeout() so debug
-kernels and LTP_TIMEOUT_MUL apply, fixing failures under parallel
-Kirk workers without changing default behavior on non-debug systems.
+> Hi!
+> > > Well either we do that, or we skip the signals that dump core when we
+> > > are dumping into the pipe.
+> > 
+> > To me it looks good to skip the signals which are not allowing child
+> > to be killed after coredump. It's a systemd feature we can't workaround
+> > in this case.
+> 
+> Thinking of it once more, I wonder what exactly fails in the
+> systemd-coredump case. I guess that it may delay the test execution a
+> bit but the crashed process should eventualy quit and the test wait()
+> call should collect it. If that wasn't the case systemd-coredump would
+> break one of the fundamentals of UNIX process management.
 
-Before (only with case 100):
+Let's forget about systemd for a second.
 
-pipe13.c:50: TINFO: Creating 100 child processes
-pipe13.c:81: TINFO: pid 435007 still sleeps
-...
-pipe13.c:81: TINFO: pid 435300 still sleeps
-pipe13.c:89: TFAIL: Closed pipe didn't wake up everyone
-The list varied but sometimes up to 20 would remained asleep.
+The problem is that by using `pause()` that is not draining the buffer we
+never ends the piped user-space helper. The default behaviour for a piped
+helper is that kernel collect the coredump until helper drains the pipe.
 
-After using tst_multiply_timeout(), test passes.
-
-The failure before would happen, when using 4 paralell workers
-on a debug kernel, about 1 to 2 times when iterated 5 times.
-With the addition of the function, under the same conditions,
-it has not failed in 100 iterations.
-
-Signed-off-by: Stephen Bertram <sbertram@redhat.com>
----
- testcases/kernel/syscalls/pipe/pipe13.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/testcases/kernel/syscalls/pipe/pipe13.c b/testcases/kernel/syscalls/pipe/pipe13.c
-index 5d76e1f00..cf1ccbcbc 100644
---- a/testcases/kernel/syscalls/pipe/pipe13.c
-+++ b/testcases/kernel/syscalls/pipe/pipe13.c
-@@ -44,6 +44,7 @@ static void verify_pipe(unsigned int n)
- 	int ret;
- 	unsigned int i, cnt = 0, sleep_us = 1, fail = 0;
- 	unsigned int child_num = tcases[n];
-+	unsigned int sleep_us_cap = tst_multiply_timeout(1000) * 1000U;
- 	int pid[child_num];
- 
- 	SAFE_PIPE(fds);
-@@ -60,7 +61,7 @@ static void verify_pipe(unsigned int n)
- 	SAFE_CLOSE(fds[0]);
- 	SAFE_CLOSE(fds[1]);
- 
--	while (cnt < child_num && sleep_us < 1000000) {
-+	while (cnt < child_num && sleep_us < sleep_us_cap) {
- 		ret = waitpid(-1, NULL, WNOHANG);
- 		if (ret < 0)
- 			tst_brk(TBROK | TERRNO, "waitpid()");
--- 
-2.54.0
-
+--
+Andrea Cervesato
+SUSE QE Automation Engineer Linux
+andrea.cervesato@suse.com
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
