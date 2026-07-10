@@ -4,108 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E21C0C43458
-	for <ltp@archiver.kernel.org>; Fri, 10 Jul 2026 14:21:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B84B0C43458
+	for <ltp@archiver.kernel.org>; Fri, 10 Jul 2026 14:32:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1783693964; h=to : date :
+ message-id : mime-version : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : cc : content-type : content-transfer-encoding : sender :
+ from; bh=nA4r5tKY2Emthh75oDUlhyttt1WUF2Dtk8jkZ0yTKm0=;
+ b=qzP4oKIsv9CDqFBa62BR4L3iZj9wAUVzp/6erniJPv7aowGkd4awxij7413cPNgloPCyP
+ iUP+KXwl9H104uZU+OOHAcIa36Xh9vIn6Q8OXx2/iAjA+fsfnOpF2VlbW33f/qJ0LyFMXBR
+ dGT3NzEolEqicQrEJoXrhS68xUd6Kog=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 453AE3E5CEC
-	for <ltp@archiver.kernel.org>; Fri, 10 Jul 2026 16:21:31 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 09A943E5C5E
+	for <ltp@archiver.kernel.org>; Fri, 10 Jul 2026 16:32:44 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2FB053C8231
- for <ltp@lists.linux.it>; Fri, 10 Jul 2026 16:21:15 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ by picard.linux.it (Postfix) with ESMTPS id 0DC8F3C8231
+ for <ltp@lists.linux.it>; Fri, 10 Jul 2026 16:32:22 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 474421000D28
- for <ltp@lists.linux.it>; Fri, 10 Jul 2026 16:21:12 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 2BC79767D6;
- Fri, 10 Jul 2026 14:21:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1783693272; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=/gOz8ulTFwliESF5kcOs2fEbl2ppBE7V25d/Z4dMQk4=;
- b=XZg/X6D8NZu5ofTH3qNKV89A0wQyt1E2cZXveMC7tgOAUHQyg06kQ0HliIWN67bG4wd0Wk
- GTm+3lqjIlLmCzgqg7oDAVSoUF7JZSXZR3jqqBK9BcPGrBuDLrFlpsn97g6uYMEnVCnfFB
- PZp+lh4JdVZ3PtPmN0M5vIHjmKtaxuI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1783693272;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=/gOz8ulTFwliESF5kcOs2fEbl2ppBE7V25d/Z4dMQk4=;
- b=0mJ9kJFjfFy4Knv9B1WzMORBOTNoFVWexdX+jIw8eTHXSzgkWg1wHbXPTRVPCZXeWZAawz
- t+Cln+iocXTM6rDQ==
-Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=XkSISPJy;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=OqcBRxvQ
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1783693270; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=/gOz8ulTFwliESF5kcOs2fEbl2ppBE7V25d/Z4dMQk4=;
- b=XkSISPJyJLHZtm0NvqqIJw+YHN8Pq5IbuU3fcVHMGenEv7+JiSf/f8YqLvtBAkraEbfdYX
- e9lR0tamZcv17MGohexjfHtuesaJ7TzjgwggrX0OFHZqYppzozcdI8OGFMejVzfGyrTyP5
- FTsyPTrTCeZJbeilPHWXEyHwRyKZJJg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1783693270;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=/gOz8ulTFwliESF5kcOs2fEbl2ppBE7V25d/Z4dMQk4=;
- b=OqcBRxvQAZWwlBgcSN51srZcXFp1qeAsEVVTUkpAdTRztu19TjPeKUul9DPxs6kNC9Yl1x
- fjKV41OfIN1CCJAg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 149CE779BD;
- Fri, 10 Jul 2026 14:21:10 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id aAMvBNb/UGrjPwAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Fri, 10 Jul 2026 14:21:10 +0000
-Date: Fri, 10 Jul 2026 16:20:24 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Jinseok Kim <always.starving0@gmail.com>
-Message-ID: <alD_qLh0SzW-2oJC@rei>
-References: <20260707150920.6489-1-always.starving0@gmail.com>
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 2ACF4200AE9
+ for <ltp@lists.linux.it>; Fri, 10 Jul 2026 16:32:21 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1783693940;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=K5IJytPC1PNTswVmxg6bWjlSKzAFvgYYjdJ8D8aJSEI=;
+ b=JJ3fIVfCIR6xrAxAPBCSEmHf+rzh9PKWWrGZqLwf9+9q/5d3zENh/nCQrmumABeQ0GHA33
+ gUxEZO+c4sBFOrPt3VgJ7PLRzdH97VY/lbAO7nYx0V6CVnbpYrY0BSc7/xWiHT9kNiWXRV
+ oECxz8EtwP0wHfLUuaICfmBYkkWDJuo=
+Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
+ [209.85.219.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-246-IXNaZpRXOL-F6x2fVLswlw-1; Fri, 10 Jul 2026 10:32:18 -0400
+X-MC-Unique: IXNaZpRXOL-F6x2fVLswlw-1
+X-Mimecast-MFC-AGG-ID: IXNaZpRXOL-F6x2fVLswlw_1783693938
+Received: by mail-qv1-f71.google.com with SMTP id
+ 6a1803df08f44-8dc607c8a54so20945286d6.2
+ for <ltp@lists.linux.it>; Fri, 10 Jul 2026 07:32:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1783693938; x=1784298738;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to:content-type;
+ bh=K5IJytPC1PNTswVmxg6bWjlSKzAFvgYYjdJ8D8aJSEI=;
+ b=r7eg+X9bLiWxEvKmzqcRTQaoDSNxVICO1m3zmBnaRNGasZ9pHj5XZx/kvmlbJaPdax
+ rAxQ1Cylu5YAp1cuoN5eLzKDHvSwir76fBW5c3vrJbyrG4iECJIngaM9yNfpva0rF8yC
+ 2ZALjRJzetha9nuvd0ukWcMBo7w9vfi1lqurjzTKgyZAX4BPi4EBBqFbQTYuSewLxHjc
+ KXSV+25oO0dmMEHFeNK0dUUEVtFaFk2oeFigsLyPTOcyxej3jhBD7lLFv0gykOF6mjjs
+ aXCfVy43ZJMJA9xkGfkGfa2CYFpG/hbdJ84ih/Gy4stiB3uzxuie0ngNByowMh5+G4GM
+ c+XQ==
+X-Gm-Message-State: AOJu0YyxU4Cp4i+gYkwWxZs+yFH/K+vIjpYUukQ08rMHazQ3r6vDXLNJ
+ NPxFdEX9jcvgRmOtyEEjT02+w8CFdXzqa9rqBz+8bHrl6OCx5Xx804O0oL9ySOxI09cXeKBMn0a
+ YD+/gSEGdSBGq0Loubfdyrfg3K7ryEmRadYev1axZ6BNUSG6npH08xFQBeO9vh6CytluLKUn9UB
+ bj5+gP2JX4UiD8FRnFzAolqutvyccssCehPzPG
+X-Gm-Gg: AfdE7cnyiTP3Ma8tI8Ph731ebxDX71Qx8CxD4N98jjqBWbKBNguCOAs8bRlVdTaCdkl
+ WzKZyfGLuYrgRj2GH7ZOTBsZxxhRAzcBBZjlI7ytcwrjyBAhs3HyihauDGLCw62TokvlVZ24MXo
+ KbTxWEZt4LFRdpG+lDvEHgRSRaRfE+DqgbALeess3LD9icfmvYYZLneAK4npfhvLOSMz889Ebyv
+ HuUZk4OviICjQE3BLFidOVkon/kMT5Ew89lHBdUyC3Scjkz+VdffylZfa4mJsjMCyOuMQfmnbJ/
+ luVv1MoJdQ6pODHszfjikupHpjtDlvfz8YLyZLW7MBRGbByjvwqKr4COzep+pRJxdberSmW/sRF
+ JI0M6PpbOTSNlMIl+yHt09qI/5c56l/u2Pj30
+X-Received: by 2002:a05:6214:410:b0:8ee:d9e7:be2d with SMTP id
+ 6a1803df08f44-8fec04e89f8mr148375336d6.7.1783693938007; 
+ Fri, 10 Jul 2026 07:32:18 -0700 (PDT)
+X-Received: by 2002:a05:6214:410:b0:8ee:d9e7:be2d with SMTP id
+ 6a1803df08f44-8fec04e89f8mr148374646d6.7.1783693937318; 
+ Fri, 10 Jul 2026 07:32:17 -0700 (PDT)
+Received: from sbertram-thinkpadp1gen5.bos.com ([67.189.222.97])
+ by smtp.gmail.com with ESMTPSA id
+ 6a1803df08f44-8ffd7c1e8aesm41801176d6.28.2026.07.10.07.32.16
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 10 Jul 2026 07:32:17 -0700 (PDT)
+To: ltp@lists.linux.it
+Date: Fri, 10 Jul 2026 10:31:19 -0400
+Message-ID: <20260710143155.588390-1-sbertram@redhat.com>
+X-Mailer: git-send-email 2.54.0
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20260707150920.6489-1-always.starving0@gmail.com>
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: 2BC79767D6
-X-Spamd-Result: default: False [-4.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- NEURAL_HAM_SHORT(-0.20)[-1.000];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- MIME_GOOD(-0.10)[text/plain]; MX_GOOD(-0.01)[];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- MIME_TRACE(0.00)[0:+]; FUZZY_RATELIMITED(0.00)[rspamd.com];
- ARC_NA(0.00)[]; FREEMAIL_TO(0.00)[gmail.com];
- RCPT_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- FREEMAIL_ENVRCPT(0.00)[gmail.com]; RCVD_TLS_ALL(0.00)[];
- RCVD_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- RCVD_VIA_SMTP_AUTH(0.00)[]; TAGGED_RCPT(0.00)[];
- DKIM_TRACE(0.00)[suse.cz:+]; MISSING_XM_UA(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[pm_include.sh:url, imap1.dmz-prg2.suse.org:rdns,
- imap1.dmz-prg2.suse.org:helo, runpwtests04.sh:url, runpwtests03.sh:url,
- suse.cz:email, suse.cz:dkim, runpwtests06.sh:url, linux.it:url, test.sh:url]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+X-Mimecast-Spam-Score: 0
+X-Mimecast-MFC-PROC-ID: xLnByAwTp4CfEoF8pekyerxi3W8sImq8y6yoGNxGIvs_1783693938
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v6] power_management: rewrite runpwtests04.sh in C
+Subject: [LTP] [PATCH v1] pipe13: Scale child reap window with
+ LTP_TIMEOUT_MUL
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -117,218 +106,64 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+From: Stephen Bertram via ltp <ltp@lists.linux.it>
+Reply-To: Stephen Bertram <sbertram@redhat.com>
+Cc: Stephen Bertram <sbertram@redhat.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
->  runtest/power_management_tests                |  2 +-
->  testcases/kernel/power_management/.gitignore  |  1 +
->  testcases/kernel/power_management/cpuidle01.c | 90 +++++++++++++++++++
->  .../kernel/power_management/runpwtests04.sh   | 58 ------------
->  4 files changed, 92 insertions(+), 59 deletions(-)
->  create mode 100644 testcases/kernel/power_management/cpuidle01.c
->  delete mode 100755 testcases/kernel/power_management/runpwtests04.sh
-> 
-> diff --git a/runtest/power_management_tests b/runtest/power_management_tests
-> index 4da57ee72..0f2656b52 100644
-> --- a/runtest/power_management_tests
-> +++ b/runtest/power_management_tests
-> @@ -1,5 +1,5 @@
->  #POWER_MANAGEMENT
->  high_freq_hwp_cap_cppc high_freq_hwp_cap_cppc
-> +cpuidle01 cpuidle01
->  runpwtests03 runpwtests03.sh
-> -runpwtests04 runpwtests04.sh
->  runpwtests06 runpwtests06.sh
-> diff --git a/testcases/kernel/power_management/.gitignore b/testcases/kernel/power_management/.gitignore
-> index 03f0c83e4..e237df1c8 100644
-> --- a/testcases/kernel/power_management/.gitignore
-> +++ b/testcases/kernel/power_management/.gitignore
-> @@ -1 +1,2 @@
->  high_freq_hwp_cap_cppc
-> +cpuidle01
-> diff --git a/testcases/kernel/power_management/cpuidle01.c b/testcases/kernel/power_management/cpuidle01.c
-> new file mode 100644
-> index 000000000..919dd2b7c
-> --- /dev/null
-> +++ b/testcases/kernel/power_management/cpuidle01.c
-> @@ -0,0 +1,90 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (C) 2026 Jinseok Kim <always.starving0@gmail.com>
-> + */
-> +
-> +/*\
-> + * Basic cpuidle sysfs smoke test.
-> + *
-> + * Verify that selected cpuidle sysfs files are readable.
-> + */
-> +
-> +#include <fcntl.h>
-> +#include <unistd.h>
-> +
-> +#include "tst_test.h"
-> +
-> +#define CPUIDLE_PATH "/sys/devices/system/cpu/cpuidle"
-> +
-> +static struct tcase {
-> +	const char *name;
-> +	bool is_writable;
-> +} tcases[] = {
-> +	{ "available_governors", false },
-> +	{ "current_driver", false },
-> +	{ "current_governor", true },
-> +	{ "current_governor_ro", false },
-> +};
-> +
-> +static int fd = -1;
-> +
-> +static void verify_cpuidle(unsigned int i)
-> +{
-> +	int ret;
-> +	char path[PATH_MAX];
-> +	char buf[32];
-> +
-> +	snprintf(path, sizeof(path), "%s/%s", CPUIDLE_PATH, tcases[i].name);
-> +
-> +	if (tcases[i].is_writable)
-> +		fd = open(path, O_RDWR);
-> +	else
-> +		fd = open(path, O_RDONLY);
-> +
-> +	if (fd < 0) {
-> +		if (errno == ENOENT)
-> +			tst_res(TCONF, "%s not available", path);
-> +		else
-> +			tst_res(TFAIL | TERRNO, "open(%s) failed", path);
-> +		return;
-> +	}
-> +
-> +	ret = read(fd, buf, sizeof(buf));
-> +
-> +	if (ret < 0)
-> +		tst_res(TFAIL | TERRNO, "%s read() failed", path);
-> +	else if (ret == 0)
-> +		tst_res(TFAIL, "%s read() returned 0", path);
-> +	else
-> +		tst_res(TPASS, "%s read() successfully", path);
+The post-close wait used a fixed 1000000 us cap on exponential backoff
+(~524 ms total). Scale that cap with tst_multiply_timeout() so debug
+kernels and LTP_TIMEOUT_MUL apply, fixing failures under parallel
+Kirk workers without changing default behavior on non-debug systems.
 
-When we actually bother writing tests maybe we should not do it with the
-array style, but rather add a function per sysfs file that would
-actually check that the data are correct.
+Before (only with case 100):
 
-E.g. we could write a function that would read and parse
-available_governors and then check that current_governor is in the set
-of the available_governors.
+pipe13.c:50: TINFO: Creating 100 child processes
+pipe13.c:81: TINFO: pid 435007 still sleeps
+...
+pipe13.c:81: TINFO: pid 435300 still sleeps
+pipe13.c:89: TFAIL: Closed pipe didn't wake up everyone
+The list varied but sometimes up to 20 would remained asleep.
 
-> +	if (tcases[i].is_writable) {
-> +		if (write(fd, "invalid_governor", 16) < 0) {
-> +			if (errno == EINVAL)
-> +				tst_res(TPASS, "%s rejected invalid input with EINVAL", path);
-> +			else
-> +				tst_res(TFAIL | TERRNO, "%s rejected invalid input with unexpected errno", path);
-> +		} else {
-> +			tst_res(TFAIL, "%s accepted invalid input successfully", path);
-> +		}
+After using tst_multiply_timeout(), test passes.
 
-	This can be just TST_EXP_FAIL2();
+The failure before would happen, when using 4 paralell workers
+on a debug kernel, about 1 to 2 times when iterated 5 times.
+With the addition of the function, under the same conditions,
+it has not failed in 100 iterations.
 
-> +	}
-> +
-> +	SAFE_CLOSE(fd);
-> +}
-> +
-> +static void cleanup(void)
-> +{
-> +	if (fd != -1)
-> +		SAFE_CLOSE(fd);
-> +}
-> +
-> +static struct tst_test test = {
-> +	.cleanup = cleanup,
-> +	.needs_root = 1,
-> +	.tcnt = ARRAY_SIZE(tcases),
-> +	.test = verify_cpuidle,
-> +	.save_restore = (const struct tst_path_val[]) {
-> +		{ CPUIDLE_PATH "/current_governor", NULL, TST_SR_TCONF },
-> +		{}
-> +	},
-> +};
-> diff --git a/testcases/kernel/power_management/runpwtests04.sh b/testcases/kernel/power_management/runpwtests04.sh
-> deleted file mode 100755
-> index 6565320d2..000000000
-> --- a/testcases/kernel/power_management/runpwtests04.sh
-> +++ /dev/null
-> @@ -1,58 +0,0 @@
-> -#! /bin/sh
-> -#
-> -# Copyright (c) International Business Machines  Corp., 2001
-> -# Author: Nageswara R Sastry <nasastry@in.ibm.com>
-> -#
-> -# This program is free software;  you can redistribute it and#or modify
-> -# it under the terms of the GNU General Public License as published by
-> -# the Free Software Foundation; either version 2 of the License, or
-> -# (at your option) any later version.
-> -#
-> -# This program is distributed in the hope that it will be useful, but
-> -# WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
-> -# or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-> -# for more details.
-> -#
-> -# You should have received a copy of the GNU General Public License
-> -# along with this program;  if not, write to the Free Software Foundation,
-> -# Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-> -#
-> -
-> -export TCID="Power_Management04"
-> -export TST_TOTAL=1
-> -
-> -. test.sh
-> -. pm_include.sh
-> -
-> -check_cpuidle_sysfs_files() {
-> -	RC=0
-> -	if [ -d /sys/devices/system/cpu/cpuidle ] ; then
-> -		for files in current_governor_ro current_driver
-> -		do
-> -			cat /sys/devices/system/cpu/cpuidle/${files} \
-> -				>/dev/null 2>&1
-> -			if [ $? -ne 0 ] ; then
-> -				echo "${0}: FAIL: cat ${files}"
-> -				RC=1
-> -			fi
-> -		done
-> -	fi
-> -	if [ ${RC} -eq 0 ] ; then
-> -		echo "${0}: PASS: Checking cpu idle sysfs files"
-> -	else
-> -		echo "${0}: FAIL: Checking cpu idle sysfs files"
-> -	fi
-> -	return $RC
-> -}
-> -
-> -# Checking test environment
-> -check_arch
-> -
-> -# Checking cpuidle sysfs interface files
-> -if check_cpuidle_sysfs_files ; then
-> -	tst_resm TPASS "CPUIDLE sysfs tests passed"
-> -else
-> -    tst_resm TFAIL "CPUIDLE sysfs tests failed"
-> -fi
-> -
-> -tst_exit
-> --
-> 2.43.0
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
+Signed-off-by: Stephen Bertram <sbertram@redhat.com>
+---
+ testcases/kernel/syscalls/pipe/pipe13.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
+diff --git a/testcases/kernel/syscalls/pipe/pipe13.c b/testcases/kernel/syscalls/pipe/pipe13.c
+index 5d76e1f00..cf1ccbcbc 100644
+--- a/testcases/kernel/syscalls/pipe/pipe13.c
++++ b/testcases/kernel/syscalls/pipe/pipe13.c
+@@ -44,6 +44,7 @@ static void verify_pipe(unsigned int n)
+ 	int ret;
+ 	unsigned int i, cnt = 0, sleep_us = 1, fail = 0;
+ 	unsigned int child_num = tcases[n];
++	unsigned int sleep_us_cap = tst_multiply_timeout(1000) * 1000U;
+ 	int pid[child_num];
+ 
+ 	SAFE_PIPE(fds);
+@@ -60,7 +61,7 @@ static void verify_pipe(unsigned int n)
+ 	SAFE_CLOSE(fds[0]);
+ 	SAFE_CLOSE(fds[1]);
+ 
+-	while (cnt < child_num && sleep_us < 1000000) {
++	while (cnt < child_num && sleep_us < sleep_us_cap) {
+ 		ret = waitpid(-1, NULL, WNOHANG);
+ 		if (ret < 0)
+ 			tst_brk(TBROK | TERRNO, "waitpid()");
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.54.0
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
