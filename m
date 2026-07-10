@@ -4,103 +4,98 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AA923C43458
-	for <ltp@archiver.kernel.org>; Fri, 10 Jul 2026 11:47:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AD2BBC44506
+	for <ltp@archiver.kernel.org>; Fri, 10 Jul 2026 11:48:45 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C9DAE3E5BC6
-	for <ltp@archiver.kernel.org>; Fri, 10 Jul 2026 13:47:11 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 30F533E5BC5
+	for <ltp@archiver.kernel.org>; Fri, 10 Jul 2026 13:48:44 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6F9073C9911
- for <ltp@lists.linux.it>; Fri, 10 Jul 2026 13:46:56 +0200 (CEST)
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
- [148.163.156.1])
+ by picard.linux.it (Postfix) with ESMTPS id F1B363C9911
+ for <ltp@lists.linux.it>; Fri, 10 Jul 2026 13:48:26 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id A12C11000A1E
- for <ltp@lists.linux.it>; Fri, 10 Jul 2026 13:46:55 +0200 (CEST)
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id
- 66AAmfgV888753; Fri, 10 Jul 2026 11:46:53 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
- :content-type:date:from:in-reply-to:message-id:mime-version
- :references:subject:to; s=pp1; bh=fp4oQzbaGDSGnET6JJ1Qkamgq/e6Q6
- x3AetCNltfw1g=; b=SlsNHSWnQrP6xF+GcselzIg25XPv0lRfzsb3OHmJcqmpqy
- Di8vmksA0dGwT+4HIMeiiMXd/bA3j1u6tYsldfhvLl/gu9pjeiWMwU5wf6m7WeeS
- EEOtSX/bZU9ZI15aj1C/jaFJt4x+kT0MaI0u+aD85OnnVgiKFvWchW79rMHfPeMU
- 3bPgP78l/mi3ZwWynrweXLwNrgzwe2Ky4Wz/vjKaNpcEaY7lNyDg++QMezqLhjW5
- 3iyQ1dEF9qHeSsY53OSZ/abGoVby3hFbOHzp+lvH/mIg2/EkYilvE3vDTQwd3TKY
- nCBGt2k7xE9ATt0vTUAzt6zKdbi8Yw8mobo4JyNA==
-Received: from ppma13.dal12v.mail.ibm.com
- (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4fafh0bs13-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Fri, 10 Jul 2026 11:46:52 +0000 (GMT)
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
- by ppma13.dal12v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 66ABYf6s001594;
- Fri, 10 Jul 2026 11:46:52 GMT
-Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
- by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 4f7eqghkxp-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Fri, 10 Jul 2026 11:46:51 +0000 (GMT)
-Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com
- [10.20.54.104])
- by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 66ABkogs46661944
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Fri, 10 Jul 2026 11:46:50 GMT
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 2878320043;
- Fri, 10 Jul 2026 11:46:50 +0000 (GMT)
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id EB5E520040;
- Fri, 10 Jul 2026 11:46:49 +0000 (GMT)
-Received: from li-276bd24c-2dcc-11b2-a85c-945b6f05615c.ibm.com (unknown
- [9.87.140.3]) by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTPS;
- Fri, 10 Jul 2026 11:46:49 +0000 (GMT)
-Date: Fri, 10 Jul 2026 13:46:48 +0200
-From: Jan Polensky <japo@linux.ibm.com>
-To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <alDbqPsc3ueUqXlN@li-276bd24c-2dcc-11b2-a85c-945b6f05615c.ibm.com>
-References: <20260709175927.268677-1-japo@linux.ibm.com> <alDW49sRfwx0eBw5@rei>
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id DA82A1000759
+ for <ltp@lists.linux.it>; Fri, 10 Jul 2026 13:48:25 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 5873276479;
+ Fri, 10 Jul 2026 11:48:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1783684105; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=7j1wIn3VlBad8FM5cnPk7fCteR6Oq2GCM1ONn7mAkdY=;
+ b=nUV0dfCl128OohPNX7IObVAQD3HjKqSazCiLHZyG1nHgNhHZmfYjrDINSOdGp7XM/MbKkI
+ hn6z74WI08BcJBmW8IhkEmIeYFctdQCgL1qHIDp/pMT22ggVA9OMzvbhiudL8v6g3zSKMr
+ 1IXPHyZ2HenBfBQSu+GvTi2i4qcBgyc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1783684105;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=7j1wIn3VlBad8FM5cnPk7fCteR6Oq2GCM1ONn7mAkdY=;
+ b=xnPlYJ/TBYTOrarB0BaUSy1YGDPAPwxmu/svFaBNf0jF8TPCMm9MHOSczHNV7lnDN/NO2G
+ xTaf8NrkjU116WDA==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1783684105; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=7j1wIn3VlBad8FM5cnPk7fCteR6Oq2GCM1ONn7mAkdY=;
+ b=nUV0dfCl128OohPNX7IObVAQD3HjKqSazCiLHZyG1nHgNhHZmfYjrDINSOdGp7XM/MbKkI
+ hn6z74WI08BcJBmW8IhkEmIeYFctdQCgL1qHIDp/pMT22ggVA9OMzvbhiudL8v6g3zSKMr
+ 1IXPHyZ2HenBfBQSu+GvTi2i4qcBgyc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1783684105;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=7j1wIn3VlBad8FM5cnPk7fCteR6Oq2GCM1ONn7mAkdY=;
+ b=xnPlYJ/TBYTOrarB0BaUSy1YGDPAPwxmu/svFaBNf0jF8TPCMm9MHOSczHNV7lnDN/NO2G
+ xTaf8NrkjU116WDA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 484CC779BE;
+ Fri, 10 Jul 2026 11:48:25 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id RFeUEAncUGpHKAAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Fri, 10 Jul 2026 11:48:25 +0000
+Date: Fri, 10 Jul 2026 13:47:39 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Petr Vorel <pvorel@suse.cz>
+Message-ID: <alDb2xQXRdCI0SMl@rei>
+References: <20260710055556.1109220-1-pvorel@suse.cz>
+ <20260710055556.1109220-5-pvorel@suse.cz> <alC04_YPyPr0ai_z@rei>
+ <20260710113904.GA1189007@pevik>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <alDW49sRfwx0eBw5@rei>
-X-TM-AS-GCONF: 00
-X-Authority-Analysis: v=2.4 cv=VebH+lp9 c=1 sm=1 tr=0 ts=6a50dbac cx=c_pps
- a=AfN7/Ok6k8XGzOShvHwTGQ==:117 a=AfN7/Ok6k8XGzOShvHwTGQ==:17
- a=kj9zAlcOel0A:10 a=RAioF0-LDSMA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=RnoormkPH1_aCDwRdu11:22 a=iQ6ETzBq9ecOQQE5vZCe:22 a=d6Zq3oZ6_tHfbCBfB0gA:9
- a=CjuIK1q_8ugA:10
-X-Proofpoint-GUID: tJxAURrXCkYUdjx1mjpL6OCCfItPZyMY
-X-Proofpoint-ORIG-GUID: tJxAURrXCkYUdjx1mjpL6OCCfItPZyMY
-X-Proofpoint-Spam-Info: AW1haW4tMjYwNzEwMDExMiBTYWx0ZWRfX4DGPOFebB/uF
- nKO0GWZzZzP2L85cWyX7l0A++PnSLqm1qg2PPdvrrjPfWHQ05ItIqv9EAHPRau2/roDYDsZWA0x
- LvsDzUMvRWh7od2/RO8JfcgtVQZv8BE=
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNzEwMDExMiBTYWx0ZWRfX02hgn5pkaDb1
- EsC9NzdTgxzMO3YLsr16YSJEzUeOq85TZ017ebOHxsHIVftZaQtCUdxu3kLNB43+yBvEyMxckVh
- tcwBx8JktCPJmeREFRc9LXezH2IHzbrGtmvK+Rm2SYApFfoTdiRTk2DEwdmIEaoHjn2ogfXJ+YR
- c917rtmJXdpFHZBCmCwMlbVSaDd+jff0CS4HLUw+/2kvvAoE4csRc2zKo6Q1fsiL6LO4zyX361V
- uTGv/UJccxyqbtDK4GJRNymbLORJ6xxX+j37V6Kr8Sb8japYwVpQ4KT/IdXo7UWMLIz2ivN++vm
- iAZ8qI4wEIJSbhPOs+EWwDfb+dB5MfcrshNs8ryH3NiFQNp2HpA1gCdermqi/DA0uKQsuAsEVjV
- RcLmnWsHRaZstXtoiLXrirPED3WX3AeLY2aCrd8NDiNJHfaCDuJ8Hjx05e/KtjjcWHUtPA83Th5
- kFwMqgO9PFuB14Hq4pA==
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.134,FMLib:17.12.100.49
- definitions=2026-07-10_03,2026-07-09_04,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- priorityscore=1501 suspectscore=0 clxscore=1015 malwarescore=0
- impostorscore=0 phishscore=0 lowpriorityscore=0 adultscore=0 spamscore=0
- bulkscore=0 classifier=typeunknown authscore=0 authtc= authcc= route=outbound
- adjust=0 reason=mlx scancount=1 engine=8.22.0-2606150000
- definitions=main-2607100112
+In-Reply-To: <20260710113904.GA1189007@pevik>
+X-Spamd-Result: default: False [-3.80 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ FUZZY_RATELIMITED(0.00)[rspamd.com]; ARC_NA(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; MIME_TRACE(0.00)[0:+];
+ FROM_HAS_DN(0.00)[]; RCVD_TLS_ALL(0.00)[];
+ RCPT_COUNT_THREE(0.00)[4]; FROM_EQ_ENVFROM(0.00)[];
+ TO_DN_SOME(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ MISSING_XM_UA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:email]
 X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v6 1/1] thp04: Add ptrace mode and fix tracee stop
- synchronization
+Subject: Re: [LTP] [PATCH v2 4/8] metadata: test.sh: Add support for
+ building out-of-tree
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -118,43 +113,18 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Fri, Jul 10, 2026 at 01:26:27PM +0200, Cyril Hrubis wrote:
-> Hi!
-> > - Note: Serialization eliminates the race; tests write functionality
->
-> I'm a bit puzzled by this line. If there is no chance of hitting the
-> race wouldn't it make much more sense to write a separate ptrace test
-> that would excercise the parent being able to write into child memory?
->
-> --
-> Cyril Hrubis
-> chrubis@suse.cz
-Hi Cyril,
+Hi!
+> I would say no, it's not worth of that trouble. I would either live without
+> out-of-tree build or reevaluate what is blocking for switching to meson.
+> (I don't remember what Andrea found in his POC some years ago.)
 
-That's a fair point.
+I'm not 100% convinced that meson is the best way to go. It increases
+the build dependecies quite a lot from a autotools+make to python with
+several libraries.
 
-The main goal was to keep thp04 functional on kernels with
-CONFIG_PROC_MEM_FORCE_PTRACE=y, where direct writes via /proc/self/mem
-are no longer possible.
-
-Do you have a preference for how support for that configuration should
-look?
-
-Would you prefer:
-
-  1. Keeping thp04 focused on the original race test and skipping it
-     when only ptrace-based writes are available?
-
-  2. Splitting the ptrace write validation into a separate testcase and
-     leaving thp04 unchanged?
-
-  3. Some other approach?
-
-I'm mostly trying to understand the intended coverage for
-CONFIG_PROC_MEM_FORCE_PTRACE=y before making further changes.
-
-Thanks,
-Jan
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
