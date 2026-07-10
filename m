@@ -4,80 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5D398C43458
-	for <ltp@archiver.kernel.org>; Fri, 10 Jul 2026 08:29:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 00FACC43458
+	for <ltp@archiver.kernel.org>; Fri, 10 Jul 2026 08:30:55 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D6BE53E2E1E
-	for <ltp@archiver.kernel.org>; Fri, 10 Jul 2026 10:29:33 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id A39853E297A
+	for <ltp@archiver.kernel.org>; Fri, 10 Jul 2026 10:30:54 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0C9EB3E2793
- for <ltp@lists.linux.it>; Fri, 10 Jul 2026 10:29:18 +0200 (CEST)
-Received: from mail-pz2-x00.google.com (mail-pz2-x00.google.com
- [IPv6:2607:f8b0:4864:3b::])
+ by picard.linux.it (Postfix) with ESMTPS id 1D6C43E2793
+ for <ltp@lists.linux.it>; Fri, 10 Jul 2026 10:30:40 +0200 (CEST)
+Received: from mail-qv2-x01.google.com (mail-qv2-x01.google.com
+ [IPv6:2607:f8b0:4864:33::1])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id B6FCA1A00CAF
- for <ltp@lists.linux.it>; Fri, 10 Jul 2026 10:29:17 +0200 (CEST)
-Received: by mail-pz2-x00.google.com with SMTP id
- 41be03b00d2f7-c95bd574471so267505a12.0
- for <ltp@lists.linux.it>; Fri, 10 Jul 2026 01:29:17 -0700 (PDT)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 9823B200ADA
+ for <ltp@lists.linux.it>; Fri, 10 Jul 2026 10:30:39 +0200 (CEST)
+Received: by mail-qv2-x01.google.com with SMTP id
+ 6a1803df08f44-8fd49c74519so1950386d6.0
+ for <ltp@lists.linux.it>; Fri, 10 Jul 2026 01:30:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1783672156; x=1784276956; darn=lists.linux.it;
+ d=gmail.com; s=20251104; t=1783672238; x=1784277038; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to:content-type;
- bh=9zbhQGigeiO4jY3/0wb7/yIWiD3N1ECbnjsQsj1BlqU=;
- b=AZASnf3DI2Sy+vHZTi6om6z28fWp4oJzsEDen34q7Dv/SOF1OP0FCcC+CHA0LSM6nv
- BjsHg+YSe1Q0AcxWqTv3VP2/1xyOpmVbujyLTzWLyEwsoYpzM698ikEd9Mal1uGrHTBI
- 8kAW/J+3B6Mlv6MXShOOl/oQJYOFML15kfkjjb2AGsmHN6K2pISWBMM54m+RwPQVwMpn
- wiHp94U+RIJR9c0ryK53NA7x+gbmYmH61N1zetPNaouIGMdftAP6RufMgnWE4pb8XTLS
- hBRIuh/9dE+OBrvbhoiooYzI1g1Qa51ZU331XnDONE5KuLHlv0QT3hXPDpUpxv6Kcr5M
- fUOw==
+ bh=vkwTo5cSaf/bsRBt8wsDsSHVKwM3K/0MNnxgM2hGlj8=;
+ b=kslOmJIWU3hTOwRjWU6iUDnd6QvQL4eRsZzqFfvgIWssbJPRO4N3biKwH4EoXMRwmT
+ egD2/EoAh1M5z0XHRsaiqs+B9plSCTG6Hp87bAXj+tSHn4rnQJBhPx0mdNfwHoeEazjQ
+ CR6XSwFsoYv3vhjU3K/2WjawiuU3BMn4marfLDjEmtAeUBYDS6VNCJgGPM3PMR6w7BcK
+ IdnfnTfW7EwpuXlCddVJgfYz2vViXqQbF1v8DVoW0X0NSAkSzN+BDiQKbvPlo9wOCwEz
+ YQo/Cgd1aaDP8VA8G4kniiiLyUZ+sV+GF4YTG79Bf10CyhtsIF630b8KheaC8bxEMEPM
+ XpRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1783672156; x=1784276956;
+ d=1e100.net; s=20251104; t=1783672238; x=1784277038;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to:content-type;
- bh=9zbhQGigeiO4jY3/0wb7/yIWiD3N1ECbnjsQsj1BlqU=;
- b=Li0pOmRrLoBiqjZ9ECfW7scetKbbEFGss9UujRDpm4mEYXbBYTQM6q7+f45oNI4lhI
- 9nfCZx4FovNi4u7tk3dyx1fE0yuDAhF18tfJil/pJXRjFaG5YepJkZ0KoXbQwZx6k1la
- eqdpEWvKiXR/czzJrXpMAreR+EmwHo5PcDg2oSTIVB8YpAR7wDz4ppuqLDgTnKgvxLfz
- EgAUeETScpyZKFKj+Dl4GRaIgr5ghAfoiTrX0OyoI+Qf5kkOG8sEsK0soyNbIJsGLJTE
- CWmR8kP4fD+HcID0esuPCb1cxKU+PXTO4k7yPIoj+CqC8Bue0yz1tJNJFpONDzu4eoYb
- 0Ycw==
-X-Gm-Message-State: AOJu0YypYf8PgCiaGZ9K0OFXD6RTHtWB4uNwynnzyasB0G0v6U76L2JN
- iVVr0T/X9UbeCL97egZt/L4slLPF6p39E+6G7Gg1GpmQNGKH2AKCmep/
-X-Gm-Gg: AfdE7cnJQ0240qOrvXhQWByqPsliYzEJ5bjrGQFirc5ivSfdTtJUdJskhb+wZvNP2yd
- l7A/ttWHYXMgcXnKMh8nHAWO5BztfcU0P91goQTrY1HTz8c6dseWzDgRwe/rOQvh7ww+fNqMehF
- mZ0JIKi0+rl2dIAYJmXL4iAmkt2OktoPqx+Igd5cHFVBRfn6KDuJQ8IHeCg3en3/qnkFi/w4XF8
- iNxANckccXB/SbwlxRMnT4Q+xTKwJVdjcmoNxc1DiQtuHIuP3rBtjb34ek/AmBMXEGUH0TJKHsm
- 8LExhAVg8aUZDJ8YhTqeJNQvgeXqhfOQYCvGaBuof3aAvPx9A9k23+s8NJWY1AhYNZDFh6miiKD
- TpoxRFidMXnQxEi1WRYNUT9zATX0KpX3IBtrKY+7tLOOWMs+wue51Xd4yyw0xuacA2sLv1XLnqQ
- vbfVbP38wtMMVm9KCWG0Pp3znSg92EW0+SmlO1/CHf89t59NsOri4Gm1rRl6aF7JcFu3mE4ZLbQ
- mJSMss6VTnL22BlfJYdtNxAyjsygw==
-X-Received: by 2002:a05:6a20:c998:b0:3c0:9c19:b278 with SMTP id
- adf61e73a8af0-3c0bcc9d063mr12350693637.70.1783672155771; 
- Fri, 10 Jul 2026 01:29:15 -0700 (PDT)
+ bh=vkwTo5cSaf/bsRBt8wsDsSHVKwM3K/0MNnxgM2hGlj8=;
+ b=EhA/MeTutphPMz2ONQ2yuZhDs1BKfuMFGXppPPW1aBR3LbLOBe66h3DrrUhbzMKAl4
+ qmV0aYd7x7ffamIdkTfWyXFuZTByidpXqOlF87tr41KEHwI5q3MmSDZn7oulDyMSTo+Y
+ 6zVANmkt6ikq7CIZdssNykcHNoHKG12kl9Q18GSIVEwLj+iS1oLQ4ozmFwYoAWwacczK
+ lyf3peomP48yW9nVQIP57jXNGf4nuYJFBxvQ+3WSJTmohccCKLfzdJnGQNzkwYjmQeTv
+ ZCYQ6UamT1ohjT6ygxeJ3+MTXNEQfYMCkGxYTXHnDcupxlKq41QFhkGzaie9TJWu8hTq
+ bAJw==
+X-Gm-Message-State: AOJu0YyK1y5oOWO7A6CmiM0p+rfG4qYeTi3JXsCreLZ5DZ1uBQQBoznc
+ 0/FSLRmX1beSpC7kZdY0hX7ARlQsuG0RmhFCnJY0VglA15I56Ezzw4HO
+X-Gm-Gg: AfdE7cnAbP8SJCa8ZTLHaZoTMPa8rQJ6LSXBFKR5S5xsbVAN2Iy8LfUrOwjlHU9ARdt
+ nIYf0nLfgbR4yOq4bhYFD+LrOaujCghX6ZSPbLaYSv0km2LsfNGhmiDb12EfuVj8XkdeJX++V0l
+ IRvHfjAVai7YAwgA5UkmgQEcvz7NYq0COJ2rjcN2aXwFmv24crln2NVI3obzVT7h3tKlEWKk9oV
+ 7bQnwKhEWe/hw9mteE0nT2Cn+UtBJwqELr2rDI1zWa9fU0NzuMn2l62EATYTiapuqxGe49YhTHH
+ bcOOWyPjJ6y2z2LtcpHyOBua43LpQOB7B+/V5xfyPVlYjshaDhe/KkulUBSTnTvy5H38M+JuPjX
+ uwuw/Q33lWOHHZ6TE5gty7AZ0SgmQ3yV2Dd4d5ciSbijNdlaR5UIZEyFDoxs10k1I+GpHvoEn0z
+ 8bUuQAU1XhMUt/Xunbbn5dxlFOCujcjQEDC1cD4NxQhM8fuKRZUlis8UloCTkJfC5nLMKJ+QbaA
+ 849YcmoYSPqw6s+x9WJ4A1Tc47/HQ==
+X-Received: by 2002:a05:6214:230e:b0:8ef:1fc9:9361 with SMTP id
+ 6a1803df08f44-8fec2c4158cmr123554356d6.48.1783672238244; 
+ Fri, 10 Jul 2026 01:30:38 -0700 (PDT)
 Received: from
- runnervm5mmn9.jumomkzmldje5pabznlpr1ssie.dx.internal.cloudapp.net
- ([52.241.147.115]) by smtp.gmail.com with ESMTPSA id
- a92af1059eb24-13b6593c4ddsm42011648c88.1.2026.07.10.01.29.15
+ runnervm5mmn9.1nxslduoqheefguh3zlogrj5vh.cx.internal.cloudapp.net
+ ([145.132.102.54]) by smtp.gmail.com with ESMTPSA id
+ 6a1803df08f44-8ffd87c9128sm35484316d6.45.2026.07.10.01.30.37
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 10 Jul 2026 01:29:15 -0700 (PDT)
+ Fri, 10 Jul 2026 01:30:37 -0700 (PDT)
 From: linuxtestproject.agent@gmail.com
 To: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 10 Jul 2026 08:29:13 +0000
-Message-ID: <20260710082914.4110-1-linuxtestproject.agent@gmail.com>
+Date: Fri, 10 Jul 2026 08:30:37 +0000
+Message-ID: <20260710083037.4145-1-linuxtestproject.agent@gmail.com>
 X-Mailer: git-send-email 2.54.0
 In-Reply-To: <20260710055556.1109220-2-pvorel@suse.cz>
 References: <20260710055556.1109220-2-pvorel@suse.cz>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] Makefile: Skip test-metadata on cross compile
 X-BeenThere: ltp@lists.linux.it
@@ -102,7 +101,31 @@ Hi Petr,
 On Fri, 10 Jul 2026 07:55:49 +0200, Petr Vorel wrote:
 > Makefile: Skip test-metadata on cross compile
 
-Verdict - Reviewed
+--- [PATCH 2/8] ---
+
+> +	printf "* $i "
+
+$i is used directly as part of the printf format string rather than
+passed as a separate argument.  A filename containing a '%' character
+would be interpreted as a format specifier.
+
+The portable form is:
+
+    printf "* %s " "$i"
+
+--- [PATCH 4/8] ---
+
+> +	$METAPARSE $i > tmp.json
+
+Both $METAPARSE and $i are unquoted.  If METAPARSEDIR (and therefore
+METAPARSE) contains spaces, the shell will perform word-splitting on
+the variable before exec, breaking the invocation.
+
+The quoted form:
+
+    "$METAPARSE" "$i" > tmp.json
+
+Verdict - Needs revision
 
 ---
 Note:
