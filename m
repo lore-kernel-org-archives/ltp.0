@@ -4,98 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AD2BBC44506
-	for <ltp@archiver.kernel.org>; Fri, 10 Jul 2026 11:48:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AC4A7C43458
+	for <ltp@archiver.kernel.org>; Fri, 10 Jul 2026 11:55:42 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 30F533E5BC5
-	for <ltp@archiver.kernel.org>; Fri, 10 Jul 2026 13:48:44 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 547553CD199
+	for <ltp@archiver.kernel.org>; Fri, 10 Jul 2026 13:55:41 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id F1B363C9911
- for <ltp@lists.linux.it>; Fri, 10 Jul 2026 13:48:26 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 9CDFD3C857A
+ for <ltp@lists.linux.it>; Fri, 10 Jul 2026 13:55:24 +0200 (CEST)
+Received: from mail-qv2-x00.google.com (mail-qv2-x00.google.com
+ [IPv6:2607:f8b0:4864:33::])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id DA82A1000759
- for <ltp@lists.linux.it>; Fri, 10 Jul 2026 13:48:25 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 5873276479;
- Fri, 10 Jul 2026 11:48:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1783684105; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=7j1wIn3VlBad8FM5cnPk7fCteR6Oq2GCM1ONn7mAkdY=;
- b=nUV0dfCl128OohPNX7IObVAQD3HjKqSazCiLHZyG1nHgNhHZmfYjrDINSOdGp7XM/MbKkI
- hn6z74WI08BcJBmW8IhkEmIeYFctdQCgL1qHIDp/pMT22ggVA9OMzvbhiudL8v6g3zSKMr
- 1IXPHyZ2HenBfBQSu+GvTi2i4qcBgyc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1783684105;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=7j1wIn3VlBad8FM5cnPk7fCteR6Oq2GCM1ONn7mAkdY=;
- b=xnPlYJ/TBYTOrarB0BaUSy1YGDPAPwxmu/svFaBNf0jF8TPCMm9MHOSczHNV7lnDN/NO2G
- xTaf8NrkjU116WDA==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1783684105; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=7j1wIn3VlBad8FM5cnPk7fCteR6Oq2GCM1ONn7mAkdY=;
- b=nUV0dfCl128OohPNX7IObVAQD3HjKqSazCiLHZyG1nHgNhHZmfYjrDINSOdGp7XM/MbKkI
- hn6z74WI08BcJBmW8IhkEmIeYFctdQCgL1qHIDp/pMT22ggVA9OMzvbhiudL8v6g3zSKMr
- 1IXPHyZ2HenBfBQSu+GvTi2i4qcBgyc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1783684105;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=7j1wIn3VlBad8FM5cnPk7fCteR6Oq2GCM1ONn7mAkdY=;
- b=xnPlYJ/TBYTOrarB0BaUSy1YGDPAPwxmu/svFaBNf0jF8TPCMm9MHOSczHNV7lnDN/NO2G
- xTaf8NrkjU116WDA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 484CC779BE;
- Fri, 10 Jul 2026 11:48:25 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id RFeUEAncUGpHKAAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Fri, 10 Jul 2026 11:48:25 +0000
-Date: Fri, 10 Jul 2026 13:47:39 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 03F56600B45
+ for <ltp@lists.linux.it>; Fri, 10 Jul 2026 13:55:24 +0200 (CEST)
+Received: by mail-qv2-x00.google.com with SMTP id
+ 6a1803df08f44-8ed50e588d8so2533266d6.0
+ for <ltp@lists.linux.it>; Fri, 10 Jul 2026 04:55:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20251104; t=1783684523; x=1784289323; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to:content-type;
+ bh=fIsWJUVzNTdmAhh4iQuPWeqIutBy8h7o0+PBXPS3HN8=;
+ b=WiBcCcyqqAv3U6l1J+1CkmCZPJQF3jfkx/Usew3wr2o/jjbp/emxXk1kKGiHHFnrBb
+ hMSx9jrFwEcmkG8VqdrCfIx7konxdbFa/URg9DkH1aL9ox9yW/jeNr7FU6jzGdEcSeOs
+ H1VGmx7Wkk49v9gl895HpwH6H7NoVep5N9z0s+lss+hgt/zNc1s9n+ddAqj4y4VaGN6p
+ u3nB0Og75BME1vdG91SbO3uK7PWb6mkZAkZyQo6hDFCFL2jbSZs26oTgY35JgZ3kMVYk
+ qQmu9OpXjCBcwAL95gfHOfmBFbseuw/C4zkabZrEqQW7lNCY6qkzsTX/yHQf/Vj1F6WI
+ gwsA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1783684523; x=1784289323;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to:content-type;
+ bh=fIsWJUVzNTdmAhh4iQuPWeqIutBy8h7o0+PBXPS3HN8=;
+ b=NQf8CWmaZet1r9gd7k0vZS11LBdmxpU7TrDWZ+zGRxMpD/Z54TQznDSm9z+M8Qk/lA
+ JR3cg1/+HZBNBqshGsq18pD0m+M8kvXC84//gqZwhgGk9D/hydxsGBwi/mau2Nfi2+CX
+ gHr+KhgbmSyIToULv2BSJn5fDdePiFM/LymT37P25Y98UXdaLdhrsOdhxpjRPyhfxwlc
+ GtzvtRdQSQjGOQL6RGimD2wSYtTNUhcFlKPqSChHv3gYxZJe7AenKqWa6++z4YU1b504
+ DzeZ3eubRFBekOnlAfBAMnYvPvbleaukAcdfNXJ7SH9fetAARMRJs++XAZ5TcnD6Z0sx
+ kXpw==
+X-Gm-Message-State: AOJu0YyVRwB00Q0gjeWTkJdo/QBnmDqJ1kG0/+lA39s59QTieOlfPsyT
+ X6q21GXS0IW20MoFqk6qIBgkKymNslIcLZudhorggLvQ1VnM4bjqdY6d
+X-Gm-Gg: AfdE7cka85KurlZvBn1AjHaaMl4QUb0W8W3r2Zres8KuNoJjWiHuvOG8wOBsSq/gWXD
+ 44Dy/p3TzLtlnmXBGf4MBY7TQ+VpsH75WIreP1vnxzNa1hP6+FW7lVq2wA4waaIXXBRk30VOBwh
+ KM2fVgtCpiHjrldBKOSrX1f6cb/r0uhlL3oJ1Bxsa2LRwBHKt/YXIVge6EPmtkh3kcPiFqz1uMp
+ ww9rV0gI0y5/KKu9UA+kQWNHfyH/w6bxmoBarN9dWj/x67xzM578bdgXvDLzEH6IOsrVzUxqB1/
+ qjE69yghz2PkQCH0Fi35L48q9k1u47Lc90lwRJq/lS0tfju0WfhdhoSCp3z97tF+r30u4UuZGu3
+ lM12NgqgxJa3TfJnMv21kx59TYkDIpFgCMJrdpj5CcMgbZet0qkVGPP8R3QePT6zuP03Wlq00j4
+ xSs7Xh3/HImG0CGKkm2TSTR7SxRHdZ97ik46Y14uIajqcvokZ/ZSBx6ZYfW7lFaAJDI6leRoyWO
+ 9ewn9Wvui4tmZPG7z1sm57ExH+5
+X-Received: by 2002:ac8:5ccb:0:b0:51a:8d31:9a06 with SMTP id
+ d75a77b69052e-51c8b403b76mr126045101cf.16.1783684522567; 
+ Fri, 10 Jul 2026 04:55:22 -0700 (PDT)
+Received: from
+ runnervm5mmn9.yo2jsnv3aaiufmiidgoerdg2xa.bx.internal.cloudapp.net
+ ([172.174.165.2]) by smtp.gmail.com with ESMTPSA id
+ d75a77b69052e-51caae5e91dsm13840051cf.21.2026.07.10.04.55.22
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 10 Jul 2026 04:55:22 -0700 (PDT)
+From: linuxtestproject.agent@gmail.com
 To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <alDb2xQXRdCI0SMl@rei>
-References: <20260710055556.1109220-1-pvorel@suse.cz>
- <20260710055556.1109220-5-pvorel@suse.cz> <alC04_YPyPr0ai_z@rei>
- <20260710113904.GA1189007@pevik>
+Date: Fri, 10 Jul 2026 11:55:21 +0000
+Message-ID: <20260710115521.3898-1-linuxtestproject.agent@gmail.com>
+X-Mailer: git-send-email 2.54.0
+In-Reply-To: <20260710083337.1185184-1-pvorel@suse.cz>
+References: <20260710083337.1185184-1-pvorel@suse.cz>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20260710113904.GA1189007@pevik>
-X-Spamd-Result: default: False [-3.80 / 50.00]; BAYES_HAM(-3.00)[99.99%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FUZZY_RATELIMITED(0.00)[rspamd.com]; ARC_NA(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; MIME_TRACE(0.00)[0:+];
- FROM_HAS_DN(0.00)[]; RCVD_TLS_ALL(0.00)[];
- RCPT_COUNT_THREE(0.00)[4]; FROM_EQ_ENVFROM(0.00)[];
- TO_DN_SOME(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- MISSING_XM_UA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:email]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 4/8] metadata: test.sh: Add support for
- building out-of-tree
+Subject: Re: [LTP] test_macros: Add TST_EXP_PASS_OR_FAIL()
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -113,18 +97,36 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> I would say no, it's not worth of that trouble. I would either live without
-> out-of-tree build or reevaluate what is blocking for switching to meson.
-> (I don't remember what Andrea found in his POC some years ago.)
+Hi Petr,
 
-I'm not 100% convinced that meson is the best way to go. It increases
-the build dependecies quite a lot from a autotools+make to python with
-several libraries.
+On Fri, Jul 10, 2026, Petr Vorel wrote:
+> test_macros: Add TST_EXP_PASS_OR_FAIL()
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> + Fix macro parameter name in TST_EXP_FD_OR_FAIL() (upper case).
+
+This is a second, independent logical change bundled into the same
+patch. Ground Rule 7 requires exactly one logical change per patch.
+The doc-comment fix in TST_EXP_FD_OR_FAIL() should go in a separate
+preparatory patch.
+
+> + * TST_EXP_PASS_OR_FAIL() - Test syscall to and expect to pass or fail with
+> + * expected errno.
+
+"to and expect" reads as ungrammatical here. Something like:
+
+  TST_EXP_PASS_OR_FAIL() - Test syscall to pass or fail with expected errno.
+
+Verdict - Needs revision
+
+---
+Note:
+
+The agent can sometimes produce false positives although often its
+findings are genuine. If you find issues with the review, please
+comment this email or ignore the suggestions.
+
+Regards,
+LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
