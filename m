@@ -4,98 +4,107 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 48DDAC43458
-	for <ltp@archiver.kernel.org>; Fri, 10 Jul 2026 13:05:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2B85CC43458
+	for <ltp@archiver.kernel.org>; Fri, 10 Jul 2026 13:10:26 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id CAFD23E5BBD
-	for <ltp@archiver.kernel.org>; Fri, 10 Jul 2026 15:05:19 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id AEFAF3E5BC9
+	for <ltp@archiver.kernel.org>; Fri, 10 Jul 2026 15:10:24 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 21FD53C8231
- for <ltp@lists.linux.it>; Fri, 10 Jul 2026 15:05:06 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+ by picard.linux.it (Postfix) with ESMTPS id C0FDA3C1D3E
+ for <ltp@lists.linux.it>; Fri, 10 Jul 2026 15:10:06 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id A833A200AE8
- for <ltp@lists.linux.it>; Fri, 10 Jul 2026 15:05:02 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id C4D58600717
+ for <ltp@lists.linux.it>; Fri, 10 Jul 2026 15:10:05 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 833947632F;
- Fri, 10 Jul 2026 13:05:01 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 610BD76790;
+ Fri, 10 Jul 2026 13:10:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1783688701; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1783689004; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=CPn+j/Wv5MSLsUZgzpqrP48ITITgJ8RTEcIZWk6S3Mk=;
- b=Pby05tyYYFdlmYMoAVc5tRbPFJMN7WdKBSVZa+qhPyWdLFp9yLh9luq+JjRKOBC86yqQYF
- MEBREhWWfRf90Mro+HNld7NL+wdensXfgD+5rJ1T7z0/6t67oG6RttO7G2KJAQxDntk38G
- qe99DcaRt2FSwpJvG2fGglngC7wVXdQ=
+ bh=P/XnEeyuQWxfSyxph2h18EMXsSga2kwWIdMMHbHTyak=;
+ b=23sQqn4EdqhNtuG5uMGhCmkeFz0KO7oC61PcrJHaJpRjh+o34nYOzHMlrXpAGE2vuDib0X
+ Ot8O6JukVSBK9Mt+gbAeWG/Bb04MJ6ll51Djo2r/UidEGez19VexDXcAxB4j1zLalQzPAm
+ VUs8kOxziOdGfn9aJ44Z8055SgUEDqQ=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1783688701;
+ s=susede2_ed25519; t=1783689004;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=CPn+j/Wv5MSLsUZgzpqrP48ITITgJ8RTEcIZWk6S3Mk=;
- b=nlSMgJixd0TaiIB1+9GohEttwuD0CDgyn/qvoo/JOobFxalh95RJIJFcEA/uzCEQTZIPsw
- 8p/X6xyJ8SZ+28CA==
-Authentication-Results: smtp-out2.suse.de;
-	none
+ bh=P/XnEeyuQWxfSyxph2h18EMXsSga2kwWIdMMHbHTyak=;
+ b=rVN/IweyNHXUA75gf19WBUOo28wnUNnSo0KbRCKB+LkYRvepmbyMuKnP+CJjBKNKPwD8xq
+ YcvLce3FKiL1BaCA==
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=23sQqn4E;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="rVN/Iwey"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1783688701; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1783689004; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=CPn+j/Wv5MSLsUZgzpqrP48ITITgJ8RTEcIZWk6S3Mk=;
- b=Pby05tyYYFdlmYMoAVc5tRbPFJMN7WdKBSVZa+qhPyWdLFp9yLh9luq+JjRKOBC86yqQYF
- MEBREhWWfRf90Mro+HNld7NL+wdensXfgD+5rJ1T7z0/6t67oG6RttO7G2KJAQxDntk38G
- qe99DcaRt2FSwpJvG2fGglngC7wVXdQ=
+ bh=P/XnEeyuQWxfSyxph2h18EMXsSga2kwWIdMMHbHTyak=;
+ b=23sQqn4EdqhNtuG5uMGhCmkeFz0KO7oC61PcrJHaJpRjh+o34nYOzHMlrXpAGE2vuDib0X
+ Ot8O6JukVSBK9Mt+gbAeWG/Bb04MJ6ll51Djo2r/UidEGez19VexDXcAxB4j1zLalQzPAm
+ VUs8kOxziOdGfn9aJ44Z8055SgUEDqQ=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1783688701;
+ s=susede2_ed25519; t=1783689004;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=CPn+j/Wv5MSLsUZgzpqrP48ITITgJ8RTEcIZWk6S3Mk=;
- b=nlSMgJixd0TaiIB1+9GohEttwuD0CDgyn/qvoo/JOobFxalh95RJIJFcEA/uzCEQTZIPsw
- 8p/X6xyJ8SZ+28CA==
+ bh=P/XnEeyuQWxfSyxph2h18EMXsSga2kwWIdMMHbHTyak=;
+ b=rVN/IweyNHXUA75gf19WBUOo28wnUNnSo0KbRCKB+LkYRvepmbyMuKnP+CJjBKNKPwD8xq
+ YcvLce3FKiL1BaCA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 74296779BD;
- Fri, 10 Jul 2026 13:05:01 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4D45C779BD;
+ Fri, 10 Jul 2026 13:10:04 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id jL5VHP3tUGpecwAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Fri, 10 Jul 2026 13:05:01 +0000
-Date: Fri, 10 Jul 2026 15:04:15 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id oCiaESzvUGpLeAAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Fri, 10 Jul 2026 13:10:04 +0000
+Date: Fri, 10 Jul 2026 15:09:18 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Message-ID: <alDtz7CMmysJtlAp@rei>
-References: <alDpW3YzuECdGmG2@rei> <6a50ebce.c9089686.76aeb.e15d@mx.google.com>
+To: Petr Vorel <pvorel@suse.cz>
+Message-ID: <alDu_o0TCVP7aMtQ@rei>
+References: <20260710130303.1210731-1-pvorel@suse.cz>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <6a50ebce.c9089686.76aeb.e15d@mx.google.com>
-X-Spamd-Result: default: False [-7.80 / 50.00]; REPLY(-4.00)[];
- BAYES_HAM(-3.00)[99.99%]; NEURAL_HAM_LONG(-1.00)[-1.000];
- MID_RHS_NOT_FQDN(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-1.000];
- MIME_GOOD(-0.10)[text/plain]; ARC_NA(0.00)[];
- MISSING_XM_UA(0.00)[]; RCVD_TLS_ALL(0.00)[];
- TO_DN_SOME(0.00)[]; MIME_TRACE(0.00)[0:+];
- RCVD_VIA_SMTP_AUTH(0.00)[];
+In-Reply-To: <20260710130303.1210731-1-pvorel@suse.cz>
+X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: 610BD76790
+X-Spamd-Result: default: False [-4.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[]; RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
+ MISSING_XM_UA(0.00)[]; MIME_TRACE(0.00)[0:+];
+ FUZZY_RATELIMITED(0.00)[rspamd.com]; TO_DN_SOME(0.00)[];
+ DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received,2a07:de40:b281:104:10:150:64:97:from];
+ RCVD_TLS_ALL(0.00)[];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ RCVD_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
+ FROM_HAS_DN(0.00)[];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:dkim,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RCPT_COUNT_THREE(0.00)[3]; FROM_HAS_DN(0.00)[];
- FUZZY_RATELIMITED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,imap1.dmz-prg2.suse.org:helo]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; RCPT_COUNT_TWO(0.00)[2];
+ DKIM_TRACE(0.00)[suse.cz:+]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 1/1] kill11: Skip pipe-based core dumps per
- signal
+Subject: Re: [LTP] [PATCH v2 1/2] test macros: Fix TST_EXP_FD_OR_FAIL()
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -114,18 +123,77 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> > Well either we do that, or we skip the signals that dump core when we
-> > are dumping into the pipe.
-> 
-> To me it looks good to skip the signals which are not allowing child
-> to be killed after coredump. It's a systemd feature we can't workaround
-> in this case.
+> diff --git a/include/tst_test_macros.h b/include/tst_test_macros.h
+> index f06c8aeb77..e18f1d33f3 100644
+> --- a/include/tst_test_macros.h
+> +++ b/include/tst_test_macros.h
+> @@ -8,6 +8,12 @@
+>   * DOC: tst_test_macros.h -- helpers for testing syscalls
+>   */
+>  
+> +/*
+> + * NOTE: for all TST_EXP_*() macros SCALL in first macro needs to be stringified
+> + * otherwise constants in syscalls will be evaluated (e.g. O_RDONLY becomes 0).
+> + * That is the reason for underscore variants (e.g. TST_EXP_FAIL_()).
+> + */
+> +
+>  #ifndef TST_TEST_MACROS_H__
+>  #define TST_TEST_MACROS_H__
+>  
+> @@ -149,7 +155,10 @@ extern int TST_PASS;
+>   * This is a variant of the TST_EXP_POSITIVE() for a more specific case that
+>   * the returned value is a file descriptor.
+>   */
+> -#define TST_EXP_FD(SCALL, ...)                                                 \
+> +#define TST_EXP_FD(SCALL, ...)                                  \
+> +	TST_EXP_FD_(SCALL, #SCALL, ##__VA_ARGS__)
+> +
+> +#define TST_EXP_FD_(SCALL, SSCALL, ...)                                     \
+>  	({                                                                     \
+>  		TST_EXP_POSITIVE__(SCALL, #SCALL, ##__VA_ARGS__);              \
+                                           ^
+					   SSCALL
+> @@ -174,11 +183,14 @@ extern int TST_PASS;
+>   * Internally it uses TST_EXP_FAIL() and TST_EXP_FD().
+>   */
+>  #define TST_EXP_FD_OR_FAIL(SCALL, ERRNO, ...)                                  \
+> -	({                                                                     \
+> +	TST_EXP_FD_OR_FAIL_(SCALL, #SCALL, ERRNO, ##__VA_ARGS__)
+> +
+> +#define TST_EXP_FD_OR_FAIL_(SCALL, SSCALL, ERRNO, ...)                 \
+> +	({                                                                 \
 
-Thinking of it once more, I wonder what exactly fails in the
-systemd-coredump case. I guess that it may delay the test execution a
-bit but the crashed process should eventualy quit and the test wait()
-call should collect it. If that wasn't the case systemd-coredump would
-break one of the fundamentals of UNIX process management.
+This indirection is not needed as long as TST_EXP_FD_OR_FAIL() is not
+called from other macros.
+
+>  		if (ERRNO)                                                     \
+> -			TST_EXP_FAIL(SCALL, ERRNO, ##__VA_ARGS__);             \
+> +			TST_EXP_FAIL_(SCALL, SSCALL, ERRNO, ##__VA_ARGS__);    \
+>  		else                                                           \
+> -			TST_EXP_FD(SCALL, ##__VA_ARGS__);                      \
+> +			TST_EXP_FD_(SCALL, SSCALL, ##__VA_ARGS__);             \
+>  		                                                               \
+>  		TST_RET;                                                       \
+>  	})
+> @@ -488,10 +500,13 @@ const char *tst_errno_names(char *buf, const int *exp_errs, int exp_errs_cnt);
+>   * printed by the pass or fail tst_res() calls. If omitted the first parameter
+>   * is converted to a string and used instead.
+>   */
+> -#define TST_EXP_FAIL(SCALL, EXP_ERR, ...)                                      \
+> +#define TST_EXP_FAIL(SCALL, EXP_ERR, ...) \
+> +	TST_EXP_FAIL_(SCALL, #SCALL, EXP_ERR, ##__VA_ARGS__)
+> +
+> +#define TST_EXP_FAIL_(SCALL, SSCALL, EXP_ERR, ...) \
+>  	do {                                                                   \
+>  		int tst_exp_err__ = EXP_ERR;                                   \
+> -		TST_EXP_FAIL_ARR_(SCALL, #SCALL, &tst_exp_err__, 1,            \
+> +		TST_EXP_FAIL_ARR_(SCALL, SSCALL, &tst_exp_err__, 1,            \
+>                                    ##__VA_ARGS__);                              \
+>  	} while (0)
+>  
+> -- 
+> 2.54.0
+> 
 
 -- 
 Cyril Hrubis
