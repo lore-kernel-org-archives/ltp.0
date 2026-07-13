@@ -4,118 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9436DC43458
-	for <ltp@archiver.kernel.org>; Mon, 13 Jul 2026 14:02:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0704FC43458
+	for <ltp@archiver.kernel.org>; Mon, 13 Jul 2026 14:09:22 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 027D03E9692
-	for <ltp@archiver.kernel.org>; Mon, 13 Jul 2026 16:02:40 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 72EF53E9A1E
+	for <ltp@archiver.kernel.org>; Mon, 13 Jul 2026 16:09:21 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D72B63E65CC
- for <ltp@lists.linux.it>; Mon, 13 Jul 2026 16:01:48 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 54C4A3E21F7
+ for <ltp@lists.linux.it>; Mon, 13 Jul 2026 16:09:04 +0200 (CEST)
+Received: from mail-qv2-x00.google.com (mail-qv2-x00.google.com
+ [IPv6:2607:f8b0:4864:33::])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id E3C6A600068
- for <ltp@lists.linux.it>; Mon, 13 Jul 2026 16:01:47 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 364783E11;
- Mon, 13 Jul 2026 14:01:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1783951303; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=LsnOXcPcmtqtktP4A0QLf3MRAFd/l4yDuhK+MIDVsgQ=;
- b=HYl/tDdxXKx/RF8Ct66K0hJyWoOD6LkPtQ3X1Mjut/xcvqzn8OwDk4jGsCC8tT4VjvIKlh
- MDueso/xe8M8OFt5Tg+qEsPsKhwf8udgp44PNBzcdT0r9yEfyZcvXONvDnED5TVvZJFHYj
- 1m2iJtmxkroERerGhFVHvOyCRqop/C0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1783951303;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=LsnOXcPcmtqtktP4A0QLf3MRAFd/l4yDuhK+MIDVsgQ=;
- b=JI8ulPKeKnRrve+XtVM/+HLg11HSUKgndJ0R7Ar0QMVSlkVoEk6PuHxAoIWZiJYUM/p3vt
- cPORovdBStxiYnDw==
-Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.de header.s=susede2_rsa header.b=nIVQl0BS;
- dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b="1CG/aFz8"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1783951298; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=LsnOXcPcmtqtktP4A0QLf3MRAFd/l4yDuhK+MIDVsgQ=;
- b=nIVQl0BS5Y2szKFUAzYdRjneRRSQ+oATkzm0D/ENXqNmaTPg7ZK0UFrhD6n1wmgQPUB8NX
- GNQUePgW3I1d/zWhiK15K/qgH7EKvNuxyw65MpCws073eCTLn5GJBnWg4FKPBYEJDpBZbV
- W931xQj3KWVMk5uFAMSt4GXyYA5zdc8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1783951298;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=LsnOXcPcmtqtktP4A0QLf3MRAFd/l4yDuhK+MIDVsgQ=;
- b=1CG/aFz8i9AFHc7jhvOLxXhe8KWF5EZLr+tPpUdSiqmQlB5aBJpGUPVVeoIu/d6fBStwbQ
- BXMEbwvvPaCXUrDw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1C0F8779AF;
- Mon, 13 Jul 2026 14:01:38 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id mAEqBcLvVGpaEQAAD6G6ig
- (envelope-from <andrea.cervesato@suse.de>); Mon, 13 Jul 2026 14:01:38 +0000
-From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Mon, 13 Jul 2026 16:01:29 +0200
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id C23DE1A00708
+ for <ltp@lists.linux.it>; Mon, 13 Jul 2026 16:09:03 +0200 (CEST)
+Received: by mail-qv2-x00.google.com with SMTP id
+ 6a1803df08f44-9032b580ed4so11683556d6.1
+ for <ltp@lists.linux.it>; Mon, 13 Jul 2026 07:09:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20251104; t=1783951742; x=1784556542; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to:content-type;
+ bh=8D1GLysOmvGOFMCW6AKjkor+A33cWkLUk94mEp8S/20=;
+ b=akm1Dq1ESnN5IQxSfrlsx6HGPwEWd2I/Vf5qrccoDWub0L0QaIW4ZHMoqhjUolRzIF
+ 8wABmenpbM2uqmmBnIUEX0PESamcuJJZTTEeu0DfR0ImAhHd1DyfWP/4fSP4mELx/apJ
+ 98Lu/yDmH74Fg+6zywG1N6sYDj12ZzgQLIRbjuEct0JnmQlI/k5mlKmQsIoGWQLEFrA8
+ /anJzJjl1ORKgxiKj+rKtO2t7+YRAnGu6DZtITaPlMaNKZ1sbTh8uLR+mp9+fBde+2Sc
+ BuIWpJc3NJrQcA5TOWkCOzF222TowB/KEQMH7ZQ0GEmPbc6cScNnPIwaz0k0INK4vE67
+ nBQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1783951742; x=1784556542;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to:content-type;
+ bh=8D1GLysOmvGOFMCW6AKjkor+A33cWkLUk94mEp8S/20=;
+ b=Y9Fbt8vu1JPmINDKSv1A4AcjrL2V7go5/qapy2iiKt5uN7VlbNMNL3P4ImqBEFJZaa
+ y/9QMchLdAwr2W2f3MVCfvaUb6goc2dgBKdP1LyT+9h6j6Ag3j+Ym/Sd7XWK+qgRUC8T
+ /Ypn25yzZZl9EuUN2K3m02O6IDJjQAKL0H49/R8W6X9YMwHU8a4Pxo9H3Sn15xoYfEAE
+ 180/xRCzvJVGFq1niE1PUPjxv6aLXYBYSrUokzYWs1kzO/BszAKNgDTVAY4mFF0bSHFt
+ n7t/a+TCSPzl23cnh5lSEk8EP8KIIdN/sJjzHDAgmtJMQ9SxC53+A6ZrRvA5dS1rJXjv
+ VrdA==
+X-Gm-Message-State: AOJu0YyAgdOTySj68z97nhM8MN0D6fSdjoe+HwH3jLEmwc4x0f+dTUuu
+ osL8CBUl3WVe0M8razQYe9G8TaHyCcU2AwXepg8tsdEw/SH5MlGgbvKb
+X-Gm-Gg: AfdE7clV94tAFyScmL3fLeZConjKiEe/iYWMALqu6SYOG0TmyTtmvsU9489WLv9wtdp
+ c4Woc6bAE0LlT4Q8tC+9pN3mOF1hNhMAa/km7daxgvPdd+K4mfV4bsCp2K8EcEMudBMv7EjwdUP
+ ZYiaMiS9nj4AgdJ5wEvQvJ+MYwLewxb6GwLQ6OdRs7AeKim9wBYdBhIU0MI7MtkCc84RzMmvT9I
+ yu6+8WusX35SQ8rqW5mniFlTXmr+QTgm39OrcaKQlL9KssdKPIE10FoguUT/0O2bwvnGKgoH1sL
+ 2LEduOVFzmkcSn+5DmOLX0n4sXKyt39QRNBHJUF6MtTTraiOyEx6bR9q2JVVdwXtCiiO3mvNJdi
+ 0cu31HE0RYl4nC0B17vDQDPGpM5s54hWfyw1w/oHeN49vF3q25OSb1neylk/pi7GT8uY29HiChh
+ 48GxGWsM+so5zQHPTi5SlQL7fwDOstpcxIBMfcT20tDW7J2eWXtamKPbAvEADwReBbqRKKs74MA
+ SmvTXD8KKZ0I2EEVVyBBjyophkiQ1s=
+X-Received: by 2002:a05:6214:4114:b0:8eb:24e8:8d28 with SMTP id
+ 6a1803df08f44-9040206af4cmr100401566d6.46.1783951742251; 
+ Mon, 13 Jul 2026 07:09:02 -0700 (PDT)
+Received: from
+ runnervm5mmn9.c1owmm2apunufa0yanmraqiv1g.bx.internal.cloudapp.net
+ ([172.203.253.173]) by smtp.gmail.com with ESMTPSA id
+ 6a1803df08f44-8ffd56c4b78sm129189886d6.18.2026.07.13.07.09.01
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 13 Jul 2026 07:09:02 -0700 (PDT)
+From: linuxtestproject.agent@gmail.com
+To: Wake Liu <wakel@google.com>
+Date: Mon, 13 Jul 2026 14:09:01 +0000
+Message-ID: <20260713140901.4008-1-linuxtestproject.agent@gmail.com>
+X-Mailer: git-send-email 2.54.0
+In-Reply-To: <20260713114220.4185427-1-wakel@google.com>
+References: <20260713114220.4185427-1-wakel@google.com>
 MIME-Version: 1.0
-Message-Id: <20260713-shell_oom_protection-v1-1-b732e8647894@suse.com>
-References: <20260713-shell_oom_protection-v1-0-b732e8647894@suse.com>
-In-Reply-To: <20260713-shell_oom_protection-v1-0-b732e8647894@suse.com>
-To: Linux Test Project <ltp@lists.linux.it>
-X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1783951297; l=4478;
- i=andrea.cervesato@suse.com; s=20251210; h=from:subject:message-id;
- bh=pByNMsBAS7rZONW64M1JZhKsDAdyOrTq/nmhcjjr+Ts=;
- b=kPFGL2W1q8NRUz9rhNBC9NPpBtkJQXq2Zd9JqzOpmccJ2qJ8pIc7NIny14lYeWQywSxQSHd7M
- QJfcv3vtfSACyipBQ3PgeZIvNB7j5mXw/ivruVgVC/f8viH3IiJZwQ9
-X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
- pk=zKY+6GCauOiuHNZ//d8PQ/UL4jFCTKbXrzXAOQSLevI=
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: 364783E11
-X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000];
- R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; TO_DN_ALL(0.00)[];
- DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- FROM_HAS_DN(0.00)[]; FUZZY_RATELIMITED(0.00)[rspamd.com];
- RCPT_COUNT_TWO(0.00)[2]; ARC_NA(0.00)[];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_TLS_ALL(0.00)[];
- DKIM_TRACE(0.00)[suse.de:+]; RCVD_COUNT_TWO(0.00)[2];
- FROM_EQ_ENVFROM(0.00)[]; MIME_TRACE(0.00)[0:+];
- DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- DWL_DNSWL_BLOCKED(0.00)[suse.de:dkim];
- RCVD_VIA_SMTP_AUTH(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,
- imap1.dmz-prg2.suse.org:helo, suse.com:email, suse.com:mid, suse.de:dkim]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 1/2] shell: add optional OOM protection
+Subject: Re: [LTP] madvise09: Reset cgroup limits before retrying test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -127,163 +91,47 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Andrea Cervesato <andrea.cervesato@suse.com>
+Hi Wake,
 
-Add TST_OOM_PROTECTION to activate OOM protection in shell tests. When
-enabled, the shell harness shields itself from the OOM killer and runs
-the test in a child process, so it survives memory pressure and can
-still report results (e.g. during memcg stress tests).
+On Mon Jul 13 11:42:20 2026, Wake Liu wrote:
+> madvise09: Reset cgroup limits before retrying test
 
-Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+> Reset both memory.max and memory.swap.max to "max" at the start of
+> child() to ensure each retry run begins in an unconstrained cgroup.
+
+The description says "reset both" unconditionally, but memory.swap.max
+is only reset when swap_accounting_enabled is true:
+
+> +	SAFE_CG_PRINT(tst_cg, "memory.max", "max");
+> +	if (swap_accounting_enabled)
+> +		SAFE_CG_PRINT(tst_cg, "memory.swap.max", "max");
+
+The code itself is correct -- it mirrors the conditional set pattern
+already in child().  The commit message just omits the conditional.
+Something like:
+
+  Reset memory.max unconditionally, and memory.swap.max when swap
+  accounting is enabled, to "max" at the start of child() ...
+
+would match the code more accurately.
+
+Verdict - Needs revision
+
 ---
- doc/developers/writing_tests.rst            |  3 ++
- testcases/lib/tests/shell_oom_protection.sh | 34 +++++++++++++++++
- testcases/lib/tst_test.sh                   | 57 ++++++++++++++++++++++++++++-
- 3 files changed, 93 insertions(+), 1 deletion(-)
+Note:
 
-diff --git a/doc/developers/writing_tests.rst b/doc/developers/writing_tests.rst
-index 4db57898fcf08b83e68be996f666e91c418838fc..2d5bc294083fa2b89212714f0a6c5e5c3f22777a 100644
---- a/doc/developers/writing_tests.rst
-+++ b/doc/developers/writing_tests.rst
-@@ -549,6 +549,9 @@ LTP C And Shell Test API Comparison
-     * - not applicable
-       - TST_FS_TYPE
- 
-+    * - not applicable
-+      - TST_OOM_PROTECTION
-+
- .. list-table::
-     :header-rows: 1
- 
-diff --git a/testcases/lib/tests/shell_oom_protection.sh b/testcases/lib/tests/shell_oom_protection.sh
-new file mode 100755
-index 0000000000000000000000000000000000000000..a37ec51d2955e176c3b54297b8ca73ffbf2999f6
---- /dev/null
-+++ b/testcases/lib/tests/shell_oom_protection.sh
-@@ -0,0 +1,34 @@
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (c) 2026 Linux Test Project
-+
-+TST_TESTFUNC=test
-+TST_OOM_PROTECTION=1
-+
-+read_oom_score_adj()
-+{
-+	cat "/proc/$1/oom_score_adj" 2>/dev/null
-+}
-+
-+test()
-+{
-+	local self_score harness_score
-+
-+	self_score=$(read_oom_score_adj self)
-+	harness_score=$(read_oom_score_adj "$$")
-+
-+	if [ "$self_score" = 0 ]; then
-+		tst_res TPASS "test process has oom_score_adj reset to 0"
-+	else
-+		tst_res TFAIL "test process oom_score_adj is $self_score, expected 0"
-+	fi
-+
-+	if [ "$harness_score" = -1000 ]; then
-+		tst_res TPASS "shell harness is protected from OOM"
-+	else
-+		tst_res TCONF "shell harness OOM protection unavailable"
-+	fi
-+}
-+
-+. tst_test.sh
-+tst_run
-diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
-index 8701bb3903889b009f88ba98bac47534608cdd0a..48dacb432b953295ae4ad710e4f27ed87ac0a7e5 100644
---- a/testcases/lib/tst_test.sh
-+++ b/testcases/lib/tst_test.sh
-@@ -28,6 +28,57 @@ export TST_USR_GID="${LTP_USR_GID:-65534}"
- trap "tst_brk TBROK 'test interrupted'" INT
- trap "unset _tst_setup_timer_pid; tst_brk TBROK 'test terminated'" TERM
- 
-+_tst_set_oom_score_adj()
-+{
-+	local value="$1"
-+	local path="/proc/self/oom_score_adj"
-+
-+	[ -e "$path" ] || return 0
-+
-+	echo "$value" > "$path" 2>/dev/null || return 0
-+}
-+
-+_tst_enable_oom_protection()
-+{
-+	_tst_set_oom_score_adj -1000
-+}
-+
-+_tst_disable_oom_protection()
-+{
-+	_tst_set_oom_score_adj 0
-+}
-+
-+_tst_run_oom_protected()
-+{
-+	local _tst_pid
-+	local _tst_ret
-+
-+	# Shield the harness from the OOM killer and run the test in a child.
-+	# The child keeps the default oom_score_adj so that it, and any process
-+	# it spawns, stay killable under memory pressure while the harness
-+	# survives to report results.
-+	_tst_enable_oom_protection
-+
-+	(
-+		_tst_disable_oom_protection
-+		_TST_OOM_PROTECTION=0
-+		export _TST_OOM_PROTECTION
-+		tst_run "$@"
-+	) &
-+	_tst_pid=$!
-+
-+	wait "$_tst_pid"
-+	_tst_ret=$?
-+
-+	if [ "$_tst_ret" -eq 137 ]; then
-+		tst_res TINFO "Test was SIGKILLed: OOM killer or timeout?"
-+		tst_res TINFO "On a slow machine try exporting LTP_TIMEOUT_MUL > 1"
-+		tst_brk TBROK "Test killed!"
-+	fi
-+
-+	exit "$_tst_ret"
-+}
-+
- _tst_do_cleanup()
- {
- 	if [ -n "$TST_DO_CLEANUP" -a -n "$TST_CLEANUP" -a -z "$LTP_NO_CLEANUP" ]; then
-@@ -680,12 +731,16 @@ tst_run()
- 	local _tst_pattern='[='\''"} \t\/:`$\;|].*'
- 	local ret
- 
-+	if [ "$TST_OOM_PROTECTION" = 1 -a "$_TST_OOM_PROTECTION" != 0 ]; then
-+		_tst_run_oom_protected "$@"
-+	fi
-+
- 	if [ -n "$TST_TEST_PATH" ]; then
- 		for _tst_i in $(grep '^[^#]*\<TST_' "$TST_TEST_PATH" | sed "s/.*TST_//; s/$_tst_pattern//"); do
- 			case "$_tst_i" in
- 			ALL_FILESYSTEMS|DISABLE_APPARMOR|DISABLE_SELINUX);;
- 			SETUP|CLEANUP|TESTFUNC|ID|CNT|MIN_KVER);;
--			OPTS|USAGE|PARSE_ARGS|POS_ARGS);;
-+			OPTS|USAGE|PARSE_ARGS|POS_ARGS|OOM_PROTECTION);;
- 			NEEDS_ROOT|NEEDS_TMPDIR|TMPDIR|NEEDS_DEVICE|DEVICE);;
- 			NEEDS_CMDS|NEEDS_MODULE|MODPATH|DATAROOT);;
- 			NEEDS_DRIVERS|FS_TYPE|MNTPOINT|MNT_PARAMS);;
+The agent can sometimes produce false positives although often its
+findings are genuine. If you find issues with the review, please
+comment this email or ignore the suggestions.
 
--- 
-2.51.0
-
+Regards,
+LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
