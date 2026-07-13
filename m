@@ -4,85 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 71703C44501
-	for <ltp@archiver.kernel.org>; Mon, 13 Jul 2026 11:12:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B826AC43458
+	for <ltp@archiver.kernel.org>; Mon, 13 Jul 2026 11:12:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1783941139; h=message-id :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1783941158; h=message-id :
  to : in-reply-to : date : subject : list-id : list-unsubscribe :
  list-archive : list-post : list-help : list-subscribe : from :
  reply-to : cc : mime-version : content-type :
  content-transfer-encoding : sender : from;
  bh=RWBj789HCSiUrKB8R4V2KKfYWo3b/dWdN6e1tu5kcT0=;
- b=pyQWIJ4GegCNJX6z7TLDVa+ec+k8BOhcA6Yru4IxinE8VNJp/YyjDs5bMjmaSJVZBDX7n
- LJn7f2Zrw9C3Fut5LyY4VnrRudzprLogSZsxD8FNTd0r8GyMAdrZGSDliIYFKQPSFBOnAP4
- CMSiEr8/1CoRLcfIEYNieZTh85zkNbE=
+ b=o0wfyM4wX1CgGu1aRZfQGO4L3opoeC5noS25gu01Fz3lof/qTEk8Mbkq60s/g3Xn7yiE+
+ UdHnMDyI79j/0TG6xGEgStpwEFH2Zc2ELU6asVyzb+6UHgsaZ4wOky0mpmVNSaDymxZ2cej
+ exUgUpHhyWz6Ce+ZqIoLNpC3o9YgKCc=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E3AE93E5D41
-	for <ltp@archiver.kernel.org>; Mon, 13 Jul 2026 13:12:19 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id EA6323E735A
+	for <ltp@archiver.kernel.org>; Mon, 13 Jul 2026 13:12:37 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 033203E5CC7
- for <ltp@lists.linux.it>; Mon, 13 Jul 2026 13:11:45 +0200 (CEST)
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com
- [IPv6:2a00:1450:4864:20::530])
+ by picard.linux.it (Postfix) with ESMTPS id 766203E5C15
+ for <ltp@lists.linux.it>; Mon, 13 Jul 2026 13:12:14 +0200 (CEST)
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com
+ [IPv6:2a00:1450:4864:20::334])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 9731E60071B
- for <ltp@lists.linux.it>; Mon, 13 Jul 2026 13:11:42 +0200 (CEST)
-Received: by mail-ed1-x530.google.com with SMTP id
- 4fb4d7f45d1cf-698a9f11776so4723872a12.1
- for <ltp@lists.linux.it>; Mon, 13 Jul 2026 04:11:42 -0700 (PDT)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 2011C2005D0
+ for <ltp@lists.linux.it>; Mon, 13 Jul 2026 13:12:14 +0200 (CEST)
+Received: by mail-wm1-x334.google.com with SMTP id
+ 5b1f17b1804b1-493e8d4f4dcso23764395e9.0
+ for <ltp@lists.linux.it>; Mon, 13 Jul 2026 04:12:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1783941102; x=1784545902; darn=lists.linux.it;
+ d=suse.com; s=google; t=1783941133; x=1784545933; darn=lists.linux.it;
  h=date:content-transfer-encoding:content-type:subject:in-reply-to:cc
  :to:from:message-id:from:to:cc:subject:date:message-id:reply-to
  :content-type; bh=nIYZV4wIwN0c0BMAf0MMCsM9Xjm5KWqPcbqWD98uGZ0=;
- b=AttF60u8RLDNSGfT52qYe/KhnNesa1Drl6QiYkjDhz88hBYUj6yr2UX+FTiGauABa7
- APWKw2DXZQQCTnbKC1EkIhifulgLG8f9dxIOFVxH6DkM7eieWzyjPXPtSZZ6tfm5PPy7
- 2Qal3L2Y9KNwYEuPleFKMVOC09agoOBViq8wT7rgkOpaYz+j33aHBV6BwNxy2EtSLj45
- 0ppOF++CzoTjZCiDMPv8hrQzICH8vM1gRZ12v2MGxIL3J0VUqZLcwrdQfg+9nr6m3lpa
- Dnt/vSUNOZTw86drgzkeWOYGsyTpkYO+qi8tz0Z2cphM+ivsxGRht0gaY828B3HYIdMq
- ftrw==
+ b=JgAr+KvXRwWyJmTZ1+KEQCh7AyaT3TYdXDpCuHHgtKQTrDpd9Ewvd4HQDZ01Pxpcji
+ 1ESFHpMSc+cyeTxy/llR6lGOnmoEc2frE1KTKW9anxB/BPALGbnZmMPDZfxA5FT+6RLZ
+ 7Gb9cz14wFCyQcDzUWrSQmtxXjXtuwHlIqU3NTDk5zs+BYry31eJsd/3obDLepkEZLNu
+ XGr+LjMdQEAWNbM2YVg/+G9k2/AtOdrzMt9HBnK4EUwLR/neswSmj2lxPO5OPbnezGDP
+ AxG3w5QwKFKvf6mscl9r7i7hODLLtbBnK0nIMegEI1wlZt7qtXa3/Vl1xb87Kxz9S/52
+ 4qHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1783941102; x=1784545902;
+ d=1e100.net; s=20251104; t=1783941133; x=1784545933;
  h=date:content-transfer-encoding:content-type:subject:in-reply-to:cc
  :to:from:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject
  :date:message-id:reply-to:content-type;
  bh=nIYZV4wIwN0c0BMAf0MMCsM9Xjm5KWqPcbqWD98uGZ0=;
- b=hHnxMffnmLWRvJyuK8jgXAeNmmRRyL2cQmPlsX6/s/CSaxfAklFDA7uu7Gu9hQUOEL
- 6kWu99tpMEMgV0R3/VP76wA382YRPKEOuvXowL4iCHjR9pcuM5EvOneDYvUeA4bmBC2n
- tAvVbgAQYp6Cus1Rjh2bo+0Z+U2g53sOJF83lSilkhbryN1EZSJAm45yk1prGePGsDJI
- n5bS46gW1SgFCVJ2mrpS6jgcTD6vCSaoCxAHd5udaO8IDwMwiN7iJWDqOKKwj1O5715g
- z7u/OoWttILJMBvpTCVmExoVqrZd7wXtjdkKBDFVAfv/sdnXNGDd5+S0wdAtxVbrkd4N
- TAWQ==
-X-Gm-Message-State: AOJu0Yyyp5zBFa7aUSbXBDMVEQBM1ymKGsiROljtzxckSX0q7Vkjoi80
- IKRsmVSXWBiOcAU7L5nz2fxEllqtI8XOq4fZy4MbohXFBMfzlSJTBqeTwokHTMy1ZBo=
-X-Gm-Gg: AfdE7clM3s2zVX3p6OCgAx4VnKU2GmXexS7BofM7o+HlR2fh4T7hvQj6M0pm5+tAQZB
- +w5Jlf7z15Kd9T4Tqn1smzy+wXvz041PyZFocyrCTCAWBqmEDY8KHJoSFzIdScQg/UhpauvAEeN
- 2x5pcpfLmfzVIu4YrXFxCcvwOnoBDUJO3gM6iap++JTPb8aw5t3mbAEkojNQLnG/4VAKkvswKaR
- BlPteqA+bkdXCeOr4HDKz2SsZO1Xqm6LnA3nGdCFbtNM5HuJOQZkHfLKQUscyczIGR1nZvCG5rM
- VERP9ncXzh/erPGoGGAMeNoFftRvXGKZakWcjG0CCa6+/Wwb0stjc4K6MOi4rDlfj+mr2CiWVOC
- owaxzZIYfRyE4Y0vQuEYyzdEKtUqehYmS8ecCRGbF5GMrrBCvZtpfg8drCVa9ENpZ+Abp35ckn2
- XaLj5GHVsdwUuiMnh/g/9JnwBDaggIzHJX
-X-Received: by 2002:a05:6402:5255:b0:698:aa8c:c15f with SMTP id
- 4fb4d7f45d1cf-69c5f1212e2mr3667140a12.22.1783941100199; 
- Mon, 13 Jul 2026 04:11:40 -0700 (PDT)
+ b=n/ej8wAPaNoLyuDklaoCCczPMpmMSFfWRBj56BXptgKJLeO82rsLPGCvZzXJYVys7+
+ 8iMXOFR+g7pxHD81HFYPUeuF7tJGXkR0yZQrB20/BBj7JqcZpPcNrnh9+1GC4VFaHRRh
+ YaMNMoQmsHkbR06Nho/cyA/+DK0jPiylQak8xiU/b71JoBrKYEKEpMS7vCIhpeyMbuIe
+ +WK/p3PCpsg6pJpSqRlKj4O4Lpe3jDvFSxJX7nW0Sb2NV2gIhn1YB34OWdqXVWF58qbx
+ +PocKJPwtlJdCTKp6bK4M+YU1M/vGQgq29Ig7elxXjSdvdy6JWEv0EM+3cqM1AsxAf20
+ XDcQ==
+X-Gm-Message-State: AOJu0Yxt82LJaZgjGvCG3ilHBt9/csbHkL2mZIC3XY+px+9oY4XRu3H1
+ d6qWHvwnHkAsD8v6iz28NrlIUC+oxd8Pwu1fUbpuFX5052qUg1QaiLkQ1jvN/Z9Jq6VnC4gnxJ8
+ e8UluEyveog==
+X-Gm-Gg: AfdE7ckhBzUVi7qCrO4piRqAdfUJ1dfXaaA+FKcBL7+SGsBVK8UuY7Awpe4qFeyDne8
+ ewXRQsyPfurVNElkbfdNKwRjcIeZsCqSObZTvBCTOd0xq6qLYDqATo6vluj3GKlN1fs1oRsdz/R
+ 0CAzSnpedhEYyG4CEplL6/DMQzacl2RyP/PtTA0ewm7r+8AC3ws/1Du82Hhr0WyjLnkeIJ4ObGS
+ 0OXze2M8h8Z7j57be0/V5prSIjNfdmrgOUK0xFsnmniQCrncmYmeVSSacGDE5FgzVnD4hxKm/S8
+ LTxhzgDmrZB0jyv+xdpfvL1hTCtQ5ep21DmXxdK29Q5PkbQMR93JUCggQmIoP38Qt447LxM5n3C
+ XxaL8G6TiWxGbpJ0lu7ATYVwuMcIyQwggqzpUnNvh4YksGs5uw8LNz4WKzau9fkQ4AFzpuwyfft
+ 4d5g4mbZbIodJcLYtDf+qXnBwRONNeKWbcH9ZtVELfPag=
+X-Received: by 2002:a05:600c:45d4:b0:493:a966:d5b5 with SMTP id
+ 5b1f17b1804b1-493f87dc5d3mr86954235e9.2.1783941133442; 
+ Mon, 13 Jul 2026 04:12:13 -0700 (PDT)
 Received: from localhost.localdomain ([153.19.102.214])
  by smtp.gmail.com with ESMTPSA id
- 4fb4d7f45d1cf-69a19cf68f5sm15293863a12.13.2026.07.13.04.11.39
+ 5b1f17b1804b1-493eb6f3c42sm349783685e9.1.2026.07.13.04.12.12
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 13 Jul 2026 04:11:40 -0700 (PDT)
-Message-ID: <6a54c7ec.33738867.2304eb.8366@mx.google.com>
+ Mon, 13 Jul 2026 04:12:13 -0700 (PDT)
+Message-ID: <6a54c80d.029fe3b5.39a82d.837b@mx.google.com>
 To: "Petr Vorel" <pvorel@suse.cz>
-In-Reply-To: <20260710055556.1109220-8-pvorel@suse.cz>
-Date: Mon, 13 Jul 2026 11:11:39 +0000
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+In-Reply-To: <20260710055556.1109220-9-pvorel@suse.cz>
+Date: Mon, 13 Jul 2026 11:12:12 +0000
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 7/8] ci/tumbleweed: Install diffutils
+Subject: Re: [LTP] [PATCH v2 8/8] ci: Test metadata in docker build testing
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
