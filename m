@@ -4,83 +4,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 016B6C43458
-	for <ltp@archiver.kernel.org>; Mon, 13 Jul 2026 16:44:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 26058C43458
+	for <ltp@archiver.kernel.org>; Mon, 13 Jul 2026 17:02:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1783962122; h=to : date :
+ message-id : in-reply-to : references : mime-version : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-type :
+ content-transfer-encoding : sender : from;
+ bh=0p5BlpniPliXixThefbOigV6/x9J+SBVduCl+KJG6iE=;
+ b=eu8+J2p1htWf3RiE8y98lPqj3AweD1Pk6abFKO1U9FPjz/MaA6vZ/wjxhR7sXUVEAJnTs
+ 3lQn58v/iiid/XSCdq+QTEkmrEQos2k6NGAHlun7CaRvsG2dNuXHgbo25yOCc0360Ukok65
+ d5xTiRh2FYxtElPFTmy5T3HPkosaUyM=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7A9F33E9A1D
-	for <ltp@archiver.kernel.org>; Mon, 13 Jul 2026 18:44:11 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 959873E969A
+	for <ltp@archiver.kernel.org>; Mon, 13 Jul 2026 19:02:02 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 17F493E22C2
- for <ltp@lists.linux.it>; Mon, 13 Jul 2026 18:43:54 +0200 (CEST)
-Received: from mail-pz2-x00.google.com (mail-pz2-x00.google.com
- [IPv6:2607:f8b0:4864:3b::])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id C44AC3E22C2
+ for <ltp@lists.linux.it>; Mon, 13 Jul 2026 19:01:43 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 652DB6001A2
- for <ltp@lists.linux.it>; Mon, 13 Jul 2026 18:43:53 +0200 (CEST)
-Received: by mail-pz2-x00.google.com with SMTP id
- 41be03b00d2f7-c96739a46acso2091420a12.1
- for <ltp@lists.linux.it>; Mon, 13 Jul 2026 09:43:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1783961032; x=1784565832; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to:content-type;
- bh=sTyQMTyQpZ+MH5fjNmrjGKWMF5KUazky3WSf2NPfbck=;
- b=llopW94XjQQ4uT6Y2LAQ2Bhgxitzdc4LdQyv5DB20+NZ1yI8cVU1Ua3gQFYT+LtmoY
- mmrhikV/Q8UJgYfpyXCusv7FmPhVpmYBppqOlQvv49hCEqhI9Ij1njIhaInE7a5xcfj2
- 7pPW/pJWme8+OV26Xo+38iA+tcDrROMPQIpvUNzt5ShTQ0gKkoV1A0zNs1N+l3QLlILw
- ntRGgv8/zIGHR8TzHGzie7pWEpE6S+mqG7SBoiZ5o3UEqe42xOBAA04Qt4uRDquvU17d
- TJJ3/AslODrE2dTihXLbDGiRbJtHdQxwEvmsanzGetdcMjQkWGfk+kL4CKOhCVQlt3Zj
- cbGQ==
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id BF302200043
+ for <ltp@lists.linux.it>; Mon, 13 Jul 2026 19:01:41 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1783962100;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=jywFCJq1bJnHyjwgWhFQv0+CM9K7H3yv1ojzjD06594=;
+ b=E4lOeWLLq5KUYz/8JuKnaS6re0rzZLfpgkmAN1nyL+fKhgCFexLMOoRCpeC8B0l9CI1W8V
+ hAToP0aywlrX+L4cILKPBXWHbIozxl+BRrOGLAN/MM0Hxdckk+aPUvnvNBlbxmDK2v5N3u
+ HuVT2OXtVD5JcJ68wShOb0zpk0kt+CY=
+Received: from mail-yw1-f199.google.com (mail-yw1-f199.google.com
+ [209.85.128.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-189-lRz8WF3hO4mIWGYsU5To5A-1; Mon, 13 Jul 2026 13:01:39 -0400
+X-MC-Unique: lRz8WF3hO4mIWGYsU5To5A-1
+X-Mimecast-MFC-AGG-ID: lRz8WF3hO4mIWGYsU5To5A_1783962099
+Received: by mail-yw1-f199.google.com with SMTP id
+ 00721157ae682-81e6bb29581so120384037b3.2
+ for <ltp@lists.linux.it>; Mon, 13 Jul 2026 10:01:39 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1783961032; x=1784565832;
+ d=1e100.net; s=20251104; t=1783962099; x=1784566899;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to:content-type;
- bh=sTyQMTyQpZ+MH5fjNmrjGKWMF5KUazky3WSf2NPfbck=;
- b=WZD28iI8QH1fk9VJfjH3KXIhfvkFSFrni40FN+WGcQzh8x96gWjbMa9+D3uSKA1fuS
- xQItOjLfhrtInZq+6MSF6S1U0AHcEf6hxyvv8TyuwAQuNmO8gHeLcKtW9rSjqF89YrHk
- C4TOfNKdd3ll2t3rmxBSa4fVGgUDyFd9ddPb4QFIRqiP8BsR/WhWTOhd2Q/xCUcpxMFE
- JbiYsEIOBO0Mt6BgrZneuxN24Unzd3Zp+6WmH0MG5rFkSCKIktRxr0q8bH9ndj5/uBD9
- qMbiyMxGzzL9OspD+yaSuetMYfcI9wbF2KcyDeA4qjUXi+KEzHEzc/G6Ir15CUJLRSg8
- k3MQ==
-X-Gm-Message-State: AOJu0YytJMJasNwxiFRvNibSgZgQzMm0OIsMrz8KxHST1naDxPel3miH
- VeyZITXMyviJq5oM1F1EtNWhyWr6+88BaLLpM8/loTkv0Ok4CQMCY0dYfSbg3GPx
-X-Gm-Gg: AfdE7cmFeFZgSuwkjRPCiIa17HPR4mHdZOcOh6opFqZ1Kht+I3PIfQEbb6dVf+P0gbD
- A7svlDNBNRnWo3UpV9Kz2rY8xnJWxDm7EdlKylg5x2zL+o1ZhwCfbAHoQkV52ejZqnEsOqwqiWI
- UK1bte4Z+f25VwmScQnjBMLq0qqMNPvimHYfa+FKr9utwcbGaEyYXDcmewowmxxrz91bczFeDo5
- EYnSmpk05GtakEfO3mB4wX/wWJ9GZwW4nomLTbnfzmm5gTWOF+VeBsKjolt9pmvm0DTgQGTT/zD
- pXm140A1Cq1sRkRTyW+2Rr0u7POLgyJ1DgqR9M+GF8g7cO8rA3MaDaeswweLFGRjBX2KT/usyif
- B/W9V3lv7i9sX4jh85Y7LngyFHEwsArBqtK85xLq5z1QyWjO1cfOwqGt56HrdLEVIHV+0K3L49d
- 5MY84nFlU5pyu5DRDUZvCMA44RtD0OX2M1vdVRLbZL/bbXx4052GhLhDmnyqdZcbiNw2hdHlzql
- PzY569TMoUFbGkriVIly+66nsr2I0+Az4KTwra1
-X-Received: by 2002:a05:6a21:e097:b0:3b4:b276:a789 with SMTP id
- adf61e73a8af0-3c110b43701mr9646403637.36.1783961031608; 
- Mon, 13 Jul 2026 09:43:51 -0700 (PDT)
-Received: from
- runnervm5mmn9.bz51w4jame5urfvxkbexpjqmjf.phxx.internal.cloudapp.net
- ([134.33.71.44]) by smtp.gmail.com with ESMTPSA id
- 5a478bee46e88-3119c2a7bb5sm46659629eec.25.2026.07.13.09.43.51
+ bh=jywFCJq1bJnHyjwgWhFQv0+CM9K7H3yv1ojzjD06594=;
+ b=MwTX/PoR+vzGBr5WwV/UrsLRIxWgw+IZ9s39edhry308xF7c4srRg06AbohsKfDqa+
+ y55GqFqpoCQtNphI/Ri5dNdfOoy0BGvWuk/iFtflDF2FuLk9PcVib56NPSEHuqtNTHBm
+ QvrzHUAm0dyF9Qqq82uTjqYVaSuLWZfsaNlxRpjIU73hCpImC1Y7OM3w4CE4wEROwOD3
+ vxyc+XOVIGXrKq4Tnmj02IPk22lwgsvjWlClN7WsGG7oHVWm0BPizPMueK7SG70s3O5l
+ 4LvXDWyxHitj5hlv3VB7jrp+DoYsmwe9UXOKRcx1yZ/3LUiBiaf2dBsuCcfWpSuODwJZ
+ UEvw==
+X-Gm-Message-State: AOJu0Yw0lVeuUTS99/sZHOQ6gr4kxXXhkMeyuQbqLsSvxnUx27PLdgzq
+ azatAZjQn2MiR48w9SHtaWIhG5Dlogn7hZHnfwDIx8L2WmOQuV7UIe1zkRvdO0BjahvfyKRoHS2
+ mcK6X3BC8OiLovNUt9AZsyAepdIiUi7/OGvt1d58yRoTabCLRaNPZA6xpKoFEJx6qoX7F1IG5sT
+ Wv9Isw1PdUTlOstu6dOEEPIBBQkcOiNFd9dNDo
+X-Gm-Gg: AfdE7cmCBjPE9ZYiz3Y2YUNURqp2qj/wO7dKdNUzqXy9vwDj9IfUp7kCpsOfQ/5j06O
+ 0hiB0yEMZPIlhgFpd8mdnHvH6ALWSUALMeRomKas1HfENRTTo/2X9IjqTZI44WoH16PhHGRClTq
+ giG2JTOQkai+MVsT7A1KAs1ABl4Pb8JKrWbVFGOxsC8VVNjEtGsCBZfzh4ck4V7vX0j8LIUG5LY
+ Ff1eXOJuMaS7+MGaDVFnDcAEcpaOThTzpaHYuikEwpdgvP5KoN49g1TkTq48bpn71tlrXLZYA4y
+ Rsg16jZYEjgWwcqEIJY8jtCYeiZVvsAK1ImGHUIMjLo4xAWh9jq1iYEQIXD6IfY0yb4YsoZGCyq
+ v7BD9HQgviPLJ9PS3ampE5HJh+9QF1OV3ZqO0
+X-Received: by 2002:a05:690c:710a:b0:81c:eca8:b31f with SMTP id
+ 00721157ae682-81e9013e27amr69944017b3.39.1783962098726; 
+ Mon, 13 Jul 2026 10:01:38 -0700 (PDT)
+X-Received: by 2002:a05:690c:710a:b0:81c:eca8:b31f with SMTP id
+ 00721157ae682-81e9013e27amr69942407b3.39.1783962096984; 
+ Mon, 13 Jul 2026 10:01:36 -0700 (PDT)
+Received: from sbertram-thinkpadp1gen5.bos.com ([67.189.222.97])
+ by smtp.gmail.com with ESMTPSA id
+ af79cd13be357-92ee5d61facsm1124033285a.42.2026.07.13.10.01.35
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 13 Jul 2026 09:43:51 -0700 (PDT)
-From: linuxtestproject.agent@gmail.com
-To: Martin Doucha <mdoucha@suse.cz>
-Date: Mon, 13 Jul 2026 16:43:50 +0000
-Message-ID: <20260713164350.3931-1-linuxtestproject.agent@gmail.com>
+ Mon, 13 Jul 2026 10:01:36 -0700 (PDT)
+To: ltp@lists.linux.it
+Date: Mon, 13 Jul 2026 13:01:28 -0400
+Message-ID: <20260713170129.1177772-1-sbertram@redhat.com>
 X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260713155739.48823-1-mdoucha@suse.cz>
-References: <20260713155739.48823-1-mdoucha@suse.cz>
+In-Reply-To: <20260710143155.588390-1-sbertram@redhat.com>
+References: <20260710143155.588390-1-sbertram@redhat.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+X-Mimecast-Spam-Score: 0
+X-Mimecast-MFC-PROC-ID: AziDR-yATn1vonqIgP5cR2lfH_lmwgVCYp1_vg2Rwyg_1783962099
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] fanotify25: Add CVE reference and include it in CVE
- runfile
+Subject: [LTP] [PATCH v3] pipe13: Scale child reap window with
+ LTP_TIMEOUT_MUL
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -92,55 +109,114 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+From: Stephen Bertram via ltp <ltp@lists.linux.it>
+Reply-To: Stephen Bertram <sbertram@redhat.com>
+Cc: Stephen Bertram <sbertram@redhat.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Martin,
+The post-close wait used a fixed 1000000 us cap on exponential backoff.
+Scale that cap with tst_multiply_timeout() so debug
+kernels and LTP_TIMEOUT_MUL apply, fixing failures under parallel
+Kirk workers without changing default behavior on non-debug systems.
 
-On Mon, Jul 13 2026, Martin Doucha wrote:
-> fanotify25: Add CVE reference and include it in CVE runfile
+Before (only with case 100):
 
-> + * CVE-2023-52879
-> + *
-> + * Verify that :manpage:`fanotify(7)` monitoring can be applied to the tracing
-> + * filesystem and write events will be correctly delivered. NULL pointer
-> + * dereference fixed in:
-> + *
-> + * commit bb32500fb9b78215e4ef6ee8b4345c5f5d7eafb4
-> + * Author: Steven Rostedt (Google) <rostedt@goodmis.org>
-> + * Date:   Tue Oct 31 12:24:53 2023 -0400
-> + *
-> + * tracing: Have trace_event_file have ref counters
+pipe13.c:50: TINFO: Creating 100 child processes
+pipe13.c:81: TINFO: pid 435007 still sleeps
+...
+pipe13.c:81: TINFO: pid 435300 still sleeps
+pipe13.c:89: TFAIL: Closed pipe didn't wake up everyone
+The list varied but sometimes up to 20 would remained asleep.
 
-The Author: and Date: lines are commit metadata that do not help
-describe what the test does or why it matters. The linux-git tag
-already records the commit reference.
+Test is passing after using TST_RETRY_FN_EXP_BACKOFF() so timeout
+scaling follows the standard LTP path (tst_multiply_timeout, debug
+kconfig, LTP_TIMEOUT_MUL).
 
-Other tests in the tree use a compact inline format, e.g. fanotify24.c:
+The failure before would happen, when using 4 parallel workers
+on a debug kernel, about 1 to 2 times when iterated 5 times.
+Tested on aarch64 debug+PREEMPT_RT: kirk -w 4 pipe13 -i 100, 400 runs,
+0 fail.
 
-  commit 28bba2c2935e2 ("fsnotify: Pass correct offset to
-  fsnotify_mmap_perm()")
-
-Would it be possible to drop the Author:/Date: lines and fold the
-reference into the description as a single line, e.g.:
-
-  NULL pointer dereference fixed in commit bb32500fb9b7
-  ("tracing: Have trace_event_file have ref counters").
-
-Verdict - Needs revision
-
+Signed-off-by: Stephen Bertram <sbertram@redhat.com>
 ---
-Note:
+ testcases/kernel/syscalls/pipe/pipe13.c | 44 +++++++++++++++----------
+ 1 file changed, 27 insertions(+), 17 deletions(-)
 
-The agent can sometimes produce false positives although often its
-findings are genuine. If you find issues with the review, please
-comment this email or ignore the suggestions.
+diff --git a/testcases/kernel/syscalls/pipe/pipe13.c b/testcases/kernel/syscalls/pipe/pipe13.c
+index 5d76e1f00..7f7685a2c 100644
+--- a/testcases/kernel/syscalls/pipe/pipe13.c
++++ b/testcases/kernel/syscalls/pipe/pipe13.c
+@@ -26,6 +26,28 @@ static unsigned int tcases[] = {
+ };
+ 
+ static int fds[2];
++static unsigned int reap_child_num;
++static unsigned int reap_count;
++static int *reap_pids;
++
++static int reap_children_once(void)
++{
++	unsigned int i;
++	int ret;
++
++	while ((ret = waitpid(-1, NULL, WNOHANG)) > 0) {
++		reap_count++;
++		for (i = 0; i < reap_child_num; i++) {
++			if (reap_pids[i] == ret)
++				reap_pids[i] = 0;
++		}
++	}
++	if (ret < 0 && errno != ECHILD)
++		tst_brk(TBROK | TERRNO, "waitpid()");
++	return reap_count;
++}
++
++#define ALL_CHILDREN_REAPED(cnt) ((unsigned int)(cnt) >= reap_child_num)
+ 
+ static void do_child(unsigned int i)
+ {
+@@ -41,8 +63,7 @@ static void do_child(unsigned int i)
+ 
+ static void verify_pipe(unsigned int n)
+ {
+-	int ret;
+-	unsigned int i, cnt = 0, sleep_us = 1, fail = 0;
++	unsigned int i, fail = 0;
+ 	unsigned int child_num = tcases[n];
+ 	int pid[child_num];
+ 
+@@ -60,21 +81,10 @@ static void verify_pipe(unsigned int n)
+ 	SAFE_CLOSE(fds[0]);
+ 	SAFE_CLOSE(fds[1]);
+ 
+-	while (cnt < child_num && sleep_us < 1000000) {
+-		ret = waitpid(-1, NULL, WNOHANG);
+-		if (ret < 0)
+-			tst_brk(TBROK | TERRNO, "waitpid()");
+-		if (ret > 0) {
+-			cnt++;
+-			for (i = 0; i < child_num; i++) {
+-				if (pid[i] == ret)
+-					pid[i] = 0;
+-			}
+-			continue;
+-		}
+-		usleep(sleep_us);
+-		sleep_us *= 2;
+-	}
++	reap_child_num = child_num;
++	reap_count = 0;
++	reap_pids = pid;
++	TST_RETRY_FN_EXP_BACKOFF(reap_children_once(), ALL_CHILDREN_REAPED, 1);
+ 
+ 	for (i = 0; i < child_num; i++) {
+ 		if (pid[i]) {
+-- 
+2.54.0
 
-Regards,
-LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
