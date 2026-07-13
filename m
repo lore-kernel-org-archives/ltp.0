@@ -4,86 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AEC14C43458
-	for <ltp@archiver.kernel.org>; Mon, 13 Jul 2026 11:38:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 88136C43458
+	for <ltp@archiver.kernel.org>; Mon, 13 Jul 2026 11:42:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1783942688; h=message-id :
- to : in-reply-to : date : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : cc : mime-version : content-type :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1783942967; h=date :
+ in-reply-to : mime-version : references : message-id : to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-type :
  content-transfer-encoding : sender : from;
- bh=lc5gUNsqwRYaSTEtemS7M/q/M1+XvLKP3zQQGfsPaxY=;
- b=N1BhxJgOGILpWvJCJj5YK6q4HX8rqJaQwyGzMlDm0tM8DLCI9IPmcn/KEYxZ+t9Xuzd8r
- 5JCbDY7xdOiG9lcyboVopLTpSwH9q9VUulsCaKAjqNt+bf1UWXpuPR9Scmo2VC9Xf2gmAYC
- rpFGktU0ut5SzzYTweDoRR+ryYl15aA=
+ bh=2dSqJ3iGdm9c44xZ72DB8xKq+jyknvkRaosKaDwtBaY=;
+ b=D4jYzj0XDRtqgIVSCcbYR0EzuT3corLq2N5BhnFGpZdOZ9OCyx50OqWXGv/GRqlSIyM4W
+ aThVJ4ODPCT8WSpb+Aj5qmTO9MUQ+OIECF/i5VIQVaUVHiwJYvTzzXFaKJPpvkBEbP182U7
+ tTTY70ZHXvrMdBZ1e8+52JWGQX/xU2g=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 557BA3E5C4F
-	for <ltp@archiver.kernel.org>; Mon, 13 Jul 2026 13:38:08 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 05C723E295D
+	for <ltp@archiver.kernel.org>; Mon, 13 Jul 2026 13:42:47 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id DEBB13C17CE
- for <ltp@lists.linux.it>; Mon, 13 Jul 2026 13:37:48 +0200 (CEST)
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com
- [IPv6:2a00:1450:4864:20::32d])
+ by picard.linux.it (Postfix) with ESMTPS id 106D83E295D
+ for <ltp@lists.linux.it>; Mon, 13 Jul 2026 13:42:24 +0200 (CEST)
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com
+ [IPv6:2607:f8b0:4864:20::549])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id D831F1A00437
- for <ltp@lists.linux.it>; Mon, 13 Jul 2026 13:37:47 +0200 (CEST)
-Received: by mail-wm1-x32d.google.com with SMTP id
- 5b1f17b1804b1-493ece78b0cso22419505e9.0
- for <ltp@lists.linux.it>; Mon, 13 Jul 2026 04:37:47 -0700 (PDT)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 505C6100014F
+ for <ltp@lists.linux.it>; Mon, 13 Jul 2026 13:42:24 +0200 (CEST)
+Received: by mail-pg1-x549.google.com with SMTP id
+ 41be03b00d2f7-c85798977dcso1848704a12.0
+ for <ltp@lists.linux.it>; Mon, 13 Jul 2026 04:42:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1783942667; x=1784547467; darn=lists.linux.it;
- h=date:content-transfer-encoding:content-type:subject:in-reply-to:cc
- :to:from:message-id:from:to:cc:subject:date:message-id:reply-to
- :content-type; bh=/JMLkPnfIz98TPP5ss51CGriGGp0990ysauIVEmg4TE=;
- b=L+NHBEDz7o84YuAjym8xP25D1DtUG4BUF6+c5nYIQRJhJqHfV1e+ieeDuDGvKot4cY
- c1iv0PY8Zm9HD0s9LhBhR14OXYAyVIefIeCua+JIa9sQ614Dsvg2rPhYJymsqkJQKyUs
- Iv0tVCIBI0gUykMgf34i4qzbxrG6QV9uFhgJdC/4N4GwrP0SoEdyNCgdO3HnZZbJrAFv
- X1ERTUmKows0R/IT6MGLLEzli+kXUpN/Bk+Mi5QJCc9WmW13d0E//1TGRm3yB9xgIEmk
- 3dGQpFxmUSmrDChkVB3veaZmgZaIsf25vdvFL++2lFZnYYtCLDVRGrCNLBRx9Shs3stD
- PwKg==
+ d=google.com; s=20251104; t=1783942943; x=1784547743; darn=lists.linux.it;
+ h=content-type:cc:to:from:subject:message-id:references:mime-version
+ :in-reply-to:date:from:to:cc:subject:date:message-id:reply-to
+ :content-type; bh=zkiHeItbq79dyDeu6bohp9UioHnCvwGef4MDZxJ99AA=;
+ b=l5mHup2SGm3kcQVJNV+6qgWU7KCRVW358r+QHapXN/BYk3siszURddAvUkZLPHpCxD
+ r/OqII9jAw9LnxFFxi75S1oA2ePo7PINHaYjAQexenqxxmZxvs0/IQj8r7YSoCQmrYS0
+ aEVddyZEr0Tsxq9fl32yLZS2JiyQF2TuGOSRWxB6BieafGBIo6ulI/8MZ1/VCevo1DPv
+ v7DxmvIwme4nohsod25h1GY5n25jPyvapeDePt8p+EP1L3sgzytXjZoYViA4WZ8cpvL9
+ FernCw6BRzIhOqSrOX+8dUgSO/fGgVvWBUB9VvKFJo9+pkXTGlpcghlvkreGR83hBICi
+ j8mw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1783942667; x=1784547467;
- h=date:content-transfer-encoding:content-type:subject:in-reply-to:cc
- :to:from:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject
- :date:message-id:reply-to:content-type;
- bh=/JMLkPnfIz98TPP5ss51CGriGGp0990ysauIVEmg4TE=;
- b=snKTHc8SU+ePbYsh5wJq/Yyp3KfMbSc8IRYxuDdBstAI9z2tO4f1a1l+rBe8qyjk1O
- hG1FLmH+iF9ETH2OpQCQZ/ihqAL+MCK20PvRIMdcTY5NI8GdSD0QEIjqUSlKcdHPlxgT
- 83lGFp74Mm4rEV3cZUgFgv7XDgunqotQ34Mc6fIQGvGxPCDPMtU2i3uSeqeQrP6t39p2
- 2qteO8sjQ9NI+7ZMZCHwW5k+1bedhtaJZIhIsm7v09xiaaLLEM3PphjPfhD2u+PJ2K++
- JnOiZB9NR+3xIvr039fQloTWiCKy8dFkD0yFg63szNnH5/HJVOoYlWgVDoy3mjTBS+Mg
- DRyg==
-X-Gm-Message-State: AOJu0YwPZoZaFduasnBlMBvV++3w4D+sBhS2ysrrG9v0nrc4emTIA2fK
- IV9OyQqVwDfyqfIWQn+DR2/kCiLC8oyf6FkZZWLqOQ5ZIzT5x3XNlYkcoOtNzJd1DJOusqFkAVy
- rswpyr58W3g==
-X-Gm-Gg: AfdE7ckLwAcj1GhZUGLmLyVSTiRcCgsk1YwMXrB971BWlK7UHLq71I988E0U+Sym+Na
- +we4dbt9fFZ8VY9fkQpScVjLpKMmqEGdnA6GGvroW42cC3JeVlOnjpDp5SQRmybsCKjDtAoqplq
- 4cNcEZECG6/pScWfJPvC/HQEo3vxGrEH8q57lw+MI3HrlM2yACOAZiNoZvttCH6kfRr1n3P/Lr7
- xfSChB+149r9FBFw44of5u9DuyMIcgae5lxMbR49DMwH0nN1cK4R8yCHcgPoOVVrxiEcHR/4reZ
- mFuiLHhnlTvtSfEVtrhPZCj3O44jYCT1iuQtH4kSXu13Mm8fDeRaq5NobpBPTIr33inxvzmmLUu
- rShShywVY0UF7vJyZXoY7Q4uAEpEgHfDBPMlYqCz1Co8yKw/nNQp9365uLDYcvWUwGcT1VhokAW
- osV570W2f+Lnona23I83kbwbkOUNW52iE8
-X-Received: by 2002:a05:600c:3acf:b0:493:cfc8:12e7 with SMTP id
- 5b1f17b1804b1-493f881d44fmr84157585e9.25.1783942667223; 
- Mon, 13 Jul 2026 04:37:47 -0700 (PDT)
-Received: from localhost.localdomain ([153.19.102.214])
- by smtp.gmail.com with ESMTPSA id
- ffacd0b85a97d-47a9e4d780csm84561437f8f.11.2026.07.13.04.37.46
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 13 Jul 2026 04:37:46 -0700 (PDT)
-Message-ID: <6a54ce0a.9b582779.27f3ca.8da8@mx.google.com>
-To: "Sachin Sant" <sachinp@linux.ibm.com>
-In-Reply-To: <20260710091437.92148-2-sachinp@linux.ibm.com>
-Date: Mon, 13 Jul 2026 11:37:46 +0000
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+ d=1e100.net; s=20251104; t=1783942943; x=1784547743;
+ h=content-type:cc:to:from:subject:message-id:references:mime-version
+ :in-reply-to:date:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to:content-type;
+ bh=zkiHeItbq79dyDeu6bohp9UioHnCvwGef4MDZxJ99AA=;
+ b=UTksoCR9nlCu8pggyzsI2t5WG+7zo3PtZL3pO2ou5wY+t2VWP7D6rOSk5YFL2lG41V
+ zvX7eSgoLBSJ07zCmkLy06rhogEIWkZNq6G/YxFzqbJWNrQN8wqLzaOisp9JRWGx6xkR
+ PdfjazvDRB8eyPbpkUKZ7N6n1Ukltj8gVxNh2jsd8ItrxTBKJ8pj+6hwnJ61tf9Zr2Rb
+ Lr4Y+ifrbsFrp0cGOv5AU9Kyj0/pcKeCgoO78onhqF7UJvlc+Z2XDeLzAqKVmTiGydTO
+ RXt80HgGV9jErPEdZdrsSu3tPNCgx32GgyYaicMXmhEf6y4UdyuVBfhxHANLxtlhn2K2
+ bsiw==
+X-Gm-Message-State: AOJu0YxbtQD2AY8bpTUxJlVrA3DOO1Dw14iizCLfQbWxrbLDywzK3gOM
+ 2n9Ih5IvKxX9b3HLYQgKuU8PJRUUZfPPg2VoXz/c8aaie92CDPc4wiRSVQX804iyhZi3rZOSMHM
+ IGcYVi+/rXeXx83OFj6I2u4hHaZ/hDo8cyKreDYsRPTvtd/QWnc2HGnDRRpTCwIOlN5YxhX2FCF
+ 9lL9skHJD0pj+0EsNY2tt5jvYLmA==
+X-Received: from pfbcu1.prod.google.com ([2002:a05:6a00:4481:b0:848:8827:5d12])
+ (user=wakel job=prod-delivery.src-stubby-dispatcher) by
+ 2002:a05:6a00:4b4e:b0:848:2f7a:2e5c
+ with SMTP id d2e1a72fcca58-84889763ab2mr7357665b3a.75.1783942942004; Mon, 13
+ Jul 2026 04:42:22 -0700 (PDT)
+Date: Mon, 13 Jul 2026 11:42:20 +0000
+In-Reply-To: <20260713012545.3875573-1-wakel@google.com>
+Mime-Version: 1.0
+References: <20260713012545.3875573-1-wakel@google.com>
+X-Mailer: git-send-email 2.55.0.795.g602f6c329a-goog
+Message-ID: <20260713114220.4185427-1-wakel@google.com>
+To: ltp@lists.linux.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3 2/2] mem/min_free_kbytes: refactor to use
- SAFE_FORK and simplify tune logic
+Subject: [LTP] [PATCH v4] madvise09: Reset cgroup limits before retrying test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -95,28 +89,61 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Cc: ltp@lists.linux.it
-MIME-Version: 1.0
+From: Wake Liu via ltp <ltp@lists.linux.it>
+Reply-To: Wake Liu <wakel@google.com>
+Cc: Wake Liu <wakel@google.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-LGTM, but next time please follow the patch-set convention of having
+When madvise09 enters its retry loop, the cgroup limits (memory.max and
+memory.swap.max) configured in the previous run remain active. If the
+previous run ended due to memory pressure, the inherited limits will
+cause the new child to immediately reclaim MADV_FREE pages. This
+results in false-positive failures during test verification.
 
-[PATCH <version> <number>/<total>] <subject>
+Reset both memory.max and memory.swap.max to "max" at the start of
+child() to ensure each retry run begins in an unconstrained cgroup.
 
-The v3 1/2 is missing the right version tag and it's not linked to the
-second patch in this way.
+Signed-off-by: Wake Liu <wakel@google.com>
+---
+v4:
+- Remove redundant SAFE_CG_HAS checks for memory.max and memory.swap.max.
 
-Reviewed-by: Andrea Cervesato <andrea.cervesato@suse.com>
+v3:
+- Fix commit message layout and length to follow guidelines.
+- Use SAFE_CG_PRINT instead of SAFE_CG_PRINTF to fix compile errors.
 
---
-Andrea Cervesato
-SUSE QE Automation Engineer Linux
-andrea.cervesato@suse.com
+v2:
+- Reset memory limits to max in child.
+
+ testcases/kernel/syscalls/madvise/madvise09.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/testcases/kernel/syscalls/madvise/madvise09.c b/testcases/kernel/syscalls/madvise/madvise09.c
+index 87fe096fb..821d40545 100644
+--- a/testcases/kernel/syscalls/madvise/madvise09.c
++++ b/testcases/kernel/syscalls/madvise/madvise09.c
+@@ -146,6 +146,15 @@ static void child(void)
+ 
+ 	SAFE_CG_PRINTF(tst_cg, "cgroup.procs", "%d", getpid());
+ 
++	/*
++	 * Reset cgroup memory limits to default ("max") in case this is a retry run.
++	 * Otherwise, the retried child inherits the strict MEM_LIMIT from the previous
++	 * run, causing MADV_FREE pages to be dropped immediately before we touch them.
++	 */
++	SAFE_CG_PRINT(tst_cg, "memory.max", "max");
++	if (swap_accounting_enabled)
++		SAFE_CG_PRINT(tst_cg, "memory.swap.max", "max");
++
+ 	ptr = SAFE_MMAP(NULL, PAGES * page_size, PROT_READ | PROT_WRITE,
+ 			MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+ 
+-- 
+2.55.0.795.g602f6c329a-goog
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
