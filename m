@@ -4,104 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DDCF3C44508
-	for <ltp@archiver.kernel.org>; Tue, 14 Jul 2026 17:01:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1784048493; h=to : date :
- message-id : mime-version : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : content-type : content-transfer-encoding : sender : from;
- bh=a8RNkJhpBTMOTjYmv5sd8An7qJhv5jpIfHscmlLN4e4=;
- b=EUBCWnjP5Wu3qTcWeoXsyLoIrEsdy1+ZwduMuWRee1pWfYs99x9aaiN5audNW0yeUS0qv
- /eKvTO0e/mnwEW1BYxtO34b5pknimm5OzV09T8mHAaieC8JdIG28oRGqNQ5lWKf7HtZ7FLn
- quGwMuuQllcauRXSHo42eOHhOGwkrng=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 10082C44508
+	for <ltp@archiver.kernel.org>; Tue, 14 Jul 2026 18:07:51 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id DD66C3E968E
-	for <ltp@archiver.kernel.org>; Tue, 14 Jul 2026 19:01:33 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 4351A3E1E71
+	for <ltp@archiver.kernel.org>; Tue, 14 Jul 2026 20:07:50 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A1A8C3E56E7
- for <ltp@lists.linux.it>; Tue, 14 Jul 2026 18:28:39 +0200 (CEST)
-Received: from smtp-relay-internal-1.canonical.com
- (smtp-relay-internal-1.canonical.com [185.125.188.123])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id C62573E1693
+ for <ltp@lists.linux.it>; Tue, 14 Jul 2026 20:07:35 +0200 (CEST)
+Received: from mail-pj2-x04.google.com (mail-pj2-x04.google.com
+ [IPv6:2607:f8b0:4864:39::4])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 1887A60080D
- for <ltp@lists.linux.it>; Tue, 14 Jul 2026 18:28:38 +0200 (CEST)
-Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
- [209.85.222.200])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 709ED3F608
- for <ltp@lists.linux.it>; Tue, 14 Jul 2026 16:28:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
- s=20251003; t=1784046518;
- bh=hS5wu5nuPJr9dxw19SClndeK0hAp3zz2eVa/yh1vzWE=;
- h=From:To:Subject:Date:Message-ID:MIME-Version;
- b=EUQVDIPRRYkajLE2CPcKoqR5DXZrlJhBLSEv2uWC+VbBURvPVr7wvWqgzK6F9LQ4C
- MtJLgzl/yJw/aBGkWvR/lbtMUyvZBB2ZUk1pojir3HG978RPXuzNNrrgGOC4OQ2NYp
- 0h6QBV8D/hGLD4gtZeqR4UzsJwhEoqXxb3hssRMNUg9TI9sS4VQt6L4QucWa5hoX3e
- 5SywV29YZxZdKSIg91CDfIC4Cs38Zx477Z6r0zX+V+4k+oRATyjeBNrb2esrgNewaq
- gEgssKd27aSYV+zAot8caMvbRoLdeANI2IKNI8ki6rEHkoXLYL4jT+0FkerESggSIu
- 8CmB37R8PgirMx98I1zz9JuDi43pDFHmxOf4q6uRli39YD2J0/AZvzCa42WBkP0Hfd
- pmKRGcuLgMzlRHC5r+dCdLth5DA6R2571j+XX5SFc6dmh2GUjmQON5cE7VaigPDbpR
- /1RDxEU/otf6MxLi3jKoejt3FaaQYMykGdkKSWKTnTOZNmrXI77RxvnHtTgj8kpITB
- zjIWGmGYZ6yMtfaLKV/cleSXQoMlyykMhh1e3ByHywgPZxFNE21E7RhBQ34JH1mjO4
- iSn3QliZGyVna3R5mV5d2ZA4DB8EWQRGs1docKDA8zPpXblO21Yy9E0XWEJs/IgpHQ
- oJSU77C6DRIRPkU3t6ts2jpA=
-Received: by mail-qk1-f200.google.com with SMTP id
- af79cd13be357-92e8004d60eso230942685a.1
- for <ltp@lists.linux.it>; Tue, 14 Jul 2026 09:28:38 -0700 (PDT)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 3548114004FD
+ for <ltp@lists.linux.it>; Tue, 14 Jul 2026 20:07:35 +0200 (CEST)
+Received: by mail-pj2-x04.google.com with SMTP id
+ d9443c01a7336-2cabf1f1051so3961415ad.0
+ for <ltp@lists.linux.it>; Tue, 14 Jul 2026 11:07:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20251104; t=1784052453; x=1784657253; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to:content-type;
+ bh=H+XFXlIlEfHLzy3N+IXzMYNpDJpBO2aXlJw35LCRSSM=;
+ b=Jf3cWHzpVnXZSK387Ph67fj+Y3elNQGzHHMVmV7/JMpeyW2WktX2UAY14rma3jY7AH
+ eW5RBYYoqARSR12KS9DFGsbODy0zJkWBeDd0J3/EZx3+UZSpsDhoCj7G36m5XtDtHXc6
+ 3IN356oAhdv7RTUbZpmcF5KBsJ57TpTGU3/5oEfWo17DgIafhuhB6unjY05TLHI4ZfGy
+ 6DXbBDKJSKLPE3ScUqiZ5VLaxFKZmw4eB3mokxeUjw3+GQvz9qV7gI1l/hxIr0dbtY9i
+ vqez6Rndut3krZtuNsZaMx1BB7xl0bS6gwdGU4EooVCe5LAr+cauYVG0fnlYRAwXUT6I
+ j34A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1784046517; x=1784651317;
- h=content-transfer-encoding:mime-version:message-id:date:subject:to
- :from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to:content-type;
- bh=hS5wu5nuPJr9dxw19SClndeK0hAp3zz2eVa/yh1vzWE=;
- b=p63B1ybK4CGMDIfameR+oqgN/pfc4IVgVD2LeYhbJKxArMEQDvayL9VjxQYhNsbuYV
- KKaijEWm2OHREHXoP0+tXGzHJoVYD3eoG/V7C53zImG2dpFYd3AX8Jk+cfAJQEQ/kAWi
- OxjZcrj4RBYrD+SN3hV3MWXWOPObgYCoAouiA2FTmyH2RXcxcDXKayBajYcZAfjOJAJO
- nEFQES61ZadxMrfUoxFE41vexsflAQcUHHzxpi03Ey02g1sH46cx38n8/irozf88D5Or
- A9FVmTXAoa8B08Qdi3rgUoBGTujM5FcjmBRIYkUs+pYV8FxiwA/N5ppeyXFjQ+a2npCv
- IYrA==
-X-Gm-Message-State: AOJu0YyBHZENwiB5lP2AcCtGcWXGqM8CivXz3yg4z0YBJXrqO44mJy3D
- j/rYccl2t1hsnJhA94TqusNDhCbJT2vYh0GEZnG8yXtP7CdYEWmbs4wlPVWQqIa8jOAUdO9M+r8
- CpxwhVDzeixWZjGEJ+tdKAf+4kuyf+qcNsL6RETZKipft3Gru/wzlnHU7QH36OW9s4RwO3gXb1N
- sZ
-X-Gm-Gg: AfdE7clFh/zDs2zAmguydrXh/usLi1eHDciBio2FukXB1NBNZTdlUnaIxAB127se4wn
- faNSYLnidewR1f7kzaFvcgHWCJrI/EI4QMkJgajeZ3zBw8StJ3I33C6oTRrw9zi9MW7dRtdS1bw
- jv0as6Uiv8ZUHDD4uJB5N90AfDoXaFP+S17cw2M5R+S0DZcnkW5W9jHh75Xyd9rnZ3EvQHPR0Fa
- H3XRnsr1BnFOG4FwzhtyF/9wTTxiMbITxhnbfNpVjaskTfPqUdImci9rGQSV3qUGy9X4HW3Gec9
- uPZc4qRcwBTjileTumPDzLHqXg4QO/hPqJ3Ou7MOKgS2oo9uNlZh6B0wVjHuignm7Dg+bcCEHNz
- ChvEkUhh5gGg/F8kS9s1I5+SF7B7TXaZ6wuRtchit51tMluNSBeFwDpC888mYx2GTrfQwjbCw0A
- ==
-X-Received: by 2002:a05:620a:6e82:20b0:92e:f690:56cf with SMTP id
- af79cd13be357-92ef6905832mr1015700885a.59.1784046517409; 
- Tue, 14 Jul 2026 09:28:37 -0700 (PDT)
-X-Received: by 2002:a05:620a:6e82:20b0:92e:f690:56cf with SMTP id
- af79cd13be357-92ef6905832mr1015695285a.59.1784046516638; 
- Tue, 14 Jul 2026 09:28:36 -0700 (PDT)
-Received: from framework.cable.rcn.com ([130.44.166.248])
- by smtp.gmail.com with ESMTPSA id
- af79cd13be357-92ee5b4c834sm1481529085a.1.2026.07.14.09.28.36
- for <ltp@lists.linux.it>
+ d=1e100.net; s=20251104; t=1784052453; x=1784657253;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to:content-type;
+ bh=H+XFXlIlEfHLzy3N+IXzMYNpDJpBO2aXlJw35LCRSSM=;
+ b=Cj2+vkjxqh8TRq6AD81c45hm0rPed3ozQXjFOhtBl9FybLlOtaU6qcIKvH3K1K5wB0
+ uspAFdwuwnYKW8/LyNhQJzL9vWwilQfWU5jVHf/DaYAvPaj/W7thErriP4qiDwKpeVTQ
+ 5Jx3pUwNoFwvithYeUu82Bzt7S8JDLs74VaE2fsHzkQWS1iBHboc+NkBv0TDvGzrhGDS
+ IoIay7eCfN8A3p6AdjOtxaRZDsrY05rXshAR7rqmJ0cbig1cYyDcTFfhax4qL+yJ4JK+
+ WySUmyXnP7svXCtgkOlHNxihiOwu7Ur+UWkE/oBB9T6+hgWJD81j3bnP0v9SJs3q3MDX
+ 1OdA==
+X-Gm-Message-State: AOJu0YyDLhzuQNjhaTDAuZdGAwTXAXc5nqghXjGxIBySj8reeaP3dRSG
+ wMXKi3VWzHxk2defJOXj/N7/ATP9GEZFWfQEJLulSx05OheI44rCLsw4U/EzwVwP
+X-Gm-Gg: AfdE7cnmJpS+nZ62nX9FND+llJDGaz8WF5d+FSezII4TXgcG+/I0YcMWmgKrFK/WTzZ
+ NWiRMJYTlgXbmL1UEQhyin57BRhNo65SfMCCb4W371IbrCM7Y5ddUM/6v4ap2iwdNhLwWq4XLmT
+ 1U9l13Pr/NyOp5DnnojaqQSkYzhAdJKdUCJpK42e7ZCdSc4CJaJV5DOEojzXXdeqCPibUSEv+gw
+ dzGRAVNz85ueo7YLzWocbJnIoZDHo8lTznJ308yx3ntBQx2DLdqWASWP8Dvr7DsUNhKr31rTj3L
+ cMZdm6buw1IUvGSyfBFYM7TY35DWDu9nEw0pf9zYjdsF4JpSumGwiyZQaRM8mJDFmueiKN5EG1n
+ kspjkPHSoPhiVQs/oTb9zO3erzhLuvvsMcHYFA6E8CRjYc5mEK7L4c9kh/gwlodCmxvRoJtWacd
+ 0EvZU0fixRONv7j+tEKv6tH5arTYjKAEENxpK0/4UNNY7xC+ve5NP/2jrK7/cYI1QKbh4XkkOaR
+ B5LObYStxsKKTouuPqfUwONdXj+RlkB
+X-Received: by 2002:a05:6a20:3d19:b0:3bf:866b:b74a with SMTP id
+ adf61e73a8af0-3c110b1e418mr18562749637.35.1784052453219; 
+ Tue, 14 Jul 2026 11:07:33 -0700 (PDT)
+Received: from
+ runnervm5mmn9.hoabpu31hpaupmk2ycwfr0t0ee.phxx.internal.cloudapp.net
+ ([172.182.244.81]) by smtp.gmail.com with ESMTPSA id
+ a92af1059eb24-13b659d8da9sm148805997c88.14.2026.07.14.11.07.32
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 14 Jul 2026 09:28:36 -0700 (PDT)
-To: ltp@lists.linux.it
-Date: Tue, 14 Jul 2026 12:28:34 -0400
-Message-ID: <20260714162834.47191-1-benjamin.wheeler@canonical.com>
-X-Mailer: git-send-email 2.43.0
+ Tue, 14 Jul 2026 11:07:32 -0700 (PDT)
+From: linuxtestproject.agent@gmail.com
+To: Benjamin Wheeler <benjamin.wheeler@canonical.com>
+Date: Tue, 14 Jul 2026 18:07:31 +0000
+Message-ID: <20260714180732.3800-1-linuxtestproject.agent@gmail.com>
+X-Mailer: git-send-email 2.54.0
+In-Reply-To: <20260714162834.47191-1-benjamin.wheeler@canonical.com>
+References: <20260714162834.47191-1-benjamin.wheeler@canonical.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Mailman-Approved-At: Tue, 14 Jul 2026 19:01:13 +0200
-Subject: [LTP] [PATCH v1 1/1] cpuhotplug03.sh: Poll for CPU migration
- instead of sleeping
+Subject: Re: [LTP] cpuhotplug03.sh: Poll for CPU migration instead of
+ sleeping
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -113,109 +91,28 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Benjamin Wheeler via ltp <ltp@lists.linux.it>
-Reply-To: Benjamin Wheeler <benjamin.wheeler@canonical.com>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-The test onlined the target CPU, slept a fixed one second and then
-checked once whether the scheduler had migrated a cpuhotplug_do_spin_loop
-process onto it. A blind sleep is both racy (the migration may not have
-happened yet on a busy or slow system) and wasteful (it always waits the
-full second even when the migration is immediate).
+Hi Benjamin,
 
-Replace the sleep and single check with tst_retry(), which retries the
-check a few times until a process is seen on the onlined CPU. The
-migration check is factored out into a check_cpu_migrated() helper.
+On Tue, 14 Jul 2026 12:28:34 -0400, Benjamin Wheeler wrote:
+> cpuhotplug03.sh: Poll for CPU migration instead of sleeping
 
-tst_retry() is the retry helper available in the legacy shell test API
-(test.sh) that this test uses; TST_RETRY_FUNC() only exists in the new
-API (tst_test.sh), so it is not usable here without converting the whole
-test, which is out of scope for this change.
+Verdict - Reviewed
 
-The TBROK vs TFAIL distinction is preserved: if no spin loop processes
-are running at all it is reported as a broken test (TBROK), whereas
-processes running but none migrating to the onlined CPU remains a
-genuine failure (TFAIL).
-
-Signed-off-by: Benjamin Wheeler <benjamin.wheeler@canonical.com>
 ---
- .../cpu_hotplug/functional/cpuhotplug03.sh    | 43 ++++++++++++-------
- 1 file changed, 27 insertions(+), 16 deletions(-)
+Note:
 
-diff --git a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug03.sh b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug03.sh
-index 3a461e30c..1577f3e6e 100755
---- a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug03.sh
-+++ b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug03.sh
-@@ -50,6 +50,20 @@ do_clean()
- 	set_all_cpu_states "$cpu_states"
- }
+The agent can sometimes produce false positives although often its
+findings are genuine. If you find issues with the review, please
+comment this email or ignore the suggestions.
 
-+# check_cpu_migrated()
-+#
-+#  Returns 0 if at least one cpuhotplug_do_spin_loop process is running
-+#  on CPU_TO_TEST, non-zero otherwise.
-+#  Since procps v3.3.15, we need to accurately select command name by -C
-+#  option, because procps cannot truncate normal command name to 15
-+#  characters by default.
-+check_cpu_migrated()
-+{
-+	ps -o psr -o command --no-headers -C cpuhotplug_do_s \
-+		| sed -e "s/^ *//" | cut -d' ' -f 1 \
-+		| grep -q "^${CPU_TO_TEST}$"
-+}
-+
- while getopts c:l: OPTION; do
- case $OPTION in
- 	c)
-@@ -120,21 +134,18 @@ until [ $LOOP_COUNT -gt $HOTPLUG03_LOOPS ]; do
- 		tst_brkm TBROK "CPU${CPU_TO_TEST} cannot be onlined"
- 	fi
-
--	sleep 1
--
--	# Verify at least one process has migrated to the new CPU
--	# Since procps v3.3.15, we need to accurately select command name
--	# by -C option, because procps cannot trucate normal command name
--	# to 15 characters by default).
--	ps -o psr -o command --no-headers -C cpuhotplug_do_s
--	if [ $? -ne 0 ]; then
--		tst_brkm TBROK "No cpuhotplug_do_spin_loop processes \
--			found on any processor"
--	fi
--	NUM=`ps -o psr -o command --no-headers -C cpuhotplug_do_s \
--		| sed -e "s/^ *//" | cut -d' ' -f 1 | grep "^${CPU_TO_TEST}$" \
--		| wc -l`
--	if [ $NUM -lt 1 ]; then
-+	# Verify at least one process has migrated to the new CPU.
-+	# Retry the check in a loop instead of blindly sleeping, since the
-+	# scheduler may take a while to migrate a task to the freshly
-+	# onlined CPU.
-+	if ! tst_retry "check_cpu_migrated"; then
-+		# Distinguish a broken workload (no spin loop processes running
-+		# at all) from a genuine failure (processes running, but none
-+		# migrated to the onlined CPU).
-+		if ! ps --no-headers -C cpuhotplug_do_s >/dev/null; then
-+			tst_brkm TBROK "No cpuhotplug_do_spin_loop processes \
-+				found on any processor"
-+		fi
- 		tst_resm TFAIL "No cpuhotplug_do_spin_loop processes found on \
- 			CPU${CPU_TO_TEST}"
- 		tst_exit
-@@ -145,7 +156,7 @@ until [ $LOOP_COUNT -gt $HOTPLUG03_LOOPS ]; do
- 	LOOP_COUNT=$((LOOP_COUNT+1))
- done
-
--tst_resm TPASS "$NUM cpuhotplug_do_spin_loop processes found on \
-+tst_resm TPASS "cpuhotplug_do_spin_loop process(es) migrated to \
- 	CPU${CPU_TO_TEST}"
-
- tst_exit
---
-2.43.0
-
+Regards,
+LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
