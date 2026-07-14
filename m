@@ -4,82 +4,98 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5C33EC43458
-	for <ltp@archiver.kernel.org>; Tue, 14 Jul 2026 12:18:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 053ECC43458
+	for <ltp@archiver.kernel.org>; Tue, 14 Jul 2026 12:49:24 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B45613E77B9
-	for <ltp@archiver.kernel.org>; Tue, 14 Jul 2026 14:18:47 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id CFEA83E9678
+	for <ltp@archiver.kernel.org>; Tue, 14 Jul 2026 14:49:22 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 818D83C5E52
- for <ltp@lists.linux.it>; Tue, 14 Jul 2026 14:18:30 +0200 (CEST)
-Received: from mail-qk2-x08.google.com (mail-qk2-x08.google.com
- [IPv6:2607:f8b0:4864:34::8])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 322AD3E56A8
+ for <ltp@lists.linux.it>; Tue, 14 Jul 2026 14:49:07 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 088701A00901
- for <ltp@lists.linux.it>; Tue, 14 Jul 2026 14:18:30 +0200 (CEST)
-Received: by mail-qk2-x08.google.com with SMTP id
- d75a77b69052e-51ce209041cso2892651cf.1
- for <ltp@lists.linux.it>; Tue, 14 Jul 2026 05:18:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1784031509; x=1784636309; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to:content-type;
- bh=VPZPEUCUb/TwaEU3QQ2DIHRqpMT5DTG11VIulnjADFE=;
- b=a6u8y32YoVPP7qKtRLXzp0vZvafkvSSksuZ1G1k/i3MOBGTUVLQU2IJop7tGkNyCfJ
- MrI3fqnxaj1YDFt1w2d+SMcrWIXXoUBm5Xi5MeCD7HkIrT9tfTDD6vsShZLXeKYz6pe2
- gm8JwA9ToxTz4GPTnWpUMJF4QpGUWS/KxQdRC/mp+9hqzL6RBdu5JendOObd96+x3BAV
- /VVRqh92DOe52vb/MWWRvCLjSC/rE/c5VT3q7prJRCvA3V4ZsC3LjWHxSa9wLxFSKNkK
- ea8Q5Ky+fSZxOoy1wBxmFH2QANQIlR/0FrMB+qgWai8QcUVZO+Id3lG+OazIZmzNGHKH
- uPCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1784031509; x=1784636309;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to:content-type;
- bh=VPZPEUCUb/TwaEU3QQ2DIHRqpMT5DTG11VIulnjADFE=;
- b=NZvTDz8GBUgY7nCl1cUFgPaYIoz1m/hlLO/LD0Lmr2ypg068FSu59KfXXeCwW/U/3L
- LqMAbUwzRcJBP0xazmf0rutakri+Y4wD50yUzCNZvTJhFJCZoWuyMZU0Xu8pxTn/xnwi
- of78DvJJMLpqYNN4GijZ6pkMC0bxzG0bZNHpzjBh6jKHipmKjDV5nOLN2zfTXqXc5xOG
- PoGfBBw7ERAaFEwf9R2TXdFnZrsOjG52/xRVFkRTsXYnBVDOPmMaw0kZLB0KZETvhgcJ
- ouu+4obZzDs64gX0l+JjJz7vwvHLBOu2o6AuGX73vfx93+YwVEaHiOC/MbrVUm//MBL+
- 8/kg==
-X-Gm-Message-State: AOJu0YxgvgXSs/m5vzouP7RDMlTGnQXBuVchvrafgBLlUFrJRTgMZlME
- xv7Byf9PRUnLpm7w1FkeI9uibzJ5gPu7tfAFD4Z9vQRbSy+rHGAzcA8B
-X-Gm-Gg: AfdE7ckg4w0BiF9nPFMGByfK92ic/l+ueaABpeh6QKk3Gvx54d0fxx0L0Bus1JveQN2
- 2dYSbBtva3dMOrsVywwLyOglnlgms4C9lEg6BMj6HTLPlbV/bqyMkcuNX2/164sEQfsKHztv5hw
- Fbskp32KnvJ4g7vco8PYPqkcXdPdzgUquVTvaAkJn6cskrpf8ohoogLIZYukjBwgeQVRUg4YB1R
- srj7CdBpyimg4kPEfwz/XuGwoUMWp616xhqLU1dwn4W3ZkZKbKazyR7R276+g62Q5Pduix0Hdlx
- qbozmNQd1HGNbHvfVk8noAVI5rKLKruK6lGDw/sO5eR/sTaYnC/VW5ZaaG8cgDtjvpA2oDFrxHJ
- B+7FCgR8Hs+yN/nh4sWUMyNdZJ9KfBNSJQOc+MlHrJiDmvMd1Tv/sHKE7lCmUAjrhIM9Uugv1CR
- P+iwQND5LTL15s38EtGEDZGOqgz8mN80uq7ZnB5ozov4EFSy/3D6xzKd95/BfbLAG1p4jgB92rD
- OGSuVjUa6dl1Tu9wr0OXe0He7DEFbRLiX+nlw==
-X-Received: by 2002:ac8:5a04:0:b0:51c:167a:a48f with SMTP id
- d75a77b69052e-51cbf2f8f92mr127045051cf.64.1784031508614; 
- Tue, 14 Jul 2026 05:18:28 -0700 (PDT)
-Received: from
- runnervm5mmn9.b3yniapqfpledkdknmdvdxy3fe.bx.internal.cloudapp.net
- ([20.62.255.18]) by smtp.gmail.com with ESMTPSA id
- d75a77b69052e-51caae5e91dsm114170451cf.21.2026.07.14.05.18.28
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 14 Jul 2026 05:18:28 -0700 (PDT)
-From: linuxtestproject.agent@gmail.com
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 84A5D1000368
+ for <ltp@lists.linux.it>; Tue, 14 Jul 2026 14:49:07 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 9AA5B761AF;
+ Tue, 14 Jul 2026 12:49:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1784033345; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=iyLiq83zHAWAvWpiAl3Ywf/Nu15wr85wFvmNDnVW+jA=;
+ b=rBGgGIDGLF/Nq2VLL6zW4E3Ks4axjGKTeSG3NNOa6z6WVE/s7J+ene/qtwi/DWY0t2qQ9O
+ vW2NTXnM3hk1sK/dpsDCqtRdSwVIjU1xzJqH6hj5N0Tl0/OQTiGRfhjn9pKMcuuNYKXu5S
+ i+V8pm4bDMuIFy3dEIZuBRIwOSu5wwQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1784033345;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=iyLiq83zHAWAvWpiAl3Ywf/Nu15wr85wFvmNDnVW+jA=;
+ b=bF1lnfcqA183bX6xJgfxRPew4gT/OFfWg5a/CR0h0QpkKTe8baBX/p7cQXO0rzG4oIgmbE
+ 4Z1kw8Ozk/cZ2yCg==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1784033345; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=iyLiq83zHAWAvWpiAl3Ywf/Nu15wr85wFvmNDnVW+jA=;
+ b=rBGgGIDGLF/Nq2VLL6zW4E3Ks4axjGKTeSG3NNOa6z6WVE/s7J+ene/qtwi/DWY0t2qQ9O
+ vW2NTXnM3hk1sK/dpsDCqtRdSwVIjU1xzJqH6hj5N0Tl0/OQTiGRfhjn9pKMcuuNYKXu5S
+ i+V8pm4bDMuIFy3dEIZuBRIwOSu5wwQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1784033345;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=iyLiq83zHAWAvWpiAl3Ywf/Nu15wr85wFvmNDnVW+jA=;
+ b=bF1lnfcqA183bX6xJgfxRPew4gT/OFfWg5a/CR0h0QpkKTe8baBX/p7cQXO0rzG4oIgmbE
+ 4Z1kw8Ozk/cZ2yCg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8750C779AE;
+ Tue, 14 Jul 2026 12:49:05 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id tznkH0EwVmo3NgAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Tue, 14 Jul 2026 12:49:05 +0000
+Date: Tue, 14 Jul 2026 14:48:52 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
 To: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Tue, 14 Jul 2026 12:18:27 +0000
-Message-ID: <20260714121827.3999-1-linuxtestproject.agent@gmail.com>
-X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260714-syscall_invalid_nr-v2-1-b94a8f60f112@suse.com>
+Message-ID: <alYwNHy3AP34FJPR@yuki.lan>
 References: <20260714-syscall_invalid_nr-v2-1-b94a8f60f112@suse.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20260714-syscall_invalid_nr-v2-1-b94a8f60f112@suse.com>
+X-Spamd-Result: default: False [-8.30 / 50.00]; REPLY(-4.00)[];
+ BAYES_HAM(-3.00)[100.00%]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ NEURAL_HAM_SHORT(-0.20)[-0.998]; MIME_GOOD(-0.10)[text/plain];
+ TO_DN_ALL(0.00)[];
+ URIBL_BLOCKED(0.00)[suse.com:email,imap1.dmz-prg2.suse.org:helo,suse.cz:email,yuki.lan:mid];
+ RCPT_COUNT_TWO(0.00)[2]; FUZZY_RATELIMITED(0.00)[rspamd.com];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ ARC_NA(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ FROM_HAS_DN(0.00)[]; RCVD_TLS_ALL(0.00)[];
+ FROM_EQ_ENVFROM(0.00)[]; MIME_TRACE(0.00)[0:+];
+ RCVD_COUNT_TWO(0.00)[2]; MISSING_XM_UA(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[yuki.lan:mid, suse.cz:email, suse.com:email,
+ imap1.dmz-prg2.suse.org:helo]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] syscall02: test invalid syscall number -1
+Subject: Re: [LTP] [PATCH v2] syscall02: test invalid syscall number -1
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,38 +107,77 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+Cc: Linux Test Project <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Andrea,
+Hi!
+> diff --git a/runtest/syscalls b/runtest/syscalls
+> index a021c79da49d4157c33187caed2dd3f0483759e0..8a777e61da1af59ba694e0bc5b5d92bb1d63754a 100644
+> --- a/runtest/syscalls
+> +++ b/runtest/syscalls
+> @@ -1678,6 +1678,7 @@ sync_file_range01 sync_file_range01
+>  sync_file_range02 sync_file_range02
+>  
+>  syscall01 syscall01
+> +syscall02 syscall02
+>  
+>  sysconf01 sysconf01
+>  
+> diff --git a/testcases/kernel/syscalls/syscall/.gitignore b/testcases/kernel/syscalls/syscall/.gitignore
+> index 74a081e40cb564e874e0f81478d3d1a0e95b6df4..fed1d81079450a7442023447285cd112924f7a10 100644
+> --- a/testcases/kernel/syscalls/syscall/.gitignore
+> +++ b/testcases/kernel/syscalls/syscall/.gitignore
+> @@ -1 +1,2 @@
+>  /syscall01
+> +/syscall02
+> diff --git a/testcases/kernel/syscalls/syscall/syscall02.c b/testcases/kernel/syscalls/syscall/syscall02.c
+> new file mode 100644
+> index 0000000000000000000000000000000000000000..2fefcb17c763813653a6644759c2a035bee2c604
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/syscall/syscall02.c
+> @@ -0,0 +1,31 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Copyright (c) 2026 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
+> + */
+> +
+> +/*\
+> + * Verify that a raw :manpage:`syscall(2)` with the invalid system call
+> + * number -1 fails with ENOSYS.
+> + *
+> + * The behavior of number -1 is architecture specific, so the test only runs on
+> + * the architectures where it has been verified against the kernel entry code.
+> + */
+> +
+> +#define _GNU_SOURCE
+> +#include <unistd.h>
+> +
+> +#include "tst_test.h"
+> +
+> +static void run(void)
+> +{
+> +	TST_EXP_FAIL2(syscall(-1), ENOSYS, "invalid syscall number -1");
+> +}
+> +
+> +static struct tst_test test = {
+> +	.test_all = run,
+> +	.supported_archs = (const char *const []) {
+> +		"x86_64",
+> +		"aarch64",
+> +		NULL
+> +	},
+> +};
 
-On Tue, 14 Jul 2026 12:56:04 +0200, Andrea Cervesato wrote:
-> syscall02: test invalid syscall number -1
+I do not think that there is an architecture that has a valid syscall
+mapped to -1. I do not think that we need to restrict the architecture
+here.
 
-> Add a test verifying that a raw syscall() with the reserved number -1
-> fails with ENOSYS.
-
-The subject and the doc comment inside the test both say "invalid syscall
-number -1", but the commit body says "reserved number -1". These terms
-carry different meanings. "Reserved" implies deliberate kernel allocation
-for a specific purpose, while "invalid" is the user-facing description
-for an out-of-range syscall number. Could "reserved" be changed to
-"invalid" here to match the subject and the test description block?
-
-Verdict - Needs revision
-
----
-Note:
-
-The agent can sometimes produce false positives although often its
-findings are genuine. If you find issues with the review, please
-comment this email or ignore the suggestions.
-
-Regards,
-LTP AI Reviewer
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
