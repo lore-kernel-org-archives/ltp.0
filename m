@@ -4,81 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 19370C44501
-	for <ltp@archiver.kernel.org>; Tue, 14 Jul 2026 10:54:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E8F0AC44501
+	for <ltp@archiver.kernel.org>; Tue, 14 Jul 2026 10:54:48 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 75BF73E77FB
-	for <ltp@archiver.kernel.org>; Tue, 14 Jul 2026 12:54:04 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 99C283E574D
+	for <ltp@archiver.kernel.org>; Tue, 14 Jul 2026 12:54:47 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id BD7753E2F07
- for <ltp@lists.linux.it>; Tue, 14 Jul 2026 12:53:49 +0200 (CEST)
-Received: from mail-pz2-x01.google.com (mail-pz2-x01.google.com
- [IPv6:2607:f8b0:4864:3b::1])
+ by picard.linux.it (Postfix) with ESMTPS id D693C3E2F07
+ for <ltp@lists.linux.it>; Tue, 14 Jul 2026 12:54:32 +0200 (CEST)
+Received: from mail-pj2-x02.google.com (mail-pj2-x02.google.com
+ [IPv6:2607:f8b0:4864:39::2])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 5835560071E
- for <ltp@lists.linux.it>; Tue, 14 Jul 2026 12:53:49 +0200 (CEST)
-Received: by mail-pz2-x01.google.com with SMTP id
- 41be03b00d2f7-c8c1ebd68a1so2720621a12.0
- for <ltp@lists.linux.it>; Tue, 14 Jul 2026 03:53:49 -0700 (PDT)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 5BB851A00792
+ for <ltp@lists.linux.it>; Tue, 14 Jul 2026 12:54:32 +0200 (CEST)
+Received: by mail-pj2-x02.google.com with SMTP id
+ 98e67ed59e1d1-381c69ad0d9so2506907a91.0
+ for <ltp@lists.linux.it>; Tue, 14 Jul 2026 03:54:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1784026428; x=1784631228; darn=lists.linux.it;
+ d=gmail.com; s=20251104; t=1784026471; x=1784631271; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to:content-type;
- bh=8ntK4iRdIpODmBz1fx+OPrEXs2lFA9UnFbSJG8fEP3M=;
- b=Ng+krUgLtTuRJGnBmW0jrtU7vskrfEb/izsehlYYCc80TmxKfKEgFP9S6C7XUratbm
- DgdDdgFm7uyTSwG4h4rc9UR4ol9wvV1MUhNe8rl4aOQe+4oZ4kFsWm41braB/z3QJXSs
- tJKojyI41yrFfJSxlTYuxLFdxp7L3p8NEoL21SA4t6VwYBGQ1CYRpWenuJmnetGPKbzF
- jotdx2Nw122RSUkWToO8hUJXL9YGtHSvWmY/v29W3lR7J21KWJ04H2V6rnh4AxtKAqbu
- Fpp9ucd7kkvDJGfQ3WHHWk2gwQK827JCKtZrL6NDUfE4jbVCgaFxUD76FjNF/FaBm20K
- Y8GQ==
+ bh=KoAF8AkrT5w4//mNdLlkFWyrHOP1Bpl85QZ3xCABsZc=;
+ b=H1TTUSlGgCTxqihMQjlmJp98+D15BvmW1guDhgllzKrA/nQkBKCpxz6qZLeurrP6wZ
+ Q5PM00rorXRo8tdc1YD7vXpZxRELH5UBhoBk+XXKi3/w79ovnGUSDcAH78EB/UxEMKrC
+ aYKxjp+cualikM6waDatkoCfzyMEEF2fsH5YG6c14+2EFoqqtfL+QnITkMTdS83ZZt+n
+ 4K6UOhiYzREX5mwIYINJWNFByfvqo1mTYpFqgY/xE6RcgetDjfwPL74wuP1asv2doRAz
+ msr8lrI1/76rxjFmEvDSQfaFIkLEyOxdI6ada/enZ80IMYFHTNyZrQp1UJ47+aoHs7fY
+ fBqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1784026428; x=1784631228;
+ d=1e100.net; s=20251104; t=1784026471; x=1784631271;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to:content-type;
- bh=8ntK4iRdIpODmBz1fx+OPrEXs2lFA9UnFbSJG8fEP3M=;
- b=IlM7cyHGzEmsfwTeltniZEwfutEJdPzM49slAvKJ29A12Dalx52Ucc+bQOUc5vFSC/
- u1ZiiltJohxUMZLOkMPJHPgIZ8gQWZahm11GDFm7EYbstpHXzquwPdhuLEY5uCmmjxKA
- seDnCzt0mNJyFFnsuwUw/x2cIFazxg1Ox/gGmUEVyi0b5ziCbrmpYdc6/ER8wNunJXC5
- wTtC2Yep5wonsbX+0t4rxjsY22PmQZ69jbU4Njtmddzbzf9g3OnirKZe5COlVO4h8tQs
- gAw3aXWDpxskXQdW+bckdTVoJSGKp4e211l249iX+lxt6WerzclYeym3ZxXbu4FJiNMs
- a/Rg==
-X-Gm-Message-State: AOJu0YzFCJwKi+nYzwRLFHKE25LVfO1+To09cOkOEx2pMGoWkcycebSl
- vm0FDauqd41E2ySWESjcX64JvTgXI0JIJ/oE8aais6r4OSXjvICugrypJsRNvo7FqUQ=
-X-Gm-Gg: AfdE7clnnJvKR6GuidKtQkY10bnrXkb1wMPE4uyFrgBBtgKtqdQ5VGmiCOYIgt+T+kb
- ScWygoLoW2mo90SCe8YYY9o/K6jkPYWJhFBCG9EaE9t8ZFFxIIk2T1fBg0/yG1A3XlGTRb/uvr0
- u8kA925UuBHV5OCykaGE4mAJepYFEH2MqB8jgOuGTC4KezJak2MGqekLeU3pg910ATHaj/7jeh5
- vru9xlugbQhPE1K0pQBAbQ4lU1R70Q9f2T7rAdU4S9y7ldznHZWE+Wx3gpdsQuzdekmqjvZVqF6
- 8AKxKYCIiIDQTQhnr9o7uSkQQb7OVM57uNKcd0+gh8go6hN9uRU3cvAp2l+SpGRsAm6t3QH8//l
- zWDp/kChQqORsrqe5EIgWk3/iCozMdPGHgb/aAdgUilX+NtOA60wkQPBm2sSxQWc8jNxQ7Yfi4O
- Ovlp9lMKOPErMrFXE6EoSRMr/sJ0MaAc7f44/irvIXQszGrVW7c4fp3y50ev6bhdct3ibBLiR96
- 56OZPlnmYtNk3iVabpgR/2ysV6G3Q==
-X-Received: by 2002:a05:6300:2189:b0:3bf:6c08:4ebb with SMTP id
- adf61e73a8af0-3c3571d0894mr2592672637.48.1784026427489; 
- Tue, 14 Jul 2026 03:53:47 -0700 (PDT)
+ bh=KoAF8AkrT5w4//mNdLlkFWyrHOP1Bpl85QZ3xCABsZc=;
+ b=Kjt5yTtpbosnytl2CpSPqXYvztIe29jaUTGBJIjwRJgEUtgwH2b0jFZ4w2tlUUR/os
+ omnljXLLNz0K6Ofrd+JarQqzeZ6KAVkWyttSz1Yd2CJgJ1RtnHl/Ezx2uHaMIBPJvnaP
+ ok5tcRzjlEWXuLH/wlIgeuO+fJOhjYXUNgh/eSG/KRTEhgEfhHjyzPkShZujgYObNm+K
+ tzCKa+DhBMEmVBAV+MPEMHQhr3zXfmTLPkUUUarlSIQ80dBSlzYttzZiIPmmDs/WkQ6a
+ e9wKwiwftGLPROKkmbgajrMZKJYb37ncN5vkpGKFMRtC5t4gNQO/6HbEhuhmyuVH4fyl
+ Eaeg==
+X-Gm-Message-State: AOJu0Yy0ZTFM4CR41ztLoaS87zunkxIOq4X/PcYUsCOlxrj827RDzR4Y
+ xiW+EkEDTtEDOU1XCO9wysTr2U4mleq43WKwU8s7pHqC59icil865uFNFrl2bbl+
+X-Gm-Gg: AfdE7cl+uyc/zoTGasnMzH1S5UBJvzoONRD1bswEBOAaC1XM2oA5xj3RE01fZC9D71N
+ 1K/JtAyBDksLZxQ5LIg0jkevS/h2WHgupnj3ZahueFjPSacJjKukbMhdQ871wINo87xMtN9sIWM
+ 7odgPx1kKXPun442uV7W0Z15e/8lkKFlAR2oxVPqD/vFI2V7DsagXuwll7Av0TS/JrmtG6JOqrn
+ 1fDCt+7LIWzT/knh7kHKv8JsVyM2whNJI6rh9AHCL0DEcSFU1OqcIOTEBOm0ZGcCFMTmUCdoxIv
+ lfFBDeK4Q8ZRA+rZy9FF3OUcRnb8KzQ+Q26O2Ybyat3vQIMDoeoywm8m5Fr0n7gdaBgLPygNwTo
+ KrCLzfRGOUqi2ZMeeYTZufyEXDIixlPn+WXnU8EDJoZj3J7Va/QTYh4LRkeStpPz5NHHkDwP0+T
+ 9CJ4BoBexTIhJ8nhYn5nFKgnrpWLQp7svYkn8VdwvcovK0wcmvjzt8HLkr6ehpP9W6IYiJTaz5N
+ N88Oy3kY7WcQb1Frp6jWgAAL2iYPg5t8DG+uZ6PWw==
+X-Received: by 2002:a05:6a20:9f95:b0:3b7:d9d6:9fc9 with SMTP id
+ adf61e73a8af0-3c356f75555mr2474681637.2.1784026470615; 
+ Tue, 14 Jul 2026 03:54:30 -0700 (PDT)
 Received: from
- runnervm5mmn9.c1ygo510fseu3ihkomri2qkfzd.phxx.internal.cloudapp.net
- ([20.169.93.26]) by smtp.gmail.com with ESMTPSA id
- 5a478bee46e88-313cb804197sm30183014eec.13.2026.07.14.03.53.47
+ runnervm5mmn9.ksylce4ud4kezku4puvbvmbvsd.dx.internal.cloudapp.net
+ ([172.184.204.102]) by smtp.gmail.com with ESMTPSA id
+ a92af1059eb24-13b84d6ce15sm37966656c88.5.2026.07.14.03.54.30
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 14 Jul 2026 03:53:47 -0700 (PDT)
+ Tue, 14 Jul 2026 03:54:30 -0700 (PDT)
 From: linuxtestproject.agent@gmail.com
-To: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Tue, 14 Jul 2026 10:53:46 +0000
-Message-ID: <20260714105346.3883-1-linuxtestproject.agent@gmail.com>
+To: Gang Yan <gang.yan@linux.dev>
+Date: Tue, 14 Jul 2026 10:54:28 +0000
+Message-ID: <20260714105429.4063-1-linuxtestproject.agent@gmail.com>
 X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260714-cve-2026-46331-v5-1-bab4ac23c1f7@suse.com>
-References: <20260714-cve-2026-46331-v5-1-bab4ac23c1f7@suse.com>
+In-Reply-To: <20260714101454.8784-2-gang.yan@linux.dev>
+References: <20260714101454.8784-2-gang.yan@linux.dev>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] lapi: Add pkt_cls.h fallback
+Subject: Re: [LTP] loongarch.in: add memfd_secret syscall
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -96,42 +97,76 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Andrea,
+Hi Gang,
 
-On Tue, 14 Jul 2026 10:38:58 +0200, Andrea Cervesato wrote:
-> lapi: Add pkt_cls.h fallback
+On Tue Jul 14 18:14:52 2026 +0800, Gang Yan wrote:
+> loongarch.in: add memfd_secret syscall
 
---- [PATCH 4/4] ---
+--- [PATCH 1/3] ---
 
-> +/*
-> + * Same as NETDEV_REMOVE_QDISC() but does not fail when the qdisc is
-> + * missing (strict=0), so it can be used to clear a possibly absent qdisc.
-> + */
-> +#define NETDEV_MAY_REMOVE_QDISC(ifname, family, parent, handle, qd_kind) \
+The subject names the wrong file. The changed file is "loongarch64.in",
+not "loongarch.in".
 
-New public macros in include/ require kernel-doc (/** */), not a plain
-block comment. The content is fine; it just needs the right opener:
+> In 209f0c6360da('Update arch(s) syscalls files'), it only removes the
+> 'memfd_secret' for loongarch, so that caused a error based on the old
+> kernel:
 
-  /**
-   * NETDEV_MAY_REMOVE_QDISC - remove qdisc without failing if absent.
-   * @ifname: network interface name
-   * @family: address family
-   * @parent: parent handle
-   * @handle: qdisc handle
-   * @qd_kind: qdisc kind string
-   *
-   * Same as NETDEV_REMOVE_QDISC() but passes strict=0, so it does not
-   * fail when the qdisc is missing.
-   */
+"a error" -> "an error". Also, "based on the old kernel" is unclear: the
+EBADF failure occurs because __NR_memfd_secret defaults to -1 when absent
+from the syscall table, not because of any particular kernel version.
 
-> +#define NETDEV_REMOVE_QDISC(ifname, family, parent, handle, qd_kind) \
->  	tst_netdev_remove_qdisc(__FILE__, __LINE__, 1, (ifname), (family), \
->  		(parent), (handle), (qd_kind))
-> +/*
+> +memfd_secret 447
+>  landlock_restrict_self 446
 
-No blank line between the closing of NETDEV_REMOVE_QDISC and the comment
-that opens NETDEV_MAY_REMOVE_QDISC. All other macro blocks in the file
-have a blank line between them.
+memfd_secret (447) is inserted before landlock_restrict_self (446),
+breaking the ascending numerical order of the file. Should the insertion
+point be after landlock_restrict_self?
+
+  landlock_add_rule       445
+  landlock_restrict_self  446
++ memfd_secret            447
+  process_mrelease        448
+
+--- [PATCH 2/3] ---
+
+The subject names the wrong file. The script is "generate_syscalls.sh"
+(plural), not "generate_syscall.sh".
+
+> +#define tst_syscall_base(NR, ...) ({ \
+> +    intptr_t tst_ret; \
+> +    if (NR == __LTP__NR_INVALID_SYSCALL) { \
+> +        errno = ENOSYS; \
+> +        tst_ret = -1; \
+> +    } else { \
+> +        tst_ret = syscall(NR, ##__VA_ARGS__); \
+> +    } \
+> +    tst_ret; \
+> +})
+
+The macro body uses spaces for indentation. LTP follows Linux kernel coding
+style which requires tabs. The same applies to the refactored tst_syscall
+body below.
+
+> +#define tst_syscall(NR, ...) ({ \
+> +    intptr_t tst_ret = tst_syscall_base(NR, ##__VA_ARGS__); \
+> +    if (tst_ret == -1 && errno == ENOSYS) { \
+> +        TST_SYSCALL_BRK__(NR, #NR); \
+> +    } \
+> +    tst_ret; \
+> +})
+
+Same indentation issue -- tabs required.
+
+--- [PATCH 3/3] ---
+
+> If some feature is not supported by some arch, like _NR__memfd_secret,
+
+Typo: "_NR__memfd_secret" should be "__NR_memfd_secret".
+
+> This patch use tst_syscall to give a more specific fail reason:
+
+The macro used throughout this patch is tst_syscall_base(), not
+tst_syscall(). "use" -> "uses".
 
 Verdict - Needs revision
 
