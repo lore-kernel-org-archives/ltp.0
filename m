@@ -4,61 +4,96 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 043C6C44501
-	for <ltp@archiver.kernel.org>; Tue, 14 Jul 2026 08:46:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1784018770; h=to : date :
- message-id : mime-version : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : cc : content-type : content-transfer-encoding : sender :
- from; bh=AfHc4mNp1aM5mg+LHtwRuXpK4cxwejumqkrEx1uA2xM=;
- b=ORukgTILyUtM11cOPSIyLFCnrOYG5LOz3tE8iOZ9svImRKFGlusr8Wix7+ugoNwVlxx0B
- tEeXe3BKE6oNjon6BeDyWkV3iVuoRGPm61fndpk9x2vc863zifoSOpsEXEfJCtlgVonIWmG
- e7UPxA2wsIKIplMFD6Ve+QnaWT6yan4=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 06679C43458
+	for <ltp@archiver.kernel.org>; Tue, 14 Jul 2026 08:50:52 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7008D3E490F
-	for <ltp@archiver.kernel.org>; Tue, 14 Jul 2026 10:46:10 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 93C473E2604
+	for <ltp@archiver.kernel.org>; Tue, 14 Jul 2026 10:50:50 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id CFCEF3E212C
- for <ltp@lists.linux.it>; Tue, 14 Jul 2026 10:45:51 +0200 (CEST)
-Received: from canpmsgout10.his.huawei.com (canpmsgout10.his.huawei.com
- [113.46.200.225])
+ by picard.linux.it (Postfix) with ESMTPS id 366953DCD69
+ for <ltp@lists.linux.it>; Tue, 14 Jul 2026 10:50:34 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 28F7C200743
- for <ltp@lists.linux.it>; Tue, 14 Jul 2026 10:45:49 +0200 (CEST)
-dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
- c=relaxed/relaxed; q=dns/txt; h=From;
- bh=6X5aweevi9nM4aeFDc3MUPxEAq/RyEjoKRJVhAKR7wM=;
- b=V7PkgyjAbVoTcYpVjAzpVO9AGM8/Ot8pBA6fUdbQGqYlCWlqZkr8Uyt7bpI2OrSs1IaqDv5ow
- Mq6P5Vyk4AVHgFpM6+yhN2M+n7TafrT1O23/uMFfQPvYHliN8+oO5eay889jAAIFzZjOdkJYgS/
- ygs33oodgmb93AKY4os4kXc=
-Received: from mail.maildlp.com (unknown [172.19.162.92])
- by canpmsgout10.his.huawei.com (SkyGuard) with ESMTPS id 4gzt251tkGz1K98y;
- Tue, 14 Jul 2026 16:36:29 +0800 (CST)
-Received: from dggpemr500010.china.huawei.com (unknown [7.185.36.210])
- by mail.maildlp.com (Postfix) with ESMTPS id BC9FB40586;
- Tue, 14 Jul 2026 16:45:45 +0800 (CST)
-Received: from huawei.com (10.50.85.180) by dggpemr500010.china.huawei.com
- (7.185.36.210) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Tue, 14 Jul
- 2026 16:45:45 +0800
-To: <ltp@lists.linux.it>, <andrea.cervesato@suse.com>
-Date: Tue, 14 Jul 2026 17:06:32 +0800
-Message-ID: <20260714090632.2910506-1-zhanghongtao35@huawei.com>
-X-Mailer: git-send-email 2.43.0
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 6AA881A007F1
+ for <ltp@lists.linux.it>; Tue, 14 Jul 2026 10:50:33 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id D63BA3E2B;
+ Tue, 14 Jul 2026 08:50:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1784019028; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=+qEjuQevZqyO6CweEJ3yMgcImI5q9b4HueNFxukrWBY=;
+ b=s4SNhuPf+5SoB/tzJp1g4kRW4KfyzEwxuvDZ2R7jYgVo59zkMKwscLwngtqjfvFzeVhIZM
+ 37+Yz8wpxPoPv6RJjeGjUKe23ftzWjHU2CpFy+KHrwElA2b+FdziVDksUZ4+V6bvGyL+b7
+ VoW7XSFCcQlJRKUcvTkn/p3DMIfCtXs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1784019028;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=+qEjuQevZqyO6CweEJ3yMgcImI5q9b4HueNFxukrWBY=;
+ b=0JwU3Xfi5VHGnTLIrzzwk4OMpyixANaI4Lo8EYJVK2gNheCFt+w3ugG2DDUQwxnRpA0CLr
+ Gu7AL2XOhITgt4DA==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1784019027; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=+qEjuQevZqyO6CweEJ3yMgcImI5q9b4HueNFxukrWBY=;
+ b=1B+0jh7FrXQQ1+HHKQThBJKIvqy9bRhaMMAWfiTDLn/onC4NZZ1ZccpUPaN8GEh3vSIL9n
+ xE0AXPEI/9YjHGE/3gz0sYGNGCMnSE4zmTuv5tmd9oRl0XDMf/fR38w8oRe7LKXhpTZ6cu
+ kudItpntQ3vXGR/Ql0kCi9ZrL1J01mo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1784019027;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=+qEjuQevZqyO6CweEJ3yMgcImI5q9b4HueNFxukrWBY=;
+ b=0SUWwe6zdRzAhxMLdUmTMZzR6TQJcyZkAB7lWn9uVYayhESFitOG3TFThTnU80ngDq7jrP
+ oZkshb998IkogdBQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BBC01779AE;
+ Tue, 14 Jul 2026 08:50:27 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id DYdzLFP4VWpARAAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Tue, 14 Jul 2026 08:50:27 +0000
+Date: Tue, 14 Jul 2026 10:50:14 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Andrea Cervesato <andrea.cervesato@suse.de>
+Message-ID: <alX4Rqs6_uByyjfS@yuki.lan>
+References: <20260714-checkpatch_remove_rules-v1-1-b5c561f2dc16@suse.com>
 MIME-Version: 1.0
-X-Originating-IP: [10.50.85.180]
-X-ClientProxiedBy: kwepems500002.china.huawei.com (7.221.188.17) To
- dggpemr500010.china.huawei.com (7.185.36.210)
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20260714-checkpatch_remove_rules-v1-1-b5c561f2dc16@suse.com>
+X-Spamd-Result: default: False [-8.30 / 50.00]; REPLY(-4.00)[];
+ BAYES_HAM(-3.00)[99.99%]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ NEURAL_HAM_SHORT(-0.20)[-0.999]; MIME_GOOD(-0.10)[text/plain];
+ MISSING_XM_UA(0.00)[]; RCPT_COUNT_TWO(0.00)[2];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
+ RCVD_TLS_ALL(0.00)[]; TO_DN_ALL(0.00)[]; MIME_TRACE(0.00)[0:+];
+ FROM_HAS_DN(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ FROM_EQ_ENVFROM(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo, yuki.lan:mid,
+ suse.cz:email]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] Revert "tpci: unbind driver in
- test_assign_resources()"
+Subject: Re: [LTP] [PATCH] checkpatch: relax parenthesis style checks
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -70,58 +105,18 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Hongtao Zhang via ltp <ltp@lists.linux.it>
-Reply-To: Hongtao Zhang <zhanghongtao35@huawei.com>
-Cc: liuyongqiang13@huawei.com
+Cc: Linux Test Project <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-While the patch fixes a use-after-free in /proc/iomem by unbinding and
-rebinding the driver around PCI resource reassignment, this approach is
-too dangerous for a general test. Unbinding a driver from a critical device
-(e.g. a network or block controller) can instantly break SSH connectivity or
-cause filesystem corruption. Such side effects are unacceptable compared to the original issue.
-So need to revert that patch.
+Hi!
+Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
 
-Signed-off-by: Hongtao Zhang <zhanghongtao35@huawei.com>
----
- .../device-drivers/pci/tpci_kernel/ltp_tpci.c     | 15 ---------------
- 1 file changed, 15 deletions(-)
-
-diff --git a/testcases/kernel/device-drivers/pci/tpci_kernel/ltp_tpci.c b/testcases/kernel/device-drivers/pci/tpci_kernel/ltp_tpci.c
-index 45138d834..660b3a423 100644
---- a/testcases/kernel/device-drivers/pci/tpci_kernel/ltp_tpci.c
-+++ b/testcases/kernel/device-drivers/pci/tpci_kernel/ltp_tpci.c
-@@ -442,24 +442,9 @@ static int test_assign_resources(void)
- 
- 		if (r->flags & IORESOURCE_MEM &&
- 			r->flags & IORESOURCE_PREFETCH) {
--
--			if (dev->hdr_type == PCI_HEADER_TYPE_NORMAL) {
--				if (dev->dev.driver)
--					device_release_driver(&dev->dev);
--			}
--
- 			pci_release_resource(dev, i);
- 			ret = pci_assign_resource(dev, i);
- 			prk_info("assign resource to '%d', ret '%d'", i, ret);
--
--			if (ret == 0 && dev->hdr_type == PCI_HEADER_TYPE_NORMAL) {
--				int attach_ret;
--
--				attach_ret = device_attach(&dev->dev);
--				if (attach_ret < 0)
--					prk_info("device_attach failed for endpoint, ret: %d", attach_ret);
--			}
--
- 			rc |= (ret < 0 && ret != -EBUSY) ? TFAIL : TPASS;
- 		}
- 	}
 -- 
-2.43.0
-
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
