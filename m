@@ -4,49 +4,99 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 27AF9C43458
-	for <ltp@archiver.kernel.org>; Tue, 14 Jul 2026 10:16:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 20737C44501
+	for <ltp@archiver.kernel.org>; Tue, 14 Jul 2026 10:16:51 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id CE5983E56DC
-	for <ltp@archiver.kernel.org>; Tue, 14 Jul 2026 12:16:28 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 7B66B3E65CD
+	for <ltp@archiver.kernel.org>; Tue, 14 Jul 2026 12:16:49 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 3ECBD3E56E2
- for <ltp@lists.linux.it>; Tue, 14 Jul 2026 12:15:31 +0200 (CEST)
-Received: from out-177.mta1.migadu.com (out-177.mta1.migadu.com
- [95.215.58.177])
+ by picard.linux.it (Postfix) with ESMTPS id 1432B3E65CD
+ for <ltp@lists.linux.it>; Tue, 14 Jul 2026 12:16:33 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 389EB600077
- for <ltp@lists.linux.it>; Tue, 14 Jul 2026 12:15:31 +0200 (CEST)
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and
- include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
- t=1784024130;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 9ED30200743
+ for <ltp@lists.linux.it>; Tue, 14 Jul 2026 12:16:32 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 4F8D43E0A;
+ Tue, 14 Jul 2026 10:16:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1784024191; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=6wuGPa6mq0WKUH0Er1oPWbTAAMafUlkrvZ6eWu7vsw8=;
- b=cuE1M2dyT59tCgKr4EdsNhO3w4fqlWdPCrUFx1e/PjeXgoEzAAsfKVlw2HsW+qhBnz1lPq
- x38o+JXIvUcYsRITlLX7lTP8f4EhznULlegNhsS856f+1a5PEzeu8blS+q32stg+HzAf3T
- QbmUI94rutZ2AHj8W9xmfnsUI+Cls8A=
-From: Gang Yan <gang.yan@linux.dev>
-To: ltp@lists.linux.it
-Date: Tue, 14 Jul 2026 18:14:53 +0800
-Message-ID: <20260714101454.8784-3-gang.yan@linux.dev>
-In-Reply-To: <20260714101454.8784-1-gang.yan@linux.dev>
-References: <20260714101454.8784-1-gang.yan@linux.dev>
+ bh=vuTer6G5eQKhQwYstR2ij54S+CYfAJyS5seBokSjqJM=;
+ b=S6qyzS/360JRqnpp5/nrPyenO1DP5Y406KSr2Yp7ISwrfDc4tz6d5kQ0mHD1s5gPfjNKne
+ z9ZU6HV+7SivE8DdW9JqKwzK4BoyhhFXMzA4lg4Y8s0iJcEVTW8Gd/OKw7TGvakA3UfopZ
+ 5QtIqIEx0AB4G4+m9bPbzu3iFb87Whs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1784024191;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=vuTer6G5eQKhQwYstR2ij54S+CYfAJyS5seBokSjqJM=;
+ b=m5On8mafdI/09oMTl+Emzih7wHGEfAPWeyHxJNk8VIkYb9oGYVx/VxP1ihqPPWdauw0VZZ
+ fBEeJLFY/yg+f5Cw==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1784024190; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=vuTer6G5eQKhQwYstR2ij54S+CYfAJyS5seBokSjqJM=;
+ b=lf3kwpyMJgpAFdyCcMN6EqM5Gm2jt4EQf/H3m5hltL+PBRYFHC2xI8WUq0ZxgyBQguYJ/W
+ mKyCSkdvSczP7/khhDSE57zMHYRYxbQxMYWnPnTg06rTGyfUveBQ/YMKyVgSEK3uvgRXCr
+ 1X9NFfHmfEgR8gpgA/D6yMbTg4ls7tg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1784024190;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=vuTer6G5eQKhQwYstR2ij54S+CYfAJyS5seBokSjqJM=;
+ b=4v7Vm4lODKt50uMT5IXoKLsLr+0EV47OXSeBXmwxxUQTssxU5RMYY/dnDl+xylU6JTSoX/
+ AoKU5y9RF/18QFAg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2D862779AE;
+ Tue, 14 Jul 2026 10:16:30 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id d1rMCX4MVmprGwAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Tue, 14 Jul 2026 10:16:30 +0000
+Date: Tue, 14 Jul 2026 12:16:25 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Petr Vorel <pvorel@suse.cz>
+Message-ID: <alYMeUfb_hUkIXgu@yuki.lan>
+References: <20260709085353.345957-1-chrubis@suse.cz>
+ <20260709085353.345957-7-chrubis@suse.cz>
+ <20260710070153.GA1157094@pevik>
 MIME-Version: 1.0
-X-Migadu-Flow: FLOW_OUT
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20260710070153.GA1157094@pevik>
+X-Spamd-Result: default: False [-4.29 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ NEURAL_HAM_SHORT(-0.19)[-0.943]; MIME_GOOD(-0.10)[text/plain];
+ ARC_NA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ MISSING_XM_UA(0.00)[]; MIME_TRACE(0.00)[0:+];
+ SINGLE_SHORT_PART(0.00)[]; RCPT_COUNT_TWO(0.00)[2];
+ RCVD_TLS_ALL(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
+ FROM_EQ_ENVFROM(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ RCVD_COUNT_TWO(0.00)[2];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email, yuki.lan:mid,
+ imap1.dmz-prg2.suse.org:helo]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 2/3] generate_syscall.sh: add a helper named
- tst_syscall_base
+Subject: Re: [LTP] [PATCH v3 6/9] syscalls: Add epoll_wait11
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -58,64 +108,18 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Gang Yan <yangang@kylinos.cn>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Gang Yan <yangang@kylinos.cn>
+Hi!
+Pushed, thanks.
 
-This patch adds a helper named tst_syscall_base, it can check the
-syscall on older distros without tst_brk.
-
-Signed-off-by: Gang Yan <yangang@kylinos.cn>
----
- include/lapi/syscalls/generate_syscalls.sh | 27 +++++++++++++---------
- 1 file changed, 16 insertions(+), 11 deletions(-)
-
-diff --git a/include/lapi/syscalls/generate_syscalls.sh b/include/lapi/syscalls/generate_syscalls.sh
-index 19f280dfb..95c2c9aeb 100755
---- a/include/lapi/syscalls/generate_syscalls.sh
-+++ b/include/lapi/syscalls/generate_syscalls.sh
-@@ -49,18 +49,23 @@ tst_brkm(TCONF, dummy_cleanup, \
- })
- #endif
- 
-+#define tst_syscall_base(NR, ...) ({ \
-+    intptr_t tst_ret; \
-+    if (NR == __LTP__NR_INVALID_SYSCALL) { \
-+        errno = ENOSYS; \
-+        tst_ret = -1; \
-+    } else { \
-+        tst_ret = syscall(NR, ##__VA_ARGS__); \
-+    } \
-+    tst_ret; \
-+})
-+
- #define tst_syscall(NR, ...) ({ \
--intptr_t tst_ret; \
--if (NR == __LTP__NR_INVALID_SYSCALL) { \
--	errno = ENOSYS; \
--	tst_ret = -1; \
--} else { \
--	tst_ret = syscall(NR, ##__VA_ARGS__); \
--} \
--if (tst_ret == -1 && errno == ENOSYS) { \
--	TST_SYSCALL_BRK__(NR, #NR); \
--} \
--tst_ret; \
-+    intptr_t tst_ret = tst_syscall_base(NR, ##__VA_ARGS__); \
-+    if (tst_ret == -1 && errno == ENOSYS) { \
-+        TST_SYSCALL_BRK__(NR, #NR); \
-+    } \
-+    tst_ret; \
- })
- 
- #define __LTP__NR_INVALID_SYSCALL -1' >${SYSCALLS_FILE}
 -- 
-2.43.0
-
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
