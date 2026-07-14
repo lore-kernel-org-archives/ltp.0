@@ -4,106 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B20B8C43458
-	for <ltp@archiver.kernel.org>; Tue, 14 Jul 2026 08:43:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 043C6C44501
+	for <ltp@archiver.kernel.org>; Tue, 14 Jul 2026 08:46:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1784018770; h=to : date :
+ message-id : mime-version : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : cc : content-type : content-transfer-encoding : sender :
+ from; bh=AfHc4mNp1aM5mg+LHtwRuXpK4cxwejumqkrEx1uA2xM=;
+ b=ORukgTILyUtM11cOPSIyLFCnrOYG5LOz3tE8iOZ9svImRKFGlusr8Wix7+ugoNwVlxx0B
+ tEeXe3BKE6oNjon6BeDyWkV3iVuoRGPm61fndpk9x2vc863zifoSOpsEXEfJCtlgVonIWmG
+ e7UPxA2wsIKIplMFD6Ve+QnaWT6yan4=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 5F4213E2A41
-	for <ltp@archiver.kernel.org>; Tue, 14 Jul 2026 10:43:25 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 7008D3E490F
+	for <ltp@archiver.kernel.org>; Tue, 14 Jul 2026 10:46:10 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2F9533E1F82
- for <ltp@lists.linux.it>; Tue, 14 Jul 2026 10:43:10 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ by picard.linux.it (Postfix) with ESMTPS id CFCEF3E212C
+ for <ltp@lists.linux.it>; Tue, 14 Jul 2026 10:45:51 +0200 (CEST)
+Received: from canpmsgout10.his.huawei.com (canpmsgout10.his.huawei.com
+ [113.46.200.225])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id BE9D410008FB
- for <ltp@lists.linux.it>; Tue, 14 Jul 2026 10:43:09 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id DC02977D80;
- Tue, 14 Jul 2026 08:43:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1784018589; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=159cI3PlLVbvDxalTJMu0zNyMAXIm7us2YKO9NHh9G8=;
- b=ALcyqG2U2GO4G57s1JKpcTwDplmVtlcOBYN7i7Bk09hs8WqU1oeAZ8OFvW7NR4SXk5YGy5
- 3HkXhvwbBqOYZEm+CrPVzlJpdOEEYZduGQXRpFk+w0aHJgGP2iJ1AOYVljSbgD61C+7vts
- AUavHJCkhPzrLP7XR/JE5309jUNJ3Ek=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1784018589;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=159cI3PlLVbvDxalTJMu0zNyMAXIm7us2YKO9NHh9G8=;
- b=9vbXiH3yQIOTI0HZL5QV4YxhNOcy76TlFINcGL4jkl7CzXiYh9ciEN4TZrOClLqvosumeC
- ZCI8hXGLB5mHUKDg==
-Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=IN4UoJfq;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="T/2myQA9"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1784018588; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=159cI3PlLVbvDxalTJMu0zNyMAXIm7us2YKO9NHh9G8=;
- b=IN4UoJfqNXcjTJDxboC1qE222QPhrEWUtl2iuTsGPP5N+zq8avLyloc/QkgRnGFAvVj0cP
- MiyGiQ84CSfTuVxDHANXbHKFpEzAjwwZ9ClD4KkS6obItlJys5zc+Soocft4ka33dUNqW+
- taFzuuS/I9Ss6rBwUz+WqKPHdR82KXo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1784018588;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=159cI3PlLVbvDxalTJMu0zNyMAXIm7us2YKO9NHh9G8=;
- b=T/2myQA9OfhU9qJa/CZmFQVZ4DwHvZ5GNlU2OrlY7tA7+VchPQ3I3kjS2QmQYTVcakvbNH
- Tazd5KX82UrcYLBw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C7AB6779AE;
- Tue, 14 Jul 2026 08:43:08 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id /oG2Lpz2VWpgPQAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Tue, 14 Jul 2026 08:43:08 +0000
-Date: Tue, 14 Jul 2026 10:43:00 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Message-ID: <alX2lMoWc2tdNut0@yuki.lan>
-References: <alDtz7CMmysJtlAp@rei>
- <6a510c80.fc4d87c3.115da4.55fa@mx.google.com>
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 28F7C200743
+ for <ltp@lists.linux.it>; Tue, 14 Jul 2026 10:45:49 +0200 (CEST)
+dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
+ c=relaxed/relaxed; q=dns/txt; h=From;
+ bh=6X5aweevi9nM4aeFDc3MUPxEAq/RyEjoKRJVhAKR7wM=;
+ b=V7PkgyjAbVoTcYpVjAzpVO9AGM8/Ot8pBA6fUdbQGqYlCWlqZkr8Uyt7bpI2OrSs1IaqDv5ow
+ Mq6P5Vyk4AVHgFpM6+yhN2M+n7TafrT1O23/uMFfQPvYHliN8+oO5eay889jAAIFzZjOdkJYgS/
+ ygs33oodgmb93AKY4os4kXc=
+Received: from mail.maildlp.com (unknown [172.19.162.92])
+ by canpmsgout10.his.huawei.com (SkyGuard) with ESMTPS id 4gzt251tkGz1K98y;
+ Tue, 14 Jul 2026 16:36:29 +0800 (CST)
+Received: from dggpemr500010.china.huawei.com (unknown [7.185.36.210])
+ by mail.maildlp.com (Postfix) with ESMTPS id BC9FB40586;
+ Tue, 14 Jul 2026 16:45:45 +0800 (CST)
+Received: from huawei.com (10.50.85.180) by dggpemr500010.china.huawei.com
+ (7.185.36.210) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Tue, 14 Jul
+ 2026 16:45:45 +0800
+To: <ltp@lists.linux.it>, <andrea.cervesato@suse.com>
+Date: Tue, 14 Jul 2026 17:06:32 +0800
+Message-ID: <20260714090632.2910506-1-zhanghongtao35@huawei.com>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <6a510c80.fc4d87c3.115da4.55fa@mx.google.com>
-X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; FUZZY_RATELIMITED(0.00)[rspamd.com];
- TO_DN_SOME(0.00)[]; MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- MISSING_XM_UA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- RCVD_TLS_ALL(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- RCPT_COUNT_THREE(0.00)[3];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:email,suse.cz:dkim];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DKIM_TRACE(0.00)[suse.cz:+]
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: DC02977D80
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+X-Originating-IP: [10.50.85.180]
+X-ClientProxiedBy: kwepems500002.china.huawei.com (7.221.188.17) To
+ dggpemr500010.china.huawei.com (7.185.36.210)
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 1/1] kill11: Skip pipe-based core dumps per
- signal
+Subject: [LTP] [PATCH] Revert "tpci: unbind driver in
+ test_assign_resources()"
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -115,32 +70,58 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+From: Hongtao Zhang via ltp <ltp@lists.linux.it>
+Reply-To: Hongtao Zhang <zhanghongtao35@huawei.com>
+Cc: liuyongqiang13@huawei.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> > Thinking of it once more, I wonder what exactly fails in the
-> > systemd-coredump case. I guess that it may delay the test execution a
-> > bit but the crashed process should eventualy quit and the test wait()
-> > call should collect it. If that wasn't the case systemd-coredump would
-> > break one of the fundamentals of UNIX process management.
-> 
-> Let's forget about systemd for a second.
-> 
-> The problem is that by using `pause()` that is not draining the buffer we
-> never ends the piped user-space helper. The default behaviour for a piped
-> helper is that kernel collect the coredump until helper drains the pipe.
+While the patch fixes a use-after-free in /proc/iomem by unbinding and
+rebinding the driver around PCI resource reassignment, this approach is
+too dangerous for a general test. Unbinding a driver from a critical device
+(e.g. a network or block controller) can instantly break SSH connectivity or
+cause filesystem corruption. Such side effects are unacceptable compared to the original issue.
+So need to revert that patch.
 
-Which would mean that the system this is failing on is mis-configured at
-best. I've tested this on Leap 16.0 that uses systemd-coredump and
-everything works fine there.
+Signed-off-by: Hongtao Zhang <zhanghongtao35@huawei.com>
+---
+ .../device-drivers/pci/tpci_kernel/ltp_tpci.c     | 15 ---------------
+ 1 file changed, 15 deletions(-)
 
+diff --git a/testcases/kernel/device-drivers/pci/tpci_kernel/ltp_tpci.c b/testcases/kernel/device-drivers/pci/tpci_kernel/ltp_tpci.c
+index 45138d834..660b3a423 100644
+--- a/testcases/kernel/device-drivers/pci/tpci_kernel/ltp_tpci.c
++++ b/testcases/kernel/device-drivers/pci/tpci_kernel/ltp_tpci.c
+@@ -442,24 +442,9 @@ static int test_assign_resources(void)
+ 
+ 		if (r->flags & IORESOURCE_MEM &&
+ 			r->flags & IORESOURCE_PREFETCH) {
+-
+-			if (dev->hdr_type == PCI_HEADER_TYPE_NORMAL) {
+-				if (dev->dev.driver)
+-					device_release_driver(&dev->dev);
+-			}
+-
+ 			pci_release_resource(dev, i);
+ 			ret = pci_assign_resource(dev, i);
+ 			prk_info("assign resource to '%d', ret '%d'", i, ret);
+-
+-			if (ret == 0 && dev->hdr_type == PCI_HEADER_TYPE_NORMAL) {
+-				int attach_ret;
+-
+-				attach_ret = device_attach(&dev->dev);
+-				if (attach_ret < 0)
+-					prk_info("device_attach failed for endpoint, ret: %d", attach_ret);
+-			}
+-
+ 			rc |= (ret < 0 && ret != -EBUSY) ? TFAIL : TPASS;
+ 		}
+ 	}
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.43.0
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
