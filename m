@@ -4,92 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B9C8BC43458
-	for <ltp@archiver.kernel.org>; Mon, 13 Jul 2026 19:25:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 24E0FC43458
+	for <ltp@archiver.kernel.org>; Tue, 14 Jul 2026 03:16:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1783970717; h=message-id :
- date : mime-version : to : references : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-transfer-encoding :
- content-type : sender : from;
- bh=+VyxITQ3lkUXV7Fy/UPT7/eWRc2LAm6vMnFsFTzY2y4=;
- b=CboysaAfiN8E8Z+8NUncspktNlNSu1V68w4yRVMsosFztLqTLnfHQwdSHQK6oHL9CIP0h
- cahUKfxmbgqsGCLRwlFvTC8BPcRank9ZmGjjrqWPLvIkMtY5aLnOKiXYEox/ZSTaUP/k7Xg
- AWR1nl+R7Q60xbw09CycyHEyvBqxBDw=
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1783998978; h=to : date :
+ message-id : mime-version : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : cc : content-type : content-transfer-encoding : sender :
+ from; bh=f0b4CvNdxDUg5WFUnOuG9TTIO14M90nTXvSnb9Jy0U8=;
+ b=lGJB/2CAFylXirTI5Jg9U6E+s7kovJ8B99mnCccV+BTnQwKB3RjCyGeyN2Hech5oraL06
+ SRo5gm9d2N7TGeW1gFVhSmB/12MrW5DWy/IWkkXfTeHD+lG0RB60xFyHn30f/CySrl9i4tA
+ /TQ52xc9ag2wwx77NSAvEPU5EQCVUb8=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 046E13E9A18
-	for <ltp@archiver.kernel.org>; Mon, 13 Jul 2026 21:25:17 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 46D063E5E43
+	for <ltp@archiver.kernel.org>; Tue, 14 Jul 2026 05:16:18 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 099763C29E9
- for <ltp@lists.linux.it>; Mon, 13 Jul 2026 21:24:55 +0200 (CEST)
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com
- [IPv6:2a00:1450:4864:20::333])
+ by picard.linux.it (Postfix) with ESMTPS id 366E43C5E52
+ for <ltp@lists.linux.it>; Tue, 14 Jul 2026 05:15:56 +0200 (CEST)
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com
+ [IPv6:2607:f8b0:4864:20::1033])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 6D8226002CC
- for <ltp@lists.linux.it>; Mon, 13 Jul 2026 21:24:54 +0200 (CEST)
-Received: by mail-wm1-x333.google.com with SMTP id
- 5b1f17b1804b1-493b77b150aso2055485e9.2
- for <ltp@lists.linux.it>; Mon, 13 Jul 2026 12:24:54 -0700 (PDT)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 099DD600726
+ for <ltp@lists.linux.it>; Tue, 14 Jul 2026 05:15:56 +0200 (CEST)
+Received: by mail-pj1-x1033.google.com with SMTP id
+ 98e67ed59e1d1-37e0a189b0bso502562a91.1
+ for <ltp@lists.linux.it>; Mon, 13 Jul 2026 20:15:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1783970694; x=1784575494; darn=lists.linux.it;
- h=content-transfer-encoding:content-type:in-reply-to:from:cc
- :content-language:references:to:subject:user-agent:mime-version:date
- :message-id:from:to:cc:subject:date:message-id:reply-to:content-type;
- bh=14yhFzOnXlGiLcJ/nV34Ra7K5khLRh0YeGxUygREobE=;
- b=CwAfw0lFlTdeTBbeCbS8xneuga7b24hTnOMGxQ4uMnHyk1S2VVHtngYL65B9LaLtaQ
- 9lEK1t2iEqsAqJEa8rLqcch4bhK+f9VwpgQdiNC01X9ibrHIArm4V4RzZ9Mk3CA6N+yZ
- 8ahDaEZ09sCXYRSY3a86yc9FgpANShkmkCaTUICzWvrJn2/cUzowfK9U86KUPlwdZH1O
- gqWJAYe3WRDnO5hot0EsWIJ1h6Gv8sdHh0gFkl+K0gVIo8iSUncDqMzMnZ0lFY4MbBjs
- oQ9kCvjuvA8EulxEz16In37ZMBryYNWKQZ3h15gfxjtT39ArGpv7amUmlz0cAIZx0zQM
- r7BA==
+ d=shopee.com; s=shopee.com; t=1783998954; x=1784603754; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+ bh=JwiMziRmQLA0HzJG/IVke1pFPBFHgMP8q7DwxujbLe4=;
+ b=hTaZ5LsF7M5NJuqiRpZFD580X2qrWwJ25oYHEiRXp4M2Mqtt3Dl9EAmV8hMIVUNhi9
+ VRWl6F77tdTdCYm+7W4cncsiu8xeEmWxHg3pQ8XdzROeoUjrYWJQsfQeA9rmm5pJDhhP
+ PAyhRkFmr0SAw1XNbR2hPl8sBsy7oRwUkJ5G8ZnGKKCcw7dVYttZfmuEMjZaZpHP3ebH
+ diy6IRbQJryJGgwLsYMP6hZK5YBy4PoH2kg9LG0PzVZ/XT4H3zsnwoYASqxwa5tK2hoN
+ t31IaalKr+vFNqo3v7L6PQujdQMOPxEpANMxdZyZJJGShvD1BCMoOTzjpWRTnM0iiRSO
+ xbhw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1783970694; x=1784575494;
- h=content-transfer-encoding:content-type:in-reply-to:from:cc
- :content-language:references:to:subject:user-agent:mime-version:date
- :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+ d=1e100.net; s=20251104; t=1783998954; x=1784603754;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
  :message-id:reply-to:content-type;
- bh=14yhFzOnXlGiLcJ/nV34Ra7K5khLRh0YeGxUygREobE=;
- b=fanyy4pfEOqpBgy1Qvg/GwDWMPzXF8LhWTshReqNYdVb0Qn3ahYsBo++/B8Ge7bWPB
- ek82ZZHjz5DBZT4I06zphV49AXBEk4H02DiTyZ1HDuvrIMFcJGHHpVbYTjY0qOR6RSt7
- VIvRpdxVHkawNRkOQz1OdzESabIrYoy1E8AlIqyNG5qohWkTd2svEb3GAcILICCk7jIM
- GDFSf9zxVCit2I2tCRq7jXf3niRz3sAjfEZjwsNqGjO3iutLUq4kMezxliR15/HSTkUa
- lrJww2GZk/fQe14gwZ2RD/0BIdCvORfSTdMSHXBXHTRSJAYAfqJZvJfhl7pCDhUZzKSW
- LhzQ==
-X-Gm-Message-State: AOJu0YxjB8c+13IZZyWYRvn3CHgmj7bIiQtPuzpYyS/3uccX8GcWtVPA
- UIHmt/dBB6893Y/tiJHAVFZPsxkxpvgg87mCTFaYC3/3VcTFHHxbt460u6HZySh6jwo=
-X-Gm-Gg: AfdE7cldNLIcsNQi27Hwcfa/CtbTOJq37i14XP0w1KmiKNQv+PYzXPibaGGiHh+Pabd
- GokwZCLkNuT06A/rU0bKXfV6y+oh+kjd3sP/Jccq3dwvR8LIF+F5JbLsO6olW5ZpRwUNQcD8mmy
- uk4BS+b1Xz6PKtm5yBOGXA8xdxCDRwbWYRljvW1d2uJpmGQpHJXY4q69AIPOIcYs6Q6hJLDMuqV
- qItPAF3YvFOtFD/Qzn+IJx+77FQ6FrbCbgdj2UU2qytfy4tgzcxE9BsS84mCDAi/aAIzg1GOLMo
- 1pGzmfaQFUgml6mAT8TAKlGUhBHrAO/CGXA4mfsPVYoGq/e4tCOUO6qErbIktulVjaUA7PA8Q8G
- Wuw88x5AuNr2I2fMrZx+2giXPPj9uFmcvWawcprnzAQsMpSXmucnErWMONznOo0qIRJIH5jtZOh
- 2jxv57jOcVykDRHAd28HxGFDhpd22R1A==
-X-Received: by 2002:a05:600c:4f8a:b0:493:f7c8:eae2 with SMTP id
- 5b1f17b1804b1-493f87e6e9cmr109364985e9.15.1783970693676; 
- Mon, 13 Jul 2026 12:24:53 -0700 (PDT)
-Received: from ?IPV6:2a07:b241:1004:8300::1000? ([2a07:b241:1004:8300::1000])
+ bh=JwiMziRmQLA0HzJG/IVke1pFPBFHgMP8q7DwxujbLe4=;
+ b=tPa7cqsrTzYlpfopRLuduPhtoX6P1wemkVoudsTdUeLbqeBe2yYDTA0wfOr7Tnp9zV
+ 73AJQC44r+yuOd90bJPWDzLsAC0OH3hY1tZqkpylywDg/lkxphGUcKh7tkf0w+bl0aYn
+ c5uFxVtsKHwu+6U3VUxJ+8Aa1R4K0rQs2PQjbIMAQdNDjVMJE2kfvIAfpzQKdzOf446R
+ LEXJg7K/FjUhhh44QP+qKAWbhgHktLQDcYsB3REul/bY5u42fn0qMZZ+U6sqP8QjQQTp
+ As3DhCvJt7JdJeGMZCJFt0iWNAdY8z+E9eqltPiQitGAmmS5GSG0erqiRFtCM6P2zJJ2
+ odWw==
+X-Gm-Message-State: AOJu0Yz9k4h+OdWB4hgSfvzWzbtt3FZfvlEcqMpEgm0SFtkXcbhFtyJV
+ lC0LFTECc6MAy0ZyBGQ0HY6ribNX/w5clTt3wsja8FDYmP66aubaNgzws1Xy/L9Ku/YVNjGxlUq
+ BJwBhWf0p4bx7trdfxrM+RtnTfdVRgbrZg1SUEaptMmJigyWYxbLaSGgB75EBMyxWFYQHxa7Qzb
+ qoYNQjmHpb6RSee5olCvS8EJJurcTD2WZA0ZGjWSk=
+X-Gm-Gg: AfdE7cmK/F00tXft/+fNw7FlGUUwMHxSnKaHoKP0MizH4v+/P2mVo0Qe8bS1yKwddLA
+ JaUTFBUJ3+ztPAQLKZSAezlf9Icel9KAv6UqvQvsnEnngYYV9wzxa0kDH3m/7DcOZatbLR+pPmI
+ /YuV26CJAbTt9AhYnpyfT0XPgU9PWnpYNK45aO9/9fm/COG6VxwtmXkysxi886E/9GV2poQYr2j
+ CEW0h8R3JqdP12YVAl6O7DFaErCePbgS19yw0u16MwhygoF4vw4ufINj+/bjHvr+LY52i5ldyuq
+ C5Qgb6jR6nH1lVwB1vAN/0YcT6uGwXZfPSWMyzq/z/TlbhzM+W1hrc6+JgAepGc0GYvbJQHfHWf
+ +xwMgrS87eU7UcOGIfeLiVKdVYFJBpm2/8CA93hcrIwKMQLfGHaVJ2BTfYjZI+tUWF900BQNdsO
+ Z8mLFJt93bNrOMk8P7ziPNNmBl+g9MgPPs07vGQBXM6ojNJI897P1aR7g0PptOLgVz
+X-Received: by 2002:a17:90b:5906:b0:38e:6dd:a9ad with SMTP id
+ 98e67ed59e1d1-38e06ddab7emr4463970a91.0.1783998954163; 
+ Mon, 13 Jul 2026 20:15:54 -0700 (PDT)
+Received: from LPMV6FJ9FM.cn.corp.seagroup.com ([143.92.118.20])
  by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-4950a322dc6sm15793005e9.10.2026.07.13.12.24.53
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Mon, 13 Jul 2026 12:24:53 -0700 (PDT)
-Message-ID: <e77ce49f-72ea-4186-90e4-ef8189e3ab46@suse.com>
-Date: Mon, 13 Jul 2026 21:24:52 +0200
+ 98e67ed59e1d1-38e173084c9sm716633a91.13.2026.07.13.20.15.52
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 13 Jul 2026 20:15:53 -0700 (PDT)
+To: ltp@lists.linux.it
+Date: Tue, 14 Jul 2026 11:15:45 +0800
+Message-ID: <20260714031545.64932-1-mingyu.he@shopee.com>
+X-Mailer: git-send-email 2.47.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Martin Doucha <mdoucha@suse.cz>
-References: <20260713155739.48823-1-mdoucha@suse.cz>
-Content-Language: en-US
-In-Reply-To: <20260713155739.48823-1-mdoucha@suse.cz>
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] fanotify25: Add CVE reference and include it in
- CVE runfile
+Subject: [LTP] [PATCH v2] pty09: Cap RLIMIT_NOFILE-based slave PTY opens
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -101,20 +95,63 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Avinesh Kumar via ltp <ltp@lists.linux.it>
-Reply-To: Avinesh Kumar <avinesh.kumar@suse.com>
-Cc: ltp@lists.linux.it
+From: Runli via ltp <ltp@lists.linux.it>
+Reply-To: Runli <mingyu.he@shopee.com>
+Cc: littleswimmingwhale@gmail.com, Runli <mingyu.he@shopee.com>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Martin,
+pty09 derives the number of slave PTY opens from RLIMIT_NOFILE. When the
+limit is very large, for example 1048576, the test tries to open nearly
+one million slave PTYs on the same master. That makes the workload depend
+on the caller's file descriptor limit instead of the PTY behavior being
+tested, and can turn a working PTY open path into a timeout-driven TBROK.
 
-Reviewed-by: Avinesh Kumar <avinesh.kumar@suse.com>
+The test only needs to verify that a slave pseudo-terminal can be opened
+multiple times in parallel. Cap the number of slave opens at 4096 so the
+test remains representative and deterministic even when RLIMIT_NOFILE is
+set unusually high.
 
-Regards,
-Avinesh
+Fixes: 20aa13dbd8a68 ("Add pty09 test")
+Signed-off-by: Runli <mingyu.he@shopee.com>
+---
+Changes in v2:
+- Print the uncapped available count before applying the cap.
+- Add a separate TINFO message when the open count is capped.
+
+ testcases/kernel/pty/pty09.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/testcases/kernel/pty/pty09.c b/testcases/kernel/pty/pty09.c
+index f3ade2381..80da475e9 100644
+--- a/testcases/kernel/pty/pty09.c
++++ b/testcases/kernel/pty/pty09.c
+@@ -14,6 +14,8 @@
+ 
+ static int masterfd = -1;
+ 
++#define MAX_SLAVE_OPENS 4096
++
+ static unsigned int count_avail_pid(void)
+ {
+ 	DIR *dir;
+@@ -34,6 +36,12 @@ static unsigned int count_avail_pid(void)
+ 
+ 	tst_res(TINFO, "Available number of pids: %u", max_pid_num);
+ 
++	if (max_pid_num > MAX_SLAVE_OPENS) {
++		max_pid_num = MAX_SLAVE_OPENS;
++		tst_res(TINFO, "Number of pids is too large, capped at: %u",
++			max_pid_num);
++	}
++
+ 	return max_pid_num;
+ }
+ 
+-- 
+2.47.0
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
