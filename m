@@ -4,101 +4,103 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3B401C44501
-	for <ltp@archiver.kernel.org>; Tue, 14 Jul 2026 15:07:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D9B76C44508
+	for <ltp@archiver.kernel.org>; Tue, 14 Jul 2026 15:07:32 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B8A053E968D
-	for <ltp@archiver.kernel.org>; Tue, 14 Jul 2026 17:07:15 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id A765A3E99F0
+	for <ltp@archiver.kernel.org>; Tue, 14 Jul 2026 17:07:30 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id BD40E3E56A3
+ by picard.linux.it (Postfix) with ESMTPS id 343C13E99EF
  for <ltp@lists.linux.it>; Tue, 14 Jul 2026 17:06:45 +0200 (CEST)
 Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
  [148.163.156.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id A20F9200969
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id A205D10000DD
  for <ltp@lists.linux.it>; Tue, 14 Jul 2026 17:06:44 +0200 (CEST)
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
  by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id
- 66EEfcBZ3906496; Tue, 14 Jul 2026 15:06:42 GMT
+ 66EEfsP61608803; Tue, 14 Jul 2026 15:06:42 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
- :content-transfer-encoding:date:from:in-reply-to:message-id
- :mime-version:references:subject:to; s=pp1; bh=+81aMjTX3Iz9OqKpV
- WqEOUA6lVfkf8sZny6cj8oFhjM=; b=fTDf+pCp+vYBhPQtM9PIXkq4Ol+4htYh5
- yOCGUGdYSZrDs8Q+RvEQeZwxuPQQV2wxqar/GzLXznPlIItePwUAIJBs5GDjkXp2
- SxG9wvFEAyiEhys74a1XduZkvjQy1IvWW4FDBH/quLJlu7umsVDc1edkTa3pIr+D
- TRZFlKER6QeVSdl9GOJ68jO5oceEetJZT9Tdl40+7I2Dnv4CGEchD1TfP04S49dk
- +SLi5ZS0nBp6YdaF4OR0pS79PDSPmU7cq4UrQbo7o5x1XKfMso14G3KILoAZXgBp
- uIqi7uZSpgwdHI/1EGFbLtjK4OaZxfLeSjQtoYZPfWn29MkW0g4Rg==
-Received: from ppma13.dal12v.mail.ibm.com
- (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4fcv337ch1-1
+ :content-transfer-encoding:content-type:date:from:in-reply-to
+ :message-id:mime-version:references:subject:to; s=pp1; bh=LaTZi3
+ 44/rO/nv/ta5ixQMWbpI7DR1ilCUaqpwumDxI=; b=cjfqW/9BWri7fTt38xe7B4
+ oGNjCFeZ2YrQsgBiTMslvYC0wrN5y6enN5cSI9ANSvmTt4tbyGjXEMnYY0L75OcD
+ DD8oZnrGetefkapbkm7Eba4R20NxXfU4yCFALCwg0q39C3Hgvz45t3Vh6eid6OIq
+ Qp3YhHrFmz5LvOdiBB7oIvGBck6NGaDDmY8Pv+smJBL7m5aT1sUlBjJXtrNh4ruw
+ PLNkM7P+fHzunET7q+1fH1C4myLUDufxaseqJnC7NigyYmaupViucXDqX57zzamY
+ 2+tskvFeDACHkaa/Oo0nXjcAN3utB64r9Jsl59j9cJ/PmYM4bJWV4YTDDwSfMVFg
+ ==
+Received: from ppma11.dal12v.mail.ibm.com
+ (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4fbepxetve-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
  Tue, 14 Jul 2026 15:06:42 +0000 (GMT)
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
- by ppma13.dal12v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 66EF4h81031577;
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+ by ppma11.dal12v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 66EF4aq4011533;
  Tue, 14 Jul 2026 15:06:41 GMT
-Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
- by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 4fc2cgb5q7-1
+Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
+ by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 4fc2uy32u6-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
  Tue, 14 Jul 2026 15:06:41 +0000 (GMT)
 Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com
  [10.20.54.102])
- by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 66EF6bCQ23921080
+ by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 66EF6c4151315000
  (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Tue, 14 Jul 2026 15:06:37 GMT
+ Tue, 14 Jul 2026 15:06:38 GMT
 Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id ADC4020040;
+ by IMSVA (Postfix) with ESMTP id EB2C320040;
  Tue, 14 Jul 2026 15:06:37 +0000 (GMT)
 Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 8F1522004E;
+ by IMSVA (Postfix) with ESMTP id CC3BD2004D;
  Tue, 14 Jul 2026 15:06:37 +0000 (GMT)
 Received: from li-276bd24c-2dcc-11b2-a85c-945b6f05615c.ehn-de.ibm.com (unknown
  [9.224.74.129]) by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
  Tue, 14 Jul 2026 15:06:37 +0000 (GMT)
 From: Jan Polensky <japo@linux.ibm.com>
 To: ltp@lists.linux.it
-Date: Tue, 14 Jul 2026 17:06:28 +0200
-Message-ID: <20260714150631.250972-2-japo@linux.ibm.com>
+Date: Tue, 14 Jul 2026 17:06:30 +0200
+Message-ID: <20260714150631.250972-4-japo@linux.ibm.com>
 X-Mailer: git-send-email 2.55.0
 In-Reply-To: <20260714150631.250972-1-japo@linux.ibm.com>
 References: <20260714150631.250972-1-japo@linux.ibm.com>
 MIME-Version: 1.0
 X-TM-AS-GCONF: 00
-X-Proofpoint-Spam-Info: AW1haW4tMjYwNzE0MDE1MyBTYWx0ZWRfX7cVcIXOpRdm8
- p53V1VoheCpwCkY+3NIX1JQHgQ0JnMXxlgNs/uH5+DKnj8hsmfHu/oLj9V5dTf5Akq8J6oId562
- z/rd4WyLFaKq/EekIfbd4MfhYmusGSw=
-X-Authority-Analysis: v=2.4 cv=Mp1iLWae c=1 sm=1 tr=0 ts=6a565082 cx=c_pps
- a=AfN7/Ok6k8XGzOShvHwTGQ==:117 a=AfN7/Ok6k8XGzOShvHwTGQ==:17
- a=RAioF0-LDSMA:10 a=VkNPw1HP01LnGYTKEx00:22 a=RnoormkPH1_aCDwRdu11:22
- a=uAbxVGIbfxUO_5tXvNgY:22 a=VnNF1IyMAAAA:8 a=aKpMiE9gd_-pdFYVdXcA:9
-X-Proofpoint-GUID: Qc0yxpYIr_2Yd2370HQC2dsH9uf6TBow
-X-Proofpoint-ORIG-GUID: Qc0yxpYIr_2Yd2370HQC2dsH9uf6TBow
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNzE0MDE1MyBTYWx0ZWRfXxx0/vpRUJlmr
- MKlW9xYvvSxtDhGeElydGVafgdZi+0RP8pcrGxMu4z4fmqsJt1qehuTsqCBsje+BBBObVwxgU0F
- /wUGO3f70lf8MHn97lavy4YsFEozWZxXbR+PD4ZdBUUqLBFlQ6fYT9ner+8AzHPxjy88QsHWunD
- Jo4D2bCFdDipY7BsaK4ERgYGyvKCbCUAM9fltbWErPxKr1nIcPHMDUOhCUVYYvGKNTCCXYUsqq6
- kBBci4UyFD2oWHvEcRvBFL+xtpY+irUKo15dneIstQ1s71TMoLYHF2ZMIHi31RzRcRHDCid/w2A
- 9eogiprUERPVI/V4HVEsf0ltYY8GbMnq5vbypbr0rfvYVFpLG2qZjy/JasBsxUMxMIic1MU5I8m
- tGmG27B+asjVjxdOSUpo4TH3q1HqP6FS8lVMQarpBn8efqhubfSP2EWt/Ufb+n4OeL9L6Mq/PnE
- q2rFtsv7PbRgMF7KvTA==
+X-Proofpoint-GUID: aPqK6_uIQMHfwMpHtgC0Fs5Ii0QBZFCh
+X-Proofpoint-Spam-Info: AW1haW4tMjYwNzE0MDE1MyBTYWx0ZWRfX5lowDozJIKDY
+ fSEwaTgVpschpcFP+SX4FPRYoqXtcMFFGsORD0FrwvlxHZf5rLMDz0MUZss2PkbWLfgugXxJo6E
+ /cZZcUCD1Er5wzFluMhwKzp8In5LWiQ=
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNzE0MDE1MyBTYWx0ZWRfXwxRUvdARKzjS
+ JmpgQRaqacecA+F6pXk40+0et0yqii71anhYiwcsFy3kcs4KXdST1C6YtJqlT5RbE4WYd3/NAGT
+ anKBWlSQOxpYGLp9A1RfAGSBmTnq+unVmvJ2NTdmVkbAm5Sad+xtv5ybN0WRa5ye9R+EDV/WvV+
+ N7PRnLUDudH6Tjep4QwbvnLrFHYjf1mArd4sRmYClxciqXIDYA1zvyMGuSxQiisOnCnCg6Q5f+4
+ 28Fev2hRrDXHdigsOt1vUiUL+jTDjqwxnZMry6qXWbLu8DUFAjtfjDNGTYklaWq6UDD26c1/XJa
+ E2HdCtCGsJzuHWwqSnGm36HHphcF9lRxR2ZXhlAFyNKrtsXo8o/VKSWPteXaGBZmJIbdFf2z8qi
+ 6TioTuJyiZpwIsBslr8j3OKUt/CzV3KcDbVic+GaS105TDhQOWmjvoBYb0O0vtmE+CNwhZLqGel
+ YOLSJSPcjRSBKfqjXGA==
+X-Authority-Analysis: v=2.4 cv=XbS5Co55 c=1 sm=1 tr=0 ts=6a565082 cx=c_pps
+ a=aDMHemPKRhS1OARIsFnwRA==:117 a=aDMHemPKRhS1OARIsFnwRA==:17
+ a=IkcTkHD0fZMA:10 a=RAioF0-LDSMA:10 a=VkNPw1HP01LnGYTKEx00:22
+ a=RnoormkPH1_aCDwRdu11:22 a=iQ6ETzBq9ecOQQE5vZCe:22 a=VnNF1IyMAAAA:8
+ a=YvgwHchyOSfR8NFlyQ4A:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
+X-Proofpoint-ORIG-GUID: aPqK6_uIQMHfwMpHtgC0Fs5Ii0QBZFCh
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.134,FMLib:17.12.100.49
  definitions=2026-07-14_03,2026-07-14_01,2025-10-01_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- adultscore=0 bulkscore=0 spamscore=0 malwarescore=0 lowpriorityscore=0
- impostorscore=0 priorityscore=1501 suspectscore=0 clxscore=1015 phishscore=0
+ clxscore=1015 suspectscore=0 spamscore=0 phishscore=0 lowpriorityscore=0
+ priorityscore=1501 adultscore=0 malwarescore=0 impostorscore=0 bulkscore=0
  classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
  reason=mlx scancount=1 engine=8.22.0-2606150000 definitions=main-2607140153
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v1 1/3] thp04: Simplify to focus on CVE-2017-1000405
- race test only
+Subject: [LTP] [PATCH v1 3/3] ptrace: add test for /proc/pid/mem writes
+ under ptrace
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -110,285 +112,141 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Remove ptrace mode support from thp04.c to keep the test focused on
-its original purpose: testing the CVE-2017-1000405 race condition.
-
-The ptrace-based /proc/pid/mem write functionality is now covered by
-dedicated tests in testcases/kernel/syscalls/ptrace/:
-- ptrace12: Tests that CONFIG_PROC_MEM_FORCE_PTRACE blocks self-writes
-- ptrace13: Tests that ptrace allows parent-to-child memory writes
-
-This separation follows the principle of one test per feature and makes
-the test suite more maintainable.
-
-Signed-off-by: Jan Polensky <japo@linux.ibm.com>
----
- testcases/kernel/mem/thp/thp04.c | 166 +++++++++++++++++++++----------
- 1 file changed, 113 insertions(+), 53 deletions(-)
-
-diff --git a/testcases/kernel/mem/thp/thp04.c b/testcases/kernel/mem/thp/thp04.c
-index 16d766c349b7..ffdad60c798f 100644
---- a/testcases/kernel/mem/thp/thp04.c
-+++ b/testcases/kernel/mem/thp/thp04.c
-@@ -3,7 +3,7 @@
-  * Copyright (c) 2019 SUSE LLC <mdoucha@suse.cz>
-  */
- 
--/*
-+/*\
-  * CVE-2017-1000405
-  *
-  * Check for the Huge Dirty Cow vulnerability which allows a userspace process
-@@ -21,27 +21,38 @@
-  * On old kernel such as 4.9, it has fixed the Dirty Cow bug but a similar check
-  * in huge_memory.c was forgotten.  As a result, remote memory writes to ro regions
-  * of memory backed by transparent huge pages cause an infinite loop in the kernel.
-- * While in this state the process is stil SIGKILLable, but little else works.
-+ * While in this state the process is still SIGKILLable, but little else works.
-  * It is also a regression test about kernel
-  * commit 8310d48b125d("huge_memory.c: respect FOLL_FORCE/FOLL_COW for thp").
-+ *
-+ * This test uses direct writes to /proc/self/mem with fuzzy-sync to trigger
-+ * the race condition. If direct writes are not available (e.g., when
-+ * CONFIG_PROC_MEM_FORCE_PTRACE=y is set), the test reports TCONF.
-+ * For ptrace-based /proc/pid/mem testing, see testcases/kernel/syscalls/ptrace/.
-  */
- 
--#include "tst_test.h"
- #include "lapi/mmap.h"
- #include "tst_fuzzy_sync.h"
-+#include "tst_test.h"
- 
--static char *write_thp, *read_thp;
--static int *write_ptr, *read_ptr;
--static size_t thp_size;
--static int writefd = -1, readfd = -1;
--static struct tst_fzsync_pair fzsync_pair;
-+struct child_state {
-+	char *write_thp;
-+	char *read_thp;
-+	int *write_ptr;
-+	int *read_ptr;
-+	size_t thp_size;
-+	int writefd;
-+	int readfd;
-+	struct tst_fzsync_pair fzsync_pair;
-+};
- 
--static void *alloc_zero_page(void *baseaddr)
-+static struct child_state *child;
-+
-+static void *alloc_zero_page(void *baseaddr, size_t thp_size)
- {
- 	int i;
- 	void *ret;
- 
--	/* Find aligned chunk of address space. MAP_HUGETLB doesn't work. */
- 	for (i = 0; i < 16; i++, baseaddr += thp_size) {
- 		ret = mmap(baseaddr, thp_size, PROT_READ,
- 			MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-@@ -67,47 +78,70 @@ static void *alloc_zero_page(void *baseaddr)
- 	}
- 
- 	tst_brk(TBROK, "Cannot map huge zero page near the specified address");
--	return NULL;	/* Silence compiler warning */
-+	return NULL;
- }
- 
--static void setup(void)
-+static void child_cleanup(void)
-+{
-+	if (!child)
-+		return;
-+
-+	tst_fzsync_pair_cleanup(&child->fzsync_pair);
-+
-+	if (child->readfd >= 0)
-+		SAFE_CLOSE(child->readfd);
-+
-+	if (child->writefd >= 0)
-+		SAFE_CLOSE(child->writefd);
-+
-+	if (child->read_thp)
-+		SAFE_MUNMAP(child->read_thp, child->thp_size);
-+
-+	if (child->write_thp)
-+		SAFE_MUNMAP(child->write_thp, child->thp_size);
-+}
-+
-+static void child_setup(void)
- {
- 	size_t i;
- 
--	thp_size = tst_get_hugepage_size();
-+	child->thp_size = tst_get_hugepage_size();
- 
--	if (!thp_size)
-+	if (!child->thp_size)
- 		tst_brk(TCONF, "Kernel does not support huge pages");
- 
--	write_thp = alloc_zero_page((void *)thp_size);
-+	child->write_thp = alloc_zero_page((void *)child->thp_size,
-+		child->thp_size);
- 
--	for (i = 0; i < thp_size; i++) {
--		if (write_thp[i])
-+	for (i = 0; i < child->thp_size; i++) {
-+		if (child->write_thp[i])
- 			tst_brk(TCONF, "Huge zero page is pre-polluted");
- 	}
- 
--	/* leave a hole between read and write THP to prevent merge */
--	read_thp = alloc_zero_page(write_thp + 2 * thp_size);
--	write_ptr = (int *)(write_thp + thp_size - sizeof(int));
--	read_ptr = (int *)(read_thp + thp_size - sizeof(int));
--	writefd = SAFE_OPEN("/proc/self/mem", O_RDWR);
--	readfd = SAFE_OPEN("/proc/self/mem", O_RDWR);
-+	child->read_thp = alloc_zero_page(child->write_thp + 2 * child->thp_size,
-+		child->thp_size);
-+	/* write_ptr points to last int in write_thp page */
-+	child->write_ptr = (int *)(child->write_thp + child->thp_size - sizeof(int));
-+	/* read_ptr points to last int in read_thp page */
-+	child->read_ptr = (int *)(child->read_thp + child->thp_size - sizeof(int));
- 
--	fzsync_pair.exec_loops = 100000;
--	tst_fzsync_pair_init(&fzsync_pair);
-+	child->writefd = SAFE_OPEN("/proc/self/mem", O_RDWR);
-+	child->readfd = SAFE_OPEN("/proc/self/mem", O_RDWR);
-+	child->fzsync_pair.exec_loops = 100000;
-+	tst_fzsync_pair_init(&child->fzsync_pair);
- }
- 
- static void *thread_run(void *arg)
- {
- 	int c;
- 
--	while (tst_fzsync_run_b(&fzsync_pair)) {
--		tst_fzsync_start_race_b(&fzsync_pair);
--		madvise(write_thp, thp_size, MADV_DONTNEED);
--		memcpy(&c, write_ptr, sizeof(c));
--		SAFE_LSEEK(readfd, (off_t)write_ptr, SEEK_SET);
--		SAFE_READ(1, readfd, &c, sizeof(int));
--		tst_fzsync_end_race_b(&fzsync_pair);
-+	while (tst_fzsync_run_b(&child->fzsync_pair)) {
-+		tst_fzsync_start_race_b(&child->fzsync_pair);
-+		madvise(child->write_thp, child->thp_size, MADV_DONTNEED);
-+		memcpy(&c, child->write_ptr, sizeof(c));
-+		SAFE_LSEEK(child->readfd, (off_t)child->write_ptr, SEEK_SET);
-+		SAFE_READ(1, child->readfd, &c, sizeof(int));
-+		tst_fzsync_end_race_b(&child->fzsync_pair);
- 		/* Wait for dirty page handling before next madvise() */
- 		usleep(10);
- 	}
-@@ -119,20 +153,20 @@ static void run(void)
- {
- 	int c = 0xdeadbeef;
- 
--	tst_fzsync_pair_reset(&fzsync_pair, thread_run);
-+	tst_fzsync_pair_reset(&child->fzsync_pair, thread_run);
- 
--	while (tst_fzsync_run_a(&fzsync_pair)) {
-+	while (tst_fzsync_run_a(&child->fzsync_pair)) {
- 		/* Write into the main huge page */
--		tst_fzsync_start_race_a(&fzsync_pair);
--		SAFE_LSEEK(writefd, (off_t)write_ptr, SEEK_SET);
--		madvise(write_thp, thp_size, MADV_DONTNEED);
--		SAFE_WRITE(SAFE_WRITE_ALL, writefd, &c, sizeof(int));
--		tst_fzsync_end_race_a(&fzsync_pair);
-+		tst_fzsync_start_race_a(&child->fzsync_pair);
-+		SAFE_LSEEK(child->writefd, (off_t)child->write_ptr, SEEK_SET);
-+		madvise(child->write_thp, child->thp_size, MADV_DONTNEED);
-+		SAFE_WRITE(SAFE_WRITE_ALL, child->writefd, &c, sizeof(int));
-+		tst_fzsync_end_race_a(&child->fzsync_pair);
- 
- 		/* Check the other huge zero page for pollution */
--		madvise(read_thp, thp_size, MADV_DONTNEED);
-+		madvise(child->read_thp, child->thp_size, MADV_DONTNEED);
- 
--		if (*read_ptr != 0) {
-+		if (*child->read_ptr != 0) {
- 			tst_res(TFAIL, "Huge zero page was polluted");
- 			return;
- 		}
-@@ -141,20 +175,45 @@ static void run(void)
- 	tst_res(TPASS, "Huge zero page is still clean");
- }
- 
-+static void setup(void)
-+{
-+	int test_val = 0;
-+
-+	child = SAFE_MMAP(NULL, sizeof(*child), PROT_READ | PROT_WRITE,
-+		MAP_SHARED | MAP_ANONYMOUS, -1, 0);
-+	memset(child, 0, sizeof(*child));
-+	child->writefd = -1;
-+	child->readfd = -1;
-+
-+	child_setup();
-+
-+	/* Verify that direct writes to /proc/self/mem work */
-+	TEST(lseek(child->writefd, (off_t)child->write_ptr, SEEK_SET));
-+	if (TST_RET == -1)
-+		tst_brk(TBROK | TTERRNO, "lseek on /proc/self/mem failed");
-+
-+	TEST(write(child->writefd, &test_val, sizeof(test_val)));
-+
-+	if (TST_RET == -1 && TST_ERR == EIO) {
-+		tst_brk(TCONF,
-+			"Direct writes to /proc/self/mem disabled "
-+			"(CONFIG_PROC_MEM_FORCE_PTRACE=y). "
-+			"See testcases/kernel/syscalls/ptrace/ptrace12 and ptrace13 for ptrace coverage.");
-+	}
-+
-+	if (TST_RET == -1)
-+		tst_brk(TBROK | TTERRNO, "test write to /proc/self/mem failed");
-+
-+	if (TST_RET != sizeof(test_val))
-+		tst_brk(TBROK, "short write to /proc/self/mem: %ld bytes", TST_RET);
-+}
-+
- static void cleanup(void)
- {
--	tst_fzsync_pair_cleanup(&fzsync_pair);
-+	child_cleanup();
- 
--	if (readfd >= 0)
--		SAFE_CLOSE(readfd);
--
--	if (writefd >= 0)
--		SAFE_CLOSE(writefd);
--
--	if (read_thp)
--		SAFE_MUNMAP(read_thp, thp_size);
--	if (write_thp)
--		SAFE_MUNMAP(write_thp, thp_size);
-+	if (child)
-+		SAFE_MUNMAP(child, sizeof(*child));
- }
- 
- static struct tst_test test = {
-@@ -162,10 +221,11 @@ static struct tst_test test = {
- 	.setup = setup,
- 	.cleanup = cleanup,
- 	.runtime = 150,
-+	.forks_child = 1,
- 	.tags = (const struct tst_tag[]) {
- 		{"linux-git", "a8f97366452e"},
- 		{"linux-git", "8310d48b125d"},
- 		{"CVE", "2017-1000405"},
- 		{}
- 	}
--};
-+};
-\ No newline at end of file
--- 
-2.55.0
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+QWRkIHB0cmFjZTEzIHRvIHZlcmlmeSB0aGF0IGEgdHJhY2VyIGNhbiB3cml0ZSB0byB0cmFjZWUg
+bWVtb3J5IHZpYQovcHJvYy9waWQvbWVtIHdoZW4gQ09ORklHX1BST0NfTUVNX0ZPUkNFX1BUUkFD
+RT15IGlzIGFjdGl2ZS4KClRoZSB0ZXN0IHVzZXMgUFRSQUNFX1NFSVpFIHRvIGF0dGFjaCB0byBh
+IGNoaWxkIHByb2Nlc3MgYW5kIHdyaXRlcyB0bwppdHMgcmVhZC1vbmx5IG1lbW9yeSBwYWdlcyB2
+aWEgL3Byb2MvcGlkL21lbS4gVGhpcyB2YWxpZGF0ZXMgdGhhdDoKLSBGT0xMX0ZPUkNFIGlzIGFs
+bG93ZWQgd2hlbiBhY3RpdmVseSBwdHJhY2luZwotIFBhcmVudCBjYW4gbW9kaWZ5IGNoaWxkJ3Mg
+cmVhZC1vbmx5IG1lbW9yeQotIFdyaXRlLXN0b3AtY29udGludWUgY3ljbGUgd29ya3MgY29ycmVj
+dGx5ICgxMDAgaXRlcmF0aW9ucykKClRlc3QgdmFsaWRhdGVzIGtlcm5lbCBjb21taXQgNDFlODE0
+OWM4ODkyICgicHJvYzogYWRkIGNvbmZpZyAmIHBhcmFtIHRvCmJsb2NrIGZvcmNpbmcgbWVtIHdy
+aXRlcyIpLgoKU2lnbmVkLW9mZi1ieTogSmFuIFBvbGVuc2t5IDxqYXBvQGxpbnV4LmlibS5jb20+
+Ci0tLQogdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9wdHJhY2UvLmdpdGlnbm9yZSB8ICAgMSAr
+CiB0ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3B0cmFjZS9wdHJhY2UxMy5jIHwgMjM2ICsrKysr
+KysrKysrKysrKysrKysrCiAyIGZpbGVzIGNoYW5nZWQsIDIzNyBpbnNlcnRpb25zKCspCiBjcmVh
+dGUgbW9kZSAxMDA2NDQgdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9wdHJhY2UvcHRyYWNlMTMu
+YwoKZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvcHRyYWNlLy5naXRpZ25v
+cmUgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3B0cmFjZS8uZ2l0aWdub3JlCmluZGV4IDg2
+MzEyMTkzMTJkNS4uNzJmOWNlZjk4ZTIyIDEwMDY0NAotLS0gYS90ZXN0Y2FzZXMva2VybmVsL3N5
+c2NhbGxzL3B0cmFjZS8uZ2l0aWdub3JlCisrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMv
+cHRyYWNlLy5naXRpZ25vcmUKQEAgLTEwLDMgKzEwLDQgQEAKIC9wdHJhY2UxMAogL3B0cmFjZTEx
+CiAvcHRyYWNlMTIKKy9wdHJhY2UxMwpkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNj
+YWxscy9wdHJhY2UvcHRyYWNlMTMuYyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvcHRyYWNl
+L3B0cmFjZTEzLmMKbmV3IGZpbGUgbW9kZSAxMDA2NDQKaW5kZXggMDAwMDAwMDAwMDAwLi45Yjhj
+OTM4MzJlZGEKLS0tIC9kZXYvbnVsbAorKysgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3B0
+cmFjZS9wdHJhY2UxMy5jCkBAIC0wLDAgKzEsMjM2IEBACisvLyBTUERYLUxpY2Vuc2UtSWRlbnRp
+ZmllcjogR1BMLTIuMC1vci1sYXRlcgorLyoKKyAqIENvcHlyaWdodCAoYykgMjAyNSBTVVNFIExM
+QyA8amFwb0BzdXNlLmN6PgorICovCisKKy8qXAorICogW0Rlc2NyaXB0aW9uXQorICoKKyAqIFZl
+cmlmeSB0aGF0IGEgcGFyZW50IHByb2Nlc3MgY2FuIHdyaXRlIHRvIGEgdHJhY2VkIGNoaWxkJ3Mg
+bWVtb3J5CisgKiB2aWEgL3Byb2MvcGlkL21lbSB3aGVuIHRoZSBjaGlsZCBpcyBpbiBhIHN0b3Bw
+ZWQgc3RhdGUuCisgKgorICogVGhpcyB0ZXN0IHZhbGlkYXRlcyB0aGUgcHRyYWNlLWJhc2VkIG1l
+bW9yeSB3cml0ZSBtZWNoYW5pc20gdGhhdAorICogYmVjb21lcyBtYW5kYXRvcnkgd2hlbiBDT05G
+SUdfUFJPQ19NRU1fRk9SQ0VfUFRSQUNFPXkgaXMgYWN0aXZlLgorICoKKyAqIFRlc3QgZmxvdzoK
+KyAqIDEuIFBhcmVudCBmb3JrcyBhIGNoaWxkIHByb2Nlc3MKKyAqIDIuIENoaWxkIHNpZ25hbHMg
+cmVhZGluZXNzIHZpYSBjaGVja3BvaW50CisgKiAzLiBQYXJlbnQgYXR0YWNoZXMgd2l0aCBQVFJB
+Q0VfU0VJWkUKKyAqIDQuIENoaWxkIHNlbGYtc3RvcHMgd2l0aCByYWlzZShTSUdTVE9QKQorICog
+NS4gUGFyZW50IHdyaXRlcyB0byBjaGlsZCdzIG1lbW9yeSB2aWEgL3Byb2MvcGlkL21lbQorICog
+Ni4gUGFyZW50IGNvbnRpbnVlcyBjaGlsZCB3aXRoIFBUUkFDRV9DT05UCisgKiA3LiBDaGlsZCB2
+ZXJpZmllcyB0aGUgd3JpdGUgdG9vayBlZmZlY3QKKyAqIDguIFJlcGVhdCBmb3IgbXVsdGlwbGUg
+aXRlcmF0aW9ucworICoKKyAqIFRoZSB0ZXN0IHVzZXMgY2hlY2twb2ludCBzeW5jaHJvbml6YXRp
+b24gdG8gcHJldmVudCByYWNlIGNvbmRpdGlvbnMKKyAqIGR1cmluZyBwdHJhY2UgYXR0YWNobWVu
+dC4KKyAqLworCisjaW5jbHVkZSA8ZXJybm8uaD4KKyNpbmNsdWRlIDxmY250bC5oPgorI2luY2x1
+ZGUgPHNpZ25hbC5oPgorI2luY2x1ZGUgPHN5cy9tbWFuLmg+CisjaW5jbHVkZSA8c3lzL3B0cmFj
+ZS5oPgorI2luY2x1ZGUgPHN5cy93YWl0Lmg+CisjaW5jbHVkZSA8dW5pc3RkLmg+CisKKyNpbmNs
+dWRlICJ0c3RfdGVzdC5oIgorI2luY2x1ZGUgInRzdF9jaGVja3BvaW50LmgiCisKKyNkZWZpbmUg
+VEVTVF9JVEVSQVRJT05TIDEwMAorCitzdHJ1Y3Qgc2hhcmVkX3N0YXRlIHsKKwlpbnQgKnRlc3Rf
+cHRyOworCWludCBleHBlY3RlZF92YWw7CisJaW50IHJlc3VsdDsKK307CisKK3N0YXRpYyBzdHJ1
+Y3Qgc2hhcmVkX3N0YXRlICpzaGFyZWQ7CitzdGF0aWMgcGlkX3QgdHJhY2VlX3BpZDsKKworc3Rh
+dGljIHZvaWQgdHJhY2VlX21haW4odm9pZCkKK3sKKwlpbnQgaTsKKworCS8qIEFsbG9jYXRlIHRl
+c3QgbWVtb3J5IGluIHRyYWNlZSdzIGFkZHJlc3Mgc3BhY2UgKi8KKwlzaGFyZWQtPnRlc3RfcHRy
+ID0gU0FGRV9NTUFQKE5VTEwsIHNpemVvZihpbnQpLCBQUk9UX1JFQUQgfCBQUk9UX1dSSVRFLAor
+CQkJCSAgICAgTUFQX1BSSVZBVEUgfCBNQVBfQU5PTllNT1VTLCAtMSwgMCk7CisJKnNoYXJlZC0+
+dGVzdF9wdHIgPSAwOworCQorCS8qIE1ha2UgdGhlIHBhZ2UgcmVhZC1vbmx5IC0gcGFyZW50IHdp
+bGwgbmVlZCBGT0xMX0ZPUkNFIHRvIHdyaXRlICovCisJU0FGRV9NUFJPVEVDVCgodm9pZCAqKXNo
+YXJlZC0+dGVzdF9wdHIsIHNpemVvZihpbnQpLCBQUk9UX1JFQUQpOworCisJLyogU2lnbmFsIHBh
+cmVudCB0aGF0IHdlJ3JlIHJlYWR5ICovCisJVFNUX0NIRUNLUE9JTlRfV0FLRSgwKTsKKworCS8q
+IFdhaXQgZm9yIHBhcmVudCB0byBjb21wbGV0ZSBQVFJBQ0VfU0VJWkUgKi8KKwlUU1RfQ0hFQ0tQ
+T0lOVF9XQUlUKDEpOworCisJLyogSW5pdGlhbCBzdG9wIC0gcGFyZW50IHdpbGwgd3JpdGUgZmly
+c3QgdmFsdWUgKi8KKwlyYWlzZShTSUdTVE9QKTsKKworCS8qCisJICogTWFpbiB0ZXN0IGxvb3A6
+IHZlcmlmeSBwYXJlbnQncyB3cml0ZSwgdGhlbiBzdG9wIGZvciBuZXh0IHdyaXRlLgorCSAqIFBh
+cmVudCBjb250cm9scyB0ZXJtaW5hdGlvbiB2aWEgUFRSQUNFX0RFVEFDSCArIFNJR0tJTEwuCisJ
+ICovCisJZm9yIChpID0gMDsgaSA8IFRFU1RfSVRFUkFUSU9OUzsgaSsrKSB7CisJCS8qIFZlcmlm
+eSBwYXJlbnQncyB3cml0ZSBmcm9tIHByZXZpb3VzIGl0ZXJhdGlvbiAqLworCQlpZiAoKnNoYXJl
+ZC0+dGVzdF9wdHIgIT0gc2hhcmVkLT5leHBlY3RlZF92YWwpIHsKKwkJCXRzdF9yZXMoVEZBSUws
+CisJCQkJIkl0ZXJhdGlvbiAlZDogZXhwZWN0ZWQgMHgleCwgZ290IDB4JXgiLAorCQkJCWksIHNo
+YXJlZC0+ZXhwZWN0ZWRfdmFsLCAqc2hhcmVkLT50ZXN0X3B0cik7CisJCQlzaGFyZWQtPnJlc3Vs
+dCA9IDE7CisJCQlleGl0KDEpOworCQl9CisKKwkJLyogU3RvcCBzZWxmIHRvIGxldCBwYXJlbnQg
+d3JpdGUgbmV4dCB2YWx1ZSAqLworCQlyYWlzZShTSUdTVE9QKTsKKwl9CisKKwkvKiBBbGwgaXRl
+cmF0aW9ucyBwYXNzZWQgLSB3YWl0IGZvciBwYXJlbnQgdG8gdGVybWluYXRlIHVzICovCisJc2hh
+cmVkLT5yZXN1bHQgPSAwOworCXdoaWxlICgxKQorCQlwYXVzZSgpOworfQorCitzdGF0aWMgdm9p
+ZCBzZXR1cCh2b2lkKQoreworCS8qIEFsbG9jYXRlIHNoYXJlZCBtZW1vcnkgZm9yIHBhcmVudC1j
+aGlsZCBjb21tdW5pY2F0aW9uICovCisJc2hhcmVkID0gU0FGRV9NTUFQKE5VTEwsIHNpemVvZigq
+c2hhcmVkKSwgUFJPVF9SRUFEIHwgUFJPVF9XUklURSwKKwkJCSAgIE1BUF9TSEFSRUQgfCBNQVBf
+QU5PTllNT1VTLCAtMSwgMCk7CisJbWVtc2V0KHNoYXJlZCwgMCwgc2l6ZW9mKCpzaGFyZWQpKTsK
+K30KKworc3RhdGljIHZvaWQgcnVuKHZvaWQpCit7CisJY2hhciBwYXRoWzY0XTsKKwlpbnQgbWVt
+ZmQ7CisJaW50IHN0YXR1czsKKwlpbnQgaTsKKworCS8qIEZvcmsgdHJhY2VlICovCisJdHJhY2Vl
+X3BpZCA9IFNBRkVfRk9SSygpOworCWlmICghdHJhY2VlX3BpZCkgeworCQl0cmFjZWVfbWFpbigp
+OworCQlleGl0KDApOworCX0KKworCS8qIFdhaXQgZm9yIHRyYWNlZSB0byBiZSByZWFkeSAqLwor
+CVRTVF9DSEVDS1BPSU5UX1dBSVQoMCk7CisKKwkvKiBBdHRhY2ggdG8gdHJhY2VlIHdpdGggUFRS
+QUNFX1NFSVpFICovCisJU0FGRV9QVFJBQ0UoUFRSQUNFX1NFSVpFLCB0cmFjZWVfcGlkLCBOVUxM
+LCBOVUxMKTsKKworCS8qIFNpZ25hbCB0cmFjZWUgdGhhdCBhdHRhY2htZW50IGlzIGNvbXBsZXRl
+ICovCisJVFNUX0NIRUNLUE9JTlRfV0FLRSgxKTsKKworCS8qIFdhaXQgZm9yIHRyYWNlZSdzIGZp
+cnN0IHNlbGYtc3RvcCAqLworCVNBRkVfV0FJVFBJRCh0cmFjZWVfcGlkLCAmc3RhdHVzLCAwKTsK
+KworCWlmIChXSUZFWElURUQoc3RhdHVzKSkgeworCQl0c3RfYnJrKFRCUk9LLAorCQkJIlRyYWNl
+ZSBleGl0ZWQgdW5leHBlY3RlZGx5IGJlZm9yZSBmaXJzdCBTSUdTVE9QOiAlcyIsCisJCQl0c3Rf
+c3Ryc3RhdHVzKHN0YXR1cykpOworCX0KKworCWlmIChXSUZTSUdOQUxFRChzdGF0dXMpKSB7CisJ
+CXRzdF9icmsoVEJST0ssCisJCQkiVHJhY2VlIHdhcyBraWxsZWQgYmVmb3JlIGZpcnN0IFNJR1NU
+T1A6ICVzIiwKKwkJCXRzdF9zdHJzdGF0dXMoc3RhdHVzKSk7CisJfQorCisJaWYgKCFXSUZTVE9Q
+UEVEKHN0YXR1cykgfHwgV1NUT1BTSUcoc3RhdHVzKSAhPSBTSUdTVE9QKSB7CisJCXRzdF9icmso
+VEJST0ssCisJCQkiVHJhY2VlIGRpZCBub3Qgc2VsZi1zdG9wIHdpdGggU0lHU1RPUDogJXMiLAor
+CQkJdHN0X3N0cnN0YXR1cyhzdGF0dXMpKTsKKwl9CisKKwkvKiBPcGVuIC9wcm9jL3BpZC9tZW0g
+Zm9yIHdyaXRpbmcgKi8KKwlzbnByaW50ZihwYXRoLCBzaXplb2YocGF0aCksICIvcHJvYy8lZC9t
+ZW0iLCB0cmFjZWVfcGlkKTsKKwltZW1mZCA9IFNBRkVfT1BFTihwYXRoLCBPX1JEV1IpOworCisJ
+LyoKKwkgKiBXcml0ZS1zdG9wLWNvbnRpbnVlIGN5Y2xlOiB0cmFjZWUgaXMgYWxyZWFkeSBzdG9w
+cGVkIGZyb20gaW5pdGlhbCByYWlzZShTSUdTVE9QKS4KKwkgKiBQYXR0ZXJuOiB3cml0ZSDihpIg
+Y29udGludWUg4oaSIHRyYWNlZSB2ZXJpZmllcyDihpIgdHJhY2VlIHN0b3BzIOKGkiByZXBlYXQK
+KwkgKi8KKwlmb3IgKGkgPSAwOyBpIDwgVEVTVF9JVEVSQVRJT05TOyBpKyspIHsKKwkJaW50IHdy
+aXRlX3ZhbCA9IDB4ZGVhZDAwMDAgfCBpOworCisJCS8qIFVwZGF0ZSBleHBlY3RlZCB2YWx1ZSBm
+b3IgdHJhY2VlIHRvIHZlcmlmeSAqLworCQlzaGFyZWQtPmV4cGVjdGVkX3ZhbCA9IHdyaXRlX3Zh
+bDsKKworCQkvKiBXcml0ZSB0byB0cmFjZWUncyBtZW1vcnkgd2hpbGUgaXQncyBzdG9wcGVkICov
+CisJCVNBRkVfTFNFRUsobWVtZmQsIChvZmZfdClzaGFyZWQtPnRlc3RfcHRyLCBTRUVLX1NFVCk7
+CisJCVNBRkVfV1JJVEUoU0FGRV9XUklURV9BTEwsIG1lbWZkLCAmd3JpdGVfdmFsLCBzaXplb2Yo
+d3JpdGVfdmFsKSk7CisKKwkJLyogQ29udGludWUgdHJhY2VlIHRvIHZlcmlmeSB0aGUgd3JpdGUg
+YW5kIHN0b3AgYWdhaW4gKi8KKwkJU0FGRV9QVFJBQ0UoUFRSQUNFX0NPTlQsIHRyYWNlZV9waWQs
+IE5VTEwsIE5VTEwpOworCisJCS8qIFdhaXQgZm9yIHRyYWNlZSB0byBzdG9wIGl0c2VsZiBhZnRl
+ciB2ZXJpZmljYXRpb24gKi8KKwkJU0FGRV9XQUlUUElEKHRyYWNlZV9waWQsICZzdGF0dXMsIDAp
+OworCisJCWlmIChXSUZFWElURUQoc3RhdHVzKSkgeworCQkJaWYgKFdFWElUU1RBVFVTKHN0YXR1
+cykgPT0gMCkgeworCQkJCXRzdF9icmsoVEJST0ssCisJCQkJCSJUcmFjZWUgZXhpdGVkIHVuZXhw
+ZWN0ZWRseSBhdCBpdGVyYXRpb24gJWQ6ICVzIiwKKwkJCQkJaSwgdHN0X3N0cnN0YXR1cyhzdGF0
+dXMpKTsKKwkJCX0KKwkJCS8qIFRyYWNlZSByZXBvcnRlZCBmYWlsdXJlIGFuZCBleGl0ZWQgKi8K
+KwkJCVNBRkVfQ0xPU0UobWVtZmQpOworCQkJdHJhY2VlX3BpZCA9IDA7CisJCQlyZXR1cm47CisJ
+CX0KKworCQlpZiAoV0lGU0lHTkFMRUQoc3RhdHVzKSkgeworCQkJdHN0X2JyayhUQlJPSywKKwkJ
+CQkiVHJhY2VlIHdhcyBraWxsZWQgYXQgaXRlcmF0aW9uICVkOiAlcyIsCisJCQkJaSwgdHN0X3N0
+cnN0YXR1cyhzdGF0dXMpKTsKKwkJfQorCisJCWlmICghV0lGU1RPUFBFRChzdGF0dXMpIHx8IFdT
+VE9QU0lHKHN0YXR1cykgIT0gU0lHU1RPUCkgeworCQkJdHN0X2JyayhUQlJPSywKKwkJCQkiVHJh
+Y2VlIGRpZCBub3Qgc3RvcCBjb3JyZWN0bHkgYXQgaXRlcmF0aW9uICVkOiAlcyIsCisJCQkJaSwg
+dHN0X3N0cnN0YXR1cyhzdGF0dXMpKTsKKwkJfQorCX0KKworCVNBRkVfQ0xPU0UobWVtZmQpOwor
+CisJLyogVGVzdCBwYXNzZWQgLSBhbGwgd3JpdGVzIHdlcmUgc3VjY2Vzc2Z1bCBhbmQgdHJhY2Vl
+IHZlcmlmaWVkIHRoZW0gKi8KKwl0c3RfcmVzKFRQQVNTLAorCQkiU3VjY2Vzc2Z1bGx5IHdyb3Rl
+IHRvIHRyYWNlZSBtZW1vcnkgdmlhIC9wcm9jL3BpZC9tZW0gIgorCQkiZm9yICVkIGl0ZXJhdGlv
+bnMiLCBURVNUX0lURVJBVElPTlMpOworCisJLyogRGV0YWNoIGFuZCB0ZXJtaW5hdGUgdHJhY2Vl
+ICovCisJU0FGRV9QVFJBQ0UoUFRSQUNFX0RFVEFDSCwgdHJhY2VlX3BpZCwgTlVMTCwgTlVMTCk7
+CisJU0FGRV9LSUxMKHRyYWNlZV9waWQsIFNJR0tJTEwpOworCVNBRkVfV0FJVFBJRCh0cmFjZWVf
+cGlkLCAmc3RhdHVzLCAwKTsKKwl0cmFjZWVfcGlkID0gMDsKK30KKworc3RhdGljIHZvaWQgY2xl
+YW51cCh2b2lkKQoreworCWlmICh0cmFjZWVfcGlkID4gMCkgeworCQkvKiBLaWxsIHRyYWNlZSBp
+ZiBzdGlsbCBhbGl2ZSAoZS5nLiwgdGVzdCBhYm9ydGVkKSAqLworCQlpZiAoa2lsbCh0cmFjZWVf
+cGlkLCAwKSA9PSAwKSB7CisJCQlTQUZFX0tJTEwodHJhY2VlX3BpZCwgU0lHS0lMTCk7CisJCQl0
+c3RfcmVhcF9jaGlsZHJlbigpOworCQl9CisJCXRyYWNlZV9waWQgPSAwOworCX0KKworCWlmIChz
+aGFyZWQpCisJCVNBRkVfTVVOTUFQKHNoYXJlZCwgc2l6ZW9mKCpzaGFyZWQpKTsKK30KKworc3Rh
+dGljIHN0cnVjdCB0c3RfdGVzdCB0ZXN0ID0geworCS50ZXN0X2FsbCA9IHJ1biwKKwkuc2V0dXAg
+PSBzZXR1cCwKKwkuY2xlYW51cCA9IGNsZWFudXAsCisJLmZvcmtzX2NoaWxkID0gMSwKKwkubmVl
+ZHNfY2hlY2twb2ludHMgPSAxLAorCS50YWdzID0gKGNvbnN0IHN0cnVjdCB0c3RfdGFnW10pIHsK
+KwkJeyJsaW51eC1naXQiLCAiNDFlODE0OWM4ODkyIn0sCisJCXt9CisJfQorfTsKLS0gCjIuNTUu
+MAoKCi0tIApNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5saW51eC5pdC9saXN0aW5m
+by9sdHAK
