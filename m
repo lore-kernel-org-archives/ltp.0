@@ -4,81 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8CE07C44501
-	for <ltp@archiver.kernel.org>; Tue, 14 Jul 2026 10:50:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 19370C44501
+	for <ltp@archiver.kernel.org>; Tue, 14 Jul 2026 10:54:05 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 22CC43E574E
-	for <ltp@archiver.kernel.org>; Tue, 14 Jul 2026 12:50:38 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 75BF73E77FB
+	for <ltp@archiver.kernel.org>; Tue, 14 Jul 2026 12:54:04 +0200 (CEST)
 Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 29EDF3E78DD
- for <ltp@lists.linux.it>; Tue, 14 Jul 2026 12:50:13 +0200 (CEST)
-Received: from mail-qk2-x03.google.com (mail-qk2-x03.google.com
- [IPv6:2607:f8b0:4864:34::3])
+ by picard.linux.it (Postfix) with ESMTPS id BD7753E2F07
+ for <ltp@lists.linux.it>; Tue, 14 Jul 2026 12:53:49 +0200 (CEST)
+Received: from mail-pz2-x01.google.com (mail-pz2-x01.google.com
+ [IPv6:2607:f8b0:4864:3b::1])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 8C0C46005C3
- for <ltp@lists.linux.it>; Tue, 14 Jul 2026 12:50:13 +0200 (CEST)
-Received: by mail-qk2-x03.google.com with SMTP id
- d75a77b69052e-51cafb11d1fso1469891cf.1
- for <ltp@lists.linux.it>; Tue, 14 Jul 2026 03:50:13 -0700 (PDT)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 5835560071E
+ for <ltp@lists.linux.it>; Tue, 14 Jul 2026 12:53:49 +0200 (CEST)
+Received: by mail-pz2-x01.google.com with SMTP id
+ 41be03b00d2f7-c8c1ebd68a1so2720621a12.0
+ for <ltp@lists.linux.it>; Tue, 14 Jul 2026 03:53:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1784026212; x=1784631012; darn=lists.linux.it;
+ d=gmail.com; s=20251104; t=1784026428; x=1784631228; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to:content-type;
- bh=tRXbAycAPFhVvPP5g1FaqcAzhnYsIlAKQUI1zcbejb4=;
- b=TSapei3lqBhaq8AVYIaQ7Tp0lvCQDVFqpNqOcbKVZezxgqxJRDxPwyPlzFEiOMpnZK
- 9qBgYkBTyGa6v/CigUykvXUTs/MpfKrjyeKb2RzBGtJd/9Z+WYUuxvmTIq0GUkVTsJB/
- TBWe7BVPnQ46esOUCqH9MOM1hHV2CesZjCiol8PElb2ZuGVOKvi0aUZXVnenVrroBmTX
- zUgwuuCDo8fmeJvigJH1iE2Pu2u5eBMq1BoWIu/LRsX0q04qwy+we91xoLLseKJ5QFcp
- ovoy6FTcosh6NLNhpssOLKR5udhbvtLNvrUpkuA5m5zJDQuLdE8JSGEs989jXb20Z1J+
- /62A==
+ bh=8ntK4iRdIpODmBz1fx+OPrEXs2lFA9UnFbSJG8fEP3M=;
+ b=Ng+krUgLtTuRJGnBmW0jrtU7vskrfEb/izsehlYYCc80TmxKfKEgFP9S6C7XUratbm
+ DgdDdgFm7uyTSwG4h4rc9UR4ol9wvV1MUhNe8rl4aOQe+4oZ4kFsWm41braB/z3QJXSs
+ tJKojyI41yrFfJSxlTYuxLFdxp7L3p8NEoL21SA4t6VwYBGQ1CYRpWenuJmnetGPKbzF
+ jotdx2Nw122RSUkWToO8hUJXL9YGtHSvWmY/v29W3lR7J21KWJ04H2V6rnh4AxtKAqbu
+ Fpp9ucd7kkvDJGfQ3WHHWk2gwQK827JCKtZrL6NDUfE4jbVCgaFxUD76FjNF/FaBm20K
+ Y8GQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1784026212; x=1784631012;
+ d=1e100.net; s=20251104; t=1784026428; x=1784631228;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to:content-type;
- bh=tRXbAycAPFhVvPP5g1FaqcAzhnYsIlAKQUI1zcbejb4=;
- b=i2kJPjLEfyqoVUekW+NSzF4CZYqup9GBpXAQM0VwCIi+FSlhiKvh7T9aCGF6qw8zFF
- PeewkbuTiSPyHAmEgkNaz3u5ZX/Chjm518i+1FI6qgUBpf+LT4y1O7yGgkJZsEJ5l6kh
- 5HgkDVe0fVaX/fww7uzuw07PYcGoZhrEydeClPLi5nZQyNBp8f2E6nFXUnFafePGM2Im
- Adw6zr423WcfjRJDQ7wQSokAp/XFNVLXwEx4xllNYF2K3sRHwe0uv7O7Lvg208FRvoGU
- kCII3Jd5pYzuj0QrWUThwPAqIiwuhHFeT/sruG9NEoE6wgHMxgoZBiYEdfBJvZkbVnnM
- md6Q==
-X-Gm-Message-State: AOJu0YwObMpvd65xB8Q8N9zcETY4irbjCwzf0CqcNsfz4tY5cNtqT58s
- AcO8J4Q7QgJWaelzuSGUylpzbyps8q3OytHOo2wtqJHwI4DH2sQl6ZZFEqB6UxE4v3w=
-X-Gm-Gg: AfdE7cl/MQES+D2Saw3yHWj3BnFERvRguvUBL4MOAazH5gvjIaUWph2HfrHxaZTsOwe
- OQMI93PlhLJQkXD7lvSe2jynlHmy8socsnVahWpE6P3tTCdb4KaESzQFnnJTF3hBMvn2W1AkVDA
- 7Xt+btJv3EBLfMjy52CHrfQoOqWTycoUrlI6+x37pHBNGKBthCoCKCrBLaz6xVhZIjejY9T0uGX
- n7wv25I2y7O6/hnOLZ5B5lQY5NYP95Yk+y4Sdb1nxm9/4haX8+17sXPG2+R2ewnUwbX5d/99tLC
- VtdcP7ooIzImilAdm5l+DJK3CJ7Dtgj5Yf6vIx7baMWel5zKPTROzjzbHXGpb3gpr0DSUQQT8QR
- 95VYZVL/hH1XMcPs6NK+BaI0t6acADzaT5fFWUc9C0m4wvv3kOcJwmOqcZalmc3uTBId6XxvKsN
- 8f5WRP88E2Xc1rFe+KAwEMx+R0YtBr5ooJHdxyqSi5eA+da6no8acJOp+OGgu/Dcpl3/+Fxlcry
- ABzI/ySbYgzCOTXmCQq9iYWfVNF
-X-Received: by 2002:ac8:5a47:0:b0:51a:8c99:1f18 with SMTP id
- d75a77b69052e-51cbf281a2bmr119429091cf.71.1784026212309; 
- Tue, 14 Jul 2026 03:50:12 -0700 (PDT)
+ bh=8ntK4iRdIpODmBz1fx+OPrEXs2lFA9UnFbSJG8fEP3M=;
+ b=IlM7cyHGzEmsfwTeltniZEwfutEJdPzM49slAvKJ29A12Dalx52Ucc+bQOUc5vFSC/
+ u1ZiiltJohxUMZLOkMPJHPgIZ8gQWZahm11GDFm7EYbstpHXzquwPdhuLEY5uCmmjxKA
+ seDnCzt0mNJyFFnsuwUw/x2cIFazxg1Ox/gGmUEVyi0b5ziCbrmpYdc6/ER8wNunJXC5
+ wTtC2Yep5wonsbX+0t4rxjsY22PmQZ69jbU4Njtmddzbzf9g3OnirKZe5COlVO4h8tQs
+ gAw3aXWDpxskXQdW+bckdTVoJSGKp4e211l249iX+lxt6WerzclYeym3ZxXbu4FJiNMs
+ a/Rg==
+X-Gm-Message-State: AOJu0YzFCJwKi+nYzwRLFHKE25LVfO1+To09cOkOEx2pMGoWkcycebSl
+ vm0FDauqd41E2ySWESjcX64JvTgXI0JIJ/oE8aais6r4OSXjvICugrypJsRNvo7FqUQ=
+X-Gm-Gg: AfdE7clnnJvKR6GuidKtQkY10bnrXkb1wMPE4uyFrgBBtgKtqdQ5VGmiCOYIgt+T+kb
+ ScWygoLoW2mo90SCe8YYY9o/K6jkPYWJhFBCG9EaE9t8ZFFxIIk2T1fBg0/yG1A3XlGTRb/uvr0
+ u8kA925UuBHV5OCykaGE4mAJepYFEH2MqB8jgOuGTC4KezJak2MGqekLeU3pg910ATHaj/7jeh5
+ vru9xlugbQhPE1K0pQBAbQ4lU1R70Q9f2T7rAdU4S9y7ldznHZWE+Wx3gpdsQuzdekmqjvZVqF6
+ 8AKxKYCIiIDQTQhnr9o7uSkQQb7OVM57uNKcd0+gh8go6hN9uRU3cvAp2l+SpGRsAm6t3QH8//l
+ zWDp/kChQqORsrqe5EIgWk3/iCozMdPGHgb/aAdgUilX+NtOA60wkQPBm2sSxQWc8jNxQ7Yfi4O
+ Ovlp9lMKOPErMrFXE6EoSRMr/sJ0MaAc7f44/irvIXQszGrVW7c4fp3y50ev6bhdct3ibBLiR96
+ 56OZPlnmYtNk3iVabpgR/2ysV6G3Q==
+X-Received: by 2002:a05:6300:2189:b0:3bf:6c08:4ebb with SMTP id
+ adf61e73a8af0-3c3571d0894mr2592672637.48.1784026427489; 
+ Tue, 14 Jul 2026 03:53:47 -0700 (PDT)
 Received: from
- runnervm5mmn9.xdy23aex2gdehfi5fo3ofqo3dg.cx.internal.cloudapp.net
- ([145.132.99.23]) by smtp.gmail.com with ESMTPSA id
- d75a77b69052e-51caacaad78sm108071651cf.7.2026.07.14.03.50.12
+ runnervm5mmn9.c1ygo510fseu3ihkomri2qkfzd.phxx.internal.cloudapp.net
+ ([20.169.93.26]) by smtp.gmail.com with ESMTPSA id
+ 5a478bee46e88-313cb804197sm30183014eec.13.2026.07.14.03.53.47
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 14 Jul 2026 03:50:12 -0700 (PDT)
+ Tue, 14 Jul 2026 03:53:47 -0700 (PDT)
 From: linuxtestproject.agent@gmail.com
 To: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Tue, 14 Jul 2026 10:50:11 +0000
-Message-ID: <20260714105011.4039-1-linuxtestproject.agent@gmail.com>
+Date: Tue, 14 Jul 2026 10:53:46 +0000
+Message-ID: <20260714105346.3883-1-linuxtestproject.agent@gmail.com>
 X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260714-syscall_invalid_nr-v1-1-d8b6f4e3ec7b@suse.com>
-References: <20260714-syscall_invalid_nr-v1-1-d8b6f4e3ec7b@suse.com>
+In-Reply-To: <20260714-cve-2026-46331-v5-1-bab4ac23c1f7@suse.com>
+References: <20260714-cve-2026-46331-v5-1-bab4ac23c1f7@suse.com>
 MIME-Version: 1.0
 X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] syscall02: test invalid syscall number -1
+Subject: Re: [LTP] lapi: Add pkt_cls.h fallback
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -98,23 +98,40 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi Andrea,
 
-On Tue, 14 Jul 2026 11:25:40 +0200, Andrea Cervesato wrote:
-> syscall02: test invalid syscall number -1
+On Tue, 14 Jul 2026 10:38:58 +0200, Andrea Cervesato wrote:
+> lapi: Add pkt_cls.h fallback
 
-> +#include <unistd.h>
-> +#include <sys/syscall.h>
+--- [PATCH 4/4] ---
 
-<sys/syscall.h> provides SYS_* constants, but none are used here.
-syscall() is declared by <unistd.h>. The include can be dropped.
+> +/*
+> + * Same as NETDEV_REMOVE_QDISC() but does not fail when the qdisc is
+> + * missing (strict=0), so it can be used to clear a possibly absent qdisc.
+> + */
+> +#define NETDEV_MAY_REMOVE_QDISC(ifname, family, parent, handle, qd_kind) \
 
-> + * Verify that a raw :manpage:`syscall(2)` with the reserved system call
-> + * number -1 fails with ENOSYS.
+New public macros in include/ require kernel-doc (/** */), not a plain
+block comment. The content is fine; it just needs the right opener:
 
-Same in the commit message body: -1 is not formally reserved by the
-kernel ABI or POSIX. It is simply an out-of-range number that lands on
-sys_ni_syscall. The test itself uses "invalid" in the message string,
-which is the more accurate term. Worth aligning the description with
-that wording.
+  /**
+   * NETDEV_MAY_REMOVE_QDISC - remove qdisc without failing if absent.
+   * @ifname: network interface name
+   * @family: address family
+   * @parent: parent handle
+   * @handle: qdisc handle
+   * @qd_kind: qdisc kind string
+   *
+   * Same as NETDEV_REMOVE_QDISC() but passes strict=0, so it does not
+   * fail when the qdisc is missing.
+   */
+
+> +#define NETDEV_REMOVE_QDISC(ifname, family, parent, handle, qd_kind) \
+>  	tst_netdev_remove_qdisc(__FILE__, __LINE__, 1, (ifname), (family), \
+>  		(parent), (handle), (qd_kind))
+> +/*
+
+No blank line between the closing of NETDEV_REMOVE_QDISC and the comment
+that opens NETDEV_MAY_REMOVE_QDISC. All other macro blocks in the file
+have a blank line between them.
 
 Verdict - Needs revision
 
