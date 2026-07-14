@@ -4,82 +4,104 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 10B43C44508
-	for <ltp@archiver.kernel.org>; Tue, 14 Jul 2026 16:26:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DDCF3C44508
+	for <ltp@archiver.kernel.org>; Tue, 14 Jul 2026 17:01:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1784048493; h=to : date :
+ message-id : mime-version : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : content-type : content-transfer-encoding : sender : from;
+ bh=a8RNkJhpBTMOTjYmv5sd8An7qJhv5jpIfHscmlLN4e4=;
+ b=EUBCWnjP5Wu3qTcWeoXsyLoIrEsdy1+ZwduMuWRee1pWfYs99x9aaiN5audNW0yeUS0qv
+ /eKvTO0e/mnwEW1BYxtO34b5pknimm5OzV09T8mHAaieC8JdIG28oRGqNQ5lWKf7HtZ7FLn
+ quGwMuuQllcauRXSHo42eOHhOGwkrng=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 4BAAD3E99EF
-	for <ltp@archiver.kernel.org>; Tue, 14 Jul 2026 18:26:33 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id DD66C3E968E
+	for <ltp@archiver.kernel.org>; Tue, 14 Jul 2026 19:01:33 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 4AE013E56E7
- for <ltp@lists.linux.it>; Tue, 14 Jul 2026 18:26:16 +0200 (CEST)
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com
- [IPv6:2607:f8b0:4864:20::441])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id A1A8C3E56E7
+ for <ltp@lists.linux.it>; Tue, 14 Jul 2026 18:28:39 +0200 (CEST)
+Received: from smtp-relay-internal-1.canonical.com
+ (smtp-relay-internal-1.canonical.com [185.125.188.123])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id AAF9160083D
- for <ltp@lists.linux.it>; Tue, 14 Jul 2026 18:26:15 +0200 (CEST)
-Received: by mail-pf1-x441.google.com with SMTP id
- d2e1a72fcca58-84a2c90e383so959814b3a.0
- for <ltp@lists.linux.it>; Tue, 14 Jul 2026 09:26:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1784046374; x=1784651174; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to:content-type;
- bh=AhZurK7SFHDW/41iG6OXT+Lyflf6movLHAenJ6QhvdE=;
- b=RgUj3xtUsSv5FyQzSXdUQdZh8L1OLpRUgl9GSUd33/+qeIn+Ypzl9OXmDAH6yhgUfM
- dmH/qRjGlViAT+TbnYYDl2OQzaunM+9cVI6rMW08YADR29ULQAOAy+ufNMlET9AnYKdu
- xAJUF1ok/zle0zqms9PxBOmZbgR9TilSjMtHCAmmDQRvCnn39E969oqWBWDMYWpVD76B
- UBu9oFYb+JMo0v5EK9IqCcCeFhxxcjSEaosk24hiFELqNcTBbm3O7i66udtN2QIXVwwP
- xEaw5W6YsPRuS3axPUl/52X81COlTLVTXMdWmhE8+Wi9EnPNp3QHxW/9ZrjKNoF15EZe
- ZO6w==
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 1887A60080D
+ for <ltp@lists.linux.it>; Tue, 14 Jul 2026 18:28:38 +0200 (CEST)
+Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
+ [209.85.222.200])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 709ED3F608
+ for <ltp@lists.linux.it>; Tue, 14 Jul 2026 16:28:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+ s=20251003; t=1784046518;
+ bh=hS5wu5nuPJr9dxw19SClndeK0hAp3zz2eVa/yh1vzWE=;
+ h=From:To:Subject:Date:Message-ID:MIME-Version;
+ b=EUQVDIPRRYkajLE2CPcKoqR5DXZrlJhBLSEv2uWC+VbBURvPVr7wvWqgzK6F9LQ4C
+ MtJLgzl/yJw/aBGkWvR/lbtMUyvZBB2ZUk1pojir3HG978RPXuzNNrrgGOC4OQ2NYp
+ 0h6QBV8D/hGLD4gtZeqR4UzsJwhEoqXxb3hssRMNUg9TI9sS4VQt6L4QucWa5hoX3e
+ 5SywV29YZxZdKSIg91CDfIC4Cs38Zx477Z6r0zX+V+4k+oRATyjeBNrb2esrgNewaq
+ gEgssKd27aSYV+zAot8caMvbRoLdeANI2IKNI8ki6rEHkoXLYL4jT+0FkerESggSIu
+ 8CmB37R8PgirMx98I1zz9JuDi43pDFHmxOf4q6uRli39YD2J0/AZvzCa42WBkP0Hfd
+ pmKRGcuLgMzlRHC5r+dCdLth5DA6R2571j+XX5SFc6dmh2GUjmQON5cE7VaigPDbpR
+ /1RDxEU/otf6MxLi3jKoejt3FaaQYMykGdkKSWKTnTOZNmrXI77RxvnHtTgj8kpITB
+ zjIWGmGYZ6yMtfaLKV/cleSXQoMlyykMhh1e3ByHywgPZxFNE21E7RhBQ34JH1mjO4
+ iSn3QliZGyVna3R5mV5d2ZA4DB8EWQRGs1docKDA8zPpXblO21Yy9E0XWEJs/IgpHQ
+ oJSU77C6DRIRPkU3t6ts2jpA=
+Received: by mail-qk1-f200.google.com with SMTP id
+ af79cd13be357-92e8004d60eso230942685a.1
+ for <ltp@lists.linux.it>; Tue, 14 Jul 2026 09:28:38 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1784046374; x=1784651174;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to:content-type;
- bh=AhZurK7SFHDW/41iG6OXT+Lyflf6movLHAenJ6QhvdE=;
- b=kX3tPuDiSbaPGCaqjJ/hGQaQBQ/BB6/WKLnB9l7KtR3XeRfz7H9ciHAcUDqxyu9vZL
- apOc0Z9C2FNfoF+OX43kR4h5tfYb41q/WYIy6NZ5plr6Cgt5syg6Ypj9aTtBVlY2NO2G
- AmB785ki+ep2y0jcAZaLP7ogMH7MGQp+2b4pZ+FNIall4OPVUckJPFClmGinnHeRUW/Z
- xoScxAn9OfqATGxbk66KrZ64w97tIrjkbNZ98wwgig8VIFDw3ZWCA4NZMXi0UXcvQsiR
- ahLqBRh5gv3dFJO/AKCxPLx2ERGmj5QkR2dHmcFV00wyn/+E07ic7sNWAzEzw7l9rm2U
- KSXA==
-X-Gm-Message-State: AOJu0Yw07Kucyot47xs7RVtcP9OjOgbR6WtGENiw5M1eXDJ33j7hz39L
- A9cAc/UqxvNczN2IRUYwo/1xakfNL1aVvxFHNV4yN04APAvz/4zKd8TC
-X-Gm-Gg: AfdE7ckjS0vmUfn6GOAEEF2Y27yridj4ILMSKD/j42FRZogGI3OjjmZiP/9XIhHgP6Q
- KzdgP4xfrD0enmUN1JIUS2MvkD+ynz7XfU+YSR6wTG38kq1A1s2tbEy3RESog8DztGICHnoNcE3
- L45pygKuTL6IkNPgYEM3tip8exqRL+E+qsoP5J85wDIRLAkOJc9QsmBsaDa7YBTLKNxfHMoEgVx
- gMl211eybKa3wTErSGDZrA4y3EJcI3YBfztCprmUuO+NE7Lr7Wtwl/VFwaesklZ0x2hTPcdZbwA
- C0gFM5XCKHdBt1l0pnJUFSTO+L3AGQe/l/8Qurt56J+qR3l409qcoBacJVnnNdt0N0iZFklE0xA
- +T8lwvIzkPGj9xKMTJHnHZ0uNonWbXNxZxNKdeOturkfXKKVEaUD37wPqHS2P8z+dN9FoizMU5b
- omujDA3xmQuIDm2XgiALHt/+msVtydQmmfKE7lmtvGtLt+WFbJO5kysnNnkTVGMpdyMR4gXMz7f
- Ax7UiPFz6wxtbrOHX9GuiQ1ceGi+w==
-X-Received: by 2002:a05:6a20:a10a:b0:3bf:bde7:d67e with SMTP id
- adf61e73a8af0-3c0f0bcf127mr22130082637.32.1784046373818; 
- Tue, 14 Jul 2026 09:26:13 -0700 (PDT)
-Received: from
- runnervm5mmn9.1xlrnzp2busulcmx1tuvjmdqng.yx.internal.cloudapp.net
- ([57.151.128.192]) by smtp.gmail.com with ESMTPSA id
- a92af1059eb24-13b8a5992c9sm35345027c88.4.2026.07.14.09.26.13
+ d=1e100.net; s=20251104; t=1784046517; x=1784651317;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:to
+ :from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to:content-type;
+ bh=hS5wu5nuPJr9dxw19SClndeK0hAp3zz2eVa/yh1vzWE=;
+ b=p63B1ybK4CGMDIfameR+oqgN/pfc4IVgVD2LeYhbJKxArMEQDvayL9VjxQYhNsbuYV
+ KKaijEWm2OHREHXoP0+tXGzHJoVYD3eoG/V7C53zImG2dpFYd3AX8Jk+cfAJQEQ/kAWi
+ OxjZcrj4RBYrD+SN3hV3MWXWOPObgYCoAouiA2FTmyH2RXcxcDXKayBajYcZAfjOJAJO
+ nEFQES61ZadxMrfUoxFE41vexsflAQcUHHzxpi03Ey02g1sH46cx38n8/irozf88D5Or
+ A9FVmTXAoa8B08Qdi3rgUoBGTujM5FcjmBRIYkUs+pYV8FxiwA/N5ppeyXFjQ+a2npCv
+ IYrA==
+X-Gm-Message-State: AOJu0YyBHZENwiB5lP2AcCtGcWXGqM8CivXz3yg4z0YBJXrqO44mJy3D
+ j/rYccl2t1hsnJhA94TqusNDhCbJT2vYh0GEZnG8yXtP7CdYEWmbs4wlPVWQqIa8jOAUdO9M+r8
+ CpxwhVDzeixWZjGEJ+tdKAf+4kuyf+qcNsL6RETZKipft3Gru/wzlnHU7QH36OW9s4RwO3gXb1N
+ sZ
+X-Gm-Gg: AfdE7clFh/zDs2zAmguydrXh/usLi1eHDciBio2FukXB1NBNZTdlUnaIxAB127se4wn
+ faNSYLnidewR1f7kzaFvcgHWCJrI/EI4QMkJgajeZ3zBw8StJ3I33C6oTRrw9zi9MW7dRtdS1bw
+ jv0as6Uiv8ZUHDD4uJB5N90AfDoXaFP+S17cw2M5R+S0DZcnkW5W9jHh75Xyd9rnZ3EvQHPR0Fa
+ H3XRnsr1BnFOG4FwzhtyF/9wTTxiMbITxhnbfNpVjaskTfPqUdImci9rGQSV3qUGy9X4HW3Gec9
+ uPZc4qRcwBTjileTumPDzLHqXg4QO/hPqJ3Ou7MOKgS2oo9uNlZh6B0wVjHuignm7Dg+bcCEHNz
+ ChvEkUhh5gGg/F8kS9s1I5+SF7B7TXaZ6wuRtchit51tMluNSBeFwDpC888mYx2GTrfQwjbCw0A
+ ==
+X-Received: by 2002:a05:620a:6e82:20b0:92e:f690:56cf with SMTP id
+ af79cd13be357-92ef6905832mr1015700885a.59.1784046517409; 
+ Tue, 14 Jul 2026 09:28:37 -0700 (PDT)
+X-Received: by 2002:a05:620a:6e82:20b0:92e:f690:56cf with SMTP id
+ af79cd13be357-92ef6905832mr1015695285a.59.1784046516638; 
+ Tue, 14 Jul 2026 09:28:36 -0700 (PDT)
+Received: from framework.cable.rcn.com ([130.44.166.248])
+ by smtp.gmail.com with ESMTPSA id
+ af79cd13be357-92ee5b4c834sm1481529085a.1.2026.07.14.09.28.36
+ for <ltp@lists.linux.it>
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 14 Jul 2026 09:26:13 -0700 (PDT)
-From: linuxtestproject.agent@gmail.com
-To: Jan Polensky <japo@linux.ibm.com>
-Date: Tue, 14 Jul 2026 16:26:12 +0000
-Message-ID: <20260714162612.4256-1-linuxtestproject.agent@gmail.com>
-X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260714150631.250972-2-japo@linux.ibm.com>
-References: <20260714150631.250972-2-japo@linux.ibm.com>
+ Tue, 14 Jul 2026 09:28:36 -0700 (PDT)
+To: ltp@lists.linux.it
+Date: Tue, 14 Jul 2026 12:28:34 -0400
+Message-ID: <20260714162834.47191-1-benjamin.wheeler@canonical.com>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
 X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] thp04: Simplify to focus on CVE-2017-1000405 race test
- only
+X-Mailman-Approved-At: Tue, 14 Jul 2026 19:01:13 +0200
+Subject: [LTP] [PATCH v1 1/1] cpuhotplug03.sh: Poll for CPU migration
+ instead of sleeping
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,120 +113,109 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+From: Benjamin Wheeler via ltp <ltp@lists.linux.it>
+Reply-To: Benjamin Wheeler <benjamin.wheeler@canonical.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Jan,
+The test onlined the target CPU, slept a fixed one second and then
+checked once whether the scheduler had migrated a cpuhotplug_do_spin_loop
+process onto it. A blind sleep is both racy (the migration may not have
+happened yet on a busy or slow system) and wasteful (it always waits the
+full second even when the migration is immediate).
 
-On Tue, Jul 14 2026, Jan Polensky <japo@linux.ibm.com> wrote:
-> thp04: Simplify to focus on CVE-2017-1000405 race test only
+Replace the sleep and single check with tst_retry(), which retries the
+check a few times until a process is seen on the onlined CPU. The
+migration check is factored out into a check_cpu_migrated() helper.
 
---- [PATCH 1/3] ---
+tst_retry() is the retry helper available in the legacy shell test API
+(test.sh) that this test uses; TST_RETRY_FUNC() only exists in the new
+API (tst_test.sh), so it is not usable here without converting the whole
+test, which is out of scope for this change.
 
-> +static struct child_state *child;
-> ...
-> +	child = SAFE_MMAP(NULL, sizeof(*child), PROT_READ | PROT_WRITE,
-> +		MAP_SHARED | MAP_ANONYMOUS, -1, 0);
+The TBROK vs TFAIL distinction is preserved: if no spin loop processes
+are running at all it is reported as a broken test (TBROK), whereas
+processes running but none migrating to the onlined CPU remains a
+genuine failure (TFAIL).
 
-> +static struct tst_test test = {
-> +	.test_all = run,
-> +	.setup = setup,
-> +	.cleanup = cleanup,
-> +	.runtime = 150,
-> +	.forks_child = 1,
-
-Is .forks_child = 1 intentional? tst_fzsync_pair_reset() is called
-with thread_run as the second argument, which causes it to create a
-pthread via SAFE_PTHREAD_CREATE -- not a child process.
-
-tst_test.h: "@forks_child: Has to be set if the test intends to fork
-children." No fork() or SAFE_FORK() is called anywhere in this test,
-so .forks_child should not be set.
-
-The child struct is also mapped with MAP_SHARED|MAP_ANONYMOUS.
-MAP_SHARED is meaningful between a parent and a forked child; for
-thread-only use MAP_PRIVATE is appropriate.
-
-> -};
-> +};
->  No newline at end of file
-
-The file is missing a trailing newline. POSIX requires text files to
-end with a newline; `make check` would catch this.
-
---- [PATCH 2/3] ---
-
-> +/*\
-> + * [Description]
-> + *
-> + * Verify that direct writes to /proc/self/mem are correctly rejected
-
-The [Description] header is deprecated. Remove the [Description] line;
-the RST block is treated as a description by default. See c-tests.md
-rule 18.
-
-> +	memfd = SAFE_OPEN("/proc/self/mem", O_RDWR);
-> +}
-> +
-> +static void run(void)
-> +{
-> +	int test_val = 0xdeadbeef;
-> +	ssize_t ret;
-> +
-> +	/* Seek to our test memory location */
-> +	SAFE_LSEEK(memfd, (off_t)test_ptr, SEEK_SET);
-> +
-> +	/* Attempt to write to our own memory via /proc/self/mem */
-> +	ret = write(memfd, &test_val, sizeof(test_val));
-
-The write() here is the subject syscall and its result is being
-checked, but it is not wrapped in TEST(). c-tests.md: "Subject
-syscalls MUST still be wrapped in TEST() or a TST_EXP_* macro --
-never called bare."
-
-Use TEST(write(memfd, &test_val, sizeof(test_val))) and replace the
-ret / errno checks with TST_RET and TST_ERR.
-
-> +	/* Allocate a read-only page - writes via /proc/self/mem should fail */
-> +	test_ptr = SAFE_MMAP(NULL, sizeof(int), PROT_READ | PROT_WRITE,
-
-The comment says "read-only page" but the mmap uses PROT_READ|PROT_WRITE.
-The page is made read-only by the SAFE_MPROTECT call two lines later.
-
-Also the blank line immediately after '*test_ptr = 0;' contains a
-trailing tab. Remove it.
-
-There is no entry for ptrace12 in runtest/syscalls. The test will not
-be picked up by any LTP run until that entry is added.
-
---- [PATCH 3/3] ---
-
-> +/*\
-> + * [Description]
-> + *
-> + * Verify that a parent process can write to a traced child's memory
-
-Same [Description] issue as ptrace12 -- remove the deprecated header.
-
-There is no entry for ptrace13 in runtest/syscalls.
-
-The blank line after '*shared->test_ptr = 0;' in tracee_main() also
-has a trailing tab.
-
-Verdict - Needs revision
-
+Signed-off-by: Benjamin Wheeler <benjamin.wheeler@canonical.com>
 ---
-Note:
+ .../cpu_hotplug/functional/cpuhotplug03.sh    | 43 ++++++++++++-------
+ 1 file changed, 27 insertions(+), 16 deletions(-)
 
-The agent can sometimes produce false positives although often its
-findings are genuine. If you find issues with the review, please
-comment this email or ignore the suggestions.
+diff --git a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug03.sh b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug03.sh
+index 3a461e30c..1577f3e6e 100755
+--- a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug03.sh
++++ b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug03.sh
+@@ -50,6 +50,20 @@ do_clean()
+ 	set_all_cpu_states "$cpu_states"
+ }
 
-Regards,
-LTP AI Reviewer
++# check_cpu_migrated()
++#
++#  Returns 0 if at least one cpuhotplug_do_spin_loop process is running
++#  on CPU_TO_TEST, non-zero otherwise.
++#  Since procps v3.3.15, we need to accurately select command name by -C
++#  option, because procps cannot truncate normal command name to 15
++#  characters by default.
++check_cpu_migrated()
++{
++	ps -o psr -o command --no-headers -C cpuhotplug_do_s \
++		| sed -e "s/^ *//" | cut -d' ' -f 1 \
++		| grep -q "^${CPU_TO_TEST}$"
++}
++
+ while getopts c:l: OPTION; do
+ case $OPTION in
+ 	c)
+@@ -120,21 +134,18 @@ until [ $LOOP_COUNT -gt $HOTPLUG03_LOOPS ]; do
+ 		tst_brkm TBROK "CPU${CPU_TO_TEST} cannot be onlined"
+ 	fi
+
+-	sleep 1
+-
+-	# Verify at least one process has migrated to the new CPU
+-	# Since procps v3.3.15, we need to accurately select command name
+-	# by -C option, because procps cannot trucate normal command name
+-	# to 15 characters by default).
+-	ps -o psr -o command --no-headers -C cpuhotplug_do_s
+-	if [ $? -ne 0 ]; then
+-		tst_brkm TBROK "No cpuhotplug_do_spin_loop processes \
+-			found on any processor"
+-	fi
+-	NUM=`ps -o psr -o command --no-headers -C cpuhotplug_do_s \
+-		| sed -e "s/^ *//" | cut -d' ' -f 1 | grep "^${CPU_TO_TEST}$" \
+-		| wc -l`
+-	if [ $NUM -lt 1 ]; then
++	# Verify at least one process has migrated to the new CPU.
++	# Retry the check in a loop instead of blindly sleeping, since the
++	# scheduler may take a while to migrate a task to the freshly
++	# onlined CPU.
++	if ! tst_retry "check_cpu_migrated"; then
++		# Distinguish a broken workload (no spin loop processes running
++		# at all) from a genuine failure (processes running, but none
++		# migrated to the onlined CPU).
++		if ! ps --no-headers -C cpuhotplug_do_s >/dev/null; then
++			tst_brkm TBROK "No cpuhotplug_do_spin_loop processes \
++				found on any processor"
++		fi
+ 		tst_resm TFAIL "No cpuhotplug_do_spin_loop processes found on \
+ 			CPU${CPU_TO_TEST}"
+ 		tst_exit
+@@ -145,7 +156,7 @@ until [ $LOOP_COUNT -gt $HOTPLUG03_LOOPS ]; do
+ 	LOOP_COUNT=$((LOOP_COUNT+1))
+ done
+
+-tst_resm TPASS "$NUM cpuhotplug_do_spin_loop processes found on \
++tst_resm TPASS "cpuhotplug_do_spin_loop process(es) migrated to \
+ 	CPU${CPU_TO_TEST}"
+
+ tst_exit
+--
+2.43.0
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
