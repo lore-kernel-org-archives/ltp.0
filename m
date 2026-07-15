@@ -4,82 +4,50 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 10082C44508
-	for <ltp@archiver.kernel.org>; Tue, 14 Jul 2026 18:07:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5CAB7C44508
+	for <ltp@archiver.kernel.org>; Wed, 15 Jul 2026 03:05:23 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 4351A3E1E71
-	for <ltp@archiver.kernel.org>; Tue, 14 Jul 2026 20:07:50 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 375AE3E9A0D
+	for <ltp@archiver.kernel.org>; Wed, 15 Jul 2026 05:05:21 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C62573E1693
- for <ltp@lists.linux.it>; Tue, 14 Jul 2026 20:07:35 +0200 (CEST)
-Received: from mail-pj2-x04.google.com (mail-pj2-x04.google.com
- [IPv6:2607:f8b0:4864:39::4])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 2547B3E2945
+ for <ltp@lists.linux.it>; Wed, 15 Jul 2026 05:05:04 +0200 (CEST)
+Received: from out-178.mta0.migadu.com (out-178.mta0.migadu.com
+ [IPv6:2001:41d0:1004:224b::b2])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 3548114004FD
- for <ltp@lists.linux.it>; Tue, 14 Jul 2026 20:07:35 +0200 (CEST)
-Received: by mail-pj2-x04.google.com with SMTP id
- d9443c01a7336-2cabf1f1051so3961415ad.0
- for <ltp@lists.linux.it>; Tue, 14 Jul 2026 11:07:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1784052453; x=1784657253; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to:content-type;
- bh=H+XFXlIlEfHLzy3N+IXzMYNpDJpBO2aXlJw35LCRSSM=;
- b=Jf3cWHzpVnXZSK387Ph67fj+Y3elNQGzHHMVmV7/JMpeyW2WktX2UAY14rma3jY7AH
- eW5RBYYoqARSR12KS9DFGsbODy0zJkWBeDd0J3/EZx3+UZSpsDhoCj7G36m5XtDtHXc6
- 3IN356oAhdv7RTUbZpmcF5KBsJ57TpTGU3/5oEfWo17DgIafhuhB6unjY05TLHI4ZfGy
- 6DXbBDKJSKLPE3ScUqiZ5VLaxFKZmw4eB3mokxeUjw3+GQvz9qV7gI1l/hxIr0dbtY9i
- vqez6Rndut3krZtuNsZaMx1BB7xl0bS6gwdGU4EooVCe5LAr+cauYVG0fnlYRAwXUT6I
- j34A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1784052453; x=1784657253;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to:content-type;
- bh=H+XFXlIlEfHLzy3N+IXzMYNpDJpBO2aXlJw35LCRSSM=;
- b=Cj2+vkjxqh8TRq6AD81c45hm0rPed3ozQXjFOhtBl9FybLlOtaU6qcIKvH3K1K5wB0
- uspAFdwuwnYKW8/LyNhQJzL9vWwilQfWU5jVHf/DaYAvPaj/W7thErriP4qiDwKpeVTQ
- 5Jx3pUwNoFwvithYeUu82Bzt7S8JDLs74VaE2fsHzkQWS1iBHboc+NkBv0TDvGzrhGDS
- IoIay7eCfN8A3p6AdjOtxaRZDsrY05rXshAR7rqmJ0cbig1cYyDcTFfhax4qL+yJ4JK+
- WySUmyXnP7svXCtgkOlHNxihiOwu7Ur+UWkE/oBB9T6+hgWJD81j3bnP0v9SJs3q3MDX
- 1OdA==
-X-Gm-Message-State: AOJu0YyDLhzuQNjhaTDAuZdGAwTXAXc5nqghXjGxIBySj8reeaP3dRSG
- wMXKi3VWzHxk2defJOXj/N7/ATP9GEZFWfQEJLulSx05OheI44rCLsw4U/EzwVwP
-X-Gm-Gg: AfdE7cnmJpS+nZ62nX9FND+llJDGaz8WF5d+FSezII4TXgcG+/I0YcMWmgKrFK/WTzZ
- NWiRMJYTlgXbmL1UEQhyin57BRhNo65SfMCCb4W371IbrCM7Y5ddUM/6v4ap2iwdNhLwWq4XLmT
- 1U9l13Pr/NyOp5DnnojaqQSkYzhAdJKdUCJpK42e7ZCdSc4CJaJV5DOEojzXXdeqCPibUSEv+gw
- dzGRAVNz85ueo7YLzWocbJnIoZDHo8lTznJ308yx3ntBQx2DLdqWASWP8Dvr7DsUNhKr31rTj3L
- cMZdm6buw1IUvGSyfBFYM7TY35DWDu9nEw0pf9zYjdsF4JpSumGwiyZQaRM8mJDFmueiKN5EG1n
- kspjkPHSoPhiVQs/oTb9zO3erzhLuvvsMcHYFA6E8CRjYc5mEK7L4c9kh/gwlodCmxvRoJtWacd
- 0EvZU0fixRONv7j+tEKv6tH5arTYjKAEENxpK0/4UNNY7xC+ve5NP/2jrK7/cYI1QKbh4XkkOaR
- B5LObYStxsKKTouuPqfUwONdXj+RlkB
-X-Received: by 2002:a05:6a20:3d19:b0:3bf:866b:b74a with SMTP id
- adf61e73a8af0-3c110b1e418mr18562749637.35.1784052453219; 
- Tue, 14 Jul 2026 11:07:33 -0700 (PDT)
-Received: from
- runnervm5mmn9.hoabpu31hpaupmk2ycwfr0t0ee.phxx.internal.cloudapp.net
- ([172.182.244.81]) by smtp.gmail.com with ESMTPSA id
- a92af1059eb24-13b659d8da9sm148805997c88.14.2026.07.14.11.07.32
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 14 Jul 2026 11:07:32 -0700 (PDT)
-From: linuxtestproject.agent@gmail.com
-To: Benjamin Wheeler <benjamin.wheeler@canonical.com>
-Date: Tue, 14 Jul 2026 18:07:31 +0000
-Message-ID: <20260714180732.3800-1-linuxtestproject.agent@gmail.com>
-X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260714162834.47191-1-benjamin.wheeler@canonical.com>
-References: <20260714162834.47191-1-benjamin.wheeler@canonical.com>
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id B60AE1A00484
+ for <ltp@lists.linux.it>; Wed, 15 Jul 2026 05:04:57 +0200 (CEST)
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+ t=1784084696;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=tBOeCB6lflUoSg78zbwPCMF0Kp7MMQAR18a6l7X2gn0=;
+ b=tPN0Dmk4BlrdHZxXxgjvkmuTSuY3VPtADHF51tNTQuvaDjxlCGrAq1SLi/ZNEfVya8BAtu
+ KCiAi/dgCFLyeFgJhZt/hzYKjyA0i+OfQT0r0/arfZlR9G6bFFDF7pfLvBb1S7en+7sInd
+ GFrvvnYm9mpRCE9ndj5B8YQPjaF8oEU=
+Date: Wed, 15 Jul 2026 03:04:55 +0000
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and
+ include these headers.
+From: gang.yan@linux.dev
+Message-ID: <a303ea8d1d9ddd3f8dc62fe47c9498005ce2fe10@linux.dev>
+TLS-Required: No
+To: "Andrea Cervesato" <andrea.cervesato@suse.com>
+In-Reply-To: <6a56189c.d419c4af.35af2f.7b5a@mx.google.com>
+References: <6a56189c.d419c4af.35af2f.7b5a@mx.google.com>
+X-Migadu-Flow: FLOW_OUT
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] cpuhotplug03.sh: Poll for CPU migration instead of
- sleeping
+Subject: Re: [LTP] [PATCH 2/3] generate_syscall.sh: add a helper named
+ tst_syscall_base
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,28 +59,80 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+Cc: Gang Yan <yangang@kylinos.cn>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Benjamin,
+July 14, 2026 at 7:08 PM, "Andrea Cervesato" <andrea.cervesato@suse.com mailto:andrea.cervesato@suse.com?to=%22Andrea%20Cervesato%22%20%3Candrea.cervesato%40suse.com%3E > wrote:
 
-On Tue, 14 Jul 2026 12:28:34 -0400, Benjamin Wheeler wrote:
-> cpuhotplug03.sh: Poll for CPU migration instead of sleeping
 
-Verdict - Reviewed
+> 
+> Hi Gang,
+> 
+> > 
+> > From: Gang Yan <yangang@kylinos.cn>
+> >  
+> >  This patch adds a helper named tst_syscall_base, it can check the
+> >  syscall on older distros without tst_brk.
+> >  
+> >  Signed-off-by: Gang Yan <yangang@kylinos.cn>
+> >  ---
+> >  include/lapi/syscalls/generate_syscalls.sh | 27 +++++++++++++---------
+> >  1 file changed, 16 insertions(+), 11 deletions(-)
+> >  
+> >  diff --git a/include/lapi/syscalls/generate_syscalls.sh b/include/lapi/syscalls/generate_syscalls.sh
+> >  index 19f280dfb..95c2c9aeb 100755
+> >  --- a/include/lapi/syscalls/generate_syscalls.sh
+> >  +++ b/include/lapi/syscalls/generate_syscalls.sh
+> >  @@ -49,18 +49,23 @@ tst_brkm(TCONF, dummy_cleanup, \
+> >  })
+> >  #endif
+> >  
+> >  +#define tst_syscall_base(NR, ...) ({ \
+> >  + intptr_t tst_ret; \
+> >  + if (NR == __LTP__NR_INVALID_SYSCALL) { \
+> >  + errno = ENOSYS; \
+> >  + tst_ret = -1; \
+> >  + } else { \
+> >  + tst_ret = syscall(NR, ##__VA_ARGS__); \
+> >  + } \
+> >  + tst_ret; \
+> >  +})
+> > 
+Hi Andrea,
 
----
-Note:
+Thanks for your review.
 
-The agent can sometimes produce false positives although often its
-findings are genuine. If you find issues with the review, please
-comment this email or ignore the suggestions.
+> Do we really need this? If we don't define memfd_secret, we really want
+> to get a TCONF. And the function is used in a weird way.
 
-Regards,
-LTP AI Reviewer
+You are right. I've confirmed that syscall(-1) returning a positive
+value is a glibc or kernel bug on loongarch64, syscall(-1) should return
+-1, but return 38 (ENONSYS) in my enviroment. It is not something LTP should
+work around.
+
+
+> 
+> If you need to add the support for memfd_secret, please just update the
+> syscalls files via:
+> 
+> ./include/lapi/syscalls/generate_arch.sh <path to linux sources>
+> 
+> We don't update .in files manually since it's error prone.
+>
+
+Thanks again
+
+Cherrs
+Gang 
+> Regards,
+> --
+> Andrea Cervesato
+> SUSE QE Automation Engineer Linux
+> andrea.cervesato@suse.com mailto:andrea.cervesato@suse.com
+>
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
