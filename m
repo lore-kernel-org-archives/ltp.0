@@ -4,50 +4,44 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5CAB7C44508
-	for <ltp@archiver.kernel.org>; Wed, 15 Jul 2026 03:05:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B36F6C44508
+	for <ltp@archiver.kernel.org>; Wed, 15 Jul 2026 07:59:26 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 375AE3E9A0D
-	for <ltp@archiver.kernel.org>; Wed, 15 Jul 2026 05:05:21 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 917FE3E5682
+	for <ltp@archiver.kernel.org>; Wed, 15 Jul 2026 09:59:24 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2547B3E2945
- for <ltp@lists.linux.it>; Wed, 15 Jul 2026 05:05:04 +0200 (CEST)
-Received: from out-178.mta0.migadu.com (out-178.mta0.migadu.com
- [IPv6:2001:41d0:1004:224b::b2])
+ by picard.linux.it (Postfix) with ESMTPS id AD58D3E1D74
+ for <ltp@lists.linux.it>; Wed, 15 Jul 2026 09:59:08 +0200 (CEST)
+Received: from out-188.mta0.migadu.com (out-188.mta0.migadu.com
+ [IPv6:2001:41d0:1004:224b::bc])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id B60AE1A00484
- for <ltp@lists.linux.it>; Wed, 15 Jul 2026 05:04:57 +0200 (CEST)
-MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
- t=1784084696;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=tBOeCB6lflUoSg78zbwPCMF0Kp7MMQAR18a6l7X2gn0=;
- b=tPN0Dmk4BlrdHZxXxgjvkmuTSuY3VPtADHF51tNTQuvaDjxlCGrAq1SLi/ZNEfVya8BAtu
- KCiAi/dgCFLyeFgJhZt/hzYKjyA0i+OfQT0r0/arfZlR9G6bFFDF7pfLvBb1S7en+7sInd
- GFrvvnYm9mpRCE9ndj5B8YQPjaF8oEU=
-Date: Wed, 15 Jul 2026 03:04:55 +0000
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id E78FD2001B6
+ for <ltp@lists.linux.it>; Wed, 15 Jul 2026 09:59:07 +0200 (CEST)
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and
  include these headers.
-From: gang.yan@linux.dev
-Message-ID: <a303ea8d1d9ddd3f8dc62fe47c9498005ce2fe10@linux.dev>
-TLS-Required: No
-To: "Andrea Cervesato" <andrea.cervesato@suse.com>
-In-Reply-To: <6a56189c.d419c4af.35af2f.7b5a@mx.google.com>
-References: <6a56189c.d419c4af.35af2f.7b5a@mx.google.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+ t=1784102345;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=5Od3ThtW/acgG+tLUcXV40xkd6RjUwqdU0PULqgoTDA=;
+ b=VTXcrw0T8pA11Z3G05UFQbbWU9liLJdRea/MnFC5i22238QpuU34Zk2MLaYbHDumqNpskX
+ QzONlENoVNVjHo81I5+tfrXbygLanYUhk15bm9xieQj8OEApi4PcU3IAwpGwtxi7Z3sGo7
+ FHL75+5/Y+SsPTIwiRAQC0CNTao0QvU=
+From: Gang Yan <gang.yan@linux.dev>
+To: ltp@lists.linux.it
+Date: Wed, 15 Jul 2026 15:58:50 +0800
+Message-ID: <20260715075850.66118-1-gang.yan@linux.dev>
+MIME-Version: 1.0
 X-Migadu-Flow: FLOW_OUT
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 2/3] generate_syscall.sh: add a helper named
- tst_syscall_base
+Subject: [LTP] [PATCH v2] loongarch64.in: add memfd_secret syscall
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -59,80 +53,50 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Gang Yan <yangang@kylinos.cn>, ltp@lists.linux.it
+Cc: Gang Yan <yangang@kylinos.cn>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-July 14, 2026 at 7:08 PM, "Andrea Cervesato" <andrea.cervesato@suse.com mailto:andrea.cervesato@suse.com?to=%22Andrea%20Cervesato%22%20%3Candrea.cervesato%40suse.com%3E > wrote:
+From: Gang Yan <yangang@kylinos.cn>
 
+memfd_secret(447) is already supported on newer LoongArch kernels, but
+the loongarch64.in was missing its definition. This caused tests using
+memfd_secret (e.g. accept03, readahead01, splice07 via tst_fd.c) to
+incorrectly skip with TCONF even when the kernel supports it:
 
-> 
-> Hi Gang,
-> 
-> > 
-> > From: Gang Yan <yangang@kylinos.cn>
-> >  
-> >  This patch adds a helper named tst_syscall_base, it can check the
-> >  syscall on older distros without tst_brk.
-> >  
-> >  Signed-off-by: Gang Yan <yangang@kylinos.cn>
-> >  ---
-> >  include/lapi/syscalls/generate_syscalls.sh | 27 +++++++++++++---------
-> >  1 file changed, 16 insertions(+), 11 deletions(-)
-> >  
-> >  diff --git a/include/lapi/syscalls/generate_syscalls.sh b/include/lapi/syscalls/generate_syscalls.sh
-> >  index 19f280dfb..95c2c9aeb 100755
-> >  --- a/include/lapi/syscalls/generate_syscalls.sh
-> >  +++ b/include/lapi/syscalls/generate_syscalls.sh
-> >  @@ -49,18 +49,23 @@ tst_brkm(TCONF, dummy_cleanup, \
-> >  })
-> >  #endif
-> >  
-> >  +#define tst_syscall_base(NR, ...) ({ \
-> >  + intptr_t tst_ret; \
-> >  + if (NR == __LTP__NR_INVALID_SYSCALL) { \
-> >  + errno = ENOSYS; \
-> >  + tst_ret = -1; \
-> >  + } else { \
-> >  + tst_ret = syscall(NR, ##__VA_ARGS__); \
-> >  + } \
-> >  + tst_ret; \
-> >  +})
-> > 
-Hi Andrea,
+'''
+accept03.c:46: TPASS: accept() on memfd: ENOTSOCK (88)
+tst_fd.c:261: TCONF: Skipping memfd secret : ENOSYS (38)
+'''
 
-Thanks for your review.
+This patch adds memfd_secret(447) so these tests can run normally:
 
-> Do we really need this? If we don't define memfd_secret, we really want
-> to get a TCONF. And the function is used in a weird way.
+'''
+accept03.c:46: TPASS: accept() on memfd secret : ENOTSOCK (88)
+'''
 
-You are right. I've confirmed that syscall(-1) returning a positive
-value is a glibc or kernel bug on loongarch64, syscall(-1) should return
--1, but return 38 (ENONSYS) in my enviroment. It is not something LTP should
-work around.
+Signed-off-by: Gang Yan <yangang@kylinos.cn>
+---
+ include/lapi/syscalls/loongarch64.in | 1 +
+ 1 file changed, 1 insertion(+)
 
+diff --git a/include/lapi/syscalls/loongarch64.in b/include/lapi/syscalls/loongarch64.in
+index 5407b86ea..a1dfce79e 100644
+--- a/include/lapi/syscalls/loongarch64.in
++++ b/include/lapi/syscalls/loongarch64.in
+@@ -297,6 +297,7 @@ quotactl_fd 443
+ landlock_create_ruleset 444
+ landlock_add_rule 445
+ landlock_restrict_self 446
++memfd_secret 447
+ process_mrelease 448
+ futex_waitv 449
+ set_mempolicy_home_node 450
+-- 
+2.43.0
 
-> 
-> If you need to add the support for memfd_secret, please just update the
-> syscalls files via:
-> 
-> ./include/lapi/syscalls/generate_arch.sh <path to linux sources>
-> 
-> We don't update .in files manually since it's error prone.
->
-
-Thanks again
-
-Cherrs
-Gang 
-> Regards,
-> --
-> Andrea Cervesato
-> SUSE QE Automation Engineer Linux
-> andrea.cervesato@suse.com mailto:andrea.cervesato@suse.com
->
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
