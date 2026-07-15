@@ -4,114 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1647EC44507
-	for <ltp@archiver.kernel.org>; Wed, 15 Jul 2026 09:43:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C3630C44501
+	for <ltp@archiver.kernel.org>; Wed, 15 Jul 2026 09:45:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1784108740; h=to : date :
+ message-id : mime-version : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : content-type : content-transfer-encoding : sender : from;
+ bh=YTIO3gwVtLfl4UVm+QvDLOGdlWse/LUp8zi+KvNvwig=;
+ b=RvFDX1nMXiX6k2xgHNnxXAmOEftdI3jTZzJLtuWecnO+ggI3rEVvh7Zm4FZi8ThR5CsZR
+ 90wyo5mhtwvODvnUkECkNM5nDevGLmv2cNHr0Eg6wOzfwf+eUOsRmOKpI9jf44vmCFU6Nxp
+ iIwzbPaVs2WChVCxTzwuy2I0r+veEeI=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A35513E65C5
-	for <ltp@archiver.kernel.org>; Wed, 15 Jul 2026 11:43:30 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 263EF3E65C4
+	for <ltp@archiver.kernel.org>; Wed, 15 Jul 2026 11:45:40 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 95B653E568E
- for <ltp@lists.linux.it>; Wed, 15 Jul 2026 11:42:08 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+ by picard.linux.it (Postfix) with ESMTPS id B8C9D3E5686
+ for <ltp@lists.linux.it>; Wed, 15 Jul 2026 11:45:18 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 39A631A009AE
- for <ltp@lists.linux.it>; Wed, 15 Jul 2026 11:42:07 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 162AB60012C
+ for <ltp@lists.linux.it>; Wed, 15 Jul 2026 11:45:17 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1784108716;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=VQvxC8jCdtYz80gBmH0Z1QtMfgsuvdqUilBobgeHGdY=;
+ b=AyjpGkLPjXu4CiaE7xcQWLz+PtUACtloK6jEWoy/Nw7OJCU045DWSbWLcEmhEZrfz24Ebu
+ fJB7FZowkYys+/H6y7wGwtTVhxSS6zFa5W/VDTEgwBtTt3MYpGzv5KrsGyvzHgU8eZ3A9j
+ LvbCcIJwgO+8eTFAToxhP3IY1r1D0IM=
+Received: from mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-620-8xu0MkqxN-C2uEcUpNayiA-1; Wed,
+ 15 Jul 2026 05:45:14 -0400
+X-MC-Unique: 8xu0MkqxN-C2uEcUpNayiA-1
+X-Mimecast-MFC-AGG-ID: 8xu0MkqxN-C2uEcUpNayiA_1784108713
+Received: from mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com
+ (mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.93])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id E9AE878324
- for <ltp@lists.linux.it>; Wed, 15 Jul 2026 09:41:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1784108509; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=FDLR+wC/FS7ozKZJzJqCFGL1xFr1htf/qB0qwouHIoI=;
- b=h5sL9WkT6PXbPgdcTnDe0ePlGtbXWu+r1QkXsKE0UIUoKdyA+E9CXwZU9xBRXsQGCx2OPr
- HEZkwwD02SkepmGYQxmjD8tYJclGYkyR49GpPSB2mM48L52YK+IvZWoRXZJ/J19no3uJDG
- 6KfIZzLJ5v88ozL3R8StA+r0qehaT48=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1784108509;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=FDLR+wC/FS7ozKZJzJqCFGL1xFr1htf/qB0qwouHIoI=;
- b=trEinmLSt9q3ruNPsnM03x4G3SBwmGMigThAVHRYHOyYiRpizDs7CZMzevupCsZmYvGiZI
- Ffz/+C7+wEDPf4Cg==
-Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=h5sL9WkT;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=trEinmLS
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1784108509; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=FDLR+wC/FS7ozKZJzJqCFGL1xFr1htf/qB0qwouHIoI=;
- b=h5sL9WkT6PXbPgdcTnDe0ePlGtbXWu+r1QkXsKE0UIUoKdyA+E9CXwZU9xBRXsQGCx2OPr
- HEZkwwD02SkepmGYQxmjD8tYJclGYkyR49GpPSB2mM48L52YK+IvZWoRXZJ/J19no3uJDG
- 6KfIZzLJ5v88ozL3R8StA+r0qehaT48=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1784108509;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=FDLR+wC/FS7ozKZJzJqCFGL1xFr1htf/qB0qwouHIoI=;
- b=trEinmLSt9q3ruNPsnM03x4G3SBwmGMigThAVHRYHOyYiRpizDs7CZMzevupCsZmYvGiZI
- Ffz/+C7+wEDPf4Cg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id CA53C779AD
- for <ltp@lists.linux.it>; Wed, 15 Jul 2026 09:41:49 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id kRJSMN1VV2pXKQAAD6G6ig
- (envelope-from <chrubis@suse.cz>)
- for <ltp@lists.linux.it>; Wed, 15 Jul 2026 09:41:49 +0000
-From: Cyril Hrubis <chrubis@suse.cz>
+ by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
+ id 787EB19560B5
+ for <ltp@lists.linux.it>; Wed, 15 Jul 2026 09:45:13 +0000 (UTC)
+Received: from tdzik-thinkpadt14gen6.tpbc.csb (unknown [10.43.3.29])
+ by mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP
+ id D2FDE18004D4
+ for <ltp@lists.linux.it>; Wed, 15 Jul 2026 09:45:12 +0000 (UTC)
 To: ltp@lists.linux.it
-Date: Wed, 15 Jul 2026 11:41:38 +0200
-Message-ID: <20260715094138.1679456-6-chrubis@suse.cz>
-X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260715094138.1679456-1-chrubis@suse.cz>
-References: <20260715094138.1679456-1-chrubis@suse.cz>
+Date: Wed, 15 Jul 2026 11:45:01 +0200
+Message-ID: <cover.1784103831.git.tdzik@redhat.com>
 MIME-Version: 1.0
-X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
- R_MISSING_CHARSET(0.50)[];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-0.996]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- FUZZY_RATELIMITED(0.00)[rspamd.com]; RCPT_COUNT_ONE(0.00)[1];
- ARC_NA(0.00)[];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- DKIM_TRACE(0.00)[suse.cz:+]; MIME_TRACE(0.00)[0:+];
- RCVD_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[]; RCVD_TLS_ALL(0.00)[]; TO_DN_NONE(0.00)[];
- PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
- DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- RCVD_VIA_SMTP_AUTH(0.00)[];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email, suse.cz:dkim, suse.cz:mid,
- imap1.dmz-prg2.suse.org:helo, imap1.dmz-prg2.suse.org:rdns]
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: E9AE878324
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.93
+X-Mimecast-Spam-Score: 0
+X-Mimecast-MFC-PROC-ID: 906BaDmtiPSwcT8UL-BrYi8Nl9yYB15cfbOuZMhixqg_1784108713
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 5/5] syscalls/epoll_wait15: Add EPOLLEXCLUSIVE test
+Subject: [LTP] [PATCH 0/3] Fix to float_trigo core dump and related
+ enhancements
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -123,165 +82,40 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+From: Tomas Dzik via ltp <ltp@lists.linux.it>
+Reply-To: Tomas Dzik <tdzik@redhat.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Tests that with EPOLLEXCLUSIVE only single waiter is woken up.
+Hi all,
+following 3 patches fix a core dump we observed during testing. Because
+failed malloc() was contributing factor to it I added also some checks
+to malloc() return value. And since I was editing these files I spotted
+that they use sprintf() and I replaced it with snprintf() which is IMHO
+safer and can make debugging test failures easier.
+I would be grateful for review.
 
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
----
- runtest/syscalls                              |   1 +
- .../kernel/syscalls/epoll_wait/.gitignore     |   1 +
- .../kernel/syscalls/epoll_wait/epoll_wait16.c | 115 ++++++++++++++++++
- 3 files changed, 117 insertions(+)
- create mode 100644 testcases/kernel/syscalls/epoll_wait/epoll_wait16.c
+Best regards,
+Tomas D.
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index af04b430e..f50931f56 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -205,6 +205,7 @@ epoll_wait12 epoll_wait12
- epoll_wait13 epoll_wait13
- epoll_wait14 epoll_wait14
- epoll_wait15 epoll_wait15
-+epoll_wait16 epoll_wait16
- 
- epoll_pwait01 epoll_pwait01
- epoll_pwait02 epoll_pwait02
-diff --git a/testcases/kernel/syscalls/epoll_wait/.gitignore b/testcases/kernel/syscalls/epoll_wait/.gitignore
-index 5ba917bdb..1804efbce 100644
---- a/testcases/kernel/syscalls/epoll_wait/.gitignore
-+++ b/testcases/kernel/syscalls/epoll_wait/.gitignore
-@@ -13,3 +13,4 @@ epoll_wait12
- epoll_wait13
- epoll_wait14
- epoll_wait15
-+epoll_wait16
-diff --git a/testcases/kernel/syscalls/epoll_wait/epoll_wait16.c b/testcases/kernel/syscalls/epoll_wait/epoll_wait16.c
-new file mode 100644
-index 000000000..39d8ea259
---- /dev/null
-+++ b/testcases/kernel/syscalls/epoll_wait/epoll_wait16.c
-@@ -0,0 +1,115 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2026 Cyril Hrubis <chrubis@suse.cz>
-+ */
-+
-+/*\
-+ * Verify the EPOLLEXCLUSIVE wakeup semantics of :manpage:`epoll_ctl(2)` and
-+ * :manpage:`epoll_wait(2)`.
-+ *
-+ * When a single target file descriptor is added with EPOLLEXCLUSIVE into
-+ * several epoll instances that each have a waiter blocked in
-+ * :manpage:`epoll_wait(2)`, one event on the target must wake exactly one
-+ * waiter. This is the thundering-herd avoidance introduced in Linux 4.5.
-+ *
-+ * The test writes into a pipe in a loop and checks that on each write exactly
-+ * one child process waiting on the fd is woken up.
-+ */
-+
-+#include <sys/epoll.h>
-+#include <sys/mman.h>
-+
-+#include "tst_test.h"
-+#include "tst_epoll.h"
-+#include "tst_atomic.h"
-+#include "lapi/epoll.h"
-+
-+#define NWAITERS 8
-+
-+static int fds[2] = {-1, -1};
-+static pid_t pids[NWAITERS];
-+static tst_atomic_t *woken;
-+
-+static void setup(void)
-+{
-+	woken = SAFE_MMAP(NULL, sizeof(*woken), PROT_READ | PROT_WRITE,
-+			  MAP_SHARED | MAP_ANONYMOUS, -1, 0);
-+}
-+
-+static void cleanup(void)
-+{
-+	if (fds[0] != -1) {
-+		SAFE_CLOSE(fds[0]);
-+		SAFE_CLOSE(fds[1]);
-+	}
-+
-+	if (woken)
-+		SAFE_MUNMAP(woken, sizeof(*woken));
-+}
-+
-+static void child(void)
-+{
-+	int efd;
-+	struct epoll_event ev = {.events = EPOLLIN | EPOLLET | EPOLLEXCLUSIVE};
-+
-+	efd = SAFE_EPOLL_CREATE1(0);
-+	SAFE_EPOLL_CTL(efd, EPOLL_CTL_ADD, fds[0], &ev);
-+
-+	if (epoll_wait(efd, &ev, 1, 2000) == 1) {
-+		tst_atomic_add_return(1, woken);
-+		TST_CHECKPOINT_WAKE(0);
-+	}
-+
-+	SAFE_CLOSE(efd);
-+	exit(0);
-+}
-+
-+static void run(void)
-+{
-+	int i, round, nwoken;
-+	char c;
-+
-+	tst_atomic_store(0, woken);
-+
-+	SAFE_PIPE(fds);
-+
-+	for (i = 0; i < NWAITERS; i++) {
-+		pids[i] = SAFE_FORK();
-+		if (!pids[i])
-+			child();
-+	}
-+
-+	for (i = 0; i < NWAITERS; i++)
-+		TST_PROCESS_STATE_WAIT(pids[i], 'S', 0);
-+
-+	for (round = 0; round < NWAITERS; round++) {
-+		SAFE_WRITE(SAFE_WRITE_ALL, fds[1], "x", 1);
-+
-+		TST_CHECKPOINT_WAIT(0);
-+
-+		nwoken = tst_atomic_load(woken);
-+		if (nwoken != round+1) {
-+			tst_res(TFAIL,
-+				"event %d woke %d waiters in total, expected %d",
-+				round, nwoken, round);
-+			break;
-+		}
-+
-+		SAFE_READ(1, fds[0], &c, 1);
-+	}
-+
-+	if (round == NWAITERS)
-+		tst_res(TPASS, "each event woke exactly one waiter");
-+
-+	SAFE_CLOSE(fds[0]);
-+	SAFE_CLOSE(fds[1]);
-+}
-+
-+static struct tst_test test = {
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.test_all = run,
-+	.forks_child = 1,
-+	.needs_checkpoints = 1,
-+	.min_kver = "4.5",
-+};
+Tomas Dzik (3):
+  LTP/Lite test float_trigo core dumps due to free(): invalid pointer
+  Add some checks for malloc() returning NULL
+  Replace sprintf() with more secure snprintf() variant in float tests
+
+ testcases/misc/math/float/bessel/genbessel.c  | 10 +++---
+ .../misc/math/float/exp_log/genexp_log.c      | 24 +++++++++----
+ testcases/misc/math/float/iperb/geniperb.c    | 11 ++++--
+ testcases/misc/math/float/main.c              | 18 +++++++---
+ testcases/misc/math/float/power/genpower.c    | 21 ++++++++----
+ testcases/misc/math/float/thread_code.c       | 34 +++++++++++++------
+ testcases/misc/math/float/trigo/gentrigo.c    | 24 +++++++++----
+ 7 files changed, 99 insertions(+), 43 deletions(-)
+
 -- 
-2.54.0
+2.55.0
 
 
 -- 
