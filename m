@@ -4,101 +4,103 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6A8B3C4450A
-	for <ltp@archiver.kernel.org>; Thu, 16 Jul 2026 09:50:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A9485C44501
+	for <ltp@archiver.kernel.org>; Thu, 16 Jul 2026 09:51:07 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0C82D3E55EB
-	for <ltp@archiver.kernel.org>; Thu, 16 Jul 2026 11:50:50 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id EFC113E55EC
+	for <ltp@archiver.kernel.org>; Thu, 16 Jul 2026 11:51:05 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 308443E1CD6
- for <ltp@lists.linux.it>; Thu, 16 Jul 2026 11:50:17 +0200 (CEST)
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
- [148.163.156.1])
+ by picard.linux.it (Postfix) with ESMTPS id BF22E3E1CD6
+ for <ltp@lists.linux.it>; Thu, 16 Jul 2026 11:50:16 +0200 (CEST)
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
+ [148.163.158.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 5967D2005FD
- for <ltp@lists.linux.it>; Thu, 16 Jul 2026 11:50:15 +0200 (CEST)
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 285C110007C4
+ for <ltp@lists.linux.it>; Thu, 16 Jul 2026 11:50:14 +0200 (CEST)
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
  by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id
- 66G7CckF634975; Thu, 16 Jul 2026 09:50:13 GMT
+ 66G7CYCL2515781; Thu, 16 Jul 2026 09:50:13 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
  :content-transfer-encoding:date:from:in-reply-to:message-id
- :mime-version:references:subject:to; s=pp1; bh=xOkbDVXYXOX/yg9mB
- QUTMOwkDf0zF0c5LMciU+F1hJ8=; b=tu4zI63LV8XYonwXIIZ4QJy6UYODj4ZfA
- iV5biJSQArElfSpQyqBzJvOIEhphiG+6HMfWCFK4ADGqoY7hCtbAGw0v1zTT91Iq
- 3U6RFuuOwWwffikX8jE0u9BixnXa68quTJwY2T28qn5E61YyR7vGVbGPfnhFdbO2
- 1ODZdzFLEcyK5MS0S7tJrg5o3NSBAMtbRa6QWQ2LU2dw/l9RYiV99k6mu5OoOK+L
- UShYO3YxNkuM0Bmg+IR2jtmigjyUrihaftL+sYjKeq7a2i0uMdItsGbcm1gXJpai
- lnOfLTWvnoCxNH2Cv8IxfHHhNJ6luXpdFuI7zsHhGp0hpRXdguQ8A==
-Received: from ppma23.wdc07v.mail.ibm.com
- (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4fcv33gnh0-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Thu, 16 Jul 2026 09:50:13 +0000 (GMT)
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
- by ppma23.wdc07v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 66G9nbep027288;
- Thu, 16 Jul 2026 09:50:12 GMT
-Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
- by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4fc1nhmavr-1
+ :mime-version:references:subject:to; s=pp1; bh=3YKg5CvR7tsKMuuYK
+ 7TuonP4gChJyx+iQBGSuTGfrfo=; b=aqZyQpnpvEdKl7+nC/h20PIkBkxRGrPd+
+ wE+KBmwwoH1ETpJnNORdAEAKYqZnfZoxqZhRDCu9db4SpeCwhvPk4CSPTyGjdhDj
+ J/Cyhr9svvO0Wan6bmPx7N+JvwZFxtEI8kNWjueY1cd/8kCP/bCxJqMzHYoPX0j4
+ /KGbUUfwP9dE3igeAFC4sLKHNvN20qZ8FJGSxsyVzGsyP0uVRLzHxi/MWPGVTQm9
+ 6PMk5z7dwBifmeNbPkiootjWHOlasWrOnz+uQquEqaVuMp/rPXurXSWmafwn8Q9U
+ lJdvIBkayvl0LVtZ+HzbrLkhCiq6knMQ/MsH+3yMasbrJJsxmLDmQ==
+Received: from ppma13.dal12v.mail.ibm.com
+ (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4fbegbyff7-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
  Thu, 16 Jul 2026 09:50:12 +0000 (GMT)
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+ by ppma13.dal12v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 66G9nbcx029600;
+ Thu, 16 Jul 2026 09:50:12 GMT
+Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
+ by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 4fc2cgm73p-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Thu, 16 Jul 2026 09:50:11 +0000 (GMT)
 Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com
  [10.20.54.102])
  by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 66G9o8AW48955748
+ 66G9o8R448955746
  (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
  Thu, 16 Jul 2026 09:50:08 GMT
 Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 7483B20043;
+ by IMSVA (Postfix) with ESMTP id 2DDB020040;
  Thu, 16 Jul 2026 09:50:08 +0000 (GMT)
 Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 3E23F2004E;
- Thu, 16 Jul 2026 09:50:08 +0000 (GMT)
+ by IMSVA (Postfix) with ESMTP id E8CF120043;
+ Thu, 16 Jul 2026 09:50:07 +0000 (GMT)
 Received: from li-276bd24c-2dcc-11b2-a85c-945b6f05615c.ibm.com.com (unknown
  [9.111.74.245]) by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
- Thu, 16 Jul 2026 09:50:08 +0000 (GMT)
+ Thu, 16 Jul 2026 09:50:07 +0000 (GMT)
 From: Jan Polensky <japo@linux.ibm.com>
 To: ltp@lists.linux.it
-Date: Thu, 16 Jul 2026 11:50:02 +0200
-Message-ID: <20260716095004.92793-3-japo@linux.ibm.com>
+Date: Thu, 16 Jul 2026 11:50:01 +0200
+Message-ID: <20260716095004.92793-2-japo@linux.ibm.com>
 X-Mailer: git-send-email 2.55.0
 In-Reply-To: <20260716095004.92793-1-japo@linux.ibm.com>
 References: <20260716095004.92793-1-japo@linux.ibm.com>
 MIME-Version: 1.0
 X-TM-AS-GCONF: 00
-X-Proofpoint-Spam-Info: AW1haW4tMjYwNzE2MDA5OSBTYWx0ZWRfX9MDjz/teJXu4
- x2GeK70RFA3+77VIy42jr2Sd4K56GFVhpYC+HA0wbf9jlQWgelL3mQr9vZsTlgtM5Oh9JE4Ves1
- K3EmQCF5bIwpK5j0LP/QD30ZIJEo6Zc=
-X-Authority-Analysis: v=2.4 cv=Mp1iLWae c=1 sm=1 tr=0 ts=6a58a955 cx=c_pps
- a=3Bg1Hr4SwmMryq2xdFQyZA==:117 a=3Bg1Hr4SwmMryq2xdFQyZA==:17
+X-Authority-Analysis: v=2.4 cv=fOcJG5ae c=1 sm=1 tr=0 ts=6a58a954 cx=c_pps
+ a=AfN7/Ok6k8XGzOShvHwTGQ==:117 a=AfN7/Ok6k8XGzOShvHwTGQ==:17
  a=RAioF0-LDSMA:10 a=VkNPw1HP01LnGYTKEx00:22 a=RnoormkPH1_aCDwRdu11:22
- a=uAbxVGIbfxUO_5tXvNgY:22 a=VnNF1IyMAAAA:8 a=bjkPbY_unp0hTH1mPXIA:9
-X-Proofpoint-GUID: Cxt1BhzpfkY_amDon128nUQuL4D9gIys
-X-Proofpoint-ORIG-GUID: Cxt1BhzpfkY_amDon128nUQuL4D9gIys
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNzE2MDA5OSBTYWx0ZWRfX62CRr5ZemDda
- lUHe2Qc+lmTUrv5pVojhHqg2yPwIkhs3mv3gimFtKsP+vk7tRKDoyFY5PsPGXh0UT8ny8qj0axa
- /eCPMrudXKUkh9QFvT8QGSNvO4I9vhnyOfhPE8/5hAu1fCExWCMydvyssW16mfG1WFJTkoqnXGi
- j84XOsz+ozlBpOR2QWm51WBQzATIxW9jN8Zf8aU41nkTXclHbrPZLbMKi1dQYcS1raIzqgm+YOs
- YyztoIYgmDCDGTx9c/wXnzFwIvvG/cwx+prxRF+8zBwVGyKqsgaX5j1byx6s9MvlWlMREI5gHfc
- 9316dQuZpoZWEeVj96RfhA/YxDj44naAcRSRSbxDXzL3wDUeLsOYv16Wf52EJZRfT1Epa1odaF2
- 0BK5wDK0VGSspqP/k5BbDZXnqWxvM8N11jPnX37yreAEYg3Ava6sMp7x9KExhDgvyfB4v9LBQne
- 5ET5B1E3QFQ0kPhmdgw==
+ a=RzCfie-kr_QcCd8fBx8p:22 a=VnNF1IyMAAAA:8 a=aKpMiE9gd_-pdFYVdXcA:9
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNzE2MDA5OSBTYWx0ZWRfX9PoGXx1oTlNm
+ ayWxBcI/TwtPwat91C/eacmJv6MrMRmHlTQt0B2BitGsRrZAmX03OkufthKepKG8NUARh9Pvpto
+ kYSh5SAJZZBibFdGCwi0K6EHB5PHUZyzOjQH7gG9vz55B5Kpt4MOA5YB4oTCcVq6k8ZKOfMLrPQ
+ gJvWs0MVtKCNMz/t2cSG9B14Jio/qkGzf8KvDP6PHMyojT8CxteZI2GnPjazuliYdCxteFPHNY8
+ Hgh7PdvVGbGmVqG9q5uGTidmQKB4MFdL0PtrIu3JPFtjeKeCX68lkCZ995wNc03p8luuXIxyPJM
+ tLCDX2UAdwA3VrnaLRswVv8tC3Uj/bw94pkuDrCXit3D6ntEkujnHpt5PkQU/fmlrfaah7JR/jJ
+ 8+thYFiiXVWqyhM2hrIT6ipmTP/CqNnAXAKtUbobtLqGrSL2l0HrsJyxFfYDimoKRFV030hw8H1
+ q3khRm6Boop3U2FaKeg==
+X-Proofpoint-Spam-Info: AW1haW4tMjYwNzE2MDA5OSBTYWx0ZWRfX8ZUQ72LNETy5
+ JPCF6Cub3ibkl4CLAtwAxEIwoTKulyoWe14fHrGlxuUK+NQBKQUhpoKy8Y41CiCsPLE913PHwF8
+ Vevb/Xa2rteYjz+rfmvUSiIVTYtXKxY=
+X-Proofpoint-GUID: YDLsBjmNj00UVi61WLmDg7a_eGgi3Uwg
+X-Proofpoint-ORIG-GUID: YDLsBjmNj00UVi61WLmDg7a_eGgi3Uwg
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.134,FMLib:17.12.100.49
  definitions=2026-07-16_03,2026-07-15_02,2025-10-01_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- adultscore=0 bulkscore=0 spamscore=0 malwarescore=0 lowpriorityscore=0
- impostorscore=0 priorityscore=1501 suspectscore=0 clxscore=1015 phishscore=0
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.22.0-2606150000 definitions=main-2607160099
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+ spamscore=0 bulkscore=0 impostorscore=0 suspectscore=0 adultscore=0
+ priorityscore=1501 malwarescore=0 clxscore=1015 phishscore=0
+ lowpriorityscore=0 classifier=typeunknown authscore=0 authtc= authcc=
+ route=outbound adjust=0 reason=mlx scancount=1 engine=8.22.0-2606150000
+ definitions=main-2607160099
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 2/3] ptrace: add test for /proc/self/mem write
- rejection
+Subject: [LTP] [PATCH v2 1/3] thp04: Simplify to focus on CVE-2017-1000405
+ race test only
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -115,150 +117,273 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Add ptrace12 to verify that direct writes to /proc/self/mem are
-correctly rejected when CONFIG_PROC_MEM_FORCE_PTRACE=y is active.
+Remove ptrace mode support from thp04.c to keep the test focused on
+its original purpose: testing the CVE-2017-1000405 race condition.
 
-The test allocates a read-only memory page and attempts to write to it
-via /proc/self/mem. With CONFIG_PROC_MEM_FORCE_PTRACE=y, this write
-should fail with EIO because:
-- FOLL_FORCE flag is needed to write to read-only pages
-- CONFIG_PROC_MEM_FORCE_PTRACE blocks FOLL_FORCE unless actively ptracing
-- A process cannot ptrace itself
+The ptrace-based /proc/pid/mem write functionality is now covered by
+dedicated tests in testcases/kernel/syscalls/ptrace/:
+- ptrace12: Tests that CONFIG_PROC_MEM_FORCE_PTRACE blocks self-writes
+- ptrace13: Tests that ptrace allows parent-to-child memory writes
 
-Test validates kernel commit 41e8149c8892 ("proc: add config & param to
-block forcing mem writes").
+This separation follows the principle of one test per feature and makes
+the test suite more maintainable.
 
 Signed-off-by: Jan Polensky <japo@linux.ibm.com>
 ---
- runtest/syscalls                            |  1 +
- testcases/kernel/syscalls/ptrace/.gitignore |  1 +
- testcases/kernel/syscalls/ptrace/ptrace12.c | 96 +++++++++++++++++++++
- 3 files changed, 98 insertions(+)
- create mode 100644 testcases/kernel/syscalls/ptrace/ptrace12.c
+ testcases/kernel/mem/thp/thp04.c | 166 +++++++++++++++++++++----------
+ 1 file changed, 114 insertions(+), 52 deletions(-)
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 2be7012a6cd4..9df4684cca41 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -1176,6 +1176,7 @@ ptrace09 ptrace09
- ptrace10 ptrace10
- ptrace11 ptrace11
+diff --git a/testcases/kernel/mem/thp/thp04.c b/testcases/kernel/mem/thp/thp04.c
+index 16d766c349b7..c8d71289e005 100644
+--- a/testcases/kernel/mem/thp/thp04.c
++++ b/testcases/kernel/mem/thp/thp04.c
+@@ -3,7 +3,7 @@
+  * Copyright (c) 2019 SUSE LLC <mdoucha@suse.cz>
+  */
  
-+ptrace12 ptrace12
- pwrite01 pwrite01
- pwrite02 pwrite02
- pwrite03 pwrite03
-diff --git a/testcases/kernel/syscalls/ptrace/.gitignore b/testcases/kernel/syscalls/ptrace/.gitignore
-index 1ee6117e9d5b..8631219312d5 100644
---- a/testcases/kernel/syscalls/ptrace/.gitignore
-+++ b/testcases/kernel/syscalls/ptrace/.gitignore
-@@ -9,3 +9,4 @@
- /ptrace09
- /ptrace10
- /ptrace11
-+/ptrace12
-diff --git a/testcases/kernel/syscalls/ptrace/ptrace12.c b/testcases/kernel/syscalls/ptrace/ptrace12.c
-new file mode 100644
-index 000000000000..0a528f27961d
---- /dev/null
-+++ b/testcases/kernel/syscalls/ptrace/ptrace12.c
-@@ -0,0 +1,96 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2025 SUSE LLC <japo@suse.cz>
-+ */
-+
+-/*
 +/*\
-+ * Verify that direct writes to /proc/self/mem are correctly rejected
-+ * when CONFIG_PROC_MEM_FORCE_PTRACE=y is active.
+  * CVE-2017-1000405
+  *
+  * Check for the Huge Dirty Cow vulnerability which allows a userspace process
+@@ -21,27 +21,40 @@
+  * On old kernel such as 4.9, it has fixed the Dirty Cow bug but a similar check
+  * in huge_memory.c was forgotten.  As a result, remote memory writes to ro regions
+  * of memory backed by transparent huge pages cause an infinite loop in the kernel.
+- * While in this state the process is stil SIGKILLable, but little else works.
++ * While in this state the process is still SIGKILLable, but little else works.
+  * It is also a regression test about kernel
+  * commit 8310d48b125d("huge_memory.c: respect FOLL_FORCE/FOLL_COW for thp").
 + *
-+ * When CONFIG_PROC_MEM_FORCE_PTRACE=y is set, the kernel requires
-+ * PTRACE_MODE_ATTACH for /proc/pid/mem writes. This means a process
-+ * cannot write to its own memory via /proc/self/mem - such writes
-+ * should fail with EIO.
-+ *
-+ * Test behavior:
-+ * - If write succeeds: TCONF (feature not active)
-+ * - If write fails with EIO: TPASS (feature working correctly)
-+ * - If write fails with other error: TFAIL (unexpected behavior)
-+ */
++ * This test uses direct writes to /proc/self/mem with fuzzy-sync to trigger
++ * the race condition. If direct writes are not available (e.g., when
++ * CONFIG_PROC_MEM_FORCE_PTRACE=y is set), the test reports TCONF.
++ * For ptrace-based /proc/pid/mem testing, see testcases/kernel/syscalls/ptrace/.
+  */
+ 
+-#include "tst_test.h"
++#include <string.h>
 +
-+#include <errno.h>
-+#include <fcntl.h>
-+#include <sys/mman.h>
-+#include <unistd.h>
-+
+ #include "lapi/mmap.h"
+ #include "tst_fuzzy_sync.h"
 +#include "tst_test.h"
+ 
+-static char *write_thp, *read_thp;
+-static int *write_ptr, *read_ptr;
+-static size_t thp_size;
+-static int writefd = -1, readfd = -1;
+-static struct tst_fzsync_pair fzsync_pair;
++struct thp_state {
++	char *write_thp;
++	char *read_thp;
++	int *write_ptr;
++	int *read_ptr;
++	size_t thp_size;
++	int writefd;
++	int readfd;
++	struct tst_fzsync_pair fzsync_pair;
++};
+ 
+-static void *alloc_zero_page(void *baseaddr)
++static struct thp_state *state;
 +
-+static int *test_ptr;
-+static int memfd = -1;
++static void *alloc_zero_page(void *baseaddr, size_t thp_size)
+ {
+ 	int i;
+ 	void *ret;
+ 
+-	/* Find aligned chunk of address space. MAP_HUGETLB doesn't work. */
+ 	for (i = 0; i < 16; i++, baseaddr += thp_size) {
+ 		ret = mmap(baseaddr, thp_size, PROT_READ,
+ 			MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+@@ -67,47 +80,70 @@ static void *alloc_zero_page(void *baseaddr)
+ 	}
+ 
+ 	tst_brk(TBROK, "Cannot map huge zero page near the specified address");
+-	return NULL;	/* Silence compiler warning */
++	return NULL;
+ }
+ 
+-static void setup(void)
++static void thp_cleanup(void)
++{
++	if (!state)
++		return;
 +
++	tst_fzsync_pair_cleanup(&state->fzsync_pair);
++
++	if (state->readfd >= 0)
++		SAFE_CLOSE(state->readfd);
++
++	if (state->writefd >= 0)
++		SAFE_CLOSE(state->writefd);
++
++	if (state->read_thp)
++		SAFE_MUNMAP(state->read_thp, state->thp_size);
++
++	if (state->write_thp)
++		SAFE_MUNMAP(state->write_thp, state->thp_size);
++}
++
++static void thp_setup(void)
+ {
+ 	size_t i;
+ 
+-	thp_size = tst_get_hugepage_size();
++	state->thp_size = tst_get_hugepage_size();
+ 
+-	if (!thp_size)
++	if (!state->thp_size)
+ 		tst_brk(TCONF, "Kernel does not support huge pages");
+ 
+-	write_thp = alloc_zero_page((void *)thp_size);
++	state->write_thp = alloc_zero_page((void *)state->thp_size,
++		state->thp_size);
+ 
+-	for (i = 0; i < thp_size; i++) {
+-		if (write_thp[i])
++	for (i = 0; i < state->thp_size; i++) {
++		if (state->write_thp[i])
+ 			tst_brk(TCONF, "Huge zero page is pre-polluted");
+ 	}
+ 
+-	/* leave a hole between read and write THP to prevent merge */
+-	read_thp = alloc_zero_page(write_thp + 2 * thp_size);
+-	write_ptr = (int *)(write_thp + thp_size - sizeof(int));
+-	read_ptr = (int *)(read_thp + thp_size - sizeof(int));
+-	writefd = SAFE_OPEN("/proc/self/mem", O_RDWR);
+-	readfd = SAFE_OPEN("/proc/self/mem", O_RDWR);
++	state->read_thp = alloc_zero_page(state->write_thp + 2 * state->thp_size,
++		state->thp_size);
++	/* write_ptr points to last int in write_thp page */
++	state->write_ptr = (int *)(state->write_thp + state->thp_size - sizeof(int));
++	/* read_ptr points to last int in read_thp page */
++	state->read_ptr = (int *)(state->read_thp + state->thp_size - sizeof(int));
+ 
+-	fzsync_pair.exec_loops = 100000;
+-	tst_fzsync_pair_init(&fzsync_pair);
++	state->writefd = SAFE_OPEN("/proc/self/mem", O_RDWR);
++	state->readfd = SAFE_OPEN("/proc/self/mem", O_RDWR);
++	state->fzsync_pair.exec_loops = 100000;
++	tst_fzsync_pair_init(&state->fzsync_pair);
+ }
+ 
+ static void *thread_run(void *arg)
+ {
+ 	int c;
+ 
+-	while (tst_fzsync_run_b(&fzsync_pair)) {
+-		tst_fzsync_start_race_b(&fzsync_pair);
+-		madvise(write_thp, thp_size, MADV_DONTNEED);
+-		memcpy(&c, write_ptr, sizeof(c));
+-		SAFE_LSEEK(readfd, (off_t)write_ptr, SEEK_SET);
+-		SAFE_READ(1, readfd, &c, sizeof(int));
+-		tst_fzsync_end_race_b(&fzsync_pair);
++	while (tst_fzsync_run_b(&state->fzsync_pair)) {
++		tst_fzsync_start_race_b(&state->fzsync_pair);
++		madvise(state->write_thp, state->thp_size, MADV_DONTNEED);
++		memcpy(&c, state->write_ptr, sizeof(c));
++		SAFE_LSEEK(state->readfd, (off_t)state->write_ptr, SEEK_SET);
++		SAFE_READ(1, state->readfd, &c, sizeof(int));
++		tst_fzsync_end_race_b(&state->fzsync_pair);
+ 		/* Wait for dirty page handling before next madvise() */
+ 		usleep(10);
+ 	}
+@@ -119,20 +155,20 @@ static void run(void)
+ {
+ 	int c = 0xdeadbeef;
+ 
+-	tst_fzsync_pair_reset(&fzsync_pair, thread_run);
++	tst_fzsync_pair_reset(&state->fzsync_pair, thread_run);
+ 
+-	while (tst_fzsync_run_a(&fzsync_pair)) {
++	while (tst_fzsync_run_a(&state->fzsync_pair)) {
+ 		/* Write into the main huge page */
+-		tst_fzsync_start_race_a(&fzsync_pair);
+-		SAFE_LSEEK(writefd, (off_t)write_ptr, SEEK_SET);
+-		madvise(write_thp, thp_size, MADV_DONTNEED);
+-		SAFE_WRITE(SAFE_WRITE_ALL, writefd, &c, sizeof(int));
+-		tst_fzsync_end_race_a(&fzsync_pair);
++		tst_fzsync_start_race_a(&state->fzsync_pair);
++		SAFE_LSEEK(state->writefd, (off_t)state->write_ptr, SEEK_SET);
++		madvise(state->write_thp, state->thp_size, MADV_DONTNEED);
++		SAFE_WRITE(SAFE_WRITE_ALL, state->writefd, &c, sizeof(int));
++		tst_fzsync_end_race_a(&state->fzsync_pair);
+ 
+ 		/* Check the other huge zero page for pollution */
+-		madvise(read_thp, thp_size, MADV_DONTNEED);
++		madvise(state->read_thp, state->thp_size, MADV_DONTNEED);
+ 
+-		if (*read_ptr != 0) {
++		if (*state->read_ptr != 0) {
+ 			tst_res(TFAIL, "Huge zero page was polluted");
+ 			return;
+ 		}
+@@ -141,20 +177,45 @@ static void run(void)
+ 	tst_res(TPASS, "Huge zero page is still clean");
+ }
+ 
 +static void setup(void)
 +{
-+	/* Allocate a page, initialize it, then make it read-only */
-+	test_ptr = SAFE_MMAP(NULL, sizeof(int), PROT_READ | PROT_WRITE,
-+			     MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-+	*test_ptr = 0;
++	int test_val = 0;
 +
-+	/* Make the page read-only to test permission override blocking */
-+	SAFE_MPROTECT((void *)test_ptr, sizeof(int), PROT_READ);
++	state = SAFE_MMAP(NULL, sizeof(*state), PROT_READ | PROT_WRITE,
++		MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
++	memset(state, 0, sizeof(*state));
++	state->writefd = -1;
++	state->readfd = -1;
 +
-+	/* Open /proc/self/mem for writing */
-+	memfd = SAFE_OPEN("/proc/self/mem", O_RDWR);
-+}
++	thp_setup();
 +
-+static void run(void)
-+{
-+	int test_val = 0xdeadbeef;
++	/* Verify that direct writes to /proc/self/mem work */
++	TEST(lseek(state->writefd, (off_t)state->write_ptr, SEEK_SET));
++	if (TST_RET == -1)
++		tst_brk(TBROK | TTERRNO, "lseek on /proc/self/mem failed");
 +
-+	/* Seek to our test memory location */
-+	SAFE_LSEEK(memfd, (off_t)test_ptr, SEEK_SET);
-+
-+	/* Attempt to write to our own memory via /proc/self/mem */
-+	TEST(write(memfd, &test_val, sizeof(test_val)));
-+
-+	if (TST_RET == sizeof(test_val)) {
-+		tst_res(TCONF,
-+			"Direct writes to /proc/self/mem succeeded - "
-+			"CONFIG_PROC_MEM_FORCE_PTRACE not active or overridden");
-+		return;
-+	}
++	TEST(write(state->writefd, &test_val, sizeof(test_val)));
 +
 +	if (TST_RET == -1 && TST_ERR == EIO) {
-+		tst_res(TPASS,
-+			"Write to /proc/self/mem correctly rejected with EIO");
-+		return;
++		tst_brk(TCONF,
++			"Direct writes to /proc/self/mem disabled "
++			"(CONFIG_PROC_MEM_FORCE_PTRACE=y). "
++			"See testcases/kernel/syscalls/ptrace/ptrace12 and ptrace13 for ptrace coverage.");
 +	}
 +
-+	if (TST_RET == -1) {
-+		tst_res(TFAIL | TERRNO,
-+			"Write to /proc/self/mem failed with unexpected error");
-+		return;
-+	}
++	if (TST_RET == -1)
++		tst_brk(TBROK | TTERRNO, "test write to /proc/self/mem failed");
 +
-+	tst_res(TFAIL,
-+		"Short write to /proc/self/mem: %zd bytes (expected %zu or -1)",
-+		TST_RET, sizeof(test_val));
++	if (TST_RET != sizeof(test_val))
++		tst_brk(TBROK, "short write to /proc/self/mem: %ld bytes", TST_RET);
 +}
 +
-+static void cleanup(void)
-+{
-+	if (memfd >= 0)
-+		SAFE_CLOSE(memfd);
+ static void cleanup(void)
+ {
+-	tst_fzsync_pair_cleanup(&fzsync_pair);
++	thp_cleanup();
+ 
+-	if (readfd >= 0)
+-		SAFE_CLOSE(readfd);
+-
+-	if (writefd >= 0)
+-		SAFE_CLOSE(writefd);
+-
+-	if (read_thp)
+-		SAFE_MUNMAP(read_thp, thp_size);
+-	if (write_thp)
+-		SAFE_MUNMAP(write_thp, thp_size);
++	if (state)
++		SAFE_MUNMAP(state, sizeof(*state));
+ }
+ 
+ static struct tst_test test = {
+@@ -162,6 +223,7 @@ static struct tst_test test = {
+ 	.setup = setup,
+ 	.cleanup = cleanup,
+ 	.runtime = 150,
 +
-+	if (test_ptr)
-+		SAFE_MUNMAP(test_ptr, sizeof(int));
-+}
-+
-+static struct tst_test test = {
-+	.test_all = run,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.tags = (const struct tst_tag[]) {
-+		{"linux-git", "41e8149c8892"},
-+		{}
-+	}
-+};
+ 	.tags = (const struct tst_tag[]) {
+ 		{"linux-git", "a8f97366452e"},
+ 		{"linux-git", "8310d48b125d"},
 -- 
 2.55.0
 
