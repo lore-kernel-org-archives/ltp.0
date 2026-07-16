@@ -4,101 +4,96 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B54B9C44512
-	for <ltp@archiver.kernel.org>; Thu, 16 Jul 2026 13:25:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CB328C4450A
+	for <ltp@archiver.kernel.org>; Thu, 16 Jul 2026 13:31:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1784208325; h=to : date :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1784208700; h=to : date :
  message-id : mime-version : subject : list-id : list-unsubscribe :
  list-archive : list-post : list-help : list-subscribe : from :
  reply-to : content-type : content-transfer-encoding : sender : from;
- bh=W6etQF6tV+Z1m6gXPZq/x+abzY+njaEqFgM0PH9FXi0=;
- b=j4RIimCYWF0hTYi5XeCJIbOHJqoneg6hVjHKTP+Wcnpb1ISRBUG4NvKp7HMIlCyd5CD3X
- DJW/0TcZeyYIfcmxLMNAGXgnIURBwyzjO/gmffCGJBGjeT0yz4nTaQLGC+1bbZ5mMUi4oLx
- CM+7pPB2DBpgHGrcsx9GsSMJW8320IU=
+ bh=x/DMBnYx23WwMWjxiMtM0N8m0wneqi+R4T7liFbtD9I=;
+ b=kcBlk8xTWnGMPkldrDPcJNxfwbWzcohM1dbx2Z0nOsHeibG42LaWSWIEmEYXIv8XM14JJ
+ 6kogfFDs4blb92AK5B9lnCvjCHV7cSNbTa1mPCsGwrUB5ZYX32Nv+Hiv77hDY/TpvI0kqxo
+ gPuh7A+Ozrg06YbdvNAnsg71F7fl8Rk=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 014743E5693
-	for <ltp@archiver.kernel.org>; Thu, 16 Jul 2026 15:25:25 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 4E8263E565F
+	for <ltp@archiver.kernel.org>; Thu, 16 Jul 2026 15:31:40 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9F61B3E2580
- for <ltp@lists.linux.it>; Thu, 16 Jul 2026 15:25:03 +0200 (CEST)
-Received: from smtp-relay-internal-1.canonical.com
- (smtp-relay-internal-1.canonical.com [185.125.188.123])
+ by picard.linux.it (Postfix) with ESMTPS id EFAFC3E2580
+ for <ltp@lists.linux.it>; Thu, 16 Jul 2026 15:31:19 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 575786009B4
- for <ltp@lists.linux.it>; Thu, 16 Jul 2026 15:25:03 +0200 (CEST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 2FDD91400C78
+ for <ltp@lists.linux.it>; Thu, 16 Jul 2026 15:31:18 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1784208677;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=s+1chXq+4uoWQSBFR+KCRAKYhkJhD8AxfMNGLnU6MM8=;
+ b=IN/v5XxTs79jHmcNlD610e3rtbe7mP+/BW8yJRVPzjyIzWbremCMDUlISdIL8QBkTv4fqo
+ E69SeydaGhk/TgisDrNYin71uJYw7HND2jxh0WzAp5yygaqB+EG2IsEjTbh9HikSMWzQR6
+ UVHJWvvUS3DEyhYXtY7goeDtlbY7+TA=
 Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id A42133F61E
- for <ltp@lists.linux.it>; Thu, 16 Jul 2026 13:25:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
- s=20251003; t=1784208302;
- bh=HoM03vpMsgteKToUdqsQuXtkD2Zlo6/hPpmvoTHlaWI=;
- h=From:To:Subject:Date:Message-ID:MIME-Version;
- b=kNKEW/Cc+SRHhiOpItisn1t3rP6a5TZ7YkrfGLWIhYqJpGU6P5puiqRoNHYNgk1ea
- elYNqBMTRU96cjhLQX6S2La9wrflg+cxQRTSkZLgQARuIUpIrfcRjdaPmuekFMwy0k
- 4VXJzbyCmoOBcwWBl5LZUYGIl5q7l8sIcU5SFQLgkonXWM1gLN4iivMChM7JXU4Vtn
- Q2RIXspaWPbbEt2P2HthcuOA3E4+8AT+2u/hXPekMPE3iA4vAd24dtIRbTBA6R/NgL
- Qm+z799mJ/uiR+Pfy9UT4Jhp3oRpezPUvG4DV0llHTyPkVJBnY+z6EmU65J6QLNDsO
- tD25npAyPlb9rosdgb6bEXHU579eP5fUCbqRZQ4ecd3Lecvrce0Iqmm+a0XctXvT29
- Zk5qUUrnHtvyccOzlw7WUP0ReqqxOyXtt0PI0BK0Trw7tvlumn+mjLwEXtu2kE6/J2
- bmiYsvIsd4WondnginEF5zN2LmgnyWHuxgMXAHUu0MbnlFMZQE/ydPX+Yf1WIK5YGz
- Sy5ZvivH72yGowZDUZ4POnYuibXAxmZ7H6P5cMU5XOCR8s1y4OAvcYMAiagaHtG/XI
- P8F89Yr9b13yGGhj5DX7yA97SfAAzY5/yhxESz4hDYK/dz+987HmiGfB38WnGJXvFr
- zVGoawdbxsPQmAWrJoBA4pDw=
+ [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-81-cF2PvffOOImfjP16qk9FVQ-1; Thu, 16 Jul 2026 09:31:15 -0400
+X-MC-Unique: cF2PvffOOImfjP16qk9FVQ-1
+X-Mimecast-MFC-AGG-ID: cF2PvffOOImfjP16qk9FVQ_1784208673
 Received: by mail-wr1-f70.google.com with SMTP id
- ffacd0b85a97d-472a798fc7cso2350384f8f.1
- for <ltp@lists.linux.it>; Thu, 16 Jul 2026 06:25:02 -0700 (PDT)
+ ffacd0b85a97d-46fb9079a04so3331595f8f.3
+ for <ltp@lists.linux.it>; Thu, 16 Jul 2026 06:31:13 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1784208302; x=1784813102;
- h=content-transfer-encoding:mime-version:message-id:date:subject:to
- :from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to:content-type;
- bh=HoM03vpMsgteKToUdqsQuXtkD2Zlo6/hPpmvoTHlaWI=;
- b=Pt58BFWrVOMxVAloOS3mOutlErGKpDeHnjXejgZEJOO2i5mTfQUNJVE4uUMAmA6cv9
- HzjCtUYW0mQHYErn0a4YgGSc8tg2yPblKRJWj5YJnT0XN381e5nPFfeSNpOdHa8MIpqt
- aEdeL8jbZi47wsENrysh3S2CivwaR6dvAOu1KiFFWEBKywVpKoqg/1un6ueGMeSCjYWZ
- Gl2XU7Atad6F0b1MJvuAgQj9nG2hQoVTwGbslnf+snWyMc5PIPMdDmmsBdLudXj0NQdQ
- KmuDox0dHmbMyLMABZyslq2DLqOkJLXsKTHJosDrxC2sgAg6xpN7NwYMab9Qbd3jz1i9
- H/Sw==
-X-Gm-Message-State: AOJu0YyT/cG1PayuhvZa3gr/trq0O7ittODDUTBGUm4cwSK+S8m63z0a
- gO3LmNOxqUToTtLH+8FUkMu6ccJJwjZMtNfQCOxQdfyKSI7kNtvLEJYXTOVLRskwYqP5VBd1Q7D
- YLrZO20Katl4fiZMp2BhfSzLtMVHmafLoT7Z9Zz8ShIKX0QmjG621TCzXRcbmQmWcXe/Z5Z6Krt
- K2
-X-Gm-Gg: AfdE7cnezRF4Dq25K+Scy7PuR6wjVPUUGBNs1dz4kApgs+FUMZL0kZ1QzGdMCugPZVB
- lGD/oeizBhWMcBgb4W4Gn6LxUko+O+mDYZzj5U3A+KQUWLNzHJh4oYQMlzqyIc3DUG5v06i/f9A
- W9HXVkpzD0RcDgdyMgTVXfpnuM0RUgxC/Xo/DXm5Fwd2C6yTwlJTvlyjJXpURxfSxYV/yF17avG
- djl8yBnrUe/XWc2e4nMFegnLclodTTwjQszn4mK1Ox/f7VbxhRusU+1op06AunHU+4+PbsPGPGA
- 3CleJoi7GJ3IDsmdUXGK75+dOjip5I9xOzXwVgqfhSHZKmsKQvubjti4gNFc/UIE3Q/8Orus0S3
- U7HV25TxrajX0+WlBd09wVwxteiWZgOYDEZRG
-X-Received: by 2002:a05:6000:2004:b0:47a:c103:8a2e with SMTP id
- ffacd0b85a97d-47f2dce3062mr25608806f8f.45.1784208301982; 
- Thu, 16 Jul 2026 06:25:01 -0700 (PDT)
-X-Received: by 2002:a05:6000:2004:b0:47a:c103:8a2e with SMTP id
- ffacd0b85a97d-47f2dce3062mr25608764f8f.45.1784208301464; 
- Thu, 16 Jul 2026 06:25:01 -0700 (PDT)
-Received: from P16s.. (user-5-173-218-44.play-internet.pl. [5.173.218.44])
- by smtp.gmail.com with ESMTPSA id
- ffacd0b85a97d-47f4634e5b8sm22578107f8f.6.2026.07.16.06.25.00
- for <ltp@lists.linux.it>
+ d=1e100.net; s=20251104; t=1784208673; x=1784813473;
+ h=content-transfer-encoding:content-type:mime-version:message-id:date
+ :subject:cc:to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject
+ :date:message-id:reply-to:content-type;
+ bh=s+1chXq+4uoWQSBFR+KCRAKYhkJhD8AxfMNGLnU6MM8=;
+ b=nCWO5WwhsaGu1nkVYGht1YoCHJaX7jHRTeQB9CXB0Dc8URbUtV5QSk/8XvHaQuKPpj
+ d+vyHQ9Oes9gEFMRgB18nq6OaHv+A9p5ikdEU1UVBwdqDSdBnToD2ZgcG/1WLlWxqSGV
+ 4zWsBe2A69iGljeTLnwWBLy9fE+VIQsj+GMFxczNR3iOpgaUKaQTIGcQxWIfp2GwiDDd
+ 2/IF104axbnxdNdOArwV3JQiwM+3vCJ9bsxj6+Gxko7o6ejVDPn7MDmd7ufso+O3lXm2
+ S/cWhcQCzH7dh8PiBZI3xEDCU5xR0M428Ph/IeM0cbnDMHOGCgY4ZVH5f6ErS3FIA+Us
+ /KKw==
+X-Gm-Message-State: AOJu0YwegZRHwJnVWwo5Z5ziMI75TRhkE4ylyQPJ0KgqGBKen6teEM+8
+ bbx0m4aczmH2OE/6YXHsiBzTr4H1FldxUkb8aT63TnqcxdLfeaI+IiAxKzON4s6LFXuWQEAeZ5B
+ KjVDmX0ICz+n0LFc62NTYbAfVqG5bff/GDP0WNoBVLjRiFTePv5aJdJXdRwIJfuoWlgKjffCMli
+ d0I61dvETSadBeXMxeKL2TTQCxd2q64NghHBt5
+X-Gm-Gg: AfdE7cl0YPiatbWpC4nM/JkurzdjI44DPMHHiWaXp21+UPrjDPtycyACV4ON7hlg8bY
+ 0jPEHUtX/ul/IHAFPTHh6jO8ATQkoVIpe/fc8mCUUcgL2giZGjqJ7sIG1KLtdKzNHSWA2XmBXGu
+ bSRnMJF6QGCuaZSqUcWyEPbZHObP6SinLNewinlGHDuYZItz7BNiS3+t5/CKKeR2aacQsGM5I3B
+ R/bdzQgFPR889a226MBZ1E7mvf59ROMfBKHowD5Zku2kh2OOpQeWbhdCnO7nh6qFLNIohuKZpiG
+ kxwwfri4m/DsvLgD5J1GDPhCY7ytHp+WlacBaXrKR3FKdXcrrz9r+Sc8kH9wn0VyXU86F5hq5Rg
+ Pu5yVGknnRhVJ2/gtNKU8eDnZVA0NghwN4bpRXsEtWeiRMc5CIw==
+X-Received: by 2002:a05:6000:2990:10b0:462:ce05:c5e4 with SMTP id
+ ffacd0b85a97d-47f46373ed7mr11159547f8f.37.1784208672686; 
+ Thu, 16 Jul 2026 06:31:12 -0700 (PDT)
+X-Received: by 2002:a05:6000:2990:10b0:462:ce05:c5e4 with SMTP id
+ ffacd0b85a97d-47f46373ed7mr11159476f8f.37.1784208672056; 
+ Thu, 16 Jul 2026 06:31:12 -0700 (PDT)
+Received: from fedora.redhat.com (85.64.193.120.dynamic.barak-online.net.
+ [85.64.193.120]) by smtp.gmail.com with ESMTPSA id
+ ffacd0b85a97d-47f4635c86csm24900918f8f.16.2026.07.16.06.31.10
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 16 Jul 2026 06:25:00 -0700 (PDT)
+ Thu, 16 Jul 2026 06:31:11 -0700 (PDT)
 To: ltp@lists.linux.it
-Date: Thu, 16 Jul 2026 15:24:59 +0200
-Message-ID: <20260716132459.1042752-1-kuba.pawlak@canonical.com>
-X-Mailer: git-send-email 2.43.0
+Date: Thu, 16 Jul 2026 16:31:06 +0300
+Message-ID: <20260716133108.13003-1-mmenashe@redhat.com>
+X-Mailer: git-send-email 2.55.0
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+X-Mimecast-Spam-Score: 0
+X-Mimecast-MFC-PROC-ID: ZnlWdJI7RD1zi4etnqYRei-TT8W2LNDL-l5IPQKhAPU_1784208673
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] rtc02: skip (TCONF) on read-only RTCs that reject
- RTC_SET_TIME
+Subject: [LTP] [PATCH v17 0/2] futex: Add EFAULT error coverage tests
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -110,81 +105,52 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Kuba Pawlak via ltp <ltp@lists.linux.it>
-Reply-To: Kuba Pawlak <kuba.pawlak@canonical.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+From: Michael Menasherov via ltp <ltp@lists.linux.it>
+Reply-To: Michael Menasherov <mmenashe@redhat.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Some RTC hardware does not allow setting the time from the host. For
-example Qualcomm PMIC RTCs (rtc-pm8xxx) that are configured without the
-allow-set-time DT property and without an nvmem/UEFI offset return
--ENODEV from RTC_SET_TIME; the counter free-runs from the epoch and is
-only usable as an uptime source. On such devices rtc02 currently reports
-TFAIL, which is a hardware limitation rather than a kernel defect.
-
-Probe whether the RTC can be set in the setup phase, writing back the
-value just read so a writable RTC is left unchanged. When RTC_SET_TIME
-fails with an errno that indicates the operation is unsupported or not
-permitted (ENODEV, EOPNOTSUPP, EINVAL, EACCES, EPERM), skip the whole
-test with TCONF.
-
-Doing the check in setup, before tst_rtc_clock_save(), also avoids the
-cleanup path (tst_rtc_clock_restore()) issuing RTC_SET_TIME and turning
-the run into a TBROK on such devices. If the probe succeeds the test body
-runs as before, so no additional handling is needed there.
-
-Signed-off-by: Kuba Pawlak <kuba.pawlak@canonical.com>
----
- testcases/kernel/device-drivers/rtc/rtc02.c | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
-
-diff --git a/testcases/kernel/device-drivers/rtc/rtc02.c b/testcases/kernel/device-drivers/rtc/rtc02.c
-index 34509ab..9103d60 100644
---- a/testcases/kernel/device-drivers/rtc/rtc02.c
-+++ b/testcases/kernel/device-drivers/rtc/rtc02.c
-@@ -16,6 +16,7 @@
-  */
- 
- #include <stdio.h>
-+#include <errno.h>
- #include "tst_rtctime.h"
- #include "tst_wallclock.h"
- #include "tst_test.h"
-@@ -133,10 +134,29 @@ static void set_rtc_test(void)
- static void rtc_setup(void)
- {
- 	int exists = access(rtc_dev, F_OK);
-+	struct rtc_time probe_tm;
- 
- 	if (exists < 0)
- 		tst_brk(TCONF, "RTC device %s not available", rtc_dev);
- 
-+	/*
-+	 * Skip on RTCs that do not allow setting the time, e.g. Qualcomm PMIC
-+	 * RTCs without allow-set-time or an nvmem offset, where RTC_SET_TIME
-+	 * returns -ENODEV. Probe with the current time so a writable RTC is
-+	 * left unchanged, and skip here (before tst_rtc_clock_save()) so the
-+	 * cleanup restore does not fail on such devices.
-+	 */
-+	if (tst_rtc_gettime(rtc_dev, &probe_tm))
-+		tst_brk(TBROK | TERRNO, "ioctl() RTC_RD_TIME");
-+	if (tst_rtc_settime(rtc_dev, &probe_tm)) {
-+		if (errno == ENODEV || errno == EOPNOTSUPP ||
-+		    errno == EINVAL || errno == EACCES || errno == EPERM)
-+			tst_brk(TCONF | TERRNO,
-+				"RTC does not support setting the time");
-+
-+	    tst_brk(TBROK | TERRNO, "ioctl() RTC_SET_TIME");
-+	}
-+
- 	tst_rtc_clock_save(rtc_dev);
- }
- 
--- 
-2.43.0
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+SGkgUGV0ciwKClRoYW5rcyBmb3IgdGhlIHJldmlldy4gSGVyZSBpcyB2MTcgYWRkcmVzc2luZyB5
+b3VyIGZlZWRiYWNrLgoKZnV0ZXhfd2FpdDA2IGFuZCBmdXRleF93YWl0MDcgd2VyZSBhbHJlYWR5
+IG1lcmdlZC4gVGhpcyBzZXJpZXMgY29udGFpbnMKdGhlIHJlbWFpbmluZyB0d28gcGF0Y2hlcy4K
+CmZ1dGV4X2NtcF9yZXF1ZXVlMDM6CiAgQXBwbGllZCB5b3VyIG5pdCDigJQgcmVtb3ZlZCB0aGUg
+ZXhwX2Vycm5vIGZpZWxkIGZyb20gdGhlIHRlc3RjYXNlIHN0cnVjdAogIGFuZCB1c2VkIEVGQVVM
+VCBkaXJlY3RseSBpbiBUU1RfRVhQX0ZBSUwoKS4KCmZ1dGV4X3dha2UwNToKICBBcHBsaWVkIGJv
+dGggbml0cyAobGlzdCBjb21tZW50IGZvcm1hdCwgRUZBVUxUIGRpcmVjdGx5KS4gRm9yIHRoZQog
+IGtlcm5lbC1zcGFjZSBhZGRyZXNzIGNhc2U6IHlvdSB3ZXJlIHJpZ2h0IHRvIHF1ZXN0aW9uIGl0
+LiBJIGNvdWxkbid0CiAgY29uZmlybSBjb25zaXN0ZW50IEVGQVVMVCBhY3Jvc3Mga2VybmVscywg
+c28gSSBsb29rZWQgZm9yIGEgYmV0dGVyCiAgcmVwbGFjZW1lbnQuCgogIEkgdXNlZCBBSSBhc3Np
+c3RhbmNlIHRvIHJlc2VhcmNoIHRoZSBrZXJuZWwncyBnZXRfdXNlcl9wYWdlcygpIGNvZGUKICBw
+YXRocyBhbmQgY3Jvc3MtcmVmZXJlbmNlZCBleGlzdGluZyBMVFAgbW1hcCB0ZXN0cyB0byB2ZXJp
+ZnkgdGhlCiAgYXBwcm9hY2guIFRoZSByZXBsYWNlbWVudCBJIGxhbmRlZCBvbiBpcyBhIHNoYXJl
+ZCBmaWxlLWJhY2tlZCBtYXBwaW5nCiAgd2hlcmUgdGhlIGZpbGUgaXMgdHJ1bmNhdGVkIHRvIDAg
+YWZ0ZXIgbW1hcCgpLgoKICBUaGUgdGhyZWUgY2FzZXMgbm93IGV4ZXJjaXNlIGdlbnVpbmVseSBk
+aWZmZXJlbnQgY29kZSBwYXRoczoKCiAgLSB1bm1hcHBlZCBtZW1vcnkgZmFpbHMgYXQgZmluZF92
+bWEoKSAobm8gVk1BIGV4aXN0cykKICAtIFBST1RfTk9ORSBtZW1vcnkgZmFpbHMgYXQgZ2V0X3Vz
+ZXJfcGFnZXNfZmFzdCgpIChWTUEgZXhpc3RzIGJ1dAogICAgcGFnZSBpcyBpbmFjY2Vzc2libGUp
+CiAgLSB0aGUgdHJ1bmNhdGVkIGZpbGUgbWFwcGluZyB0cmlnZ2VycyBWTV9GQVVMVF9TSUdCVVMg
+aW5zaWRlIHRoZSBwYWdlCiAgICBmYXVsdCBoYW5kbGVyIChmaWxlbWFwX2ZhdWx0KCkgc2VlcyBv
+ZmZzZXQgYmV5b25kIEVPRiksIHdoaWNoCiAgICBnZXRfdXNlcl9wYWdlcygpIHByb3BhZ2F0ZXMg
+YXMgRUZBVUxUCgogIFRoZSBTSUdCVVMgaXMgbmV2ZXIgZGVsaXZlcmVkIHRvIHVzZXIgc3BhY2Ug
+4oCUIGdldF91c2VyX3BhZ2VzKCkgY29udmVydHMKICBWTV9GQVVMVF9TSUdCVVMgdG8gLUVGQVVM
+VCBpbnRlcm5hbGx5LiBUaGlzIGJlaGF2aW9yIGhhcyBiZWVuIHN0YWJsZQogIHNpbmNlIGJlZm9y
+ZSBrZXJuZWwgMi42IGFuZCB3b3JrcyByZWxpYWJseSBvbiBhbGwgYXJjaGl0ZWN0dXJlcyBhbmQK
+ICBib3RoIDMyLzY0LWJpdC4gVGhlIHRlc3QgdXNlcyAubmVlZHNfdG1wZGlyID0gMS4KCkNoYW5n
+ZXMgc2luY2UgdjE2OgotIGZ1dGV4X3dha2UwNTogcmVwbGFjZSBrZXJuZWwtc3BhY2UgYWRkcmVz
+cyBjYXNlIHdpdGggdHJ1bmNhdGVkCiAgZmlsZS1iYWNrZWQgbWFwcGluZywgZml4IGNvbW1lbnQg
+dG8gbGlzdCBmb3JtYXQsIHVzZSBFRkFVTFQgZGlyZWN0bHkKICBpbiBUU1RfRVhQX0ZBSUwoKSwg
+YWRkIC5uZWVkc190bXBkaXIKLSBmdXRleF9jbXBfcmVxdWV1ZTAzOiB1c2UgRUZBVUxUIGRpcmVj
+dGx5IGluIFRTVF9FWFBfRkFJTCgpCgpNaWNoYWVsIE1lbmFzaGVyb3YgKDIpOgogIGZ1dGV4X3dh
+a2UwNTogQWRkIEVGQVVMVCBlcnJvciBjb3ZlcmFnZSB0ZXN0CiAgZnV0ZXhfY21wX3JlcXVldWUw
+MzogQWRkIEVGQVVMVCBlcnJvciBjb3ZlcmFnZSB0ZXN0CgogcnVudGVzdC9zeXNjYWxscyAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgIHwgICAyICsKIHRlc3RjYXNlcy9rZXJuZWwvc3lzY2Fs
+bHMvZnV0ZXgvLmdpdGlnbm9yZSAgICB8ICAgMiArCiAuLi4vc3lzY2FsbHMvZnV0ZXgvZnV0ZXhf
+Y21wX3JlcXVldWUwMy5jICAgICAgfCAxMDMgKysrKysrKysrKysrKysrKwogLi4uL2tlcm5lbC9z
+eXNjYWxscy9mdXRleC9mdXRleF93YWtlMDUuYyAgICAgIHwgMTEzICsrKysrKysrKysrKysrKysr
+KwogNCBmaWxlcyBjaGFuZ2VkLCAyMjAgaW5zZXJ0aW9ucygrKQogY3JlYXRlIG1vZGUgMTAwNjQ0
+IHRlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvZnV0ZXgvZnV0ZXhfY21wX3JlcXVldWUwMy5jCiBj
+cmVhdGUgbW9kZSAxMDA2NDQgdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9mdXRleC9mdXRleF93
+YWtlMDUuYwoKLS0gCjIuNTUuMAoKCi0tIApNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0
+cy5saW51eC5pdC9saXN0aW5mby9sdHAK
