@@ -4,96 +4,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CB328C4450A
-	for <ltp@archiver.kernel.org>; Thu, 16 Jul 2026 13:31:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B3241C44501
+	for <ltp@archiver.kernel.org>; Thu, 16 Jul 2026 13:32:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1784208700; h=to : date :
- message-id : mime-version : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : content-type : content-transfer-encoding : sender : from;
- bh=x/DMBnYx23WwMWjxiMtM0N8m0wneqi+R4T7liFbtD9I=;
- b=kcBlk8xTWnGMPkldrDPcJNxfwbWzcohM1dbx2Z0nOsHeibG42LaWSWIEmEYXIv8XM14JJ
- 6kogfFDs4blb92AK5B9lnCvjCHV7cSNbTa1mPCsGwrUB5ZYX32Nv+Hiv77hDY/TpvI0kqxo
- gPuh7A+Ozrg06YbdvNAnsg71F7fl8Rk=
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1784208720; h=to : date :
+ message-id : in-reply-to : references : mime-version : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : content-type :
+ content-transfer-encoding : sender : from;
+ bh=MRWCxxBC2ka4iIgFeG+FoMWeozQkT1RtEodeCN9/cOg=;
+ b=PurZdJlnmtGbIUb+Z8gJOf98JpYshpG0CKeoovmcvGNS8gd6cPmjd3PXbjmhJpGnbOgkf
+ 2WkuWo1aqDTqqfYIfp0ORLdCBYNJoxAS+FjZ6I29wOk/KQ0+LPWjShViRO7FG56Y/cRa8NE
+ qmjy5UtkHvntn1QZDQ0Z9sp48CQaDnk=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 4E8263E565F
-	for <ltp@archiver.kernel.org>; Thu, 16 Jul 2026 15:31:40 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 297EF3E564B
+	for <ltp@archiver.kernel.org>; Thu, 16 Jul 2026 15:32:00 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id EFAFC3E2580
- for <ltp@lists.linux.it>; Thu, 16 Jul 2026 15:31:19 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 228AC3E2580
+ for <ltp@lists.linux.it>; Thu, 16 Jul 2026 15:31:21 +0200 (CEST)
 Received: from us-smtp-delivery-124.mimecast.com
  (us-smtp-delivery-124.mimecast.com [170.10.129.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 2FDD91400C78
- for <ltp@lists.linux.it>; Thu, 16 Jul 2026 15:31:18 +0200 (CEST)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 7C047100099D
+ for <ltp@lists.linux.it>; Thu, 16 Jul 2026 15:31:19 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1784208677;
+ s=mimecast20190719; t=1784208678;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=s+1chXq+4uoWQSBFR+KCRAKYhkJhD8AxfMNGLnU6MM8=;
- b=IN/v5XxTs79jHmcNlD610e3rtbe7mP+/BW8yJRVPzjyIzWbremCMDUlISdIL8QBkTv4fqo
- E69SeydaGhk/TgisDrNYin71uJYw7HND2jxh0WzAp5yygaqB+EG2IsEjTbh9HikSMWzQR6
- UVHJWvvUS3DEyhYXtY7goeDtlbY7+TA=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=gOW8+wX/1cQw+eMMY3j2XY/euVs+73eoo/f+MPIz9Bk=;
+ b=Tq0ccTlXQAqI2xlmTH3e6kh4Pz42QvKdVF0AI55SnidG6OTX6jfmE8X/rLRfjtzIdZk9uv
+ DFoGvk+QX4tfV+XiNSUGAPmbjWnJ1Ng1umff10CGvx5L9KO+oSKW6QXjDDpJnldjV4GAYp
+ 31Zhhu6gMlqadgP2YdWu5vWQFHo/pwo=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-81-cF2PvffOOImfjP16qk9FVQ-1; Thu, 16 Jul 2026 09:31:15 -0400
-X-MC-Unique: cF2PvffOOImfjP16qk9FVQ-1
-X-Mimecast-MFC-AGG-ID: cF2PvffOOImfjP16qk9FVQ_1784208673
-Received: by mail-wr1-f70.google.com with SMTP id
- ffacd0b85a97d-46fb9079a04so3331595f8f.3
- for <ltp@lists.linux.it>; Thu, 16 Jul 2026 06:31:13 -0700 (PDT)
+ us-mta-359-Wi4SF59wM7GKh8N9y0i7zA-1; Thu, 16 Jul 2026 09:31:16 -0400
+X-MC-Unique: Wi4SF59wM7GKh8N9y0i7zA-1
+X-Mimecast-MFC-AGG-ID: Wi4SF59wM7GKh8N9y0i7zA_1784208674
+Received: by mail-wr1-f69.google.com with SMTP id
+ ffacd0b85a97d-472a798fc7cso2357175f8f.1
+ for <ltp@lists.linux.it>; Thu, 16 Jul 2026 06:31:15 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1784208673; x=1784813473;
- h=content-transfer-encoding:content-type:mime-version:message-id:date
- :subject:cc:to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject
- :date:message-id:reply-to:content-type;
- bh=s+1chXq+4uoWQSBFR+KCRAKYhkJhD8AxfMNGLnU6MM8=;
- b=nCWO5WwhsaGu1nkVYGht1YoCHJaX7jHRTeQB9CXB0Dc8URbUtV5QSk/8XvHaQuKPpj
- d+vyHQ9Oes9gEFMRgB18nq6OaHv+A9p5ikdEU1UVBwdqDSdBnToD2ZgcG/1WLlWxqSGV
- 4zWsBe2A69iGljeTLnwWBLy9fE+VIQsj+GMFxczNR3iOpgaUKaQTIGcQxWIfp2GwiDDd
- 2/IF104axbnxdNdOArwV3JQiwM+3vCJ9bsxj6+Gxko7o6ejVDPn7MDmd7ufso+O3lXm2
- S/cWhcQCzH7dh8PiBZI3xEDCU5xR0M428Ph/IeM0cbnDMHOGCgY4ZVH5f6ErS3FIA+Us
- /KKw==
-X-Gm-Message-State: AOJu0YwegZRHwJnVWwo5Z5ziMI75TRhkE4ylyQPJ0KgqGBKen6teEM+8
- bbx0m4aczmH2OE/6YXHsiBzTr4H1FldxUkb8aT63TnqcxdLfeaI+IiAxKzON4s6LFXuWQEAeZ5B
- KjVDmX0ICz+n0LFc62NTYbAfVqG5bff/GDP0WNoBVLjRiFTePv5aJdJXdRwIJfuoWlgKjffCMli
- d0I61dvETSadBeXMxeKL2TTQCxd2q64NghHBt5
-X-Gm-Gg: AfdE7cl0YPiatbWpC4nM/JkurzdjI44DPMHHiWaXp21+UPrjDPtycyACV4ON7hlg8bY
- 0jPEHUtX/ul/IHAFPTHh6jO8ATQkoVIpe/fc8mCUUcgL2giZGjqJ7sIG1KLtdKzNHSWA2XmBXGu
- bSRnMJF6QGCuaZSqUcWyEPbZHObP6SinLNewinlGHDuYZItz7BNiS3+t5/CKKeR2aacQsGM5I3B
- R/bdzQgFPR889a226MBZ1E7mvf59ROMfBKHowD5Zku2kh2OOpQeWbhdCnO7nh6qFLNIohuKZpiG
- kxwwfri4m/DsvLgD5J1GDPhCY7ytHp+WlacBaXrKR3FKdXcrrz9r+Sc8kH9wn0VyXU86F5hq5Rg
- Pu5yVGknnRhVJ2/gtNKU8eDnZVA0NghwN4bpRXsEtWeiRMc5CIw==
-X-Received: by 2002:a05:6000:2990:10b0:462:ce05:c5e4 with SMTP id
- ffacd0b85a97d-47f46373ed7mr11159547f8f.37.1784208672686; 
- Thu, 16 Jul 2026 06:31:12 -0700 (PDT)
-X-Received: by 2002:a05:6000:2990:10b0:462:ce05:c5e4 with SMTP id
- ffacd0b85a97d-47f46373ed7mr11159476f8f.37.1784208672056; 
- Thu, 16 Jul 2026 06:31:12 -0700 (PDT)
+ d=1e100.net; s=20251104; t=1784208674; x=1784813474;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to:content-type;
+ bh=gOW8+wX/1cQw+eMMY3j2XY/euVs+73eoo/f+MPIz9Bk=;
+ b=ddOPDfPB8SaetwtXdLXQek8vIoyj+dRyt7ihRnfCyqrOSJO7y9Ty2a5o/qIZZNP8Ac
+ hSHVWSuzMOOICiiSND7Bq0BAkPElY29aZEZurDswHniJLQc42X6ZlO5UK3ApVBoumst3
+ beASX+BGyiQ38cgW6U9RlyC/AAKEVomK1YYcjGdQJPCQqt/6fVw0ors3wrvJzuU97Mce
+ BT1GPTJzMWz1/AT3Olbg9gB1//IX2ni8Uc8je/KV3OWEe1BWavHc6Xe/rmI3fK0fQ560
+ FB40yAr8Ok1xjD1jJA2JxUiqS65ykruBzXGS73wEJz7k9vU8tbJNPOtzkwoP8Fwbxe6q
+ YJzA==
+X-Gm-Message-State: AOJu0YxVw1nh/TabcQJXnqIX1v0Gk17EMGJXV/beG+L84UgGhI38SFAf
+ xhsm/BUIDdFs4lmqPWbeb1DybBEm/47RxfM1Z53m5fzsy2RtMHqjlJ3hKmYg0HNuoArVf55shBT
+ 86GNXBugiSD/WWdicQMEAvf1DwnAexA+Mk0YF9THdRCaHnOJ9om9pAjWAs53VTNABKJjLckJJOn
+ EJPyXXOi7/n0brjRWcXCKxVBP38w3x/gAjvh/A
+X-Gm-Gg: AfdE7ckFhMur0NJb5WTEF41c6+HdLCTp6yqYfnEeXv59oYusw9LB2uwmwek9eFEfEsj
+ HO8JcVgwfHyLRtKVPU7/WOkYXTWt/gpDansvjvm548BesbafNtvAWa/PrYjHT/KwRqLe15JjCoL
+ LtKJMHeZNtlm04NUW42to3nbWoo/hqB4AtJ0zCVYRVOpRHIxSewE3MIUymQgu3Mq3OIFvt170d8
+ osn6caruWLhHb5RAJiWGpQuKIlnbuXNwbZA+mH112IOd3oTOFXJmQHteievcSwepswiUfOxyX/2
+ MpSsWSn9M/jdOZrwYs8a4Q07xkyalbO/8OhByENWnl2996QJ+Z3c/QV2uHqFfCDq+8rHgd50FdY
+ laMih+RGK6GFLfvg11L2cOY68duKPZhkFaOsrXDgsozlG2aBBbQ==
+X-Received: by 2002:a05:6000:290f:b0:46d:d693:88cb with SMTP id
+ ffacd0b85a97d-47f2dce2db6mr25406714f8f.46.1784208674161; 
+ Thu, 16 Jul 2026 06:31:14 -0700 (PDT)
+X-Received: by 2002:a05:6000:290f:b0:46d:d693:88cb with SMTP id
+ ffacd0b85a97d-47f2dce2db6mr25406636f8f.46.1784208673615; 
+ Thu, 16 Jul 2026 06:31:13 -0700 (PDT)
 Received: from fedora.redhat.com (85.64.193.120.dynamic.barak-online.net.
  [85.64.193.120]) by smtp.gmail.com with ESMTPSA id
- ffacd0b85a97d-47f4635c86csm24900918f8f.16.2026.07.16.06.31.10
+ ffacd0b85a97d-47f4635c86csm24900918f8f.16.2026.07.16.06.31.12
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 16 Jul 2026 06:31:11 -0700 (PDT)
+ Thu, 16 Jul 2026 06:31:12 -0700 (PDT)
 To: ltp@lists.linux.it
-Date: Thu, 16 Jul 2026 16:31:06 +0300
-Message-ID: <20260716133108.13003-1-mmenashe@redhat.com>
+Date: Thu, 16 Jul 2026 16:31:07 +0300
+Message-ID: <20260716133108.13003-2-mmenashe@redhat.com>
 X-Mailer: git-send-email 2.55.0
+In-Reply-To: <20260716133108.13003-1-mmenashe@redhat.com>
+References: <20260716133108.13003-1-mmenashe@redhat.com>
 MIME-Version: 1.0
 X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: ZnlWdJI7RD1zi4etnqYRei-TT8W2LNDL-l5IPQKhAPU_1784208673
+X-Mimecast-MFC-PROC-ID: __lvX_uKGC1aiMhUE3WsRQqKgWzvYF5bjWDtkeSbgHs_1784208674
 X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v17 0/2] futex: Add EFAULT error coverage tests
+Subject: [LTP] [PATCH v17 1/2] futex_wake05: Add EFAULT error coverage test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -107,50 +111,166 @@ List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 From: Michael Menasherov via ltp <ltp@lists.linux.it>
 Reply-To: Michael Menasherov <mmenashe@redhat.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-SGkgUGV0ciwKClRoYW5rcyBmb3IgdGhlIHJldmlldy4gSGVyZSBpcyB2MTcgYWRkcmVzc2luZyB5
-b3VyIGZlZWRiYWNrLgoKZnV0ZXhfd2FpdDA2IGFuZCBmdXRleF93YWl0MDcgd2VyZSBhbHJlYWR5
-IG1lcmdlZC4gVGhpcyBzZXJpZXMgY29udGFpbnMKdGhlIHJlbWFpbmluZyB0d28gcGF0Y2hlcy4K
-CmZ1dGV4X2NtcF9yZXF1ZXVlMDM6CiAgQXBwbGllZCB5b3VyIG5pdCDigJQgcmVtb3ZlZCB0aGUg
-ZXhwX2Vycm5vIGZpZWxkIGZyb20gdGhlIHRlc3RjYXNlIHN0cnVjdAogIGFuZCB1c2VkIEVGQVVM
-VCBkaXJlY3RseSBpbiBUU1RfRVhQX0ZBSUwoKS4KCmZ1dGV4X3dha2UwNToKICBBcHBsaWVkIGJv
-dGggbml0cyAobGlzdCBjb21tZW50IGZvcm1hdCwgRUZBVUxUIGRpcmVjdGx5KS4gRm9yIHRoZQog
-IGtlcm5lbC1zcGFjZSBhZGRyZXNzIGNhc2U6IHlvdSB3ZXJlIHJpZ2h0IHRvIHF1ZXN0aW9uIGl0
-LiBJIGNvdWxkbid0CiAgY29uZmlybSBjb25zaXN0ZW50IEVGQVVMVCBhY3Jvc3Mga2VybmVscywg
-c28gSSBsb29rZWQgZm9yIGEgYmV0dGVyCiAgcmVwbGFjZW1lbnQuCgogIEkgdXNlZCBBSSBhc3Np
-c3RhbmNlIHRvIHJlc2VhcmNoIHRoZSBrZXJuZWwncyBnZXRfdXNlcl9wYWdlcygpIGNvZGUKICBw
-YXRocyBhbmQgY3Jvc3MtcmVmZXJlbmNlZCBleGlzdGluZyBMVFAgbW1hcCB0ZXN0cyB0byB2ZXJp
-ZnkgdGhlCiAgYXBwcm9hY2guIFRoZSByZXBsYWNlbWVudCBJIGxhbmRlZCBvbiBpcyBhIHNoYXJl
-ZCBmaWxlLWJhY2tlZCBtYXBwaW5nCiAgd2hlcmUgdGhlIGZpbGUgaXMgdHJ1bmNhdGVkIHRvIDAg
-YWZ0ZXIgbW1hcCgpLgoKICBUaGUgdGhyZWUgY2FzZXMgbm93IGV4ZXJjaXNlIGdlbnVpbmVseSBk
-aWZmZXJlbnQgY29kZSBwYXRoczoKCiAgLSB1bm1hcHBlZCBtZW1vcnkgZmFpbHMgYXQgZmluZF92
-bWEoKSAobm8gVk1BIGV4aXN0cykKICAtIFBST1RfTk9ORSBtZW1vcnkgZmFpbHMgYXQgZ2V0X3Vz
-ZXJfcGFnZXNfZmFzdCgpIChWTUEgZXhpc3RzIGJ1dAogICAgcGFnZSBpcyBpbmFjY2Vzc2libGUp
-CiAgLSB0aGUgdHJ1bmNhdGVkIGZpbGUgbWFwcGluZyB0cmlnZ2VycyBWTV9GQVVMVF9TSUdCVVMg
-aW5zaWRlIHRoZSBwYWdlCiAgICBmYXVsdCBoYW5kbGVyIChmaWxlbWFwX2ZhdWx0KCkgc2VlcyBv
-ZmZzZXQgYmV5b25kIEVPRiksIHdoaWNoCiAgICBnZXRfdXNlcl9wYWdlcygpIHByb3BhZ2F0ZXMg
-YXMgRUZBVUxUCgogIFRoZSBTSUdCVVMgaXMgbmV2ZXIgZGVsaXZlcmVkIHRvIHVzZXIgc3BhY2Ug
-4oCUIGdldF91c2VyX3BhZ2VzKCkgY29udmVydHMKICBWTV9GQVVMVF9TSUdCVVMgdG8gLUVGQVVM
-VCBpbnRlcm5hbGx5LiBUaGlzIGJlaGF2aW9yIGhhcyBiZWVuIHN0YWJsZQogIHNpbmNlIGJlZm9y
-ZSBrZXJuZWwgMi42IGFuZCB3b3JrcyByZWxpYWJseSBvbiBhbGwgYXJjaGl0ZWN0dXJlcyBhbmQK
-ICBib3RoIDMyLzY0LWJpdC4gVGhlIHRlc3QgdXNlcyAubmVlZHNfdG1wZGlyID0gMS4KCkNoYW5n
-ZXMgc2luY2UgdjE2OgotIGZ1dGV4X3dha2UwNTogcmVwbGFjZSBrZXJuZWwtc3BhY2UgYWRkcmVz
-cyBjYXNlIHdpdGggdHJ1bmNhdGVkCiAgZmlsZS1iYWNrZWQgbWFwcGluZywgZml4IGNvbW1lbnQg
-dG8gbGlzdCBmb3JtYXQsIHVzZSBFRkFVTFQgZGlyZWN0bHkKICBpbiBUU1RfRVhQX0ZBSUwoKSwg
-YWRkIC5uZWVkc190bXBkaXIKLSBmdXRleF9jbXBfcmVxdWV1ZTAzOiB1c2UgRUZBVUxUIGRpcmVj
-dGx5IGluIFRTVF9FWFBfRkFJTCgpCgpNaWNoYWVsIE1lbmFzaGVyb3YgKDIpOgogIGZ1dGV4X3dh
-a2UwNTogQWRkIEVGQVVMVCBlcnJvciBjb3ZlcmFnZSB0ZXN0CiAgZnV0ZXhfY21wX3JlcXVldWUw
-MzogQWRkIEVGQVVMVCBlcnJvciBjb3ZlcmFnZSB0ZXN0CgogcnVudGVzdC9zeXNjYWxscyAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgIHwgICAyICsKIHRlc3RjYXNlcy9rZXJuZWwvc3lzY2Fs
-bHMvZnV0ZXgvLmdpdGlnbm9yZSAgICB8ICAgMiArCiAuLi4vc3lzY2FsbHMvZnV0ZXgvZnV0ZXhf
-Y21wX3JlcXVldWUwMy5jICAgICAgfCAxMDMgKysrKysrKysrKysrKysrKwogLi4uL2tlcm5lbC9z
-eXNjYWxscy9mdXRleC9mdXRleF93YWtlMDUuYyAgICAgIHwgMTEzICsrKysrKysrKysrKysrKysr
-KwogNCBmaWxlcyBjaGFuZ2VkLCAyMjAgaW5zZXJ0aW9ucygrKQogY3JlYXRlIG1vZGUgMTAwNjQ0
-IHRlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvZnV0ZXgvZnV0ZXhfY21wX3JlcXVldWUwMy5jCiBj
-cmVhdGUgbW9kZSAxMDA2NDQgdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9mdXRleC9mdXRleF93
-YWtlMDUuYwoKLS0gCjIuNTUuMAoKCi0tIApNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0
-cy5saW51eC5pdC9saXN0aW5mby9sdHAK
+futex(FUTEX_WAKE) has no existing test for EFAULT. Add coverage for
+unmapped, PROT_NONE, and truncated file-backed uaddr, each exercising a
+different code path in the kernel's address validation.
+
+Signed-off-by: Michael Menasherov <mmenashe@redhat.com>
+---
+ runtest/syscalls                              |   1 +
+ testcases/kernel/syscalls/futex/.gitignore    |   1 +
+ .../kernel/syscalls/futex/futex_wake05.c      | 113 ++++++++++++++++++
+ 3 files changed, 115 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/futex/futex_wake05.c
+
+diff --git a/runtest/syscalls b/runtest/syscalls
+index a021c79da..67509826f 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -1878,6 +1878,7 @@ futex_wake01 futex_wake01
+ futex_wake02 futex_wake02
+ futex_wake03 futex_wake03
+ futex_wake04 futex_wake04
++futex_wake05 futex_wake05
+ futex_wait_bitset01 futex_wait_bitset01
+ 
+ memfd_create01 memfd_create01
+diff --git a/testcases/kernel/syscalls/futex/.gitignore b/testcases/kernel/syscalls/futex/.gitignore
+index 74ac9a926..c11546e07 100644
+--- a/testcases/kernel/syscalls/futex/.gitignore
++++ b/testcases/kernel/syscalls/futex/.gitignore
+@@ -15,3 +15,4 @@
+ /futex_waitv03
+ /futex_wait06
+ /futex_wait07
++/futex_wake05
+diff --git a/testcases/kernel/syscalls/futex/futex_wake05.c b/testcases/kernel/syscalls/futex/futex_wake05.c
+new file mode 100644
+index 000000000..7cd26ffaf
+--- /dev/null
++++ b/testcases/kernel/syscalls/futex/futex_wake05.c
+@@ -0,0 +1,113 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (C) 2026 Red Hat, Inc.
++ * Copyright (C) 2026 Michael Menasherov <mmenashe@redhat.com>
++ */
++
++/*\
++ * Check that futex(FUTEX_WAKE) returns EFAULT when uaddr points to
++ * unmapped, PROT_NONE, or truncated file-backed memory.
++ *
++ * For opflags=0 (no FUTEX_PRIVATE_FLAG) futex_wake() takes the
++ * shared-futex path in get_futex_key() which must resolve the physical
++ * page.
++ *
++ * The three cases exercise different code paths:
++ *
++ * - unmapped memory fails at find_vma() (no VMA exists)
++ * - PROT_NONE memory fails at get_user_pages_fast() (VMA exists but
++ *   page is inaccessible)
++ * - a file-backed address beyond the file's end triggers VM_FAULT_SIGBUS
++ *   inside the page fault handler, which get_user_pages() propagates as
++ *   EFAULT
++ */
++
++#include <errno.h>
++#include <sys/mman.h>
++
++#include "futextest.h"
++
++static futex_t *unmapped_addr;
++static futex_t *prot_none_addr;
++static futex_t *file_trunc_addr;
++
++static struct futex_test_variants variants[] = {
++#if (__NR_futex != __LTP__NR_INVALID_SYSCALL)
++	{ .fntype = FUTEX_FN_FUTEX, .desc = "syscall with old kernel spec"},
++#endif
++
++#if (__NR_futex_time64 != __LTP__NR_INVALID_SYSCALL)
++	{ .fntype = FUTEX_FN_FUTEX64, .desc = "syscall time64 with kernel spec"},
++#endif
++};
++
++static struct testcase {
++	const char *desc;
++	futex_t **addr;
++} testcases[] = {
++	{
++		.desc = "uaddr unmapped",
++		.addr = &unmapped_addr,
++	},
++	{
++		.desc = "uaddr PROT_NONE",
++		.addr = &prot_none_addr,
++	},
++	{
++		.desc = "uaddr file truncated",
++		.addr = &file_trunc_addr,
++	},
++};
++
++static void run(unsigned int n)
++{
++	struct futex_test_variants *tv = &variants[tst_variant];
++	struct testcase *tc = &testcases[n];
++
++	TST_EXP_FAIL(futex_wake(tv->fntype, *tc->addr, 1, 0),
++		     EFAULT, "%s", tc->desc);
++}
++
++static void setup(void)
++{
++	struct futex_test_variants *tv = &variants[tst_variant];
++	size_t pagesize = getpagesize();
++	int fd;
++
++	tst_res(TINFO, "Testing variant: %s", tv->desc);
++	futex_supported_by_kernel(tv->fntype);
++
++	unmapped_addr = SAFE_MMAP(NULL, pagesize, PROT_READ | PROT_WRITE,
++				  MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
++	SAFE_MUNMAP((void *)unmapped_addr, pagesize);
++
++	prot_none_addr = SAFE_MMAP(NULL, pagesize, PROT_NONE,
++				   MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
++
++	fd = SAFE_OPEN("futex_wake05_tmp", O_CREAT | O_RDWR | O_TRUNC, 0644);
++	SAFE_FTRUNCATE(fd, pagesize);
++	file_trunc_addr = SAFE_MMAP(NULL, pagesize, PROT_READ | PROT_WRITE,
++				    MAP_SHARED, fd, 0);
++	SAFE_FTRUNCATE(fd, 0);
++	SAFE_CLOSE(fd);
++	SAFE_UNLINK("futex_wake05_tmp");
++}
++
++static void cleanup(void)
++{
++	size_t pagesize = getpagesize();
++
++	if (prot_none_addr)
++		SAFE_MUNMAP((void *)prot_none_addr, pagesize);
++	if (file_trunc_addr)
++		SAFE_MUNMAP((void *)file_trunc_addr, pagesize);
++}
++
++static struct tst_test test = {
++	.setup = setup,
++	.cleanup = cleanup,
++	.test = run,
++	.tcnt = ARRAY_SIZE(testcases),
++	.test_variants = ARRAY_SIZE(variants),
++	.needs_tmpdir = 1,
++};
+-- 
+2.55.0
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
