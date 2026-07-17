@@ -4,60 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D6CD5C44507
-	for <ltp@archiver.kernel.org>; Fri, 17 Jul 2026 09:33:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B41DDC44516
+	for <ltp@archiver.kernel.org>; Fri, 17 Jul 2026 09:34:45 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 225CD3E92E7
-	for <ltp@archiver.kernel.org>; Fri, 17 Jul 2026 11:33:04 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 5B36D3E92EC
+	for <ltp@archiver.kernel.org>; Fri, 17 Jul 2026 11:34:44 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id AC4183D00A7
- for <ltp@lists.linux.it>; Fri, 17 Jul 2026 11:32:47 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ by picard.linux.it (Postfix) with ESMTPS id D20B53E76AE
+ for <ltp@lists.linux.it>; Fri, 17 Jul 2026 11:34:27 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 3AF6E60029C
- for <ltp@lists.linux.it>; Fri, 17 Jul 2026 11:32:46 +0200 (CEST)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 61764600A64
+ for <ltp@lists.linux.it>; Fri, 17 Jul 2026 11:34:27 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 8975D3E59;
- Fri, 17 Jul 2026 09:32:46 +0000 (UTC)
-Authentication-Results: smtp-out2.suse.de;
+ by smtp-out1.suse.de (Postfix) with ESMTPS id CBA2178E1D;
+ Fri, 17 Jul 2026 09:34:26 +0000 (UTC)
+Authentication-Results: smtp-out1.suse.de;
 	none
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6F4A3779AA;
- Fri, 17 Jul 2026 09:32:46 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B07E9779AA;
+ Fri, 17 Jul 2026 09:34:26 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id LAvMGb72WWpMfQAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Fri, 17 Jul 2026 09:32:46 +0000
-Date: Fri, 17 Jul 2026 11:32:40 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id tIDGKSL3WWrkfgAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Fri, 17 Jul 2026 09:34:26 +0000
+Date: Fri, 17 Jul 2026 11:34:25 +0200
 From: Petr Vorel <pvorel@suse.cz>
-To: Andrea Cervesato <andrea.cervesato@suse.de>
-Message-ID: <20260717093240.GA316902@pevik>
+To: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20260717093425.GB316902@pevik>
 References: <20260717-fix_tst_test_hugepages-v1-1-a63bf2ccdd17@suse.com>
+ <alnbk-wNqcenHl2S@linux.dev> <alneMq4cprTbWZTj@yuki.lan>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20260717-fix_tst_test_hugepages-v1-1-a63bf2ccdd17@suse.com>
+In-Reply-To: <alneMq4cprTbWZTj@yuki.lan>
 X-Rspamd-Pre-Result: action=no action; module=replies;
  Message is reply to one we originated
-X-Rspamd-Queue-Id: 8975D3E59
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 X-Rspamd-Pre-Result: action=no action; module=replies;
  Message is reply to one we originated
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
 X-Spamd-Result: default: False [-4.00 / 50.00];
 	REPLY(-4.00)[]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+X-Rspamd-Queue-Id: CBA2178E1D
+X-Rspamd-Action: no action
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH] hugepages: ensure CONFIG_COMPACTION is defined
 X-BeenThere: ltp@lists.linux.it
@@ -78,24 +78,22 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Andrea,
+> Hi!
+> > Given that, I don't think we should tst_brk(TCONF) here at all.
+> > My suggetion is not to use SAFE_* macros:
 
-> Add check to ensure CONFIG_COMPACTION=y when we need to use hugepages
-> inside tests. The kernel configuration is used to enable usage of
-> `/proc/sys/vm/compact_memory` inside the LTP core library.
+> > --- a/lib/tst_hugepage.c
+> > +++ b/lib/tst_hugepage.c
+> > @@ -47,7 +47,7 @@ unsigned long tst_reserve_hugepages(struct tst_hugepage *hp)
+> >         }
 
-> The issue was raised by https://github.com/linux-test-project/ltp/pull/1335
-> that is trying to solve a problem with cachestat03.
-> ---
->  lib/tst_hugepage.c | 5 +++++
-....
-> +	if (access(PATH_VM_COMPACT_MEMORY, F_OK)) {
-> +		if (hp->policy == TST_NEEDS || hp->policy == TST_REQUEST)
-> +			tst_brk(TCONF, "CONFIG_COMPACTION not enabled in kernel");
+> >         SAFE_FILE_PRINTF(PATH_VM_DROP_CACHES, "3");
+> > -       SAFE_FILE_PRINTF(PATH_VM_COMPACT_MEMORY, "1");
+> > +       FILE_PRINTF(PATH_VM_COMPACT_MEMORY, "1");
 
-I'd at least add a question mark when it's not based on a real kconfig
-inspection. Because there might be different reasons for missing file in the
-future.
+> Looks good to me.
+
+Li, +1 as well. Thanks all to handle this.
 
 Kind regards,
 Petr
