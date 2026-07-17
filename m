@@ -4,106 +4,102 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 423D4C44516
-	for <ltp@archiver.kernel.org>; Fri, 17 Jul 2026 10:20:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1784283648; h=to : date :
- message-id : in-reply-to : references : mime-version : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : content-type :
- content-transfer-encoding : sender : from;
- bh=ozrxbrGxvZiLnoguQy0TeBXXHNdaEakbE0sDed5gn5w=;
- b=NJbEYuBriHqyrmduJHhvOEqQDYrE8p8JLGfnFewTakqsRFnjDbtsorlFcLJstLrsVok4x
- jQUdt3RV+OPjfLf/lTSKbFqp3uv05mEBSdO6vtQZfnXB25etlUHDwDSNdd8Tig9GGC1PrkQ
- T+RwOBYSg5+qaeteP7i/PtjB8QuUtBA=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AC6EBC44507
+	for <ltp@archiver.kernel.org>; Fri, 17 Jul 2026 11:03:06 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D1A6B3E76AE
-	for <ltp@archiver.kernel.org>; Fri, 17 Jul 2026 12:20:48 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 21C793E92EE
+	for <ltp@archiver.kernel.org>; Fri, 17 Jul 2026 13:03:05 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0EF663E55DC
- for <ltp@lists.linux.it>; Fri, 17 Jul 2026 12:20:08 +0200 (CEST)
-Received: from smtp-relay-internal-1.canonical.com
- (smtp-relay-internal-1.canonical.com [185.125.188.123])
+ by picard.linux.it (Postfix) with ESMTPS id 8FA793E55DC
+ for <ltp@lists.linux.it>; Fri, 17 Jul 2026 13:02:48 +0200 (CEST)
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
+ [148.163.158.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id CC33D1400B62
- for <ltp@lists.linux.it>; Fri, 17 Jul 2026 12:20:06 +0200 (CEST)
-Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
- [209.85.208.198])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 1C7863F135
- for <ltp@lists.linux.it>; Fri, 17 Jul 2026 10:20:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
- s=20251003; t=1784283606;
- bh=f0h3Z1tb/rnM6NoLUE3A5Jelv85o74DkHoB4eukCyak=;
- h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
- MIME-Version;
- b=HxgsBQT++B7G/OF5Zrb5UP3w0RP2VPdDlPlF2Zy+qtt+0USFRP/RbTVcDfG80BA3p
- HgJZMjRVFxJa1guGLh3QuIDHwwiz2CdjnISfkyCSHjVCWkzHMgB71Gl8J+t8Aj8vIA
- ku4vuvqUinvnbqCfygvPNzryYOrwZFprCaqhoQIfhWMNLjnvj1d5MguWeB9/7ChNZo
- 9NEqQTOYsj3i6Dl8wf2ySn8AVxw8jwjNatZBovLEohEyw6RtCVelwHr21UhbyixRqN
- P9uX5mUSY4utGZD/u4KIRYYi55NJp5Asf9ERdUCx8w48ZugAp1rHxh9joUpvi4VN4B
- Rlf0CQ69+NLaBpaJuVaKykcWwn8y816jsASxgXLw+NojniF7dAFAjYYjL7D4x+hsUN
- c3xnvHZPzZx0LMFzMsCGpeN1cN+d7LQ3Lv7ay20yxHezLhRY+Ul6OYWt0JHU6Gy0q4
- L7UKMOc2L0+UKJCCuZfAvPWMkIEaD94qj8CKGbAgViwdWFz0Y4LVl17zixx73tz6GY
- bwYH8UXbgGgTcXtWE2DKlzAYRRWAYt55Sz3MM2LCZOtq3eeyDRmfqxeR30jE/zc3Ec
- w0+J+Xy/JEe8XSrogqYopj/0F3yrwqYZneNgWIqQWA44gpu0vlTV0kDr2lP9bSvbnP
- 5heoxBwq0YSmDsj5cQpg5iYw=
-Received: by mail-lj1-f198.google.com with SMTP id
- 38308e7fff4ca-39d93d95a21so20167041fa.0
- for <ltp@lists.linux.it>; Fri, 17 Jul 2026 03:20:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1784283605; x=1784888405;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:to:from:x-gm-gg:x-gm-message-state:from:to
- :cc:subject:date:message-id:reply-to:content-type;
- bh=f0h3Z1tb/rnM6NoLUE3A5Jelv85o74DkHoB4eukCyak=;
- b=k5B1ERsbRyGHxKT4LV5LbUS5d+rKlkRL9jBkSnk39tc73liZP4vB+pExhfgBmZpsPQ
- 0G9IBJpjaeP1+HXcGbBsCh6Wjqfwf4N6LWoNb5OFCpVEzJ9+GwxYShaddiy3y7LmrUXv
- HOjXeSXaDtt/ngxOOH35dMoXwWML0Gx1o4XFI7Jw6+OGrjrb1z/pSLVmoIGZd8jmB67z
- qm3uzzSbORBckP+KRQEF/DG7QsHra2CQbnROVWKlfdBxWf4TtwTRDaZK3UzG5Ep1yPNO
- 2UnEF3UQcbFvDcDjKHPepcoBDQjTDUuLCdyPXXUqY2M4pEbzQbM4DBFjKs7EzKFBqTCj
- ETBw==
-X-Gm-Message-State: AOJu0YyE5ac4zA3T9TesT6dnfQgAAv93203Pq48z3eG98lTFP2CaloEc
- 4CtS3gUKA2+swFKbYmgx34ivmuyy5QWIjOfeLS8Iww5GMT7X+LZcx1djqehRsXRO0MMsKrjRzXw
- S+XVsCHxtTp6v1u9hnni2hJ/nZ8+Rll4VIAjECKMtQf12CMcaSdKkNC6aZz4Qi6K40k1C7l+Xe6
- vc
-X-Gm-Gg: AfdE7cmO4KwWtlSwx9K4oRfQAuTtc294anUUZFRiQzumijPyKEipfFLctZrCTos4bzX
- ZD2ofGr3XzfonbymWTLEd0L7L9ZnVWASOLtiAE7dsxlIAdq8Uw6CNZmGNcewBrpwM087yBoKhIs
- mUoGB16ZGBWCPUhfPdW0TGGbB5MNif4PZQPIofNy7XewnFI4zGAE83o3/slEv7skP1d112yKIyL
- 5WC8Ro8hsiy7PGLoT5vtrVA94YRW+OIpUGifrmknul/xwtcoP74uP0mN6slwCTUh1LpBxJnLWfu
- DLjHf6Xib9e90oAxmEcRFNxUmHMVNUgH1bS/5AI1ysv+AHsVxRifcvySP3oY0Nr1bX+w3jj/H8p
- jR3fzGjL3vhnKXnCkBejmAltOl/OSFpiPbjxUi2q3YhYQ2pUET95iFZPPuIec
-X-Received: by 2002:a05:651c:88b:b0:394:3b62:b6aa with SMTP id
- 38308e7fff4ca-39eb275de69mr4589731fa.12.1784283605442; 
- Fri, 17 Jul 2026 03:20:05 -0700 (PDT)
-X-Received: by 2002:a05:651c:88b:b0:394:3b62:b6aa with SMTP id
- 38308e7fff4ca-39eb275de69mr4589671fa.12.1784283604979; 
- Fri, 17 Jul 2026 03:20:04 -0700 (PDT)
-Received: from localhost.localdomain (staticline-31-183-213-56.toya.net.pl.
- [31.183.213.56]) by smtp.gmail.com with ESMTPSA id
- 38308e7fff4ca-39eb4e5b31esm1228501fa.12.2026.07.17.03.20.04
- for <ltp@lists.linux.it>
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 17 Jul 2026 03:20:04 -0700 (PDT)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 9B3CD1A00A55
+ for <ltp@lists.linux.it>; Fri, 17 Jul 2026 13:02:46 +0200 (CEST)
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id
+ 66HAgmgX1782417
+ for <ltp@lists.linux.it>; Fri, 17 Jul 2026 11:02:45 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+ :content-transfer-encoding:date:from:message-id:mime-version
+ :subject:to; s=pp1; bh=YvYUgL0wDJBiXzQKTaUQ+CpcJJcFFAqDzN7UE/GCi
+ 10=; b=Elz0omHaYTrONoZtgTJJLlJn9eVJkrm6+JcKGC5v3uGK5s4YqxgOEz2/l
+ 0HvrytbnNrc78J/Tl5m7M5r86RaH8q6DIJ6uK7/gmP1JD++f/CkIPT0mKVe9UYPV
+ IowMiUojMoYeRSOjJFegohuxJpqnwq4c6kbUxCCrZ8oUyd9e9kypbVzVlzDc9W0z
+ LQoiF5URz2Ew+vJhk2dwSgGpChmxjywhdhXqTkqhAVHTWlM7qMgO50sWTooimLTt
+ ttN3N5BR1og3b0GMXMgY+bCMRHztjgkO25SzrH4NWK9jJKVq8Uh87ZVrs3QDDiFL
+ C5g21s7ebNQwC53eB+Neb2ndmPKJA==
+Received: from ppma22.wdc07v.mail.ibm.com
+ (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4fbegc52jk-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+ for <ltp@lists.linux.it>; Fri, 17 Jul 2026 11:02:45 +0000 (GMT)
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+ by ppma22.wdc07v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 66HAneg8005783
+ for <ltp@lists.linux.it>; Fri, 17 Jul 2026 11:02:44 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+ by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4fc0hwhfnv-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+ for <ltp@lists.linux.it>; Fri, 17 Jul 2026 11:02:44 +0000 (GMT)
+Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com
+ [10.20.54.103])
+ by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 66HB2eQo62914892
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Fri, 17 Jul 2026 11:02:40 GMT
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 05F5320040;
+ Fri, 17 Jul 2026 11:02:40 +0000 (GMT)
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id DAD282004B;
+ Fri, 17 Jul 2026 11:02:38 +0000 (GMT)
+Received: from li-49acbccc-2994-11b2-a85c-d51b89e344f1.ibm.com.com (unknown
+ [9.39.17.226]) by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
+ Fri, 17 Jul 2026 11:02:38 +0000 (GMT)
+From: Pavithra <pavrampu@linux.ibm.com>
 To: ltp@lists.linux.it
-Date: Fri, 17 Jul 2026 12:20:00 +0200
-Message-ID: <20260717102000.1318116-2-kuba.pawlak@canonical.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20260717102000.1318116-1-kuba.pawlak@canonical.com>
-References: <20260717102000.1318116-1-kuba.pawlak@canonical.com>
+Date: Fri, 17 Jul 2026 16:32:34 +0530
+Message-ID: <20260717110234.1070268-1-pavrampu@linux.ibm.com>
+X-Mailer: git-send-email 2.55.0
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+X-TM-AS-GCONF: 00
+X-Authority-Analysis: v=2.4 cv=fOcJG5ae c=1 sm=1 tr=0 ts=6a5a0bd5 cx=c_pps
+ a=5BHTudwdYE3Te8bg5FgnPg==:117 a=5BHTudwdYE3Te8bg5FgnPg==:17
+ a=RAioF0-LDSMA:10 a=VkNPw1HP01LnGYTKEx00:22 a=RnoormkPH1_aCDwRdu11:22
+ a=RzCfie-kr_QcCd8fBx8p:22 a=VnNF1IyMAAAA:8 a=JAEoehrIkcouhSjHoGMA:9
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNzE3MDEwNyBTYWx0ZWRfX6anbg5xvueBg
+ YybDeOxCfBqafbTselt6IQFpVb5E/4wokzTRumguZSYQjCTBj4K0dowPTib2hUl50TEHrx6D3kj
+ MOWmkPtKnlsIB7GMUibmwWSkwkwjlZz/LH54+5UxX4bRPLxn6/j4yxittTCpgJCFxq0Ws8aZZKg
+ CUQV9ag0ffEXPWYcQLOYGQ7Qu86Lx9JIp513YvfZdhdJOVeGOBVfQfAYlL/OUGGIhkjk0gYHorW
+ dB6ckHc/mQzqROq1GU91ibGMZgNGjEQiA+k0RRy1U7Dao7/Ja5vUcB/YLvktD+602PHIFwHGsyn
+ nJECirWe6KSMdBxA6GNzmeZ4OWsX3HVbqz8rgKN8fb4kVFWOKPZmrHP9/VEsVhCNdOUa7Ut3JiU
+ anT1amVaxJpnRUCzVO8H4QDXHknOp3RlnwpYq7Qp7MAAtXm98Q7UXYt4Vzo/5/goNsXpLDIwHVh
+ /BpdUv4okl+t0AMR8ow==
+X-Proofpoint-Spam-Info: AW1haW4tMjYwNzE3MDEwNyBTYWx0ZWRfXxuE5UlqxCeYP
+ ZtFS6titntjEfmkRYZDw1sHLHwdN+tqJkyT8Bwb4Q/9sOq0c9KCsKZaTpcsLNKSVpLj1tdOo28O
+ DyqrKSLKydakWJDLd/Ov8wSKg+lZyFI=
+X-Proofpoint-GUID: QDU8HfEaFoh7hbVfOog04c72sfp44Pm-
+X-Proofpoint-ORIG-GUID: QDU8HfEaFoh7hbVfOog04c72sfp44Pm-
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.134,FMLib:17.12.100.49
+ definitions=2026-07-17_03,2026-07-15_02,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ spamscore=0 bulkscore=0 impostorscore=0 suspectscore=0 adultscore=0
+ priorityscore=1501 malwarescore=0 clxscore=1011 phishscore=0
+ lowpriorityscore=0 classifier=typeunknown authscore=0 authtc= authcc=
+ route=outbound adjust=0 reason=mlx scancount=1 engine=8.22.0-2606150000
+ definitions=main-2607170107
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 2/2] rtc02: skip (TCONF) on read-only RTCs that
- reject RTC_SET_TIME
+Subject: [LTP] [PATCH] hugemmap/hugemmap41: Migrate ptrace-write-hugepage
+ from libhugetlbfs
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -115,83 +111,198 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Kuba Pawlak via ltp <ltp@lists.linux.it>
-Reply-To: Kuba Pawlak <kuba.pawlak@canonical.com>
+Cc: pavrampu@linux.ibm.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Some RTC hardware does not allow setting the time from the host. For
-example Qualcomm PMIC RTCs (rtc-pm8xxx) that are configured without the
-allow-set-time DT property and without an nvmem/UEFI offset return
--ENODEV from RTC_SET_TIME; the counter free-runs from the epoch and is
-only usable as an uptime source. On such devices rtc02 currently reports
-TFAIL, which is a hardware limitation rather than a kernel defect.
+This test verifies that ptrace POKEDATA and PEEKDATA operations work
+correctly on hugepage-backed memory regions.
 
-Probe whether the RTC can be set in the setup phase, writing back the
-value just read so a writable RTC is left unchanged. When RTC_SET_TIME
-fails with ENODEV, skip the whole test with TCONF. Only ENODEV is treated
-as "not supported": wider errnos such as EINVAL are used broadly by the
-kernel and could mask a genuine failure, so anything else still results
-in TBROK.
-
-Doing the check in setup, before tst_rtc_clock_save(), also avoids the
-cleanup path (tst_rtc_clock_restore()) issuing RTC_SET_TIME and turning
-the run into a TBROK on such devices. If the probe succeeds the test body
-runs as before, so no additional handling is needed there.
-
-Signed-off-by: Kuba Pawlak <kuba.pawlak@canonical.com>
+Signed-off-by: Pavithra <pavrampu@linux.ibm.com>
 ---
- testcases/kernel/device-drivers/rtc/rtc02.c | 22 +++++++++++++++++++++
- 1 file changed, 22 insertions(+)
+ runtest/hugetlb                               |   1 +
+ testcases/kernel/mem/.gitignore               |   1 +
+ .../kernel/mem/hugetlb/hugemmap/hugemmap41.c  | 143 ++++++++++++++++++
+ 3 files changed, 145 insertions(+)
+ create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap41.c
 
-diff --git a/testcases/kernel/device-drivers/rtc/rtc02.c b/testcases/kernel/device-drivers/rtc/rtc02.c
-index 34509ab..96e1084 100644
---- a/testcases/kernel/device-drivers/rtc/rtc02.c
-+++ b/testcases/kernel/device-drivers/rtc/rtc02.c
-@@ -16,6 +16,7 @@
-  */
- 
- #include <stdio.h>
-+#include <errno.h>
- #include "tst_rtctime.h"
- #include "tst_wallclock.h"
- #include "tst_test.h"
-@@ -133,10 +134,31 @@ static void set_rtc_test(void)
- static void rtc_setup(void)
- {
- 	int exists = access(rtc_dev, F_OK);
-+	struct rtc_time probe_tm;
- 
- 	if (exists < 0)
- 		tst_brk(TCONF, "RTC device %s not available", rtc_dev);
- 
-+	/*
-+	 * Skip on RTCs that do not allow setting the time, e.g. Qualcomm PMIC
-+	 * RTCs without allow-set-time or an nvmem offset, where RTC_SET_TIME
-+	 * returns -ENODEV. Probe with the current time so a writable RTC is
-+	 * left unchanged, and skip here (before tst_rtc_clock_save()) so the
-+	 * cleanup restore does not fail on such devices.
-+	 *
-+	 * Only ENODEV is treated as "not supported" here. Wider errnos such as
-+	 * EINVAL are used broadly by the kernel and could mask a genuine
-+	 * failure, so let anything else fall through to TBROK.
-+	 */
-+	if (tst_rtc_gettime(rtc_dev, &probe_tm))
-+		tst_brk(TBROK | TERRNO, "ioctl() RTC_RD_TIME");
-+	if (tst_rtc_settime(rtc_dev, &probe_tm)) {
-+		if (errno == ENODEV)
-+			tst_brk(TCONF | TERRNO,
-+				"RTC does not support setting the time");
-+		tst_brk(TBROK | TERRNO, "ioctl() RTC_SET_TIME");
+diff --git a/runtest/hugetlb b/runtest/hugetlb
+index 8ee0e6f82..32412ed45 100644
+--- a/runtest/hugetlb
++++ b/runtest/hugetlb
+@@ -37,6 +37,7 @@ hugemmap31 hugemmap31
+ hugemmap32 hugemmap32
+ hugemmap34 hugemmap34
+ hugemmap35 hugemmap35
++hugemmap41 hugemmap41
+ hugemmap05_1 hugemmap05 -m
+ hugemmap05_2 hugemmap05 -s
+ hugemmap05_3 hugemmap05 -s -m
+diff --git a/testcases/kernel/mem/.gitignore b/testcases/kernel/mem/.gitignore
+index 0e59035df..29eb83d16 100644
+--- a/testcases/kernel/mem/.gitignore
++++ b/testcases/kernel/mem/.gitignore
+@@ -37,6 +37,7 @@
+ /hugetlb/hugemmap/hugemmap32
+ /hugetlb/hugemmap/hugemmap34
+ /hugetlb/hugemmap/hugemmap35
++/hugetlb/hugemmap/hugemmap41
+ /hugetlb/hugeshmat/hugeshmat01
+ /hugetlb/hugeshmat/hugeshmat02
+ /hugetlb/hugeshmat/hugeshmat03
+diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap41.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap41.c
+new file mode 100644
+index 000000000..d16d1fe02
+--- /dev/null
++++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap41.c
+@@ -0,0 +1,143 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (C) 2005-2006 David Gibson & Adam Litke, IBM Corporation.
++ * Copyright (c) 2026 Pavithra <pavrampu@linux.ibm.com>
++ */
++
++/*\
++ * Test ptrace write to hugepage memory.
++ *
++ * This test verifies that ptrace POKEDATA and PEEKDATA work correctly
++ * on hugepage-backed memory regions. A child process maps a hugepage,
++ * and the parent uses ptrace to write and read data from the child's
++ * hugepage memory, ensuring that ptrace operations function properly
++ * with hugepage mappings.
++ *
++ * Requires root to mount hugetlbfs and for ptrace(PTRACE_ATTACH) to
++ * work across processes when ptrace_scope is restrictive.
++ */
++
++#include <stdlib.h>
++#include <string.h>
++#include <sys/mman.h>
++#include <sys/ptrace.h>
++#include <sys/types.h>
++#include <sys/wait.h>
++
++#include "tst_test.h"
++#include "hugetlb.h"
++
++#define CONST	0xdeadbeefL
++#define MNTPOINT "hugetlbfs/"
++
++static long hpage_size;
++static int fd = -1;
++
++static void child(int hugefd, int pipefd[2])
++{
++	void *p;
++
++	SAFE_CLOSE(pipefd[0]);
++
++	p = SAFE_MMAP(NULL, hpage_size, PROT_READ|PROT_WRITE, MAP_SHARED,
++		      hugefd, 0);
++
++	memset(p, 0, hpage_size);
++
++	tst_res(TINFO, "Child mapped data at %p", p);
++
++	SAFE_WRITE(SAFE_WRITE_ALL, pipefd[1], &p, sizeof(p));
++	SAFE_CLOSE(pipefd[1]);
++
++	pause();
++	/* Child is killed by parent via PTRACE_KILL, so cleanup is not reached */
++}
++
++static void do_poke(pid_t pid, void *p)
++{
++	long err;
++
++	tst_res(TINFO, "Poking at %p...", p);
++	err = ptrace(PTRACE_POKEDATA, pid, p, (void *)CONST);
++	if (err)
++		tst_brk(TFAIL | TERRNO, "ptrace(POKEDATA) failed");
++
++	tst_res(TINFO, "Peeking at %p...", p);
++	errno = 0;
++	err = ptrace(PTRACE_PEEKDATA, pid, p, NULL);
++	if (err == -1 && errno)
++		tst_brk(TFAIL | TERRNO, "ptrace(PEEKDATA) failed");
++
++	if (err != CONST)
++		tst_brk(TFAIL, "Value mismatch: got %lx, expected %lx", err, CONST);
++}
++
++static void run_test(void)
++{
++	int pipefd[2];
++	long err;
++	pid_t cpid;
++	void *p;
++	int status;
++
++	fd = tst_creat_unlinked(MNTPOINT, 0, 0600);
++
++	SAFE_PIPE(pipefd);
++
++	cpid = SAFE_FORK();
++
++	if (cpid == 0) {
++		child(fd, pipefd);
++		exit(0);
 +	}
 +
- 	tst_rtc_clock_save(rtc_dev);
- }
- 
++	/* Parent */
++	SAFE_CLOSE(pipefd[1]);
++	SAFE_READ(1, pipefd[0], &p, sizeof(p));
++	SAFE_CLOSE(pipefd[0]);
++
++	tst_res(TINFO, "Parent received address %p", p);
++
++	err = ptrace(PTRACE_ATTACH, cpid, NULL, NULL);
++	if (err)
++		tst_brk(TFAIL | TERRNO, "ptrace(ATTACH) failed");
++
++	TST_PROCESS_STATE_WAIT(cpid, 't', 0);
++
++	do_poke(cpid, p);
++	do_poke(cpid, p + getpagesize());
++
++	SAFE_KILL(cpid, SIGKILL);
++	SAFE_WAITPID(cpid, &status, 0);
++
++	SAFE_CLOSE(fd);
++	fd = -1;
++
++	tst_res(TPASS, "ptrace write to hugepage succeeded");
++}
++
++static void setup(void)
++{
++	hpage_size = tst_get_hugepage_size();
++}
++
++static void cleanup(void)
++{
++	if (fd != -1)
++		SAFE_CLOSE(fd);
++}
++
++static struct tst_test test = {
++	.tags = (struct tst_tag[]) {
++		{"linux-git", "ebed4bfc8da8"},
++		{}
++	},
++	.needs_root = 1,
++	.mntpoint = MNTPOINT,
++	.needs_hugetlbfs = 1,
++	.hugepages = {4, TST_NEEDS},
++	.forks_child = 1,
++	.setup = setup,
++	.cleanup = cleanup,
++	.test_all = run_test,
++};
 -- 
-2.43.0
+2.55.0
 
 
 -- 
