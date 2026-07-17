@@ -4,90 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9B933C4451C
-	for <ltp@archiver.kernel.org>; Fri, 17 Jul 2026 12:34:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 47166C4451C
+	for <ltp@archiver.kernel.org>; Fri, 17 Jul 2026 12:34:26 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 38A423E24D6
-	for <ltp@archiver.kernel.org>; Fri, 17 Jul 2026 14:34:08 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 93DA63E1C40
+	for <ltp@archiver.kernel.org>; Fri, 17 Jul 2026 14:34:24 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D4AD43E569C
+ by picard.linux.it (Postfix) with ESMTPS id DDCBD3E58FB
  for <ltp@lists.linux.it>; Fri, 17 Jul 2026 14:33:24 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 50CD61000A2F
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 8697E600B9E
  for <ltp@lists.linux.it>; Fri, 17 Jul 2026 14:33:24 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id DB70578DBA;
+ by smtp-out2.suse.de (Postfix) with ESMTPS id B6FF03E43;
  Fri, 17 Jul 2026 12:33:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1784291599; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=X8JWp+d2UklsdEoB+pozNPnGJrDjAry7CqnCg5xS4SM=;
- b=G4uKYsKG1MJrSNpZWant4vuX2HsQktzuYr4xElTK76q4NAZAah0bzwsgprV4NJk27QTR/M
- 1G/wsbdyL0NS3GkIrWBvrpfg8Zke9U3mhJ1H3KrwTXARoKrhlHM6zLYn5MgMmuBeIgHoE7
- fPqEJTsfWoKHm/ZACptX35mJag+VbUQ=
+ bh=ofHGf5FPv9v4VvZTu0C2oZeBVclFzRTQhwdrH9iO+ik=;
+ b=jQRtHRPQotcmYXXBAforS0yBs3vzhWwYrktfClDK43h9r6qkzd8BPUKvFK/a440t3yM0xH
+ IMNU9nuTxDFCo1tFXJ+IUUZUtEKSLUK5MhAJWLUUOZD8jduWL+XtCKi4D+rX+qmaUwcB90
+ WR3S+u0eFMovUhkFPsDkZcouQn1gld8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1784291599;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=X8JWp+d2UklsdEoB+pozNPnGJrDjAry7CqnCg5xS4SM=;
- b=nAyfFYivNlCqDd1j0oWLlED9exOh8L0p1P2/SitmxkSjYSqM6fGUViuVv34kyl4/BqbQYF
- cxv0ZZ2EYAcjLoDA==
-Authentication-Results: smtp-out1.suse.de;
+ bh=ofHGf5FPv9v4VvZTu0C2oZeBVclFzRTQhwdrH9iO+ik=;
+ b=8Fa5yea3/iHq5lTEGEpnNWEndfvnIiBPmGK73+10fNJQ4y9gMlBqVsycDZ4rE2l3cRVEjG
+ Z486XDKcGdqroiBw==
+Authentication-Results: smtp-out2.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1784291599; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=X8JWp+d2UklsdEoB+pozNPnGJrDjAry7CqnCg5xS4SM=;
- b=G4uKYsKG1MJrSNpZWant4vuX2HsQktzuYr4xElTK76q4NAZAah0bzwsgprV4NJk27QTR/M
- 1G/wsbdyL0NS3GkIrWBvrpfg8Zke9U3mhJ1H3KrwTXARoKrhlHM6zLYn5MgMmuBeIgHoE7
- fPqEJTsfWoKHm/ZACptX35mJag+VbUQ=
+ bh=ofHGf5FPv9v4VvZTu0C2oZeBVclFzRTQhwdrH9iO+ik=;
+ b=jQRtHRPQotcmYXXBAforS0yBs3vzhWwYrktfClDK43h9r6qkzd8BPUKvFK/a440t3yM0xH
+ IMNU9nuTxDFCo1tFXJ+IUUZUtEKSLUK5MhAJWLUUOZD8jduWL+XtCKi4D+rX+qmaUwcB90
+ WR3S+u0eFMovUhkFPsDkZcouQn1gld8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1784291599;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=X8JWp+d2UklsdEoB+pozNPnGJrDjAry7CqnCg5xS4SM=;
- b=nAyfFYivNlCqDd1j0oWLlED9exOh8L0p1P2/SitmxkSjYSqM6fGUViuVv34kyl4/BqbQYF
- cxv0ZZ2EYAcjLoDA==
+ bh=ofHGf5FPv9v4VvZTu0C2oZeBVclFzRTQhwdrH9iO+ik=;
+ b=8Fa5yea3/iHq5lTEGEpnNWEndfvnIiBPmGK73+10fNJQ4y9gMlBqVsycDZ4rE2l3cRVEjG
+ Z486XDKcGdqroiBw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C0978779AA;
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9791A779AE;
  Fri, 17 Jul 2026 12:33:19 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id QOceLQ8hWmr7LgAAD6G6ig
+ by imap1.dmz-prg2.suse.org with ESMTPSA id uLc1Iw8hWmr7LgAAD6G6ig
  (envelope-from <andrea.cervesato@suse.de>); Fri, 17 Jul 2026 12:33:19 +0000
 From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Fri, 17 Jul 2026 14:33:20 +0200
+Date: Fri, 17 Jul 2026 14:33:19 +0200
 MIME-Version: 1.0
-Message-Id: <20260717-fix_core_library-v1-3-c575fcbb2cb3@suse.com>
+Message-Id: <20260717-fix_core_library-v1-2-c575fcbb2cb3@suse.com>
 References: <20260717-fix_core_library-v1-0-c575fcbb2cb3@suse.com>
 In-Reply-To: <20260717-fix_core_library-v1-0-c575fcbb2cb3@suse.com>
 To: Linux Test Project <ltp@lists.linux.it>
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1784291599; l=698;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1784291599; l=785;
  i=andrea.cervesato@suse.com; s=20251210; h=from:subject:message-id;
- bh=V0YPQkYDYTyyVv+4GJPS0bQ3I9+GLIsa+XvrQl3uA8A=;
- b=w6ZcbOCmJ1FkSXmgOjgh2WqjZZddVczNWXIAVntX3Fq5IJfz6AtJE86SPTC8cCDhjNFkCSxN1
- Ni3/0g9EsyuBCrrFuWbMIVRt3nboXdCNI0NiQeThxJ6sa9k2JqT9ka0
+ bh=+TARZYaNnJRjvHaIgvwKWz6uapCesOhJKH+I9TFYna8=;
+ b=xAV+DWe6ZRr3TGYxu08Id529I2ipqDR2vcWvnS3kO0SinHsC7WLqvMkQzrKtNkIxSbTq+pC2W
+ aRn3QO//tF6DywbE4D5JRM0JbVWhybw1RMGSg49nKaNTbuN3oTiMv5q
 X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
  pk=zKY+6GCauOiuHNZ//d8PQ/UL4jFCTKbXrzXAOQSLevI=
 X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[99.99%];
@@ -100,11 +100,11 @@ X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[99.99%];
  TO_DN_ALL(0.00)[]; FROM_HAS_DN(0.00)[]; MIME_TRACE(0.00)[0:+];
  FROM_EQ_ENVFROM(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
  RCVD_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email, suse.com:mid,
- imap1.dmz-prg2.suse.org:helo]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo, suse.com:email,
+ suse.com:mid]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 3/3] lib: Fix wrong field in tst_iovec_alloc
+Subject: [LTP] [PATCH 2/3] lib: Close directory fd on ENOSPC in tst_fill_fs
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -123,27 +123,27 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-The zero-size branch assigned iov_base twice and left iov_len unset,
-clearly a copy-paste typo. Set iov_len to 0 as intended.
+The directory descriptor opened at the top of the function was leaked
+when openat() failed with ENOSPC and the function returned early. Close
+it before returning.
 
 Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
- lib/tst_buffers.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ lib/tst_fill_fs.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/lib/tst_buffers.c b/lib/tst_buffers.c
-index ac76a784bb7060ad46815310b56b2a4229bfd395..048b322457c3173df61e0617ad0bc190581c78a7 100644
---- a/lib/tst_buffers.c
-+++ b/lib/tst_buffers.c
-@@ -123,7 +123,7 @@ struct iovec *tst_iovec_alloc(int sizes[])
- 			iovec[i].iov_len = sizes[i];
- 		} else {
- 			iovec[i].iov_base = NULL;
--			iovec[i].iov_base = 0;
-+			iovec[i].iov_len = 0;
+diff --git a/lib/tst_fill_fs.c b/lib/tst_fill_fs.c
+index c62d48e289965d59ef6c877870c6047bbecb33da..b1e48fdeea6ab00848aab482fd3899fc6f6ce23c 100644
+--- a/lib/tst_fill_fs.c
++++ b/lib/tst_fill_fs.c
+@@ -91,6 +91,7 @@ static void fill_flat_vec(const char *path, int verbose)
+ 	if (fd == -1) {
+ 		if (errno == ENOSPC) {
+ 			tst_res(TINFO | TERRNO, "openat()");
++			SAFE_CLOSE(dir);
+ 			return;
  		}
- 	}
- 
+ 		tst_brk(TBROK | TERRNO, "openat(%d, %d, 0600) failed for path %s",
 
 -- 
 2.51.0
