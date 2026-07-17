@@ -4,98 +4,105 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C6E5DC44515
-	for <ltp@archiver.kernel.org>; Fri, 17 Jul 2026 07:48:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 89295C44514
+	for <ltp@archiver.kernel.org>; Fri, 17 Jul 2026 08:03:24 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id EFA083E55DC
-	for <ltp@archiver.kernel.org>; Fri, 17 Jul 2026 09:48:28 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id E21443E76BA
+	for <ltp@archiver.kernel.org>; Fri, 17 Jul 2026 10:03:22 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 367E93C9911
- for <ltp@lists.linux.it>; Fri, 17 Jul 2026 09:48:12 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+ by picard.linux.it (Postfix) with ESMTPS id 4AD663D00A7
+ for <ltp@lists.linux.it>; Fri, 17 Jul 2026 10:03:08 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id E54D26009F9
- for <ltp@lists.linux.it>; Fri, 17 Jul 2026 09:48:11 +0200 (CEST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id A8DA61A0009C
+ for <ltp@lists.linux.it>; Fri, 17 Jul 2026 10:03:06 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 787B277172;
- Fri, 17 Jul 2026 07:48:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1784274490; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ by smtp-out2.suse.de (Postfix) with ESMTPS id C1B683E4B;
+ Fri, 17 Jul 2026 08:02:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1784275384; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=YdiLbY2RQT3KvFbMmONY2dEy6/uUaweniYubJjHTVts=;
- b=KseG+45/jHUISqZmq8VWxoTPMNile85zyslUe0tagA49lY2wbRUbj+a0OdvKxqwEh2bUSj
- Ivk1RVsTjDNi3xpelgX/U0qExtX3KqiTKexRbkYqLrN+rFdCUtCNYT5S216Cld+X3wUKor
- P34o2VVYJI4FIgz8a3viwZtrzZtqQMY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1784274490;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=qL7mACgWPiDFxXs87dhYbgXRfhfIY5Va7SxaOgK2Dvo=;
+ b=wkcL6FjYEEQwT0cP81SFtyU1BTm11zi3ucV9pe2wVmAPLaDP81Vxch5rcMRzlektPRsMT1
+ 1zMhwLHRVzzWMet7i5hxGgJzVJrEau3Lits6faVa5emQoe4i14fxpt42ZNmcEvhgCH7AKF
+ FM0gfLw2fBHXwpj0w7i26lZDscCuz3c=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1784275384;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=YdiLbY2RQT3KvFbMmONY2dEy6/uUaweniYubJjHTVts=;
- b=RAk3xcV1slz7tI0cK+hOzn53MokU/X5cD5nwlLIjL19stGjg5MrDcHfs4dSkVQtzvtZLfu
- l/cd8jxoBj8z9CBw==
-Authentication-Results: smtp-out1.suse.de;
+ content-transfer-encoding:content-transfer-encoding;
+ bh=qL7mACgWPiDFxXs87dhYbgXRfhfIY5Va7SxaOgK2Dvo=;
+ b=anfagZ3PU8/b7VZair7AACwk9kgHqcO7omjwuZm6lBG0PEzAnPZjehgtTIQGQm7OzwyVWl
+ Pm+Xb2Z4SoKi1YDw==
+Authentication-Results: smtp-out2.suse.de;
 	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1784274490; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1784275379; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=YdiLbY2RQT3KvFbMmONY2dEy6/uUaweniYubJjHTVts=;
- b=KseG+45/jHUISqZmq8VWxoTPMNile85zyslUe0tagA49lY2wbRUbj+a0OdvKxqwEh2bUSj
- Ivk1RVsTjDNi3xpelgX/U0qExtX3KqiTKexRbkYqLrN+rFdCUtCNYT5S216Cld+X3wUKor
- P34o2VVYJI4FIgz8a3viwZtrzZtqQMY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1784274490;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=qL7mACgWPiDFxXs87dhYbgXRfhfIY5Va7SxaOgK2Dvo=;
+ b=HUsKv/Mw+ApRFrOyVrY+M9lS95KTwJ3afr10thF+cS2wGwmDzhdvCQf0Owz3cnNuYfVFJm
+ m5A6vvM728hh8d2MGpb7H6h+MrZsfKmf7eBVvGLXNmfWWgbENJtyyHkxWoZce08b9bVRaf
+ YTOD/rOiobm7+Lt2PEANrBMT5OTIbm4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1784275379;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=YdiLbY2RQT3KvFbMmONY2dEy6/uUaweniYubJjHTVts=;
- b=RAk3xcV1slz7tI0cK+hOzn53MokU/X5cD5nwlLIjL19stGjg5MrDcHfs4dSkVQtzvtZLfu
- l/cd8jxoBj8z9CBw==
+ content-transfer-encoding:content-transfer-encoding;
+ bh=qL7mACgWPiDFxXs87dhYbgXRfhfIY5Va7SxaOgK2Dvo=;
+ b=nub8nqDb5j78/f1enEciO12K2EzFPLaGvu3qOQp4pSVrY/gpcv5enlfVGJRAVLXWTGn89Y
+ VhOOgKpcd7XMVvCQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 686D6779AA;
- Fri, 17 Jul 2026 07:48:10 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9000C779AA;
+ Fri, 17 Jul 2026 08:02:59 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id vsk6GDreWWotFwAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Fri, 17 Jul 2026 07:48:10 +0000
-Date: Fri, 17 Jul 2026 09:48:02 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Andrea Cervesato <andrea.cervesato@suse.de>,
- Linux Test Project <ltp@lists.linux.it>
-Message-ID: <alneMq4cprTbWZTj@yuki.lan>
-References: <20260717-fix_tst_test_hugepages-v1-1-a63bf2ccdd17@suse.com>
- <alnbk-wNqcenHl2S@linux.dev>
+ by imap1.dmz-prg2.suse.org with ESMTPSA id LAaCILPhWWqJJQAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>); Fri, 17 Jul 2026 08:02:59 +0000
+From: Andrea Cervesato <andrea.cervesato@suse.de>
+Date: Fri, 17 Jul 2026 10:02:58 +0200
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <alnbk-wNqcenHl2S@linux.dev>
-X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+Message-Id: <20260717-fix_tst_test_hugepages-v2-1-235342ee6fe6@suse.com>
+X-B4-Tracking: v=1; b=H4sIALLhWWoC/4WNTQqDMBCFryKzboqJkNiueo8ionFMZlGVTAwtk
+ rs39QLdPPge7+cAxkDIcK8OCJiIaV0KqEsF1g+LQ0FTYVC10rWRRsz07iPHPmIRvzvcBocs5rG
+ xbYs3I7WFUt4CluQ5/OwKe+K4hs/5k+TP/TuZpJBi0M04K2unSZoH74xXu76gyzl/AU1F4HW7A
+ AAA
+X-Change-ID: 20260717-fix_tst_test_hugepages-fb3c88e9716c
+To: Linux Test Project <ltp@lists.linux.it>
+X-Mailer: b4 0.14.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1784275379; l=1744;
+ i=andrea.cervesato@suse.com; s=20251210; h=from:subject:message-id;
+ bh=cNlmT8lG+meAhNECvQWwkB/qssAFXZmzWGWjXNzhDPg=;
+ b=berpShIp7f6qnLf3+/20Scdz24YlWGBGGovl2AAx25McTMg0MWYL1ZFpVXoUtGnjDlN1xbjH8
+ Ejq7VMQwkBrCwFiegPQgk7my35cYbQM0dron9HU2nVwheC2L4YyK6fh
+X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
+ pk=zKY+6GCauOiuHNZ//d8PQ/UL4jFCTKbXrzXAOQSLevI=
+X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  NEURAL_HAM_LONG(-1.00)[-1.000];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- FROM_HAS_DN(0.00)[]; TO_DN_ALL(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RCPT_COUNT_TWO(0.00)[2]; ARC_NA(0.00)[];
- FUZZY_RATELIMITED(0.00)[rspamd.com];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_TLS_ALL(0.00)[];
- MISSING_XM_UA(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
- MIME_TRACE(0.00)[0:+]; RCVD_COUNT_TWO(0.00)[2];
- RCVD_VIA_SMTP_AUTH(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,imap1.dmz-prg2.suse.org:helo]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+ RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
+ MIME_TRACE(0.00)[0:+]; FUZZY_RATELIMITED(0.00)[rspamd.com];
+ RCVD_TLS_ALL(0.00)[];
+ DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ TO_DN_ALL(0.00)[]; FROM_HAS_DN(0.00)[];
+ RCPT_COUNT_THREE(0.00)[3]; FROM_EQ_ENVFROM(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email, suse.com:mid,
+ imap1.dmz-prg2.suse.org:helo, linux.dev:email]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] hugepages: ensure CONFIG_COMPACTION is defined
+Subject: [LTP] [PATCH v2] hugepages: make compact_memory setup optional
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -112,24 +119,53 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> Given that, I don't think we should tst_brk(TCONF) here at all.
-> My suggetion is not to use SAFE_* macros:
-> 
-> --- a/lib/tst_hugepage.c
-> +++ b/lib/tst_hugepage.c
-> @@ -47,7 +47,7 @@ unsigned long tst_reserve_hugepages(struct tst_hugepage *hp)
->         }
->  
->         SAFE_FILE_PRINTF(PATH_VM_DROP_CACHES, "3");
-> -       SAFE_FILE_PRINTF(PATH_VM_COMPACT_MEMORY, "1");
-> +       FILE_PRINTF(PATH_VM_COMPACT_MEMORY, "1");
+From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-Looks good to me.
+Writing 1 to /proc/sys/vm/compact_memory only triggers proactive
+memory compaction. It's a best-effort hint that makes a hugepage
+reservation more likely to succeed by defragmenting memory
+beforehand, but the reservation itself does not depend on it.
 
+The kernel can (and often will) still satisfy the request without
+any explicit compaction step. So treating a missing compact_memory
+(i.e. CONFIG_COMPACTION=n) as a hard TCONF is too strict: it skips
+tests that could otherwise run perfectly fine.
+
+Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+Suggested-by: Li Wang <li.wang@linux.dev>
+---
+The issue was raised by https://github.com/linux-test-project/ltp/pull/1335
+that is trying to solve a problem with cachestat03.
+---
+Changes in v2:
+- change the patch with Li suggestion and description
+- Link to v1: https://lore.kernel.org/20260717-fix_tst_test_hugepages-v1-1-a63bf2ccdd17@suse.com
+---
+ lib/tst_hugepage.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/lib/tst_hugepage.c b/lib/tst_hugepage.c
+index 40ecfa162a236a8674628f8ffe7a8fd2ccd52712..d5e1650d2ae65eaede662af9a2435fea2d3ef61f 100644
+--- a/lib/tst_hugepage.c
++++ b/lib/tst_hugepage.c
+@@ -47,7 +47,7 @@ unsigned long tst_reserve_hugepages(struct tst_hugepage *hp)
+ 	}
+ 
+ 	SAFE_FILE_PRINTF(PATH_VM_DROP_CACHES, "3");
+-	SAFE_FILE_PRINTF(PATH_VM_COMPACT_MEMORY, "1");
++	FILE_PRINTF(PATH_VM_COMPACT_MEMORY, "1");
+ 	if (hp->policy == TST_NEEDS) {
+ 		tst_hugepages += SAFE_READ_MEMINFO("HugePages_Total:");
+ 		goto set_hugepages;
+
+---
+base-commit: b8eb2e087e13eb85c9a77baa3fb3533eedd55098
+change-id: 20260717-fix_tst_test_hugepages-fb3c88e9716c
+
+Best regards,
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+Andrea Cervesato <andrea.cervesato@suse.com>
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
