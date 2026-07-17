@@ -4,83 +4,101 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B8D24C44516
-	for <ltp@archiver.kernel.org>; Fri, 17 Jul 2026 11:28:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 545F9C4451C
+	for <ltp@archiver.kernel.org>; Fri, 17 Jul 2026 11:53:29 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7EF323CE2E5
-	for <ltp@archiver.kernel.org>; Fri, 17 Jul 2026 13:28:46 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 6FE623E92E9
+	for <ltp@archiver.kernel.org>; Fri, 17 Jul 2026 13:53:27 +0200 (CEST)
 Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 35F4E3CE2E5
- for <ltp@lists.linux.it>; Fri, 17 Jul 2026 13:28:31 +0200 (CEST)
-Received: from mail-qk2-x04.google.com (mail-qk2-x04.google.com
- [IPv6:2607:f8b0:4864:34::4])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id BE2073E76AE
+ for <ltp@lists.linux.it>; Fri, 17 Jul 2026 13:53:10 +0200 (CEST)
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
+ [148.163.156.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 5F0A5600667
- for <ltp@lists.linux.it>; Fri, 17 Jul 2026 13:28:31 +0200 (CEST)
-Received: by mail-qk2-x04.google.com with SMTP id
- d75a77b69052e-51c0ab4fb8bso24694461cf.1
- for <ltp@lists.linux.it>; Fri, 17 Jul 2026 04:28:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1784287710; x=1784892510; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to:content-type;
- bh=5dShZJHIxd7G87uGH9fzTKeWpgv0DPuiN5btwIl56nU=;
- b=C5FzYBj3lqCQ14nUpAgne7eth00azeKlS+5aXQU198euk5Q2ezxJjRIaiquyIjLbDF
- mVZhS4+8emCMbqpl6SU2VyiOz4lAhJqgi6za7Rhyvs3/T7zp79gHDy6CePWly+hIrLUb
- /jQZjjzBVp28SAfxwtcFJSNp2dEK5CH3mnn5ut2BStnQXz+CbCXREk84sliv5SNEVgXs
- DSnc2+tC/a3Zvl+Z7ieX/rgUgw9pckZdmZ4la15RqvT0gLeA3kpYXSoaojQ5xfbiCoF4
- Ex81rlhzclxUtalWzeZmHhca0e4BuQzAYYtCElpNlfz79LnGTIhDpByM9kBo0/DuiW+g
- /BAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1784287710; x=1784892510;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to:content-type;
- bh=5dShZJHIxd7G87uGH9fzTKeWpgv0DPuiN5btwIl56nU=;
- b=lm6kA9whrdutnJ1cB4be5F5nhhvKlnSUaCtsQMPOroqLJwadEDLzkU4YbypSN0a1EX
- gotYNh/dY18RC+u8S5IoU4VAtqAi7WasZPndy/urQobMXGEyk5R+2GazlHRiTD0/YX8C
- Td7krhptAkmZA+1EtL7mT5bSZtnYou98fy4cARRqvLuIg82fPiMJbt/WB88YKUMAv0xu
- ZetPoT8YwxyTGVnrY6ARLOC9Ei1EwtyGrh8Uol52SjKrqhfwsRpX7TmLHH/YmDiDAU28
- N3UC+ULvf7VRi5Caz6l6yruBV6mJjOZLopT0oU2z6DfI5+ONmdtjWuFYtcUDKU0Zp0Du
- uSWA==
-X-Gm-Message-State: AOJu0YzVfUwfSu55PT8moE3ABVb6E8i5CcFqAVf30GtgBzFKTjIncdXg
- 3V/Ffm4yHNQ/iifYEsk9ss2ajt6txmRUBLSi8tSqT68frVrStMwjfIhZ
-X-Gm-Gg: AfdE7ckULaZ2QvVSB/loJvXQlYnNOKZk2hESAJaz/S5AWXB4XNlaXqY6HO8z77Ab6Nz
- wQejnlnuM/0pEwPbp5HtlCRTYErvlTwx/xf/gYogecHtUOASaqEHOxfn5aA8XREfNBqUK/VX99z
- aW4OxYoXC8wJ+vaBphsC+ieBDKLQO7BIW+FaLg7ZT91bVCDEiIi6RMmfWm1jRipbHomIpT3bRkq
- NXqilS2MGYmr6P6EkRcdqbYU0cEX2y5u6xpTDsIAPYNwhK4J8aAha1+6soTRLh/WNSg2uKUa46f
- Aj/r7vy5SIH3tj3euYvvADUOCScFJH7hhUp2BfMyK5NDsm4sUjH7oMHEwTB0g529+LF6YtTkTSP
- z8854UhYzt1ND+Fy2NKM8XA4GsnDehpf4tE63+BPlNpwghBrv5dEzE0XsDsVT1NUNGb6not4EJy
- 7K5CqE5vXBuPwH1dJH9oO++uUCkxpAPjbYXFcPTio8y/Ur4TJVs46ArUXuMU8E7ONqWoaFXq2KC
- gomElCGYtUB41Mp
-X-Received: by 2002:ac8:58ce:0:b0:51c:7b12:5fed with SMTP id
- d75a77b69052e-5213d4bc5d2mr18315411cf.73.1784287709998; 
- Fri, 17 Jul 2026 04:28:29 -0700 (PDT)
-Received: from
- runnervm3jd5f.cjo3wyyrofeu3il553x5iqp5yd.bx.internal.cloudapp.net
- ([20.81.47.119]) by smtp.gmail.com with ESMTPSA id
- 6a1803df08f44-9077871f766sm14278666d6.46.2026.07.17.04.28.29
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 17 Jul 2026 04:28:29 -0700 (PDT)
-From: linuxtestproject.agent@gmail.com
-To: Pavithra <pavrampu@linux.ibm.com>
-Date: Fri, 17 Jul 2026 11:28:28 +0000
-Message-ID: <20260717112829.4056-1-linuxtestproject.agent@gmail.com>
-X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260717110234.1070268-1-pavrampu@linux.ibm.com>
-References: <20260717110234.1070268-1-pavrampu@linux.ibm.com>
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id E5410600A23
+ for <ltp@lists.linux.it>; Fri, 17 Jul 2026 13:53:09 +0200 (CEST)
+Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id
+ 66HAg5Sn1797118
+ for <ltp@lists.linux.it>; Fri, 17 Jul 2026 11:53:08 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+ :content-transfer-encoding:date:from:message-id:mime-version
+ :subject:to; s=pp1; bh=0cOSF8fDYS5ZnULvdvmPZehvZ9HnUd7LARvWWBAqU
+ ss=; b=pWCPH7RK1YvkvXOvohHSouzO7+WTYx5qdAs1rk65TkHfgr/Hq7fy0/HfD
+ cUVJxRzn/zYMTRFQra+iNAv+HPlGUS0f1S9c+aYMvjZoNMFqzi+ilxWQZG7wW5Lu
+ EXKLuAn2hSjfCVV47kCL+J9FD84+svLps78T2W5Rbr04YVjOxcVrbl+Uz/mkjm/d
+ 2qoRDTayP7e3Ea0ddQ9PAYmSRt3IK04+ek93u31NMo5PSc+cxuIrQveDLyU4eZ8J
+ T+SURjW7NoHZ+tgdvzVHfnxlI/LuMszngfSnBC7InQXLAqJMpHTiZmLqALSuybYA
+ mfMGncSNuwhVNCAbEdavbgo963+kw==
+Received: from ppma13.dal12v.mail.ibm.com
+ (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4fbepxx7fw-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+ for <ltp@lists.linux.it>; Fri, 17 Jul 2026 11:53:07 +0000 (GMT)
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+ by ppma13.dal12v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 66HBncqT001489
+ for <ltp@lists.linux.it>; Fri, 17 Jul 2026 11:53:07 GMT
+Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
+ by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 4fc2cgsa02-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+ for <ltp@lists.linux.it>; Fri, 17 Jul 2026 11:53:06 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com
+ [10.20.54.101])
+ by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 66HBr3Xx27984314
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Fri, 17 Jul 2026 11:53:03 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 56BA120043;
+ Fri, 17 Jul 2026 11:53:03 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 2A31520040;
+ Fri, 17 Jul 2026 11:53:02 +0000 (GMT)
+Received: from li-49acbccc-2994-11b2-a85c-d51b89e344f1.ibm.com.com (unknown
+ [9.39.17.226]) by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
+ Fri, 17 Jul 2026 11:53:01 +0000 (GMT)
+From: Pavithra <pavrampu@linux.ibm.com>
+To: ltp@lists.linux.it
+Date: Fri, 17 Jul 2026 17:22:58 +0530
+Message-ID: <20260717115258.1087666-1-pavrampu@linux.ibm.com>
+X-Mailer: git-send-email 2.55.0
 MIME-Version: 1.0
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: Z6yxjRzXslpFndtZStkBIJbIlpYOzUdf
+X-Proofpoint-Spam-Info: AW1haW4tMjYwNzE3MDExOCBTYWx0ZWRfX8FhCaFPyTljP
+ Gi40L6raRaUIwuTC2gCqjlR12iB0MeA6ijNF3YWs8ICcl1vQQKrLVRAqwZPwOUtYOSdpF6jCrxd
+ QWy4hl1XDT80YzsGTFbUggAnVPfGAVw=
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNzE3MDExOCBTYWx0ZWRfXxt+446LMar2S
+ aPcR0s9GTxzg8groi6f2G+M5/KhgcwFoKLRSFIQcKKUSXmHttcvUxXW7vjzqHQ4nADXPoC1gv6N
+ 11RgdzOXA30ITyjT67LJjJmbRGJ3tn8WrT6KXd9XXkcbBH+Eyz0g1tKw8VDoan3tYqnixRYnPBk
+ EDL2rcsSv62WhDe83njTyJH0nLJVCnOPp9koF8GiMwAb3GrYmrs5cykSlFEEy/1XQSg/VAQVym3
+ UkZP/71S2n3yzrEAG6H22K2VsAyhmjI9F8TTfjNXNvlgMNryYl9ocuYmIGGDIqFTp3RZS0/YClO
+ QahKHtijq8zwCD+yZCX4oCH3+60GSf1cdB+dnMxIERJM/IMFu3DDKpIqoSbOEWClxCT/CZ9vRXl
+ twy2C4UmSwgdS5RtyhOhZZ/PJ9bipWJ+YUo+ahuCaoL6eWlrAALV/xZorn+EZKKcBJuNCuOpBAs
+ jTclOWvIml7Ct4XFv7w==
+X-Authority-Analysis: v=2.4 cv=XbS5Co55 c=1 sm=1 tr=0 ts=6a5a17a3 cx=c_pps
+ a=AfN7/Ok6k8XGzOShvHwTGQ==:117 a=AfN7/Ok6k8XGzOShvHwTGQ==:17
+ a=RAioF0-LDSMA:10 a=VkNPw1HP01LnGYTKEx00:22 a=RnoormkPH1_aCDwRdu11:22
+ a=iQ6ETzBq9ecOQQE5vZCe:22 a=VnNF1IyMAAAA:8 a=GRDrsndCclCwDrQ3hkYA:9
+X-Proofpoint-ORIG-GUID: Z6yxjRzXslpFndtZStkBIJbIlpYOzUdf
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.134,FMLib:17.12.100.49
+ definitions=2026-07-17_03,2026-07-15_02,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ clxscore=1015 suspectscore=0 spamscore=0 phishscore=0 lowpriorityscore=0
+ priorityscore=1501 adultscore=0 malwarescore=0 impostorscore=0 bulkscore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.22.0-2606150000 definitions=main-2607170118
 X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] hugemmap/hugemmap41: Migrate ptrace-write-hugepage from
- libhugetlbfs
+Subject: [LTP] [PATCH] hugemmap36: Migrate the
+ libhugetlbfs/testcases/truncate_above_4GB.c test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -92,105 +110,220 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+Cc: pavrampu@linux.ibm.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Pavithra,
+Test for a bug where truncating hugepage files at offsets >= 4GB on
+32-bit systems could incorrectly truncate lower pages due to a
+misconversion of hugetlb_vmtruncate_list to a prio_tree.
+This test verifies that:
+- Pages below 4GB remain accessible after truncation at 4GB
+- Pages at or above the truncation point correctly trigger SIGBUS
 
-On Fri, 17 Jul 2026 16:32:34 +0530, Pavithra wrote:
-> hugemmap/hugemmap41: Migrate ptrace-write-hugepage from libhugetlbfs
-
-> This test verifies that ptrace POKEDATA and PEEKDATA operations work
-> correctly on hugepage-backed memory regions.
-
-The commit body describes what the test does but does not say why the
-migration from libhugetlbfs is happening. What is the motivation?
-(e.g. libhugetlbfs is deprecated and tests are being consolidated into
-LTP.) The rule requires the body to state the motivation or the problem
-being solved.
-
-> +	err = ptrace(PTRACE_ATTACH, cpid, NULL, NULL);
-> +	if (err)
-> +		tst_brk(TFAIL | TERRNO, "ptrace(ATTACH) failed");
-
-PTRACE_ATTACH is a setup step, not the operation under test. A failure
-here means the test could not be set up, which should be TBROK, not
-TFAIL. TFAIL implies the hugepage ptrace feature is broken, which is
-misleading when the real cause is, for example, a restrictive
-ptrace_scope.
-
-The doc block already notes: "for ptrace(PTRACE_ATTACH) to work across
-processes when ptrace_scope is restrictive." At ptrace_scope=3, even
-root gets EPERM, and the correct response is TCONF, not TFAIL.
-
-Consider:
-
-  SAFE_PTRACE(PTRACE_ATTACH, cpid, NULL, NULL);
-
-or, to handle the ptrace_scope case explicitly:
-
-  if (ptrace(PTRACE_ATTACH, cpid, NULL, NULL)) {
-      if (errno == EPERM)
-          tst_brk(TCONF | TERRNO, "ptrace(ATTACH) not permitted");
-      tst_brk(TBROK | TERRNO, "ptrace(ATTACH) failed");
-  }
-
-> +	err = ptrace(PTRACE_POKEDATA, pid, p, (void *)CONST);
-> +	if (err)
-> +		tst_brk(TFAIL | TERRNO, "ptrace(POKEDATA) failed");
-> +
-> +	tst_res(TINFO, "Peeking at %p...", p);
-> +	errno = 0;
-> +	err = ptrace(PTRACE_PEEKDATA, pid, p, NULL);
-> +	if (err == -1 && errno)
-> +		tst_brk(TFAIL | TERRNO, "ptrace(PEEKDATA) failed");
-
-PTRACE_POKEDATA and PTRACE_PEEKDATA are the syscalls under test and
-must not be called bare. The rule requires subject syscalls to be
-wrapped in TEST() or TST_EXP_*. SAFE_PTRACE cannot be used for
-PEEKDATA (it treats any non-zero return as error, but PEEKDATA returns
-arbitrary data), so TEST() is the right wrapper for both. Example:
-
-  TEST(ptrace(PTRACE_POKEDATA, pid, p, (void *)CONST));
-  if (TST_RET != 0)
-      tst_brk(TFAIL | TTERRNO, "ptrace(POKEDATA) failed");
-
-  errno = 0;
-  TEST(ptrace(PTRACE_PEEKDATA, pid, p, NULL));
-  if (TST_RET == -1 && TST_ERR)
-      tst_brk(TFAIL | TTERRNO, "ptrace(PEEKDATA) failed");
-
-> +	pause();
-> +	/* Child is killed by parent via PTRACE_KILL, so cleanup is not reached */
-
-The comment says PTRACE_KILL, but the parent uses SAFE_KILL(cpid,
-SIGKILL). PTRACE_KILL is a deprecated ptrace request, not what is
-used here. The comment is factually wrong.
-
-> + * This test verifies that ptrace POKEDATA and PEEKDATA work correctly
-> + * on hugepage-backed memory regions. A child process maps a hugepage,
-> + * and the parent uses ptrace to write and read data from the child's
-> + * hugepage memory, ensuring that ptrace operations function properly
-> + * with hugepage mappings.
-
-The doc block references the ptrace syscall without the required
-manpage RST role. Use :manpage:`ptrace(2)` when referring to a syscall
-in a /*\ ... */ block.
-
-Verdict - Needs revision
-
+Signed-off-by: Pavithra <pavrampu@linux.ibm.com>
 ---
-Note:
+ runtest/hugetlb                               |   1 +
+ testcases/kernel/mem/.gitignore               |   1 +
+ .../kernel/mem/hugetlb/hugemmap/hugemmap36.c  | 160 ++++++++++++++++++
+ 3 files changed, 162 insertions(+)
+ create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap36.c
 
-The agent can sometimes produce false positives although often its
-findings are genuine. If you find issues with the review, please
-comment this email or ignore the suggestions.
+diff --git a/runtest/hugetlb b/runtest/hugetlb
+index 8ee0e6f82..5ea76df35 100644
+--- a/runtest/hugetlb
++++ b/runtest/hugetlb
+@@ -37,6 +37,7 @@ hugemmap31 hugemmap31
+ hugemmap32 hugemmap32
+ hugemmap34 hugemmap34
+ hugemmap35 hugemmap35
++hugemmap36 hugemmap36
+ hugemmap05_1 hugemmap05 -m
+ hugemmap05_2 hugemmap05 -s
+ hugemmap05_3 hugemmap05 -s -m
+diff --git a/testcases/kernel/mem/.gitignore b/testcases/kernel/mem/.gitignore
+index 0e59035df..1585b35bd 100644
+--- a/testcases/kernel/mem/.gitignore
++++ b/testcases/kernel/mem/.gitignore
+@@ -37,6 +37,7 @@
+ /hugetlb/hugemmap/hugemmap32
+ /hugetlb/hugemmap/hugemmap34
+ /hugetlb/hugemmap/hugemmap35
++/hugetlb/hugemmap/hugemmap36
+ /hugetlb/hugeshmat/hugeshmat01
+ /hugetlb/hugeshmat/hugeshmat02
+ /hugetlb/hugeshmat/hugeshmat03
+diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap36.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap36.c
+new file mode 100644
+index 000000000..b48a34f59
+--- /dev/null
++++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap36.c
+@@ -0,0 +1,160 @@
++// SPDX-License-Identifier: LGPL-2.1-or-later
++/*
++ * Copyright (C) 2005-2006 David Gibson & Adam Litke, IBM Corporation.
++ * Copyright (c) 2026 Pavithra <pavrampu@linux.ibm.com>
++ */
++
++/*\
++ * Test for a bug where truncating hugepage files at offsets >= 4GB on
++ * 32-bit systems could incorrectly truncate lower pages due to a
++ * misconversion of hugetlb_vmtruncate_list to a prio_tree.
++ *
++ * This test verifies that:
++ * - Pages below 4GB remain accessible after truncation at 4GB
++ * - Pages at or above the truncation point correctly trigger SIGBUS
++ *
++ * WARNING: The offsets and addresses used within are specifically
++ * calculated to trigger the bug as it existed. Don't mess with them
++ * unless you *really* know what you're doing.
++ *
++ * Requires root to mount hugetlbfs.
++ */
++
++#define _GNU_SOURCE
++#define FOURGIG ((off64_t)0x100000000ULL)
++#define MNTPOINT "hugetlbfs/"
++
++#include <signal.h>
++#include <setjmp.h>
++#include "hugetlb.h"
++
++static int page_size;
++static long hpage_size;
++static int fd = -1;
++static long long buggy_offset;
++static volatile int test_pass;
++static sigjmp_buf sig_escape;
++
++static void sigbus_handler_fail(int signum LTP_ATTRIBUTE_UNUSED,
++				siginfo_t *si LTP_ATTRIBUTE_UNUSED,
++				void *uc LTP_ATTRIBUTE_UNUSED)
++{
++	test_pass = -1;
++	siglongjmp(sig_escape, 17);
++}
++
++static void sigbus_handler_pass(int signum LTP_ATTRIBUTE_UNUSED,
++				siginfo_t *si LTP_ATTRIBUTE_UNUSED,
++				void *uc LTP_ATTRIBUTE_UNUSED)
++{
++	test_pass = 1;
++	siglongjmp(sig_escape, 17);
++}
++
++static void run_test(void)
++{
++	void *p, *q;
++	volatile unsigned int *pi, *qi;
++
++	struct sigaction sa_pass = {
++		.sa_sigaction = sigbus_handler_pass,
++		.sa_flags = SA_SIGINFO,
++	};
++
++	struct sigaction sa_fail = {
++		.sa_sigaction = sigbus_handler_fail,
++		.sa_flags = SA_SIGINFO,
++	};
++
++	test_pass = 0;
++
++	buggy_offset = FOURGIG / (hpage_size / page_size);
++	buggy_offset = (long long)PALIGN(buggy_offset, hpage_size);
++
++	/* First get arena of three hpages size, at file offset 4GB */
++	q = SAFE_MMAP(NULL, 3*hpage_size, PROT_READ|PROT_WRITE,
++		      MAP_PRIVATE, fd, FOURGIG);
++	qi = q;
++	/* Touch the high page */
++	*qi = 0;
++
++	/* This part of the test makes the problem more obvious, but
++	 * is not essential.  It can't be done on segmented powerpc, where
++	 * segment restrictions prohibit us from performing such a
++	 * mapping, so skip it there. Similarly, ia64's address space
++	 * restrictions prevent this.
++	 */
++#if (defined(__powerpc__) && defined(PPC_NO_SEGMENTS)) || \
++	!defined(__powerpc__) && !defined(__powerpc64__) && \
++	!defined(__ia64__)
++	/* Replace middle hpage by tinypage mapping to trigger
++	 * nr_ptes BUG
++	 */
++	p = SAFE_MMAP(q + hpage_size, hpage_size, PROT_READ|PROT_WRITE,
++		      MAP_FIXED|MAP_PRIVATE|MAP_ANON, -1, 0);
++	pi = p;
++	/* Touch one page to allocate its page table */
++	*pi = 0;
++#endif
++
++	/* Replace top hpage by hpage mapping at confusing file offset */
++	p = SAFE_MMAP(q + 2*hpage_size, hpage_size, PROT_READ|PROT_WRITE,
++		      MAP_FIXED|MAP_PRIVATE, fd, buggy_offset);
++	pi = p;
++	/* Touch the low page with something non-zero */
++	*pi = 1;
++
++	SAFE_FTRUNCATE(fd, FOURGIG);
++
++	SAFE_SIGACTION(SIGBUS, &sa_fail, NULL);
++	if (sigsetjmp(sig_escape, 1) == 0) {
++		if (*pi != 1) {
++			tst_res(TFAIL, "Data 1 has changed!");
++			goto cleanup;
++		}
++	} else if (test_pass == -1) {
++		tst_res(TFAIL, "Unexpected SIGBUS on low-offset page (kernel bug present)");
++		goto cleanup;
++	}
++
++	SAFE_SIGACTION(SIGBUS, &sa_pass, NULL);
++	if (sigsetjmp(sig_escape, 1) == 0) {
++		*qi;
++		tst_res(TFAIL, "Didn't SIGBUS on truncated page.");
++	}
++
++	if (test_pass)
++		tst_res(TPASS, "Expected SIGBUS");
++
++cleanup:
++	SAFE_MUNMAP(q, 3*hpage_size);
++}
++
++static void setup(void)
++{
++	page_size = getpagesize();
++	hpage_size = tst_get_hugepage_size();
++	fd = tst_creat_unlinked(MNTPOINT, 0, 0600);
++	if (hpage_size > FOURGIG)
++		tst_brk(TCONF, "Huge page size is too large!");
++}
++
++static void cleanup(void)
++{
++	if (fd != -1)
++		SAFE_CLOSE(fd);
++}
++
++static struct tst_test test = {
++	.tags = (struct tst_tag[]) {
++		{"linux-git", "856fc2950555"},
++		{}
++	},
++	.needs_root = 1,
++	.mntpoint = MNTPOINT,
++	.needs_hugetlbfs = 1,
++	.hugepages = {4, TST_NEEDS},
++	.setup = setup,
++	.cleanup = cleanup,
++	.test_all = run_test,
++};
+-- 
+2.55.0
 
-Regards,
-LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
