@@ -4,49 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CC634C44507
-	for <ltp@archiver.kernel.org>; Fri, 17 Jul 2026 08:09:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D2329C44514
+	for <ltp@archiver.kernel.org>; Fri, 17 Jul 2026 08:47:56 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 4676B3E55E3
-	for <ltp@archiver.kernel.org>; Fri, 17 Jul 2026 10:09:54 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 560433E740A
+	for <ltp@archiver.kernel.org>; Fri, 17 Jul 2026 10:47:55 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 41D5F3E1B9A
- for <ltp@lists.linux.it>; Fri, 17 Jul 2026 10:09:37 +0200 (CEST)
-Received: from out-180.mta1.migadu.com (out-180.mta1.migadu.com
- [95.215.58.180])
+ by picard.linux.it (Postfix) with ESMTPS id EA0733E13D2
+ for <ltp@lists.linux.it>; Fri, 17 Jul 2026 10:47:39 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id EBEA62002A6
- for <ltp@lists.linux.it>; Fri, 17 Jul 2026 10:09:36 +0200 (CEST)
-Date: Fri, 17 Jul 2026 16:09:23 +0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
- t=1784275775;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=GCjj0x6fI/i25cl32qCxJdUztAHBKt49x8caWsa7muI=;
- b=SibB08A7PKdxRFmS/oYj55snXYjipZ0bHJGsibC6GF2bKnAECVLmQUQgboSKkre+GGlzTf
- YpNqVbG2g7B3hIEPjGMwKWCzFganZ3wjtI4l3FQgPn5pmB3LuxhowrPRaRy7zysmo6vlny
- fIrixbvrrX82/MANzEeaP2DM0R6i1Zg=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and
- include these headers.
-From: Li Wang <li.wang@linux.dev>
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 48E1F600A89
+ for <ltp@lists.linux.it>; Fri, 17 Jul 2026 10:47:33 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id A9CD73E5D;
+ Fri, 17 Jul 2026 08:47:32 +0000 (UTC)
+Authentication-Results: smtp-out2.suse.de;
+	none
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 92D38779AA;
+ Fri, 17 Jul 2026 08:47:32 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id xn/rIiTsWWodUQAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Fri, 17 Jul 2026 08:47:32 +0000
+Date: Fri, 17 Jul 2026 10:47:20 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
 To: Andrea Cervesato <andrea.cervesato@suse.de>
-Message-ID: <alnjM1LzGc98LZhq@linux.dev>
-Mail-Followup-To: Andrea Cervesato <andrea.cervesato@suse.de>,
- Linux Test Project <ltp@lists.linux.it>,
- Andrea Cervesato <andrea.cervesato@suse.com>
+Message-ID: <alnsGLvckxyKML6I@yuki.lan>
 References: <20260717-fix_tst_test_hugepages-v2-1-235342ee6fe6@suse.com>
 MIME-Version: 1.0
 Content-Disposition: inline
 In-Reply-To: <20260717-fix_tst_test_hugepages-v2-1-235342ee6fe6@suse.com>
-X-Migadu-Flow: FLOW_OUT
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	REPLY(-4.00)[]
+X-Rspamd-Queue-Id: A9CD73E5D
+X-Rspamd-Action: no action
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH v2] hugepages: make compact_memory setup optional
 X-BeenThere: ltp@lists.linux.it
@@ -66,11 +78,12 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Reviewed-by: Li Wang <li.wang@linux.dev>
+Hi!
+Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
 
 -- 
-Regards,
-Li Wang
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
