@@ -4,89 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A2ACBC4450F
-	for <ltp@archiver.kernel.org>; Fri, 17 Jul 2026 07:09:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1784272191; h=message-id :
- to : cc : in-reply-to : date : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : mime-version : content-type : content-transfer-encoding :
- sender : from; bh=34fdjgQNrJAJRUGIWtXYUqE5GgrCLEsJhJtSlI/xQdY=;
- b=Rg3SbALRBjLOB1j5qL/l1W1NTgwCs+f0QZ8lW5B6FHtw+FcX42tyzB170s4gmnvyDriFt
- VhLhCdgMHe+o4X5HREzqnkLtIEwWmWHVRMIy/A8S1bCuRqZZ/z0HQaJ81JkBWd5kW+EQWw4
- NGoaQ4adXrSZfA5qoxoECaLQxdXDOJA=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E691FC44517
+	for <ltp@archiver.kernel.org>; Fri, 17 Jul 2026 07:37:33 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 380193E24E7
-	for <ltp@archiver.kernel.org>; Fri, 17 Jul 2026 09:09:51 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 3714C3E24E6
+	for <ltp@archiver.kernel.org>; Fri, 17 Jul 2026 09:37:32 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D8F113E24D4
- for <ltp@lists.linux.it>; Fri, 17 Jul 2026 09:09:31 +0200 (CEST)
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com
- [IPv6:2a00:1450:4864:20::331])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 09BF63C9911
+ for <ltp@lists.linux.it>; Fri, 17 Jul 2026 09:37:15 +0200 (CEST)
+Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com
+ [91.218.175.170])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 267EB60096D
- for <ltp@lists.linux.it>; Fri, 17 Jul 2026 09:09:31 +0200 (CEST)
-Received: by mail-wm1-x331.google.com with SMTP id
- 5b1f17b1804b1-493bfe9f886so41235205e9.0
- for <ltp@lists.linux.it>; Fri, 17 Jul 2026 00:09:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1784272170; x=1784876970; darn=lists.linux.it;
- h=date:content-transfer-encoding:content-type:subject:in-reply-to:cc
- :to:from:message-id:from:to:cc:subject:date:message-id:reply-to
- :content-type; bh=kuPSF5DA5kUKtzsujCUy981zMHn6OKsgw6LQ7prm57Q=;
- b=WD2L/5qo07XZtY+fzYEomTXKPAUMhuTGMA49wLOh3r7ET42e3i2stUAk7bE+ebIlMe
- CVsmQTjgTXbSMyNLgRr08XTBKSr852pv4B0/dP8LprVfd66Mk2NUfEDOpYeCyi5TSNXZ
- xjWS2wESyWOt6MWMfUn0Gzfp8hHqc8vDwA2hkWk9ZuJ7GkPO1W9MAxoa6WJy0lCoRrb/
- l0adOUs5lbjZ2Utqks1v5nTNwn2/nt4xRfRX7rnRYtjhxTINPulUZC+MbjhhQxDwH6k/
- zb5o8a+yHJXuX3Ld+aOCUruwzEtJjotPWESIOeNv4yv1VH2sIVefGzfGPI47pMTss25d
- QnNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1784272170; x=1784876970;
- h=date:content-transfer-encoding:content-type:subject:in-reply-to:cc
- :to:from:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject
- :date:message-id:reply-to:content-type;
- bh=kuPSF5DA5kUKtzsujCUy981zMHn6OKsgw6LQ7prm57Q=;
- b=RkXES1j+m/y3tSymCfnEixMG037HJm9IbdTZNUPNaEQJWOYVAY8sbA5daD7R0rAMyC
- ZZMG5+Qv+UgKxY90zNhqwqejxFGEywjHK5jYlsskjjBP0k9qPXlxb8ddFJY4g9aKQyp1
- jkfHzR8X2RcSZdWfXUsPRsMlX5uqjPOZTBvGXYDED6A9hK8H+V6aVCBOd5muBOCLbYER
- NyQAB3caMq8r8q2TcWrjhDdFKzQ9d1BC7oGOzhUvlEHxHEkoRg+Cl8jW7tLDHCgqoduR
- ojGVyt1i5rDzug4aoVZeqEJELIi6we396dzyLaR2Fg5dLJyOOxN41NthLI+j93v4Uwrv
- jM+A==
-X-Gm-Message-State: AOJu0YxutJ+1eVxooijOZv9CdWDUjnItXJ0rancKIiASjFYA2JZ3yggs
- +wAtIXmHbysaUUebN5zeogqGMMZJkA6YchrQJo6tWTvA66L/SCQQrNdIyMQhAR1RhHnWh7CeWgW
- PBBQx0dC7NQ==
-X-Gm-Gg: AfdE7ck7hXfLVjRuta+dg79zxrdCKXj5Ns94rL8dCGwMT0qD5EBzEjEHfFz8sE6j+rY
- kslMrtqIq/8216f7dB+0p2wwqp/IlW6lpcjI9f85FTlVR7fS8PjFpg0Y5UyYXroxNi+lQzivogj
- OkI29OQart56UAJhWn5fDfHGl3Q2QSZM2Bm6q0N/BP3WoDDc+1OysXc9xR9kQGpkY0mmKmeaSJG
- 6O9F69OWqTzKIJd4iPpzE7k706ep7sxE5zbyclBtisn3D528LLONOirTy0Pz10uaNfT22KzqYOk
- h0BRql3wXLNqBSrWpdl+QQKt3CMaacDUVqmxdwJdGmqOW0IyJQWNURh3mylgCQQ+ol8sqqtw8Pb
- zQh7SzNui0+RhLjTmDYc5UGECYb/GqPftUaEggtZCubHnYT/KPd6SadLReJ252VJGDLduR+rm/L
- lXnija9YaMWm/6hdTc7dwsEQYkLtDG44y/9le3
-X-Received: by 2002:a05:600c:3586:b0:495:3f68:699b with SMTP id
- 5b1f17b1804b1-4954a3f3173mr14974525e9.9.1784272170466; 
- Fri, 17 Jul 2026 00:09:30 -0700 (PDT)
-Received: from localhost.localdomain
- ([2a02:a31b:84a1:b780:6f4e:21d6:82d2:5333])
- by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-49549c96fecsm31554015e9.11.2026.07.17.00.09.29
- for <ltp@lists.linux.it>
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 17 Jul 2026 00:09:30 -0700 (PDT)
-Message-ID: <6a59d52a.87c5160c.c54f3.bce2@mx.google.com>
-To: "Benjamin Wheeler via ltp" <ltp@lists.linux.it>
-Cc: ltp@lists.linux.it
-In-Reply-To: <20260714162834.47191-1-benjamin.wheeler@canonical.com>
-Date: Fri, 17 Jul 2026 07:09:29 +0000
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 014B92009EF
+ for <ltp@lists.linux.it>; Fri, 17 Jul 2026 09:37:14 +0200 (CEST)
+Date: Fri, 17 Jul 2026 15:36:51 +0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+ t=1784273832;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=6Ai0IU+avXMPn0Yi59Q3ycnq8b/Ykoppu7Cokinlqjw=;
+ b=kQNf14NPuSbd0v4z44w5+miND/eYJ5eTSimvPSl2wmli2n/c013vqte0rMC9Z/XZ13V033
+ 8DzcyVskHw2AJPeqyLGrZaZQQ8iEIx70yflmAc/IIkSc9Mevuic911aFvLE8niuheAdkuJ
+ U+cRGw51cu/uEhCUfOusze+UYhOgbRw=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and
+ include these headers.
+From: Li Wang <li.wang@linux.dev>
+To: Andrea Cervesato <andrea.cervesato@suse.de>
+Message-ID: <alnbk-wNqcenHl2S@linux.dev>
+Mail-Followup-To: Andrea Cervesato <andrea.cervesato@suse.de>,
+ Linux Test Project <ltp@lists.linux.it>
+References: <20260717-fix_tst_test_hugepages-v1-1-a63bf2ccdd17@suse.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20260717-fix_tst_test_hugepages-v1-1-a63bf2ccdd17@suse.com>
+X-Migadu-Flow: FLOW_OUT
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1 1/1] cpuhotplug03.sh: Poll for CPU migration
- instead of sleeping
+Subject: Re: [LTP] [PATCH] hugepages: ensure CONFIG_COMPACTION is defined
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -98,20 +58,61 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
-MIME-Version: 1.0
+Cc: Linux Test Project <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Merged, Thanks!
+Hi Andrea,
 
---
-Andrea Cervesato
-SUSE QE Automation Engineer Linux
-andrea.cervesato@suse.com
+> From: Andrea Cervesato <andrea.cervesato@suse.com>
+
+> --- a/lib/tst_hugepage.c
+> +++ b/lib/tst_hugepage.c
+> @@ -46,6 +46,11 @@ unsigned long tst_reserve_hugepages(struct tst_hugepage *hp)
+>  		goto set_hugepages;
+>  	}
+>  
+> +	if (access(PATH_VM_COMPACT_MEMORY, F_OK)) {
+> +		if (hp->policy == TST_NEEDS || hp->policy == TST_REQUEST)
+> +			tst_brk(TCONF, "CONFIG_COMPACTION not enabled in kernel");
+> +	}
+> +
+
+Thanks for the patch. I think the goal is reasonable, but I'd
+push back on the core assumption: compact_memory is not actually
+required to reserve hugepages.
+
+Writing 1 to /proc/sys/vm/compact_memory only triggers proactive
+memory compaction. It's a best-effort hint that makes a hugepage
+reservation more likely to succeed by defragmenting memory
+beforehand, but the reservation itself does not depend on it.
+
+The kernel can (and often will) still satisfy the request without
+any explicit compaction step. So treating a missing compact_memory
+(i.e. CONFIG_COMPACTION=n) as a hard TCONF is too strict: it skips
+tests that could otherwise run perfectly fine.
+
+Given that, I don't think we should tst_brk(TCONF) here at all.
+My suggetion is not to use SAFE_* macros:
+
+--- a/lib/tst_hugepage.c
++++ b/lib/tst_hugepage.c
+@@ -47,7 +47,7 @@ unsigned long tst_reserve_hugepages(struct tst_hugepage *hp)
+        }
+ 
+        SAFE_FILE_PRINTF(PATH_VM_DROP_CACHES, "3");
+-       SAFE_FILE_PRINTF(PATH_VM_COMPACT_MEMORY, "1");
++       FILE_PRINTF(PATH_VM_COMPACT_MEMORY, "1");
+        if (hp->policy == TST_NEEDS) {
+                tst_hugepages += SAFE_READ_MEMINFO("HugePages_Total:");
+                goto set_hugepages;
+
+
+-- 
+Regards,
+Li Wang
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
