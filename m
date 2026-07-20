@@ -4,82 +4,101 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3725DC44520
-	for <ltp@archiver.kernel.org>; Mon, 20 Jul 2026 22:03:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ED953C44515
+	for <ltp@archiver.kernel.org>; Mon, 20 Jul 2026 22:50:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1784587809; h=to : date :
+ message-id : in-reply-to : references : mime-version : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-type :
+ content-transfer-encoding : sender : from;
+ bh=tAN5sNCyUT+BzOCntxxREtGMwfw8caVx6XiPO4JplUg=;
+ b=GGdkVK2Yc73+uP0Frimkgd2ra2QvvXcQ73c0zoBYiZy2ZvFvZUgObqHSvhBgslU7I1GCH
+ X2WwhggQzhIReF3JSVmJBY17KEUdONcHxUSiX0GkDMBtkGklEpdxs4K9/WPxdwtU1Osok3s
+ oBDWrzdXJviSD5supgm01nJlhD6q7IY=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 3FA8B3E9616
-	for <ltp@archiver.kernel.org>; Tue, 21 Jul 2026 00:03:07 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 24CED3E961F
+	for <ltp@archiver.kernel.org>; Tue, 21 Jul 2026 00:50:09 +0200 (CEST)
 Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id CC41B3E76A6
- for <ltp@lists.linux.it>; Tue, 21 Jul 2026 00:02:51 +0200 (CEST)
-Received: from mail-pj2-x04.google.com (mail-pj2-x04.google.com
- [IPv6:2607:f8b0:4864:39::4])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 6C4F43E1C66
+ for <ltp@lists.linux.it>; Tue, 21 Jul 2026 00:49:48 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id D4F7D1A00346
- for <ltp@lists.linux.it>; Tue, 21 Jul 2026 00:02:50 +0200 (CEST)
-Received: by mail-pj2-x04.google.com with SMTP id
- d9443c01a7336-2cac634f921so45451795ad.0
- for <ltp@lists.linux.it>; Mon, 20 Jul 2026 15:02:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1784584969; x=1785189769; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to:content-type;
- bh=6BKNhRVLpMyCBrqR7LJcGkP6/RtKUs0T26Ew56t/OGw=;
- b=Z7Alh+JdEb96gg3Pyg145t7sWJtfAs7+rR94h1wO9xtS/f0pzs3pRC+KXh9tKgq3JT
- HO9XCDCohpc1tUE7fU6uzUnrCc7fxWsfkMwJGNuJoT+S7YXgFhyfuh++Vd+3alCAWYv/
- FiXtnjjnFpzSTTHlyaZdhCeSh42gczUfGwhDMkK40Vvj2xTn5HD226VA5tcXNpFRmOrU
- OuvSaIFrrerc4KSJch31NpEIv59gh5ef2CzsdPmgC3AqmPQf5bHufdZGkueFBTPJTh55
- tX6+8kd9KmzcTFEnDqV0m+T99WSDOv8sXEusSWzc1icOz9rq3ZFf7IAU5jQ3qY4DSK3k
- YABg==
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 9ABA91A001D6
+ for <ltp@lists.linux.it>; Tue, 21 Jul 2026 00:49:46 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1784587785;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=8PR41dhXFax7pUsuk1XpWjIpwlB0dpojZjJ1vfJbXG8=;
+ b=afNPR5cH1ID2Xrcyk5sryYbQ5Q+6sUnoUnhcmcD8LhskYAJr/xeD5RDP4SUdeRDZRMoq9I
+ VYOGatYMbGFDGt0qI+p0rNnk5pmfN6KcaD02faCyZH3+tG9GnHkEoyv7vu0ahWUbQYylUT
+ 1K3u3RfqIEswKtmA2N4CCzyVlYnOKhg=
+Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
+ [209.85.219.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-528-RF_zQ7mAOqGE5AETzJVeoA-1; Mon, 20 Jul 2026 18:49:43 -0400
+X-MC-Unique: RF_zQ7mAOqGE5AETzJVeoA-1
+X-Mimecast-MFC-AGG-ID: RF_zQ7mAOqGE5AETzJVeoA_1784587783
+Received: by mail-qv1-f69.google.com with SMTP id
+ 6a1803df08f44-8f45dde7595so85869846d6.3
+ for <ltp@lists.linux.it>; Mon, 20 Jul 2026 15:49:43 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1784584969; x=1785189769;
+ d=1e100.net; s=20251104; t=1784587783; x=1785192583;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to:content-type;
- bh=6BKNhRVLpMyCBrqR7LJcGkP6/RtKUs0T26Ew56t/OGw=;
- b=bzkEyRN8lnlu7+spFj9YYal7nLHvZymoi/kh0rqMX23O+y7wUrUtm2EKfp0C7Jzg5e
- aqf5Dj9xNW7tEbrN+9giAxJICbiwXS0wv10YXC1ro8gldF+BRHgLU/B3JvpOzIt6brL2
- emSEUM3N38p37IPGEsqaIlC6mEJ9SxBov6K7ygx0hB1VxGDmTJdUcVsQdtVOrbXPJxij
- dBgtdRJ35etOEm2x+BHQDCc/n5DNDYa9S7tqLFba5CWOvU7ciCkVYj0VPwCTcja/ZZxh
- h7sA1/7itAZFXiXEz/yEgPkq9BDCzzo/Hx6KiDTQxOA1FWHLXq/bnP5yWxnS9rpwSwwt
- 0SNw==
-X-Gm-Message-State: AOJu0Ywq5Dl9zHD+O7iOk5wiwL9eaE1vDq1XQ2HMTK3ielgWTC8KxkDh
- Svt3yLKkoJjNOmAqpQhT3bZTH+IF4zsZt09PZRpciwOg6jid81kL23iwH42LQtu5
-X-Gm-Gg: AfdE7cn0/dn6zHbtuZrS4sc+1GQz6r2/zzYwEjhj4XM8x6TM3w8LLXqICXdozvWAi2o
- +iSLrD05pgWCzrCKUA5xbBdstt+mJ19TFyZcqCRZkFwOMuQrLm416l8pQp/DMDDlkIMMqAN3IpZ
- zGwSNnrF13ePwzGJVDLnqFiEG/uRpUCe4ubeX3VjbHKiXhXLk5roYJL9z7WJrU6w8j9xBH7+VGF
- p/4kGa02Olh2pQ8tJqUaJFL23DbEF+JesX36W4W5qGuAp9AL+6nnrvM2qu+6huKqUeP+rGmJRqq
- 00xX+qppfwRJOyCuwhbVzvTM7WgMykgDQx6tn5/rJrarTmpMBP2bZuKJbACa3BTg+h2f1BZwyDL
- QSF/Kp5jQwdErMiAv8MrXTjUW/gNB10rK5jW0e9TFPhb8GNGtjGK608AmoFdcsMDIR4Uqe4fO+A
- ZHVqDNkRqFK0M92DJVHioqhKG9EsENbMU6w3BFoMgscec6BchOgLdMZOagLULDttsu3Vnv4b5Mv
- hxOahXU0RSMJWco+V6nF7aL0w==
-X-Received: by 2002:a05:6a00:124c:b0:848:2f71:b65b with SMTP id
- d2e1a72fcca58-84c29578f2dmr14790599b3a.70.1784584968926; 
- Mon, 20 Jul 2026 15:02:48 -0700 (PDT)
-Received: from
- runnervm3jd5f.atih1j5idlnuzf0a0ifstqup0a.xx.internal.cloudapp.net
- ([4.155.99.47]) by smtp.gmail.com with ESMTPSA id
- d2e1a72fcca58-84c2af9ef6dsm6290480b3a.57.2026.07.20.15.02.48
+ bh=8PR41dhXFax7pUsuk1XpWjIpwlB0dpojZjJ1vfJbXG8=;
+ b=fBIQU3BA7Ziu1z6Kd2L8pDWHo682pOHRzvWR5MK9i65CK5RhaYUKTxawnUNlVHSBau
+ SHhzBdwO92hF7u1kcTVdN1aBPQ9wDa7NltUrQIOPgCgdCI5wbt35rTYSBBq/pQecxxNo
+ oKSJSS33SBgCLoFgzajBGprSpVcwLJVg1G7ZAHWmGN7/erxTxU8IRWsy71RkJsaKKv00
+ Wu/bMPQI7LkC9YblBenb2bG1q3W8TgbJcySJLKKGwfdHQ2LZ+Zb/BZ1yxfSxhg5sHyqH
+ GV7IG6UEOpdpt/yPqA+BTr62D28VbZhCgvYernRIQ3wdGkmBxZG4Tw07k/L13U1ZN66P
+ coEA==
+X-Gm-Message-State: AOJu0YwbUDVqF5z5I+i0yUzHbN7TdHf99yryf6yyraOb5EW/oZ+oXrnU
+ isSYDn5ejpjfEPqXMoXgHgGfzlLBmdAuGbqXjE7CgciI3K3MLkU/Zr0x5jXFzhabumVHB/kMER1
+ OZSUo+C0p10yOShgE4x8obUb3N3x08yySfMtWbMM4EyVaiKsmLdYe93+joMW0J3UscpD7Gh5wJg
+ WnC3ZNac4ZCdHokpXmReqCEKJAs1qeEUwXNkIp
+X-Gm-Gg: AR+sD13eMWNOtQq3ggH32flvUgkWUVucMe18D8+dyNCv3ENtlJr4UW0cfZ+xup7geM7
+ On/Tyj2NtNQHnok/Dq8BddMZS/IG+j4wg/xQWEL4lRNjEChv1r2Tkrg/GAtx23Xy6qhJv0mJtu9
+ fZYaWLcdcTtwo0D4eGLuwitnhoH9vsnOT/HxzqvXz/mr6xS9mcIg+R63UWQAdoU4aB4KGB9EXfT
+ NEBHrP5f/JMzXQSe+WFtmMtO0kPDJMjFeQidteIHQY4C250o1Z56IV0aXNCnAe+oFCKZfsJjKMT
+ ja1vSOk7A8bmxHBVh4QBhjGjI7IAhZY73CdFf2d9f8zdBF9q2lwV5xVsZcAO7ogdUKDxdmOcffO
+ RRe29bLMhO8k4CM21ogqxXDjSGQ==
+X-Received: by 2002:a05:6214:c2b:b0:8ff:60dc:d41c with SMTP id
+ 6a1803df08f44-907783cff15mr175038166d6.52.1784587783093; 
+ Mon, 20 Jul 2026 15:49:43 -0700 (PDT)
+X-Received: by 2002:a05:6214:c2b:b0:8ff:60dc:d41c with SMTP id
+ 6a1803df08f44-907783cff15mr175037806d6.52.1784587782388; 
+ Mon, 20 Jul 2026 15:49:42 -0700 (PDT)
+Received: from sbertram-thinkpadp1gen5.bos.com ([67.189.222.97])
+ by smtp.gmail.com with ESMTPSA id
+ 6a1803df08f44-907786f365fsm100355676d6.37.2026.07.20.15.49.41
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 20 Jul 2026 15:02:48 -0700 (PDT)
-From: linuxtestproject.agent@gmail.com
-To: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 20 Jul 2026 22:02:47 +0000
-Message-ID: <20260720220247.4030-1-linuxtestproject.agent@gmail.com>
-X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260720213610.627213-1-pvorel@suse.cz>
-References: <20260720213610.627213-1-pvorel@suse.cz>
+ Mon, 20 Jul 2026 15:49:41 -0700 (PDT)
+To: ltp@lists.linux.it
+Date: Mon, 20 Jul 2026 18:49:30 -0400
+Message-ID: <20260720224936.2753334-1-sbertram@redhat.com>
+X-Mailer: git-send-email 2.55.0
+In-Reply-To: <20260414164927.843200-1-sbertram@redhat.com>
+References: <20260414164927.843200-1-sbertram@redhat.com>
 MIME-Version: 1.0
+X-Mimecast-Spam-Score: 0
+X-Mimecast-MFC-PROC-ID: WDF7IY2o467Eu1_ZOHsQw-xRZoCVUb55DNWrOUcK6rg_1784587783
+X-Mimecast-Originator: redhat.com
 X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] setsockopt10: Fix running with more iterations
+Subject: [LTP] [PATCH v3] semctl01: tolerate SEM_STAT races under parallel
+ LTP runs
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,28 +110,182 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+From: Stephen Bertram via ltp <ltp@lists.linux.it>
+Reply-To: Stephen Bertram <sbertram@redhat.com>
+Cc: Stephen Bertram <sbertram@redhat.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Petr,
+When multiple LTP workers run IPC tests concurrently, SEM_STAT can fail
+with EIDRM/EINVAL because the index from IPC_INFO can disappear before
+SEM_STAT runs. Retry a few times instead of treating that as TBROK.
 
-On Mon, Jul 20 23:36:10 2026 +0200, Petr Vorel wrote:
-> setsockopt10: Fix running with more iterations
+The test remains single-threaded; shared globals are intentional.
 
-Verdict - Reviewed
+Test: ./kirk -w 4 -f syscalls_32 -p semctl01 -i 1000
 
+Results summary before:
+runtime:      997.690s
+passed        415980
+failed        0
+broken        10
+skipped       0
+warnings      0
+
+Results summary after:
+runtime:      998.593s
+passed        416000
+failed        0
+broken        0
+skipped       0
+warnings      0
+
+Assisted-by: Cursor
+
+Signed-off-by: Stephen Bertram <sbertram@redhat.com>
 ---
-Note:
+ testcases/kernel/syscalls/semctl/semctl01.c | 90 ++++++++++++++-------
+ 1 file changed, 61 insertions(+), 29 deletions(-)
 
-The agent can sometimes produce false positives although often its
-findings are genuine. If you find issues with the review, please
-comment this email or ignore the suggestions.
+diff --git a/testcases/kernel/syscalls/semctl/semctl01.c b/testcases/kernel/syscalls/semctl/semctl01.c
+index 5bd675ab6..e5056e8e3 100644
+--- a/testcases/kernel/syscalls/semctl/semctl01.c
++++ b/testcases/kernel/syscalls/semctl/semctl01.c
+@@ -236,35 +236,58 @@ static void func_sstat(int semidx)
+ }
+ 
+ static struct tcases {
+-	int *semid;
+ 	int semnum;
+ 	int cmd;
+ 	void (*func_test) ();
+ 	union semun arg;
+ 	void (*func_setup) ();
+ } tests[] = {
+-	{&sem_id, 0, IPC_STAT, func_stat, SEMUN_CAST & buf, NULL},
+-	{&sem_id, 0, IPC_SET, func_set, SEMUN_CAST & buf, set_setup},
+-	{&sem_id, 0, GETALL, func_gall, SEMUN_CAST array, NULL},
+-	{&sem_id, 4, GETNCNT, func_cnt, SEMUN_CAST & buf, cnt_setup},
+-	{&sem_id, 2, GETPID, func_pid, SEMUN_CAST & buf, pid_setup},
+-	{&sem_id, 2, GETVAL, func_gval, SEMUN_CAST & buf, NULL},
+-	{&sem_id, 4, GETZCNT, func_cnt, SEMUN_CAST & buf, cnt_setup},
+-	{&sem_id, 0, SETALL, func_sall, SEMUN_CAST array, sall_setup},
+-	{&sem_id, 4, SETVAL, func_sval, SEMUN_CAST INCVAL, NULL},
+-	{&sem_id, 0, IPC_INFO, func_iinfo, SEMUN_CAST & ipc_buf, NULL},
+-	{&sem_id, 0, SEM_INFO, func_sinfo, SEMUN_CAST & ipc_buf, NULL},
+-	{&sem_index, 0, SEM_STAT, func_sstat, SEMUN_CAST & buf, NULL},
+-	{&sem_id, 0, IPC_RMID, func_rmid, SEMUN_CAST & buf, NULL},
++	{0, IPC_STAT, func_stat, SEMUN_CAST & buf, NULL},
++	{0, IPC_SET, func_set, SEMUN_CAST & buf, set_setup},
++	{0, GETALL, func_gall, SEMUN_CAST array, NULL},
++	{4, GETNCNT, func_cnt, SEMUN_CAST & buf, cnt_setup},
++	{2, GETPID, func_pid, SEMUN_CAST & buf, pid_setup},
++	{2, GETVAL, func_gval, SEMUN_CAST & buf, NULL},
++	{4, GETZCNT, func_cnt, SEMUN_CAST & buf, cnt_setup},
++	{0, SETALL, func_sall, SEMUN_CAST array, sall_setup},
++	{4, SETVAL, func_sval, SEMUN_CAST INCVAL, NULL},
++	{0, IPC_INFO, func_iinfo, SEMUN_CAST & ipc_buf, NULL},
++	{0, SEM_INFO, func_sinfo, SEMUN_CAST & ipc_buf, NULL},
++	{0, SEM_STAT, func_sstat, SEMUN_CAST & buf, NULL},
++	{0, IPC_RMID, func_rmid, SEMUN_CAST & buf, NULL},
+ };
+ 
++/*
++ * SEM_STAT takes an ipc idr index. Under parallel IPC tests that index can
++ * vanish between IPC_INFO and SEM_STAT (EIDRM/EINVAL). Refresh and retry.
++ */
++static int do_sem_stat(union semun arg)
++{
++	int idx, rval;
++	unsigned int retries = 5;
++
++	do {
++		idx = semctl(0, 0, IPC_INFO, (union semun)&ipc_buf);
++		if (idx < 0)
++			tst_brk(TBROK | TERRNO, "semctl(0, 0, IPC_INFO)");
++		rval = semctl(idx, 0, SEM_STAT, arg);
++		if (rval >= 0) {
++			sem_index = idx;
++			return rval;
++		}
++		if (errno != EIDRM && errno != EINVAL)
++			tst_brk(TBROK | TERRNO, "semctl(SEM_STAT)");
++	} while (--retries);
++
++	tst_brk(TBROK | TERRNO, "semctl(SEM_STAT) still failing after retries");
++	return -1;
++}
++
+ static void verify_semctl(unsigned int n)
+ {
+ 	struct tcases *tc = &tests[n];
+ 	int rval;
+ 
+-	if (sem_id == -1)
+-		sem_id = SAFE_SEMGET(IPC_PRIVATE, PSEMS, IPC_CREAT | IPC_EXCL | SEM_RA);
+ 	if (tc->func_setup) {
+ 		switch (tc->cmd) {
+ 		case GETNCNT:
+@@ -279,25 +302,33 @@ static void verify_semctl(unsigned int n)
+ 		}
+ 	}
+ 
+-	rval = SAFE_SEMCTL(*(tc->semid), tc->semnum, tc->cmd, tc->arg);
+-	switch (tc->cmd) {
+-	case GETNCNT:
+-	case GETZCNT:
+-	case GETPID:
+-	case GETVAL:
+-	case IPC_INFO:
+-	case SEM_STAT:
++	if (tc->cmd == SEM_STAT) {
++		rval = do_sem_stat(tc->arg);
+ 		tc->func_test(rval);
+-		break;
+-	default:
+-		tc->func_test();
+-		break;
++	} else {
++		rval = SAFE_SEMCTL(sem_id, tc->semnum, tc->cmd, tc->arg);
++		switch (tc->cmd) {
++		case GETNCNT:
++		case GETZCNT:
++		case GETPID:
++		case GETVAL:
++		case IPC_INFO:
++			tc->func_test(rval);
++			break;
++		default:
++			tc->func_test();
++			break;
++		}
+ 	}
+-
+ 	if (tc->cmd == GETNCNT || tc->cmd == GETZCNT)
+ 		kill_all_children();
+ }
+ 
++static void setup(void)
++{
++	sem_id = SAFE_SEMGET(IPC_PRIVATE, PSEMS, IPC_CREAT | IPC_EXCL | SEM_RA);
++}
++
+ static void cleanup(void)
+ {
+ 	if (sem_id >= 0)
+@@ -305,6 +336,7 @@ static void cleanup(void)
+ }
+ 
+ static struct tst_test test = {
++	.setup = setup,
+ 	.cleanup = cleanup,
+ 	.test = verify_semctl,
+ 	.tcnt = ARRAY_SIZE(tests),
+-- 
+2.55.0
 
-Regards,
-LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
