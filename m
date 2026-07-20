@@ -4,81 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 37E4AC44515
-	for <ltp@archiver.kernel.org>; Mon, 20 Jul 2026 15:54:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E3426C44520
+	for <ltp@archiver.kernel.org>; Mon, 20 Jul 2026 15:55:40 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 99EB53E92C7
-	for <ltp@archiver.kernel.org>; Mon, 20 Jul 2026 17:54:27 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 795AA3E9133
+	for <ltp@archiver.kernel.org>; Mon, 20 Jul 2026 17:55:39 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B7F7C3E9613
- for <ltp@lists.linux.it>; Mon, 20 Jul 2026 17:54:11 +0200 (CEST)
-Received: from mail-pj2-x01.google.com (mail-pj2-x01.google.com
- [IPv6:2607:f8b0:4864:39::1])
+ by picard.linux.it (Postfix) with ESMTPS id D20473E62B4
+ for <ltp@lists.linux.it>; Mon, 20 Jul 2026 17:55:23 +0200 (CEST)
+Received: from mail-qk2-x02.google.com (mail-qk2-x02.google.com
+ [IPv6:2607:f8b0:4864:34::2])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 1EE3E2005DA
- for <ltp@lists.linux.it>; Mon, 20 Jul 2026 17:54:11 +0200 (CEST)
-Received: by mail-pj2-x01.google.com with SMTP id
- 98e67ed59e1d1-37fb1883fbfso2590872a91.0
- for <ltp@lists.linux.it>; Mon, 20 Jul 2026 08:54:11 -0700 (PDT)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 6C40210006B7
+ for <ltp@lists.linux.it>; Mon, 20 Jul 2026 17:55:23 +0200 (CEST)
+Received: by mail-qk2-x02.google.com with SMTP id
+ af79cd13be357-92e58c462aeso620064085a.1
+ for <ltp@lists.linux.it>; Mon, 20 Jul 2026 08:55:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1784562849; x=1785167649; darn=lists.linux.it;
+ d=gmail.com; s=20251104; t=1784562922; x=1785167722; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to:content-type;
- bh=GI8wKe7VkdM1TKoFc5E0uvPzcUQu/aJV48REnoKEcvY=;
- b=QUyRJ271LsVTsy/nHtFj/Hh5evk8lanqDDmKYfIq3LRyCOjqaefw0fqZjF2bxS98mO
- DP6iKrACbtVGfdn1NeMfHWBpDSZmAoaaiz8+ewn6xORFn/hVZpiUx5Dd2wBLM1N9uwU6
- UXZ++GtnbqW65UA3H5Gyzt3LCbfcEXdjggn7RPF2RoCiMKXT4hxPDxJtCSxAoaB/ipZP
- Db+OmIG2nF8zJfRC/koWaLCMzUIOL7RET+iMSKTBKsEUpQfk4worNLjCKHO3qJLVQgQn
- 3atJ7+DdHuWxpBVaKwmnmbgFikgRq+Oh9zb1vtP42uchveTkCiILpYyY8Uauq0arm7bd
- Z3Zg==
+ bh=xou8+8CoHAL/ywY2ckppJK3qvO0kJf77jRo9dCa9qWE=;
+ b=rR0+eZRSGRK46/1q66Kdh9amNkn28b0MP4kV33ECozaxewmeFXvyGlrVuLmyGRzwif
+ nYbr52MCq2Vru0JspJgNxzjQeApTqXv9mSLlcmKuhfx2TWMroRvEeDYSsSw6rtRYoa3g
+ 4fn6WIL+TZKGzccriWIErWEmDvz0JMjCDm/MDXk5ao9+7j8Pwgh5bGUihlziMcJY3dQ2
+ +DSlpIyyzdolm8hfmvhOsfl0qHvq5E7BGWaDRMAK17c7GtSdGSWPtpFovJdWZpnfP9gN
+ VET2OaipSqnbIOu0ifQt/Dtg/S1fmwIVBqqOXP+oazVllxOwZ/D3YFfS5xw1ZmjcKfYb
+ shBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1784562849; x=1785167649;
+ d=1e100.net; s=20251104; t=1784562922; x=1785167722;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to:content-type;
- bh=GI8wKe7VkdM1TKoFc5E0uvPzcUQu/aJV48REnoKEcvY=;
- b=ZwYlhwrBZD1duK5I+sASOmfksW+4pEpCaDPl4Irun/kzdMgN9/recEE4cSwg23nCVW
- MWQmIcETPiwivyhzwIoZe1NNQFOHLIvom2WrXhr2uTV1Ql2NCycZgVhTAA6rJ/9FKwBN
- smudBXhfGumnhUKGoUFo4ZrFaMmfwLprJeyQp4d/WEJsamiB2AFcjshXo0pXrFD+4byk
- uAreVDjBPQDKEqJyAXizhlhKzd450JhJ/3b9ouvo7B+xfLJ0p1IodMhrBr4554Dqv2gl
- CGMvnJUUFaNuX8n7XjzsqYUpf0pTLCvirx4it2ti60XAaeQoD5ztcPEucvGE88DtUMYn
- wyQQ==
-X-Gm-Message-State: AOJu0Yz4QPm4zNrTECZBDWT/4geOH5jQ29FP/PlyDBNsShmMNQvogkPx
- UBeg+jKjdWYnHSRgLq2r867A436M83FcSxfl36Vm+dtAZfnnUenNqH+N
-X-Gm-Gg: AR+sD13NgB5YRMi5xvoTQO/5T72HxAzZD/qV/NPZN/ecRDMrTGhkbxRzW+BAnvMQ0Jq
- /kyqCgXr2YKzkSx+pk88uim0goVckVOvWrSiFiVZuKtFYRGoMBJ3oVxEHZ1YQZHGMXY/JPnAmFU
- 4far0ydojg3G6yCgKeoRC4IRkFvwBuUzuVAjCzUJa/CBaGMbk4GnghHCr+uDet2I2lMq7luodrw
- CXlY+dGWVZtXjrTh4/9CC80Zab3iqpCWjPIleCe8pYET+bSeTcMdU5++L/0kwUN/RnArxx73o5T
- r5JPQqbDy4K31FFWDLSzGgtD7RjP3o7tEO0XPwA6f+Qee7cLeSPVPGVCQWCKS2ukfnli0owyybE
- RgsSGYEs2kBmoSAmAHF2aY9kFer3PxrpClDDHAQODSLnTMCyJtkxFkDCJFBD+Sl1iV77yKTo/X7
- ehoKUiSZe4GEnWrmZ7PKmcGWA9zcxFDe0CwhY5IEMb8Esru5CQB0AdG3T/9h+GjslcgoMXdySeS
- qp9eae5u71hvMc4P2Y=
-X-Received: by 2002:a17:90b:1f88:b0:38d:f1a4:1116 with SMTP id
- 98e67ed59e1d1-38e4b537bedmr12805280a91.33.1784562849234; 
- Mon, 20 Jul 2026 08:54:09 -0700 (PDT)
+ bh=xou8+8CoHAL/ywY2ckppJK3qvO0kJf77jRo9dCa9qWE=;
+ b=TzBkHbm4fnlmV8B3Ft62vBbTSZRrmxUlA0QypVBR/8T0UpMt8j80yFepwDRDDipLUC
+ rnObqO3yFiOzQGl4ZKSNAiclB8OC0ViW0CxqBtmV8ngbzSBnAYnqJG6eaCadohXpurJP
+ grWbWak3p961o46YKmv6NW5xOJL6/euijXH2k4+ywJ6pkwA6SypO3D4NFiOscxK+iyix
+ Ag8yLgHOMAGCAm5qHEqiiqaxEpaR+OvIk0h1z7qBcxyk75MnKw7Bhtx4W6h+yVQxk1HU
+ gF6t6Am63V6+F+TcY7XhtbHpHDcAQeWqC6XhRNy5jTjwUTmf1wHiFYi+O69K4LRtsZaL
+ ohAw==
+X-Gm-Message-State: AOJu0YzM7Cu/1p8wDjO4PL0WLQMibt37oVQ5jbj9xm+SauQFqjkoMUnJ
+ bKnF95pTLqirJfRf3TmSAOlwXF7mb41x9EuKcqMlXBaL/uiDQhZUKs3M
+X-Gm-Gg: AfdE7cl+pjweLLDWYcOJf6y1+Ysa+vDoqsXbMV+lhO0oPvaGt2xfT3AKPwfiolSi725
+ Fg1C7azC64Rf3WjNxKQGkTwfAwxbAtO5LhADRbgWrDwCeMVelnYNqXUAD1Mfn32D9fAHAXEZGUi
+ Nwu+yeyAhZ5Ya5QRhrNEejiS97/kL3mqXNXrpKgG9LCSYL70IKD6vdjpgWSyeVRKgz3+EsaGK44
+ XdmjKO4EkT4Qn17t4yyHdSU5XbxlCOcj9/mZC/Z+A2/kNlMwO6UP/uy10JqgkxH64eJyOGvnyWG
+ Fg0RHmi0SpO2Q2S3ek7X9i6DPVzxGyHzzbw4ZC+ndob83+gsJxEOEPBKFmGCKRlpI3j2iRcfqiw
+ 5Reyi0NMNEeykkcHtSN3AHx1O/O6HmWrVTw8aGPSq2g+rO+pllmPxD7Rw7P78ywFg5+emYCZKyc
+ A3FtLoW6HD55Ob1nicecpbdVGqNhb+xpk0Y6qOPFxjn9Zn/bRTe1y9bWrgPBvi+dpmhltXeQKRy
+ 9R9gSA9RT3dQXbyGctp
+X-Received: by 2002:a05:620a:1a13:b0:92e:541e:632b with SMTP id
+ af79cd13be357-930b3eaaa92mr1599898385a.2.1784562922079; 
+ Mon, 20 Jul 2026 08:55:22 -0700 (PDT)
 Received: from
- runnervm3jd5f.4xo3wpb4ugwubdrh1nu51nyeia.phxx.internal.cloudapp.net
- ([20.171.20.58]) by smtp.gmail.com with ESMTPSA id
- a92af1059eb24-13ce2de31a7sm32603053c88.15.2026.07.20.08.54.08
+ runnervm3jd5f.sbo4f4120sjejcpudlippbucbf.ex.internal.cloudapp.net
+ ([135.232.208.132]) by smtp.gmail.com with ESMTPSA id
+ af79cd13be357-930b545e47bsm916741785a.35.2026.07.20.08.55.21
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 20 Jul 2026 08:54:08 -0700 (PDT)
+ Mon, 20 Jul 2026 08:55:21 -0700 (PDT)
 From: linuxtestproject.agent@gmail.com
 To: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Mon, 20 Jul 2026 15:54:07 +0000
-Message-ID: <20260720155407.3993-1-linuxtestproject.agent@gmail.com>
+Date: Mon, 20 Jul 2026 15:55:20 +0000
+Message-ID: <20260720155520.4013-1-linuxtestproject.agent@gmail.com>
 X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260720-fix_cve-2026-46331_enoent-v2-1-395819e74978@suse.com>
-References: <20260720-fix_cve-2026-46331_enoent-v2-1-395819e74978@suse.com>
+In-Reply-To: <20260720-fix_cve-2026-46331_enoent-v3-1-9f216efdd661@suse.com>
+References: <20260720-fix_cve-2026-46331_enoent-v3-1-9f216efdd661@suse.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] cve-2026-46331: fix intermittent ENOENT failure
+Subject: Re: [LTP] tst_kconfig: add module mappings for
+ ingress/matchall/pedit
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -98,30 +100,43 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi Andrea,
 
-On Mon, 20 Jul 2026 15:17:55 +0200, Andrea Cervesato wrote:
-> cve-2026-46331: fix intermittent ENOENT failure
+On Mon, Jul 20 2026, Andrea Cervesato wrote:
+> tst_kconfig: add module mappings for ingress/matchall/pedit
 
-> +	.tags = (const struct tst_tag[]) {
-> +		{"linux-git", "899ee91156e5"},
-> +		{"CVE", "2026-46331"},
-> +		{}
-> +	},
+--- [PATCH 1/2] ---
 
-The fix commit 899ee91156e5 is not present in kernel 7.2 (the current
-latest stable release). Per ground rule 8, the subject line needs a
-[STAGING] prefix:
+> Map CONFIG_NET_SCH_INGRESS, CONFIG_NET_CLS_MATCHALL and CONFIG_NET_ACT_PEDIT
+> to their kernel modules (sch_ingress, cls_matchall, act_pedit).
 
-  [STAGING] cve-2026-46331: fix intermittent ENOENT failure
+The body restates what the subject already says. Is there a sentence
+missing that explains what prompted these additions -- e.g. that the
+following patch (cve-2026-46331) needs them for the kconfig module
+check to work when the features are built as modules?
+
+--- [PATCH 2/2] ---
+
+> +	for (unsigned int i = 0; i < ARRAY_SIZE(mods); i++)
+> +		tst_modprobe(mods[i], NULL);
+> +
+> +	/* Drop privileges so the reproducer runs as an unprivileged user */
+> +	pw = SAFE_GETPWNAM("nobody");
+> +	SAFE_SETGID(pw->pw_gid);
+> +	SAFE_SETUID(pw->pw_uid);
+
+The three modules loaded by tst_modprobe() are never unloaded. cleanup()
+has no matching tst_module_unload() calls, so sch_ingress, cls_matchall
+and act_pedit remain in the kernel after the test exits.
+
+The constraint is structural: SAFE_SETUID() permanently drops root, so
+cleanup() runs as "nobody" and cannot call rmmod even if the call were
+added there.
+
+Is the expectation that these modules are present on any system running
+this test, making the omission intentional? If so, a short comment in
+cleanup() noting that module unload is skipped because privileges have
+been dropped would make the intent clear.
 
 Verdict - Needs revision
-
-Pre-existing issues:
-
-The test entry lives in runtest/cve, but since the fix is not yet in a
-released kernel the entry should be in runtest/staging instead. This was
-introduced by the original test-addition commit (d6fe8d8e7 "cve: Add
-act_pedit page-cache corruption test"), which also lacks the [STAGING]
-prefix.
 
 ---
 Note:
