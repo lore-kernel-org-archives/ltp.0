@@ -4,106 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1BA24C44515
-	for <ltp@archiver.kernel.org>; Mon, 20 Jul 2026 13:18:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9E244C4452A
+	for <ltp@archiver.kernel.org>; Mon, 20 Jul 2026 14:09:44 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A7AAF3E62A9
-	for <ltp@archiver.kernel.org>; Mon, 20 Jul 2026 15:18:14 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 928493E7B88
+	for <ltp@archiver.kernel.org>; Mon, 20 Jul 2026 16:09:42 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 831723E4E24
- for <ltp@lists.linux.it>; Mon, 20 Jul 2026 15:17:59 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ by picard.linux.it (Postfix) with ESMTPS id 02EAC3C2802
+ for <ltp@lists.linux.it>; Mon, 20 Jul 2026 16:09:26 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id B8A9F6000E1
- for <ltp@lists.linux.it>; Mon, 20 Jul 2026 15:17:58 +0200 (CEST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 5E6D0200242
+ for <ltp@lists.linux.it>; Mon, 20 Jul 2026 16:09:26 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id F0FEA3E02;
- Mon, 20 Jul 2026 13:17:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1784553478; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=S7NvYy9bVQCO5I4e7RXiNGnV96vr29Kj9TMzrA54GGU=;
- b=VlV9ZdG/H2cTrc6ysG+Puwhn5FS/co6fggRyc0i5wultEpuce8pxUMUN5hjyKEUyMMU4qC
- I2zhpEd1XwwqoWV8/DPpiun5JpzLe5fJEU7Z24a0woYUUrg7QFYy3PNGYC99xWjCUd5Dbo
- /26KppUaoYyJx5NB+imt+z3RoiF8JJA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1784553478;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=S7NvYy9bVQCO5I4e7RXiNGnV96vr29Kj9TMzrA54GGU=;
- b=SkBJ0PlAvW+P7N9Nzd5whYHTti8qqvTZeKWaSIfR74OmREHYpUmo3/h4TdA7HbbR6twHsg
- Z5p2kKh3pbDoemBg==
-Authentication-Results: smtp-out2.suse.de;
+ by smtp-out1.suse.de (Postfix) with ESMTPS id AE03A79FB6
+ for <ltp@lists.linux.it>; Mon, 20 Jul 2026 14:09:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1784556565; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=nFlVaMROujWzEdGb96LCK293AErmhhC2dVzaLdblcAc=;
+ b=3ZZmzheATMSfZnuGjK4ljuiCtZVJQfpp3gILoA9pPwXNie18m0sXyFFg2rnCtJFGO3n2cm
+ lBxtsAQr2vIeAtsfV8QqMtsfEQpclvDNHCRWZyk/14w8Imf6Q6loQB7GZwIkOZXO34Mntb
+ YjIYKJ3LcO6BZ/0cbhD1tiQmLF0MvHA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1784556565;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=nFlVaMROujWzEdGb96LCK293AErmhhC2dVzaLdblcAc=;
+ b=nJLgGjd1MTjQ4iQGlPUaOHA16Uml/CtqtqNuGW78iu1nEzrA8SpQFVwK7aatkpIIu5rm0V
+ D3AzKvM7SYjUA/BQ==
+Authentication-Results: smtp-out1.suse.de;
 	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1784553476; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=S7NvYy9bVQCO5I4e7RXiNGnV96vr29Kj9TMzrA54GGU=;
- b=EoWgwnj8dEX7oVyt/9JM48P6HzsXlwOOzgWAh8VqqeVqJ2+aCFfSbIAiYlwWp29Go9SDYy
- C3o+yS3BMcPGIM0f4XnMjZpATYzE+QQ0zvsNWDVdficmhFamiEvS1YldQ4ftO4i8eRq0H8
- hczGufBq1T+TD9iUZ5g6qxNy32CDckM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1784553476;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=S7NvYy9bVQCO5I4e7RXiNGnV96vr29Kj9TMzrA54GGU=;
- b=bb7D0Rn6Q8DduSIC+wvN8Z7Rs7MN8bluOHuoLzRTiRhyKUQDZ+3qZaKYBag6CO2HxJAMz/
- vpl9hY9koiH5YrDQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1784556565; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=nFlVaMROujWzEdGb96LCK293AErmhhC2dVzaLdblcAc=;
+ b=3ZZmzheATMSfZnuGjK4ljuiCtZVJQfpp3gILoA9pPwXNie18m0sXyFFg2rnCtJFGO3n2cm
+ lBxtsAQr2vIeAtsfV8QqMtsfEQpclvDNHCRWZyk/14w8Imf6Q6loQB7GZwIkOZXO34Mntb
+ YjIYKJ3LcO6BZ/0cbhD1tiQmLF0MvHA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1784556565;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=nFlVaMROujWzEdGb96LCK293AErmhhC2dVzaLdblcAc=;
+ b=nJLgGjd1MTjQ4iQGlPUaOHA16Uml/CtqtqNuGW78iu1nEzrA8SpQFVwK7aatkpIIu5rm0V
+ D3AzKvM7SYjUA/BQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D534A779AA;
- Mon, 20 Jul 2026 13:17:56 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 94C3E779AA
+ for <ltp@lists.linux.it>; Mon, 20 Jul 2026 14:09:25 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id iGRhMgQgXmpcCAAAD6G6ig
- (envelope-from <andrea.cervesato@suse.de>); Mon, 20 Jul 2026 13:17:56 +0000
-From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Mon, 20 Jul 2026 15:17:55 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id K/N+IxUsXmrWOQAAD6G6ig
+ (envelope-from <mdoucha@suse.cz>)
+ for <ltp@lists.linux.it>; Mon, 20 Jul 2026 14:09:25 +0000
+From: Martin Doucha <mdoucha@suse.cz>
+To: ltp@lists.linux.it
+Date: Mon, 20 Jul 2026 16:09:22 +0200
+Message-ID: <20260720140925.86664-1-mdoucha@suse.cz>
+X-Mailer: git-send-email 2.54.0
 MIME-Version: 1.0
-Message-Id: <20260720-fix_cve-2026-46331_enoent-v2-1-395819e74978@suse.com>
-X-B4-Tracking: v=1; b=H4sIAAIgXmoC/42NTQ6DIBBGr2Jm3WkERbCr3qMxhuJQWRQasKSN8
- e5FT9Dle/l+VkgUHSW4VCtEyi654AvwUwVm1v5B6KbCwGve1ZJJtO4zmky4C2y7pmEj+UB+wf7
- ec9FOWkhFUPqvSCV8bN+GwrNLS4jf4yqz3f6zmhkyVKLlghSzVupreic6m/CEYdu2H3/6s8fBA
- AAA
-X-Change-ID: 20260717-fix_cve-2026-46331_enoent-9b9254da578e
-To: Linux Test Project <ltp@lists.linux.it>
-X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1784553476; l=3755;
- i=andrea.cervesato@suse.com; s=20251210; h=from:subject:message-id;
- bh=zfSP1aeEwPh5RgGskeeLLLUQX+mbf3LIU+TQyqrFzIg=;
- b=mFvSJDoBrg6TyyXgxMaRV3z4eSL0lVBjfl5BhboBJ6BScN0pUdWsgfo+QjGGs+UqYlG/YOLT9
- cLQNV4scvFLC0+wyAvcXXIU+aOCcwUnf82WHQwcar/EhR7PBICaLCSx
-X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
- pk=zKY+6GCauOiuHNZ//d8PQ/UL4jFCTKbXrzXAOQSLevI=
-X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- FUZZY_RATELIMITED(0.00)[rspamd.com];
- RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
- RCPT_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
- DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- TO_DN_ALL(0.00)[]; FROM_HAS_DN(0.00)[]; MIME_TRACE(0.00)[0:+];
- FROM_EQ_ENVFROM(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- RCVD_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email, suse.com:mid, mitre.org:url,
- imap1.dmz-prg2.suse.org:helo]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-1.000];
+ MIME_GOOD(-0.10)[text/plain]; TO_DN_NONE(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ FUZZY_RATELIMITED(0.00)[rspamd.com]; ARC_NA(0.00)[];
+ RCPT_COUNT_ONE(0.00)[1]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ RCVD_COUNT_TWO(0.00)[2]; FROM_HAS_DN(0.00)[];
+ RCVD_TLS_ALL(0.00)[];
+ PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
+ FROM_EQ_ENVFROM(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ MIME_TRACE(0.00)[0:+];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo, suse.cz:email,
+ suse.cz:mid]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2] cve-2026-46331: fix intermittent ENOENT failure
+Subject: [LTP] [PATCH] setsockopt10: Bind test sockets to any free port
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -120,120 +106,111 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Andrea Cervesato <andrea.cervesato@suse.com>
+The setsockopt10 test currently binds two test sockets to hardcoded port
+numbers. This can result in errors due to the ports being already in use.
+Bind the sockets to any free ports instead.
 
-The required qdisc, classifier and action modules cannot be
-autoloaded from the unprivileged user namespace, so arming the
-traffic filter sometimes failed with ENOENT.
-
-Preload the modules as root before dropping privileges and entering
-the network namespace.
-
-Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+Signed-off-by: Martin Doucha <mdoucha@suse.cz>
 ---
-tst_kconfig.c:90: TINFO: Parsing kernel config '/proc/config.gz'
-tst_kconfig.c:755: TINFO: CONFIG_FAULT_INJECTION kernel option detected which might slow the execution
-tst_test.c:1872: TINFO: Overall timeout per run is 0h 02m 00s
-cve-2026-46331.c:200: TBROK: Failed to modify traffic filter: ENOENT
 
-HINT: You _MAY_ be missing kernel fixes:
+Bug reproducibility verified on affected kernel v5.14. I've also tested
+that running multiple iterations of the test works correctly.
 
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=899ee91156e5
+ .../kernel/syscalls/setsockopt/setsockopt10.c | 34 ++++++++++++++-----
+ 1 file changed, 25 insertions(+), 9 deletions(-)
 
-HINT: You _MAY_ be vulnerable to CVE(s):
-
-https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2026-46331
----
-Changes in v2:
-- explain why we use root
-- use tst_modprobe()
-- add more CONFIG_* requirements
-- Link to v1: https://lore.kernel.org/20260717-fix_cve-2026-46331_enoent-v1-1-85425e81ff7a@suse.com
----
- testcases/cve/cve-2026-46331.c | 34 ++++++++++++++++++++++++++++++++--
- 1 file changed, 32 insertions(+), 2 deletions(-)
-
-diff --git a/testcases/cve/cve-2026-46331.c b/testcases/cve/cve-2026-46331.c
-index c33d358396f21024d8a68e9cd5c4cae0a9339a9f..6af43afb7910dd72777c1433f75dc8efce33366e 100644
---- a/testcases/cve/cve-2026-46331.c
-+++ b/testcases/cve/cve-2026-46331.c
-@@ -32,12 +32,19 @@
-  * - Reread the file through the same ``O_RDONLY`` descriptor and
-  *   compare with the original pattern; any difference means the
-  *   page cache was corrupted
-+ *
-+ * The test needs root to preload the qdisc, classifier and action
-+ * modules, which cannot be autoloaded from the unprivileged user
-+ * namespace, before dropping privileges to an unprivileged user.
-  */
+diff --git a/testcases/kernel/syscalls/setsockopt/setsockopt10.c b/testcases/kernel/syscalls/setsockopt/setsockopt10.c
+index f955f4e83..76c977d2e 100644
+--- a/testcases/kernel/syscalls/setsockopt/setsockopt10.c
++++ b/testcases/kernel/syscalls/setsockopt/setsockopt10.c
+@@ -77,8 +77,8 @@ static int tcp0_sk, tcp1_sk, tcp2_sk, tcp3_sk;
  
- #include <sys/sendfile.h>
-+#include <sys/prctl.h>
-+#include <pwd.h>
- #include <linux/rtnetlink.h>
- 
- #include "tst_test.h"
-+#include "tst_module.h"
- #include "tst_net.h"
- #include "tst_netdevice.h"
- #include "lapi/if_ether.h"
-@@ -128,7 +135,25 @@ static int acc_fd = -1;
  static void setup(void)
  {
- 	struct sockaddr_in addr;
--	int i;
-+	struct passwd *pw;
-+	static const char *const mods[] = {
-+		"sch_ingress", "cls_matchall", "act_pedit"
-+	};
-+
-+	for (unsigned int i = 0; i < ARRAY_SIZE(mods); i++)
-+		tst_modprobe(mods[i], NULL);
-+
-+	/* Drop privileges so the reproducer runs as an unprivileged user */
-+	pw = SAFE_GETPWNAM("nobody");
-+	SAFE_SETGID(pw->pw_gid);
-+	SAFE_SETUID(pw->pw_uid);
-+
-+	/*
-+	 * setuid() clears the dumpable flag, which makes the /proc/self
-+	 * files owned by root and prevents tst_setup_netns() from writing the
-+	 * uid/gid maps. Restore it so the user namespace can be set up.
-+	 */
-+	SAFE_PRCTL(PR_SET_DUMPABLE, 1, 0, 0, 0);
+-	tst_init_sockaddr_inet(&tcp0_addr, "127.0.0.1", 0x7c90);
+-	tst_init_sockaddr_inet(&tcp1_addr, "127.0.0.1", 0x7c91);
++	tst_init_sockaddr_inet(&tcp0_addr, "127.0.0.1", 0);
++	tst_init_sockaddr_inet(&tcp1_addr, "127.0.0.1", 0);
+ }
  
- 	tst_setup_netns();
- 	NETDEV_SET_STATE("lo", 1);
-@@ -144,7 +169,7 @@ static void setup(void)
- 	SAFE_BIND(listen_fd, (struct sockaddr *)&addr, sizeof(addr));
- 	SAFE_LISTEN(listen_fd, 1);
+ static void cleanup(void)
+@@ -95,9 +95,13 @@ static void cleanup(void)
  
--	for (i = 0; i < DATA_SIZE; i++)
-+	for (unsigned int i = 0; i < DATA_SIZE; i++)
- 		original[i] = (uint8_t)(i & 0xff);
+ static void child(void)
+ {
++	struct sockaddr_storage sockaddr;
++	socklen_t addrlen;
++
++	addrlen = tst_get_connect_address(tcp1_sk, &sockaddr);
++	SAFE_CLOSE(tcp1_sk);
++
+ 	tst_res(TINFO, "child: Listen for tcp1 connection");
+-	tcp0_sk = SAFE_SOCKET(AF_INET, SOCK_STREAM, 0);
+-	SAFE_BIND(tcp0_sk, (struct sockaddr *)&tcp0_addr, sizeof(tcp0_addr));
+ 	SAFE_LISTEN(tcp0_sk, 1);
+ 	TST_CHECKPOINT_WAKE(0);
  
- 	memset(&pedit_sel_buf, 0, sizeof(pedit_sel_buf));
-@@ -253,7 +278,12 @@ static struct tst_test test = {
- 	.test_all = run,
- 	.setup = setup,
- 	.cleanup = cleanup,
-+	.needs_root = 1,
- 	.needs_tmpdir = 1,
-+	.needs_cmds = (struct tst_cmd[]) {
-+		{.cmd = "modprobe"},
-+		{}
-+	},
- 	.needs_kconfigs = (const char *[]) {
- 		"CONFIG_USER_NS=y",
- 		"CONFIG_NET_NS=y",
-
----
-base-commit: ab04cf4157defb7f21a3cbf3392dec758dab590a
-change-id: 20260717-fix_cve-2026-46331_enoent-9b9254da578e
-
-Best regards,
+@@ -110,7 +114,7 @@ static void child(void)
+ 	TST_CHECKPOINT_WAIT(2);
+ 
+ 	tst_res(TINFO, "child: connect for tcp2 connection");
+-	TEST(connect(tcp3_sk, (struct sockaddr *)&tcp1_addr, sizeof(tcp1_addr)));
++	TEST(connect(tcp3_sk, (struct sockaddr *)&sockaddr, addrlen));
+ 
+ 	if (TST_RET == -1) {
+ 		tst_res(TINFO | TTERRNO, "child: could not connect to tcp1");
+@@ -122,18 +126,27 @@ static void child(void)
+ 
+ static void run(void)
+ {
+-	const pid_t child_pid = SAFE_FORK();
++	struct sockaddr_storage sockaddr;
++	socklen_t addrlen;
++	pid_t child_pid;
++
++	tcp0_sk = SAFE_SOCKET(AF_INET, SOCK_STREAM, 0);
++	tcp1_sk = SAFE_SOCKET(AF_INET, SOCK_STREAM, 0);
++	SAFE_BIND(tcp0_sk, (struct sockaddr *)&tcp0_addr, sizeof(tcp0_addr));
++	SAFE_BIND(tcp1_sk, (struct sockaddr *)&tcp1_addr, sizeof(tcp1_addr));
++	child_pid = SAFE_FORK();
+ 
+ 	if (child_pid == 0) {
+ 		child();
+ 		return;
+ 	}
+ 
+-	tcp1_sk = SAFE_SOCKET(AF_INET, SOCK_STREAM, 0);
++	addrlen = tst_get_connect_address(tcp0_sk, &sockaddr);
++	SAFE_CLOSE(tcp0_sk);
+ 	TST_CHECKPOINT_WAIT(0);
+ 
+ 	tst_res(TINFO, "parent: Connect for tcp0 connection");
+-	SAFE_CONNECT(tcp1_sk, (struct sockaddr *)&tcp0_addr, sizeof(tcp0_addr));
++	SAFE_CONNECT(tcp1_sk, (struct sockaddr *)&sockaddr, addrlen);
+ 	TEST(setsockopt(tcp1_sk, SOL_TCP, TCP_ULP, "tls", 3));
+ 
+ 	if (TST_RET == -1 && TST_ERR == ENOENT)
+@@ -145,6 +158,7 @@ static void run(void)
+ 	TST_CHECKPOINT_WAKE(1);
+ 
+ 	tst_res(TINFO, "parent: Disconnect by setting unspec address");
++	addrlen = tst_get_connect_address(tcp1_sk, &sockaddr);
+ 	TEST(connect(tcp1_sk, &unspec_addr, sizeof(unspec_addr)));
+ 	if (TST_RET == -1) {
+ 		if (TST_ERR == EOPNOTSUPP)
+@@ -155,7 +169,9 @@ static void run(void)
+ 		tst_reap_children();
+ 		return;
+ 	}
+-	SAFE_BIND(tcp1_sk, (struct sockaddr *)&tcp1_addr, sizeof(tcp1_addr));
++
++	/* Rebind the same port as before */
++	SAFE_BIND(tcp1_sk, (struct sockaddr *)&sockaddr, addrlen);
+ 
+ 	TEST(listen(tcp1_sk, 1));
+ 
 -- 
-Andrea Cervesato <andrea.cervesato@suse.com>
+2.54.0
 
 
 -- 
