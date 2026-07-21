@@ -4,96 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E41C9C4452F
-	for <ltp@archiver.kernel.org>; Tue, 21 Jul 2026 12:41:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D6D71C4452F
+	for <ltp@archiver.kernel.org>; Tue, 21 Jul 2026 12:42:15 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 373833E1C66
-	for <ltp@archiver.kernel.org>; Tue, 21 Jul 2026 14:41:54 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 17BAF3C5E50
+	for <ltp@archiver.kernel.org>; Tue, 21 Jul 2026 14:42:14 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id DECFB3E6202
- for <ltp@lists.linux.it>; Tue, 21 Jul 2026 14:41:16 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id D52A13E2104
+ for <ltp@lists.linux.it>; Tue, 21 Jul 2026 14:41:23 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 6B7281400998
- for <ltp@lists.linux.it>; Tue, 21 Jul 2026 14:41:15 +0200 (CEST)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 7F1381000949
+ for <ltp@lists.linux.it>; Tue, 21 Jul 2026 14:41:19 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 648B83E09;
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 9D70F3E1D;
  Tue, 21 Jul 2026 12:41:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1784637663; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=5wlXKHE/9uWNuKOGW+wszI9Zpkz0zorJ+kKE5fpiotQ=;
- b=PNSvwAcXkzSv9HwWZO1NIUGzTXhH+PwmvIni+WtlbUeKM7T0eUJTVJLP9odt+ST2AQ7O6B
- gK//W9VRw2peq68XODopAaFuUz2RoRD1IzGnLT3PZ0kho37NIN71QvEekR9YBfEsPf373k
- XG0BOQfd0oPM9lCwOOyrnkJDR5yu4Hg=
+ bh=VzUSCWjSnc8PAALlIUNZU9LHQx1AYEczQOVGX7iE/VQ=;
+ b=wADBRUNyANxUef9AvFY7ts+fGRNXEK51DR/pjAvIxVxUvABkm/9wJ4ajkNqQsDiYJZiY0G
+ TC3qWCk5ixkJTM9fQp+teniWWVhCu6wRFZr42hO41wEHIa/EQGCw1y7T8Pha2sL6+I9wmQ
+ e77csZh7jMCacsTsWNDqTna/nBeoEf4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1784637663;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=5wlXKHE/9uWNuKOGW+wszI9Zpkz0zorJ+kKE5fpiotQ=;
- b=5Eb3gpKWdVGXJyIGw7kwx3rIzZxFFoIxzbDTvl7/0Iy6mcm4UedNSgQqpKKHzE8WayDx3l
- +VNF8XGDbDFH8pAw==
+ bh=VzUSCWjSnc8PAALlIUNZU9LHQx1AYEczQOVGX7iE/VQ=;
+ b=uRZZ2YW0mQSZumySEAtBxiQSPla9LF9ZkR8WRwdeOsqVgLa03ekc4c4UJWInF4ZVP6Cdr9
+ Vea2JIOn7UqrdIAw==
 Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.de header.s=susede2_rsa header.b=PNSvwAcX;
- dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=5Eb3gpKW
+ dkim=pass header.d=suse.de header.s=susede2_rsa header.b=wADBRUNy;
+ dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=uRZZ2YW0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1784637663; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=5wlXKHE/9uWNuKOGW+wszI9Zpkz0zorJ+kKE5fpiotQ=;
- b=PNSvwAcXkzSv9HwWZO1NIUGzTXhH+PwmvIni+WtlbUeKM7T0eUJTVJLP9odt+ST2AQ7O6B
- gK//W9VRw2peq68XODopAaFuUz2RoRD1IzGnLT3PZ0kho37NIN71QvEekR9YBfEsPf373k
- XG0BOQfd0oPM9lCwOOyrnkJDR5yu4Hg=
+ bh=VzUSCWjSnc8PAALlIUNZU9LHQx1AYEczQOVGX7iE/VQ=;
+ b=wADBRUNyANxUef9AvFY7ts+fGRNXEK51DR/pjAvIxVxUvABkm/9wJ4ajkNqQsDiYJZiY0G
+ TC3qWCk5ixkJTM9fQp+teniWWVhCu6wRFZr42hO41wEHIa/EQGCw1y7T8Pha2sL6+I9wmQ
+ e77csZh7jMCacsTsWNDqTna/nBeoEf4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1784637663;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=5wlXKHE/9uWNuKOGW+wszI9Zpkz0zorJ+kKE5fpiotQ=;
- b=5Eb3gpKWdVGXJyIGw7kwx3rIzZxFFoIxzbDTvl7/0Iy6mcm4UedNSgQqpKKHzE8WayDx3l
- +VNF8XGDbDFH8pAw==
+ bh=VzUSCWjSnc8PAALlIUNZU9LHQx1AYEczQOVGX7iE/VQ=;
+ b=uRZZ2YW0mQSZumySEAtBxiQSPla9LF9ZkR8WRwdeOsqVgLa03ekc4c4UJWInF4ZVP6Cdr9
+ Vea2JIOn7UqrdIAw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3DC48779AA;
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 77909779AB;
  Tue, 21 Jul 2026 12:41:03 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 8PpYDN9oX2plWgAAD6G6ig
+ by imap1.dmz-prg2.suse.org with ESMTPSA id iJSHGt9oX2plWgAAD6G6ig
  (envelope-from <andrea.cervesato@suse.de>); Tue, 21 Jul 2026 12:41:03 +0000
 From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Tue, 21 Jul 2026 14:41:02 +0200
+Date: Tue, 21 Jul 2026 14:41:03 +0200
 MIME-Version: 1.0
-Message-Id: <20260721-rewrite_mremap_testing_suite-v1-2-ec2c3cff6ea4@suse.com>
+Message-Id: <20260721-rewrite_mremap_testing_suite-v1-3-ec2c3cff6ea4@suse.com>
 References: <20260721-rewrite_mremap_testing_suite-v1-0-ec2c3cff6ea4@suse.com>
 In-Reply-To: <20260721-rewrite_mremap_testing_suite-v1-0-ec2c3cff6ea4@suse.com>
 To: Linux Test Project <ltp@lists.linux.it>
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1784637662; l=7609;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1784637662; l=7473;
  i=andrea.cervesato@suse.com; s=20251210; h=from:subject:message-id;
- bh=7/pjqmTtkdvpX+QFtOQsZ8v2XNe6ilIEn5KDm2oQp3g=;
- b=4sChwt0TbROxVegzY76MSNqowjllwQqdSZAf1rfKstFwEYyF1UKNonFiUSe0/pPlnVM3LVr7t
- 6ygGfEpZVgdAYaZGxpD7jAwlJuSAbX+cBvUqb5U3iZhTTS15ioLSIiH
+ bh=g6d++GEYkm4+6xVkM3dgk5ddqf9WwXb/D0r7215A51Y=;
+ b=DC6A7JibgnTzBFY9PezVOjcvPIqfxTVPHJ3M3hx/Ze5d8iLji30DRcogQgjHfrElyFg2KGMU5
+ Nk2REo5Ml34ArZpDA+2NzSqQ1QbBx6bu7vPEJzzhEnutjuFkOE696oa
 X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
  pk=zKY+6GCauOiuHNZ//d8PQ/UL4jFCTKbXrzXAOQSLevI=
 X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: 648B83E09
 X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  NEURAL_HAM_LONG(-1.00)[-1.000];
  NEURAL_HAM_SHORT(-0.20)[-1.000];
@@ -109,12 +108,13 @@ X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
  DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
  RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:mid,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.de:dkim];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:mid,suse.de:dkim,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
  DKIM_TRACE(0.00)[suse.de:+]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: 9D70F3E1D
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 2/5] mremap02: Convert to new API
+Subject: [LTP] [PATCH 3/5] mremap03: Convert to new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -133,25 +133,24 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-Convert the mremap02 test case from the legacy LTP API to the new
+Convert the mremap03 test case from the legacy LTP API to the new
 tst_test API.
 
-Rewrite the test to explicitly construct a genuinely non-page-aligned
-old_address by mapping a single anonymous page and offsetting it by one
-byte, replacing the original's reliance on an uninitialized global
-pointer. Use TST_EXP_FAIL_PTR_VOID() to verify that mremap() fails with
-MAP_FAILED and EINVAL when expanding the mapping.
+Rewrite the test to use TST_EXP_FAIL_PTR_VOID() to verify that
+mremap() fails with MAP_FAILED and EFAULT when growing a mapping
+whose old_address refers to an unmapped region obtained via
+tst_get_bad_addr().
 
 Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
- testcases/kernel/syscalls/mremap/mremap02.c | 197 ++++++----------------------
- 1 file changed, 40 insertions(+), 157 deletions(-)
+ testcases/kernel/syscalls/mremap/mremap03.c | 203 +++++-----------------------
+ 1 file changed, 34 insertions(+), 169 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/mremap/mremap02.c b/testcases/kernel/syscalls/mremap/mremap02.c
-index 2dabc68472a2686a83b7ab7bb2fdd92611a6e8de..7fe699285325748ac3ed985585a2fd7afc348fba 100644
---- a/testcases/kernel/syscalls/mremap/mremap02.c
-+++ b/testcases/kernel/syscalls/mremap/mremap02.c
-@@ -1,178 +1,61 @@
+diff --git a/testcases/kernel/syscalls/mremap/mremap03.c b/testcases/kernel/syscalls/mremap/mremap03.c
+index 02b79bc47bba0ac576182c00711ff2296aaeaf65..6003657d452ce022daeeb5d54a967cf5b69b6248 100644
+--- a/testcases/kernel/syscalls/mremap/mremap03.c
++++ b/testcases/kernel/syscalls/mremap/mremap03.c
+@@ -1,187 +1,52 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
  /*
 - *
@@ -177,16 +176,17 @@ index 2dabc68472a2686a83b7ab7bb2fdd92611a6e8de..7fe699285325748ac3ed985585a2fd7a
   */
  
 -/*
-- * Test Name: mremap02
+- * Test Name: mremap03
 - *
 - * Test Description:
 - *  Verify that,
 - *   mremap() fails when used to expand the existing virtual memory mapped
-- *   region to the requested size, if the virtual memory area previously
-- *   mapped was not page aligned or invalid argument specified.
+- *   region to the requested size, if there already exists mappings that
+- *   cover the whole address space requsted or the old address specified was
+- *   not mapped.
 - *
 - * Expected Result:
-- *  mremap() should return -1 and set errno to EINVAL.
+- *  mremap() should return -1 and set errno to EFAULT.
 - *
 - * Algorithm:
 - *  Setup:
@@ -203,24 +203,24 @@ index 2dabc68472a2686a83b7ab7bb2fdd92611a6e8de..7fe699285325748ac3ed985585a2fd7a
 - *		Issue sys call fails with unexpected errno.
 - *   Otherwise,
 - *	Issue sys call returns unexpected value.
-+/*\
-+ * Verify that :manpage:`mremap(2)` fails with errno ``EINVAL`` when it is used
-+ * to expand an existing mapping while the passed ``old_address`` is not page
-+ * aligned.
-  *
+- *
 - *  Cleanup:
 - *   Print errno log and/or timing stats if options given
-+ * [Algorithm]
++/*\
++ * Verify that :manpage:`mremap(2)` fails with errno ``EFAULT`` when it is used
++ * to expand a mapping whose ``old_address`` refers to a region that is not
++ * mapped.
   *
 - * Usage:  <for command-line>
-- *  mremap02 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
+- *  mremap03 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
 - *     where,  -c n : Run n copies concurrently.
-- *	       -e   : Turn on errno logging.
+- *             -e   : Turn on errno logging.
 - *	       -i n : Execute test n times.
 - *	       -I x : Execute test for x seconds.
 - *	       -p x : Pause for x seconds between iterations.
 - *	       -t   : Turn on syscall timing.
-- *
++ * [Algorithm]
+  *
 - * HISTORY
 - *	07/2001 Ported by Wayne Boyer
 - *
@@ -235,10 +235,10 @@ index 2dabc68472a2686a83b7ab7bb2fdd92611a6e8de..7fe699285325748ac3ed985585a2fd7a
 - *
 - * RESTRICTIONS:
 - *  None.
-+ * - Map a single anonymous page.
-+ * - Call mremap() to grow it to two pages with ``MREMAP_MAYMOVE``, passing a
-+ *   deliberately misaligned ``old_address`` (mapping start + 1 byte).
-+ * - Expect the call to fail with ``MAP_FAILED`` and ``EINVAL``.
++ * - Obtain an unmapped address via ``tst_get_bad_addr()``.
++ * - Call mremap() to grow it to twice its size with ``MREMAP_MAYMOVE``,
++ *   passing the unmapped ``old_address``.
++ * - Expect the call to fail with ``MAP_FAILED`` and ``EFAULT``.
   */
 +
  #define _GNU_SOURCE
@@ -249,17 +249,18 @@ index 2dabc68472a2686a83b7ab7bb2fdd92611a6e8de..7fe699285325748ac3ed985585a2fd7a
 +#include "tst_test.h"
  
 -#include "test.h"
-+static long page_size;
-+static size_t new_size;
-+static void *page;
-+static void *bad_addr;
- 
--char *TCID = "mremap02";
+-
+-char *TCID = "mremap03";
 -int TST_TOTAL = 1;
--char *addr;			/* addr of memory mapped region */
+-static char *bad_addr;
+-static char *addr;		/* addr of memory mapped region */
 -int memsize;			/* memory mapped size */
 -int newsize;			/* new size of virtual memory block */
--
++static long page_size;
++static size_t memsize;
++static size_t newsize;
++static void *bad_addr;
+ 
 -void setup();			/* Main setup function of test */
 -void cleanup();			/* cleanup function for the test */
 -
@@ -271,21 +272,19 @@ index 2dabc68472a2686a83b7ab7bb2fdd92611a6e8de..7fe699285325748ac3ed985585a2fd7a
 -	tst_parse_opts(ac, av, NULL, NULL);
 -
 -	setup();
-+	page_size = getpagesize();
-+	new_size = page_size * 2;
- 
+-
 -	for (lc = 0; TEST_LOOPING(lc); lc++) {
 -
 -		tst_count = 0;
 -
 -		/*
 -		 * Attempt to expand the existing mapped
--		 * memory region (memsize) by newsize limits using
--		 * mremap() should fail as old virtual address is not
--		 * page aligned.
+-		 * memory region (memsize) by newsize limits
+-		 * using mremap() should fail as specified old
+-		 * virtual address was not mapped.
 -		 */
 -		errno = 0;
--		addr = mremap(addr, memsize, newsize, MREMAP_MAYMOVE);
+-		addr = mremap(bad_addr, memsize, newsize, MREMAP_MAYMOVE);
 -		TEST_ERRNO = errno;
 -
 -		/* Check for the return value of mremap() */
@@ -295,61 +294,68 @@ index 2dabc68472a2686a83b7ab7bb2fdd92611a6e8de..7fe699285325748ac3ed985585a2fd7a
 -
 -			/* Unmap the mapped memory region */
 -			if (munmap(addr, newsize) != 0) {
--				tst_brkm(TBROK, cleanup, "munmap fails to "
+-				tst_brkm(TFAIL, cleanup, "munmap fails to "
 -					 "unmap the expanded memory region, "
--					 "error=%d", errno);
+-					 " error=%d", errno);
 -			}
 -			continue;
 -		}
 -
--		if (errno == EINVAL) {
--			tst_resm(TPASS, "mremap() Failed, 'invalid argument "
--				 "specified' - errno %d", TEST_ERRNO);
+-		/* Check for the expected errno */
+-		if (errno == EFAULT) {
+-			tst_resm(TPASS, "mremap() Fails, 'old region not "
+-				 "mapped', errno %d", TEST_ERRNO);
 -		} else {
--			tst_resm(TFAIL, "mremap() Failed, "
+-			tst_resm(TFAIL, "mremap() Fails, "
 -				 "'Unexpected errno %d", TEST_ERRNO);
 -		}
 -	}
 -
 -	cleanup();
 -	tst_exit();
-+	page = SAFE_MMAP(NULL, page_size, PROT_READ | PROT_WRITE,
-+			 MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
++	page_size = getpagesize();
++	memsize = 1000 * page_size;
++	newsize = 2 * memsize;
  
-+	/* Force a non-page-aligned old_address, the invalid argument. */
-+	bad_addr = (char *)page + 1;
++	bad_addr = tst_get_bad_addr(NULL);
  }
  
 -/*
 - * setup() - performs all ONE TIME setup for this test.
 - *
-- * Get system page size, Set the size of virtual memory area and the
-- * new size after resize, Set the virtual memory address such that it
-- * is not aligned.
+- * Get system page size.
+- * Set the old address point some high address which is not mapped.
 - */
 -void setup(void)
 +static void run(void)
  {
-+	TST_EXP_FAIL_PTR_VOID(mremap(bad_addr, page_size, new_size,
-+				     MREMAP_MAYMOVE), EINVAL);
- 
+-	int page_sz;		/* system page size */
+-
 -	tst_sig(FORK, DEF_HANDLER, cleanup);
 -
 -	TEST_PAUSE;
--
++	TST_EXP_FAIL_PTR_VOID(mremap(bad_addr, memsize, newsize,
++				     MREMAP_MAYMOVE), EFAULT);
+ 
 -	/* Get the system page size */
--	if ((memsize = getpagesize()) < 0) {
+-	if ((page_sz = getpagesize()) < 0) {
 -		tst_brkm(TFAIL, NULL,
 -			 "getpagesize() fails to get system page size");
 -	}
 -
+-	/* Get the size of virtual memory area to be mapped */
+-	memsize = (1000 * page_sz);
+-
 -	/* Get the New size of virtual memory block after resize */
 -	newsize = (memsize * 2);
 -
--	/* Set the old virtual memory address */
--	addr = (char *)(addr + (memsize - 1));
+-	/*
+-	 * Set the old virtual address point to some address
+-	 * which is not mapped.
+-	 */
+-	bad_addr = tst_get_bad_addr(cleanup);
 +	if (TST_RET_PTR != MAP_FAILED)
-+		SAFE_MUNMAP(TST_RET_PTR, new_size);
++		SAFE_MUNMAP(TST_RET_PTR, newsize);
  }
  
 -/*
@@ -357,17 +363,13 @@ index 2dabc68472a2686a83b7ab7bb2fdd92611a6e8de..7fe699285325748ac3ed985585a2fd7a
 - *             completion or premature exit.
 - */
 -void cleanup(void)
-+static void cleanup(void)
- {
+-{
 -
 -	/* Exit the program */
 -
-+	SAFE_MUNMAP(page, page_size);
- }
-+
+-}
 +static struct tst_test test = {
 +	.setup = setup,
-+	.cleanup = cleanup,
 +	.test_all = run,
 +};
 
