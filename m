@@ -4,88 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B015AC44529
-	for <ltp@archiver.kernel.org>; Tue, 21 Jul 2026 08:23:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C48F2C44529
+	for <ltp@archiver.kernel.org>; Tue, 21 Jul 2026 08:28:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1784622202; h=message-id :
- to : in-reply-to : date : subject : list-id : list-unsubscribe :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1784622508; h=to : date :
+ message-id : mime-version : subject : list-id : list-unsubscribe :
  list-archive : list-post : list-help : list-subscribe : from :
- reply-to : cc : mime-version : content-type :
- content-transfer-encoding : sender : from;
- bh=ATWAoPZYdD4Ew5K7cG/8HNjj8ElDhuWxkOdNVe6xBII=;
- b=YrJTyvnx2rW1/bVXGOuSk+eWrCXTA5bxMYRcNrMc5UtIdUh8+LGZqxaBko2hvv3LFS/Nr
- VTkEyVolCjswGsC6Wg5W9xOVEw/78qmtvnHjtLxq3jX+X1YVKPbRlyv4fuw6OJEVqrWPGen
- TAGc/FeA59xtq+7A0PbiwLZamthCEyk=
+ reply-to : content-type : content-transfer-encoding : sender : from;
+ bh=gDmXJRN0ppyrY/n7jyO5r48iBtZtMrn5ZdEY2mH10+8=;
+ b=DhLWsdlLcqq6AN8ab/6c5hn4pZYUwsUEHohK6L8Zwk3jkwVaZFV62go2Ml5UCD2Ncbh5E
+ O/vrtYKVYlQAoJc/qlvxTX3G3121JXrBmFd0gbfkl0V4mTgLeHr/I4ye8jj1PR+UclZpNpy
+ XlE3swFyusJo49IqnKh7SXjS8YBEqIw=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C2DE53E624C
-	for <ltp@archiver.kernel.org>; Tue, 21 Jul 2026 10:23:22 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 23FD43E6200
+	for <ltp@archiver.kernel.org>; Tue, 21 Jul 2026 10:28:28 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 263913E203E
- for <ltp@lists.linux.it>; Tue, 21 Jul 2026 10:23:03 +0200 (CEST)
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com
- [IPv6:2a00:1450:4864:20::436])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 24A1A3E203E
+ for <ltp@lists.linux.it>; Tue, 21 Jul 2026 10:28:07 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 89C421400BC4
- for <ltp@lists.linux.it>; Tue, 21 Jul 2026 10:23:02 +0200 (CEST)
-Received: by mail-wr1-x436.google.com with SMTP id
- ffacd0b85a97d-47f365afc5aso5427767f8f.0
- for <ltp@lists.linux.it>; Tue, 21 Jul 2026 01:23:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1784622182; x=1785226982; darn=lists.linux.it;
- h=date:content-transfer-encoding:content-type:subject:in-reply-to:cc
- :to:from:message-id:from:to:cc:subject:date:message-id:reply-to
- :content-type; bh=+tRK6QGC76I4Bgycapp3Ralp9hD0rLCiZGLTUGYma2Y=;
- b=e7JGhw0vKqo0epe2p3fqfl7S63y54i2jvfXP/Qumgv6nvS/Yho+cgm14qb9rnilE2k
- 9ZTSw1NOL8ZFKZPxm15dikR2OrMk+SV1aFpengjDmCa6Du//Zu+prOme7f4aHwidtgcS
- K+yfDMUk6FYY0YFocD+gDs67YDxtXx+usRLLXVlF1luk64sGd1Uylz9NVBkOzxfF1X1Y
- fV2MTqs33m6Nc0SvHyfHpf42/yplzCsAmPus8H6W+N8ce6+0YrzUXjDMOA05AEnufoq7
- XMKgvOAM4HjUtyWjo/rs2fsSmb5Q69fluxToiC+EEB3hpuH5Y+huejsrmdYoXhArD4AJ
- zxsg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1784622182; x=1785226982;
- h=date:content-transfer-encoding:content-type:subject:in-reply-to:cc
- :to:from:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject
- :date:message-id:reply-to:content-type;
- bh=+tRK6QGC76I4Bgycapp3Ralp9hD0rLCiZGLTUGYma2Y=;
- b=WnXKm3H+XyndGx46Xg7L8kiNZCLxJHcKzktouU2XKDbwSUJLCnTPSlJlrmBFj9El/6
- f6EELE6p4zAymBvh+s48IE//XK03bblGyuR90gtamIerIT3wucdEWNhLg9/HsfOcS6l6
- MBAfzl00h4o3QBLv9S1rbskjLdDOOSu+sq7w79J/zpLC9K2JL0ipb6OoeBsYFoqHtMPi
- vztcJw0owSLBA5DMAUBEwbaZFPZaXkrVS89rqpha5J/XKA9/ZcOmzRCjl4mfys/BbMh3
- UqdmFsNug0El3a2ua2zU7nR47N1eU0YAev7joqoCKNX6qMWeyLvGGZYZjmIEeA38hO8W
- ++NQ==
-X-Gm-Message-State: AOJu0YxdvEAxf0o+5xoW5q+Q8fzn17MZsLTpCuaKstCnBN+Hqe3Tszrd
- m/VIsGiJLtGP1YEsTLJO1Gu/uQE2G49egx3cALEVvxKYENlJyOOlcQtiq3mUDvpFe/4Mzj8ajAF
- mASkZRFIikw==
-X-Gm-Gg: AR+sD105JhBfbvMweR20rg0SXGD8f5+GkyXsxYGSkQTNQXxA3h01kzRK5z8VezF0v4g
- XUE4QhfCiphp9i7O2bpkkfHX+pAMuFfSrriYN7Op9T/vRuh/YwrDgDzXa9EUtKTbnEdig+SDCKJ
- 0fEpXSxzduWd/tzWC+rqm9lSwsSNW2zL+lTggHHy4u6VFerV120umBy/oj4Skxju+RuH+BcWvbc
- +HIONzv5Uo6zzFn3lN1YMJdrB+GLNVkxoFoIdHZW62l7l/XHlG0yoVdPVrWhz7TO7CKLldRQwAE
- JM/UBwf2VpIBuJ445YEtLZjiEvaQyKq4a6guba9YEHOHuV8M2C+97w5ud/+80Zf4U2QMYb83lHw
- 4lNGUXrAtbhy/gocsPfhXXgmRJLyy2NnNk9k2IH5iDbiftqT3s5+ZNufZ0/AhUiXu2ddhXjwmLR
- hixBfi9gxTzTSiohmml3m5kNVxFw==
-X-Received: by 2002:a05:6000:4028:b0:47f:81c6:5a38 with SMTP id
- ffacd0b85a97d-47f81c65b4dmr1170479f8f.18.1784622181781; 
- Tue, 21 Jul 2026 01:23:01 -0700 (PDT)
-Received: from localhost.localdomain
- ([2a02:a31b:84a1:b780:6f4e:21d6:82d2:5333])
- by smtp.gmail.com with ESMTPSA id
- ffacd0b85a97d-47f69e5eff1sm27605945f8f.19.2026.07.21.01.23.00
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 21 Jul 2026 01:23:01 -0700 (PDT)
-Message-ID: <6a5f2c65.3fefe569.30a19c.9c0a@mx.google.com>
-To: "Wei Gao" <wegao@suse.com>
-In-Reply-To: <20260721074146.2779-1-wegao@suse.com>
-Date: Tue, 21 Jul 2026 08:22:59 +0000
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 7C396600780
+ for <ltp@lists.linux.it>; Tue, 21 Jul 2026 10:28:05 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1784622484;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=JzWl/3QM8YqLc9QzgDRr0jjr9gy3xI5Im7XGZAR0xWs=;
+ b=LlL9XRIRaBxV1BYXxll6J1hDn8b9U3tCkJWGAXN/ynuHyA7yjxCJdb1VcrVHT0aRAXcTs2
+ cen/oku7n2kxz62dKCvcGOArLN4nHrhMUs6rliV+Av7c8jXidAF1m7w7v9pQzLPhfhxlHl
+ YIQJ7au+L3UIi5fogmF3S9tsWPzqgFc=
+Received: from mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-175-RBti4RtYO2iDyHOePsNQmQ-1; Tue,
+ 21 Jul 2026 04:28:03 -0400
+X-MC-Unique: RBti4RtYO2iDyHOePsNQmQ-1
+X-Mimecast-MFC-AGG-ID: RBti4RtYO2iDyHOePsNQmQ_1784622482
+Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com
+ (mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.17])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
+ id F3638195F175
+ for <ltp@lists.linux.it>; Tue, 21 Jul 2026 08:28:01 +0000 (UTC)
+Received: from tdzik-thinkpadt14gen6.tpbc.csb (unknown [10.43.3.29])
+ by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP
+ id 5796A1954231
+ for <ltp@lists.linux.it>; Tue, 21 Jul 2026 08:28:00 +0000 (UTC)
+To: ltp@lists.linux.it
+Date: Tue, 21 Jul 2026 10:27:49 +0200
+Message-ID: <cover.1784183478.git.tdzik@redhat.com>
+MIME-Version: 1.0
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.17
+X-Mimecast-Spam-Score: 0
+X-Mimecast-MFC-PROC-ID: _W_oh7mkg7rXWKjZ44x0Wd-VrquHUbpiht32B5mVj6A_1784622482
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v11 0/2] open16: allow restricted O_CREAT of FIFOs
- and regular files
+Subject: [LTP] [PATCH v6 0/3] Fix to float_trigo core dump and related
+ enhancements
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -97,28 +83,42 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Cc: ltp@lists.linux.it
-MIME-Version: 1.0
+From: Tomas Dzik via ltp <ltp@lists.linux.it>
+Reply-To: Tomas Dzik <tdzik@redhat.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
+Message-ID: <20260721082749.8OJSzuE35vu1_Y_61sZnVwxyf56POJuY1Go0tkrRjiw@z>
 
-Hi Wei,
+Hi all,
+following 3 patches fix a core dump we observed during testing. Because
+failed malloc() was contributing factor to it I added also some checks
+to malloc() return value. And since I was editing these files I spotted
+that they use sprintf() and I replaced it with snprintf() which is IMHO
+safer and can make debugging test failures easier.
+I would be grateful for review.
 
-can you please send the patch-set in a new thread, instead of replying
-to the old version? we are having a really long thread in the lore
-instance and it's getting diffciult to read.
+Best regards,
+Tomas D.
 
-https://lore.kernel.org/ltp/20250516151028.1254207-1-wegao@suse.com/
+Tomas Dzik (3):
+  LTP/Lite test float_trigo core dumps due to free(): invalid pointer
+  float: add malloc() NULL check in gen* data generator tools
+  Replace sprintf() with more secure snprintf() variant in float tests
 
-Thanks,
---
-Andrea Cervesato
-SUSE QE Automation Engineer Linux
-andrea.cervesato@suse.com
+ testcases/misc/math/float/bessel/genbessel.c  | 10 +++---
+ .../misc/math/float/exp_log/genexp_log.c      | 24 ++++++++++----
+ testcases/misc/math/float/iperb/geniperb.c    | 11 +++++--
+ testcases/misc/math/float/main.c              | 18 +++++++---
+ testcases/misc/math/float/power/genpower.c    | 21 ++++++++----
+ testcases/misc/math/float/thread_code.c       | 33 +++++++++++++------
+ testcases/misc/math/float/trigo/gentrigo.c    | 24 ++++++++++----
+ 7 files changed, 98 insertions(+), 43 deletions(-)
+
+-- 
+2.55.0
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
