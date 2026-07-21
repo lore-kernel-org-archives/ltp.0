@@ -4,105 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 677CDC4451C
-	for <ltp@archiver.kernel.org>; Tue, 21 Jul 2026 20:26:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A9928C4452D
+	for <ltp@archiver.kernel.org>; Tue, 21 Jul 2026 21:21:59 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C96A53E211E
-	for <ltp@archiver.kernel.org>; Tue, 21 Jul 2026 22:26:12 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 6C7FB3E95DB
+	for <ltp@archiver.kernel.org>; Tue, 21 Jul 2026 23:21:57 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0FB783E62A7
- for <ltp@lists.linux.it>; Tue, 21 Jul 2026 22:25:07 +0200 (CEST)
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
- [148.163.156.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 85D0A3E1B59
+ for <ltp@lists.linux.it>; Tue, 21 Jul 2026 23:21:40 +0200 (CEST)
+Received: from mail-qk2-x0b.google.com (mail-qk2-x0b.google.com
+ [IPv6:2607:f8b0:4864:34::b])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 241E7600FB8
- for <ltp@lists.linux.it>; Tue, 21 Jul 2026 22:25:06 +0200 (CEST)
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id
- 66LHBcUW3959084; Tue, 21 Jul 2026 20:25:05 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
- :content-transfer-encoding:content-type:date:from:in-reply-to
- :message-id:mime-version:references:subject:to; s=pp1; bh=2DS50w
- T0RjOyUGFaFRwB1qHsHGwDKUIEut+Vnoo5D58=; b=a+7DB0WmXoMXpJd1la/GHf
- EUQYQoQ3oQOIT9TPkkO7ZYqsKfwT1cuDsuZcYOtkf0JawlGpHZqZCDthHDCcQ4Pg
- Zclct0deltF16/I05ZOUTd5C/x/vByB6xZDv7e6kzs3z2fyRs5NMCxiLoNy6gp4W
- LMYoFMT34prbQoqAHr49OIydXDcETuV2z7nzBIoYZZ1mPwDZq8wSPOGU5JlFydKR
- vZ8Hf8lW70uFiyf2I1USp1k5Op6vpafVc3YJCjx9Za8DuwQIuDwKoPeOvnjtognu
- BKaUllrtOp8tuPsAsRtQi9sB3iNLpmgJ9GgWAxj9RPnv/wavMKiS0KOs0h51heYA
- ==
-Received: from ppma13.dal12v.mail.ibm.com
- (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4fg77aenxr-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Tue, 21 Jul 2026 20:25:04 +0000 (GMT)
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
- by ppma13.dal12v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 66LKJaak028229;
- Tue, 21 Jul 2026 20:25:04 GMT
-Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
- by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 4fgp1gbxuk-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Tue, 21 Jul 2026 20:25:04 +0000 (GMT)
-Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com
- [10.20.54.105])
- by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 66LKP00N37880216
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Tue, 21 Jul 2026 20:25:00 GMT
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 59A55200C4;
- Tue, 21 Jul 2026 20:25:00 +0000 (GMT)
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 21432200C5;
- Tue, 21 Jul 2026 20:25:00 +0000 (GMT)
-Received: from li-276bd24c-2dcc-11b2-a85c-945b6f05615c.ibm.com.com (unknown
- [9.87.158.239]) by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
- Tue, 21 Jul 2026 20:25:00 +0000 (GMT)
-From: Jan Polensky <japo@linux.ibm.com>
-To: ltp@lists.linux.it
-Date: Tue, 21 Jul 2026 22:24:51 +0200
-Message-ID: <20260721202452.315581-4-japo@linux.ibm.com>
-X-Mailer: git-send-email 2.55.0
-In-Reply-To: <20260721202452.315581-1-japo@linux.ibm.com>
-References: <20260721202452.315581-1-japo@linux.ibm.com>
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 087196021EF
+ for <ltp@lists.linux.it>; Tue, 21 Jul 2026 23:21:40 +0200 (CEST)
+Received: by mail-qk2-x0b.google.com with SMTP id
+ d75a77b69052e-51e47c6269bso40558541cf.1
+ for <ltp@lists.linux.it>; Tue, 21 Jul 2026 14:21:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20251104; t=1784668899; x=1785273699; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to:content-type;
+ bh=BaSHOTeafZqEan9qxVuQPkUVoRsBhaoP25HwN+lhgCM=;
+ b=BraYvGao1Im7ktGaQq9gS+7wSlyCW8O/eN0mVO2eIZXm/yTl6HImQ14mEA3rWd9n9J
+ Mo4hpeVXVXwB1WCgYngzsfuCW1nnbEQ4bDiWhUxS8EdZEZlQaH/MghhiU+k3+u9SOHqA
+ /OGw9Sht5cechJ2DLntqnLYK+6ikwZEZMVUSrt4kjOd0uEFUDjiLVKxb03lCerx9sOB9
+ yc7X/ONhni+ZyQVXmZJnuGDbxxbIxMwEXZiGuSYjC+fetN8A2zQowWHZ08Vn+50TsOy6
+ Ob9QOUiBDL6ZNWkcR0ANPvmy3vrr9eP2OJs6ueNZotUKSPfbEzPU2MjHv9JMN+K4Y6jF
+ LmkQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1784668899; x=1785273699;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to:content-type;
+ bh=BaSHOTeafZqEan9qxVuQPkUVoRsBhaoP25HwN+lhgCM=;
+ b=az2IN7WmHTw0cDXZQq8BPEceLmBE78dfzUUdJa16NRcZxBxAGXdLkbJbVnhLZCUAaB
+ 143Xz/m5aEQ0vLBuqtoIAOw7VYbjHi8v7exzL72/JHEMmOHW7cAHPtBXipHdHoiLFT+B
+ M6M6G4dKCpD/UW9NrkNItBMJ4JP1XgBf/g2c0HG55JY+rLj5iTDajLxq7MCwKkVHokNK
+ oT+h15gZr+4845xoCwT5R+oOte0gukQMkZVv1+HA+GoDB/SXQCLXZddNbzSz7cSB6C/j
+ vXLTAp9j4IjRFExQ/H+KS+rRTvJ5nZTdkG5zb9IWc00Xnaj20V93mjvlbVO31rHvkNLI
+ 05TA==
+X-Gm-Message-State: AOJu0YwXAPzm65khOsNylDUZ4WvBg7rAKcLrRlQfZ2rFiC3wdXdkLihY
+ ZCwLOCNZBncR/Qigi58M3c1NG7Ugr8LyFAfRn0mdI/i6JpmCTv8Hi9GK
+X-Gm-Gg: AfdE7ckCWDxwATYaD1wKdqYHe+MnVomO/tZ1HBdUK6laltepIrsnnBcJT68y9PktNV+
+ /iX57iQLD0HC6FYjKmaIQyQcny78UBNKEsFVyG8+GB91uAb6yIkDKpFHJItfsTV/DbOT22hEbuq
+ A5kL3UyvqyskQ9APxTkwvJ9i8Vft9LECBaskedUxr93WUC82AtOVsrLB8SWSj+9KGpLCS3/ZchQ
+ LmUfr+eee7DaNX/7ZV054VrUjtvfnI8cAi1oyBoSmRO03cPilfyx4xjXebAwOewHYEJox7W8WJV
+ h1v+sOxbtRd9DH9rOiR3JHPr5ODzI/K9B0JtQ5ShMowWcZEujRV05NqltuuFlY8ZRvBuqX3zZB4
+ 0n7O7Li+pCUQpgBTdogYiHAL8nGeeqj5SXJ3/Zvjs77RBkpDBtcKxkFBzFQ7o5Wql8ON80ClTwH
+ ml0dqIerKva/jwFq2eqO/ce/FKf1HGCeJpGzZaycY8ygIj5BDX0Rvq/d4FfWW+6FkXAeaWh+ydi
+ w6oS1C1JYiceQuhMCI=
+X-Received: by 2002:a05:622a:1b20:b0:519:5629:20a2 with SMTP id
+ d75a77b69052e-5213d4b0170mr184897931cf.36.1784668898529; 
+ Tue, 21 Jul 2026 14:21:38 -0700 (PDT)
+Received: from
+ runnervm3jd5f.moswaw1qwtoepjndkdztdbvrth.bx.internal.cloudapp.net
+ ([20.102.103.200]) by smtp.gmail.com with ESMTPSA id
+ d75a77b69052e-527d402caf9sm2897301cf.30.2026.07.21.14.21.38
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 21 Jul 2026 14:21:38 -0700 (PDT)
+From: linuxtestproject.agent@gmail.com
+To: Jan Polensky <japo@linux.ibm.com>
+Date: Tue, 21 Jul 2026 21:21:37 +0000
+Message-ID: <20260721212137.4220-1-linuxtestproject.agent@gmail.com>
+X-Mailer: git-send-email 2.54.0
+In-Reply-To: <20260721202452.315581-2-japo@linux.ibm.com>
+References: <20260721202452.315581-2-japo@linux.ibm.com>
 MIME-Version: 1.0
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 1eh-VTRwG_OzDoXLfXtcLtl2IMsfwr-X
-X-Proofpoint-Spam-Info: AW1haW4tMjYwNzIxMDIxMCBTYWx0ZWRfX/W9Gknmi7a48
- SGS/kuIucgNQ/RKuXKCy9SOa58L5c1sIgKX72rdxW2czgJWJJrfsxuhl4v/tG+gotJ5X6xDAXCb
- sVfq6ulrHvzMgWjhcagDlvSz+8u6yw4=
-X-Proofpoint-GUID: 1eh-VTRwG_OzDoXLfXtcLtl2IMsfwr-X
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNzIxMDIxMCBTYWx0ZWRfX6CAnRD9l8QCd
- glP2tzNYsvG8yEfvikUKOXq3wm8MFQSAFldgvsEuJ0lUwhNUGbhNSSd4+G0g4Fdp6CgZNkdT60b
- x9CHWOA+Kug6LRl37X1/FIcNshe0hUrjB1zhILPy0jqrdrFQEOlFRdihA4BFMD6oQla8ha5l//q
- FwW6To2Uj0VTv295EBCnxdIZS8r1cWDzRZu46t5Ee4p4xsQ/5QBJRbBGBCvRLnuO8wtiS2xLVUL
- igUkqkwVOTkGJVlTfZOyDh/k9GpjHDa0nbX60x1C64wjDGdiA24v3GTJgtqcDUeZ7CWbRGW1wmC
- 2TZv5PuNMM1GaS0XvjgO+C5ebxVFygHMQlbORUGyOtQxw3HGPI4ToKIhGAsEccxLFkDEAxCSdI5
- Fwy3ybnE6NkSuB2R4nBFY0z9QtzL47jr1j+5kdsK+9t5JEbJ0r2zxxLb/DZ4v17ndB5VFpxShA+
- j336nweGJXqziXrjR+g==
-X-Authority-Analysis: v=2.4 cv=K7AS2SWI c=1 sm=1 tr=0 ts=6a5fd5a1 cx=c_pps
- a=AfN7/Ok6k8XGzOShvHwTGQ==:117 a=AfN7/Ok6k8XGzOShvHwTGQ==:17
- a=IkcTkHD0fZMA:10 a=RAioF0-LDSMA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=RnoormkPH1_aCDwRdu11:22 a=uAbxVGIbfxUO_5tXvNgY:22 a=VnNF1IyMAAAA:8
- a=6pSmv7tjuMZDC-KQ6YgA:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.134,FMLib:17.12.100.49
- definitions=2026-07-21_03,2026-07-21_01,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- lowpriorityscore=0 suspectscore=0 bulkscore=0 clxscore=1015
- priorityscore=1501 spamscore=0 phishscore=0 malwarescore=0 adultscore=0
- impostorscore=0 classifier=typeunknown authscore=0 authtc= authcc=
- route=outbound adjust=0 reason=mlx scancount=1 engine=8.22.0-2606150000
- definitions=main-2607210210
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3 3/3] ptrace: add test for /proc/pid/mem writes
- under ptrace
+Subject: Re: [LTP] thp04: Simplify to focus on CVE-2017-1000405 race test
+ only
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -114,129 +92,89 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-QWRkIHB0cmFjZTEzIHRvIHZlcmlmeSB0aGF0IGEgdHJhY2VyIGNhbiB3cml0ZSB0byB0cmFjZWUg
-bWVtb3J5IHZpYQovcHJvYy9waWQvbWVtIHdoZW4gQ09ORklHX1BST0NfTUVNX0ZPUkNFX1BUUkFD
-RT15IGlzIGFjdGl2ZS4KClRoZSB0ZXN0IHVzZXMgUFRSQUNFX1NFSVpFIHRvIGF0dGFjaCB0byBh
-IGNoaWxkIHByb2Nlc3MgYW5kIHdyaXRlcyB0bwppdHMgcmVhZC1vbmx5IG1lbW9yeSBwYWdlcyB2
-aWEgL3Byb2MvcGlkL21lbS4gVGhpcyB2YWxpZGF0ZXMgdGhhdDoKLSBGT0xMX0ZPUkNFIGlzIGFs
-bG93ZWQgd2hlbiBhY3RpdmVseSBwdHJhY2luZwotIFBhcmVudCBjYW4gbW9kaWZ5IGNoaWxkJ3Mg
-cmVhZC1vbmx5IG1lbW9yeQotIFdyaXRlLXN0b3AtY29udGludWUgY3ljbGUgd29ya3MgY29ycmVj
-dGx5ICgxMDAgaXRlcmF0aW9ucykKClRlc3QgdmFsaWRhdGVzIGtlcm5lbCBjb21taXQgNDFlODE0
-OWM4ODkyICgicHJvYzogYWRkIGNvbmZpZyAmIHBhcmFtIHRvCmJsb2NrIGZvcmNpbmcgbWVtIHdy
-aXRlcyIpLgoKU2lnbmVkLW9mZi1ieTogSmFuIFBvbGVuc2t5IDxqYXBvQGxpbnV4LmlibS5jb20+
-Ci0tLQogcnVudGVzdC9zeXNjYWxscyAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAgMSAr
-CiB0ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3B0cmFjZS8uZ2l0aWdub3JlIHwgICAxICsKIHRl
-c3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvcHRyYWNlL3B0cmFjZTEzLmMgfCAyMDQgKysrKysrKysr
-KysrKysrKysrKysKIDMgZmlsZXMgY2hhbmdlZCwgMjA2IGluc2VydGlvbnMoKykKIGNyZWF0ZSBt
-b2RlIDEwMDY0NCB0ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3B0cmFjZS9wdHJhY2UxMy5jCgpk
-aWZmIC0tZ2l0IGEvcnVudGVzdC9zeXNjYWxscyBiL3J1bnRlc3Qvc3lzY2FsbHMKaW5kZXggOWRm
-NDY4NGNjYTQxLi40NzZjNjlkNGM1ZjAgMTAwNjQ0Ci0tLSBhL3J1bnRlc3Qvc3lzY2FsbHMKKysr
-IGIvcnVudGVzdC9zeXNjYWxscwpAQCAtMTE3Nyw2ICsxMTc3LDcgQEAgcHRyYWNlMTAgcHRyYWNl
-MTAKIHB0cmFjZTExIHB0cmFjZTExCiAKIHB0cmFjZTEyIHB0cmFjZTEyCitwdHJhY2UxMyBwdHJh
-Y2UxMwogcHdyaXRlMDEgcHdyaXRlMDEKIHB3cml0ZTAyIHB3cml0ZTAyCiBwd3JpdGUwMyBwd3Jp
-dGUwMwpkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9wdHJhY2UvLmdpdGln
-bm9yZSBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvcHRyYWNlLy5naXRpZ25vcmUKaW5kZXgg
-ODYzMTIxOTMxMmQ1Li43MmY5Y2VmOThlMjIgMTAwNjQ0Ci0tLSBhL3Rlc3RjYXNlcy9rZXJuZWwv
-c3lzY2FsbHMvcHRyYWNlLy5naXRpZ25vcmUKKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxs
-cy9wdHJhY2UvLmdpdGlnbm9yZQpAQCAtMTAsMyArMTAsNCBAQAogL3B0cmFjZTEwCiAvcHRyYWNl
-MTEKIC9wdHJhY2UxMgorL3B0cmFjZTEzCmRpZmYgLS1naXQgYS90ZXN0Y2FzZXMva2VybmVsL3N5
-c2NhbGxzL3B0cmFjZS9wdHJhY2UxMy5jIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9wdHJh
-Y2UvcHRyYWNlMTMuYwpuZXcgZmlsZSBtb2RlIDEwMDY0NAppbmRleCAwMDAwMDAwMDAwMDAuLmEw
-NTJmYWI4MWNiNgotLS0gL2Rldi9udWxsCisrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMv
-cHRyYWNlL3B0cmFjZTEzLmMKQEAgLTAsMCArMSwyMDQgQEAKKy8vIFNQRFgtTGljZW5zZS1JZGVu
-dGlmaWVyOiBHUEwtMi4wLW9yLWxhdGVyCisvKgorICogQ29weXJpZ2h0IChjKSAyMDI1IFNVU0Ug
-TExDIDxqYXBvQHN1c2UuY3o+CisgKi8KKworLypcCisgKiBWZXJpZnkgdGhhdCBhIHBhcmVudCBw
-cm9jZXNzIGNhbiB3cml0ZSB0byBhIHRyYWNlZCBjaGlsZCdzIG1lbW9yeQorICogdmlhIC9wcm9j
-L3BpZC9tZW0gd2hlbiB0aGUgY2hpbGQgaXMgaW4gYSBzdG9wcGVkIHN0YXRlLgorICoKKyAqIFRo
-aXMgdGVzdCB2YWxpZGF0ZXMgdGhlIHB0cmFjZS1iYXNlZCBtZW1vcnkgd3JpdGUgbWVjaGFuaXNt
-IHRoYXQKKyAqIGJlY29tZXMgbWFuZGF0b3J5IHdoZW4gQ09ORklHX1BST0NfTUVNX0ZPUkNFX1BU
-UkFDRT15IGlzIGFjdGl2ZS4KKyAqCisgKiBUZXN0IGZsb3c6CisgKgorICogMS4gUGFyZW50IGZv
-cmtzIGEgY2hpbGQgcHJvY2VzcworICogMi4gQ2hpbGQgc2lnbmFscyByZWFkaW5lc3MgdmlhIGNo
-ZWNrcG9pbnQKKyAqIDMuIFBhcmVudCBhdHRhY2hlcyB3aXRoIFBUUkFDRV9TRUlaRQorICogNC4g
-Q2hpbGQgc2VsZi1zdG9wcyB3aXRoIHJhaXNlKFNJR1NUT1ApCisgKiA1LiBQYXJlbnQgd3JpdGVz
-IHRvIGNoaWxkJ3MgbWVtb3J5IHZpYSAvcHJvYy9waWQvbWVtCisgKiA2LiBQYXJlbnQgY29udGlu
-dWVzIGNoaWxkIHdpdGggUFRSQUNFX0NPTlQKKyAqIDcuIENoaWxkIHZlcmlmaWVzIHRoZSB3cml0
-ZSB0b29rIGVmZmVjdAorICogOC4gUmVwZWF0IGZvciBtdWx0aXBsZSBpdGVyYXRpb25zCisgKgor
-ICogVGhlIHRlc3QgdXNlcyBjaGVja3BvaW50IHN5bmNocm9uaXphdGlvbiB0byBwcmV2ZW50IHJh
-Y2UgY29uZGl0aW9ucworICogZHVyaW5nIHB0cmFjZSBhdHRhY2htZW50LgorICovCisKKyNpbmNs
-dWRlIDxlcnJuby5oPgorI2luY2x1ZGUgPGZjbnRsLmg+CisjaW5jbHVkZSA8c2lnbmFsLmg+Cisj
-aW5jbHVkZSA8c3RyaW5nLmg+CisjaW5jbHVkZSA8c3lzL21tYW4uaD4KKyNpbmNsdWRlIDxzeXMv
-cHRyYWNlLmg+CisjaW5jbHVkZSA8c3lzL3dhaXQuaD4KKyNpbmNsdWRlIDx1bmlzdGQuaD4KKwor
-I2luY2x1ZGUgInRzdF90ZXN0LmgiCisjaW5jbHVkZSAidHN0X2NoZWNrcG9pbnQuaCIKKworI2Rl
-ZmluZSBURVNUX0lURVJBVElPTlMgMTAwCisKK3N0cnVjdCBzaGFyZWRfc3RhdGUgeworCWludCAq
-dGVzdF9wdHI7CisJaW50IGV4cGVjdGVkX3ZhbDsKK307CisKK3N0YXRpYyBzdHJ1Y3Qgc2hhcmVk
-X3N0YXRlICpzaGFyZWQ7CitzdGF0aWMgcGlkX3QgdHJhY2VlX3BpZDsKKworc3RhdGljIHZvaWQg
-dHJhY2VlX21haW4odm9pZCkKK3sKKwlpbnQgaTsKKworCXNoYXJlZC0+dGVzdF9wdHIgPSBTQUZF
-X01NQVAoTlVMTCwgc2l6ZW9mKGludCksIFBST1RfUkVBRCB8IFBST1RfV1JJVEUsCisJCQkJICAg
-ICBNQVBfUFJJVkFURSB8IE1BUF9BTk9OWU1PVVMsIC0xLCAwKTsKKwkqc2hhcmVkLT50ZXN0X3B0
-ciA9IDA7CisKKwkvKiBGb3JjZSBwYXJlbnQgd3JpdGUgdGhyb3VnaCAvcHJvYy9waWQvbWVtIHRv
-IHJlcXVpcmUgRk9MTF9GT1JDRSAqLworCVNBRkVfTVBST1RFQ1QoKHZvaWQgKilzaGFyZWQtPnRl
-c3RfcHRyLCBzaXplb2YoaW50KSwgUFJPVF9SRUFEKTsKKworCVRTVF9DSEVDS1BPSU5UX1dBS0Uo
-MCk7CisJVFNUX0NIRUNLUE9JTlRfV0FJVCgxKTsKKwlyYWlzZShTSUdTVE9QKTsKKworCWZvciAo
-aSA9IDA7IGkgPCBURVNUX0lURVJBVElPTlM7IGkrKykgeworCQlpZiAoKnNoYXJlZC0+dGVzdF9w
-dHIgIT0gc2hhcmVkLT5leHBlY3RlZF92YWwpIHsKKwkJCXRzdF9yZXMoVEZBSUwsCisJCQkJIkl0
-ZXJhdGlvbiAlZDogZXhwZWN0ZWQgMHgleCAod3JpdHRlbiBpbiBpdGVyYXRpb24gJWQpLCBnb3Qg
-MHgleCIsCisJCQkJaSwgc2hhcmVkLT5leHBlY3RlZF92YWwsIGkgPiAwID8gaS0xIDogMCwgKnNo
-YXJlZC0+dGVzdF9wdHIpOworCQkJZXhpdCgxKTsKKwkJfQorCisJCXJhaXNlKFNJR1NUT1ApOwor
-CX0KKworCXdoaWxlICgxKQorCQlwYXVzZSgpOworfQorCitzdGF0aWMgdm9pZCBzZXR1cCh2b2lk
-KQoreworCS8qIEFsbG9jYXRlIHNoYXJlZCBtZW1vcnkgZm9yIHBhcmVudC1jaGlsZCBjb21tdW5p
-Y2F0aW9uICovCisJc2hhcmVkID0gU0FGRV9NTUFQKE5VTEwsIHNpemVvZigqc2hhcmVkKSwgUFJP
-VF9SRUFEIHwgUFJPVF9XUklURSwKKwkJCSAgIE1BUF9TSEFSRUQgfCBNQVBfQU5PTllNT1VTLCAt
-MSwgMCk7CisJbWVtc2V0KHNoYXJlZCwgMCwgc2l6ZW9mKCpzaGFyZWQpKTsKK30KKworc3RhdGlj
-IHZvaWQgcnVuKHZvaWQpCit7CisJY2hhciBwYXRoWzY0XTsKKwlpbnQgbWVtZmQ7CisJaW50IHN0
-YXR1czsKKwlpbnQgaTsKKworCXRyYWNlZV9waWQgPSBTQUZFX0ZPUksoKTsKKwlpZiAoIXRyYWNl
-ZV9waWQpIHsKKwkJdHJhY2VlX21haW4oKTsKKwkJZXhpdCgwKTsKKwl9CisKKwlUU1RfQ0hFQ0tQ
-T0lOVF9XQUlUKDApOworCVNBRkVfUFRSQUNFKFBUUkFDRV9TRUlaRSwgdHJhY2VlX3BpZCwgTlVM
-TCwgTlVMTCk7CisJVFNUX0NIRUNLUE9JTlRfV0FLRSgxKTsKKwlTQUZFX1dBSVRQSUQodHJhY2Vl
-X3BpZCwgJnN0YXR1cywgMCk7CisKKwlpZiAoV0lGRVhJVEVEKHN0YXR1cykpIHsKKwkJdHN0X2Jy
-ayhUQlJPSywKKwkJCSJUcmFjZWUgZXhpdGVkIHVuZXhwZWN0ZWRseSBiZWZvcmUgZmlyc3QgU0lH
-U1RPUDogJXMiLAorCQkJdHN0X3N0cnN0YXR1cyhzdGF0dXMpKTsKKwl9CisKKwlpZiAoV0lGU0lH
-TkFMRUQoc3RhdHVzKSkgeworCQl0c3RfYnJrKFRCUk9LLAorCQkJIlRyYWNlZSB3YXMga2lsbGVk
-IGJlZm9yZSBmaXJzdCBTSUdTVE9QOiAlcyIsCisJCQl0c3Rfc3Ryc3RhdHVzKHN0YXR1cykpOwor
-CX0KKworCWlmICghV0lGU1RPUFBFRChzdGF0dXMpIHx8IFdTVE9QU0lHKHN0YXR1cykgIT0gU0lH
-U1RPUCkgeworCQl0c3RfYnJrKFRCUk9LLAorCQkJIlRyYWNlZSBkaWQgbm90IHNlbGYtc3RvcCB3
-aXRoIFNJR1NUT1A6ICVzIiwKKwkJCXRzdF9zdHJzdGF0dXMoc3RhdHVzKSk7CisJfQorCisJc25w
-cmludGYocGF0aCwgc2l6ZW9mKHBhdGgpLCAiL3Byb2MvJWQvbWVtIiwgdHJhY2VlX3BpZCk7CisJ
-bWVtZmQgPSBTQUZFX09QRU4ocGF0aCwgT19SRFdSKTsKKworCS8qCisJICogV3JpdGUtc3RvcC1j
-b250aW51ZSBjeWNsZTogdHJhY2VlIGlzIGFscmVhZHkgc3RvcHBlZCBmcm9tIGluaXRpYWwgcmFp
-c2UoU0lHU1RPUCkuCisJICogUGF0dGVybjogd3JpdGUg4oaSIGNvbnRpbnVlIOKGkiB0cmFjZWUg
-dmVyaWZpZXMg4oaSIHRyYWNlZSBzdG9wcyDihpIgcmVwZWF0CisJICovCisJZm9yIChpID0gMDsg
-aSA8IFRFU1RfSVRFUkFUSU9OUzsgaSsrKSB7CisJCWludCB3cml0ZV92YWwgPSAweGRlYWQwMDAw
-IHwgaTsKKworCQlzaGFyZWQtPmV4cGVjdGVkX3ZhbCA9IHdyaXRlX3ZhbDsKKwkJU0FGRV9MU0VF
-SyhtZW1mZCwgKG9mZl90KXNoYXJlZC0+dGVzdF9wdHIsIFNFRUtfU0VUKTsKKwkJU0FGRV9XUklU
-RShTQUZFX1dSSVRFX0FMTCwgbWVtZmQsICZ3cml0ZV92YWwsIHNpemVvZih3cml0ZV92YWwpKTsK
-KwkJU0FGRV9QVFJBQ0UoUFRSQUNFX0NPTlQsIHRyYWNlZV9waWQsIE5VTEwsIE5VTEwpOworCQlT
-QUZFX1dBSVRQSUQodHJhY2VlX3BpZCwgJnN0YXR1cywgMCk7CisKKwkJaWYgKFdJRkVYSVRFRChz
-dGF0dXMpKSB7CisJCQlpZiAoV0VYSVRTVEFUVVMoc3RhdHVzKSA9PSAwKSB7CisJCQkJdHN0X2Jy
-ayhUQlJPSywKKwkJCQkJIlRyYWNlZSBleGl0ZWQgdW5leHBlY3RlZGx5IGF0IGl0ZXJhdGlvbiAl
-ZDogJXMiLAorCQkJCQlpLCB0c3Rfc3Ryc3RhdHVzKHN0YXR1cykpOworCQkJfQorCQkJLyogVHJh
-Y2VlIHJlcG9ydGVkIGZhaWx1cmUgYW5kIGV4aXRlZCAqLworCQkJU0FGRV9DTE9TRShtZW1mZCk7
-CisJCQl0cmFjZWVfcGlkID0gMDsKKwkJCXJldHVybjsKKwkJfQorCisJCWlmIChXSUZTSUdOQUxF
-RChzdGF0dXMpKSB7CisJCQl0c3RfYnJrKFRCUk9LLAorCQkJCSJUcmFjZWUgd2FzIGtpbGxlZCBh
-dCBpdGVyYXRpb24gJWQ6ICVzIiwKKwkJCQlpLCB0c3Rfc3Ryc3RhdHVzKHN0YXR1cykpOworCQl9
-CisKKwkJaWYgKCFXSUZTVE9QUEVEKHN0YXR1cykgfHwgV1NUT1BTSUcoc3RhdHVzKSAhPSBTSUdT
-VE9QKSB7CisJCQl0c3RfYnJrKFRCUk9LLAorCQkJCSJUcmFjZWUgZGlkIG5vdCBzdG9wIGNvcnJl
-Y3RseSBhdCBpdGVyYXRpb24gJWQ6ICVzIiwKKwkJCQlpLCB0c3Rfc3Ryc3RhdHVzKHN0YXR1cykp
-OworCQl9CisJfQorCisJU0FGRV9DTE9TRShtZW1mZCk7CisKKwkvKiBUZXN0IHBhc3NlZCAtIGFs
-bCB3cml0ZXMgd2VyZSBzdWNjZXNzZnVsIGFuZCB0cmFjZWUgdmVyaWZpZWQgdGhlbSAqLworCXRz
-dF9yZXMoVFBBU1MsCisJCSJTdWNjZXNzZnVsbHkgd3JvdGUgdG8gdHJhY2VlIG1lbW9yeSB2aWEg
-L3Byb2MvcGlkL21lbSAiCisJCSJmb3IgJWQgaXRlcmF0aW9ucyIsIFRFU1RfSVRFUkFUSU9OUyk7
-CisKKwkvKiBEZXRhY2ggYW5kIHRlcm1pbmF0ZSB0cmFjZWUgKi8KKwlTQUZFX1BUUkFDRShQVFJB
-Q0VfREVUQUNILCB0cmFjZWVfcGlkLCBOVUxMLCBOVUxMKTsKKwlTQUZFX0tJTEwodHJhY2VlX3Bp
-ZCwgU0lHS0lMTCk7CisJU0FGRV9XQUlUUElEKHRyYWNlZV9waWQsICZzdGF0dXMsIDApOworCXRy
-YWNlZV9waWQgPSAwOworfQorCitzdGF0aWMgdm9pZCBjbGVhbnVwKHZvaWQpCit7CisJaWYgKHRy
-YWNlZV9waWQgPiAwKSB7CisJCS8qIEtpbGwgdHJhY2VlIGlmIHN0aWxsIGFsaXZlIChlLmcuLCB0
-ZXN0IGFib3J0ZWQpICovCisJCWlmIChraWxsKHRyYWNlZV9waWQsIDApID09IDApIHsKKwkJCVNB
-RkVfS0lMTCh0cmFjZWVfcGlkLCBTSUdLSUxMKTsKKwkJCXRzdF9yZWFwX2NoaWxkcmVuKCk7CisJ
-CX0KKwkJdHJhY2VlX3BpZCA9IDA7CisJfQorCisJaWYgKHNoYXJlZCkKKwkJU0FGRV9NVU5NQVAo
-c2hhcmVkLCBzaXplb2YoKnNoYXJlZCkpOworfQorCitzdGF0aWMgc3RydWN0IHRzdF90ZXN0IHRl
-c3QgPSB7CisJLnRlc3RfYWxsID0gcnVuLAorCS5zZXR1cCA9IHNldHVwLAorCS5jbGVhbnVwID0g
-Y2xlYW51cCwKKwkuZm9ya3NfY2hpbGQgPSAxLAorCS5uZWVkc19jaGVja3BvaW50cyA9IDEsCisJ
-LnRhZ3MgPSAoY29uc3Qgc3RydWN0IHRzdF90YWdbXSkgeworCQl7ImxpbnV4LWdpdCIsICI0MWU4
-MTQ5Yzg4OTIifSwKKwkJe30KKwl9Cit9OwotLSAKMi41NS4wCgoKLS0gCk1haWxpbmcgbGlzdCBp
-bmZvOiBodHRwczovL2xpc3RzLmxpbnV4Lml0L2xpc3RpbmZvL2x0cAo=
+Hi Jan,
+
+On Tue, 21 Jul 2026, Jan Polensky wrote:
+> thp04: Simplify to focus on CVE-2017-1000405 race test only
+
+--- [PATCH 1/3] ---
+
+> Remove ptrace mode support from thp04.c to keep the test focused on
+> its original purpose: testing the CVE-2017-1000405 race condition.
+
+The pre-patch thp04.c has no ptrace calls or "ptrace mode" branch at
+all -- it is already just the plain fuzzy-sync race test using
+/proc/self/mem. There does not seem to be anything to remove here.
+
+What the diff actually does is move the static globals (write_thp,
+read_thp, write_ptr, read_ptr, thp_size, writefd, readfd, fzsync_pair)
+into a heap-allocated `struct thp_state *state`, and add a new probe in
+setup() that performs a real write() to /proc/self/mem and reports
+TCONF if it fails with EIO (i.e. when CONFIG_PROC_MEM_FORCE_PTRACE or
+CONFIG_PROC_MEM_NO_FORCE blocks unforced self-writes). Could the commit
+message be updated to describe this actual change and its motivation?
+
+> The ptrace-based /proc/pid/mem write functionality is now covered by
+> dedicated tests in testcases/kernel/syscalls/ptrace/:
+> - ptrace12: Tests that CONFIG_PROC_MEM_FORCE_PTRACE blocks self-writes
+> - ptrace13: Tests that ptrace allows parent-to-child memory writes
+
+Neither ptrace12 nor ptrace13 exists yet at this point in the series --
+they are added by patches 2/3 and 3/3. The same names are also baked
+into the new TCONF message added to thp04.c's setup(). Someone
+bisecting to this commit alone would see references to tests that
+don't exist. Would moving this patch after the two ptrace patches (or
+dropping the concrete test names) avoid the forward reference?
+
+> +	TEST(lseek(state->writefd, (off_t)state->write_ptr, SEEK_SET));
+> +	if (TST_RET == -1)
+> +		tst_brk(TBROK | TTERRNO, "lseek on /proc/self/mem failed");
+
+lseek() isn't the subject under test here -- only the write() probe
+right after it is meant to observe the FOLL_FORCE policy. Since
+SAFE_LSEEK() exists and this duplicates its abort-on-error behavior by
+hand, could this use SAFE_LSEEK() instead?
+
+--- [PATCH 3/3] ---
+
+> Add ptrace13 to verify that a tracer can write to tracee memory via
+> /proc/pid/mem when CONFIG_PROC_MEM_FORCE_PTRACE=y is active.
+
+Unlike ptrace12's self-write probe (which reports TCONF whenever the
+write unexpectedly succeeds), this test has no runtime or
+.needs_kconfigs gate on CONFIG_PROC_MEM_FORCE_PTRACE. If the running
+kernel enforces CONFIG_PROC_MEM_NO_FORCE (or is booted with
+"proc_mem.force_override=never"), proc_mem_foll_force() in
+fs/proc/base.c always returns false, so the write to the read-only
+page in the run() loop fails with -EIO:
+
+> 		SAFE_LSEEK(memfd, (off_t)shared->test_ptr, SEEK_SET);
+> 		SAFE_WRITE(SAFE_WRITE_ALL, memfd, &write_val, sizeof(write_val));
+
+SAFE_WRITE() aborts with TBROK on that -EIO instead of the test
+reporting TCONF for a kernel that isn't configured with the "ptrace"
+policy. Could this test gate on
+`.needs_kconfigs = {"CONFIG_PROC_MEM_FORCE_PTRACE=y", NULL}`, or add a
+runtime probe similar to the one used in ptrace12/thp04, so it reports
+TCONF instead of TBROK on such kernels?
+
+Verdict - Needs revision
+
+---
+Note:
+
+The agent can sometimes produce false positives although often its
+findings are genuine. If you find issues with the review, please
+comment this email or ignore the suggestions.
+
+Regards,
+LTP AI Reviewer
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
