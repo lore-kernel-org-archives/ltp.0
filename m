@@ -4,101 +4,101 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 97931C44532
-	for <ltp@archiver.kernel.org>; Tue, 21 Jul 2026 13:56:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1784642173; h=to : date :
- message-id : in-reply-to : references : mime-version : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=GF7FC+oBVH/W/yhZ+jjuGugY2cabty8Y9gqqWD2ECDg=;
- b=HaxNiDI6T8HEkbES3p45d7T2vVLKel70CkVhq+RqxXDnrGsjx1kRic5E3z1HVkIR0GMVl
- 0r5bILHecoscSj6l9WaPMgFTqG/d/sLIg61r+sIFHnZfvi+Uu1Eiee88Vz50bbdU3qOa/x9
- uAopoMmVEktfj7mdFmDnCH7/B3N1i90=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A0B48C44529
+	for <ltp@archiver.kernel.org>; Tue, 21 Jul 2026 14:16:25 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 943D93CEF3D
-	for <ltp@archiver.kernel.org>; Tue, 21 Jul 2026 15:56:13 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 7800C3E226C
+	for <ltp@archiver.kernel.org>; Tue, 21 Jul 2026 16:16:23 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 39DD33C2603
- for <ltp@lists.linux.it>; Tue, 21 Jul 2026 15:55:52 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ by picard.linux.it (Postfix) with ESMTPS id 7AA083C1C41
+ for <ltp@lists.linux.it>; Tue, 21 Jul 2026 16:16:11 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 6C34E200260
- for <ltp@lists.linux.it>; Tue, 21 Jul 2026 15:55:50 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1784642149;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=Y+XPV+ZALx2fslwP4OaWIlwMQTrQeNRSkUgl93BdSHM=;
- b=MjiQHUGAIfa2xDCNQRdxZ20a1/LStiUAY6fwvPe9Fv7o0weSKlfKGrzK2WlHg0183FWsP9
- RGSBPmr4DFEy0vy0wsF/aeH/r7jPn4Kdnws8SLxGuLBiFTkCaAxiA3RP//QrTqYQ5Ryjys
- QY1qOHUwY+l2S0AbEnlK9Vd9IHFHXcg=
-Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
- [209.85.219.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-211-TvcXGcVJMK62T1e7PUgwTA-1; Tue, 21 Jul 2026 09:55:46 -0400
-X-MC-Unique: TvcXGcVJMK62T1e7PUgwTA-1
-X-Mimecast-MFC-AGG-ID: TvcXGcVJMK62T1e7PUgwTA_1784642146
-Received: by mail-qv1-f71.google.com with SMTP id
- 6a1803df08f44-8f08560ea44so170203986d6.1
- for <ltp@lists.linux.it>; Tue, 21 Jul 2026 06:55:46 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1784642146; x=1785246946;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to:content-type;
- bh=Y+XPV+ZALx2fslwP4OaWIlwMQTrQeNRSkUgl93BdSHM=;
- b=Gb1v7KKbsBL9OzYSOMCo41+wdGY3U07env4olFK0xQDsl9e/xWcGbDXkAzt2oXl5vV
- oI5F2HEIBZZQ+irZG8mx71oTjPRprESfu6vTJgIF1lc5mVBfzyB0SGzvmsmrWh37oQKQ
- q0IyysQpO1PIv00wZoffxKCS1nE3wMRFG4/wRFjHlbG06bw0TP0YAbXPAQMUQSvkmmbP
- w6GrLk4qi8texXGDYEwH63LUCOSl66jEjfX2Ligjw+a1PkmADEn0rVbL3drIzXSuwY77
- vDOYj9jdT8Fr0G2xK/qWzA18s/fBR3Ez3h1+ZaHrbI/G/ey0oFGXH+BiVlrGP+HV5prd
- SstQ==
-X-Gm-Message-State: AOJu0YwOtqIsNq2Vtv9qETHQPxmLYOoI7RK3Dzusk0x4mrCLS/EFBBef
- QPPp5tYaHT0f8+MRsRVfqWPBIH3Aj0aVvOG8gh1fQScsK0qj5FzmXuNK3lNUp/H4cC1Wke7ERKz
- tZFwq31L8YYG9iqpoxSVRObO4MakhryYyJApmM/WuLdspEPf3cgUeKz17QK0IRTfMQZuA3p8nzh
- F2/CqjtTY1v+WNnHb1U4TdjR0WgJtDbUl2D1rq
-X-Gm-Gg: AfdE7cmRu7Xsd+TAWTUi7xHi+07Uxkq8uOALWyMU6UP2h0RmjZm2VtWeK5w4uQIHrsB
- IqEgI2ewkLXnsTU/0X84zXSPnEbg/NqYkYpa3hpyQJQ/IeQbD7cc44TO5h8w8fJSigKOv9lBcCB
- BaGm68DbMH39djS4ihAh7SMIK4U4WkHxUagQl2ZV8R/zrshOyk1+Id9B2B5dbql7Qp82P1yb+Er
- ShW5zSl0Ih7yMHYhbaOdYZEptADGdZv4WvfCvIWqrMnBMKw3FaBzbo6uH72VHdxv2ev/1e9sIty
- PFHN37SJV7XfnKKBD1l+E+OqHJaAPi+a5zo2tRuQjosy6iMCxosJtXFPAqonoJUNcOXTU1htFIk
- u6duYkSPv8DNlnUZS6o6SUFAA1A==
-X-Received: by 2002:a05:622a:14d:b0:51c:1bcd:5cc3 with SMTP id
- d75a77b69052e-5213b146e19mr178326171cf.25.1784642145379; 
- Tue, 21 Jul 2026 06:55:45 -0700 (PDT)
-X-Received: by 2002:a05:622a:14d:b0:51c:1bcd:5cc3 with SMTP id
- d75a77b69052e-5213b146e19mr178320011cf.25.1784642134352; 
- Tue, 21 Jul 2026 06:55:34 -0700 (PDT)
-Received: from sbertram-thinkpadp1gen5.bos.com ([67.189.222.97])
- by smtp.gmail.com with ESMTPSA id
- d75a77b69052e-5214d09bb08sm94771341cf.12.2026.07.21.06.55.33
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 21 Jul 2026 06:55:33 -0700 (PDT)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 12D5160082C
+ for <ltp@lists.linux.it>; Tue, 21 Jul 2026 16:16:05 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 4990C7A56A;
+ Tue, 21 Jul 2026 14:16:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1784643365; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=tycKCuHqcrz9s2iWsBqvCM/MMp84dJ361PArk1IEcvQ=;
+ b=kQPRoczI7JoStrk1FGw5Q19gCENlXwrWL1w9flGyik2eY29wWnBBkXwUhoE6GPc1RXs7oY
+ t8l1UOoOOsspX3r0Sh5xJreKO2M4wSMZndUgwbGiSKG7o+T8+eHTWmN4EcLRvtsphPvjGB
+ AIwID+VHORXRWLhW4QNo9pXZjETybeU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1784643365;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=tycKCuHqcrz9s2iWsBqvCM/MMp84dJ361PArk1IEcvQ=;
+ b=iku+RLv5fkgG7X/1SA/PKD9j6jT2Ig5KtQnLzTtfDP+68EkLFNxa8xjiG+6QpTrkmrdoaT
+ /JV8/B1eH2gSYYAA==
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.de header.s=susede2_rsa header.b=kQPRoczI;
+ dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=iku+RLv5
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1784643365; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=tycKCuHqcrz9s2iWsBqvCM/MMp84dJ361PArk1IEcvQ=;
+ b=kQPRoczI7JoStrk1FGw5Q19gCENlXwrWL1w9flGyik2eY29wWnBBkXwUhoE6GPc1RXs7oY
+ t8l1UOoOOsspX3r0Sh5xJreKO2M4wSMZndUgwbGiSKG7o+T8+eHTWmN4EcLRvtsphPvjGB
+ AIwID+VHORXRWLhW4QNo9pXZjETybeU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1784643365;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=tycKCuHqcrz9s2iWsBqvCM/MMp84dJ361PArk1IEcvQ=;
+ b=iku+RLv5fkgG7X/1SA/PKD9j6jT2Ig5KtQnLzTtfDP+68EkLFNxa8xjiG+6QpTrkmrdoaT
+ /JV8/B1eH2gSYYAA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0A2E8779AA;
+ Tue, 21 Jul 2026 14:16:04 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id /wBYOyR/X2pmOwAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>); Tue, 21 Jul 2026 14:16:04 +0000
+From: Andrea Cervesato <andrea.cervesato@suse.de>
 To: ltp@lists.linux.it
-Date: Tue, 21 Jul 2026 09:55:28 -0400
-Message-ID: <20260721135530.2882066-1-sbertram@redhat.com>
-X-Mailer: git-send-email 2.55.0
-In-Reply-To: <20260720235649.2783420-1-sbertram@redhat.com>
-References: <20260720235649.2783420-1-sbertram@redhat.com>
+Date: Tue, 21 Jul 2026 16:16:00 +0200
+Message-ID: <20260721141601.667095-1-andrea.cervesato@suse.de>
+X-Mailer: git-send-email 2.51.0
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: QMv_x7UZzgQVvmcRZCp12Gd0-JlfQFa7ETn93bagY5c_1784642146
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: 4990C7A56A
+X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_CONTAINS_FROM(1.00)[];
+ R_MISSING_CHARSET(0.50)[];
+ R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[]; RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ MIME_TRACE(0.00)[0:+]; FUZZY_RATELIMITED(0.00)[rspamd.com];
+ TO_DN_SOME(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ FROM_HAS_DN(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:mid,suse.de:dkim,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.com:email];
+ RCVD_TLS_ALL(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
+ RCPT_COUNT_TWO(0.00)[2];
+ DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ DKIM_TRACE(0.00)[suse.de:+]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v5] semctl01: tolerate SEM_STAT races under parallel
- LTP runs
+Subject: [LTP] [PATCH v2] inode: convert to new API and merge into a single
+ test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -110,182 +110,1922 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Stephen Bertram via ltp <ltp@lists.linux.it>
-Reply-To: Stephen Bertram <sbertram@redhat.com>
-Cc: Stephen Bertram <sbertram@redhat.com>, fdarocha@redhat.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-When multiple LTP workers run IPC tests concurrently, SEM_STAT can fail
-with EIDRM/EINVAL because the index from IPC_INFO can disappear before
-SEM_STAT runs. Retry a few times instead of treating that as TBROK.
+From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-The test remains single-threaded; shared globals are intentional.
+The inode01 and inode02 tests shared the same directory/file tree engine
+and differed only in tree dimensions and in whether the workload ran in
+a single process or across several parallel workers.
 
-Test: ./kirk -w 4 -f syscalls_32 -p semctl01 -i 1000
+inode01 now covers both scenarios, so inode02 is removed together with
+its entries in runtest/fs, runtest/fs_readonly and the .gitignore. Note
+this drops inode02 as a test id; its runtest/fs_readonly slot is left as
+a gap so unrelated test_robind entries keep their numbers.
 
-Results summary before:
-runtime:      997.690s
-passed        415980
-failed        0
-broken        10
-skipped       0
-warnings      0
-
-Results summary after:
-runtime:      998.593s
-passed        416000
-failed        0
-broken        0
-skipped       0
-warnings      0
-
-Assisted-by: Cursor
-
-Signed-off-by: Stephen Bertram <sbertram@redhat.com>
+Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
- testcases/kernel/syscalls/semctl/semctl01.c | 84 +++++++++++++--------
- 1 file changed, 54 insertions(+), 30 deletions(-)
+ runtest/fs                           |   1 -
+ runtest/fs_readonly                  |   1 -
+ testcases/kernel/fs/inode/.gitignore |   1 -
+ testcases/kernel/fs/inode/inode01.c  | 942 +++++----------------------
+ testcases/kernel/fs/inode/inode02.c  | 902 -------------------------
+ 5 files changed, 163 insertions(+), 1684 deletions(-)
+ rewrite testcases/kernel/fs/inode/inode01.c (99%)
+ delete mode 100644 testcases/kernel/fs/inode/inode02.c
 
-diff --git a/testcases/kernel/syscalls/semctl/semctl01.c b/testcases/kernel/syscalls/semctl/semctl01.c
-index 5bd675ab6..c0e9e8f41 100644
---- a/testcases/kernel/syscalls/semctl/semctl01.c
-+++ b/testcases/kernel/syscalls/semctl/semctl01.c
-@@ -19,7 +19,6 @@
- #define SEMUN_CAST (union semun)
- 
- static int sem_id = -1;
--static int sem_index;
- static struct semid_ds buf;
- static struct seminfo ipc_buf;
- static unsigned short array[PSEMS];
-@@ -211,10 +210,8 @@ static void func_rmid(void)
- static void func_iinfo(int hidx)
- {
- 	if (hidx >= 0) {
--		sem_index = hidx;
- 		tst_res(TPASS, "the highest index is correct");
- 	} else {
--		sem_index = 0;
- 		tst_res(TFAIL, "the highest index is incorrect");
- 	}
- }
-@@ -236,28 +233,51 @@ static void func_sstat(int semidx)
- }
- 
- static struct tcases {
--	int *semid;
- 	int semnum;
- 	int cmd;
- 	void (*func_test) ();
- 	union semun arg;
- 	void (*func_setup) ();
- } tests[] = {
--	{&sem_id, 0, IPC_STAT, func_stat, SEMUN_CAST & buf, NULL},
--	{&sem_id, 0, IPC_SET, func_set, SEMUN_CAST & buf, set_setup},
--	{&sem_id, 0, GETALL, func_gall, SEMUN_CAST array, NULL},
--	{&sem_id, 4, GETNCNT, func_cnt, SEMUN_CAST & buf, cnt_setup},
--	{&sem_id, 2, GETPID, func_pid, SEMUN_CAST & buf, pid_setup},
--	{&sem_id, 2, GETVAL, func_gval, SEMUN_CAST & buf, NULL},
--	{&sem_id, 4, GETZCNT, func_cnt, SEMUN_CAST & buf, cnt_setup},
--	{&sem_id, 0, SETALL, func_sall, SEMUN_CAST array, sall_setup},
--	{&sem_id, 4, SETVAL, func_sval, SEMUN_CAST INCVAL, NULL},
--	{&sem_id, 0, IPC_INFO, func_iinfo, SEMUN_CAST & ipc_buf, NULL},
--	{&sem_id, 0, SEM_INFO, func_sinfo, SEMUN_CAST & ipc_buf, NULL},
--	{&sem_index, 0, SEM_STAT, func_sstat, SEMUN_CAST & buf, NULL},
--	{&sem_id, 0, IPC_RMID, func_rmid, SEMUN_CAST & buf, NULL},
-+	{0, IPC_STAT, func_stat, SEMUN_CAST & buf, NULL},
-+	{0, IPC_SET, func_set, SEMUN_CAST & buf, set_setup},
-+	{0, GETALL, func_gall, SEMUN_CAST array, NULL},
-+	{4, GETNCNT, func_cnt, SEMUN_CAST & buf, cnt_setup},
-+	{2, GETPID, func_pid, SEMUN_CAST & buf, pid_setup},
-+	{2, GETVAL, func_gval, SEMUN_CAST & buf, NULL},
-+	{4, GETZCNT, func_cnt, SEMUN_CAST & buf, cnt_setup},
-+	{0, SETALL, func_sall, SEMUN_CAST array, sall_setup},
-+	{4, SETVAL, func_sval, SEMUN_CAST INCVAL, NULL},
-+	{0, IPC_INFO, func_iinfo, SEMUN_CAST & ipc_buf, NULL},
-+	{0, SEM_INFO, func_sinfo, SEMUN_CAST & ipc_buf, NULL},
-+	{0, SEM_STAT, func_sstat, SEMUN_CAST & buf, NULL},
-+	{0, IPC_RMID, func_rmid, SEMUN_CAST & buf, NULL},
- };
- 
+diff --git a/runtest/fs b/runtest/fs
+index 1d753e0dd..3d0137ee7 100644
+--- a/runtest/fs
++++ b/runtest/fs
+@@ -43,7 +43,6 @@ fs_inod01 fs_inod $TMPDIR 10 10 10
+ linker01 linktest.sh
+ openfile01 openfile -f10 -t10
+ inode01 inode01
+-inode02 inode02
+ stream01 stream01
+ stream02 stream02
+ stream03 stream03
+diff --git a/runtest/fs_readonly b/runtest/fs_readonly
+index dc70d28d8..c29c7e551 100644
+--- a/runtest/fs_readonly
++++ b/runtest/fs_readonly
+@@ -37,7 +37,6 @@ test_robind36 test_robind.sh -c "rwtest -N iogen01 -i 120s -s read,write -Da -Dv
+ test_robind37 test_robind.sh -c "fs_inod . 10 10 1"
+ test_robind38 test_robind.sh -c "openfile -f10 -t10"
+ test_robind39 test_robind.sh -c "inode01"
+-test_robind40 test_robind.sh -c "inode02"
+ test_robind41 test_robind.sh -c "stream01"
+ test_robind42 test_robind.sh -c "stream02"
+ test_robind43 test_robind.sh -c "stream03"
+diff --git a/testcases/kernel/fs/inode/.gitignore b/testcases/kernel/fs/inode/.gitignore
+index 92d90357a..13f7f27fa 100644
+--- a/testcases/kernel/fs/inode/.gitignore
++++ b/testcases/kernel/fs/inode/.gitignore
+@@ -1,2 +1 @@
+ /inode01
+-/inode02
+diff --git a/testcases/kernel/fs/inode/inode01.c b/testcases/kernel/fs/inode/inode01.c
+dissimilarity index 99%
+index a7387e868..94ccb6f49 100644
+--- a/testcases/kernel/fs/inode/inode01.c
++++ b/testcases/kernel/fs/inode/inode01.c
+@@ -1,779 +1,163 @@
+-/*
+- *
+- *   Copyright (c) International Business Machines  Corp., 2002
+- *
+- *   This program is free software;  you can redistribute it and/or modify
+- *   it under the terms of the GNU General Public License as published by
+- *   the Free Software Foundation; either version 2 of the License, or
+- *   (at your option) any later version.
+- *
+- *   This program is distributed in the hope that it will be useful,
+- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- *   the GNU General Public License for more details.
+- *
+- *   You should have received a copy of the GNU General Public License
+- *   along with this program;  if not, write to the Free Software
+- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+- */
+-
+-/* 10/31/2002	Port to LTP	robbiew@us.ibm.com */
+-/* 06/30/2001	Port to Linux	nsharoff@us.ibm.com */
+-
+-			   /* inode1.c */
+-/*======================================================================
+-	=================== TESTPLAN SEGMENT ===================
+-CALLS:	mkdir, stat, open
+-
+-	run using TERM mode
+-
+->KEYS:  < file system management I/O
+->WHAT:  < Do the system's file system management and I/O functions work
+-	< correctly?
+->HOW:   < Construct a directory tree, create files in it, and verify
+-	< that this was done as expected.
+->BUGS:  <
+-======================================================================*/
+-/* modified by dale 25-Jul-84 */
+-
+-/************************************************/
+-#define PATH_STRING_LENGTH  100
+-#define NAME_LENGTH  8
+-#define MAX_PATH_STRING_LENGTH  (PATH_STRING_LENGTH - NAME_LENGTH)
+-#define MAX_DEPTH   3
+-#define MAX_BREADTH 3
+-#define FILE_LENGTH 100
+-#define DIRECTORY_MODE  00777
+-#define FILE_MODE       00777
+-
+-/* #define PRINT 		 define to get list while running */
+-
+-#define TRUE  1
+-#define FALSE 0
+-#define READ  0
+-#define WRITE 1
+-
+-#include <stdio.h>
+-#include <errno.h>
+-#include <sys/types.h>
+-#include <sys/stat.h>
+-#include <fcntl.h>
+-#include <signal.h>
+-#include <errno.h>
+-
+-/** LTP Port **/
+-#include "test.h"
+-
+-void blexit(void);
+-void blenter(void);
+-void setup(void);
+-void fail_exit(void);
+-void anyfail(void);
+-void ok_exit(void);
+-
+-#define FAILED 0
+-#define PASSED 1
+-
+-int local_flag = PASSED;
+-int block_number;
+-FILE *temp;
+-
+-char *TCID = "inode01";		/* Test program identifier.    */
+-int TST_TOTAL = 2;		/* Total number of test cases. */
+-/**************/
+-
+-#ifdef LINUX
+-#include <string.h>
+-#endif
+-
+-char name[NAME_LENGTH + 1];
+-char path_string[PATH_STRING_LENGTH + 1];
+-char read_string[PATH_STRING_LENGTH + 1];
+-char write_string[PATH_STRING_LENGTH + 1];
+-char rm_string[200];
+-
+-FILE *list_stream = NULL;
+-int file_id;
+-int list_id;
+-
+-int increment_name(), get_next_name(), mode(), escrivez();
+-
+-int main(void)
+-{
+-	char root[16];		//as pids can get much longer
+-	int gen_ret_val, ch_ret_val, level;
+-	int ret_val;
+-	int generate(), check();
+-	char path_list_string[PATH_STRING_LENGTH + 1];
+-	int status;
+-	int len;
+-	int term();
+-	int snp_ret;
+-
+-	strcpy(path_string, "inode");
+-	sprintf(root, "A%d", getpid());
+-	strcat(path_string, root);
+-
+-	strcpy(rm_string, "rm -rf ");
+-	strcat(rm_string, path_string);
+-
+-	setup();
+-
+-	if (signal(SIGTERM, (void (*)())term) == SIG_ERR) {
+-		fprintf(temp, "\tSIGTERM signal set failed!, errno=%d\n",
+-			errno);
+-		fail_exit();
+-	}
+-
+-	blenter();
+-
+-	/********************************/
+-	/*                              */
+-	/*  make the root directory for */
+-	/*  the tree                    */
+-	/*                              */
+-	/********************************/
+-
+-	ret_val = mkdir(path_string, DIRECTORY_MODE);
+-
+-	if (ret_val == -1) {
+-		perror("mkdir error");
+-		fprintf(temp, "\tcreating directory '%s'\n", path_string);
+-		fprintf(temp, "\t\n%s Impossible to create directory %s\n",
+-			root, path_string);
+-		fail_exit();
+-	}
+-#ifdef PRINT
+-	printf("\n%s\n", path_string);
+-#endif
+-
+-	/****************************************/
+-	/*                                      */
+-	/*  create the "path_list" file, in     */
+-	/*  which the list of generated paths   */
+-	/*  will be stored so that they later   */
+-	/*  may be checked                      */
+-	/*                                      */
+-	/****************************************/
+-
+-	snp_ret = snprintf(path_list_string, sizeof(path_list_string),
+-		"%s/path_list",	path_string);
+-	if (snp_ret < 0 || snp_ret >= sizeof(path_list_string)) {
+-		tst_resm(TBROK, "snprintf(path_list_string,..) returned %d",
+-			snp_ret);
+-		fail_exit();
+-	}
+-	list_id = creat(path_list_string, FILE_MODE);
+-	if (list_id == -1) {
+-		fprintf(temp,
+-			"\t\n%s The path_list file cannot be created, errno=%d \n",
+-			root, errno);
+-		fail_exit();
+-	}
+-
+-	/****************************************/
+-	/*                                      */
+-	/*   and store its name in path_list    */
+-	/*                                      */
+-	/****************************************/
+-
+-	strcpy(write_string, path_string);
+-	len = strlen(write_string);
+-	write_string[len++] = 'D';
+-	write_string[len] = '\0';
+-	escrivez(write_string);
+-
+-	/****************************************/
+-	/*                                      */
+-	/*   generate the directory-file tree   */
+-	/*                                      */
+-	/****************************************/
+-
+-	level = 0;
+-
+-#ifdef PRINT
+-	printf("\n\t%s\n\n", "GENERATING:");
+-#endif
+-
+-	gen_ret_val = generate(path_string, level);
+-
+-	if (gen_ret_val) {
+-		fprintf(temp,
+-			"Failure occured in generate routine, return value %d\n",
+-			gen_ret_val);
+-		local_flag = FAILED;
+-	}
+-
+-	blexit();
+-	blenter();
+-
+-	close(list_id);
+-	list_id = open(path_list_string, READ);
+-	if (list_id == -1) {
+-		fprintf(temp,
+-			"\t\n%s The path_list file cannot be opened for reading, errno=%d\n",
+-			root, errno);
+-		fail_exit();
+-	}
+-	list_stream = fdopen(list_id, "r");
+-
+-	/****************************************/
+-	/*                                      */
+-	/*   check the directory-file tree      */
+-	/*      for correctness                 */
+-	/*                                      */
+-	/****************************************/
+-
+-#ifdef PRINT
+-	printf("\n\t%s\n\n", "CHECKING:");
+-#endif
+-
+-	ch_ret_val = check();
+-
+-	if (ch_ret_val) {
+-		fprintf(temp,
+-			"Failure occured in check routine, return value %d\n",
+-			ch_ret_val);
+-		local_flag = FAILED;
+-	}
+-
+-	status = fclose(list_stream);
+-	if (status != 0) {
+-		fprintf(temp,
+-			"Failed to close list_stream: ret=%d errno=%d (%s)\n",
+-			status, errno, strerror(errno));
+-		local_flag = FAILED;
+-	}
+-
+-	blexit();
+-
+-	/*
+-	 * Now fork and exec a system call to remove the directory.
+-	 */
+-
+-#ifdef DEBUG
+-	fprintf(temp, "\nClean up:\trm string = %s\n", rm_string);
+-#endif
+-	fflush(stdout);
+-	fflush(temp);
+-
+-	status = system(rm_string);
+-
+-	if (status) {
+-		fprintf(temp, "Caution-``%s'' may have failed\n", rm_string);
+-		fprintf(temp, "rm command exit status = %d\n", status);
+-	}
+-
+-	/****************************************/
+-	/*                                      */
+-	/*         .....and exit main           */
+-	/*                                      */
+-	/****************************************/
+-
+-	anyfail();
+-	/***** NOT REACHED ******/
+-	tst_exit();
+-}
+-
+-int generate(char *string, int level)
+-
+-/****************************************/
+-/*					*/
+-/*   generate recursively a tree of	*/
+-/*   directories and files:  within   	*/
+-/*   created directory, an alternating	*/
+-/*   series of files and directories 	*/
+-/*   are constructed---until tree	*/
+-/*   breadth and depth limits are	*/
+-/*   reached or an error occurs		*/
+-/*					*/
+-/****************************************/
+-/***************************/
+-/*  string[]      	   */
+-/*  the directory path     */
+-/*  string below which a   */
+-/*  tree is generated      */
+-/*                         */
+-/***************************/
+-
+-/***************************/
+-/* level                   */
+-/* the tree depth variable */
+-/*                         */
+-/***************************/
+-{
+-	int switch_flag;
+-	int ret_val = 0;
+-	int new_ret_val, len, ret_len;
+-	char new_string[PATH_STRING_LENGTH + 1];
+-	int new_level;
+-	int i, j;		/* iteration counters */
+-	int snp_ret;
+-
+-	switch_flag = level & TRUE;
+-	if (strlen(string) >= MAX_PATH_STRING_LENGTH) {
+-
+-		/********************************/
+-		/*                              */
+-		/*   Maximum path name length   */
+-		/*          reached             */
+-		/*                              */
+-		/********************************/
+-
+-		fprintf(temp, "\tMaximum path_name length reached.\n");
+-		return (-1);
+-	} else if (level < MAX_DEPTH) {
+-		for (i = 0; i <= MAX_BREADTH; i++) {
+-			get_next_name();
+-			snp_ret = snprintf(new_string, sizeof(new_string),
+-				"%s/%s", string, name);
+-			if (snp_ret < 0 || snp_ret >= sizeof(new_string)) {
+-				tst_resm(TBROK, "snprintf(new_string,..) "
+-					"returned %d", snp_ret);
+-				fail_exit();
+-			}
+-
+-			/****************************************/
+-			/*                                      */
+-			/*    switch between creating files     */
+-			/*    and making directories            */
+-			/*                                      */
+-			/****************************************/
+-
+-			if (switch_flag) {
+-				switch_flag = FALSE;
+-
+-				/****************************************/
+-				/*                                      */
+-				/*        create a new file             */
+-				/*                                      */
+-				/****************************************/
+-
+-				file_id = creat(new_string, FILE_MODE);
+-				if (file_id == -1) {
+-					fprintf(temp,
+-						"\tImpossible to create file %s, errno=%d\n",
+-						new_string, errno);
+-					return (-2);
+-				}
+-#ifdef PRINT
+-				printf("%d  %s F\n", level, new_string);
+-#endif
+-
+-				/****************************************/
+-				/*                                      */
+-				/*            write to it               */
+-				/*                                      */
+-				/****************************************/
+-
+-				len = strlen(new_string);
+-				for (j = 1; j <= FILE_LENGTH; j++) {
+-					ret_len =
+-					    write(file_id, new_string, len);
+-					if (ret_len != len) {
+-						fprintf(temp,
+-							"\tUnsuccessful write to file %s, expected return of %d, got %d, errno=%d\n",
+-							new_string, len,
+-							ret_len, errno);
+-						return (-3);
+-					}
+-				}
+-				close(file_id);
+-
+-				/****************************************/
+-				/*                                      */
+-				/*   and store its name in path_list    */
+-				/*                                      */
+-				/****************************************/
+-
+-				strcpy(write_string, new_string);
+-				len = strlen(write_string);
+-				write_string[len++] = 'F';
+-				write_string[len] = '\0';
+-				escrivez(write_string);
+-			} else {
+-				switch_flag = TRUE;
+-
+-				/****************************************/
+-				/*                                      */
+-				/*       or make a directory            */
+-				/*                                      */
+-				/****************************************/
+-
+-				ret_val = mkdir(new_string, DIRECTORY_MODE);
+-
+-				if (ret_val != 0) {
+-					fprintf(temp,
+-						"\tImpossible to create directory %s, errno=%d\n",
+-						new_string, errno);
+-					return (-5);
+-				}
+-#ifdef PRINT
+-				printf("%d  %s D\n", level, new_string);
+-#endif
+-
+-				/****************************************/
+-				/*                                      */
+-				/*     store its name in path_list      */
+-				/*                                      */
+-				/****************************************/
+-
+-				strcpy(write_string, new_string);
+-				len = strlen(write_string);
+-				write_string[len++] = 'D';
+-				write_string[len] = '\0';
+-				escrivez(write_string);
+-
+-				/****************************************/
+-				/*                                      */
+-				/*      and generate a new level        */
+-				/*                                      */
+-				/****************************************/
+-
+-				new_level = level + 1;
+-				new_ret_val = generate(new_string, new_level);
+-				if (new_ret_val < ret_val)
+-					ret_val = new_ret_val;
+-			}
+-		}
+-
+-		/********************************/
+-		/*                              */
+-		/*    Maximum breadth reached   */
+-		/*                              */
+-		/********************************/
+-
+-		return (ret_val);
+-	} else
+-		    /********************************/
+-		/*                             */
+-		/*    Maximum depth reached    */
+-		/*                             */
+- /********************************/
+-		return 0;
+-}
+-
+-int check(void)
+-
+-/****************************************/
+-/*					*/
+-/*   check for file and directory	*/
+-/*   correctness by reading records	*/
+-/*   from the path_list and attempting	*/
+-/*   to determine if the corresponding	*/
+-/*   files or directories are as 	*/
+-/*   created 				*/
+-/*					*/
+-/****************************************/
+-{
+-	int len, path_mode, val, ret_len, j;
+-
+-	for (;;) {
+-
+-		/****************************************/
+-		/*                                      */
+-		/*  read a path string from path_list   */
+-		/*                                      */
+-		/****************************************/
+-
+-		if (fscanf(list_stream, "%s", path_string) == EOF) {
+-
+-#ifdef PRINT
+-			printf("\nEnd of path_list file reached \n");
+-#endif
+-
+-			return 0;
+-		}
+-#ifdef PRINT
+-		printf("%s\n", path_string);
+-#endif
+-
+-		len = strlen(path_string);
+-		len--;
+-		if (path_string[len] == 'F') {
+-
+-		/********************************/
+-			/*                              */
+-			/*    this should be a file     */
+-			/*                              */
+-		/********************************/
+-
+-			path_string[len] = '\0';
+-			file_id = open(path_string, READ);
+-			if (file_id <= 0) {
+-				fprintf(temp,
+-					"\tImpossible to open file %s, errno=%d\n",
+-					path_string, errno);
+-				return (-1);
+-			}
+-
+-			else {
+-				/********************************/
+-				/*                              */
+-				/*    check its contents        */
+-				/*                              */
+-				/********************************/
+-
+-				len = strlen(path_string);
+-				for (j = 1; j <= FILE_LENGTH; j++) {
+-					ret_len =
+-					    read(file_id, read_string, len);
+-					if (len != ret_len) {
+-						fprintf(temp,
+-							"\tFile read error for file %s, expected return of %d, got %d, errno=%d\n",
+-							path_string, len,
+-							ret_len, errno);
+-						return (-3);
+-					}
+-					read_string[len] = '\0';
+-					val = strcmp(read_string, path_string);
+-					if (val != 0) {
+-						fprintf(temp,
+-							"\tContents of file %s are different than expected: %s\n",
+-							path_string,
+-							read_string);
+-						return (-4);
+-					}
+-				}
+-				close(file_id);
+-			}	/* else for */
+-			if (ret_len <= 0) {
+-				fprintf(temp, "\tImpossible to read file %s\n",
+-					path_string);
+-				return (-2);
+-			}
+-		} else {
+-
+-		/********************************/
+-			/*                              */
+-			/*  otherwise..........         */
+-			/*  it should be a directory    */
+-			/*                              */
+-		/********************************/
+-
+-			path_string[len] = '\0';
+-			path_mode = mode(path_string);
+-			if (path_mode == -1) {
+-				fprintf(temp,
+-					"\tPreviously created directory path %s was not open\n",
+-					path_string);
+-				return (-4);
+-			}
+-			if ((040000 & path_mode) != 040000) {
+-				fprintf(temp,
+-					"\tPath %s was not recognized to be a directory\n",
+-					path_string);
+-				fprintf(temp, "\tIts mode is %o\n", path_mode);
+-				return (-5);
+-			}
+-		}
+-	}			/* while */
+-}
+-
+-int get_next_name(void)
+-
+-/****************************************/
+-/*					*/
+-/*   get the next---in a dictionary	*/
+-/*   sense---file or directory name	*/
+-/*					*/
+-/****************************************/
+-{
+-	static int k;
+-	int i;
+-	int last_position;
+-
+-	last_position = NAME_LENGTH - 1;
+-	if (k == 0) {
+-
+-		/************************/
+-		/*                      */
+-		/*   initialize name    */
+-		/*                      */
+-		/************************/
+-
+-		for (i = 0; i < NAME_LENGTH; i++)
+-			name[i] = 'a';
+-		name[NAME_LENGTH] = '\0';
+-		k++;
+-	}
+-					    /********************************/
+-	/*                              */
+-	else
+-		increment_name(last_position);	/* i.e., beginning at the last  */
+-	/* position                     */
+-	/*                              */
+-					    /********************************/
+-	return 0;
+-}
+-
+-int increment_name(int position)
+-
+-/****************************************/
+-/*					*/
+-/*  recursively revise the letters in 	*/
+-/*  a name to get the lexiographically	*/
+-/*  next name				*/
+-/*					*/
+-/****************************************/
+-{
+-	int next_position;
+-
+-	if (name[position] == 'z')
+-		if (position == 0) {
+-			fprintf(temp,
+-				"\tERROR: There are no more available names\n");
+-			fail_exit();
+-		} else {
+-			name[position] = 'a';	       /**********************/
+-			next_position = --position;	/*                    */
+-			increment_name(next_position);	/*  increment the     */
+-			/*  previous letter   */
+-			/*                    */
+-						       /**********************/
+-		}
+-				  /*********************************/
+-	/*                               */
+-	else
+-		name[position]++;	/* otherwise, increment this one */
+-	return 0;		/*                               */
+-				  /*********************************/
+-}
+-
+-int mode(char *path_string)
+-
+-/****************************************/
+-/*					*/
+-/*   determine and return the mode of	*/
+-/*   the file named by path_string 	*/
+-/*					*/
+-/****************************************/
+-{
+-	struct stat buf;
+-	int ret_val, mod;
+-
+-	ret_val = stat(path_string, &buf);
+-	if (ret_val == -1)
+-		return (-1);
+-	else {
+-		mod = buf.st_mode;
+-		return (mod);
+-	}
+-}
+-
+-int escrivez(char *string)
+-{
+-	char write_string[PATH_STRING_LENGTH + 1];
+-	int len, ret_len;
+-
+-	strcpy(write_string, string);
+-	len = strlen(write_string);
+-	write_string[len] = '\n';
+-	len++;
+-	ret_len = write(list_id, write_string, len);
+-	if (len != ret_len) {
+-		fprintf(temp,
+-			"\tA string of deviant length %d written to path_list, errno=%d\n",
+-			ret_len, errno);
+-		fail_exit();
+-	}
+-	return 0;
+-}
+-
+-int term(void)
+-{
+-	int status;
+-
+-	fprintf(temp, "\tterm - got SIGTERM, cleaning up.\n");
+-
+-	if (list_stream != NULL)
+-		fclose(list_stream);
+-	close(list_id);
+-	close(file_id);
+-
+-	status = system(rm_string);
+-	if (status) {
+-		fprintf(temp, "Caution - ``%s'' may have failed.\n", rm_string);
+-		fprintf(temp, "rm command exit status = %d\n", status);
+-	}
+-
+-	ok_exit();
+-	/***NOT REACHED***/
+-	return 0;
+-
+-}
+-
+-/** LTP Port **/
+-/*
+- * setup
+- *
+- * Do set up - here its a dummy function
+- */
+-void setup(void)
+-{
+-	tst_tmpdir();
+-	temp = stderr;
+-}
+-
+-/*
+- * Function: blexit()
+- *
+- * Description: This function will exit a block, a block may be a lo
+-gical unit
+- *              of a test. It will report the status if the test ie
+-fail or
+- *              pass.
+- */
+-void blexit(void)
+-{
+-	(local_flag == PASSED) ? tst_resm(TPASS, "Test block %d", block_number)
+-	    : tst_resm(TFAIL, "Test block %d", block_number);
+-	block_number++;
+-	return;
+-}
+-
+-/*
+- * Function: blenter()
+- *
+- * Description: Print message on entering a new block
+- */
+-void blenter(void)
+-{
+-	local_flag = PASSED;
+-	return;
+-}
+-
+-/*
+- * fail_exit()
+- *
+- * Exit on failure
+- */
+-void fail_exit(void)
+-{
+-	tst_brkm(TFAIL, tst_rmdir, "Test failed");
+-}
+-
+-/*
+- *
+- * Function: anyfail()
+- *
+- * Description: Exit a test.
+- */
+-void anyfail(void)
+-{
+-	(local_flag == FAILED) ? tst_resm(TFAIL, "Test failed")
+-	    : tst_resm(TPASS, "Test passed");
+-	tst_rmdir();
+-	tst_exit();
+-}
+-
+-/*
+- * ok_exit
+- *
+- * Calling block passed the test
+- */
+-void ok_exit(void)
+-{
+-	local_flag = PASSED;
+-	return;
+-}
++// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
-+ * SEM_STAT takes an ipc idr index. Under parallel IPC tests that index can
-+ * vanish between IPC_INFO and SEM_STAT (EIDRM/EINVAL). Refresh and retry.
++ * Copyright (c) International Business Machines Corp., 2002
++ * Copyright (C) 2026 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
 + */
-+static int do_sem_stat(union semun arg)
++
++/*\
++ * Exercise filesystem metadata and buffered I/O by building mixed trees of
++ * directories and regular files, writing each file's pathname repeatedly,
++ * then traversing the tree again to verify every object's type, size and
++ * contents.
++ *
++ * Two scenarios are run:
++ *
++ * - a single process building one small tree, and
++ * - several workers building independent larger trees in parallel to add
++ *   concurrent load, started simultaneously through a checkpoint.
++ */
++
++#include "tst_test.h"
++
++static struct tcase {
++	unsigned int depth;
++	unsigned int fanout;
++	unsigned int repetitions;
++	unsigned int workers;
++	const char *desc;
++} tcases[] = {
++	{3, 4, 100, 1, "single-process small tree"},
++	{6, 6, 8, 5, "parallel larger trees"},
++};
++
++static void create_tree(const struct tcase *tc, const char *parent,
++			unsigned int level, unsigned int *id)
 +{
-+	int idx;
-+	unsigned int retries = 5;
++	unsigned int i;
++	int create_file = level & 1;
 +
-+	do {
-+		int info_id = 0;
++	if (level >= tc->depth)
++		return;
 +
-+		idx = SAFE_SEMCTL(info_id, 0, IPC_INFO, (union semun)&ipc_buf);
-+		TEST(semctl(idx, 0, SEM_STAT, arg));
-+		if (TST_RET >= 0)
-+			return TST_RET;
-+		if (TST_ERR != EIDRM && TST_ERR != EINVAL)
-+			tst_brk(TBROK | TERRNO, "semctl(SEM_STAT)");
-+	} while (--retries);
++	for (i = 0; i < tc->fanout; i++, create_file = !create_file) {
++		char path[PATH_MAX];
 +
-+	tst_brk(TBROK | TERRNO, "semctl(SEM_STAT) still failing after retries");
-+	return -1;
++		snprintf(path, sizeof(path), "%s/%08u", parent, ++*id);
++		if (create_file) {
++			int fd = SAFE_OPEN(path, O_WRONLY | O_CREAT | O_TRUNC, 0777);
++			unsigned int j;
++
++			for (j = 0; j < tc->repetitions; j++)
++				SAFE_WRITE(SAFE_WRITE_ALL, fd, path, strlen(path));
++			SAFE_CLOSE(fd);
++		} else {
++			SAFE_MKDIR(path, 0777);
++			create_tree(tc, path, level + 1, id);
++		}
++	}
 +}
 +
- static void verify_semctl(unsigned int n)
- {
- 	struct tcases *tc = &tests[n];
-@@ -265,6 +285,7 @@ static void verify_semctl(unsigned int n)
- 
- 	if (sem_id == -1)
- 		sem_id = SAFE_SEMGET(IPC_PRIVATE, PSEMS, IPC_CREAT | IPC_EXCL | SEM_RA);
++static void verify_file(const struct tcase *tc, const char *path)
++{
++	char buf[PATH_MAX];
++	char extra;
++	struct stat st;
++	size_t len = strlen(path);
++	unsigned int i;
++	int fd = SAFE_OPEN(path, O_RDONLY);
 +
- 	if (tc->func_setup) {
- 		switch (tc->cmd) {
- 		case GETNCNT:
-@@ -279,21 +300,24 @@ static void verify_semctl(unsigned int n)
- 		}
- 	}
- 
--	rval = SAFE_SEMCTL(*(tc->semid), tc->semnum, tc->cmd, tc->arg);
--	switch (tc->cmd) {
--	case GETNCNT:
--	case GETZCNT:
--	case GETPID:
--	case GETVAL:
--	case IPC_INFO:
--	case SEM_STAT:
-+	if (tc->cmd == SEM_STAT) {
-+		rval = do_sem_stat(tc->arg);
- 		tc->func_test(rval);
--		break;
--	default:
--		tc->func_test();
--		break;
-+	} else {
-+		rval = SAFE_SEMCTL(sem_id, tc->semnum, tc->cmd, tc->arg);
-+		switch (tc->cmd) {
-+		case GETNCNT:
-+		case GETZCNT:
-+		case GETPID:
-+		case GETVAL:
-+		case IPC_INFO:
-+			tc->func_test(rval);
-+			break;
-+		default:
-+			tc->func_test();
-+			break;
++	SAFE_FSTAT(fd, &st);
++	if (!S_ISREG(st.st_mode))
++		tst_brk(TFAIL, "%s is not a regular file", path);
++
++	if (st.st_size != (off_t)(len * tc->repetitions)) {
++		tst_brk(TFAIL, "%s has size %lld, expected %zu", path,
++			(long long)st.st_size, len * tc->repetitions);
++	}
++
++	for (i = 0; i < tc->repetitions; i++) {
++		SAFE_READ(1, fd, buf, len);
++		if (memcmp(buf, path, len))
++			tst_brk(TFAIL, "%s contains unexpected data at record %u",
++				path, i);
++	}
++
++	if (SAFE_READ(SAFE_READ_ANY, fd, &extra, 1))
++		tst_brk(TFAIL, "%s has data after the expected records", path);
++
++	SAFE_CLOSE(fd);
++}
++
++static void verify_tree(const struct tcase *tc, const char *parent,
++			unsigned int level, unsigned int *id)
++{
++	unsigned int i;
++	int create_file = level & 1;
++
++	if (level >= tc->depth)
++		return;
++
++	for (i = 0; i < tc->fanout; i++, create_file = !create_file) {
++		char path[PATH_MAX];
++
++		snprintf(path, sizeof(path), "%s/%08u", parent, ++*id);
++		if (create_file) {
++			verify_file(tc, path);
++		} else {
++			struct stat st;
++
++			SAFE_STAT(path, &st);
++			if (!S_ISDIR(st.st_mode))
++				tst_brk(TFAIL, "%s is not a directory", path);
++			verify_tree(tc, path, level + 1, id);
 +		}
- 	}
++	}
++}
++
++static void run_worker(const struct tcase *tc)
++{
++	char root[PATH_MAX];
++	struct stat st;
++	unsigned int id = 0;
++
++	TST_CHECKPOINT_WAIT(0);
++	snprintf(root, sizeof(root), "inode.%d", getpid());
++	SAFE_MKDIR(root, 0777);
++	create_tree(tc, root, 0, &id);
++
++	SAFE_STAT(root, &st);
++	if (!S_ISDIR(st.st_mode))
++		tst_brk(TFAIL, "%s is not a directory", root);
++
++	id = 0;
++	verify_tree(tc, root, 0, &id);
++	tst_res(TPASS, "Created and verified %u objects in %s", id + 1, root);
++	tst_purge_dir(root);
++	SAFE_RMDIR(root);
++	exit(0);
++}
++
++static void run(unsigned int n)
++{
++	const struct tcase *tc = &tcases[n];
++	unsigned int i;
++
++	tst_res(TINFO, "Testing %s (depth=%u fanout=%u repetitions=%u workers=%u)",
++		tc->desc, tc->depth, tc->fanout, tc->repetitions, tc->workers);
++
++	for (i = 0; i < tc->workers; i++) {
++		if (!SAFE_FORK())
++			run_worker(tc);
++	}
++
++	TST_CHECKPOINT_WAKE2(0, tc->workers);
++}
++
++static struct tst_test test = {
++	.test = run,
++	.tcnt = ARRAY_SIZE(tcases),
++	.needs_tmpdir = 1,
++	.forks_child = 1,
++	.needs_checkpoints = 1,
++	.timeout = 300,
++};
+diff --git a/testcases/kernel/fs/inode/inode02.c b/testcases/kernel/fs/inode/inode02.c
+deleted file mode 100644
+index 43e406d54..000000000
+--- a/testcases/kernel/fs/inode/inode02.c
++++ /dev/null
+@@ -1,902 +0,0 @@
+-/*
+- *
+- *   Copyright (c) International Business Machines  Corp., 2002
+- *
+- *   This program is free software;  you can redistribute it and/or modify
+- *   it under the terms of the GNU General Public License as published by
+- *   the Free Software Foundation; either version 2 of the License, or
+- *   (at your option) any later version.
+- *
+- *   This program is distributed in the hope that it will be useful,
+- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- *   the GNU General Public License for more details.
+- *
+- *   You should have received a copy of the GNU General Public License
+- *   along with this program;  if not, write to the Free Software
+- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+- */
 -
- 	if (tc->cmd == GETNCNT || tc->cmd == GETZCNT)
- 		kill_all_children();
- }
+-/* 11/01/2002	Port to LTP	robbiew@us.ibm.com */
+-/* 06/30/2001	Port to Linux	nsharoff@us.ibm.com */
+-
+-			   /*inode02.c */
+-/*======================================================================
+-	=================== TESTPLAN SEGMENT ===================
+-CALLS:	mkdir, stat, open
+-
+-	Run with TERM mode.
+-
+->KEYS:  < file system and I/O management, system resource constraints.
+->WHAT:  < Can the system handle a heavy load on the file system I/O
+-	< functions?
+->HOW:   < Create several identical process that call inode02.c.  This
+-	< will simulate the multi-user environment, and hopefully uncover
+-	< conflicts that might occur in "real life" use.
+->BUGS:  <
+-======================================================================*/
+-
+-#define PATH_STRING_LENGTH  1024
+-#define NAME_LENGTH  8
+-#define MAX_PATH_STRING_LENGTH  (PATH_STRING_LENGTH - NAME_LENGTH - 40)
+-#define DIRECTORY_MODE  00777
+-#define FILE_MODE       00777
+-
+-#define MKDIR_STRING_LENGTH  (MAX_PATH_STRING_LENGTH + 7)
+-
+-/* #define DEBUG	 you can watch the generation with this flag */
+-
+-#define TRUE  1
+-#define FALSE 0
+-#define READ  0
+-#define WRITE 1
+-
+-#include <stdio.h>
+-#include <errno.h>
+-#include <sys/types.h>
+-#include <sys/stat.h>
+-#include <signal.h>
+-#include <fcntl.h>
+-#include <errno.h>
+-#include <sys/wait.h>
+-
+-#ifdef LINUX
+-#include <stdlib.h>
+-#include <unistd.h>
+-#include <string.h>
+-#endif
+-
+-#define MAXCHILD	25
+-int allchild[MAXCHILD + 1];
+-
+-char name[NAME_LENGTH + 1];
+-char path_string[PATH_STRING_LENGTH + 1];
+-char read_string[PATH_STRING_LENGTH + 1];
+-char write_string[PATH_STRING_LENGTH + 1];
+-char remove_string[PATH_STRING_LENGTH + 10];
+-int parent_pid;
+-int nchild;
+-
+-FILE *list_stream = NULL;
+-int list_id;
+-int file_id;
+-
+-int increment_name(), get_next_name(), mode(), escrivez(), massmurder();
+-int max_depth, max_breadth, file_length;
+-int bd_arg(char *);
+-
+-#ifdef LINUX
+-void (*sigset(int, void (*)(int))) (int);
+-#endif
+-
+-/** LTP Port **/
+-#include "test.h"
+-
+-void setup(void);
+-void fail_exit(void);
+-void anyfail(void);
+-void ok_exit(void);
+-void forkfail(void);
+-void terror(char *);
+-int instress(void);
+-
+-#define FAILED 0
+-#define PASSED 1
+-
+-int local_flag = PASSED;
+-FILE *temp;
+-
+-char *TCID = "inode02";		/* Test program identifier.    */
+-int TST_TOTAL = 1;		/* Total number of test cases. */
+-/**************/
+-
+-int main(int argc, char *argv[])
+-{
+-	int pid, tree(), p, status;
+-	int count, child;
+-	register int i;
+-	int term();
+-
+-	setup();
+-
+-	parent_pid = getpid();
+-
+-	if (sigset(SIGTERM, (void (*)())term) == SIG_ERR) {
+-		tst_resm(TBROK, "\tSIGTERM sigset set failed, errno=%d",
+-			 errno);
+-		exit(1);
+-	}
+-
+-	/************************************************/
+-	/*                                              */
+-	/*  Input the parameters for the directory---   */
+-	/*  file trees which are to be generated        */
+-	/*                                              */
+-	/************************************************/
+-
+-	if (argc < 2) {
+-		max_depth = 6;
+-		max_breadth = 5;
+-		file_length = 8;
+-		nchild = 5;
+-	} else if (argc < 5) {
+-		tst_resm(TCONF, "Bad argument count.");
+-		printf
+-		    ("\tinode02 max_depth max_breadth file_length #children\n\tdefault: inode02 6 5 8 5\n");
+-		exit(1);
+-	} else {
+-		i = 1;
+-		if (sscanf(argv[i++], "%d", &max_depth) != 1)
+-			bd_arg(argv[i - 1]);
+-		if (sscanf(argv[i++], "%d", &max_breadth) != 1)
+-			bd_arg(argv[i - 1]);
+-		if (sscanf(argv[i++], "%d", &file_length) != 1)
+-			bd_arg(argv[i - 1]);
+-		if (sscanf(argv[i++], "%d", &nchild) != 1)
+-			bd_arg(argv[i - 1]);
+-		if (nchild > MAXCHILD) {
+-			fprintf(temp, "too many children - max is %d\n",
+-				MAXCHILD);
+-			exit(1);
+-		}
+-	}
+-
+-	/************************************************/
+-	/*                                              */
+-	/*  Generate and check nchild trees             */
+-	/*                                              */
+-	/************************************************/
+-
+-	for (p = 0; p < nchild; p++) {
+-		pid = fork();
+-		if (pid == 0) {
+-			tree();
+-		} else {
+-			if (pid < 1) {
+-				terror
+-				    ("Fork failed (may be OK if under stress)");
+-				massmurder();
+-				if (instress()) {
+-					ok_exit();
+-				}
+-				forkfail();
+-			}
+-		}
+-	}
+-
+-	count = 0;
+-	while ((child = wait(&status)) > 0) {
+-#ifdef DEBUG
+-		tst_resm(TINFO, "Test %d exited status = %d\n", child, status);
+-#endif
+-		if (status) {
+-			fprintf(temp, "Test %d failed - expected 0 exit.\n",
+-				child);
+-			local_flag = FAILED;
+-		}
+-		count++;
+-	}
+-
+-	if (count != nchild) {
+-		tst_resm(TFAIL, "Wrong number of children waited on!");
+-		tst_resm(TFAIL, "Saw %d, expected %d", count, nchild);
+-		local_flag = FAILED;
+-	}
+-
+-	/************************************************/
+-	/*                                              */
+-	/*  And report the results..........            */
+-	/*                                              */
+-	/************************************************/
+-
+-	anyfail();
+-	/** NOT REACHED **/
+-	tst_exit();
+-}
+-
+-int bd_arg(char *str)
+-{
+-	fprintf(temp,
+-		"Bad argument - %s - could not parse as number.\n\tinode02 [max_depth] [max_breadth] [file_length] [#children]\n\tdefault: inode02 6 5 8 5\n",
+-		str);
+-	exit(1);
+-}
+-
+-int tree(void)
+-
+-/************************************************/
+-/*						*/
+-/*  		      TREE			*/
+-/*						*/
+-/*   generate a tree of directories and files   */
+-/*   and save the path names in the path_list	*/
+-/*   file 					*/
+-/*						*/
+-/*   then, read the path names and attempt to   */
+-/*   access the corresponding directories and	*/
+-/*   files					*/
+-/*						*/
+-/************************************************/
+-{
+-	int gen_ret_val, ch_ret_val, exit_val, level;
+-	int ret_val;
+-	int generate(), check();
+-	char path_list_string[PATH_STRING_LENGTH + 10];
+-	int len;
+-	int status;
+-	int snp_ret;
+-
+-	/********************************/
+-	/*                              */
+-	/*  make the root directory for */
+-	/*  the tree                    */
+-	/*                              */
+-	/********************************/
+-
+-	sprintf(path_string, "inode02.%d", getpid());
+-
+-	ret_val = mkdir(path_string, DIRECTORY_MODE);
+-
+-	if (ret_val == -1) {
+-		tst_resm(TBROK,
+-			 "Reason: Impossible to create directory %s, errno=%d\n",
+-			 path_string, errno);
+-		exit(-5);
+-	}
+-
+-	strcpy(remove_string, "rm -rf ");
+-	strcat(remove_string, path_string);
+-
+-#ifdef DEBUG
+-	tst_resm(TINFO, "\n%s\n", path_string);
+-#endif
+-
+-	/****************************************/
+-	/*                                      */
+-	/*  create the "path_list" file, in     */
+-	/*  which the list of generated paths   */
+-	/*  will be stored so that they later   */
+-	/*  may be checked                      */
+-	/*                                      */
+-	/****************************************/
+-
+-	snp_ret = snprintf(path_list_string, sizeof(path_list_string),
+-		"%s/path_list",	path_string);
+-	if (snp_ret < 0 || snp_ret >= sizeof(path_list_string)) {
+-		tst_resm(TBROK, "snprintf(path_list_string,..) returned %d",
+-			snp_ret);
+-		exit(-1);
+-	}
+-	list_id = creat(path_list_string, FILE_MODE);
+-	if (list_id == -1) {
+-		fprintf(temp,
+-			"\nThe path_list file '%s' cannot be created, errno=%d\n",
+-			path_list_string, errno);
+-		exit(-7);
+-	}
+-
+-	/****************************************/
+-	/*                                      */
+-	/*   and store its name in path_list    */
+-	/*                                      */
+-	/****************************************/
+-
+-	strcpy(write_string, path_string);
+-	len = strlen(write_string);
+-	write_string[len++] = 'D';
+-	write_string[len] = '\0';
+-	escrivez(write_string);
+-
+-	/****************************************/
+-	/*                                      */
+-	/*   generate the directory-file tree   */
+-	/*                                      */
+-	/****************************************/
+-
+-	level = 0;
+-
+-#ifdef DEBUG
+-	tst_resm(TINFO, "\n\t%s\n\n", "GENERATING:");
+-#endif
+-
+-	gen_ret_val = generate(path_string, level);
+-	close(list_id);
+-	list_id = open(path_list_string, READ);
+-	if (list_id == -1) {
+-		fprintf(temp,
+-			"\nThe path_list file cannot be opened for reading, errno=%d\n",
+-			errno);
+-		exit(-8);
+-	}
+-	list_stream = fdopen(list_id, "r");
+-
+-	/****************************************/
+-	/*                                      */
+-	/*   check the directory-file tree      */
+-	/*      for correctness                 */
+-	/*                                      */
+-	/****************************************/
+-
+-#ifdef DEBUG
+-	tst_resm(TINFO, "\n\t%s\n\n", "CHECKING:");
+-#endif
+-
+-	ch_ret_val = check();
+-
+-	exit_val = MIN(ch_ret_val, gen_ret_val);
+-
+-	status = fclose(list_stream);
+-	if (status != 0) {
+-		fprintf(temp,
+-			"Failed to close list_stream: ret=%d errno=%d (%s)\n",
+-			status, errno, strerror(errno));
+-		exit(-8);
+-	}
+-
+-	/*
+-	 * Remove file.
+-	 */
+-
+-	status = system(remove_string);
+-	if (status) {
+-		fprintf(temp, "Caution - `%s' failed.\n", remove_string);
+-		fprintf(temp, "Status returned %d.\n", status);
+-	}
+-
+-	/****************************************/
+-	/*                                      */
+-	/*         .....and exit main           */
+-	/*                                      */
+-	/****************************************/
+-
+-	exit(exit_val);
+-}
+-
+-int generate(char *string, int level)
+-
+-/****************************************/
+-/*					*/
+-/*   generate recursively a tree of	*/
+-/*   directories and files:  within   	*/
+-/*   created directory, an alternating	*/
+-/*   series of files and directories 	*/
+-/*   are constructed---until tree	*/
+-/*   breadth and depth limits are	*/
+-/*   reached or an error occurs		*/
+-/*					*/
+-/****************************************/
+-/***************************/
+-/*  string:                */
+-/*  the directory path     */
+-/*  string below which a   */
+-/*  tree is generated      */
+-/*                         */
+-/***************************/
+-
+-/***************************/
+-/* level:                  */
+-/* the tree depth variable */
+-/*                         */
+-/***************************/
+-{
+-	int switch_flag;
+-	int ret_val = 0;
+-	int new_ret_val, len, ret_len;
+-	char new_string[PATH_STRING_LENGTH + 1];
+-	int new_level;
+-	int i, j;		/* iteration counters */
+-	int snp_ret;
+-
+-	switch_flag = level & TRUE;
+-	if (strlen(string) >= MAX_PATH_STRING_LENGTH) {
+-
+-		/********************************/
+-		/*                              */
+-		/*   Maximum path name length   */
+-		/*          reached             */
+-		/*                              */
+-		/********************************/
+-
+-		fprintf(temp, "\nMaximum path_name length reached\n");
+-		return (-1);
+-	} else if (level < max_depth) {
+-		for (i = 0; i <= max_breadth; i++) {
+-			get_next_name();
+-			snp_ret = snprintf(new_string, sizeof(new_string),
+-				"%s/%s", string, name);
+-			if (snp_ret < 0 || snp_ret >= sizeof(new_string)) {
+-				tst_resm(TBROK, "snprintf(new_string,..) "
+-					"returned %d", snp_ret);
+-				exit(-1);
+-			}
+-
+-			/****************************************/
+-			/*                                      */
+-			/*    switch between creating files     */
+-			/*    and making directories            */
+-			/*                                      */
+-			/****************************************/
+-
+-			if (switch_flag) {
+-				switch_flag = FALSE;
+-
+-				/****************************************/
+-				/*                                      */
+-				/*        create a new file             */
+-				/*                                      */
+-				/****************************************/
+-
+-				file_id = creat(new_string, FILE_MODE);
+-				if (file_id == -1) {
+-					fprintf(temp,
+-						"\nImpossible to create file %s, errno=%d\n",
+-						new_string, errno);
+-					return (-2);
+-				}
+-#ifdef DEBUG
+-				tst_resm(TINFO, "%d  %s F\n", level,
+-					 new_string);
+-#endif
+-
+-				/****************************************/
+-				/*                                      */
+-				/*            write to it               */
+-				/*                                      */
+-				/****************************************/
+-
+-				len = strlen(new_string);
+-				for (j = 1; j <= file_length; j++) {
+-					ret_len =
+-					    write(file_id, new_string, len);
+-					if (ret_len != len) {
+-						fprintf(temp,
+-							"\nUnsuccessful write to file %s, errno=%d\n",
+-							new_string, errno);
+-						return (-3);
+-					}
+-				}
+-				close(file_id);
+-
+-				/****************************************/
+-				/*                                      */
+-				/*   and store its name in path_list    */
+-				/*                                      */
+-				/****************************************/
+-
+-				strcpy(write_string, new_string);
+-				len = strlen(write_string);
+-				write_string[len++] = 'F';
+-				write_string[len] = '\0';
+-				escrivez(write_string);
+-			} else {
+-				switch_flag = TRUE;
+-
+-				/****************************************/
+-				/*                                      */
+-				/*       or make a directory            */
+-				/*                                      */
+-				/*  (mknod can only be called when in   */
+-				/*   super user mode)                   */
+-				/*                                      */
+-				/****************************************/
+-
+-				ret_val = mkdir(new_string, DIRECTORY_MODE);
+-
+-				if (ret_val != 0) {
+-					fprintf(temp,
+-						"\nImpossible to create directory %s, errno=%d\n",
+-						new_string, errno);
+-					return (-5);
+-				}
+-#ifdef DEBUG
+-				tst_resm(TINFO, "%d  %s D\n", level,
+-					 new_string);
+-#endif
+-
+-				/****************************************/
+-				/*                                      */
+-				/*     store its name in path_list      */
+-				/*                                      */
+-				/****************************************/
+-
+-				strcpy(write_string, new_string);
+-				len = strlen(write_string);
+-				write_string[len++] = 'D';
+-				write_string[len] = '\0';
+-				escrivez(write_string);
+-
+-				/****************************************/
+-				/*                                      */
+-				/*      and generate a new level        */
+-				/*                                      */
+-				/****************************************/
+-
+-				new_level = level + 1;
+-				new_ret_val = generate(new_string, new_level);
+-				if (new_ret_val < ret_val)
+-					ret_val = new_ret_val;
+-			}
+-		}
+-
+-		/********************************/
+-		/*                              */
+-		/*    Maximum breadth reached   */
+-		/*                              */
+-		/********************************/
+-
+-		return (ret_val);
+-	} else
+-		    /********************************/
+-		/*                             */
+-		/*    Maximum depth reached    */
+-		/*                             */
+- /********************************/
+-		return 0;
+-}
+-
+-int check(void)
+-
+-/****************************************/
+-/*					*/
+-/*   check for file and directory	*/
+-/*   correctness by reading records	*/
+-/*   from the path_list and attempting	*/
+-/*   to determine if the corresponding	*/
+-/*   files or directories are as 	*/
+-/*   created 				*/
+-/*					*/
+-/****************************************/
+-{
+-	int len, path_mode, val, ret_len, j;
+-
+-	for (;;) {
+-
+-		/****************************************/
+-		/*                                      */
+-		/*  read a path string from path_list   */
+-		/*                                      */
+-		/****************************************/
+-
+-		if (fscanf(list_stream, "%s", path_string) == EOF) {
+-
+-#ifdef DEBUG
+-			tst_resm(TINFO, "\nEnd of path_list file reached \n");
+-#endif
+-
+-			return 0;
+-		}
+-#ifdef DEBUG
+-		tst_resm(TINFO, "%s\n", path_string);
+-#endif
+-
+-		len = strlen(path_string);
+-		len--;
+-		if (path_string[len] == 'F') {
+-
+-		/********************************/
+-			/*                              */
+-			/*    this should be a file     */
+-			/*                              */
+-		/********************************/
+-
+-			path_string[len] = '\0';
+-			file_id = open(path_string, READ);
+-			if (file_id <= 0) {
+-				fprintf(temp,
+-					"\nImpossible to open file %s, errno=%d\n",
+-					path_string, errno);
+-				return (-1);
+-			}
+-
+-			else {
+-				/********************************/
+-				/*                              */
+-				/*    check its contents        */
+-				/*                              */
+-				/********************************/
+-
+-				ret_len = 0;
+-				len = strlen(path_string);
+-				for (j = 1; j <= file_length; j++) {
+-					ret_len =
+-					    read(file_id, read_string, len);
+-					if (len != ret_len) {
+-						fprintf(temp,
+-							"\nFile read error for file %s, errno=%d\n",
+-							path_string, errno);
+-						return (-3);
+-					}
+-					read_string[len] = '\0';
+-					val = strcmp(read_string, path_string);
+-					if (val != 0) {
+-						fprintf(temp,
+-							"\nContents of file %s are different than expected: %s\n",
+-							path_string,
+-							read_string);
+-						return (-4);
+-					}
+-				}
+-				close(file_id);
+-			}	/* else for */
+-			if (ret_len <= 0) {
+-				fprintf(temp,
+-					"\nImpossible to read file %s, errno=%d\n",
+-					path_string, errno);
+-				return (-2);
+-			}
+-		} else {
+-
+-		/********************************/
+-			/*                              */
+-			/*  otherwise..........         */
+-			/*  it should be a directory    */
+-			/*                              */
+-		/********************************/
+-
+-			path_string[len] = '\0';
+-			path_mode = mode(path_string);
+-			if (path_mode == -1) {
+-				fprintf(temp,
+-					"\nPreviously created directory path %s was not open\n",
+-					path_string);
+-				return (-4);
+-			}
+-			if ((040000 & path_mode) != 040000) {
+-				fprintf(temp,
+-					"\nPath %s was not recognized to be a directory\n",
+-					path_string);
+-				fprintf(temp, "Its mode is %o\n", path_mode);
+-				return (-5);
+-			}
+-		}
+-	}			/* while */
+-}
+-
+-int get_next_name(void)
+-
+-/****************************************/
+-/*					*/
+-/*   get the next---in a dictionary	*/
+-/*   sense---file or directory name	*/
+-/*					*/
+-/****************************************/
+-{
+-	static int k;
+-	int i;
+-	int last_position;
+-
+-	last_position = NAME_LENGTH - 1;
+-	if (k == 0) {
+-
+-		/************************/
+-		/*                      */
+-		/*   initialize name    */
+-		/*                      */
+-		/************************/
+-
+-		for (i = 0; i < NAME_LENGTH; i++)
+-			name[i] = 'a';
+-		name[NAME_LENGTH] = '\0';
+-		k++;
+-	}
+-					    /********************************/
+-	/*                              */
+-	else
+-		increment_name(last_position);	/* i.e., beginning at the last  */
+-	/* position                     */
+-	/*                              */
+-					    /********************************/
+-	return 0;
+-}
+-
+-int increment_name(int position)
+-
+-/****************************************/
+-/*					*/
+-/*  recursively revise the letters in 	*/
+-/*  a name to get the lexiographically	*/
+-/*  next name				*/
+-/*					*/
+-/****************************************/
+-{
+-	int next_position;
+-
+-	if (name[position] == 'z')
+-		if (position == 0) {
+-			fprintf(temp,
+-				"ERROR: There are no more available names\n");
+-			exit(-1);
+-		} else {
+-			name[position] = 'a';	       /**********************/
+-			next_position = --position;	/*                    */
+-			increment_name(next_position);	/*  increment the     */
+-			/*  previous letter   */
+-			/*                    */
+-						       /**********************/
+-		}
+-				  /*********************************/
+-	/*                               */
+-	else
+-		name[position]++;	/* otherwise, increment this one */
+-	return 0;		/*                               */
+-				  /*********************************/
+-}
+-
+-int mode(char *path_string)
+-
+-/****************************************/
+-/*					*/
+-/*   determine and return the mode of	*/
+-/*   the file named by path_string 	*/
+-/*					*/
+-/****************************************/
+-{
+-	struct stat buf;
+-	int ret_val, mod;
+-
+-	ret_val = stat(path_string, &buf);
+-	if (ret_val == -1)
+-		return (-1);
+-	else {
+-		mod = buf.st_mode;
+-		return (mod);
+-	}
+-}
+-
+-int escrivez(char *string)
+-{
+-	char write_string[PATH_STRING_LENGTH + 1];
+-	int len, ret_len;
+-
+-	strcpy(write_string, string);
+-	len = strlen(write_string);
+-	write_string[len] = '\n';
+-	len++;
+-	ret_len = write(list_id, write_string, len);
+-	if (len != ret_len) {
+-		fprintf(temp,
+-			"A string of deviant length %d written to path_list, errno=%d\n",
+-			ret_len, errno);
+-		exit(-2);
+-	}
+-	return 0;
+-}
+-
+-int term(void)
+-{
+-	int status;
+-
+-	fflush(temp);
+-	if (parent_pid == getpid()) {
+-		massmurder();	/* kill kids */
+-		fprintf(temp, "\term1 - SIGTERM received by parent.\n");
+-		fflush(temp);
+-	} else {
+-		fprintf(temp, "\tchild - got SIGTERM signal.\n");
+-		if (list_stream != NULL)
+-			fclose(list_stream);
+-		close(list_id);
+-		close(file_id);
+-		status = system(remove_string);
+-		if (status) {
+-			fprintf(temp, "Caution - ``%s'' returned status %d\n",
+-				remove_string, status);
+-		}
+-		exit(0);
+-	}
+-	return 0;
+-}
+-
+-int massmurder(void)
+-{
+-	int i;
+-	for (i = 0; i < MAXCHILD; i++) {
+-		if (allchild[i]) {
+-			kill(allchild[i], SIGTERM);
+-		}
+-	}
+-	return 0;
+-}
+-
+-/** LTP Port **/
+-/*
+- * setup
+- *
+- * Do set up - here its a dummy function
+- */
+-void setup(void)
+-{
+-	tst_tmpdir();
+-	temp = stderr;
+-}
+-
+-/*
+- * fail_exit()
+- *
+- * Exit on failure
+- */
+-void fail_exit(void)
+-{
+-	tst_brkm(TFAIL, tst_rmdir, "Test failed");
+-}
+-
+-/*
+- *
+- * Function: anyfail()
+- *
+- * Description: Exit a test.
+- */
+-void anyfail(void)
+-{
+-	(local_flag == FAILED) ? tst_resm(TFAIL, "Test failed")
+-	    : tst_resm(TPASS, "Test passed");
+-	tst_rmdir();
+-	tst_exit();
+-}
+-
+-/*
+- * ok_exit
+- *
+- * Calling block passed the test
+- */
+-void ok_exit(void)
+-{
+-	local_flag = PASSED;
+-	return;
+-}
+-
+-/*
+- * forkfail()
+- *
+- * exit on failure
+- */
+-void forkfail(void)
+-{
+-	tst_brkm(TBROK, tst_rmdir, "Reason: %s", strerror(errno));
+-}
+-
+-/*
+- * Function: terror
+- *
+- * Description: prints error message this may not be because some part of the
+- *              test case failed, for example fork() failed. We will log this
+- *              failure as TBROK instead of TFAIL.
+- */
+-void terror(char *message)
+-{
+-	tst_resm(TBROK, "Reason: %s:%s", message, strerror(errno));
+-	return;
+-}
+-
+-/*
+- * instress
+- *
+- * Assume that we are always running under stress, so this function will
+- * return > 0 value always.
+- */
+-int instress(void)
+-{
+-	tst_resm(TINFO, "System resource may be too low, fork() malloc()"
+-		 " etc are likely to fail.\n");
+-	return 1;
+-}
 -- 
-2.55.0
+2.51.0
 
 
 -- 
