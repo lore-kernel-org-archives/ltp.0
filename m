@@ -4,82 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 500DDC44512
-	for <ltp@archiver.kernel.org>; Wed, 22 Jul 2026 05:55:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4D960C44512
+	for <ltp@archiver.kernel.org>; Wed, 22 Jul 2026 05:59:29 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A59AD3E1F19
-	for <ltp@archiver.kernel.org>; Wed, 22 Jul 2026 07:55:22 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id B26A23E55A7
+	for <ltp@archiver.kernel.org>; Wed, 22 Jul 2026 07:59:27 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 7B2EE3C241C
- for <ltp@lists.linux.it>; Wed, 22 Jul 2026 07:55:07 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 7325A3C241C
+ for <ltp@lists.linux.it>; Wed, 22 Jul 2026 07:59:06 +0200 (CEST)
 Received: from mail-qv2-x00.google.com (mail-qv2-x00.google.com
  [IPv6:2607:f8b0:4864:33::])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id E0E67600AB8
- for <ltp@lists.linux.it>; Wed, 22 Jul 2026 07:55:06 +0200 (CEST)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 43CCF600AE6
+ for <ltp@lists.linux.it>; Wed, 22 Jul 2026 07:59:06 +0200 (CEST)
 Received: by mail-qv2-x00.google.com with SMTP id
- 6a1803df08f44-9032b580ed4so43479516d6.1
- for <ltp@lists.linux.it>; Tue, 21 Jul 2026 22:55:06 -0700 (PDT)
+ 6a1803df08f44-8ee27aa897fso69665906d6.1
+ for <ltp@lists.linux.it>; Tue, 21 Jul 2026 22:59:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1784699706; x=1785304506; darn=lists.linux.it;
+ d=gmail.com; s=20251104; t=1784699945; x=1785304745; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to:content-type;
- bh=p6Mxhj0NY7i5IVpk5wYFvlx6x+lUVxi4jYJfcz5Ko/s=;
- b=qijjHZEU17wxcerEv/DeBKbm4MrW7LyvYoNNo0EudBvZDN6Ya8Lq/GmIqjVTUvw25E
- vdTfi1Xh9gMak20bHdRnFRVxlQmXft0txHe9G/WG2XCTUBnKX3rzcamnABV8qCdmaOsZ
- Mj+2yAY+ilygJZQ6+MR2DlFcmZOp3XLY/Md3XxSAju5B9+9q2Xm6ir2qghIwS8MAv2RR
- ymk5mqQRpiz3rK0IkmGPg099hVu9oT091/TNXebITUUZOIVuvzq20UzXCqOChD9+MQGh
- j3JwYuqfOqZh7lDAmSi2M23l2ptpuLks6EKwqzkNwCHOxVVuEdCcNqwAeFu1BI9+lQIs
- IhoA==
+ bh=xMv5iqrCzDHNt66rJupwUvGUYR61g7RolTke/Gnd+L4=;
+ b=eEOfkca15ODf3n0+67/50U/jAgHPr75/hBH7DpLE+kNmcb7M4g253t+L1ajAlEXwGI
+ Z90rFx/kkuNkdt+vj8UhqIEuJ9bR4Vi8uL/oJm3aaXSgAxCQ/ASTBG1dQe038E9jzYcx
+ USLqnwhxyni/mhHg3yDo8FrD63hoGDZLRRlu02tzJH7EukjmkwSXfbAXW64l6poCjKDR
+ uj2R8WA2e+Vv1VPkfqScEDfZz9BmomBk6GEC/sIZj9CXthvaaqr0uHIFNiG4NZx0qxg5
+ a3nb0A1ma3eovnPVHuuER6whrvc3gR0vz4hjBrqkAaR7/PPUXBVzzSDgY9a7hWa2DDu/
+ LSBA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1784699706; x=1785304506;
+ d=1e100.net; s=20251104; t=1784699945; x=1785304745;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to:content-type;
- bh=p6Mxhj0NY7i5IVpk5wYFvlx6x+lUVxi4jYJfcz5Ko/s=;
- b=J+aTwjBdeNK9vlh5ED41fuUyKOcrlJgaxlPiOUUHkp3iCA5mSHDMDFbheF/au6Nuf9
- kCVuYbV9/ygwau7MjYc9IWCZ7JIi3UDlRrBp8223CSnT7Tjh3LMdempdc+Rtb71SwfDu
- fOcyFQULWKPcYajxPbgRjVB1ZSVNwqNh+1DenUTldUMcSpiBZ3gyZBqE+IQjDimQVmQu
- q4c7iXAXVIcujqqIp3jmQO9zIVhEPBmZ3EdLxJJ7gTctXqjgtr63i1F2+eu2IuI4miND
- IK13RnqNdqibfGiVaccRTjrJ6pqUTPUQiXtdMiCVzDLRx7NffAwmPmQGwf+0aE3T1/S+
- F9+g==
-X-Gm-Message-State: AOJu0YwKpldB1DREJqzEwifccVDZhnJFsoVCld5ikbsaLBe7Dn9EQYof
- CIxeJaPDiHZenWymke6bGobQ3LXJmN8y2RozOM5yanwACmsDmXZag8vA
-X-Gm-Gg: AR+sD134fMaegDPMEr09ktymlK0rhOZ1XGe24+GzGRP5WGzPEVrxjC4Ex6N9AtrTh+o
- Io4VXAYVDshKCQK75cZYhwbNsXZBXUj4te2sqUr5JiMSacxEZ8gfZLyJbgIRTB/gIX0eOr66TDY
- sWr+5X7oIzpefTyldnNVPIty5u6jordF6bAeLRqe7Q4EKXJ983MS3Cj4ByOJRJG/3xqxBFlYu31
- JSWhl9e66T1aZaYwb9By6nglzsQcYO2974jAjn71uDy3BCOHTKB5sZ1S8duDLwo4AeYx1SRk12l
- JAjjUq5b39GHFnARqY9k5F7ohR/ufZxOOF9AenSfTkZj5DE3ZXFVSPBaKEdzo/mB/TKt1YfOtVK
- ffY8YPB45qFji2Ns6wtPPRhgKtiVb09yfq2wXJqfIVmX3iEO/Dge7AUkO9WDaQkmV5U/obWjKPR
- mkdu1yT5+EnZsc3UyCHIUqL6A0KFdTltVR9k6L1FPVre6R/44at28Xo3vnEXUxmxwMbkd9mxWSa
- V2PiPrYmmWjjNvI
-X-Received: by 2002:a05:6214:4284:b0:8ef:e3c9:533e with SMTP id
- 6a1803df08f44-9077834e631mr244912796d6.9.1784699705674; 
- Tue, 21 Jul 2026 22:55:05 -0700 (PDT)
+ bh=xMv5iqrCzDHNt66rJupwUvGUYR61g7RolTke/Gnd+L4=;
+ b=PjJZzsj+YkcjUG/MiNr5PZwTKvAYvnZWohXJg1WH0o8rlhdDrVuxc4LraFeWNF+1xu
+ ekMVS7A+3ixUgmukPDz+AcKfGVwvupSHsttnAEDqZ/LWQ91ogCS++7VucDWorjCOq1uc
+ gUnQfDA5rYe+1sPvbglEKu4+92JrwWZDnwy+X4dHWWKUC1N/43o9/IMYSwnrtdUb1luR
+ KXvuS0WiUD1fiT8LQUarmDuCt6tuhRFZSDmdqDvBX0ectXsRwZ2YmW70GhrdvLKzGYBY
+ MP1PKepGSlbA6h+VqTHPLI923RzuAP3D5Sm6Rfb6BEiyO0bRf+s9JogFko78Y6YZiTvc
+ uzzg==
+X-Gm-Message-State: AOJu0YylkyvWLY0ccj6DZpWeVrMGvy2bBQOKbMN+LBM4PxUsTRju++3V
+ 0SPkGnFsPUC/8OpQlMYBx+9iQm6NoknIJofxC0mDMv9betocODvrYs0q
+X-Gm-Gg: AR+sD12N45EfFIuCFJ16iDUY90sBZucsInqiwK0mWEpXxTo6/jU9Il/ImzQpisED49u
+ XH8vVW+WNBCE3y0OchFiV0jyAITkhxt0yZrGJdaVP8Ijz4Kp8kUZLUgQYs+SDVdAZ+SSjdZrYXy
+ vRBD0oNdu084rV/IVWxvaa7iLQ+pXSYYaWC2BmtwENMcrzR5tcDfaCjjCnB40V7qvSK3Jeqjnm2
+ rtM/IzhSL7ZUrgvOvi1MTgqezoM6bnLZ84RDrFTfteiclJxGEpB16UXs/m/wadI4InZcuBpH8b6
+ lym6sNpSRyPMof1XYkbh1QE/dueMhf6dyGkx2dvX40/jb9NUCcVeYPCd12I4DMQmxja9nFhb8as
+ v4rZkSb5FNJWcUln1jrPzZRYGAr/5bfNfCbxg5WczxCgRaSk5R6W3DCEEuMYo1WxxIXs1Jx9Jkj
+ ToX8wArHmz4bygynWOq4Id0wi6Ho5Hq7vMr+1cbzcPfoxbb9TteYKlKHN3P+d6MbrHsZD5t1IxU
+ 0OFC8gr3kQqMWn3iw==
+X-Received: by 2002:a05:620a:2552:b0:92e:72cd:32f4 with SMTP id
+ af79cd13be357-930b43157ccmr2162042585a.64.1784699944925; 
+ Tue, 21 Jul 2026 22:59:04 -0700 (PDT)
 Received: from
- runnervm3jd5f.azxqbe15tnoejktjlqhfjvh14g.cx.internal.cloudapp.net
- ([48.214.53.65]) by smtp.gmail.com with ESMTPSA id
- 6a1803df08f44-907baa27361sm13419266d6.43.2026.07.21.22.55.05
+ runnervm3jd5f.f3puv0spyjrexgmmrdyyiudxgb.bx.internal.cloudapp.net
+ ([40.76.191.162]) by smtp.gmail.com with ESMTPSA id
+ af79cd13be357-930f6872a59sm86258685a.3.2026.07.21.22.59.04
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 21 Jul 2026 22:55:05 -0700 (PDT)
+ Tue, 21 Jul 2026 22:59:04 -0700 (PDT)
 From: linuxtestproject.agent@gmail.com
-To: Tang Yizhou <yizhou.tang@shopee.com>
-Date: Wed, 22 Jul 2026 05:55:04 +0000
-Message-ID: <20260722055504.3912-1-linuxtestproject.agent@gmail.com>
+To: Wei Gao <wegao@suse.com>
+Date: Wed, 22 Jul 2026 05:59:04 +0000
+Message-ID: <20260722055904.8701-1-linuxtestproject.agent@gmail.com>
 X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260722054125.197919-1-yizhou.tang@shopee.com>
-References: <20260722054125.197919-1-yizhou.tang@shopee.com>
+In-Reply-To: <20260722044732.3547-2-wegao@suse.com>
+References: <20260722044732.3547-2-wegao@suse.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] perf_event_open03: Track SUnreclaim growth instead of
- MemAvailable
+Subject: Re: [LTP] lib/tst_uid: Remove spurious TERRNO from tst_get_free_gid
+ success path
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -97,10 +98,10 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Tang,
+Hi Wei,
 
-On 07/22/2026, Tang Yizhou wrote:
-> perf_event_open03: Track SUnreclaim growth instead of MemAvailable
+On Wed, 22 Jul 2026, Wei Gao wrote:
+> lib/tst_uid: Remove spurious TERRNO from tst_get_free_gid success path
 
 Verdict - Reviewed
 
