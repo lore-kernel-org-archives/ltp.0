@@ -4,84 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 820B0C4452D
-	for <ltp@archiver.kernel.org>; Wed, 22 Jul 2026 05:40:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 056D3C44512
+	for <ltp@archiver.kernel.org>; Wed, 22 Jul 2026 05:41:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1784698914; h=to : date :
+ message-id : mime-version : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : cc : content-type : content-transfer-encoding : sender :
+ from; bh=NJTwiBLN2l6QPFbqLm2xqzPKcKMQKgZ6I64xaxe2onw=;
+ b=PXJHj6c3f8MD+/NdZz9u/Nrrp/FHNtmRyV2WN3ww96bwI1Cr1eTaOKj2hu2MZe21ilK5L
+ aS4kzRs+0krX8V69U9rzX0e4eep3saOIPCmBU4Xt7UilG6SHnrsm542ycKMMHy4skbffuZa
+ labmeoJ/uhsuFuEoDX50CZcEA97WdC0=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8B7B53E1F33
-	for <ltp@archiver.kernel.org>; Wed, 22 Jul 2026 07:40:31 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 908CD3E1F83
+	for <ltp@archiver.kernel.org>; Wed, 22 Jul 2026 07:41:54 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 60A6C3C0571
- for <ltp@lists.linux.it>; Wed, 22 Jul 2026 07:40:16 +0200 (CEST)
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com
- [IPv6:2607:f8b0:4864:20::62b])
+ by picard.linux.it (Postfix) with ESMTPS id 0CD363C0571
+ for <ltp@lists.linux.it>; Wed, 22 Jul 2026 07:41:33 +0200 (CEST)
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com
+ [IPv6:2607:f8b0:4864:20::52b])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 30C4A1A0120D
- for <ltp@lists.linux.it>; Wed, 22 Jul 2026 07:40:16 +0200 (CEST)
-Received: by mail-pl1-x62b.google.com with SMTP id
- d9443c01a7336-2ceb096e675so124362875ad.0
- for <ltp@lists.linux.it>; Tue, 21 Jul 2026 22:40:16 -0700 (PDT)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 780FF6010EF
+ for <ltp@lists.linux.it>; Wed, 22 Jul 2026 07:41:33 +0200 (CEST)
+Received: by mail-pg1-x52b.google.com with SMTP id
+ 41be03b00d2f7-cbb7926836eso1231233a12.3
+ for <ltp@lists.linux.it>; Tue, 21 Jul 2026 22:41:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1784698814; x=1785303614; darn=lists.linux.it;
- h=content-transfer-encoding:content-type:in-reply-to:from
- :content-language:references:cc:to:subject:user-agent:mime-version
- :date:message-id:from:to:cc:subject:date:message-id:reply-to
- :content-type; bh=b0lpOv5UqzhrVINq1UN+V0nYIv8pFcnXx9tLv0LTWoU=;
- b=MgQRthNOyo416Y7Z0GNpA/llA4J9X/ZgxPvOyseeg7JOzYll//R/rq04eRvzXgWM4s
- R5SAwZ1UZF28NtI0UYctlzyD8ifWTmhhmCrrCQT0CramqOxKPGg9FqHI4V8ozvyhbxGs
- uUVvlnIi9Nbpf/w4YzzS/41HDtJNHF8z+0HxaSebBEJYFyd646gjivs6xcwqlF8ibFZf
- ZLNTvIcQpq4tihKSktiOVJgS8/yfagD1LsvcdXS4uMpxlH40eDyc4F8yFN99PpbX4rdg
- WJN4spssqmrA0yJotp5+qVxtJGZAVwjrpOWTZDJR9dsQPlzfB1INPQODp4wA5lQaT/NG
- b1hg==
+ d=shopee.com; s=shopee.com; t=1784698892; x=1785303692; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+ bh=ibpBk+GGyIYiJnw3tXq+GzE0nkvLfHLywKT61AZnNq0=;
+ b=Eu9RB2AfdOdpb34WZo9XKWynJx3maGja9JIq0iOFhdp5oBVwlxf2MYvpb37TPvm1vG
+ 0he/2NBv0RCT1jyqXltsBZG/termnDCgElOMI5kdoW4raDKKdlep/Bpyukz9CAbpTC5A
+ kY7j1v3BtNldAApgdoD+Rf5R4c3sPAa8Ft7te0dsS+8q0VFb6FCbv2CtBI2wkgKKiw21
+ JysvGVanoQclMPD4y+5P2ONC6wLsChKfAPureV+61MPCO+mbgPBNoeaRXiU9CBY/+bNa
+ 5M2A3sx53FZFhKiHYv665DIe0bns90MqNjfnnAQiSAoIDorWWKxRpDyocv/sZvb60N3C
+ o5EQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1784698814; x=1785303614;
- h=content-transfer-encoding:content-type:in-reply-to:from
- :content-language:references:cc:to:subject:user-agent:mime-version
- :date:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+ d=1e100.net; s=20251104; t=1784698892; x=1785303692;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
  :message-id:reply-to:content-type;
- bh=b0lpOv5UqzhrVINq1UN+V0nYIv8pFcnXx9tLv0LTWoU=;
- b=SGu0AG90yjTTp6PA2AYo2IXEM71bsEuTH8QzE/Yu4OfrLh9JAehnTFNeqxbxh4Bvbr
- dzqongjnx7Ap17PodtyaciXkxiCzfo3FivMi3XIF+pWMpQDAEiRESYYbCMqESw7lq2g4
- O06kcV9kIIRyVEk/6ok8AYJ0yMBC/AJSUzeLQgwipyOOccwBYOtKjkWeqJC0tcRMe8tW
- lM7TitVBXpjs/xwzBy8kAYRUiaph/OQara0Oy8YNbiPT0QaepmfeRKNHUsHrLlbY+zo0
- AVZvfJ0iUUqeEAfDqvoCz4ete2YHJg/4Zrc4wJV0KQBEiAxOdW+rE/2ltV5ymghEfBCZ
- K58w==
-X-Gm-Message-State: AOJu0YzXCVTHGq4ZsvJJmp8jbv0Vk4JXubH4d6CHOrx+mjzso/47SKBo
- KF/HWiwBqxeJRGq/UkOrsc9kD8u5sSp6xEPk1MX07EXMD8d65NkNQDLp
-X-Gm-Gg: AR+sD12+CN+YhZpJrenDawK0hYed7N+ObwQ/s3yk17gasd/W34IqOsYrPlhmetT798j
- r3MVTMlkdKtVL2q/fciD3HYZ9svyJLC5VDN0xAQy3Rw6BeHvWycNg8PIhyq7LKJvtDxD7MCqOir
- qpr0vImQpdRoi10pVqiMMRJK+myXa4dQ0aeF7iuHlD0PmrDu9kfeD0tQrqW2KqzZw8qg+qduXEA
- xnav5GgVFnqgiYd8N29O+oJpJguC3qlt0VjNny7HQExBpoouQScz/41reHz3swJHEZ5AYQ07wFH
- seeb0n/zV+t8rD9g8Clmfr6HdQocPFpAoXr4j/d1eHH1J1Tr8YqSNS98njw4sOKMT07TL6e2/xP
- 6DnX/bcFQIZXbA+x4Se8y6TltTw1RFBSQfz1wGrMpyfRdQ4XrNC7WIfCDlMfHVCcFKXjOBwbwza
- uOoWisStXetLerLSdtZsEZLjc=
-X-Received: by 2002:a17:902:f642:b0:2cc:fa08:eebc with SMTP id
- d9443c01a7336-2cf34831b12mr220709085ad.1.1784698814337; 
- Tue, 21 Jul 2026 22:40:14 -0700 (PDT)
-Received: from [10.22.68.254] ([111.223.92.222])
+ bh=ibpBk+GGyIYiJnw3tXq+GzE0nkvLfHLywKT61AZnNq0=;
+ b=MEXKJEJFRDOcmcqU/SOBa4fUzdm56dC3BiQfE1L0Ouynj7JXU2rlvguDu0iLwyNQ8f
+ lPEqEd+NrPGtFAbE+MEB0t1NaTw8mYnqim74Mq1rZcFsDRdFpirYobVeLc7aiaEf1Kit
+ kzAFF4UCVyL2mJbm/mzHAFJtchy5vTkHT8S8VXz/KakNWCdE3lnVStZR54TC5TFsLFNr
+ dRhCzfXhUx3+zAFZr3KqxkEkNq1vfGkUR0VczA4d3e7ZqgdKYtGRlKor+wFspFytUqVH
+ b6Jaf4XX1rBW4LnIXkkBjiS9X1SVUOSgfAn8hriCW4X9dYLE3nrCoxek1fDtlSSIjBUx
+ S2cg==
+X-Gm-Message-State: AOJu0Yy4DLvVEN6JkIiqham+DZxsFf9nJcjuHjVeMoK8kD/QmvuSmtBr
+ Z5bWHFoWH50J9qWhAJA2QibKV2Z2OYIEtd7o1sFhbUetcC95mZrWn4L032wT/+KHGyk=
+X-Gm-Gg: AR+sD13eSvDEglfq8UPHCPxHIyd4c+EaWwGZhDUnyCWB+tQutiAjR9WEShtOkQjDrKP
+ 1yaMzjroXstw52M8xfVqah8PNwXXjAFATk8/GGwpE7RbUoeX0E0x4IKlTSUgPKmw+7ofAlJcsAm
+ WizxaCRXjp8l09nxezqrYl5g0YGBHtAhbIsenGI9qKOW51rJ3kDszcLZOQXDiDapWNMX4iQNvDa
+ TfjSAI8xRuvRuY+Wl+yv2WOx5MQzgRNLEW56m9mDFm0JkZEN6kuUezNU1xGyqQKWTNxC3Q52jQH
+ P4TiNKvQgE8KzvSswFfIJo9NnrcDP6GuG+4vUQdlgkuxD64Pbmm9TU1W7dPZ2X/LW77yAzeHHpZ
+ 3UKPdyATieWQW8k90E5K/ERnqE/cyuhDDe+4XvCqUfTz+jfi+czzjYTE27ks7p54=
+X-Received: by 2002:a05:6a20:918e:b0:3bf:6c04:a819 with SMTP id
+ adf61e73a8af0-3c3ad9e7e87mr22199358637.58.1784698891758; 
+ Tue, 21 Jul 2026 22:41:31 -0700 (PDT)
+Received: from localhost.localdomain ([147.136.157.3])
  by smtp.gmail.com with ESMTPSA id
- d9443c01a7336-2cf8f34eba1sm8211155ad.67.2026.07.21.22.40.12
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Tue, 21 Jul 2026 22:40:13 -0700 (PDT)
-Message-ID: <60b5ffe7-dc56-44df-8ac3-be020e033795@gmail.com>
-Date: Wed, 22 Jul 2026 13:40:11 +0800
+ 5a478bee46e88-3147df0686fsm5055484eec.14.2026.07.21.22.41.29
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 21 Jul 2026 22:41:31 -0700 (PDT)
+X-Google-Original-From: Tang Yizhou
+To: Martin Doucha <mdoucha@suse.cz>,
+	Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 22 Jul 2026 13:41:25 +0800
+Message-ID: <20260722054125.197919-1-yizhou.tang@shopee.com>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Cyril Hrubis <chrubis@suse.cz>, Tang Yizhou <yizhou.tang@shopee.com>
-References: <20260714111307.166205-1-yizhou.tang@shopee.com>
- <al92s67_X0D7m01y@yuki.lan>
-Content-Language: en-US
-From: Tang Yizhou <tangyeechou@gmail.com>
-In-Reply-To: <al92s67_X0D7m01y@yuki.lan>
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] perf_event_open03: Track SUnreclaim growth
- instead of MemAvailable
+Subject: [LTP] [PATCH v2] perf_event_open03: Track SUnreclaim growth instead
+ of MemAvailable
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -93,48 +95,111 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+From: Tang Yizhou via ltp <ltp@lists.linux.it>
+Reply-To: Tang Yizhou <yizhou.tang@shopee.com>
+Cc: Vlastimil Babka <vbabka@kernel.org>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
+From: Tang Yizhou <yizhou.tang@shopee.com>
 
+CVE-2020-25704 leaks a small kmalloc() allocation (the filter's file
+name string) on every failed PERF_EVENT_IOC_SET_FILTER call. The test
+detected this by watching MemAvailable in /proc/meminfo drop by more
+than 100MB over 12M iterations.
 
-On 21/7/26 9:40 pm, Cyril Hrubis wrote:
-> Hi!
->> -	if ((sample > 5) || (diff_total > 100 * 1024))
->> -		tst_res(TFAIL, "Likely kernel memory leak detected, total decrease: %ld kB", diff_total);
->> -	else
->> +	if ((sample > 5) || (diff_total > 100 * 1024)) {
->> +		tst_res(TFAIL,
->> +			"Likely kernel memory leak detected, SUnreclaim increased by %ld kB total",
->> +			diff_total);
->> +		tst_res(TINFO,
->> +			"Unreclaimable slab can also grow due to memory activity from "
->> +			"any other unrelated process. If this test fails, re-run it on "
->> +			"an otherwise idle system and/or confirm with kmemleak "
->> +			"(CONFIG_DEBUG_KMEMLEAK) before treating it as a real regression.");
-> 
-> I wouldn't be that verbose here. Maybe something as:
-> 
-> 			"Unreclaimable slab can grow due to unrelated
-> 			reasons as well. You can rerun the test with
-> 			CONFIG_DEBUG_KMEMLEAK to make sure the leak is
-> 			real.
+MemAvailable is a global, system-wide estimate. It is heavily influenced
+by other memory activities of unrelated processes. This produces
+intermittent false positives: the test passes when run alone but
+occasionally fails when run with other tasks.
 
-OK. Will update in v2.
+An improvement is to track the growth of SUnreclaim instead. It is less
+sensitive to other kinds of memory activities.
 
+Also note in the failure output that unreclaimable slab can still grow
+due to unrelated slab activities, so a failure should be confirmed on an
+idle system or with kmemleak before being treated as a regression.
+
+Reviewed-by: Vlastimil Babka (SUSE) <vbabka@kernel.org>
+Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+Signed-off-by: Tang Yizhou <yizhou.tang@shopee.com>
+---
+v2:
+Take Vlastimil and Cyril's reviewed-by tag.
+Update the printed error message.
+
+ .../perf_event_open/perf_event_open03.c       | 30 +++++++++++--------
+ 1 file changed, 18 insertions(+), 12 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/perf_event_open/perf_event_open03.c b/testcases/kernel/syscalls/perf_event_open/perf_event_open03.c
+index 389cc35111b4..a4ce6eaffc02 100644
+--- a/testcases/kernel/syscalls/perf_event_open/perf_event_open03.c
++++ b/testcases/kernel/syscalls/perf_event_open/perf_event_open03.c
+@@ -77,13 +77,13 @@ static void check_progress(int i)
+ 
+ static void run(void)
+ {
+-	long diff, diff_total, mem_avail, mem_avail_prev;
++	long diff, diff_total, slab, slab_prev;
+ 	int i, sample;
+ 
+ 	sample = 0;
+ 	diff_total = 0;
+ 
+-	mem_avail_prev = SAFE_READ_MEMINFO("MemAvailable:");
++	slab_prev = SAFE_READ_MEMINFO("SUnreclaim:");
+ 	tst_timer_start(CLOCK_MONOTONIC);
+ 
+ 	/* leak about 100MB of RAM */
+@@ -92,28 +92,34 @@ static void run(void)
+ 		check_progress(i);
+ 
+ 		/*
+-		 * Every 1200000 iterations, calculate the difference in memory
+-		 * availability. If the difference is greater than 20 * 1024 (20MB),
+-		 * increment the sample counter and log the event.
++		 * Every 1200000 iterations, calculate how much the unreclaimable
++		 * slab has grown. If the increase is greater than 20 * 1024
++		 * (20MB), increment the sample counter and log the event.
+ 		 */
+ 		if ((i % 1200000) == 0) {
+-			mem_avail = SAFE_READ_MEMINFO("MemAvailable:");
+-			diff = mem_avail_prev - mem_avail;
++			slab = SAFE_READ_MEMINFO("SUnreclaim:");
++			diff = slab - slab_prev;
+ 			diff_total += diff;
+ 
+ 			if (diff > 20 * 1024) {
+ 				sample++;
+-				tst_res(TINFO, "MemAvailable decreased by %ld kB at iteration %d", diff, i);
++				tst_res(TINFO, "SUnreclaim increased by %ld kB at iteration %d", diff, i);
+ 			}
+ 
+-			mem_avail_prev = mem_avail;
++			slab_prev = slab;
+ 		}
+ 	}
+ 
+-	if ((sample > 5) || (diff_total > 100 * 1024))
+-		tst_res(TFAIL, "Likely kernel memory leak detected, total decrease: %ld kB", diff_total);
+-	else
++	if ((sample > 5) || (diff_total > 100 * 1024)) {
++		tst_res(TFAIL,
++			"Likely kernel memory leak detected, SUnreclaim increased by %ld kB total",
++			diff_total);
++		tst_res(TINFO,
++			"Unreclaimable slab can also grow due to unrelated reasons as well. "
++			"You can rerun the test with CONFIG_DEBUG_KMEMLEAK to make sure the leak is real");
++	} else {
+ 		tst_res(TPASS, "No memory leak found");
++	}
+ }
+ 
+ static void cleanup(void)
 -- 
-Best Regards,
-Yi
-
-> 
-> Other than that:
-> 
-> Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
-> 
-> 
+2.43.0
 
 
 -- 
