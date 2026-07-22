@@ -4,89 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4BA2DC4451C
-	for <ltp@archiver.kernel.org>; Wed, 22 Jul 2026 07:31:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D1AB1C44533
+	for <ltp@archiver.kernel.org>; Wed, 22 Jul 2026 07:37:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1784705499; h=message-id :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1784705843; h=message-id :
  to : in-reply-to : date : subject : list-id : list-unsubscribe :
  list-archive : list-post : list-help : list-subscribe : from :
  reply-to : cc : mime-version : content-type :
  content-transfer-encoding : sender : from;
- bh=sg86BdTO05y3GK3yurDRLBQ78IYIDo03GFk5/pvWn5Y=;
- b=i5W/4U8+3yrLUHZKYdzuYP9T9GZ1sdWyB02Ibhv4m2ANnQmxrpwwhUjUF4QAZuLLXDlsc
- 9dB3vO4RpJTcFJh0Mmz5cOpqopskjIn6iNcMtQSj4xiFKrLcLq2EG24bwLOkYqZ+SwMiDQf
- mgaNrr6Fupt5A4EuOwZvS4JMTGvLj2I=
+ bh=EC6KOr3NFfXPV58IUBxnbYhwzpfzeOoGruIqIwAo8C0=;
+ b=VeoZIe6Wj+6WQvHYGv/CQmvqZRWMAIYNYptYR5fZ4A2X6T7GsAKaJFNOBvrrlfD701Qy+
+ EjcUqGZTnjNkRTUwBlbWO4RTh209d2mRhKsnNDSlUsV8Ssp9lOHpfySTNhg37JOsQJjFp8Z
+ d4n++duaiIRnbhn6xqWx0CfDEh1lcAo=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id F12FB3E1F8D
-	for <ltp@archiver.kernel.org>; Wed, 22 Jul 2026 09:31:38 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 226F03E26B4
+	for <ltp@archiver.kernel.org>; Wed, 22 Jul 2026 09:37:23 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 3196A3E1BFA
- for <ltp@lists.linux.it>; Wed, 22 Jul 2026 09:31:18 +0200 (CEST)
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com
- [IPv6:2a00:1450:4864:20::336])
+ by picard.linux.it (Postfix) with ESMTPS id DEA833E1EB0
+ for <ltp@lists.linux.it>; Wed, 22 Jul 2026 09:37:02 +0200 (CEST)
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com
+ [IPv6:2a00:1450:4864:20::32e])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 1558D602231
- for <ltp@lists.linux.it>; Wed, 22 Jul 2026 09:31:17 +0200 (CEST)
-Received: by mail-wm1-x336.google.com with SMTP id
- 5b1f17b1804b1-4956869750eso9517795e9.2
- for <ltp@lists.linux.it>; Wed, 22 Jul 2026 00:31:17 -0700 (PDT)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 6B49F1000411
+ for <ltp@lists.linux.it>; Wed, 22 Jul 2026 09:37:01 +0200 (CEST)
+Received: by mail-wm1-x32e.google.com with SMTP id
+ 5b1f17b1804b1-4953de5be0aso44411025e9.0
+ for <ltp@lists.linux.it>; Wed, 22 Jul 2026 00:37:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1784705476; x=1785310276; darn=lists.linux.it;
+ d=suse.com; s=google; t=1784705821; x=1785310621; darn=lists.linux.it;
  h=date:content-transfer-encoding:content-type:subject:in-reply-to:cc
  :to:from:message-id:from:to:cc:subject:date:message-id:reply-to
- :content-type; bh=bVsLqHD+AMgDqlrOvyF9Bfc6pRBq/hrI4OfWje4cUZk=;
- b=csJrjzabXi02eRrmMlS5jtcc36/rkM+SwHz0S7Yf7KwDrSV3yeBRxe6kO3K9cOnQrM
- cNsWQkF+nOqyDlMNd4qtYQzO+2nM1hBoRE/iUZA2T36TiUZ/AkFCWYIq930kCWHWp2Eb
- uqmGVFxdB4oAlGmGJw7MVUUVWAAwxN91Yuv1IdWdMiqAAMPt7OJ4eM7vnF1iDJ/jwrIb
- mRIE9emPFFR2S9wlvAUtt2gxtzIafLNeo3oJrPyaszGC+KKDaSv6yeSS9cVwwjnJefhk
- TOf9B6WpXrjVADTyEd0ixca+TIerl6n3P9HMZbD8QcH5UVDd9THGI5k4F/3wfj5/On8Y
- 5FVQ==
+ :content-type; bh=gSL3ApcalK46wskr5Gdlr8JMRtPExaHy20ygHFs1H90=;
+ b=KjVHel35Py46Keif4gVO2RRUvEb+mEv8paxCLM/jH8kw/kJ2vjHtqHMghmoCw+j3Qv
+ IVwsaCBbxyE4ex5OeBD0aJ8tjBUtZmqRf3aWZRZ6ZwbsKmg0VQjVw04ePwH6+2hqReK+
+ rp4qTZRgJCxafgh3yParqQORnKgM0ja5nHVzLLe0IxgfQOnBye0RXaYYcH5e/1/FRp2l
+ hAQIYXTBlnv5Et9jMDycMC/aBqI6d4slgKKjrXxrEwtp7ySI3TjrjBREAo+KW2cuaJR6
+ Ol86Qvh0lL2ObIw9sQpaljSvkudVaaPzzfVl2tMOEmFTr9L6P5/6p60mPVomi33qogdL
+ C+5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1784705476; x=1785310276;
+ d=1e100.net; s=20251104; t=1784705821; x=1785310621;
  h=date:content-transfer-encoding:content-type:subject:in-reply-to:cc
  :to:from:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject
  :date:message-id:reply-to:content-type;
- bh=bVsLqHD+AMgDqlrOvyF9Bfc6pRBq/hrI4OfWje4cUZk=;
- b=p064wSd+1xEfJ+SNelKhzBxa+Olga0sV9sEE/KRxfPR2dJzoC5lHpyHATpAgqVrK1P
- IXxGFVTw8lYq7AtK73Kv9Fp9oBpIM0B1JU8W6Zg9K6xnseyLmfxftH1HeTh+yhtWdEsK
- 2+TxTScGvUZMtPEo9nbRXyjDn3PEK+tKTsrgwZ4WuPcpN4U2Yz57UMWR/V55thH06zKN
- So/REXeKnVDJzMbCY+hvpY9eDOGoHKkUeufdlx/UcuX4BCZXGFn3B+ARa0i+wqyZ8Tut
- PNo+URSN/VFAIkkXDgq31+JzGngqkn3HLGdW9i2sJfkn6JBoPm42NW0nOPSLtRjrQZSQ
- 4j4Q==
+ bh=gSL3ApcalK46wskr5Gdlr8JMRtPExaHy20ygHFs1H90=;
+ b=i1PuVMolG4/F4T3V9aIyXCJMKQcjsQDrwrVOOhnZY0Ma3R8yGFEZCZ8+lZYUBPwDf5
+ POKxwLrG8B3tDa66qbXgjdqUv0JLgwmKd1YQh1IH09cxdOaRibr1rLWCv03mff67yHvn
+ 8BH0u1eTOwWfFuoedUvEbpmoXF+pe+BNNxSZQfR9PD8yh3ajWNkPAWnOyxW7VjlBskyo
+ tMiQ24FMe0JnkW3EvNefHBgYZTtFE5tAxemXRkDF/Z6pj1/Gg+7TJ5gWVOmwOA9G6U6t
+ pFTuBnoq6200rip8DXvEJUWWIRA/nsSz/5tOicX01EQEjwVUkj/TsGn6hZMZOXaSpJFx
+ 4IqQ==
 X-Forwarded-Encrypted: i=1;
- AHgh+Rp8CIpBMU6AvDmjmj7VtwlIoqmkOcR//I/hs7g3/QJ9KBPCdub6iUQay6D+2sd2YOSJHF4=@lists.linux.it
-X-Gm-Message-State: AOJu0Yz+/cuusuRMzJzFTa7XfYryKH7UlMTnPp0VSvOozWFimkFF1wz3
- LuQuRQGxF82KT3b8WkKHZYt5fvWLeixI6qvR61/1Qu2kZNgHHr77hKduXMvu13pQ4ws=
-X-Gm-Gg: AR+sD11Piyey6+LuW4wRNpOGd6AdESI9mcSUBDAs5731qnCcNVwQgMx9bEcBKlRIXUL
- O9XPcw2JRrDwY+LEDHeCewkcjujhxRsZWn6mMj0FsA7GeibIzF/kq39wEDi1HZnaQ2VST/nT6Qt
- NSN6WkYwx1o/2JRhJP74r4qfrUJJeh14eUxeqhH+UJicSGGeVLvuRhK80E4byGaEFhxACrwdWeX
- TuDf7WWKRBGXsPUqrWO0EaCiTWRfFeAjzImKQpI1PDsTXTM6T6jrXs0oeRihs37sOCiIg+GwH6X
- r13wKBjyeLgYVGHYdhk3BgI4hDQwYpx675gTDpzIyMoIi29fTtl+13rP38UcN30UNHLHq9XAmna
- 3xzzxjTT2QeSZaU7OUG4AglWjRyByWnnX3Sr8Few5586TTYHqgmZaTYu0uUeQDrofw22OpblG2N
- eRK48MrVF1SkR+YrZdMRtziRsbVQ==
-X-Received: by 2002:a05:600c:1549:b0:492:3da4:81ef with SMTP id
- 5b1f17b1804b1-4954a50c3famr213340195e9.18.1784705476415; 
- Wed, 22 Jul 2026 00:31:16 -0700 (PDT)
+ AHgh+RrMuNWVhtZ2w2IgXU1EYDJ6ArVJu5jfmFtNbtRO/OF2HcI4XOyB+EY4JYv+UerxgEpHMdM=@lists.linux.it
+X-Gm-Message-State: AOJu0YzguP+zcNK253GR3hh5rmAqRS7rUuf1k6+TacQbanuoRSRylRTy
+ UHgpPcXyrVx81KG3TB+EB3SvktpeR1/4QZRSjg8CTzxKL23wPq0x6PDeKu1c+6XUHUM=
+X-Gm-Gg: AR+sD10ED0+QNi+ZXQkWmNxh9I+8t54Yvm4ecx66EuW0ezarUeLRLT1nIfhoOtCC7Og
+ j8uV5MAEbomlur3k9aob+jx/rHShdwqWvbMvogJqDVQ/upfp/L+bcri8EHRBq/f0d+G5yI8vn/c
+ b5kgiTcbkeqS1/v1kgAu/PSOTYKdYFgiSSDeQUd7MycU7VuDkStAAsJ8YKixXP9wxweLuPs3jMe
+ R5IpDAXWc5Iai9vWogA/fcmsCz3ZD8xgqz9YXEzWRrR5MQyTMSznb/LV3BBraOoKDmN6nuhRB2M
+ HW0S/sHgGEnzxi9ETV8xgkbsnSnNeYQ/VqBhpfXF2Ao29ZUluW6eK+Qjhs79Sx207UWzM793Jdc
+ hJ1G2ufEe4AjzpaigD34MPYFLsCGBqXpXF03MJF4htvOH9jlwHPlohj7c/2DFrgnp8Lt95LCvi/
+ XT1YXYJluyjgW5SmIz4tWJSiHKAA==
+X-Received: by 2002:a05:600c:524a:b0:495:5a0e:6d8c with SMTP id
+ 5b1f17b1804b1-4955a0e6fa1mr167893585e9.27.1784705820721; 
+ Wed, 22 Jul 2026 00:37:00 -0700 (PDT)
 Received: from localhost.localdomain
  ([2a02:a31b:84a1:b780:6f4e:21d6:82d2:5333])
  by smtp.gmail.com with ESMTPSA id
- ffacd0b85a97d-47f864305f5sm2839407f8f.17.2026.07.22.00.31.15
+ 5b1f17b1804b1-495686a8600sm100881845e9.6.2026.07.22.00.37.00
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 22 Jul 2026 00:31:16 -0700 (PDT)
-Message-ID: <6a6071c4.d1054386.2e8328.2dc0@mx.google.com>
+ Wed, 22 Jul 2026 00:37:00 -0700 (PDT)
+Message-ID: <6a60731c.9e856a68.1de8b6.5ec6@mx.google.com>
 To: linuxtestproject.agent@gmail.com
-In-Reply-To: <20260721212137.4220-1-linuxtestproject.agent@gmail.com>
-Date: Wed, 22 Jul 2026 07:31:15 +0000
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+In-Reply-To: <20260721192815.8592-1-linuxtestproject.agent@gmail.com>
+Date: Wed, 22 Jul 2026 07:36:59 +0000
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] thp04: Simplify to focus on CVE-2017-1000405 race test
- only
+Subject: Re: [LTP] Add test for CVE 2026-53362
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -107,33 +105,61 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Jan,
+Hi Martin,
 
-> Hi Jan,
+> This high-level description block opens with a plain `/*` instead of
+> `/*\`. setsockopt10.c (and the rest of the test suite) uses `/*\` for
+> this block, since it gets exported into the RST-based test catalog.
 > 
-> On Tue, 21 Jul 2026, Jan Polensky wrote:
-> > thp04: Simplify to focus on CVE-2017-1000405 race test only
-> 
-> --- [PATCH 1/3] ---
-> 
-> > Remove ptrace mode support from thp04.c to keep the test focused on
-> > its original purpose: testing the CVE-2017-1000405 race condition.
-> 
-> The pre-patch thp04.c has no ptrace calls or "ptrace mode" branch at
-> all -- it is already just the plain fuzzy-sync race test using
-> /proc/self/mem. There does not seem to be anything to remove here.
-> 
-> What the diff actually does is move the static globals (write_thp,
-> read_thp, write_ptr, read_ptr, thp_size, writefd, readfd, fzsync_pair)
-> into a heap-allocated `struct thp_state *state`, and add a new probe in
-> setup() that performs a real write() to /proc/self/mem and reports
-> TCONF if it fails with EIO (i.e. when CONFIG_PROC_MEM_FORCE_PTRACE or
-> CONFIG_PROC_MEM_NO_FORCE blocks unforced self-writes). Could the commit
-> message be updated to describe this actual change and its motivation?
+> As written, this stays a regular comment and will not show up in the
+> generated documentation. Could this be changed to `/*\`?
 
-LLMs tends to be a bit verbose in here, so please keep commit message
-straight to the point. The rest of the review is correct.
+This is correct.
 
+> 
+> > +	/* Splice input pipe buffer page into socket */
+> > +	memset(buf, 0, TEST_MSGSIZE);
+> > +	buf[TEST_MSGSIZE - 6] = 1;
+> > +	SAFE_WRITE(SAFE_WRITE_ALL, pipefds[1][1], buf, TEST_MSGSIZE);
+> > +	splice(pipefds[1][0], NULL, sockfd, NULL, TEST_MSGSIZE, SPLICE_F_MORE);
+> > +	tee(pipefds[0][0], pipefds[1][1], PATTERN_SIZE, 0);
+> > +	splice(pipefds[1][0], NULL, sockfd, NULL, PATTERN_SIZE, SPLICE_F_MORE);
+> 
+> The file already includes "lapi/splice.h", which provides
+> `SAFE_SPLICE()`. Both splice() calls here use the bare syscall
+> instead, so their return value is discarded. If either call fails or
+> returns short, the reproduction sequence silently doesn't happen and
+> the iteration would just report TPASS without having exercised
+> anything. Would SAFE_SPLICE() be preferable here?
+
+mmmh is this the case where splice() is supposed to fail but triggering
+the CVE into the kernel? if so, we probably need to add a short comment
+so we know that SAFE_SPLICE() is not a good choice.
+
+> 
+> > +	for (i = 0; i < PIPE_COUNT; i++) {
+> > +		SAFE_CLOSE(pipefds[i][0]);
+> > +		SAFE_CLOSE(pipefds[i][1]);
+> > +	}
+> 
+> pipefds[][] (and sockfd, closed a few lines above) are not reset to -1
+> after being closed here; only setup() initializes them to -1, once.
+> cleanup() decides whether a descriptor needs closing with a `>= 0`
+> check.
+> 
+> Since leak_pipe() runs in a loop (up to 64 times), if SAFE_PIPE() or
+> SAFE_SOCKET() at the start of a later iteration fails (pipe(2)/
+> socket(2) can fail with EMFILE/ENFILE/ENOMEM) before refreshing a
+> given slot, cleanup() would see the stale, already-closed descriptor
+> number from the previous iteration as still open and try to close it
+> again. Would it make sense to reset the relevant slot to -1 right
+> after each close?
+
+Again, I updated the agent but it's still asking for this. Please ignore
+it, I will need to update the agent in a proper way. There's probably
+some logic flaw in the rules at the moment.
+
+Thanks,
 --
 Andrea Cervesato
 SUSE QE Automation Engineer Linux
