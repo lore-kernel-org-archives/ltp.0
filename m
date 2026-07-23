@@ -4,82 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B3BC7C531CC
-	for <ltp@archiver.kernel.org>; Thu, 23 Jul 2026 11:13:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1610FC531CC
+	for <ltp@archiver.kernel.org>; Thu, 23 Jul 2026 11:14:25 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E66923E559F
-	for <ltp@archiver.kernel.org>; Thu, 23 Jul 2026 13:13:01 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 55AB83E75F2
+	for <ltp@archiver.kernel.org>; Thu, 23 Jul 2026 13:14:24 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 044323C713B
- for <ltp@lists.linux.it>; Thu, 23 Jul 2026 13:12:47 +0200 (CEST)
-Received: from mail-pj2-x09.google.com (mail-pj2-x09.google.com
- [IPv6:2607:f8b0:4864:39::9])
+ by picard.linux.it (Postfix) with ESMTPS id 1913C3E2E48
+ for <ltp@lists.linux.it>; Thu, 23 Jul 2026 13:14:09 +0200 (CEST)
+Received: from mail-qk2-x01.google.com (mail-qk2-x01.google.com
+ [IPv6:2607:f8b0:4864:34::1])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 7C12C601400
- for <ltp@lists.linux.it>; Thu, 23 Jul 2026 13:12:47 +0200 (CEST)
-Received: by mail-pj2-x09.google.com with SMTP id
- 98e67ed59e1d1-38ed4d37526so209344a91.1
- for <ltp@lists.linux.it>; Thu, 23 Jul 2026 04:12:47 -0700 (PDT)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 95D4310007A6
+ for <ltp@lists.linux.it>; Thu, 23 Jul 2026 13:14:09 +0200 (CEST)
+Received: by mail-qk2-x01.google.com with SMTP id
+ d75a77b69052e-51c1ff471c1so2713901cf.0
+ for <ltp@lists.linux.it>; Thu, 23 Jul 2026 04:14:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1784805166; x=1785409966; darn=lists.linux.it;
+ d=gmail.com; s=20251104; t=1784805248; x=1785410048; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to:content-type;
- bh=XJiVWUyo817kAcqAGsoAqEquj4alVhXrW+TUBNgHQ+s=;
- b=TTocOVnDBHeBKbK9+X1sMQPmTyYunTW1O3DwpmurnF0bids0N8Lq5nZ5BBogcBlolq
- 90KU2pUwYH8oMr5uZE2GNkn16M+xb4PddwM3Trk6t5UQnoddZfdQGwFlX1amVfCIyI6S
- kh7rcdaxE1GMh8h4sIXtsiyI6yf4EaMGRiBTqTVBAt3aYumlWbOd3i4ywTU8s2rrI6CX
- xgChrCdMm2hjmKZhAwuEfXbIl7uEiyg5gfFdNgmJz6FJ5wJg9jBSn4+UwELeIfxbEYT0
- T6bsM6dR7TwZXxUZxV3cOAdMeR2fWMixDdyx3SYEwqXiqAAhJdOXha95uRyyGyNxFBCd
- ckHQ==
+ bh=uRmRWhevIMEO7Z1vSMLT7QJkM8M9JZGEhfPEzxnFyH4=;
+ b=gS8v4ZAnoWTzka1lLPLUTnjUSoUPRQ8D+ezbARuxmx9yfTJlEWkBCHy499HFXl9dL7
+ 3+Ta77R0OSFeP1kUv9JNKVnTySEGItzRC+vEWUf2ty/ZSMjXEofxOFZ4p38byp/teML+
+ L0If1MvDPoSftWOL0s5Wf/0R1q6SSZhEVr+xFXxjRNBLlA8Y8dBcL2KqV5DEmDf1d50Z
+ +Upe4Gd4cldu0vLz1dN2B/gzXMMmv1xVp4vt0LQlbY0OMmMuS3ZRo4fx9RF0cNmpFXkJ
+ KHXr4gVoCobYCKfk6x6mhQ2ShPAkd+ojF1y2/1lILMI0OQSsW4Ev6qCf11Bc7Y2OlA5G
+ rlIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1784805166; x=1785409966;
+ d=1e100.net; s=20251104; t=1784805248; x=1785410048;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to:content-type;
- bh=XJiVWUyo817kAcqAGsoAqEquj4alVhXrW+TUBNgHQ+s=;
- b=gYIjhGiZ4PbwE1WmigEi1EbNozHPfnaF0lKnIcTPZIomjQ7tFMDofT8j+i+zWe7iof
- JQHB4y2yb/g8iQ5jPxP/0UjsKGiV4WbHgc+2Zf0Kt8ioKidmCMuy4K5gmXoD8L16s/k2
- 6M6oHF2pSchE4FgLmINPDE80T0ufRDVfWGl5/sxbI5gJ39wmvRGZB5E+ejnXXf4vH2wi
- u5BjZyBeVF57RAd+ea8CS4vfHxn5yy+v3kO4iCWbL6DPwHH1s+RCQbCLP+NI0GhAQHEl
- OWS3PRkcj8gYN4EN2nC9XEXN7GY7nFLZYH9vw8Gc5yiPnoyzcKnGzvb1Kb2phSjZrW7w
- 4FIA==
-X-Gm-Message-State: AOJu0YygFbDQGXpU57G29vXGwuuZu+t9ZyZ4JVn5mRcQ+9OT9xsHVm7w
- FK+O0FyZhDtb8vF5SfM/Y4Vt9NJ+N8BDcmwLw/Lb8W6yeLWjMaZeVFi9
-X-Gm-Gg: AR+sD10gQ0bmENkz0junykFcsSsUJnxysRK4pwSbiDrIN7lcCz9oHUt/VC3RH/vB5r/
- GRehLJGyCPeZTFf2G+gqw5/AKzhMPqWxjxpu9rps0rznZn5ZsErgg1+zE3+YN7ECTsV7AkMIKYz
- Qi5EbKKhkjWxjyRIOg+wT/63TpBbeo5eaqqh+Zn7eMLz3GdI/fQoDMvKxM1C35uRAGgSe51/d8/
- LRWixk/baA4OVYTw5MlsiFuYMbXivMMOcz1mtVAr2B6SjfWTzKMWZIUATFhYP0/IVxOGE4VnOEV
- 4pShJKQZTI5739l7K4c6ZxBfZHyvXmM1DZRDXh0cx31Eq+/V4aMAnOdGa2oogaBNHysZYfRXihY
- RS2DUkiVmZ/jT4CT6T7PNXBnNj/OtuBLwjt8kH+huC7BLIlAVZv/pYNVVjAgtBi0O6Fo/EyvfyX
- NA0IZtIETpzEXlmDalpQSvihbDu3snx7NuWHjjydlhdQFQe0c+Jo3yLlihtoXn2joO+RVLGNNc0
- MM+1YQvCnHk/9/j0iA=
-X-Received: by 2002:a05:6a21:117:b0:3bf:e3d6:ab5a with SMTP id
- adf61e73a8af0-3c44b210ec8mr2766514637.52.1784805165479; 
- Thu, 23 Jul 2026 04:12:45 -0700 (PDT)
+ bh=uRmRWhevIMEO7Z1vSMLT7QJkM8M9JZGEhfPEzxnFyH4=;
+ b=AHBC8l/vzA8Y+gnb4NXMExTujPP46oBzYlsKXpCzPMZ1vkNrcXT2fNfTfQwQB29vXI
+ kn8msL3TuGhLLkw+tSWDJ30MZcEHfkewKv5675G1uVCgV/jJo8VCcpx1m9SrewHQF4zX
+ GhgEDa+JdL69D6//jiZXbdRDoa20/lZwqXv2IevLGbzUR/FwTbrWvwjNBNkku8rD/z2r
+ PBnttIAycvMk9NJe3LcPe8wvn1iSXTLHNhhwcurAZTatyN9wsS3hQAvRqRZKy4CpS06J
+ SeNxfrumivHnkpBa7B3PbkERgc8qpF+Up2UKRVFR/j1KBW6lGNTAdgajE4yCaRezFfHp
+ Pjsw==
+X-Gm-Message-State: AOJu0Yz3hgr4HMyWOjts5iGYmqUxdH9Yj2vdYEGhDCDDpvkyaWV7i2T1
+ TudM2xBKp+/P5+bTzx28fAXD+ausqy/yfvhBWcnHJbAIvSRqlBycG9ft
+X-Gm-Gg: AR+sD10fc1pdRJiaRdDpDN01ZcsX2INQkUjhbTsrive1H2gm4GhihM6QQOG67gk79yM
+ JoRBLEV9n+Oh6EYOM0Usf3y6mTwkadDoxeDur2La98O8qDtGjDWb9cBRfvDpKzgs9q63DC2k7Wy
+ jEWTeCNmVRss/LGS6POr4D5sbxfPDbxMV0T6J4PEfW5pfOzUz/QWQQhzfFIUZOEBtoEsN/alMVj
+ f7PG8JjhYsBFSabvDk7akLuUBlAiWAUt+TaGzmWL5XcncUMletX/C10OHv0RMfYCi8Ro31d9uRl
+ vWJOgQrsO59wB5UVIebpeB8M90JN8DQVeyq0WSoNgaRei1yPj27cHk5N5HSpXHJFSOlyYORZ3ET
+ HRN35KxphDHEudtteS2xho//hlCXkt7wu/FCzVR4yWvBBqCipWa+mP3osB3rXmRZF2lHy/7nWwC
+ tldPefONSNsJ0H1ZYfw6VwQzE4uOp1lczf3cw0n6ZFswB0ehCeaypkoncmOwQczp9oFkiIwFl1G
+ a2UPbg/BnoXXZqQDubEQET909Y=
+X-Received: by 2002:a05:622a:5917:b0:51c:478:32a1 with SMTP id
+ d75a77b69052e-5283dda80e8mr26243151cf.18.1784805248136; 
+ Thu, 23 Jul 2026 04:14:08 -0700 (PDT)
 Received: from
- runnervmvrwv9.ps0ws210rtxenopwlmuwzeo0pd.phxx.internal.cloudapp.net
- ([20.169.93.36]) by smtp.gmail.com with ESMTPSA id
- 5a478bee46e88-3147e1c7ff4sm20594548eec.27.2026.07.23.04.12.44
+ runnervm3jd5f.ndtsheiqjcounhtwo050w5fsih.bx.internal.cloudapp.net
+ ([20.55.15.224]) by smtp.gmail.com with ESMTPSA id
+ d75a77b69052e-527d0c4fe92sm32288881cf.11.2026.07.23.04.14.07
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 23 Jul 2026 04:12:44 -0700 (PDT)
+ Thu, 23 Jul 2026 04:14:07 -0700 (PDT)
 From: linuxtestproject.agent@gmail.com
-To: Wei Gao <wegao@suse.com>
-Date: Thu, 23 Jul 2026 11:12:43 +0000
-Message-ID: <20260723111243.3858-1-linuxtestproject.agent@gmail.com>
+To: Kuba Pawlak <kuba.pawlak@canonical.com>
+Date: Thu, 23 Jul 2026 11:14:06 +0000
+Message-ID: <20260723111407.4101-1-linuxtestproject.agent@gmail.com>
 X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260723094647.5051-1-wegao@suse.com>
-References: <20260723094647.5051-1-wegao@suse.com>
+In-Reply-To: <20260723094947.2639934-2-kuba.pawlak@canonical.com>
+References: <20260723094947.2639934-2-kuba.pawlak@canonical.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] madvise09: Scale cgroup memory/swap limits dynamically
- with page size
+Subject: Re: [LTP] lib: tst_rtctime: close RTC fd on the ioctl() error path
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -97,10 +96,10 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Wei,
+Hi Kuba,
 
-On Thu, 23 Jul 2026, Wei Gao wrote:
-> madvise09: Scale cgroup memory/swap limits dynamically with page size
+On 07/23/2026, Kuba Pawlak wrote:
+> lib: tst_rtctime: close RTC fd on the ioctl() error path
 
 Verdict - Reviewed
 
