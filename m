@@ -4,85 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EC093C531CB
-	for <ltp@archiver.kernel.org>; Thu, 23 Jul 2026 12:24:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8EF15C531CF
+	for <ltp@archiver.kernel.org>; Thu, 23 Jul 2026 12:29:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1784809475; h=message-id :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1784809787; h=message-id :
  to : in-reply-to : date : subject : list-id : list-unsubscribe :
  list-archive : list-post : list-help : list-subscribe : from :
  reply-to : cc : mime-version : content-type :
  content-transfer-encoding : sender : from;
- bh=PGmCZMAobIIAZbekWnRqSJF9KAxzF1ApFlMu+l2lzAE=;
- b=bl00QqBeWEAxpOkSlO92p27t0shVXkj9kYxxISp6puaBSbyqXHwscyhCiK8QhRG1m6PLi
- vKoHRuVRi/Kln1HOXxxpIL3mUc/ms6CdI7z1KW1myOM1XPK5B8VrloKWbwG/hJHAPLl0m8N
- wIZFazuxjse86LBDFvj1CUf+M59jvdM=
+ bh=34fdjgQNrJAJRUGIWtXYUqE5GgrCLEsJhJtSlI/xQdY=;
+ b=AhtswHa9j41QQn1CzXHKj5lJAnRn6SatG2cuoo5/vXhUHXTOaRWheVXnWbKqbxD0dOozA
+ V8nG4H+FhEL308hbdZ90PtHvr5fBBaNF/VRr/kocjq5BPnb0zn7WrouHUsdYmmOe0QV0Lu/
+ ns1w5F7+v1dZf9uJ1Kcv1a9b2uRYXTI=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id DEA533E55A1
-	for <ltp@archiver.kernel.org>; Thu, 23 Jul 2026 14:24:35 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id C8B443E559F
+	for <ltp@archiver.kernel.org>; Thu, 23 Jul 2026 14:29:47 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 597343E1C33
- for <ltp@lists.linux.it>; Thu, 23 Jul 2026 14:24:17 +0200 (CEST)
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com
- [IPv6:2a00:1450:4864:20::432])
+ by picard.linux.it (Postfix) with ESMTPS id E1DAA3E1C33
+ for <ltp@lists.linux.it>; Thu, 23 Jul 2026 14:29:28 +0200 (CEST)
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com
+ [IPv6:2a00:1450:4864:20::42d])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id B1D8C1000411
- for <ltp@lists.linux.it>; Thu, 23 Jul 2026 14:24:16 +0200 (CEST)
-Received: by mail-wr1-x432.google.com with SMTP id
- ffacd0b85a97d-4720f3bf164so285452f8f.1
- for <ltp@lists.linux.it>; Thu, 23 Jul 2026 05:24:16 -0700 (PDT)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 450682002AF
+ for <ltp@lists.linux.it>; Thu, 23 Jul 2026 14:29:28 +0200 (CEST)
+Received: by mail-wr1-x42d.google.com with SMTP id
+ ffacd0b85a97d-476a130c138so599134f8f.0
+ for <ltp@lists.linux.it>; Thu, 23 Jul 2026 05:29:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1784809456; x=1785414256; darn=lists.linux.it;
+ d=suse.com; s=google; t=1784809768; x=1785414568; darn=lists.linux.it;
  h=date:content-transfer-encoding:content-type:subject:in-reply-to:cc
  :to:from:message-id:from:to:cc:subject:date:message-id:reply-to
- :content-type; bh=nruyq2TYS9uYeQ3XIif63vdHoJDJ/15POak+GgR+nHE=;
- b=Xnlcex+x/J+HDz43oy9Nm3jFm3Qb1tGCzuQH0n/DUm6NZi8Wr8qhzrppUpgs4BXS5B
- 4QKRA+Qc1WrJqpgFOacvOU5QzsIWL17tPtLqU8qrc5PdRYIY6It9s/DsOa3sogSOHKPl
- xvttwkvUjrtyi4JMNFVbQrSGKdxeAHX/LsyIRESWHZepOic28NC7LOXBwtdUpSO9CLwd
- 8vl+vfeJdGiX0BO1xk8XfAkWkRghUg8K53WgZiWug15q+yDwH2fW2LaP/zQoZdRsgRJ2
- ksLPGCeiYMfIGH7H144rijS1fuEd1bpAOVmqUpZtDL3+JcLP3JbfnMWgJqkCgqRxNuJN
- y9nA==
+ :content-type; bh=kuPSF5DA5kUKtzsujCUy981zMHn6OKsgw6LQ7prm57Q=;
+ b=YQ5qTWedtbpL0RWBKGZzYL8n7cgmFY2fl29qD13hygwDyglCuYI+qyvgvHWXpJ32Jv
+ PpzQWmh8cgMLI+YcNMebdTlrTOfpaDt5gMU37jakW3IF2mLkMIr8lJKyXBPOnct7eyKa
+ aPpvGjizhUm3X3ZlO0WOuFBvHkk7K1HewMQYevA5eOX/q+k2U7Zr02OqiT7nWezR786s
+ 4TzmTRfUvEESau3H4OJUUGkVqbAOxgj1ku1E1E4XXGD319kD+cf8Ag6myetmyslU/6rn
+ VoEXjmz6t28dwqg3ifB0oEQEtg8w2ekSYmFIxeqykn/XvEcZUM/KS2OSN+OCQOnRjpHJ
+ Q2Mw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1784809456; x=1785414256;
+ d=1e100.net; s=20251104; t=1784809768; x=1785414568;
  h=date:content-transfer-encoding:content-type:subject:in-reply-to:cc
  :to:from:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject
  :date:message-id:reply-to:content-type;
- bh=nruyq2TYS9uYeQ3XIif63vdHoJDJ/15POak+GgR+nHE=;
- b=MPFr16Zb8+daRV0HWKRU2yiufE3muEjWHLOl22RqHiFTwMb6NJfSXqg2MB/pWOpEIl
- kTEdCA+cZdIFzIF6ZM1c1d3oKhwiqGK8TaaskIyDKVNrNIMgSQUo10QdVpRoTqgUlTyL
- 7zt2e6Y5Pv4l9g6Agye3AD1XpPlQxqwVYDJ+jiOmrOs7D/fpt8MVupmTSAFkw7Pzm9Rs
- Oqqp5yzvDFlvMQtMWztnZYFC+buGnTW2P0ZlsqScPkiBRRTLpFQu9H7Olc+CJXvIowiZ
- fqFqC4cfw8vffTB4kaqBMHUy+4adpP5BtgD7RGdnVVkZtAhNbArep5i/IAAKmj2JAKGp
- uy9g==
-X-Gm-Message-State: AOJu0Yxz3rJgA+l40EhM1xWn7MTrGAb4+MMVQHWLE4YXN3ohQ1lwLext
- sgd3CbskxeUz8Il7o/HN1aPlBk25rH1aXu5dYl94nBnWQuglAOrSMp9DiL6FkhN8i9I=
-X-Gm-Gg: AR+sD12sKpbgYcNPDc/Qn9CqoYVF7BbvR3pu5kw7cSZLQmtNYsLjtyw9wIKJvsLEXNi
- 8ryDvU6f2q8kCqF2h03ReJBlfb059W9yls4b3WYx+dGn+T+gWkqiK+TWCzjFoGQY+I7wEdB4/nj
- Jr0+FinITa32SgRsM/FuDB0+7fPIYCAjoabpKdMwQWOaLy8kr89OWdUFGG2IXKFn/Kg3VNslmOz
- /RbN12JiAT9qCiOCikSHaENyt/N42tVcaFOR+61KXk2Gmn1msYpGOX05egk6m/Da0AYTFELng8c
- vPOxAwBzKD2Lg+rrhxlpOXQF6yLplyjFeNyV+oxvSQq5wgfOwJ50RykctYwNZXT8xjULFyamdUU
- c0P1YkhAhNSaz0+sX0g4MdbapoqKN/gyvR452WGtqXphCzSHVoj3DJl7+PnCao6pmTJ/4mViN17
- +98/U5pt+9TGWf7369sAiJRjSf7g==
-X-Received: by 2002:a5d:5f47:0:b0:47f:6e8b:699c with SMTP id
- ffacd0b85a97d-47f90254094mr3088729f8f.14.1784809455969; 
- Thu, 23 Jul 2026 05:24:15 -0700 (PDT)
+ bh=kuPSF5DA5kUKtzsujCUy981zMHn6OKsgw6LQ7prm57Q=;
+ b=pp0gbnKyI0IFu7qylgr6BYsQpzdtOtp+TfTKNlqvAsP545K3s/7+pMWf1vUoNTeSBe
+ EbixDmhFgzZee+Ar0yw1nrHT+o++mUBAW1/94xe8WHXzC2fy1TxYSTr3jRwbWw7oYAkq
+ rCa2y0XNoxujOU2f7Bj2hXKdp25zbFIeT/Qzg+CP4Zgyq6Cr9jUAuXX4/RmoR+yrEqCo
+ U4tYGQFOH57EF67es2HwDd26Ggev87o6d/dy/uC887d90WlHbsKooarsKmHU7o5eIK2/
+ r3L7n0+Wphr6+SrzCfoen+zOE02oqwW5fgESEFR48tdyXpvmQz/SQxtEtYPy6G+t4iEx
+ NtLg==
+X-Gm-Message-State: AOJu0Yw8IJVDAl0nwQUy/So9oJoUUZCYtCKp7AcGBXq7Te54I9fl7Tk0
+ oOWDPI9YZM8K1R7rlOMVqrq3PeFkmeEu5cdCEHb0s69a6AeybNEUizjyCbSD08eYIJr0hU9L3BC
+ xo9GjIwhyzA==
+X-Gm-Gg: AR+sD10diYpnllyJ8w5u5oe9jybA4oGD6/oaZkH9lP0UcR0AZjiI+XxKTWumM/HzL36
+ Aqb3jZVOTirRV9WEPX9xJXodqmVRFKznL6CGPqAVc6OVJfBO6ZW0Njs/BxG2dnrGpstVjWwr6B4
+ Bh2vj8l6IPQ4vZzbz72sbIM0w2WYzLwdxpNjALdFeIQ1e8B/QJ4yvBtI0QR2I+UrjfegJwJWaSV
+ qkNoHlmV9c1WxHvY9N85TCbIxm3l8NzfOQtBrNra3mvvMsmMIqiF0vJhx9JNiv9O7x20jbKMnrG
+ RUTr5N+BLIuFU82gPvs6ql+kN26lFzlZoh1ZYb7deeLfoZrsUkwYN1qcgcQmCBjEiKCgMX9mZiu
+ VdnAufxreyc6swig6WNgIlSsuFAssEqjIPyDZSwk4p7ylDDmWa1OVW9ry/wYjYL+UNv1LuA3qBy
+ F9Y7j4em15TfHtDMRiqYN+421kOg==
+X-Received: by 2002:a05:6000:1a85:b0:47f:8183:e9b8 with SMTP id
+ ffacd0b85a97d-47f8da7c903mr3639110f8f.22.1784809767528; 
+ Thu, 23 Jul 2026 05:29:27 -0700 (PDT)
 Received: from localhost.localdomain
  ([2a02:a31b:84a1:b780:6f4e:21d6:82d2:5333])
  by smtp.gmail.com with ESMTPSA id
- ffacd0b85a97d-47f85c6d277sm15623930f8f.32.2026.07.23.05.24.15
+ ffacd0b85a97d-47f864305f5sm14633135f8f.17.2026.07.23.05.29.26
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 23 Jul 2026 05:24:15 -0700 (PDT)
-Message-ID: <6a6207ef.8c9cee7f.1e6be1.04d9@mx.google.com>
-To: "Martin Doucha" <mdoucha@suse.cz>
-In-Reply-To: <20260721153917.64722-1-mdoucha@suse.cz>
-Date: Thu, 23 Jul 2026 12:24:14 +0000
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+ Thu, 23 Jul 2026 05:29:27 -0700 (PDT)
+Message-ID: <6a620927.d1054386.2e8328.faf4@mx.google.com>
+To: "Petr Vorel" <pvorel@suse.cz>
+In-Reply-To: <20260720213610.627213-1-pvorel@suse.cz>
+Date: Thu, 23 Jul 2026 12:29:26 +0000
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] Add test for CVE 2026-53362
+Subject: Re: [LTP] [PATCH 1/1] setsockopt10: Fix running with more iterations
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -103,117 +104,7 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> Add test for memory corruption due to miscalculation of socket buffer
-> size for fragmented packets with gaps.
-> 
-> Signed-off-by: Martin Doucha <mdoucha@suse.cz>
-> ---
-> 
-> Bug reproducibility verified on affected kernels v6.4 and v6.12.
-> 
->  runtest/cve                                   |   1 +
->  runtest/syscalls                              |   1 +
->  .../kernel/syscalls/setsockopt/.gitignore     |   1 +
->  .../kernel/syscalls/setsockopt/setsockopt11.c | 171 ++++++++++++++++++
->  4 files changed, 174 insertions(+)
->  create mode 100644 testcases/kernel/syscalls/setsockopt/setsockopt11.c
-> 
-> diff --git a/runtest/cve b/runtest/cve
-> index 3bbcfd6a2..99d84270b 100644
-> --- a/runtest/cve
-> +++ b/runtest/cve
-> @@ -88,6 +88,7 @@ cve-2023-1829 tcindex01
->  cve-2023-0461 setsockopt10
->  cve-2023-31248 nft02
->  cve-2023-52879 fanotify25
-> +cve-2026-53362 setsockopt11
->  # Tests below may cause kernel memory leak
->  cve-2020-25704 perf_event_open03
->  cve-2022-0185 fsconfig03
-> diff --git a/runtest/syscalls b/runtest/syscalls
-> index c84c32a6f..949ad7622 100644
-> --- a/runtest/syscalls
-> +++ b/runtest/syscalls
-> @@ -1524,6 +1524,7 @@ setsockopt07 setsockopt07
->  setsockopt08 setsockopt08
->  setsockopt09 setsockopt09
->  setsockopt10 setsockopt10
-> +setsockopt11 setsockopt11
->  
->  settimeofday01 settimeofday01
->  settimeofday02 settimeofday02
-> diff --git a/testcases/kernel/syscalls/setsockopt/.gitignore b/testcases/kernel/syscalls/setsockopt/.gitignore
-> index 5c05290a5..58cc82d9c 100644
-> --- a/testcases/kernel/syscalls/setsockopt/.gitignore
-> +++ b/testcases/kernel/syscalls/setsockopt/.gitignore
-> @@ -8,3 +8,4 @@
->  /setsockopt08
->  /setsockopt09
->  /setsockopt10
-> +/setsockopt11
-> diff --git a/testcases/kernel/syscalls/setsockopt/setsockopt11.c b/testcases/kernel/syscalls/setsockopt/setsockopt11.c
-> new file mode 100644
-> index 000000000..5f09291b3
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/setsockopt/setsockopt11.c
-> @@ -0,0 +1,171 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (C) 2026 SUSE LLC
-> + * Original reproducer by Massimiliano Oldani
-> + * Simplified LTP port: Martin Doucha <mdoucha@suse.com>
-> + */
-> +
-> +/*
-> + * CVE 2026-53362
-> + *
-> + * Test for vulnerability in socket buffer size calculation for fragmented
-> + * UDP packets with gaps. Reproducer based on:
-> + * https://github.com/sgkdev/ipv6_frag_escape
-> + *
-> + * Memory corruption fixed in kernel v7.2:
-> + * 736b380e28d0 ("ipv6: account for fraggap on the paged allocation path")
-
-We can add an Algorithm section to make the test easier to read.
-
- * [Algorithm]
- *
- * - Fill pipe[0] with a known pattern (0x42) ("canary" page).
- * - Splice pages into a corked socket so the skb references pipe[0]'s page.
- * - Close the socket -> the corruption causes the page refcount to drop
- *   too low -> the page appears free while pipe[0] still owns it.
- * - Pollute all free memory with 0xBD (inverse of 0x42).
- * - Read pipe[0] back. If any byte changed, the page was reallocated
- *   while the pipe still held it -> the bug is confirmed.
-
-> +	/* Splice input pipe buffer page into socket */
-> +	memset(buf, 0, TEST_MSGSIZE);
-> +	buf[TEST_MSGSIZE - 6] = 1;
-> +	SAFE_WRITE(SAFE_WRITE_ALL, pipefds[1][1], buf, TEST_MSGSIZE);
-> +	splice(pipefds[1][0], NULL, sockfd, NULL, TEST_MSGSIZE, SPLICE_F_MORE);
-
-SAFE_SPLICE() here.
-
-> +static void cleanup(void)
-> +{
-> +	int i;
-> +
-> +	for (i = 0; i < PIPE_COUNT; i++) {
-> +		if (pipefds[i][0] >= 0) {
-
-This should be != -1 according to static definition and the SAFE_CLOSE()
-bahavior in the test (it sets to -1).
-
-> +			SAFE_CLOSE(pipefds[i][0]);
-> +			SAFE_CLOSE(pipefds[i][1]);
-> +		}
-> +	}
-> +
-> +	if (sockfd >= 0)
-
-And here as well.
-
-The rest looks good to me.
+Merged, Thanks!
 
 --
 Andrea Cervesato
