@@ -4,90 +4,101 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 344FAC531CB
-	for <ltp@archiver.kernel.org>; Thu, 23 Jul 2026 09:47:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 87C0AC531CB
+	for <ltp@archiver.kernel.org>; Thu, 23 Jul 2026 09:50:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1784800032; h=to : date :
- message-id : in-reply-to : references : mime-version : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : content-type :
- content-transfer-encoding : sender : from;
- bh=OAAGxK6obM1oG0GEpABr31lyJS2C9EmzaatjDN2Lkv0=;
- b=Sl5fEfDzeEOn8YnpUYVarvOQFeNLTl3MonHykqix1OAEUlSpvAJ5ypTOWkgjwZzNxTRWA
- Yxlk5YZO2EpyBHDMGXT6wKBpUiN6xg057dSekmd6LdAY0yYQd7SQIUySsolEK7aK/s649nA
- EmKEeaIWSaShDziyMpjx1F+VGGdEJtw=
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1784800214; h=to : date :
+ message-id : mime-version : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : content-type : content-transfer-encoding : sender : from;
+ bh=8VOJ+DG3D0x4QLxvQ569gpWAg3aJfn9v75HXQ/IYst4=;
+ b=l6h5Ps4wkxvBrQrnf4w8Zaf7vFBU8vR/gqX+XHY2kgW/UbfHo8jfTRGReD1JyhNH8NP1q
+ mAkYbT7vIpCCPzFM3ZpCyb8zluq5jxXLUX9L2Ns7u8oy5brIct1ZKxTkRxc7AAP8ru6+TFd
+ qvI1kHN22UaojFaVnv/myxbSE/XpHH4=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0D96B3C7757
-	for <ltp@archiver.kernel.org>; Thu, 23 Jul 2026 11:47:12 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id BE5EB3E23BD
+	for <ltp@archiver.kernel.org>; Thu, 23 Jul 2026 11:50:14 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2E9ED3C7757
- for <ltp@lists.linux.it>; Thu, 23 Jul 2026 11:46:50 +0200 (CEST)
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com
- [IPv6:2a00:1450:4864:20::435])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 6ABA53C7757
+ for <ltp@lists.linux.it>; Thu, 23 Jul 2026 11:49:54 +0200 (CEST)
+Received: from smtp-relay-internal-0.canonical.com
+ (smtp-relay-internal-0.canonical.com [185.125.188.122])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 3DAF71A00905
- for <ltp@lists.linux.it>; Thu, 23 Jul 2026 11:46:50 +0200 (CEST)
-Received: by mail-wr1-x435.google.com with SMTP id
- ffacd0b85a97d-47c2b362ee2so363765f8f.1
- for <ltp@lists.linux.it>; Thu, 23 Jul 2026 02:46:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1784800009; x=1785404809; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to:content-type;
- bh=7QgnxQ/Gl9mE8Vzf+ln/gvkHQ5BrpwCa9MKV+vFVeNk=;
- b=Cm0U4d73kbHTtpS6nY6f0HBSIAxcrwFhO1ldxT4FrwQXP5IoRSetx1MO5IpnH0YIBv
- EWKX9+wNZXD2wwz/Fzb0u+IU3pZgNQm4NTFlhHk2U8QZGi7ieos12anVlbwCeN+PCaEq
- c7FGQXO/cf4fuAfN7fc72JS+2PNmLvxH7ste2kxmuBkfoHpsqAZvutRR65FvXrUhhApA
- e6w7KkeDbgxSDGJvNTEjvYTmG/mIGH7sP2+ONplTAu4vXbKPc1cSX3B/+KgSxKIla1Vk
- NhCYWo/mki3vXeBbzPQyMmTC6h7YWsueRIh4iAqW7M9lZcPLf4I8gE1KLGAHxLPG7C14
- YHDg==
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id C0AB510006DB
+ for <ltp@lists.linux.it>; Thu, 23 Jul 2026 11:49:53 +0200 (CEST)
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 083B73F672
+ for <ltp@lists.linux.it>; Thu, 23 Jul 2026 09:49:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+ s=20251003; t=1784800193;
+ bh=gKpfhHA7fIx6qj24SenebmO+VYa/GH9kx8pfrantCvg=;
+ h=From:To:Subject:Date:Message-ID:MIME-Version;
+ b=Z4XsBjGbSKbnPZzCXZbgUBFeTbMkWssyCmfbn/cae1JrSDjUxsJ978jB34hSEG3A4
+ JSFZPmDWzyWoH1J+Fwmf18nUa4E+gu66/LytAXefZ2mTNakCHefaQgQJIZHMtUGEqH
+ oehE1SqvPddZTZELskc+I+6Rned8ZDz7vLwui4EQW0CweUBAP5EJGn4Ra+pQTK42ib
+ Nbs+2ye45plyEPflLZnugUcAOOD+egDSPwwjWA4Avic0d+s3iGpAGtHoBHmGD6W0ER
+ 1C2dLGqCmMjr4O2tiw9YCNeA7tePb1iXIkfJ9PoO2q5s1onEtQrbrZPq/ayBmsj2Ok
+ btqQYcjq1USnPFgYc2lxqtIwq8FRBaJP6xQ1PZYJbhNz2i2xmrBo4w1BJ77VgwM2bZ
+ WV3zg8o9Ldbp7CEQOZ+vGrml/PDMy2QOKGbvr7exoRB7ZB+CmuIJbYok2uv84R4fZ4
+ O7BZs7k3zugefSZ0b5o/vls2Sj8s76DeilFZugFIcywje1j+FcH1O6NIXpPStDnBVn
+ kgaRoJV1lBcY1+8/JvlTUUZER+cRvt+EEcezimndczpgNGUYb0fWzZNd6BU5GazIwX
+ efsa2ZcgqyDc5IWMzl53P1amfvmzlcImbdzzCLQXCBUaMAhH3KENaNdhVzQO2Q9jAj
+ fw8ClrYme0bgtwM9tVbEXcYQ=
+Received: by mail-wm1-f71.google.com with SMTP id
+ 5b1f17b1804b1-495517d39fbso2316775e9.2
+ for <ltp@lists.linux.it>; Thu, 23 Jul 2026 02:49:53 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1784800009; x=1785404809;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to:content-type;
- bh=7QgnxQ/Gl9mE8Vzf+ln/gvkHQ5BrpwCa9MKV+vFVeNk=;
- b=oBV0KgrPZBOw22Gds97sQMi/8zM8XswZ5kF1+Oq8znpA5n9INzEbAN5RFU74nuPQXz
- +JRF/KzyQZ47MZrMMzB4bfCY6qHcDCwDZXZZx3tEcf/zP6HbpkPuf+MCgvz0VeVZoVne
- Tu7fejSrTHjS3LA6vwLq1CFEaiO6CyVTqlGRYZsVQgnBwT7B75TLQ5zo8nMDMOrlV9i1
- 10iqKg4sCOZcPvanShWzpH5ScN7Me3pIUQpj2NIGNUzh4d3TkOlrYSwEEVN8mE2dzSbF
- fOJXh2/1kYgZGRAM7P/zaiz6y7j9tmsb9lcecxpUWH7MVktNRThOspb85gvnuSCqSKFR
- Q7Wg==
-X-Gm-Message-State: AOJu0Yw0bt41NnJRAkE9S3I8zA/FHjlTQX/xXnL4Wu9TlU141qZJJZsj
- ifG2QWVy9hjEGjdOoQdA2c3SbbqmZd93hdYIe4K2ve2zEvX+xgD4yD/GnfVTVjvAxl25gsgauQD
- jTA0=
-X-Gm-Gg: AR+sD105RjalwR1i7vK1t3TsbUrOPG4K/+PX49eA4gFesUPAFdjFV6HeFIUn1IE80l9
- +ia5ULkdr2EVP2wQM7QkynwZzh96bpaXvZ+DpxO5ixsKKtpPfXRNUn5+U4rNdOnJe4F2q1Zxrmz
- WfOM1dwbMzHyWlTuBx5X/vc1GFcWIYhm0JNqbGnMXZAGmdD51lGSTi3gdridQu5JsPwlE4KCScK
- c3Hm3Rhbz/rmJ9k9QjrVq3mPOwmRPOrBcL0ajo71xdCNXjnLOvmqBatMJbqi6KEw60dahPFECeO
- 7Xq+nvXo0gb41pMKBbi7N2bHD4vgTtX5xbYWOz3eE15h8aQPjDQVO7cJhuwD8AlS3dHdZ8uAEXP
- jbkIsjr0sWNBQL6qsn0FXHnNl2YaGCUcYnYWwepDrFDKvi6VTDfUKMp/i6xRcsKv8AQ==
-X-Received: by 2002:a05:6000:2f87:b0:47f:8487:a686 with SMTP id
- ffacd0b85a97d-47f8d72c248mr2757967f8f.23.1784800009514; 
- Thu, 23 Jul 2026 02:46:49 -0700 (PDT)
-Received: from localhost ([2a07:de40:b240:0:2ad6:ed42:2ad6:ed42])
- by smtp.gmail.com with UTF8SMTPSA id
- ffacd0b85a97d-47f8635c8d7sm12577301f8f.21.2026.07.23.02.46.48
+ d=1e100.net; s=20251104; t=1784800192; x=1785404992;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:to
+ :from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to:content-type;
+ bh=gKpfhHA7fIx6qj24SenebmO+VYa/GH9kx8pfrantCvg=;
+ b=Pmg+U070GHPQQq4ndnLVleX1fPHuxUrX4Z9jEh9eBQ3CNOlibbG+lza8ylczHcMun7
+ 5G4JSZH9GGq0y6Fi4qF8waNtY2gsR+51YpD0h++tlP+ErEcRXd9XJ9dnTPTGPYeQGkIz
+ vH3kanBqGhi6tpKXfvL7COUY9Cocqi8q0C6MRywZ5naxypkRw5MbjujKg5cpY09/hz7e
+ L651YGR49PahdRQBeot+IxE5kF5O6eIq3wNx+PTDJAP40XYydXoTy0NEhmkGIuUgWuaQ
+ Zu5yEBv6T7YxOx+fuqgPCsz/vOF5JCtX3L4rKD1tNJEcdSSeeQiQfIO5he3Da5mGiIpy
+ GQ3A==
+X-Gm-Message-State: AOJu0Yz7r4RRxvog8wtzU3fsA8s7lFhiwgLifrjdMFVOChLExPqwdg4p
+ +38MdwQp9lHagCYFzkvA9VH1Bl7e8HY19dgKfEFZkBgs7BpVX29bptbLWwM6l9wTj37AtbX4W66
+ Wv9yS2g1EjUxbYttBxcDwAHX0GnYb4F8cxdcOnwxerox04S1qxa80NZWSDnf49wmu6xDUO7K1Uk
+ iU
+X-Gm-Gg: AR+sD12HWGuuprIMxkby8os22AsWmIwhvp9/vE3ZmGQ62nYuTRnEi/+znMPVYyFJzFP
+ 94UekqeI84n6VOytTbXC4u9L6dNJtZeinxFugjhPzoeLAcnKsbgN2mxjFDSsdUSN0rKN2y5RUi5
+ +JFTyrSa+2oi00L48QDk6vT1CIQcSsJsBs0MAtW7mIWe/brz6EGqpOGDnJQ0p3Pbak6B5kOr/Uv
+ vbTOl5IhSYXtbTb7IF13LM9CUclE1pHRdIxoZNrkiBtU9goOZ/lTc8NnUeFnxxWgRERrX5eBy7p
+ juRznvN76O51pNdyeRVHB4l1ej3BgXcKeaYgXKfHBJCEYEJE10qIg4g5hk5hh0wUkkYPWuentZE
+ 4BYo5u0OlqlLsLBSNd1sEipxqpefO3BDEXqTU1kHgHICKQWyhU2SUZqDbwTc7
+X-Received: by 2002:a7b:ca51:0:b0:495:f31:7340 with SMTP id
+ 5b1f17b1804b1-49573cbf916mr16833345e9.5.1784800192520; 
+ Thu, 23 Jul 2026 02:49:52 -0700 (PDT)
+X-Received: by 2002:a7b:ca51:0:b0:495:f31:7340 with SMTP id
+ 5b1f17b1804b1-49573cbf916mr16833195e9.5.1784800192084; 
+ Thu, 23 Jul 2026 02:49:52 -0700 (PDT)
+Received: from localhost.localdomain (staticline-31-183-213-56.toya.net.pl.
+ [31.183.213.56]) by smtp.gmail.com with ESMTPSA id
+ 5b1f17b1804b1-4956537c6besm196600555e9.8.2026.07.23.02.49.51
+ for <ltp@lists.linux.it>
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 23 Jul 2026 02:46:49 -0700 (PDT)
+ Thu, 23 Jul 2026 02:49:51 -0700 (PDT)
 To: ltp@lists.linux.it
-Date: Thu, 23 Jul 2026 09:46:21 +0000
-Message-ID: <20260723094647.5051-1-wegao@suse.com>
+Date: Thu, 23 Jul 2026 11:49:45 +0200
+Message-ID: <20260723094947.2639934-1-kuba.pawlak@canonical.com>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20260723075319.4920-1-wegao@suse.com>
-References: <20260723075319.4920-1-wegao@suse.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2] madvise09: Scale cgroup memory/swap limits
- dynamically with page size
+Subject: [LTP] [PATCH v3 0/2] rtc02: handle RTCs that do not allow setting
+ the time
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -99,109 +110,49 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Wei Gao via ltp <ltp@lists.linux.it>
-Reply-To: Wei Gao <wegao@suse.com>
+From: Kuba Pawlak via ltp <ltp@lists.linux.it>
+Reply-To: Kuba Pawlak <kuba.pawlak@canonical.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On systems with 64KB page size (such as ppc64le), the mapped footprint
-of PAGES (128) is 128 * 64KB = 8MB. Since the cgroup MEM_LIMIT was
-hardcoded to 8MB, there was zero headroom left for the parent's process
-overhead, resulting in OOM when trying to fork the memory pressure
-process.
+This series makes LTP's rtc02 cope with RTC hardware that does not allow
+setting the time (e.g. Qualcomm PMIC RTCs, rtc-pm8xxx, which return -ENODEV
+from RTC_SET_TIME when configured without allow-set-time or an nvmem/UEFI
+offset). On such devices rtc02 currently fails a valid, working system.
 
-This caused the test to enter an infinite "Both children killed,
-retrying..." loop.
+Patch 1 fixes a pre-existing fd leak in tst_rtc_ioctl() that the new probe
+in patch 2 would otherwise hit on every run (the RTC chardev is
+exclusive-open, so the leak causes a follow-up EBUSY). Patch 2 probes
+set-time support in setup and skips with TCONF when RTC_SET_TIME returns
+ENODEV.
 
-Fix this by scaling mem_limit and swap_limit dynamically based on the
-system page size at runtime, and update the swap pre-check and doc
-comments to match.
+Tested on arm64:
+  - QCS8300 (read-only RTC): rtc02 now TCONF (skipped), was TFAIL.
+  - X1E80100 (writable RTC): rtc02 still TPASS.
 
-Signed-off-by: Wei Gao <wegao@suse.com>
----
-Changes v1 -> v2:
-- Update doc comment to reflect page-size based limit calculation.
-- Guard tst_available_swap() check with swap_accounting_enabled to avoid unnecessary TCONF when swap accounting is off.
+Changes since v2:
+  - patch 1: drop the errno save/restore around SAFE_CLOSE(); a successful
+    close() does not clobber errno, and if SAFE_CLOSE() fails the test
+    breaks anyway (Andrea Cervesato).
+  - patch 2: drop the long explanatory comment and let the commit message
+    and code speak for themselves; add a blank line between the RTC_RD_TIME
+    and RTC_SET_TIME probes (Andrea Cervesato).
 
- testcases/kernel/syscalls/madvise/madvise09.c | 30 ++++++++++++-------
- 1 file changed, 20 insertions(+), 10 deletions(-)
+Link to v2:
+  https://lists.linux.it/pipermail/ltp/2026-July/049974.html
 
-diff --git a/testcases/kernel/syscalls/madvise/madvise09.c b/testcases/kernel/syscalls/madvise/madvise09.c
-index 5453f9411..620805370 100644
---- a/testcases/kernel/syscalls/madvise/madvise09.c
-+++ b/testcases/kernel/syscalls/madvise/madvise09.c
-@@ -17,11 +17,11 @@
-  * o Write to some of the madvised pages again, these must not be freed
-  *
-  * o Set memory limits
-- *   - memory.max = 8MB
-- *   - memory.swap.max = 16MB
-+ *   - memory.max = 16 * PAGES * page_size (8MB on 4KB page size)
-+ *   - memory.swap.max = 2 * memory.max (16MB on 4KB page size)
-  *
-  *   The reason for doubling the memory.max is to have safe margin
-- *   for forking the memory hungy child etc. And the reason to setting
-+ *   for forking the memory hungry child etc. And the reason to setting
-  *   memory.swap.max to twice of that is to give the system chance
-  *   to try to free some memory before cgroup OOM kicks in and kills
-  *   the memory hungry child.
-@@ -54,8 +54,10 @@ static int swap_accounting_enabled;
- #define TOUCHED_PAGE1 0
- #define TOUCHED_PAGE2 10
- 
--#define MEM_LIMIT (8 * 1024 * 1024)
--#define SWAP_LIMIT (2 * MEM_LIMIT)
-+#define BASE_SWAP_LIMIT (16 * 1024 * 1024)
-+
-+static long long mem_limit;
-+static long long swap_limit;
- 
- static void memory_pressure_child(void)
- {
-@@ -176,12 +178,12 @@ static void child(void)
- 	ptr[TOUCHED_PAGE1 * page_size] = 'b';
- 	ptr[TOUCHED_PAGE2 * page_size] = 'b';
- 
--	SAFE_CG_PRINTF(tst_cg, "memory.max", "%d", MEM_LIMIT);
--	tst_res(TINFO, "Setting memory.max to %d bytes", MEM_LIMIT);
-+	SAFE_CG_PRINTF(tst_cg, "memory.max", "%lld", mem_limit);
-+	tst_res(TINFO, "Setting memory.max to %lld bytes", mem_limit);
- 
- 	if (swap_accounting_enabled) {
--		SAFE_CG_PRINTF(tst_cg, "memory.swap.max", "%d", SWAP_LIMIT);
--		tst_res(TINFO, "Setting memory.swap.max to %d bytes", SWAP_LIMIT);
-+		SAFE_CG_PRINTF(tst_cg, "memory.swap.max", "%lld", swap_limit);
-+		tst_res(TINFO, "Setting memory.swap.max to %lld bytes", swap_limit);
- 	} else {
- 		tst_res(TINFO, "memory.swap.max is unavailable, running without SWAP_LIMIT");
- 	}
-@@ -284,6 +286,14 @@ static void setup(void)
- 		tst_res(TINFO, "Swap accounting is disabled");
- 
- 	page_size = getpagesize();
-+
-+	mem_limit = 16 * PAGES * page_size;
-+	swap_limit = 2 * mem_limit;
-+
-+	if (swap_accounting_enabled && (tst_available_swap() < swap_limit / 1024)) {
-+		tst_brk(TCONF, "System needs at least %lldMB free swap to run this test",
-+			swap_limit / TST_MB);
-+	}
- }
- 
- static struct tst_test test = {
-@@ -291,6 +301,6 @@ static struct tst_test test = {
- 	.test_all = run,
- 	.needs_root = 1,
- 	.forks_child = 1,
--	.min_swap_avail = SWAP_LIMIT / TST_MB,
-+	.min_swap_avail = BASE_SWAP_LIMIT / TST_MB,
- 	.needs_cgroup_ctrls = (const char *const []){ "memory", NULL },
- };
+Kuba Pawlak (2):
+  lib: tst_rtctime: close RTC fd on the ioctl() error path
+  rtc02: skip (TCONF) on read-only RTCs that reject RTC_SET_TIME
+
+ lib/tst_rtctime.c                           |  7 ++++---
+ testcases/kernel/device-drivers/rtc/rtc02.c | 11 +++++++++++
+ 2 files changed, 15 insertions(+), 3 deletions(-)
+
 -- 
-2.54.0
+2.43.0
 
 
 -- 
