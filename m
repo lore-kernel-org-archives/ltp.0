@@ -4,82 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5DAD1C4453A
-	for <ltp@archiver.kernel.org>; Wed, 22 Jul 2026 23:05:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E86C6C44524
+	for <ltp@archiver.kernel.org>; Thu, 23 Jul 2026 07:53:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1784793226; h=to : date :
+ message-id : mime-version : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : content-type : content-transfer-encoding : sender : from;
+ bh=8CG3C2ieqx5JyYam6ia5lXh4YUP9HixVT7n9iTzpz+A=;
+ b=aZD7EeiGaWxRMXMwrC8nwHTuvYU3zjhQRuEx4Vo+ASRwpT4lRuaiAl0g9CZvZ1f6P9Blx
+ uQNryYB4HzQcrXwFY6wDoh1yUofj0ceairVa8pUI2RGUNRIad/rynRxJLGI2phz9U9iFsPp
+ I6BgHfm2FQJZH7TsaG/NzIPLiqwu5PI=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 62E273E93FB
-	for <ltp@archiver.kernel.org>; Thu, 23 Jul 2026 01:05:52 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 3B5DB3E2448
+	for <ltp@archiver.kernel.org>; Thu, 23 Jul 2026 09:53:46 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 8D7B53CD5F0
- for <ltp@lists.linux.it>; Thu, 23 Jul 2026 01:05:37 +0200 (CEST)
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com
- [IPv6:2607:f8b0:4864:20::743])
+ by picard.linux.it (Postfix) with ESMTPS id 4AF253C9179
+ for <ltp@lists.linux.it>; Thu, 23 Jul 2026 09:53:22 +0200 (CEST)
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com
+ [IPv6:2a00:1450:4864:20::432])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 272191400B83
- for <ltp@lists.linux.it>; Thu, 23 Jul 2026 01:05:37 +0200 (CEST)
-Received: by mail-qk1-x743.google.com with SMTP id
- af79cd13be357-92b21f65b60so620170485a.1
- for <ltp@lists.linux.it>; Wed, 22 Jul 2026 16:05:37 -0700 (PDT)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id E393D10008FD
+ for <ltp@lists.linux.it>; Thu, 23 Jul 2026 09:53:21 +0200 (CEST)
+Received: by mail-wr1-x432.google.com with SMTP id
+ ffacd0b85a97d-47362928f65so277608f8f.2
+ for <ltp@lists.linux.it>; Thu, 23 Jul 2026 00:53:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1784761535; x=1785366335; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to:content-type;
- bh=AJa4qB4ZZK2X2iv7Z/ol2+ZtFYrsONo2T4KaRFhOqiw=;
- b=XqWwX6SNqjsBKrcaE+cZAlNrQeB2/611XUN7JxnggXp2ztC+GQrTuQqdKVUwEJ4bd9
- AxXqT0+RMN4xB5Jayi6fEHzUPTMb0BZpTCb3ZHKTlRqpvzjDpycX5cnxamUnhD+wckzi
- AKLKabMP5L/WhGY7bvMrOWxwD/e/a88/sqSXKZX/6/wsqWRilO0m57KHNCvekFWJtYHo
- yvxorCeoYbwcn9HbrdxbjR46XqwVbAbmb99VOHWVy/6J27i1uw6Z3lSVVZ60mAi7Z7pY
- wzUvCUCoy6KRMJi1nAKP9bk9vPoy9LpZ723/w+1398s7QPJTBstO14zoqInhLECVOupM
- ho9A==
+ d=suse.com; s=google; t=1784793201; x=1785398001; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+ bh=xmeANYyeHgHUDKZiizE3/Kl+0MEyR/6VLZbl+woNAi4=;
+ b=YLVM6p5NQgvPEgAOPlPeRzlVo8s4FtgEd/Yeuq3f5EhFcdgzk/bBX9WhEZh9vKG9tz
+ o1KvoLi/kCz10vh+MO1iXvr41yyaYrsBd2BQ0mjVIOk935lKxkUGZzjZ1Q7A7dnAiUIk
+ J/hg5+1F328/HgpbTPd023VRwTPB1dx62TKuvUe4ge2TmGpSNHVB0bhKB1S+LkApV8X1
+ ONdy0QEndnxIvCJvQqnQu2xLSR3DbyRj9USyx9N3iJK4Sxuv3fB7VztujT1h3PhrPSWg
+ 51pNKf4ju7v8GrdEGTxGNTO2cnbFbSMLrMx912qf20QkMnVHcFeHmGeVx5sJh/jJhHoD
+ qz7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1784761535; x=1785366335;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to:content-type;
- bh=AJa4qB4ZZK2X2iv7Z/ol2+ZtFYrsONo2T4KaRFhOqiw=;
- b=d9a6o5T+8WoYzcz5THLdi7Dp2aYmw1WiQ6KRlqPTSnz81mucOX+eZiJryjtKskWeXE
- LidS0fTfPL8yEjkMax7xnV/ZD4yP0aD19CPSe8fcUx1qPZ1jDh+bPFi5s7d22dmU4ORR
- 3g2yO88iLN/B+csFNJVkjCm7FhABvjk4UKFpvCHX+QbTGQpTj/8pMp0Q3/6wHXmAAe3e
- WOi9GERqOZSPAGQxc7k9xd28RnXcM2tKzvI75aDZ9NUNO9zHbNRDhSPKi0OoQhvMNiU4
- UaygM6UDAw1Vsj57T4y129hIgl+6S4QnsdsEDsvUYRdFi8OaCfG7g54N9sD4o45jgIDv
- Ze7g==
-X-Gm-Message-State: AOJu0YwSLyfhVoz69PrzzPiqO6O48i+dteM5P111VwogaI9lCGvkhVGF
- hNV50Pd3h/5a/Ogpj9w9IpNSyCx20QD0cAGceYDwAgKUzC7H2/448Lts
-X-Gm-Gg: AR+sD13eVg8/CeYsVljI9YlCGol0Kx6p2UIm3Qqr7jEJeJHs6QxKPYyhr0rAaSG1DGb
- 6aRs5FCNogVF/W42R1+YZb9E2GjPNVwPIgCaOItzqNZ1JdEvD/VuTwkbSxcmxBLi2e1S2nOvjAW
- geSHUDcT+MEHOec5jdHhr6v19/aFvdQGAQxTRtZwFzugmrkiQRtzbz39SpYH5q2qEfuVvuepZov
- vZkkxOZQi3mj9GW/0+J4mwMW9c2u4Nou2C83ll2T1turwFKCjbHjD5fjE5hgPzmJ2rWvZ7oBsj8
- vn1HdTzrr5XGvhXqFlYJaAi7xv3vg7o5Rfk4/ySDclPyACpVcDDzKbPXY5wS/xQ+v7RAoAwVz+7
- PA3FZo2eAERh8jvHRef6p0OhD1tARctbJ8c9nnLZw9gSZBP5pYIbd+AFyrvdyn+PkYWf3jXlI5j
- +AwMy5KDqJYxXz5NnLxJq6Hct3rPr6S4J8iZWNtFGI2P6r8XK0rxskIP7kb+US8wb2Wyvl1yRf/
- /CJ6TU9BydvwMBLTA==
-X-Received: by 2002:a05:620a:40cb:b0:92e:5949:3563 with SMTP id
- af79cd13be357-931047ca104mr31903485a.15.1784761535533; 
- Wed, 22 Jul 2026 16:05:35 -0700 (PDT)
-Received: from
- runnervm3jd5f.xoxzbnckc3tuvhtfp2zpexthsa.bx.internal.cloudapp.net
- ([20.83.175.231]) by smtp.gmail.com with ESMTPSA id
- af79cd13be357-930f6a41180sm268928785a.34.2026.07.22.16.05.34
+ d=1e100.net; s=20251104; t=1784793201; x=1785398001;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to:content-type;
+ bh=xmeANYyeHgHUDKZiizE3/Kl+0MEyR/6VLZbl+woNAi4=;
+ b=ZKhjT5L1SMUozTIJxgKjeVuXLfMZOUq5ELO3xAi5nMoU9Xr5m3verbBslj29Wtq+fU
+ WW8OW2ZBd+Y4tb1/ceGyITvXkP/6a8f1Wj05ENm4BaFayovRoEW63vH+onr/p+CmGwHX
+ MhfN2VJd+AMrfHLT94r8N9CaPadNr4AEEZXIKGQGCcMyPdxAgbo3H7TA1QVSL3/dUChS
+ pR/o1Lfqb8fCMqpINTDGPF8Cj70ZwdmT8Cn+nCy8RCoslfjjYSfvKH7qT+32n/Memelx
+ xqoUVjKvIDbXIDrpKVXhpqg78TJmpBnNPU6gr9ajcwYEk+vH2uHcHLFk9X7uiUEIK6EL
+ blSA==
+X-Gm-Message-State: AOJu0YzL0Q6WAGyflHc7alM4ZlUOsNaln9jVITUl5F6CAc6HcOI/n6kV
+ d/BKbo7B2zbje2nwQHtkgypjbAtOZVTc1bG6I2kmYlgb9/SJStGAkoLvROnhna5fxrdAJrRtDYz
+ ngzU=
+X-Gm-Gg: AR+sD1243gCSPEgJfwfKelTiHBKMTvO15m+D74aSwrN1q0KiTNMgM6DEHygOKZHe0Ok
+ fyRDhN830gQpj8IywMDzJcLBdw5wz7muf96Q6582E0xbymrpveMZgnUzL75G/dLMum5hoEIK2m0
+ 6KPxocwX5DP0UTGvdUoIcKgyx6/r8I/5iL+N3L0tII4R5RLEaVGgLcAYyISHLlJEuSoKZh3XS8x
+ eFDfWw1Txwgb0KbQrpF5X25i/+gyBAnL6v3XIZwrMHi36Sv39CnX8r84cWzm1OuYEVftnh55TyA
+ KcU+2Mqcmatn/8Ssn71d50uzxpmYN+HVmKCBzWed7CKywgIlRdmX39XPvMvvdoUFnSFebwQXfMd
+ NmT0ZlG295zXu0GuLTaHkfMXiBTUCAV6kiFSsxiM5Q8x9uBxzQj8iziJq6GIlSgo6DQ==
+X-Received: by 2002:a05:6000:98b:b0:475:f0d1:eb63 with SMTP id
+ ffacd0b85a97d-47f8d76dc78mr2352596f8f.48.1784793201332; 
+ Thu, 23 Jul 2026 00:53:21 -0700 (PDT)
+Received: from localhost ([2a07:de40:b240:0:2ad6:ed42:2ad6:ed42])
+ by smtp.gmail.com with UTF8SMTPSA id
+ ffacd0b85a97d-47f85b9a659sm13843644f8f.6.2026.07.23.00.53.20
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 22 Jul 2026 16:05:34 -0700 (PDT)
-From: linuxtestproject.agent@gmail.com
-To: Brian Grech <bgrech@redhat.com>
-Date: Wed, 22 Jul 2026 23:05:33 +0000
-Message-ID: <20260722230533.3999-1-linuxtestproject.agent@gmail.com>
-X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260722212646.2340340-1-bgrech@redhat.com>
-References: <20260722212646.2340340-1-bgrech@redhat.com>
+ Thu, 23 Jul 2026 00:53:21 -0700 (PDT)
+To: ltp@lists.linux.it
+Date: Thu, 23 Jul 2026 07:53:15 +0000
+Message-ID: <20260723075319.4920-1-wegao@suse.com>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] cve/icmp_rate_limit01: Lower icmp_msgs_per_sec for debug
- kernel reliability
+Subject: [LTP] [PATCH v1] madvise09: Scale cgroup memory/swap limits
+ dynamically with page size
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,28 +95,93 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+From: Wei Gao via ltp <ltp@lists.linux.it>
+Reply-To: Wei Gao <wegao@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Brian,
+On systems with 64KB page size (such as ppc64le), the mapped footprint
+of PAGES (128) is 128 * 64KB = 8MB. Since the cgroup MEM_LIMIT was
+hardcoded to 8MB, there was zero headroom left for the parent's process
+overhead, resulting in OOM when trying to fork the memory pressure
+process.
 
-On Wed, 22 Jul 2026, Brian Grech wrote:
-> cve/icmp_rate_limit01: Lower icmp_msgs_per_sec for debug kernel reliability
+This caused the test to enter an infinite "Both children killed,
+retrying..." loop.
 
-Verdict - Reviewed
+Fix this by scaling mem_limit and swap_limit dynamically based on the
+system page size at runtime. Also add a dynamic swap availability check
+in setup() using tst_available_swap() to skip gracefully on machines
+lacking sufficient swap space, and define BASE_SWAP_LIMIT for the static
+.min_swap_avail check.
 
+Signed-off-by: Wei Gao <wegao@suse.com>
 ---
-Note:
+ testcases/kernel/syscalls/madvise/madvise09.c | 24 +++++++++++++------
+ 1 file changed, 17 insertions(+), 7 deletions(-)
 
-The agent can sometimes produce false positives although often its
-findings are genuine. If you find issues with the review, please
-comment this email or ignore the suggestions.
+diff --git a/testcases/kernel/syscalls/madvise/madvise09.c b/testcases/kernel/syscalls/madvise/madvise09.c
+index 5453f9411..567782896 100644
+--- a/testcases/kernel/syscalls/madvise/madvise09.c
++++ b/testcases/kernel/syscalls/madvise/madvise09.c
+@@ -54,8 +54,10 @@ static int swap_accounting_enabled;
+ #define TOUCHED_PAGE1 0
+ #define TOUCHED_PAGE2 10
+ 
+-#define MEM_LIMIT (8 * 1024 * 1024)
+-#define SWAP_LIMIT (2 * MEM_LIMIT)
++#define BASE_SWAP_LIMIT (16 * 1024 * 1024)
++
++static long mem_limit;
++static long swap_limit;
+ 
+ static void memory_pressure_child(void)
+ {
+@@ -176,12 +178,12 @@ static void child(void)
+ 	ptr[TOUCHED_PAGE1 * page_size] = 'b';
+ 	ptr[TOUCHED_PAGE2 * page_size] = 'b';
+ 
+-	SAFE_CG_PRINTF(tst_cg, "memory.max", "%d", MEM_LIMIT);
+-	tst_res(TINFO, "Setting memory.max to %d bytes", MEM_LIMIT);
++	SAFE_CG_PRINTF(tst_cg, "memory.max", "%ld", mem_limit);
++	tst_res(TINFO, "Setting memory.max to %ld bytes", mem_limit);
+ 
+ 	if (swap_accounting_enabled) {
+-		SAFE_CG_PRINTF(tst_cg, "memory.swap.max", "%d", SWAP_LIMIT);
+-		tst_res(TINFO, "Setting memory.swap.max to %d bytes", SWAP_LIMIT);
++		SAFE_CG_PRINTF(tst_cg, "memory.swap.max", "%ld", swap_limit);
++		tst_res(TINFO, "Setting memory.swap.max to %ld bytes", swap_limit);
+ 	} else {
+ 		tst_res(TINFO, "memory.swap.max is unavailable, running without SWAP_LIMIT");
+ 	}
+@@ -284,6 +286,14 @@ static void setup(void)
+ 		tst_res(TINFO, "Swap accounting is disabled");
+ 
+ 	page_size = getpagesize();
++
++	mem_limit = 16 * PAGES * page_size;
++	swap_limit = 2 * mem_limit;
++
++	if (tst_available_swap() < swap_limit / 1024) {
++		tst_brk(TCONF, "System needs at least %ldMB free swap to run this test",
++			swap_limit / TST_MB);
++	}
+ }
+ 
+ static struct tst_test test = {
+@@ -291,6 +301,6 @@ static struct tst_test test = {
+ 	.test_all = run,
+ 	.needs_root = 1,
+ 	.forks_child = 1,
+-	.min_swap_avail = SWAP_LIMIT / TST_MB,
++	.min_swap_avail = BASE_SWAP_LIMIT / TST_MB,
+ 	.needs_cgroup_ctrls = (const char *const []){ "memory", NULL },
+ };
+-- 
+2.54.0
 
-Regards,
-LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
