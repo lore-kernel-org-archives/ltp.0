@@ -4,81 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1610FC531CC
-	for <ltp@archiver.kernel.org>; Thu, 23 Jul 2026 11:14:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A41DDC4452B
+	for <ltp@archiver.kernel.org>; Thu, 23 Jul 2026 11:15:54 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 55AB83E75F2
-	for <ltp@archiver.kernel.org>; Thu, 23 Jul 2026 13:14:24 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id ECECA3E559F
+	for <ltp@archiver.kernel.org>; Thu, 23 Jul 2026 13:15:52 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1913C3E2E48
- for <ltp@lists.linux.it>; Thu, 23 Jul 2026 13:14:09 +0200 (CEST)
-Received: from mail-qk2-x01.google.com (mail-qk2-x01.google.com
- [IPv6:2607:f8b0:4864:34::1])
+ by picard.linux.it (Postfix) with ESMTPS id D2B1F3E2E48
+ for <ltp@lists.linux.it>; Thu, 23 Jul 2026 13:15:36 +0200 (CEST)
+Received: from mail-pj2-x02.google.com (mail-pj2-x02.google.com
+ [IPv6:2607:f8b0:4864:39::2])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 95D4310007A6
- for <ltp@lists.linux.it>; Thu, 23 Jul 2026 13:14:09 +0200 (CEST)
-Received: by mail-qk2-x01.google.com with SMTP id
- d75a77b69052e-51c1ff471c1so2713901cf.0
- for <ltp@lists.linux.it>; Thu, 23 Jul 2026 04:14:09 -0700 (PDT)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 32C471A011D6
+ for <ltp@lists.linux.it>; Thu, 23 Jul 2026 13:15:36 +0200 (CEST)
+Received: by mail-pj2-x02.google.com with SMTP id
+ 98e67ed59e1d1-3896ccc93b5so170711a91.1
+ for <ltp@lists.linux.it>; Thu, 23 Jul 2026 04:15:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1784805248; x=1785410048; darn=lists.linux.it;
+ d=gmail.com; s=20251104; t=1784805334; x=1785410134; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to:content-type;
- bh=uRmRWhevIMEO7Z1vSMLT7QJkM8M9JZGEhfPEzxnFyH4=;
- b=gS8v4ZAnoWTzka1lLPLUTnjUSoUPRQ8D+ezbARuxmx9yfTJlEWkBCHy499HFXl9dL7
- 3+Ta77R0OSFeP1kUv9JNKVnTySEGItzRC+vEWUf2ty/ZSMjXEofxOFZ4p38byp/teML+
- L0If1MvDPoSftWOL0s5Wf/0R1q6SSZhEVr+xFXxjRNBLlA8Y8dBcL2KqV5DEmDf1d50Z
- +Upe4Gd4cldu0vLz1dN2B/gzXMMmv1xVp4vt0LQlbY0OMmMuS3ZRo4fx9RF0cNmpFXkJ
- KHXr4gVoCobYCKfk6x6mhQ2ShPAkd+ojF1y2/1lILMI0OQSsW4Ev6qCf11Bc7Y2OlA5G
- rlIA==
+ bh=U7xPQGMMBaSOHabPLywnQNAdVAxxlqSn5uZ/7tnNcLA=;
+ b=ktCxaekLP9AWaTSo3GBsI6ybVDgMkBs5Zjuvmyz/mPkBjcgcFPQL224i14yZjBMkKF
+ lHD+UmAF9ZqtgYZJBdg2+O8oNj89JZyC5U53M20JGjMIn+6oBmSnMIVYr7oPWV3koK5C
+ /3Nc5C0hlzg7FbUo+g49/QAZsdZIv93WkebuWaTSw+a9ulBNJvxvx5qMd4PdHY6IBgHx
+ 6Gvl07H/EJa9u6W6WcqvDxxGZ0TcqcT5XkESOZ85dTD9Fo8p8odSeifiiEL/rsjmFm2T
+ RIwpKjPqCEf5J8MD7EDRHgvZHThNhklIQX3xxkuPrzihAaGSc8X8Cokp2HgSTv1iDw/X
+ lReQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1784805248; x=1785410048;
+ d=1e100.net; s=20251104; t=1784805334; x=1785410134;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to:content-type;
- bh=uRmRWhevIMEO7Z1vSMLT7QJkM8M9JZGEhfPEzxnFyH4=;
- b=AHBC8l/vzA8Y+gnb4NXMExTujPP46oBzYlsKXpCzPMZ1vkNrcXT2fNfTfQwQB29vXI
- kn8msL3TuGhLLkw+tSWDJ30MZcEHfkewKv5675G1uVCgV/jJo8VCcpx1m9SrewHQF4zX
- GhgEDa+JdL69D6//jiZXbdRDoa20/lZwqXv2IevLGbzUR/FwTbrWvwjNBNkku8rD/z2r
- PBnttIAycvMk9NJe3LcPe8wvn1iSXTLHNhhwcurAZTatyN9wsS3hQAvRqRZKy4CpS06J
- SeNxfrumivHnkpBa7B3PbkERgc8qpF+Up2UKRVFR/j1KBW6lGNTAdgajE4yCaRezFfHp
- Pjsw==
-X-Gm-Message-State: AOJu0Yz3hgr4HMyWOjts5iGYmqUxdH9Yj2vdYEGhDCDDpvkyaWV7i2T1
- TudM2xBKp+/P5+bTzx28fAXD+ausqy/yfvhBWcnHJbAIvSRqlBycG9ft
-X-Gm-Gg: AR+sD10fc1pdRJiaRdDpDN01ZcsX2INQkUjhbTsrive1H2gm4GhihM6QQOG67gk79yM
- JoRBLEV9n+Oh6EYOM0Usf3y6mTwkadDoxeDur2La98O8qDtGjDWb9cBRfvDpKzgs9q63DC2k7Wy
- jEWTeCNmVRss/LGS6POr4D5sbxfPDbxMV0T6J4PEfW5pfOzUz/QWQQhzfFIUZOEBtoEsN/alMVj
- f7PG8JjhYsBFSabvDk7akLuUBlAiWAUt+TaGzmWL5XcncUMletX/C10OHv0RMfYCi8Ro31d9uRl
- vWJOgQrsO59wB5UVIebpeB8M90JN8DQVeyq0WSoNgaRei1yPj27cHk5N5HSpXHJFSOlyYORZ3ET
- HRN35KxphDHEudtteS2xho//hlCXkt7wu/FCzVR4yWvBBqCipWa+mP3osB3rXmRZF2lHy/7nWwC
- tldPefONSNsJ0H1ZYfw6VwQzE4uOp1lczf3cw0n6ZFswB0ehCeaypkoncmOwQczp9oFkiIwFl1G
- a2UPbg/BnoXXZqQDubEQET909Y=
-X-Received: by 2002:a05:622a:5917:b0:51c:478:32a1 with SMTP id
- d75a77b69052e-5283dda80e8mr26243151cf.18.1784805248136; 
- Thu, 23 Jul 2026 04:14:08 -0700 (PDT)
+ bh=U7xPQGMMBaSOHabPLywnQNAdVAxxlqSn5uZ/7tnNcLA=;
+ b=jhM0S8zuWyBbF3vrWjaBewyI0MqPhj+njol/awRaXw+N0SXspdyWw7gz/H2WZPyby3
+ SuiIlo6ZRu7+CaQQUVeBMUwaFwChh6aWrtsoV3o1P0hHPAkKqaTreQGXNpsHNYtrgcLu
+ Ank74BNYQtjxVuVVU9WoeMyDXR2te6xmc6eQQ+++uH6OWzstshWsvfJMGHnrbco9Lbc1
+ M2Q1Li79D4nVrCPbc7Ee8z1Bu+GcGGxsKDKdXJxuT7OT4EK57nebuk5+daK7h7em0ji8
+ HT75XO92gzNucNndJo/18Bs8JDkohkeVP3FgownAfMnf7AwrqZQoako9aiHR+D40ldx2
+ lmIQ==
+X-Gm-Message-State: AOJu0YxvN2CGpA44aHf4aXS4n/V65aW3Z8tlJqtpKPNY86M4kj+Mwga4
+ PRZZ0ZrwhhoXW+vAonaIpwlX/p3Cn8F9+9Vus7D2tBQR6ksaOtAlX6rHrl0nCzBy43E=
+X-Gm-Gg: AR+sD11WlNHtTm7RsDb2qY0gZSSDHPEkNlqcqb/QYc0PgQ3oGuMg3Qjy5S9lQ62LycR
+ 9fKE6eOYb06o+AuO3vBRxXVKBR7xBrPriPzr/zvJkmLWPakHScDkBeE/9QR9KQZxGjdHNjiHiCy
+ oJCymScmRm9wqGX/3LtUe1+a+nZlvDKsQsT91DBSVVwLvA3cQ32XH8O1MGnC34RNAGJgWZEH3MH
+ iU5vZZpR1INR5d56VKMUUft52E3m/V65BaUs6giGL3qVDJqJlUXB+Hm2gCSOo2otwuDFNZXPY8J
+ 0m6YINfJO2B+R8gukw9+ElvNRqrqsIEVeTkA8hgmjFoB/k+RlL5cM7H2OOfW72d/cl6cNN5XFNp
+ Y63tro+w6267RwEZHaFMMsqSfrvDewIotZHZAjwfd6PGRfLY2z/ui7vLtOyCf6gxcvDJHP/Jxhn
+ mEw/t6AsYUsFbWvIlD4GlB2ZTrma3so1sYQMsADUvgUXcSHNqyDVcsqmKW0ydIBatKBWIvT7hB2
+ 1bmm8RkAfh/1akIci8=
+X-Received: by 2002:a05:6a20:1eaf:b0:3c3:b57b:645e with SMTP id
+ adf61e73a8af0-3c44afcd360mr2701860637.5.1784805334279; 
+ Thu, 23 Jul 2026 04:15:34 -0700 (PDT)
 Received: from
- runnervm3jd5f.ndtsheiqjcounhtwo050w5fsih.bx.internal.cloudapp.net
- ([20.55.15.224]) by smtp.gmail.com with ESMTPSA id
- d75a77b69052e-527d0c4fe92sm32288881cf.11.2026.07.23.04.14.07
+ runnervm3jd5f.f5ckgwuhno0ebkjf23bdyvgvpg.phxx.internal.cloudapp.net
+ ([20.169.74.48]) by smtp.gmail.com with ESMTPSA id
+ 5a478bee46e88-3147e1c9289sm19380395eec.29.2026.07.23.04.15.33
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 23 Jul 2026 04:14:07 -0700 (PDT)
+ Thu, 23 Jul 2026 04:15:33 -0700 (PDT)
 From: linuxtestproject.agent@gmail.com
-To: Kuba Pawlak <kuba.pawlak@canonical.com>
-Date: Thu, 23 Jul 2026 11:14:06 +0000
-Message-ID: <20260723111407.4101-1-linuxtestproject.agent@gmail.com>
+To: Andrea Cervesato <andrea.cervesato@suse.de>
+Date: Thu, 23 Jul 2026 11:15:32 +0000
+Message-ID: <20260723111532.8924-1-linuxtestproject.agent@gmail.com>
 X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260723094947.2639934-2-kuba.pawlak@canonical.com>
-References: <20260723094947.2639934-2-kuba.pawlak@canonical.com>
+In-Reply-To: <20260723104458.1287008-1-andrea.cervesato@suse.de>
+References: <20260723104458.1287008-1-andrea.cervesato@suse.de>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] lib: tst_rtctime: close RTC fd on the ioctl() error path
+Subject: Re: [LTP] inode: convert to new API and merge into a single test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -96,12 +97,21 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Kuba,
+Hi Andrea,
 
-On 07/23/2026, Kuba Pawlak wrote:
-> lib: tst_rtctime: close RTC fd on the ioctl() error path
+On Thu, 23 Jul 2026, Andrea Cervesato wrote:
+> inode: convert to new API and merge into a single test
 
-Verdict - Reviewed
+> +	for (i = 0; i < tc->repetitions; i++) {
+> +		SAFE_READ(1, fd, buf, len);
+
+The literal 1 is used for the len_strict argument here instead of the
+symbolic SAFE_READ_ALL. A few lines below, SAFE_READ_ANY and
+SAFE_WRITE_ALL are used as named constants elsewhere in the same file,
+so this reads as a minor inconsistency rather than a magic number
+choice.
+
+Verdict - Needs revision
 
 ---
 Note:
