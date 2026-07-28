@@ -4,105 +4,116 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AAA1CC54F51
-	for <ltp@archiver.kernel.org>; Tue, 28 Jul 2026 21:04:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2041BC53219
+	for <ltp@archiver.kernel.org>; Tue, 28 Jul 2026 21:09:51 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 2A5323E7484
-	for <ltp@archiver.kernel.org>; Tue, 28 Jul 2026 23:04:54 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 0DD353E1B18
+	for <ltp@archiver.kernel.org>; Tue, 28 Jul 2026 23:09:50 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id EB3F63E18C4
- for <ltp@lists.linux.it>; Tue, 28 Jul 2026 23:04:38 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ by picard.linux.it (Postfix) with ESMTPS id C7E383C0039
+ for <ltp@lists.linux.it>; Tue, 28 Jul 2026 23:09:33 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id AFAD5600838
- for <ltp@lists.linux.it>; Tue, 28 Jul 2026 23:04:36 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id EBB2420025A
+ for <ltp@lists.linux.it>; Tue, 28 Jul 2026 23:09:27 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id E35BE3DF5;
- Tue, 28 Jul 2026 21:04:27 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id CD0647C58E;
+ Tue, 28 Jul 2026 21:09:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1785272672;
+ t=1785272963;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=cnyYY4NvkFUaWgItFnOvJwZ1u3bnxqaKjAAmcMKXwqo=;
- b=E2qdmSGCv4OYe9sEb8sul+kltoGY13Rj9y4z5y4AsrzxvlsIO268QfDObbNaIMwH0IbqUF
- xlwwQ4SJUe9M/i9zrpLTykiSte0jRKgCZ875MdVn2IEBnT3+G+2T2+FkHLC5OIS7xz4X8K
- zankGpudr4XkcF/uZ/rdlh0G3GUWaOo=
+ bh=JXZv5d3yBn+bPnYbVxbfI7yEZvwIHpFD8gF7hcSSj/Q=;
+ b=emahZNjWqOTGVHNlaeHrEmhJjiX3CF2Gall4aqA/rEwGdXoQC/gIxdViYVnygHzfuj6U4r
+ 1Fb6YLtQFFr/Ba62cIKB966BP9aoRUoCbarkEROw4upBG5gxiZWEiqP2icM/8dDtnvp4sS
+ VL4fVgIiyfCBpe2S3vktg9Cj1CPeRMo=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1785272672;
+ s=susede2_ed25519; t=1785272963;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=cnyYY4NvkFUaWgItFnOvJwZ1u3bnxqaKjAAmcMKXwqo=;
- b=RiJ+uuQNSGgCU+UHTFAMIgxuUib76GxxPC8Wn3Dx0aNCYO+XeNF2YPsQH2+EsrI+Xy3KhL
- L3qgzV+V00C8RlBg==
-Authentication-Results: smtp-out2.suse.de;
-	none
+ bh=JXZv5d3yBn+bPnYbVxbfI7yEZvwIHpFD8gF7hcSSj/Q=;
+ b=IdJ/MSpncg9HE25meCLdWZlljoICidhUe+sDMbJpijdyMT+IUR8ljhZ5NwNgRkdfZ0ZoA3
+ +KA8faAlBmd5XAAA==
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=ao737Owp;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=1yIochTh
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1785272667;
+ t=1785272958;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=cnyYY4NvkFUaWgItFnOvJwZ1u3bnxqaKjAAmcMKXwqo=;
- b=MBLNRO5TYzoYSZn2AU66hFnXCHR/xd0IBoAE0qbvBevdLLeIMD2rscmK8ECFtaj3DiuZGM
- mKKvRz09Nmy9zNFkOmr5uJ0qJUKweiWTqD2Q1UCzghI6gnaNK5TFtPs7DMzozrmdG/3GQb
- mh4uz8R8mcuna0mOQjRoRgdkCWsaqvg=
+ bh=JXZv5d3yBn+bPnYbVxbfI7yEZvwIHpFD8gF7hcSSj/Q=;
+ b=ao737Owp/OaTHJAZqenvpVDZTx6LwxmJxny+ZCML34b/7PIyPwi/tAimWy6AvGwD8UuwBu
+ 6W3A1WqiIRFsZNPz9dYAdM8235VoCfkedeyvXwwcfmk7mvAxJlyJFE8j3p7moLVLTTuMJ6
+ 8idmj1pJO7/+gYGx5n6QPTlZD46OdwY=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1785272667;
+ s=susede2_ed25519; t=1785272958;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=cnyYY4NvkFUaWgItFnOvJwZ1u3bnxqaKjAAmcMKXwqo=;
- b=19DdTyoCM+KdhhOTIs6NF15xP+kh2qDdmUSuk0KyWHJ8fWEgeKxNMOAcPl8n9UjOE91b55
- iZl26TVyUGSjsMBA==
+ bh=JXZv5d3yBn+bPnYbVxbfI7yEZvwIHpFD8gF7hcSSj/Q=;
+ b=1yIochThV2Dt75zjuku5J97gY+7TJclwc39AJnjezNmOI6aZq/nwm+Tt+6GKBAuxdeCcXh
+ tyi0rlHlovGFbWAQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B88CD779B1;
- Tue, 28 Jul 2026 21:04:27 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 79579779B3;
+ Tue, 28 Jul 2026 21:09:18 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id hrjbKlsZaWqgDgAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Tue, 28 Jul 2026 21:04:27 +0000
-Date: Tue, 28 Jul 2026 23:04:09 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id wYE2HH4aaWrPEgAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Tue, 28 Jul 2026 21:09:18 +0000
+Date: Tue, 28 Jul 2026 23:09:11 +0200
 From: Petr Vorel <pvorel@suse.cz>
 To: Jan Stancek <jstancek@redhat.com>
-Message-ID: <20260728210409.GB114518@pevik>
+Message-ID: <20260728210911.GC114518@pevik>
 References: <20260722192052.3975-1-linuxtestproject.agent@gmail.com>
  <20260722212646.2340340-1-bgrech@redhat.com>
  <20260727082240.GA1010349@pevik>
  <CAA835F7iF91Hrb099kbpG0+CR3WOBCH34C7tiB-4uJfNWjva8w@mail.gmail.com>
  <20260728131601.GA1065673@pevik>
- <CAASaF6y+umcvL+fvCvr=V=b9qAu2waBu2oUARxze6bA1=Ui45g@mail.gmail.com>
+ <CAASaF6xWz9LxH-=wUveuSt0UBmUs9L7Os1OdWQ5VdpSy3UUTkg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <CAASaF6y+umcvL+fvCvr=V=b9qAu2waBu2oUARxze6bA1=Ui45g@mail.gmail.com>
-X-Spamd-Result: default: False [-7.50 / 50.00]; REPLY(-4.00)[];
- BAYES_HAM(-3.00)[100.00%]; NEURAL_HAM_LONG(-1.00)[-1.000];
- MID_RHS_NOT_FQDN(0.50)[]; HAS_REPLYTO(0.30)[pvorel@suse.cz];
+In-Reply-To: <CAASaF6xWz9LxH-=wUveuSt0UBmUs9L7Os1OdWQ5VdpSy3UUTkg@mail.gmail.com>
+X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: CD0647C58E
+X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- ARC_NA(0.00)[]; TO_DN_SOME(0.00)[]; MIME_TRACE(0.00)[0:+];
- URIBL_BLOCKED(0.00)[imap1.dmz-prg2.suse.org:helo,sourceware.org:url,suse.cz:replyto,suse.cz:email,linux.it:url,linux.it:email,list.org:url];
- RCVD_VIA_SMTP_AUTH(0.00)[]; MISSING_XM_UA(0.00)[];
- RCVD_TLS_ALL(0.00)[]; RCPT_COUNT_FIVE(0.00)[5];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ MX_GOOD(-0.01)[]; TO_DN_SOME(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; MIME_TRACE(0.00)[0:+];
+ ARC_NA(0.00)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:replyto,suse.cz:email];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- REPLYTO_EQ_FROM(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:replyto,suse.cz:email,suse.cz:dkim];
+ DKIM_TRACE(0.00)[suse.cz:+]; RCPT_COUNT_FIVE(0.00)[5];
+ RCVD_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
+ FROM_HAS_DN(0.00)[]; RCVD_TLS_ALL(0.00)[];
+ DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ RCVD_VIA_SMTP_AUTH(0.00)[];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ MISSING_XM_UA(0.00)[]; REPLYTO_EQ_FROM(0.00)[]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH v2] cve/icmp_rate_limit01: Lower icmp_msgs_per_sec
  for debug kernel reliability
@@ -138,21 +149,22 @@ cyBub3QKPiA+IGhhdmUgdGhhdCBwcm9ibGVtLCBidXQgYWN0dWFsbHkgaGUgZG9lcyBoYXZlIHRo
 YXQgcHJvYmxlbSBhcyB3ZWxsIFszXSAiRnJvbTogSmFuCj4gPiBTdGFuY2VrIHZpYSBsdHAgPGx0
 cEBsaXN0cy5saW51eC5pdD4iLiBJdCdzIGp1c3QgaGUgcHJvYmFibHkgZG9lcyBtZXJnZSB0aGVz
 ZQo+ID4gcGF0Y2hlcyBkaXJlY3RseSB3aXRob3V0IGZpcnN0IGRvd25sb2FkaW5nIHRoZW0gZnJv
-bSB0aGUgbWFpbGluZyBsaXN0LgoKPiBIbSBpbnRlcmVzdGluZywgaXQgYXBwZWFycyB0byBiZSBv
-bmx5IExUUC4gVGhlIHBhdGNoIEkgc2VudCBsYXN0IHdlZWsKPiB0byBsa21sIGFwcGVhcnMgdG8g
-YmUgT0ssCj4gYW5kIGl0J3MgdGhlIHNhbWUgZ2l0Y29uZmlnIHNldHVwOgo+IGh0dHBzOi8vbG9y
-ZS5rZXJuZWwub3JnL2xrbWwvODRhMzVlMTZmNzIzMzBkNmU3YjJkNmU5NjkwNDBmMzY5NTllMmRh
-ZC4xNzg0NjMwMjkwLmdpdC5qc3RhbmNla0ByZWRoYXQuY29tL3JhdwoKSXQgbG9va3Mgc29tZXRo
-aW5nIGF0IGxlYXN0IHJlbGF0ZWQgdG8gb3VyIG9sZCBNYWlsbWFuIG9uIGxpc3RzLmxpbnV4Lml0
-LgoKS2luZCByZWdhcmRzLApQZXRyCgo+ID4gQW55d2F5LCB2ZXJ5IG1pbm9yIHByb2JsZW0sIGJ1
-dCBpdCdkIGJlIG5pY2UgdG8gZ2V0IGl0IGZpeGVkLiBPdXIgbGlzdCBoYXMKPiA+IHNldHVwOiBm
-cm9tX2lzX2xpc3QgPSBuby4gSSBzdXBwb3NlIHRoaXMgaXMgY29ycmVjdCAobG9va2luZyBhdCB0
-aGUgZG9jcyBbNF0gYW5kCj4gPiBhbHNvIGNoZWNrIG90aGVyIHByb2plY3RzIHNldHVwIFs1XSku
-Cgo+ID4gS2luZCByZWdhcmRzLAo+ID4gUGV0cgoKPiA+IFsxXSBodHRwczovL2xvcmUua2VybmVs
-Lm9yZy9sdHAvMjAyNjA3MjIyMTI2NDYuMjM0MDM0MC0xLWJncmVjaEByZWRoYXQuY29tL3Jhdwo+
-ID4gWzJdIGh0dHBzOi8vd2lraS5saXN0Lm9yZy9ERVYvRE1BUkMKPiA+IFszXSBodHRwczovL2xv
-cmUua2VybmVsLm9yZy9sdHAvMDhjODVjZjY0ZDcwM2RmYWJhMzEzOThhYjlkOWI0ODA0ODhmZTMz
-OC4xNzQ3MjI3NDgxLmdpdC5qc3RhbmNla0ByZWRoYXQuY29tL3Jhdwo+ID4gWzRdIGh0dHBzOi8v
-bGlzdC5vcmcvbWFpbG1hbi1hZG1pbi50eHQKPiA+IFs1XSBodHRwczovL3NvdXJjZXdhcmUub3Jn
-L3BpcGVybWFpbC9iaW51dGlscy8yMDIzLU9jdG9iZXIvMTI5ODUyLmh0bWwKCgoKLS0gCk1haWxp
-bmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3RzLmxpbnV4Lml0L2xpc3RpbmZvL2x0cAo=
+bSB0aGUgbWFpbGluZyBsaXN0LgoKPiA+IEFueXdheSwgdmVyeSBtaW5vciBwcm9ibGVtLCBidXQg
+aXQnZCBiZSBuaWNlIHRvIGdldCBpdCBmaXhlZC4gT3VyIGxpc3QgaGFzCj4gPiBzZXR1cDogZnJv
+bV9pc19saXN0ID0gbm8uIEkgc3VwcG9zZSB0aGlzIGlzIGNvcnJlY3QgKGxvb2tpbmcgYXQgdGhl
+IGRvY3MgWzRdIGFuZAo+ID4gYWxzbyBjaGVjayBvdGhlciBwcm9qZWN0cyBzZXR1cCBbNV0pLgoK
+PiBDYW4geW91IHNlZSBhbHNvIHRoZXNlIHR3byBpbiBvdXIgY29uZmlnPwo+IGRtYXJjX21vZGVy
+YXRpb25fYWN0aW9uID0gQWNjZXB0CgpXZSBoYXZlIGRtYXJjX21vZGVyYXRpb25fYWN0aW9uID0g
+TXVuZ2UgRnJvbSAoaW4gcHJpdmFjeS9zZW5kZXIvZG1hcmNfbW9kZXJhdGlvbl9hY3Rpb24pCgo+
+IGRtYXJjX3F1YXJhbnRpbmVfbW9kZXJhdGlvbl9hY3Rpb24gPSBObwoKV2UgaGF2ZSBkbWFyY19x
+dWFyYW50aW5lX21vZGVyYXRpb25fYWN0aW9uID0geWVzCmRtYXJjX25vbmVfbW9kZXJhdGlvbl9h
+Y3Rpb24gPSBObwoKVG9vIGxhdGUgdG8gcmVhZCB0aGUgZG9jcywgSSdsbCBkbyBpdCB0b21vcnJv
+dy4KCktpbmQgcmVnYXJkcywKUGV0cgoKPiA+IEtpbmQgcmVnYXJkcywKPiA+IFBldHIKCj4gPiBb
+MV0gaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvbHRwLzIwMjYwNzIyMjEyNjQ2LjIzNDAzNDAtMS1i
+Z3JlY2hAcmVkaGF0LmNvbS9yYXcKPiA+IFsyXSBodHRwczovL3dpa2kubGlzdC5vcmcvREVWL0RN
+QVJDCj4gPiBbM10gaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvbHRwLzA4Yzg1Y2Y2NGQ3MDNkZmFi
+YTMxMzk4YWI5ZDliNDgwNDg4ZmUzMzguMTc0NzIyNzQ4MS5naXQuanN0YW5jZWtAcmVkaGF0LmNv
+bS9yYXcKPiA+IFs0XSBodHRwczovL2xpc3Qub3JnL21haWxtYW4tYWRtaW4udHh0Cj4gPiBbNV0g
+aHR0cHM6Ly9zb3VyY2V3YXJlLm9yZy9waXBlcm1haWwvYmludXRpbHMvMjAyMy1PY3RvYmVyLzEy
+OTg1Mi5odG1sCgoKCi0tIApNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5saW51eC5p
+dC9saXN0aW5mby9sdHAK
