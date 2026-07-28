@@ -4,83 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9494BC53219
-	for <ltp@archiver.kernel.org>; Tue, 28 Jul 2026 14:01:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 41A3CC54F4C
+	for <ltp@archiver.kernel.org>; Tue, 28 Jul 2026 14:03:10 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 20BF43E7495
-	for <ltp@archiver.kernel.org>; Tue, 28 Jul 2026 16:01:04 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id BDFF63E658A
+	for <ltp@archiver.kernel.org>; Tue, 28 Jul 2026 16:03:08 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D64DE3E6291
- for <ltp@lists.linux.it>; Tue, 28 Jul 2026 16:00:47 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ by picard.linux.it (Postfix) with ESMTPS id D2EBB3E5274
+ for <ltp@lists.linux.it>; Tue, 28 Jul 2026 16:02:52 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 3AD8F2009AB
- for <ltp@lists.linux.it>; Tue, 28 Jul 2026 16:00:44 +0200 (CEST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 6EF0E1A002EF
+ for <ltp@lists.linux.it>; Tue, 28 Jul 2026 16:02:50 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 9FEF73E02;
- Tue, 28 Jul 2026 14:00:35 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 0CA893E02;
+ Tue, 28 Jul 2026 14:02:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1785247239;
+ t=1785247365;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=4tDy07CXV4lyXj98AuQrtAem7tJLpz4I2VsijQgoOlE=;
- b=fferoTKiJAO/2C6b0LVorrz2wmERMFw9r7SG5DfpVrn4AAs8hiRkTuymTQI/gHieQmbUmE
- xrUoqRWgh6TbRKn80YZRLno6nQhaA8VMQsd5QsAc7QTSfTh+Kc6D0WNkRLT1a3xR6nGEWW
- hrLtFjPgmDozcefcJrwhO9aYoZQW3zE=
+ bh=vG++ZvEoR4Gep6BPH0jlrMAKr7diUe/aBtVwHEYlpFM=;
+ b=XWVa+QlmlmCoTp4UAv+gyUnqH3t/1XqITijR2eLCvAZCrKxwIdKxHoesXEuSfPICO7zoOI
+ 2eIAYkKbRCGdwoh/q+vq1HOhTHDt6cH5cXwbfzSwVqNatJzlshla3KjHXPL/13nCZgc/yM
+ Mmd+0Xkzy4YA4vJjbZPvidwZF4GfPBY=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1785247239;
+ s=susede2_ed25519; t=1785247365;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=4tDy07CXV4lyXj98AuQrtAem7tJLpz4I2VsijQgoOlE=;
- b=h8aqa5QJ/Z8w82KZTnSxWdWGoXqKL2E5Eiz958sQkQpxHeWn/yQKO7MqmqgJJV6AfYOxdc
- 7m8LoqBsX4Y7NLDw==
+ bh=vG++ZvEoR4Gep6BPH0jlrMAKr7diUe/aBtVwHEYlpFM=;
+ b=Vn8onZ0aVhs0o5AFL+pj443z2FA+Pb/dEIthkMeFrrzQVQRmaoejuF6kBuYjAEYylcWbBD
+ QaUKPX19g3V4TSAg==
 Authentication-Results: smtp-out2.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1785247235;
+ t=1785247361;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=4tDy07CXV4lyXj98AuQrtAem7tJLpz4I2VsijQgoOlE=;
- b=dESHprUYRJpXwZjcShjVen9f1yfxKOWjYzQLpImX1v4LuMGCsb0A5mM2MIDGewhYZzZwYT
- j0DZrBmTUALYW9g5Rn8D8pi/Yl96JZrUWVpSCpnHZMpugQpPenZesHy9lK80n2hZhEbio5
- CiDXR60KPH19AZufzvREpoGWus6MlFc=
+ bh=vG++ZvEoR4Gep6BPH0jlrMAKr7diUe/aBtVwHEYlpFM=;
+ b=Hm9UiaPcNv3BkBqbWQKG0n+bysRF3zHU1mMD1fsw92/aOCyM4gR5kxFn/ruKDkToSpoEfh
+ FSAJUJk/WgqOxABOFl90C1cHmFkLC8Z91B4FOmCz7UdxpJDAui9IeLkExxbT0BxcOmtNKQ
+ BGAtEJV1W0/bOYDqTBFM5/I7rrrVEPY=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1785247235;
+ s=susede2_ed25519; t=1785247361;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=4tDy07CXV4lyXj98AuQrtAem7tJLpz4I2VsijQgoOlE=;
- b=VKYmKGynk5GvE8G7LS6fqwP5A7T7IxUNkq06hItXokOYEN7rt8rYd0JxrLaAdiJK/Guu3W
- JQOi+1vQdqhWeMBQ==
+ bh=vG++ZvEoR4Gep6BPH0jlrMAKr7diUe/aBtVwHEYlpFM=;
+ b=a5kJQnnROXK5vNe/xlWfDPOvuR76l34Hp5kz58dkiuXrNqqUK8fAfnvvXDbAp3uUN9eomz
+ XH0TPkQwahGdWpDA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7ED44779B1;
- Tue, 28 Jul 2026 14:00:35 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C34BD779B1;
+ Tue, 28 Jul 2026 14:02:40 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id utUXHQO2aGrGeAAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Tue, 28 Jul 2026 14:00:35 +0000
-Date: Tue, 28 Jul 2026 16:00:25 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id ILaNLIC2aGrGegAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Tue, 28 Jul 2026 14:02:40 +0000
+Date: Tue, 28 Jul 2026 16:02:35 +0200
 From: Petr Vorel <pvorel@suse.cz>
 To: Andrea Cervesato <andrea.cervesato@suse.de>
-Message-ID: <20260728140025.GC1128467@pevik>
+Message-ID: <20260728140235.GD1128467@pevik>
 References: <20260717-fix_core_library-v1-0-c575fcbb2cb3@suse.com>
- <20260717-fix_core_library-v1-2-c575fcbb2cb3@suse.com>
+ <20260717-fix_core_library-v1-3-c575fcbb2cb3@suse.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20260717-fix_core_library-v1-2-c575fcbb2cb3@suse.com>
+In-Reply-To: <20260717-fix_core_library-v1-3-c575fcbb2cb3@suse.com>
 X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[99.99%];
  NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
  HAS_REPLYTO(0.30)[pvorel@suse.cz];
@@ -91,12 +93,11 @@ X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[99.99%];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  TO_MATCH_ENVRCPT_ALL(0.00)[]; FROM_HAS_DN(0.00)[];
  TO_DN_ALL(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,suse.cz:email,suse.com:email,imap1.dmz-prg2.suse.org:helo];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,suse.cz:email,imap1.dmz-prg2.suse.org:helo];
  RCVD_COUNT_TWO(0.00)[2]; REPLYTO_EQ_FROM(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 2/3] lib: Close directory fd on ENOSPC in
- tst_fill_fs
+Subject: Re: [LTP] [PATCH 3/3] lib: Fix wrong field in tst_iovec_alloc
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -117,31 +118,17 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi Andrea,
 
-> The directory descriptor opened at the top of the function was leaked
-> when openat() failed with ENOSPC and the function returned early. Close
-> it before returning.
+...
+>  			iovec[i].iov_base = NULL;
+> -			iovec[i].iov_base = 0;
+> +			iovec[i].iov_len = 0;
 
-> Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
-> ---
->  lib/tst_fill_fs.c | 1 +
->  1 file changed, 1 insertion(+)
-
-> diff --git a/lib/tst_fill_fs.c b/lib/tst_fill_fs.c
-> index c62d48e289965d59ef6c877870c6047bbecb33da..b1e48fdeea6ab00848aab482fd3899fc6f6ce23c 100644
-> --- a/lib/tst_fill_fs.c
-> +++ b/lib/tst_fill_fs.c
-> @@ -91,6 +91,7 @@ static void fill_flat_vec(const char *path, int verbose)
->  	if (fd == -1) {
->  		if (errno == ENOSPC) {
->  			tst_res(TINFO | TERRNO, "openat()");
-> +			SAFE_CLOSE(dir);
 Good catch!
 Reviewed-by: Petr Vorel <pvorel@suse.cz>
+Fixes: ee761d81b9 ("lib: Add support for guarded buffers")
 
 Kind regards,
 Petr
->  			return;
->  		}
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
