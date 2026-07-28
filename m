@@ -4,82 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 14E1FC54F4C
-	for <ltp@archiver.kernel.org>; Tue, 28 Jul 2026 12:58:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 500E2C53219
+	for <ltp@archiver.kernel.org>; Tue, 28 Jul 2026 13:06:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1785243999; h=message-id :
+ to : in-reply-to : date : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : cc : mime-version : content-type :
+ content-transfer-encoding : sender : from;
+ bh=ENVLX7EfSKtYoQKCDJT1he78aoL8voupX8iMb51S3XQ=;
+ b=BnTk7ndk0QpLoPzqC3hmjnPiQjrxrMy9P5hKIo8YSEwTo4rfqyOphISRP5v5Ml65nxPzR
+ 91nmO2rTXV9aekEUxP5Rp5cVcVR2q1v92gIeCgoI8ReDPUnbVf/zQHUR30A9RA+q3ldyc3C
+ zBemtdU3niViCDM63dg+kEjUacfyd70=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 79B3E3D0E80
-	for <ltp@archiver.kernel.org>; Tue, 28 Jul 2026 14:58:35 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 94C463E658A
+	for <ltp@archiver.kernel.org>; Tue, 28 Jul 2026 15:06:39 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 51CB03D0E80
- for <ltp@lists.linux.it>; Tue, 28 Jul 2026 14:58:19 +0200 (CEST)
-Received: from mail-qk2-x02.google.com (mail-qk2-x02.google.com
- [IPv6:2607:f8b0:4864:34::2])
+ by picard.linux.it (Postfix) with ESMTPS id C655E3E14C8
+ for <ltp@lists.linux.it>; Tue, 28 Jul 2026 15:06:18 +0200 (CEST)
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com
+ [IPv6:2a00:1450:4864:20::32f])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id A99001A00430
- for <ltp@lists.linux.it>; Tue, 28 Jul 2026 14:58:18 +0200 (CEST)
-Received: by mail-qk2-x02.google.com with SMTP id
- af79cd13be357-92e51e6879fso246780785a.1
- for <ltp@lists.linux.it>; Tue, 28 Jul 2026 05:58:18 -0700 (PDT)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 3E1BA2009A0
+ for <ltp@lists.linux.it>; Tue, 28 Jul 2026 15:06:18 +0200 (CEST)
+Received: by mail-wm1-x32f.google.com with SMTP id
+ 5b1f17b1804b1-4954a32cf1eso20068815e9.3
+ for <ltp@lists.linux.it>; Tue, 28 Jul 2026 06:06:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1785243497; x=1785848297; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to:content-type;
- bh=f5bmNimw9tkIx6j6bvA+R6/osqxFoXnOSJsChStJBLI=;
- b=BVFFcLF1Z9cgy9Woct+KA5ztSvn2Tdj6CFipZQfkLx26ev3QXSKUu0cjm6zfauUrhk
- wKBKi0dFyV4fT5otHKz5yG+AZ+GbnWRa8fNcTcmo/oWvIRHJP4AJn8GfwMiO+i0JL/W9
- 8jCdN3+CnChQi71BdLt0I010H2SNF3dtfs99BZiau8YXujBue1c8MqBTdZvkMBSwLRe5
- wqhjj8rVz2P/czW3eEZU99Clgj3COxKJFXQtTzWnd8+pMBW+/7UJRIpxxf3E0jrGSvX5
- PosGsTEp2lps6KECcfE35A7ZPlxLRwq9zHzQUjuleG6rIAuBGiS6e3EEaFs+KUEvoX3C
- k7Fg==
+ d=suse.com; s=google; t=1785243977; x=1785848777; darn=lists.linux.it;
+ h=date:content-transfer-encoding:content-type:subject:in-reply-to:cc
+ :to:from:message-id:from:to:cc:subject:date:message-id:reply-to
+ :content-type; bh=p+tqyxt/L8LpAz4ZQPxe00QNql0SkMcPFSK3DRCnXm0=;
+ b=Fpi3g1uCWYvMP5V0KzS/5st6KN6N0htDGwQA0AsrV8Iu29AcAaB0fD5kJywKE5uGQp
+ BZXK2O5JSeLMNVDGgr1w7/YXxmwXKRrugvblowCx53uS7Xp8xanSyWXTHAhvXaSqcOEe
+ Ob/yRmBCryrvG6/HA3mdK0i/gPArtOXhf1luzvLbmSHBceOE2KhjCwqB1IEDBibMLRyZ
+ dX15IQT71rQvjlBGRGYf4vh8Yqmb/XcwEBcxIoWsRjkpzkGc6IHEVORS4orT4E4dtzeC
+ x4rgKcFQ8Vm2PAZa+dxuJWv9IMejiEghzG9rJ4E+iWz9/eOagxAfLbP3srL7UUE2Jq2k
+ KD1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1785243497; x=1785848297;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to:content-type;
- bh=f5bmNimw9tkIx6j6bvA+R6/osqxFoXnOSJsChStJBLI=;
- b=W9gwUf1D0jKmH246m2zxLC8L3sJFnAE/g3eoRB+2WzPJZpRoOpN5k1LHI4Z6G4Se4x
- 2A2P5uk6nXGwDmZHIe8IVeM5v2c/0rxQBIYCkkXpLwOAX+qkfAsxCN5IBLwPDZbmOB9K
- jICT8fL2IPB30UXl4Xc9XwqkucWKFS77XkO5aPg6As6YpU8/wmsLFnywHa5+4KPPiIsw
- C3GBsxHoNMROpToO+Pbktr+g3eFsOqdp6Tc83Hb5XPoYBCAFiY1zD2wHgGH1oOITbNNH
- 6tyxorycZhpmYwIIRunh3JYap0FnxIJ8xEFc9dYS84TeTBMOyqugLceWjbMNUPDtp6A6
- 98ag==
-X-Gm-Message-State: AOJu0Yw9/IdpqzVrQzXqPteM+0vWstL1jHCOzRDbeef2ZpEt5GkTDk5Q
- HYNfkDVqAxMpDutXGtOXBpYyfJccTWsOByfwPMrVGRDBah/xgPyjMnhu
-X-Gm-Gg: AR+sD12uz8x4/GFBX/rE+auTz6HgEW2oMlE9FKJHaU5dG6COWFCxm1lONJOguEyaPcl
- CCmGt9tihg4JkjzCPjpK7mUB3bNDi/1fN+MMRT5PaCG/5whom5BroNurt672ZLkdIg2Ymc6NGJG
- +EAE++F3n9jRURH0iKH15AP52X6G3YZxKLV9jSREr+AuUwgZKjiktShfKd72KPPBD02CHfvkblJ
- yAajPDbkQ8qK6oGS4oqtSyQvG/5l+By1NM5MDg6ApnsnGK8BcYA5p4S0cMZh0HgozVAuIQlJadk
- nfDij+5cAqBuAice1dHX6FEL/0szG32PEd1Gf4HqvPoChUgfoPsHhEYWkWm1ess1vADugvyfAAw
- dZuE15rpEFT90JqmOMY/dSpag5tDQti+jc+CTxAmkDSs7UpXedbvWOU0tj14O0+YZamwWzRC5S4
- pB1RRNfoQbGw0mZord2FBZ7BL494QpE7CtlEqIaBXc3xY8xnlNwP68EFC0GuXXRgMfKYtnsoD5E
- 0MdOtYhbBdfltgPOA==
-X-Received: by 2002:a05:620a:3726:b0:92e:e252:bb43 with SMTP id
- af79cd13be357-93302716fc2mr180930385a.77.1785243496897; 
- Tue, 28 Jul 2026 05:58:16 -0700 (PDT)
-Received: from
- runnervmvrwv9.rbvbdlov45kutln3wjst01zbxa.bx.internal.cloudapp.net
- ([20.62.254.162]) by smtp.gmail.com with ESMTPSA id
- af79cd13be357-932de655676sm853386085a.37.2026.07.28.05.58.16
+ d=1e100.net; s=20251104; t=1785243977; x=1785848777;
+ h=date:content-transfer-encoding:content-type:subject:in-reply-to:cc
+ :to:from:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject
+ :date:message-id:reply-to:content-type;
+ bh=p+tqyxt/L8LpAz4ZQPxe00QNql0SkMcPFSK3DRCnXm0=;
+ b=e0TH8nBX0YLfGxS+f3XMOF85zEIQ7ml6PnS65/eHHVATSfBQP0xTx0hj79ehoYJIwm
+ k0dkSZC4gBaLk1QTOzaGCSbVYvhTk7m0OAaDc+/4M9qJ+Z9moZk8JvcSPybUIIs8FLaU
+ h2T171ll9egodbQODKbtQqLDqaLPWlv6HlqoMRrDej9GYlj+lm2GHayLy7mFHe+spkAo
+ VWJIGkdp32yVl0liq1NqUI+HcFBtsPCUXyCoBtLO1UChORMGQzRA7XDnvB8qDdJv+1s1
+ EPuCiWtsJ0iwDot5LGvdlqo2tVjvPIWRHzHCnfkLbKbLV5xOR56IrZzxzmGhpZOSzcyG
+ 0e9g==
+X-Gm-Message-State: AOJu0YwoPasguiy+jX5tfAdfdSZ2zX6mDniVV9t/cPq9Gd03L/esmhpw
+ mgd+zE2wfLbCjC5TM9sRmNeuY5MZ4uYkxTQoFUktXw76Uj8KzKCA22Mcm6cId/SrpjRfdr+URS/
+ P/gZz4yTUNw==
+X-Gm-Gg: AR+sD11kZVLTYX5o2kRS0/0X6lPpWarMZOlCNW+0FhKRig3XBi7zfSY4POdc1ub/FqV
+ IG5lbHYtXZ2W0o8p9F/wejvq5Aw7AYE7hFpkGgMmFqe+N8pT9QxkXwBqEmoXFgr25Jt8yvuubos
+ F7/PQgaup9jFLFa3IHXL3iN7I0ppSxFEamleu04cwcaxrS3plOVQV5UZGluHe4IYrVUlBHVINwb
+ UJMYXAQmLaCPL7Ym+QeoJkA45H9LLLHatfX6fr+B4sT8YJ7mM+/Cjw9Yj2b5A1xGThLLi1WG66S
+ wfS0nkMl1Th5xAgl1yQICCRbVO9Iehol8ZLBJEeXOO+uxeE6Jy5FFRGOzgo4mGLZkxBj/neZxgt
+ mTyFAshJ7tS1Ck95gexbZrFPeYH/XK68OXfUV3hv5XAsJMR46++46IUg6JkD1Ons2hs+vxjtiMl
+ jp0lnjIjhRr3DJ6+EE8a8zLQ==
+X-Received: by 2002:a05:600c:46cf:b0:495:503f:cf9a with SMTP id
+ 5b1f17b1804b1-496c6425f1dmr26203565e9.9.1785243977437; 
+ Tue, 28 Jul 2026 06:06:17 -0700 (PDT)
+Received: from localhost.localdomain ([153.19.102.214])
+ by smtp.gmail.com with ESMTPSA id
+ 5b1f17b1804b1-496c44b84edsm124354525e9.5.2026.07.28.06.06.15
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 28 Jul 2026 05:58:16 -0700 (PDT)
-From: linuxtestproject.agent@gmail.com
-To: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 28 Jul 2026 12:58:15 +0000
-Message-ID: <20260728125815.4069-1-linuxtestproject.agent@gmail.com>
-X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260728114224.1055009-1-pvorel@suse.cz>
-References: <20260728114224.1055009-1-pvorel@suse.cz>
-MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+ Tue, 28 Jul 2026 06:06:16 -0700 (PDT)
+Message-ID: <6a68a948.af19844c.435dd.4d07@mx.google.com>
+To: "Stephen Bertram via ltp" <ltp@lists.linux.it>
+In-Reply-To: <20260721135530.2882066-1-sbertram@redhat.com>
+Date: Tue, 28 Jul 2026 13:06:14 +0000
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] ima_setup.sh: Fix check_policy_writable() for kernel < 4.5
+Subject: Re: [LTP] [PATCH v5] semctl01: tolerate SEM_STAT races under
+ parallel LTP runs
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,81 +96,51 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Cc: Stephen Bertram <sbertram@redhat.com>, fdarocha@redhat.com,
+ ltp@lists.linux.it
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Petr,
+Hi Stephen,
 
-On Tue, Jul 28, 2026 at 01:42:24PM +0200, Petr Vorel wrote:
-> ima_setup.sh: Fix check_policy_writable() for kernel < 4.5
-
-> -	# workaround for kernels < v4.18 without fix
+> +/*
+> + * SEM_STAT takes an ipc idr index. Under parallel IPC tests that index can
+> + * vanish between IPC_INFO and SEM_STAT (EIDRM/EINVAL). Refresh and retry.
+> + */
+> +static int do_sem_stat(union semun arg)
+> +{
+> +	int idx;
+> +	unsigned int retries = 5;
 > +
-> +	# Workaround for kernels < v4.18 without fix
->  	# ffb122de9a60b ("ima: Reflect correct permissions for policy")
-> -	echo "" 2> log > $IMA_POLICY
-> -	grep -q "Device or resource busy" log && return 1
-> +	# Require >= 4.5 to write multiple times via CONFIG_IMA_WRITE_POLICY
-> +	# 38d859f991f3 ("IMA: policy can now be updated multiple times")
+> +	do {
+> +		int info_id = 0;
+> +
+> +		idx = SAFE_SEMCTL(info_id, 0, IPC_INFO, (union semun)&ipc_buf);
+> +		TEST(semctl(idx, 0, SEM_STAT, arg));
+> +		if (TST_RET >= 0)
+> +			return TST_RET;
+> +		if (TST_ERR != EIDRM && TST_ERR != EINVAL)
+> +			tst_brk(TBROK | TERRNO, "semctl(SEM_STAT)");
+> +	} while (--retries);
+> +
+> +	tst_brk(TBROK | TERRNO, "semctl(SEM_STAT) still failing after retries");
+> +	return -1;
+> +}
+> +
 
-Is CONFIG_IMA_WRITE_POLICY really the reason for the 4.5 boundary here?
-
-On >= 4.5 ima_release_policy() runs ima_check_policy(), which returns
--EINVAL when ima_temp_rules is empty. The empty write therefore sets
-valid_policy = 0, ima_delete_rules() is called and IMA_FS_BUSY is
-cleared, so the probe stays non-destructive even when
-CONFIG_IMA_WRITE_POLICY=n.
-
-What makes < 4.5 different is the absence of ima_check_policy(): there
-the empty write is committed and securityfs_remove() drops the policy
-file. Would it be clearer to state that, and to keep the v4.18
-permission workaround in a separate paragraph, since the two comments
-describe unrelated things?
-
-> +	if tst_kvcmp -ge 4.5; then
-> +		echo "" 2> log > $IMA_POLICY
-> +		grep -q "Device or resource busy" log && return 1
-> +	fi
->  	return 0
-
-With this, require_policy_writable() no longer TCONFs on < 4.5, so
-ima_policy.sh test2 ("verify that policy file is not opened concurrently
-and able to loaded multiple times") now runs there.
-
-On those kernels one loader gets -EBUSY at open, the other succeeds and
-the policy file is then removed on release. That hits
-
-	elif [ $rc1 -eq 0 ] || [ $rc2 -eq 0 ]; then
-		tst_res TPASS "policy was loaded just by one process and able to loaded multiple times"
-
-so the test reports that the policy can be loaded multiple times while
-only the concurrency half of the assertion was exercised, and loading
-twice is not possible before 4.5.
-
-Should test2 report TCONF (or split the two assertions) when
-CONFIG_IMA_WRITE_POLICY is not available?
-
-Verdict - Needs revision
-
-Pre-existing issues, not introduced by this patch:
-
-- "log" is created in the test working directory by
-  check_policy_writable() and load_ima_policy() and is never removed.
-
-- $IMA_POLICY is expanded unquoted throughout ima_setup.sh.
-
----
-Note:
-
-The agent can sometimes produce false positives although often its
-findings are genuine. If you find issues with the review, please
-comment this email or ignore the suggestions.
+In LTP we have TST_RETRY_FUNC/TST_RETRY_FN_EXP_BACKOFF, please use
+this one instead.
 
 Regards,
-LTP AI Reviewer
+--
+Andrea Cervesato
+SUSE QE Automation Engineer Linux
+andrea.cervesato@suse.com
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
