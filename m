@@ -4,99 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C4553C54F4C
-	for <ltp@archiver.kernel.org>; Tue, 28 Jul 2026 13:27:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2D00AC53219
+	for <ltp@archiver.kernel.org>; Tue, 28 Jul 2026 13:33:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1785245252; h=mime-version :
- references : in-reply-to : date : message-id : to : subject : list-id
- : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1785245580; h=message-id :
+ to : in-reply-to : date : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : cc : mime-version : content-type :
  content-transfer-encoding : sender : from;
- bh=fJ9wIclWUez8sgkmWXYhR51zQ6YwU+Y9ALt/6I7QD7g=;
- b=iJpmLAmN8fKeVCej7n8y9S+Kpi7lF4WfikUwD7v4neQwdinUUlnodYIURTM9DyknQLwFb
- q8KoRdmK/YoaJTSLFUiXIJttsiIiGsuM7jICnHaLteFL+j39uMYoVbwFfk7IV5TT5VC/opP
- U8EAUBVy5hvGIwIEcoYlSMhJuMYbnBw=
+ bh=+DN61LRo4HYnEhsieJWevbJIFDSZUo2j6yfIt5EaQkc=;
+ b=L/5njdxgVoexEjpsWSphjRKWsWDDRoKQgx53RhsPWtUKWXIhDH8H4Sktf1xJUGsA38qTY
+ wXoppzGhIaR7tSxI6m5x+Hum96Y0f/q7wQJm5w48sdRkobvJ1oeIt0G5G9rB1MT/QDnHLG+
+ /R9rCpr7jH99cwhD15q6SR+2YP5MpXo=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 5E23A3E7497
-	for <ltp@archiver.kernel.org>; Tue, 28 Jul 2026 15:27:32 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 446693E749D
+	for <ltp@archiver.kernel.org>; Tue, 28 Jul 2026 15:33:00 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C8E133E5618
- for <ltp@lists.linux.it>; Tue, 28 Jul 2026 15:27:12 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id BE56B3C0169
+ for <ltp@lists.linux.it>; Tue, 28 Jul 2026 15:32:38 +0200 (CEST)
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com
+ [IPv6:2a00:1450:4864:20::42f])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id BAA781400B8E
- for <ltp@lists.linux.it>; Tue, 28 Jul 2026 15:27:10 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1785245229;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=niI6xeifBcnZs3ykQxEyZQWsv+iA5umQMBslXV59CAc=;
- b=HQPL4mLa+SdGATyjDyC69gyaswV4urbsIMJbMF1dn0Prtv432drUsH2dIjIj5W0KEmi+hn
- u4kWACP2tHxp2YavyrUwB1Pwk6uPirpm047lOKcbyGqUf42aawnu4we66JE8TzEYad8dqq
- d5ecpiclYw0BfvSXBXgs2CGy7NcVGeE=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-486-j2TBofsKMyeeiJPk85svQA-1; Tue, 28 Jul 2026 09:27:05 -0400
-X-MC-Unique: j2TBofsKMyeeiJPk85svQA-1
-X-Mimecast-MFC-AGG-ID: j2TBofsKMyeeiJPk85svQA_1785245224
-Received: by mail-wr1-f72.google.com with SMTP id
- ffacd0b85a97d-472a798fc7cso2923608f8f.1
- for <ltp@lists.linux.it>; Tue, 28 Jul 2026 06:27:05 -0700 (PDT)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id BECDF6005C1
+ for <ltp@lists.linux.it>; Tue, 28 Jul 2026 15:32:35 +0200 (CEST)
+Received: by mail-wr1-x42f.google.com with SMTP id
+ ffacd0b85a97d-47362928f65so3672481f8f.2
+ for <ltp@lists.linux.it>; Tue, 28 Jul 2026 06:32:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1785245555; x=1785850355; darn=lists.linux.it;
+ h=date:content-transfer-encoding:content-type:subject:in-reply-to:cc
+ :to:from:message-id:from:to:cc:subject:date:message-id:reply-to
+ :content-type; bh=jdGQZoXhv0ZE/PhTQDrs5hWJ7QGBBuQ8LUfsAeTKXqs=;
+ b=Z6QEcsEwfzAes1RiCs1AOEPQZhLXoketKlHWy9eWOz4KO7S+pH8UIVu2uAMRob5C9r
+ dksLCyziOttRPnM67cpNCrG/ucalfwGTsyN3dZ80+19OVBWPeSEW5N70ZekQQ+NtXkpC
+ uD7B1ttv9ZvcxMtFNWUGXD5iFgY7RNMwML2ZPuS3m3vmakrALzxc+Aab+4/0DZwWZSe4
+ L3lJEUPncKQjfwILPUZMoUKYWM/7jnZxrmEfvqN3lY2K4Q9LvTHvtX2japISUGzlxJNA
+ CPrCVmcdap7ZVS8MV/rYMiSMR7SiQ7cWFm13PYXECIcSBOd3QDpQ30eMZqtv+vPOsn/I
+ x6QQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1785245224; x=1785850024;
- h=content-transfer-encoding:content-type:cc:to:subject:message-id
- :date:from:in-reply-to:references:mime-version:x-gm-gg
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
- :content-type;
- bh=niI6xeifBcnZs3ykQxEyZQWsv+iA5umQMBslXV59CAc=;
- b=Liaxw2IjRR4QDNtwlt7oGo+1fidFnP5SjESkCYLnr/C3mnWrbcYwNrM+9f05Ghhhbb
- 6aqTELulAv1S9JgYO2SrQgqhJ34S0KUsUy88h3vDXZmyBC/530VrqtJx3jpm61WnGXkd
- c4vfhsYmcuhbH0FOJ42Pi7gFGjfmmsxCWoUNSVnZU7OY4lkwmYBPpVYVznPb2aWtnKgM
- 9HnlNA74K473jfiK6NSE0z0LRyUQs3xm1KEkImAtcERHdYUkSBQidRWAyldQCAjOShmn
- +CifLbWQuIHLZRFg1c6CyImXHlP4lnDWZK6SxxXyZkiD5PXBOnVYoBA284zMmZQX0xSB
- jzig==
-X-Forwarded-Encrypted: i=1;
- AHgh+Rqo9cU7llyz0E3/3kUE166m44yEWsMThMdLS/KA0Awh8as6zdqk8Ya7I5FjeqW1iM3wt58=@lists.linux.it
-X-Gm-Message-State: AOJu0Yy1xKNiVuFAnVmU3Sc9C+SSCkxr5sh3OYrWl1zGH1Np+KoYeStU
- poyfo4F/ASqXKjaTqUbWqCo3DPT6/Vshl204m0Gy6AezDD0SK0BwChrt0ynVkxGzJuZXFf25ipH
- C36QGxvUUs5Z3bJbN0gek93Y5lXVKqziGEXh4AIcs9frZI0APcSNn/RNXGE+ZaiiIzc2tOdGh7p
- m7xwJ2YENK6yeQktOrbjtVNA4DrZg=
-X-Gm-Gg: AR+sD11v0bOoSuCC67zhj/CVM+Ev5pC1sw1j1Lvmjj2Wndl6bGUbxDZTphd/H7CiI9R
- KulN4k7eFz8cYOs6Op/blrSwkPBZ/fWDeT18JnKdzdoQ5Zvef81EoCqMN2MUbzs53zG4zw2d1AL
- o/yM2VZPuZkChDrH3X94dISJvxpjfa2P7G87Xjm0QEEQEtNCgzxoc/0Ro=
-X-Received: by 2002:a5d:584d:0:b0:461:a15f:6df4 with SMTP id
- ffacd0b85a97d-47fb1ea7d19mr2956283f8f.35.1785245224371; 
- Tue, 28 Jul 2026 06:27:04 -0700 (PDT)
-X-Received: by 2002:a5d:584d:0:b0:461:a15f:6df4 with SMTP id
- ffacd0b85a97d-47fb1ea7d19mr2956254f8f.35.1785245223964; Tue, 28 Jul 2026
- 06:27:03 -0700 (PDT)
-MIME-Version: 1.0
-References: <20260722192052.3975-1-linuxtestproject.agent@gmail.com>
- <20260722212646.2340340-1-bgrech@redhat.com> <20260727082240.GA1010349@pevik>
- <CAA835F7iF91Hrb099kbpG0+CR3WOBCH34C7tiB-4uJfNWjva8w@mail.gmail.com>
- <20260728131601.GA1065673@pevik>
-In-Reply-To: <20260728131601.GA1065673@pevik>
-Date: Tue, 28 Jul 2026 15:26:46 +0200
-X-Gm-Features: AUfX_mxA4UcFlfx0w_N67Yj1afkVmkTPdE0sx_r_-b-WX81_ARlkp3zSsUi3oHQ
-Message-ID: <CAASaF6y+umcvL+fvCvr=V=b9qAu2waBu2oUARxze6bA1=Ui45g@mail.gmail.com>
-To: Petr Vorel <pvorel@suse.cz>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: vhYGRAoTzIU_HsQxALMn0pu-40HPTovaQkhwNWNO3os_1785245224
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+ d=1e100.net; s=20251104; t=1785245555; x=1785850355;
+ h=date:content-transfer-encoding:content-type:subject:in-reply-to:cc
+ :to:from:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject
+ :date:message-id:reply-to:content-type;
+ bh=jdGQZoXhv0ZE/PhTQDrs5hWJ7QGBBuQ8LUfsAeTKXqs=;
+ b=PD+/FOj1l+3jBWCM8ZwRJWv18brgcH8kxpArROKBpFdUgFJZIxS9Xs0F1OJcjKEv4K
+ IbKNFjvaQdEYVxcJqSExpq/0YaW6NlIHYyNU6qn11diWr+fWHl20ZQIJGQ4c6wvAGTYx
+ 3aH8u07fe7DZcL6siMS29811p9QZ1KQxwxGKKNozcMQ/ye8ZbguWYY4IYN8QnONwmTS+
+ nH7f5/xLUZdhBGMDSZfyAAKKhqQ2HW1LwMjrkpaatZCOZP6w2eGgqXruxnAxmsKp5PUt
+ AUOYLsEXh2/CwG200ZYhxB8CSeLk2mFcKekr/+5rUxHvTfoTtU0/K58yWwIa97UiWGw7
+ EC7Q==
+X-Gm-Message-State: AOJu0YyQLx+cKd93ovsjmfwkS2gGrqUhY4vRFdCuTOL0jjS19dInzhax
+ CyeFYv23Lhi/E9eE+L8vkCBvOZsKj7PxLR2DViw1q/gXMpqhVBa5B8IoWyCwPAw8BAakVYjWaBv
+ IF2ztjI7o5w==
+X-Gm-Gg: AR+sD109VfmfSYOVhggZg/yx9X7Mdm/ONv1U0io3ikyni+dDz/rn5XxiWQ5XTpZk9gs
+ 8Ps6ByjAYQJly91XHo+/iVNqfBjfLnClxrUscUyZnZyHbw6Vo60f83AOYWmLqAPzQSCBS4xIgvQ
+ M42+TXcxJlvcWCE7OiXuLCTPKCyntAhqzF3b8g+2Kj1v/TWJsZarKBt6aji6xArOAXQeRMTaPuG
+ PWN5rTaGBLye1ZR9WYYaOgGy6v1stkbXnSPvQrr+l2L1du65vTcn7apZ++n+qWhHjWE1Wtz/Hgx
+ Htvi/TOSTKBBgmttbJiTofq5Z+qxqXxVoZSvRA7yYsYstc/JOarKR4Il6YyMd9INbYh85Jzu4Sz
+ ZdA7R2izI2iesRECaVYdOLI9BSGiIeu7/Qgcr6c3c2PjnsuBL7y85U3OuVLP35ZXdm0Fj0rSHsR
+ T7t8r3XzJsOhI5usWy5JOiICA/Qs6URKMP
+X-Received: by 2002:a5d:64e9:0:b0:47d:eee8:ec40 with SMTP id
+ ffacd0b85a97d-47fb1f103f9mr2740398f8f.38.1785245555091; 
+ Tue, 28 Jul 2026 06:32:35 -0700 (PDT)
+Received: from localhost.localdomain ([153.19.102.214])
+ by smtp.gmail.com with ESMTPSA id
+ ffacd0b85a97d-47f85c52fa9sm60441582f8f.20.2026.07.28.06.32.34
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 28 Jul 2026 06:32:34 -0700 (PDT)
+Message-ID: <6a68af72.b682100b.f12c1.0bc9@mx.google.com>
+To: "Samir Mulani" <samir@linux.ibm.com>
+In-Reply-To: <20260722114047.54671-1-samir@linux.ibm.com>
+Date: Tue, 28 Jul 2026 13:32:33 +0000
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] cve/icmp_rate_limit01: Lower icmp_msgs_per_sec
- for debug kernel reliability
+Subject: Re: [LTP] [PATCH v4] sched/cfs-scheduler: Fix 'make check' errors
+ and warnings in hackbench.c.
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -108,41 +96,35 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Jan Stancek via ltp <ltp@lists.linux.it>
-Reply-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Cc: Samir Mulani <samir@linux.ibm.com>, ltp@lists.linux.it
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gVHVlLCBKdWwgMjgsIDIwMjYgYXQgMzoxNuKAr1BNIFBldHIgVm9yZWwgPHB2b3JlbEBzdXNl
-LmN6PiB3cm90ZToKPgo+IEhpIEJyaWFuLAo+Cj4gPiBIaSBQZXRyLAo+Cj4gPiBIYXBweSB0byBj
-b250cmlidXRlIQo+IFdlIGFyZSBoYXBweSB0byBnZXQgbmV3IGNvbnRyaWJ1dG9ycyA6KS4KPgo+
-ID4gVGhhbmsgeW91IGZvciBsZXR0aW5nIG1lIGtub3csIHRoYXQgaXMgc3RyYW5nZS4gT24gbXkg
-c3lzdGVtIGl0J3MKPiA+IGNvbmZpZ3VyZWQgY29ycmVjdGx5LiBEaWdnaW5nIGEgbGl0dGxlIGRl
-ZXBlciwgSSB0aGluayBpdCBtaWdodCBiZSBhCj4gPiBjb3Jwb3JhdGUgc210cCBpc3N1ZS4KPgo+
-IEZZSSBpdCdzIG1hbmdsZWQgIkZyb206IiBtYWlsIGhlYWRlciBbMV06ICJGcm9tOiBCcmlhbiBH
-cmVjaCB2aWEgbHRwCj4gPGx0cEBsaXN0cy5saW51eC5pdD4iLiBJdCdzIHByb2JhYmx5IERNQVJD
-ICsgTWFpbG1hbiByZWxhdGVkLgo+Cj4gQlRXIEkgdGhvdWdodCBpdCBzaG91bGQgbm90IGJlIG9u
-IHJlZGhhdC5jb20gc2lkZSwgYmVjYXVzZSBKYW4gU3RhbmNlayBkb2VzIG5vdAo+IGhhdmUgdGhh
-dCBwcm9ibGVtLCBidXQgYWN0dWFsbHkgaGUgZG9lcyBoYXZlIHRoYXQgcHJvYmxlbSBhcyB3ZWxs
-IFszXSAiRnJvbTogSmFuCj4gU3RhbmNlayB2aWEgbHRwIDxsdHBAbGlzdHMubGludXguaXQ+Ii4g
-SXQncyBqdXN0IGhlIHByb2JhYmx5IGRvZXMgbWVyZ2UgdGhlc2UKPiBwYXRjaGVzIGRpcmVjdGx5
-IHdpdGhvdXQgZmlyc3QgZG93bmxvYWRpbmcgdGhlbSBmcm9tIHRoZSBtYWlsaW5nIGxpc3QuCgpI
-bSBpbnRlcmVzdGluZywgaXQgYXBwZWFycyB0byBiZSBvbmx5IExUUC4gVGhlIHBhdGNoIEkgc2Vu
-dCBsYXN0IHdlZWsKdG8gbGttbCBhcHBlYXJzIHRvIGJlIE9LLAphbmQgaXQncyB0aGUgc2FtZSBn
-aXRjb25maWcgc2V0dXA6Cmh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2xrbWwvODRhMzVlMTZmNzIz
-MzBkNmU3YjJkNmU5NjkwNDBmMzY5NTllMmRhZC4xNzg0NjMwMjkwLmdpdC5qc3RhbmNla0ByZWRo
-YXQuY29tL3JhdwoKPgo+IEFueXdheSwgdmVyeSBtaW5vciBwcm9ibGVtLCBidXQgaXQnZCBiZSBu
-aWNlIHRvIGdldCBpdCBmaXhlZC4gT3VyIGxpc3QgaGFzCj4gc2V0dXA6IGZyb21faXNfbGlzdCA9
-IG5vLiBJIHN1cHBvc2UgdGhpcyBpcyBjb3JyZWN0IChsb29raW5nIGF0IHRoZSBkb2NzIFs0XSBh
-bmQKPiBhbHNvIGNoZWNrIG90aGVyIHByb2plY3RzIHNldHVwIFs1XSkuCj4KPiBLaW5kIHJlZ2Fy
-ZHMsCj4gUGV0cgo+Cj4gWzFdIGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2x0cC8yMDI2MDcyMjIx
-MjY0Ni4yMzQwMzQwLTEtYmdyZWNoQHJlZGhhdC5jb20vcmF3Cj4gWzJdIGh0dHBzOi8vd2lraS5s
-aXN0Lm9yZy9ERVYvRE1BUkMKPiBbM10gaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvbHRwLzA4Yzg1
-Y2Y2NGQ3MDNkZmFiYTMxMzk4YWI5ZDliNDgwNDg4ZmUzMzguMTc0NzIyNzQ4MS5naXQuanN0YW5j
-ZWtAcmVkaGF0LmNvbS9yYXcKPiBbNF0gaHR0cHM6Ly9saXN0Lm9yZy9tYWlsbWFuLWFkbWluLnR4
-dAo+IFs1XSBodHRwczovL3NvdXJjZXdhcmUub3JnL3BpcGVybWFpbC9iaW51dGlscy8yMDIzLU9j
-dG9iZXIvMTI5ODUyLmh0bWwKPgoKCi0tIApNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0
-cy5saW51eC5pdC9saXN0aW5mby9sdHAK
+Hi Samir,
+
+> Link: https://lore.kernel.org/ltp/20260407062336.127454-1-samir@linux.ibm.com/ #v1
+> Link: https://lore.kernel.org/ltp/20260412122842.1074017-1-samir@linux.ibm.com/ #v2
+> Link: https://lore.kernel.org/ltp/20260602095656.404290-1-samir@linux.ibm.com/ #v3
+
+This should never be part of the commit message, but stay in the `---`
+section below.
+
+The rest LGTM, but you have missed a couple of warnings:
+
+CHECK testcases/kernel/sched/cfs-scheduler/hackbench.c
+hackbench.c:82: WARNING: Prefer using '"%s...", __func__' to using 'fdpair', this function's name, in a string
+hackbench.c:93: WARNING: Prefer using '"%s...", __func__' to using 'ready', this function's name, in a string
+hackbench.c:310: WARNING: Prefer using '"%s...", __func__' to using 'main', this function's name, in a string
+
+--
+Andrea Cervesato
+SUSE QE Automation Engineer Linux
+andrea.cervesato@suse.com
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
