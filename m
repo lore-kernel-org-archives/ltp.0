@@ -4,99 +4,99 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 477E7C54F4C
-	for <ltp@archiver.kernel.org>; Tue, 28 Jul 2026 13:36:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 27426C54F4C
+	for <ltp@archiver.kernel.org>; Tue, 28 Jul 2026 13:50:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1785246638; h=mime-version :
+ references : in-reply-to : date : message-id : to : subject : list-id
+ : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-type :
+ content-transfer-encoding : sender : from;
+ bh=BEwdZwxrdc6KFU1EHt8T/s7fHSnRDckZ6IRhQOx8QLY=;
+ b=PD2KpVp9OsM6ac8c4BkAmrYHGK6ETM8UoSX0AfJe/JNfHetLoRmdYahBC7h1UaNG1V0ml
+ U9TIfpccjjOQXpKV0a3miiFcZa24gpF+1WhB8kpj0eynIj3it93J+P/VkF2dJC+BfJV3ssw
+ xZVuGdF/oxk/vnxTXsQXdVSHTtI9BaU=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8C01B3E91F0
-	for <ltp@archiver.kernel.org>; Tue, 28 Jul 2026 15:36:27 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 4C6963E749F
+	for <ltp@archiver.kernel.org>; Tue, 28 Jul 2026 15:50:38 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 5EAD53E1479
- for <ltp@lists.linux.it>; Tue, 28 Jul 2026 15:36:12 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ by picard.linux.it (Postfix) with ESMTPS id 2532C3CD529
+ for <ltp@lists.linux.it>; Tue, 28 Jul 2026 15:50:17 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id DF44760045E
- for <ltp@lists.linux.it>; Tue, 28 Jul 2026 15:36:11 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id C803F7C3BB;
- Tue, 28 Jul 2026 13:36:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1785245767;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id CFF3B60068A
+ for <ltp@lists.linux.it>; Tue, 28 Jul 2026 15:50:14 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1785246613;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=txwnUYha9Sxl5FyRqjyaQvZAcHk+Y32HHqjnfCKkrrQ=;
- b=TSz/Ksf4KZQpwcdUbvQN1lo2kizsjyxpaT13xgVD1ttwVCsy27S2NiYdCiIyuy9la8IcUc
- dr1sPAZuRdMK4iubDGkLrbt6RprrRpLHiT4akmSVEkI0/vwhtpRNK4vBz4JGybwg0oyKt1
- PQlJPtHHKm37dL7iMcPKys1D6kYfdjw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1785245767;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=txwnUYha9Sxl5FyRqjyaQvZAcHk+Y32HHqjnfCKkrrQ=;
- b=bsR0PWIp0TdYaG2Oc6trK8PXaRPXK/czOwxXgF1eMUP/xB8ctH5Pa5sIWUBsT1JyfoD2/A
- 3BcNDIcO21OlgsDQ==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1785245762;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=txwnUYha9Sxl5FyRqjyaQvZAcHk+Y32HHqjnfCKkrrQ=;
- b=MG3HkDaccFpxwpNjWzXCNxfZNF7C/ZUu/nlr+pgdnzCu9sdXxBS4NKkvKR+NU6N6/rvWuR
- rgqdYt/isKZZxgOh4SQqi5vKXwh043uLdkYWN7e1857U89x2xunF2eMAHUFKUlZct4UvdK
- G5Z1eWy8eZPLFS/pB7chrMzJRAOK0kg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1785245762;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=txwnUYha9Sxl5FyRqjyaQvZAcHk+Y32HHqjnfCKkrrQ=;
- b=ScDslEyuzPTWw6dFeoTWWnMJHUPLpfSBstedDjVYlkyatrnAnWNzIcb0oMZJ2WXMtADKs8
- WDQ7mYVywuiXJ1AA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 14704779B3;
- Tue, 28 Jul 2026 13:36:01 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id xcHlOUGwaGr3YAAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Tue, 28 Jul 2026 13:36:01 +0000
-Date: Tue, 28 Jul 2026 15:35:56 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: linuxtestproject.agent@gmail.com
-Message-ID: <20260728133556.GA1128467@pevik>
-References: <20260728114224.1055009-1-pvorel@suse.cz>
- <20260728125815.4069-1-linuxtestproject.agent@gmail.com>
+ bh=obtli1dJeVhLQIVKBbMkMn7pPeFS0z7xzBmzhH7uhDA=;
+ b=i2BjfIx5eqhtvh9BAW1SNOaxyWhn6pikO3kcS9EyiUTZKHLtIPZT8Eez6O6Uzimg4MpmoD
+ +3C96Ce0wtQOSnlB7PT1cVqTH3eDVf2GAo4QfWkHiyoMMksPVISWuh1/F1tKcHeMFY1aku
+ mPY/KZmhuKKjh3wXbpl1FaDlb2W9md8=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-365-68LmW9cgMNa-WRL4r8Qf5Q-1; Tue, 28 Jul 2026 09:50:10 -0400
+X-MC-Unique: 68LmW9cgMNa-WRL4r8Qf5Q-1
+X-Mimecast-MFC-AGG-ID: 68LmW9cgMNa-WRL4r8Qf5Q_1785246609
+Received: by mail-wr1-f71.google.com with SMTP id
+ ffacd0b85a97d-47faa02f707so799171f8f.1
+ for <ltp@lists.linux.it>; Tue, 28 Jul 2026 06:50:10 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1785246609; x=1785851409;
+ h=content-transfer-encoding:content-type:cc:to:subject:message-id
+ :date:from:in-reply-to:references:mime-version:x-gm-gg
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+ :content-type;
+ bh=obtli1dJeVhLQIVKBbMkMn7pPeFS0z7xzBmzhH7uhDA=;
+ b=tWIOgRetC7qulQjTRNANKNFPqrcCEZwWGVgF1ysZ2fHRug+NhImMEQ9C8BHtzz5Wqq
+ NF1AFf9SUqeGMEkgZb3e22Mmu+QaqTDt7ggAA9jgVUzvJkAZW6YxKpMfCkX7rLgyl/j5
+ 3+KXGxw3Ll2ymDiuE6+qcvZ+/HT4OFUBAZSvQ3LxVAL69uU2BpNyeXQY2ND0t+0vVDWO
+ bvfqeWV3JmaM0yQxoEj43ovQWkgvcEqJzTsnrNIorEJUyrLOcBPZAMvxW5/H+Q7hM4+m
+ aXhXyKOwBJjz9YrWB4ju0CI6rgpwThlwVnzwDRB5Mqc/ulXke0Xy4OhPX092eSlkpZXm
+ DmCA==
+X-Forwarded-Encrypted: i=1;
+ AHgh+Roau1JLl+orJlkEpvcKFGzbTnt+YF81q/U6XNquSJ886xAaxoqf7Xprd3MyDIEcqXcHSDs=@lists.linux.it
+X-Gm-Message-State: AOJu0Yzt7O9mkcb4gvZeTm8kfjlzECDhKhhoT2SgVj46gDNTKV1/79MK
+ td490lcw6E19pS8GmWRTuOStmqTQEc1cV6CTLFU7VZ5b6wvRTFHNgyGa9Us8BwoqM5SWquPeS3e
+ z/Nmpl/9t6YZC8tWD9zM/oydPv/5GwNR/RlSJE0MrFMh5WmScwF4beSKmPiJs6dozl/GF4bonnN
+ nZcm8So1xGr8gB4rBNVEh1AFpYmXY=
+X-Gm-Gg: AR+sD13KG3sjyaQ01KAuSJjXfG4FD2OlFp/GHWwI6A6NoKj7SQMHKcvbVb5SZr3Jcn1
+ 3soLf3gMtYZrUF7S5v6tpPrpvU1L6eF/rGde265k8goIeYStfbKtp0jnPlUw18oNC1jqKSROwbj
+ pawXObW+0HLpN96Z6f8rwyUAfTJr59jrjdbZhr8aWGUJzQmk7DzlkkJQk=
+X-Received: by 2002:a05:6000:2502:b0:47f:924a:655b with SMTP id
+ ffacd0b85a97d-47fb1ee2a4fmr3281282f8f.26.1785246609462; 
+ Tue, 28 Jul 2026 06:50:09 -0700 (PDT)
+X-Received: by 2002:a05:6000:2502:b0:47f:924a:655b with SMTP id
+ ffacd0b85a97d-47fb1ee2a4fmr3281238f8f.26.1785246608997; Tue, 28 Jul 2026
+ 06:50:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20260728125815.4069-1-linuxtestproject.agent@gmail.com>
-X-Spamd-Result: default: False [-2.00 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- SUSPICIOUS_RECIPS(1.50)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
- MID_RHS_NOT_FQDN(0.50)[]; HAS_REPLYTO(0.30)[pvorel@suse.cz];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- RCVD_VIA_SMTP_AUTH(0.00)[]; TO_DN_SOME(0.00)[];
- MISSING_XM_UA(0.00)[]; FREEMAIL_TO(0.00)[gmail.com];
- TAGGED_RCPT(0.00)[]; MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[];
- FREEMAIL_ENVRCPT(0.00)[gmail.com]; RCPT_COUNT_THREE(0.00)[4];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RCVD_TLS_ALL(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:replyto]; 
- RCVD_COUNT_TWO(0.00)[2]; REPLYTO_EQ_FROM(0.00)[]
+References: <20260722192052.3975-1-linuxtestproject.agent@gmail.com>
+ <20260722212646.2340340-1-bgrech@redhat.com> <20260727082240.GA1010349@pevik>
+ <CAA835F7iF91Hrb099kbpG0+CR3WOBCH34C7tiB-4uJfNWjva8w@mail.gmail.com>
+ <20260728131601.GA1065673@pevik>
+In-Reply-To: <20260728131601.GA1065673@pevik>
+Date: Tue, 28 Jul 2026 15:49:52 +0200
+X-Gm-Features: AUfX_mySgHc651jvzzhtcUQT12LUMQaHMlep-H1-b-gd3DFYxWFHJRePJpor6jM
+Message-ID: <CAASaF6xWz9LxH-=wUveuSt0UBmUs9L7Os1OdWQ5VdpSy3UUTkg@mail.gmail.com>
+To: Petr Vorel <pvorel@suse.cz>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-MFC-PROC-ID: Kp6v4aeqmwnkKlzJ8R7v0C4l7SBR0iukhXzXT1kquSk_1785246609
+X-Mimecast-Originator: redhat.com
 X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] ima_setup.sh: Fix check_policy_writable() for kernel < 4.5
+Subject: Re: [LTP] [PATCH v2] cve/icmp_rate_limit01: Lower icmp_msgs_per_sec
+ for debug kernel reliability
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -108,109 +108,39 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: linux-integrity@vger.kernel.org, ltp@lists.linux.it
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+From: Jan Stancek via ltp <ltp@lists.linux.it>
+Reply-To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Mimi,
-
-once you have time, I'd appreciate your comments. Thanks!
-
-> Hi Petr,
-
-> On Tue, Jul 28, 2026 at 01:42:24PM +0200, Petr Vorel wrote:
-> > ima_setup.sh: Fix check_policy_writable() for kernel < 4.5
-
-> > -	# workaround for kernels < v4.18 without fix
-> > +
-> > +	# Workaround for kernels < v4.18 without fix
-> >  	# ffb122de9a60b ("ima: Reflect correct permissions for policy")
-> > -	echo "" 2> log > $IMA_POLICY
-> > -	grep -q "Device or resource busy" log && return 1
-> > +	# Require >= 4.5 to write multiple times via CONFIG_IMA_WRITE_POLICY
-> > +	# 38d859f991f3 ("IMA: policy can now be updated multiple times")
-
-> Is CONFIG_IMA_WRITE_POLICY really the reason for the 4.5 boundary here?
-
-> On >= 4.5 ima_release_policy() runs ima_check_policy(), which returns
-> -EINVAL when ima_temp_rules is empty. The empty write therefore sets
-> valid_policy = 0, ima_delete_rules() is called and IMA_FS_BUSY is
-> cleared, so the probe stays non-destructive even when
-> CONFIG_IMA_WRITE_POLICY=n.
-
-Well, CONFIG_IMA_WRITE_POLICY did not exist in kernel < 4.5 (not sure if that's
-obvious from the comment I added).
-
-> What makes < 4.5 different is the absence of ima_check_policy(): there
-Yes, that's true that ima_check_policy() was added in v4.5.
-
-> the empty write is committed and securityfs_remove() drops the policy
-> file. Would it be clearer to state that, and to keep the v4.18
-> permission workaround in a separate paragraph, since the two comments
-> describe unrelated things?
-
-> > +	if tst_kvcmp -ge 4.5; then
-> > +		echo "" 2> log > $IMA_POLICY
-> > +		grep -q "Device or resource busy" log && return 1
-> > +	fi
-> >  	return 0
-
-> With this, require_policy_writable() no longer TCONFs on < 4.5, so
-> ima_policy.sh test2 ("verify that policy file is not opened concurrently
-> and able to loaded multiple times") now runs there.
-
-Hm, maybe test2() does not really makes sense to run on < v4.5. But test1()
-certainly does. And echo "" > $IMA_POLICY really disables policy in v4.4,
-likely due one of these from v4.5-rc1:
-* 38d859f991f3 ("IMA: policy can now be updated multiple times")
-* 0112721df4ed ("IMA: policy can be updated zero times")
-@Mimi WDYT?
-
-> On those kernels one loader gets -EBUSY at open, the other succeeds and
-> the policy file is then removed on release. That hits
-
-> 	elif [ $rc1 -eq 0 ] || [ $rc2 -eq 0 ]; then
-> 		tst_res TPASS "policy was loaded just by one process and able to loaded multiple times"
-
-> so the test reports that the policy can be loaded multiple times while
-> only the concurrency half of the assertion was exercised, and loading
-> twice is not possible before 4.5.
-That sounds correct and should be fixed.
-
-> Should test2 report TCONF (or split the two assertions) when
-> CONFIG_IMA_WRITE_POLICY is not available?
-With requiring test2 to be run on kernel >= v4.5 (I'll add it to v2) everything
-should work even with this patch (unmodified behavior on >= v4.5, avoid write
-policy on < 4.5 when doing the check for ima_policy.sh test1 and for other IMA
-tests).
-
-> Verdict - Needs revision
-
-> Pre-existing issues, not introduced by this patch:
-
-> - "log" is created in the test working directory by
->   check_policy_writable() and load_ima_policy() and is never removed.
-False positive - file is removed during cleanup of the temporary directory
-because all tests use TST_NEEDS_TMPDIR=1.
-
-> - $IMA_POLICY is expanded unquoted throughout ima_setup.sh.
-False positive - /sys/kernel/security/ima/policy does not need to be quoted.
-
-Kind regards,
-Petr
-
-> ---
-> Note:
-
-> The agent can sometimes produce false positives although often its
-> findings are genuine. If you find issues with the review, please
-> comment this email or ignore the suggestions.
-
-> Regards,
-> LTP AI Reviewer
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+T24gVHVlLCBKdWwgMjgsIDIwMjYgYXQgMzoxNuKAr1BNIFBldHIgVm9yZWwgPHB2b3JlbEBzdXNl
+LmN6PiB3cm90ZToKPgo+IEhpIEJyaWFuLAo+Cj4gPiBIaSBQZXRyLAo+Cj4gPiBIYXBweSB0byBj
+b250cmlidXRlIQo+IFdlIGFyZSBoYXBweSB0byBnZXQgbmV3IGNvbnRyaWJ1dG9ycyA6KS4KPgo+
+ID4gVGhhbmsgeW91IGZvciBsZXR0aW5nIG1lIGtub3csIHRoYXQgaXMgc3RyYW5nZS4gT24gbXkg
+c3lzdGVtIGl0J3MKPiA+IGNvbmZpZ3VyZWQgY29ycmVjdGx5LiBEaWdnaW5nIGEgbGl0dGxlIGRl
+ZXBlciwgSSB0aGluayBpdCBtaWdodCBiZSBhCj4gPiBjb3Jwb3JhdGUgc210cCBpc3N1ZS4KPgo+
+IEZZSSBpdCdzIG1hbmdsZWQgIkZyb206IiBtYWlsIGhlYWRlciBbMV06ICJGcm9tOiBCcmlhbiBH
+cmVjaCB2aWEgbHRwCj4gPGx0cEBsaXN0cy5saW51eC5pdD4iLiBJdCdzIHByb2JhYmx5IERNQVJD
+ICsgTWFpbG1hbiByZWxhdGVkLgo+Cj4gQlRXIEkgdGhvdWdodCBpdCBzaG91bGQgbm90IGJlIG9u
+IHJlZGhhdC5jb20gc2lkZSwgYmVjYXVzZSBKYW4gU3RhbmNlayBkb2VzIG5vdAo+IGhhdmUgdGhh
+dCBwcm9ibGVtLCBidXQgYWN0dWFsbHkgaGUgZG9lcyBoYXZlIHRoYXQgcHJvYmxlbSBhcyB3ZWxs
+IFszXSAiRnJvbTogSmFuCj4gU3RhbmNlayB2aWEgbHRwIDxsdHBAbGlzdHMubGludXguaXQ+Ii4g
+SXQncyBqdXN0IGhlIHByb2JhYmx5IGRvZXMgbWVyZ2UgdGhlc2UKPiBwYXRjaGVzIGRpcmVjdGx5
+IHdpdGhvdXQgZmlyc3QgZG93bmxvYWRpbmcgdGhlbSBmcm9tIHRoZSBtYWlsaW5nIGxpc3QuCj4K
+PiBBbnl3YXksIHZlcnkgbWlub3IgcHJvYmxlbSwgYnV0IGl0J2QgYmUgbmljZSB0byBnZXQgaXQg
+Zml4ZWQuIE91ciBsaXN0IGhhcwo+IHNldHVwOiBmcm9tX2lzX2xpc3QgPSBuby4gSSBzdXBwb3Nl
+IHRoaXMgaXMgY29ycmVjdCAobG9va2luZyBhdCB0aGUgZG9jcyBbNF0gYW5kCj4gYWxzbyBjaGVj
+ayBvdGhlciBwcm9qZWN0cyBzZXR1cCBbNV0pLgoKQ2FuIHlvdSBzZWUgYWxzbyB0aGVzZSB0d28g
+aW4gb3VyIGNvbmZpZz8KZG1hcmNfbW9kZXJhdGlvbl9hY3Rpb24gPSBBY2NlcHQKZG1hcmNfcXVh
+cmFudGluZV9tb2RlcmF0aW9uX2FjdGlvbiA9IE5vCgo+Cj4gS2luZCByZWdhcmRzLAo+IFBldHIK
+Pgo+IFsxXSBodHRwczovL2xvcmUua2VybmVsLm9yZy9sdHAvMjAyNjA3MjIyMTI2NDYuMjM0MDM0
+MC0xLWJncmVjaEByZWRoYXQuY29tL3Jhdwo+IFsyXSBodHRwczovL3dpa2kubGlzdC5vcmcvREVW
+L0RNQVJDCj4gWzNdIGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2x0cC8wOGM4NWNmNjRkNzAzZGZh
+YmEzMTM5OGFiOWQ5YjQ4MDQ4OGZlMzM4LjE3NDcyMjc0ODEuZ2l0LmpzdGFuY2VrQHJlZGhhdC5j
+b20vcmF3Cj4gWzRdIGh0dHBzOi8vbGlzdC5vcmcvbWFpbG1hbi1hZG1pbi50eHQKPiBbNV0gaHR0
+cHM6Ly9zb3VyY2V3YXJlLm9yZy9waXBlcm1haWwvYmludXRpbHMvMjAyMy1PY3RvYmVyLzEyOTg1
+Mi5odG1sCj4KCgotLSAKTWFpbGluZyBsaXN0IGluZm86IGh0dHBzOi8vbGlzdHMubGludXguaXQv
+bGlzdGluZm8vbHRwCg==
