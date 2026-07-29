@@ -4,106 +4,112 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 35920C54F51
-	for <ltp@archiver.kernel.org>; Wed, 29 Jul 2026 09:18:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AD4B3C53200
+	for <ltp@archiver.kernel.org>; Wed, 29 Jul 2026 09:19:09 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 602923E4B22
-	for <ltp@archiver.kernel.org>; Wed, 29 Jul 2026 11:18:54 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 3B19B3E4D48
+	for <ltp@archiver.kernel.org>; Wed, 29 Jul 2026 11:19:08 +0200 (CEST)
 Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2BA343E4D26
- for <ltp@lists.linux.it>; Wed, 29 Jul 2026 11:17:48 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ by picard.linux.it (Postfix) with ESMTPS id 96B4D3E4B10
+ for <ltp@lists.linux.it>; Wed, 29 Jul 2026 11:17:51 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id C456B14002A6
- for <ltp@lists.linux.it>; Wed, 29 Jul 2026 11:17:43 +0200 (CEST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id AEE751400997
+ for <ltp@lists.linux.it>; Wed, 29 Jul 2026 11:17:50 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 2744C7C983;
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 289AE3E06;
  Wed, 29 Jul 2026 09:17:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
  t=1785316658; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=mWbc/cKku0dApuD6mol+ds1AubKqbvdnu5Hy9v52MBo=;
- b=Kwn9finFqabMSKvN/Hyqgl6v2LmfD1HcXhzZoeXYWBAkdPf61kU8TSpgVZq0Yhd5d2nBa7
- zG6DfuXVfP9vwCnC/Y0bM3f6sHRJKUrK1VvUnG2e5gluY6jRGzniChzFeb9xcGSsC90p5w
- B051e0Jv+rKNbWxGP7OW3ykY1ZPV7tM=
+ bh=tSCaY8ZYodtEmp6+IFaTnmJjtpBgyZARmaYBiI2ZYiM=;
+ b=Zi1NlqjHehyI6iqFrlro1mVxRlAUih5K0DaEz0tIt6tuTeQBt+xcDtGo70TCpvedo4Tc8z
+ FSUlqf9zep8mLoG5TXJ/QnIU6f/UYw+MF6QlCnokGaonOBP6N23vobk56wwFoANM1C0YQ2
+ vmjzpmppr3gQWg1icFu65zS12TrQrn8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
  s=susede2_ed25519; t=1785316658;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=mWbc/cKku0dApuD6mol+ds1AubKqbvdnu5Hy9v52MBo=;
- b=VLXQHRjMrMdxDDIMin1i7QD5znxoiTNhVDiaeY/P85eRXLcotn3DenMzirZWeWTJ6L9DkK
- 5ERK6f+T4W+vlAAA==
-Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=ARMXnQZN;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="myTbP/Sv"
+ bh=tSCaY8ZYodtEmp6+IFaTnmJjtpBgyZARmaYBiI2ZYiM=;
+ b=JhPzQGwROyF/jNFsNuYsJunjvBqhG8iFzzlQtCnjVGp5X5b1VItKz5TbUxxhBp70IGyXJO
+ cZ6RBPjgxZcWPCAg==
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=PGJp2iNc;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=G5aKmkgK
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
  t=1785316654; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=mWbc/cKku0dApuD6mol+ds1AubKqbvdnu5Hy9v52MBo=;
- b=ARMXnQZNJsPL/vnOp/XEg3LoaJz2H5yGk7iFhBP9GfcsBsmeuIsVbVyexdIVhPWfZtlVWn
- GqPq487KpZMcfqPGYWI687CLxhxSlvxG/KMVqIzrxPw52R6Nr470IX4ZXjSm/RgBUlrT+0
- dFjZVfsMMGpawZHuXxIAkkpeUXwVuig=
+ bh=tSCaY8ZYodtEmp6+IFaTnmJjtpBgyZARmaYBiI2ZYiM=;
+ b=PGJp2iNcWuiPlUTETGco2MrlMcmKezS2VoyHd2DKpYvJ/1aK/AObLJ27/WwJgDw5hBidKd
+ +r4DDsLmSrIMdJPIeUAi08BEaXpbAEvZc8NaoZ2yRSK7yEAfYgnL0bWKctqDFHpWNot0ra
+ eCiHOO5RIXlkdsJok9DAFp17T3Fpejs=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
  s=susede2_ed25519; t=1785316654;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=mWbc/cKku0dApuD6mol+ds1AubKqbvdnu5Hy9v52MBo=;
- b=myTbP/SvorddDBGrVgyraHHRCZr0fMyrrGgKEAOPH5lY8CWgrFgPB356+dJwEz7iFiHmyU
- OET+AK3CnELiv7DQ==
+ bh=tSCaY8ZYodtEmp6+IFaTnmJjtpBgyZARmaYBiI2ZYiM=;
+ b=G5aKmkgKpo/l8DQ5lL659WdLGZg0DtOAwRC1EpK4l1LGOu/VEXMJ4DNr32N5oeMeTNLdSD
+ v0Oo94d98Le7ZmAg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 49143779BC;
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7F057779BF;
  Wed, 29 Jul 2026 09:17:29 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 0DArECnFaWpYfgAAD6G6ig
+ by imap1.dmz-prg2.suse.org with ESMTPSA id mOfBHSnFaWpYfgAAD6G6ig
  (envelope-from <pvorel@suse.cz>); Wed, 29 Jul 2026 09:17:29 +0000
 From: Petr Vorel <pvorel@suse.cz>
 To: ltp@lists.linux.it
-Date: Wed, 29 Jul 2026 11:17:16 +0200
-Message-ID: <20260729091717.23042-5-pvorel@suse.cz>
+Date: Wed, 29 Jul 2026 11:17:17 +0200
+Message-ID: <20260729091717.23042-6-pvorel@suse.cz>
 X-Mailer: git-send-email 2.55.0
 In-Reply-To: <20260729091717.23042-1-pvorel@suse.cz>
 References: <20260729091717.23042-1-pvorel@suse.cz>
 MIME-Version: 1.0
+X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: 289AE3E06
 X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  NEURAL_HAM_LONG(-1.00)[-1.000]; MID_CONTAINS_FROM(1.00)[];
  R_MISSING_CHARSET(0.50)[];
  R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
  MX_GOOD(-0.01)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.cz:email,suse.cz:mid,suse.cz:dkim];
- FROM_HAS_DN(0.00)[]; ARC_NA(0.00)[]; MIME_TRACE(0.00)[0:+];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- TO_DN_SOME(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[]; RCVD_TLS_ALL(0.00)[];
- RCVD_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ FREEMAIL_ENVRCPT(0.00)[gmail.com]; FROM_HAS_DN(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ MIME_TRACE(0.00)[0:+];
+ FREEMAIL_CC(0.00)[suse.cz,suse.com,gmail.com];
+ RCVD_TLS_ALL(0.00)[]; RCPT_COUNT_SEVEN(0.00)[7];
+ TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:mid,suse.cz:email,suse.cz:dkim,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
+ FROM_EQ_ENVFROM(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ TO_DN_SOME(0.00)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RCPT_COUNT_THREE(0.00)[4]; DKIM_TRACE(0.00)[suse.cz:+]
-X-Rspamd-Queue-Id: 2744C7C983
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
+ DKIM_TRACE(0.00)[suse.cz:+]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 4/5] creat07: Use .max_kver
+Subject: [LTP] [PATCH 5/5] fanotify20: Skip on v7.2
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -115,51 +121,61 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: Jan Kara <jack@suse.cz>, Amir Goldstein <amir73il@gmail.com>,
+ AnonymeMeow <anonymemeow@gmail.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
+fanotify_init() used to reject FAN_REPORT_PIDFD combined with
+FAN_REPORT_TID with EINVAL. Since Linux v7.2, fanotify supports
+reporting pidfds for thread IDs, so this combination is expected to
+succeed.
+
+The test that these flag combinations are allowed:
+                FLAGS_DESC(FAN_REPORT_PIDFD | FAN_REPORT_TID),
+		FLAGS_DESC(FAN_REPORT_PIDFD | FAN_REPORT_FID |
+			   FAN_REPORT_DFID_NAME),
+
+Because the above flag combinations are already "tested" by the tests
+that use them and we don't have any tests that >= 5.10 has support for
+FAN_MARK_FILESYSTEM etc just simply skip the test on v7.2.
+
+Reported-by: AnonymeMeow <anonymemeow@gmail.com>
+Suggested-by: Amir Goldstein <amir73il@gmail.com>
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- testcases/kernel/syscalls/creat/creat07.c | 14 ++++----------
- 1 file changed, 4 insertions(+), 10 deletions(-)
+Replacement of:
+https://patchwork.ozlabs.org/project/ltp/patch/20260616210448.12175-2-anonymemeow@gmail.com/
+based on
+https://lore.kernel.org/ltp/CAOQ4uxhnrH3=XsCBhuO3oYtS=pZcRjkAchtrVwtnfJzBVmpNfQ@mail.gmail.com/
 
-diff --git a/testcases/kernel/syscalls/creat/creat07.c b/testcases/kernel/syscalls/creat/creat07.c
-index c7b85ee694..07f7bb10db 100644
---- a/testcases/kernel/syscalls/creat/creat07.c
-+++ b/testcases/kernel/syscalls/creat/creat07.c
-@@ -6,6 +6,9 @@
- 
- /*\
-  * Check that :manpage:`creat(2)` sets ETXTBSY correctly.
+ testcases/kernel/syscalls/fanotify/fanotify20.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify20.c b/testcases/kernel/syscalls/fanotify/fanotify20.c
+index b32ecf6aa3..dfcf194755 100644
+--- a/testcases/kernel/syscalls/fanotify/fanotify20.c
++++ b/testcases/kernel/syscalls/fanotify/fanotify20.c
+@@ -15,6 +15,9 @@
+  *
+  * NOTE: FAN_REPORT_PIDFD support was added in v5.15-rc1 in
+  * af579beb666a ("fanotify: add pidfd support to the fanotify API").
 + *
-+ * NOTE: write to executed file is allowed since 6.11-rc1:
-+ * 2a010c412853 ("fs: don't block i_writecount during exec")
++ * NOTE: since v7.2, fanotify supports reporting pidfds for thread IDs => skip
++ * the test.
   */
  
- #include <sys/types.h>
-@@ -47,19 +50,10 @@ static void verify_creat(void)
- 	SAFE_WAITPID(pid, NULL, 0);
- }
+ #define _GNU_SOURCE
+@@ -75,6 +78,7 @@ static void do_cleanup(void)
  
--static void setup(void)
--{
--	if ((tst_kvercmp(6, 11, 0)) >= 0) {
--		tst_brk(TCONF, "Skipping test, write to executed file is "
--			"allowed since 6.11-rc1.\n"
--			"2a010c412853 (\"fs: don't block i_writecount during exec\")");
--	}
--}
--
  static struct tst_test test = {
--	.setup = setup,
- 	.test_all = verify_creat,
- 	.needs_checkpoints = 1,
-+	.max_kver = "6.11",
- 	.forks_child = 1,
- 	.resource_files = (const char *const []) {
- 		TEST_APP,
+ 	.setup = do_setup,
++	.max_kver = "7.2",
+ 	.test = do_test,
+ 	.tcnt = ARRAY_SIZE(test_cases),
+ 	.cleanup = do_cleanup,
 -- 
 2.55.0
 
