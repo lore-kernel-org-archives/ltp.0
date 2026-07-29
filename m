@@ -4,81 +4,105 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0E8F9C53200
-	for <ltp@archiver.kernel.org>; Wed, 29 Jul 2026 16:28:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A963FC53219
+	for <ltp@archiver.kernel.org>; Wed, 29 Jul 2026 17:56:06 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 855A23E55CB
-	for <ltp@archiver.kernel.org>; Wed, 29 Jul 2026 18:28:16 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 8DC8C3E728F
+	for <ltp@archiver.kernel.org>; Wed, 29 Jul 2026 19:56:04 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 189323E29BF
- for <ltp@lists.linux.it>; Wed, 29 Jul 2026 18:28:01 +0200 (CEST)
-Received: from mail-qk2-x04.google.com (mail-qk2-x04.google.com
- [IPv6:2607:f8b0:4864:34::4])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id D74053E29BF
+ for <ltp@lists.linux.it>; Wed, 29 Jul 2026 19:55:46 +0200 (CEST)
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
+ [148.163.158.5])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id B440D600079
- for <ltp@lists.linux.it>; Wed, 29 Jul 2026 18:28:00 +0200 (CEST)
-Received: by mail-qk2-x04.google.com with SMTP id
- d75a77b69052e-51cad7c1c8cso1659651cf.0
- for <ltp@lists.linux.it>; Wed, 29 Jul 2026 09:28:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1785342479; x=1785947279; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to:content-type;
- bh=M+1nocNUzjRsYClgH7H9y48u0rSJn02CP7JxyobnW90=;
- b=ZWTnwBMF6oLFWWg90ejg4FwIkq3rRdGgPY3R+2R8uuFkdxOVZNEK8E9bzXpjClOTUk
- oBp59bcvxymn0/a96I/ok2XVwsAiAQSR4X3Gh1oKgheoHfY4aSTIOJYNvYqWpeJwSLlB
- XNMt7kxTTNJatWr6WCtgXrNCFVSnaV5orDLS3DYlVRgRJ71PxKAMkBzpqrfxnixQiP+9
- W4rKmKlEn4VZ85gfkJ8ZLhc1cwTne5kC+dmlkPHh5PlAaE3XSnkJnhaz8L0XwgXj0mHn
- gf0aHmq0pxqFk43/oBBsH6cblUf6t5M7af5scKAwqkLh2PxzFhpG2/lody5W3RNV9Hp5
- vWMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1785342479; x=1785947279;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to:content-type;
- bh=M+1nocNUzjRsYClgH7H9y48u0rSJn02CP7JxyobnW90=;
- b=oVOEx2u/XDb85Vb/586aKWzL02pygjfexEAJCCcZEopv7QAGJYgiYxSHY4HlYh14u/
- 4fKBSkQrQiUA7RsdBH1Mx/4QYrjUCYa5re1DiO0pOTM8nVsOPw/NM4oObrXggktgUklG
- miX+/WNdw7ZUPF5kdUOkp76GpJrqMTBDiDzHLeVbWVmX06STfxH8xVTy+jfd+9NV9AH6
- RJ8XkiWyQTvWDigrmjwDgGc/LoEC+yqwzidBa+dGAOsEoTCcW9aI7KpHcIAnodFW+dc8
- N3pWljycICZdhxsOD5OZnWt2u4+DnWiEoRBRM3GhcmGOcMOLGeQ/EGBO/GmqVcw/ok+K
- xrrw==
-X-Gm-Message-State: AOJu0YwWC3/TWdgGotcBIm/bcXU4bR9xZbchFzReeciSJ1lYb1xj8ht0
- e3jkkksjl2VQrdYGewWLCbUFedLsg3fp3S13ly9nAyDETfjKss9DUP6YUy65RaqpUEU=
-X-Gm-Gg: AR+sD10iNUZAeFgqUQ7NLALQBTkJ4hetjPgOumg6B2Y5OVsbaoHOGJ6hW7ghhKor8wn
- szf102UK1LDpIq6S2VVrTIyJRKBAA08NwtAQkRvNyTqWhEn1TMa+putqpfU28rf5Q9+u26tAi7X
- Ts4R2tMBiqH6yaSS2Chx3ttWstpLAU+blnHU08R0Wm2iMJmUAmuIlJxKWbhbAiseAVlgStiEJzG
- t7qBzE9Iuamk3RPFfUaJvx2+anzUtGa4e/SHwzNOFY8JomJY8qP8Et6FfTz9InVwKhEjeUjygZD
- 2JnN89l3Rk+Ko/GGrNhxnoMbgh9SGMP/Qp4qy80g2zOYVu31mA1J/x+5JtBW96tyNDw3YO9mL14
- FkiqIhOFGlmJip73FPWWaaLlwn49nwQE8egMI2KwcKS4MrNbosJbJsFezMI2kpUT+gf3fR6buWe
- 0jfXxce14FHWgNxx0lDI7pwxFK7a894apRVqvz7yXF4jF0UTTViPwngQT8POtT0+zx4q58Ftj36
- 9r6+D4vGF7U8O6W/tQtWagio6P0rOpIrcQS8snXA0Hrk65SV0dak/wlomFqzwgVCzaXiqx+9Q==
-X-Received: by 2002:a05:622a:1347:b0:528:3b9b:4f55 with SMTP id
- d75a77b69052e-529d709ccbcmr74763791cf.6.1785342479154; 
- Wed, 29 Jul 2026 09:27:59 -0700 (PDT)
-Received: from
- runnervm7i58z.dkmc3hnmub1exftwixtyqawume.bx.internal.cloudapp.net
- ([20.83.159.4]) by smtp.gmail.com with ESMTPSA id
- d75a77b69052e-529e31f25c1sm22566341cf.31.2026.07.29.09.27.58
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 29 Jul 2026 09:27:58 -0700 (PDT)
-From: linuxtestproject.agent@gmail.com
-To: Jinseok Kim <always.starving0@gmail.com>
-Date: Wed, 29 Jul 2026 16:27:58 +0000
-Message-ID: <20260729162758.8946-1-linuxtestproject.agent@gmail.com>
-X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260729143243.8433-1-always.starving0@gmail.com>
-References: <20260729143243.8433-1-always.starving0@gmail.com>
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 7BB3F1400C6D
+ for <ltp@lists.linux.it>; Wed, 29 Jul 2026 19:55:44 +0200 (CEST)
+Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id
+ 66TFIBav284430; Wed, 29 Jul 2026 17:55:43 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+ :content-transfer-encoding:content-type:date:from:in-reply-to
+ :message-id:mime-version:references:subject:to; s=pp1; bh=kIgaKQ
+ XWcfZ1D1aZocHiBrx509/dikRRbzOYAOfrhbE=; b=Idaann5ri4NaO6/wNv0QcE
+ osJtrSz0lNcItot81oQs0RWyA1dY2zFv4tM+wnOrwUnvzE8LDHGIN+5Kw3JOmrWo
+ CW6iZOj5BdNeSkvEdzo5yKunSgQY+1OOvjes7D1gjX+KlRipCPjUrTpsO8aYV+js
+ KpfjIQee44CWftE0zBQpSZvNMdBHvIfprxrkHp4FU4cjhcVsCC3fUF8fFjAaGwsd
+ zXqy3dVLCPmJLELiOlgwNxzO+RV+BJHB/mMxuAJD40+wqZJXXGLXz8pSqAOLEXGC
+ b4aymbVVChjUqgmf7nrL/HBOqhEPvo8S8WsEGrgcG/icsViFeqPJtfHT2N9jD9Hg
+ ==
+Received: from ppma21.wdc07v.mail.ibm.com
+ (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4fmv0nu5yu-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Wed, 29 Jul 2026 17:55:42 +0000 (GMT)
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+ by ppma21.wdc07v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 66THfGIL018395;
+ Wed, 29 Jul 2026 17:55:42 GMT
+Received: from smtprelay06.wdc07v.mail.ibm.com ([172.16.1.73])
+ by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4fn8fk7thw-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Wed, 29 Jul 2026 17:55:42 +0000 (GMT)
+Received: from smtpav03.wdc07v.mail.ibm.com (smtpav03.wdc07v.mail.ibm.com
+ [10.39.53.230])
+ by smtprelay06.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 66THtfxK28181246
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Wed, 29 Jul 2026 17:55:41 GMT
+Received: from smtpav03.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id AB9955805C;
+ Wed, 29 Jul 2026 17:55:41 +0000 (GMT)
+Received: from smtpav03.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 41E765805A;
+ Wed, 29 Jul 2026 17:55:41 +0000 (GMT)
+Received: from li-43857255-d5e6-4659-90f1-fc5cee4750ad.ibm.com (unknown
+ [9.31.108.66]) by smtpav03.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+ Wed, 29 Jul 2026 17:55:41 +0000 (GMT)
+Message-ID: <7279643f66b2ea6d6888716f7923363c2f59b6eb.camel@linux.ibm.com>
+From: Mimi Zohar <zohar@linux.ibm.com>
+To: Petr Vorel <pvorel@suse.cz>, linuxtestproject.agent@gmail.com
+In-Reply-To: <20260728133556.GA1128467@pevik>
+References: <20260728114224.1055009-1-pvorel@suse.cz>
+ <20260728125815.4069-1-linuxtestproject.agent@gmail.com>
+ <20260728133556.GA1128467@pevik>
+Date: Wed, 29 Jul 2026 13:55:40 -0400
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+User-Agent: Evolution 3.58.3 (3.58.3-1.fc43) 
+X-TM-AS-GCONF: 00
+X-Proofpoint-Reinject: loops=2 maxloops=12
+X-Proofpoint-Spam-Info: AW1haW4tMjYwNzI5MDEzNyBTYWx0ZWRfX1JWC+f1yRS/K
+ e/RraXScbo/8eqY3cHd/+9LPk6NYGNVC6dvcT7D/6i9XvCn0nqyYWKa4lE8PEK/JqqNN7BFgm4Z
+ nGHSurv4nQa2D59z5Nw0XihoQgtDj6w=
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNzI5MDEzNyBTYWx0ZWRfXwnYpvRmynRFo
+ VMvpazXguNLpRkU1Zur+17Rifg71xHDowK2c+smDvj1UeayNL+xuZnZSDrU00R1tVBoI7KzcMgk
+ w56ZqkxKUyUGto3VXik6wLrnbIJx39IJmu1uUq7AolyTpvW4RXmM5xEZTFdsYbMVUzn596Zy+J9
+ KkUzaEmyjDNvUqfjDMosFo6MKCB33tL7yJ7GQyRZSA0Frv8ZlaIlWQ3WfStbSVwPMsDdHEn09wh
+ U+UFvsDof3lBundbsbltaBTTNzRq1vQdr5e8tKi9q7i4GkRnSoPtoC0fLaC6vboPY9wL4HwSHOE
+ jhXqcV8h57q4c9jqOCrkIPbQwAnMhmRGg8lBF/t4KsgCKos519ezjBkXvZeYseaszBlRGUxNRoa
+ JLE898CeTXf9y3zBpImWbgK4pbdQFMV3enKNiKfmgD41Q2oR2UZ504ImfiQWUXBBzt8+MWHcX9W
+ jtKQ+U5QKAxWWHBjhJg==
+X-Authority-Analysis: v=2.4 cv=b5WCJNGx c=1 sm=1 tr=0 ts=6a6a3e9e cx=c_pps
+ a=GFwsV6G8L6GxiO2Y/PsHdQ==:117 a=GFwsV6G8L6GxiO2Y/PsHdQ==:17
+ a=IkcTkHD0fZMA:10 a=RAioF0-LDSMA:10 a=VkNPw1HP01LnGYTKEx00:22
+ a=RnoormkPH1_aCDwRdu11:22 a=V8glGbnc2Ofi9Qvn3v5h:22 a=kLBT1emeShgpeJOJY6cA:9
+ a=QEXdDO2ut3YA:10
+X-Proofpoint-GUID: ZdORQgrXuODFcVdXcn7RObsXSYd0nsIL
+X-Proofpoint-ORIG-GUID: hnKvgR72_XESAT5vhuFJavPE0cXgvmfF
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.134,FMLib:17.12.100.49
+ definitions=2026-07-29_06,2026-07-29_01,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ priorityscore=1501 spamscore=0 adultscore=0 malwarescore=0 impostorscore=0
+ bulkscore=0 phishscore=0 suspectscore=0 clxscore=1015 lowpriorityscore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.22.0-2606150000 definitions=main-2607290137
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] open01: fix cleanup file descriptor check
+Subject: Re: [LTP] ima_setup.sh: Fix check_policy_writable() for kernel < 4.5
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -90,140 +114,113 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+Cc: linux-integrity@vger.kernel.org, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Jinseok,
+On Tue, 2026-07-28 at 15:35 +0200, Petr Vorel wrote:
+> Hi Mimi,
+> 
+> once you have time, I'd appreciate your comments. Thanks!
+> 
+> > Hi Petr,
+> 
+> > On Tue, Jul 28, 2026 at 01:42:24PM +0200, Petr Vorel wrote:
+> > > ima_setup.sh: Fix check_policy_writable() for kernel < 4.5
+> 
+> > > -	# workaround for kernels < v4.18 without fix
+> > > +
+> > > +	# Workaround for kernels < v4.18 without fix
+> > >  	# ffb122de9a60b ("ima: Reflect correct permissions for policy")
+> > > -	echo "" 2> log > $IMA_POLICY
+> > > -	grep -q "Device or resource busy" log && return 1
+> > > +	# Require >= 4.5 to write multiple times via CONFIG_IMA_WRITE_POLICY
+> > > +	# 38d859f991f3 ("IMA: policy can now be updated multiple times")
+> 
+> > Is CONFIG_IMA_WRITE_POLICY really the reason for the 4.5 boundary here?
 
-On 2026-07-29, Jinseok Kim wrote:
-> open01: fix cleanup file descriptor check
+Yes
 
---- [PATCH 1/3] ---
+> 
+> > On >= 4.5 ima_release_policy() runs ima_check_policy(), which returns
+> > -EINVAL when ima_temp_rules is empty. The empty write therefore sets
+> > valid_policy = 0, ima_delete_rules() is called and IMA_FS_BUSY is
+> > cleared, so the probe stays non-destructive even when
+> > CONFIG_IMA_WRITE_POLICY=n.
+> 
+> Well, CONFIG_IMA_WRITE_POLICY did not exist in kernel < 4.5 (not sure if that's
+> obvious from the comment I added).
 
-> File descriptor 0 is valid, so checking fd > 0 may skip closing an
-> successfully opened file.
+Perhaps prefix the commit message with something like:
 
-Typo: "an successfully" -> "a successfully".
+IMA allows the builtin policy to be replaced with a custom policy just once. 
+Support for appending additional policy rules to the custom policy
+(CONFIG_IMA_WRITE_POLICY) was subsequently added in linux 4.5. Refer to commit 
+38d859f991f3 ("IMA: policy can now be updated multiple times").
 
---- [PATCH 2/3] ---
+> 
+> > What makes < 4.5 different is the absence of ima_check_policy(): there
+> Yes, that's true that ima_check_policy() was added in v4.5.
 
->  } tcases[] = {
->  	{TEST_FILE, O_RDWR | O_CREAT, 01444, S_ISVTX, "sticky bit"},
-> -	{TEST_DIR, O_DIRECTORY, 0, S_IFDIR, "directory bit"}
->  };
+Agreed.
 
-Only one entry is left in tcases[] now.
+> > the empty write is committed and securityfs_remove() drops the policy
+> > file. Would it be clearer to state that, and to keep the v4.18
+> > permission workaround in a separate paragraph, since the two comments
+> > describe unrelated things?
+> 
+> > > +	if tst_kvcmp -ge 4.5; then
+> > > +		echo "" 2> log > $IMA_POLICY
+> > > +		grep -q "Device or resource busy" log && return 1
+> > > +	fi
+> > >  	return 0
+> 
+> > With this, require_policy_writable() no longer TCONFs on < 4.5, so
+> > ima_policy.sh test2 ("verify that policy file is not opened concurrently
+> > and able to loaded multiple times") now runs there.
+> 
+> Hm, maybe test2() does not really makes sense to run on < v4.5. But test1()
+> certainly does. And echo "" > $IMA_POLICY really disables policy in v4.4,
+> likely due one of these from v4.5-rc1:
+> * 38d859f991f3 ("IMA: policy can now be updated multiple times")
+> * 0112721df4ed ("IMA: policy can be updated zero times")
+> @Mimi WDYT?
 
-Is the .test + .tcnt parametrization still worth keeping here? The
-convention is .test_all with a plain run() when there is a single test
-case, unless more cases are planned on top of this.
+Writing an invalid policy resulted in never being able to transition from a
+builtin policy to a custom policy, similar to writing an empty policy. Commit
+0112721df4ed ("IMA: policy can be updated zero times") addressed the invalid
+policy case.
 
->  	SAFE_CLOSE(fd);
->  	if (S_ISREG(buf.st_mode))
->  		SAFE_UNLINK(tc->filename);
+> 
+> > On those kernels one loader gets -EBUSY at open, the other succeeds and
+> > the policy file is then removed on release. That hits
+> 
+> > 	elif [ $rc1 -eq 0 ] || [ $rc2 -eq 0 ]; then
+> > 		tst_res TPASS "policy was loaded just by one process and able to loaded multiple times"
+> 
+> > so the test reports that the policy can be loaded multiple times while
+> > only the concurrency half of the assertion was exercised, and loading
+> > twice is not possible before 4.5.
+> That sounds correct and should be fixed.
 
-This guard existed only to skip the unlink for the O_DIRECTORY case.
+Correct, IMA originally permitted transitioning from a builtin policy to a
+custom policy.  Support for extending the custom IMA policy was added in 4.5.
 
-With that case removed the only remaining file is a regular one, so the
-condition is always true. Can it be dropped and the unlink made
-unconditional?
+Mimi
 
->   * 1. Open a new file with O_CREAT, fstat.st_mode should not have the
->   *    01000 (S_ISVTX) bit on. In Linux, the save text bit is *NOT* cleared.
-> - * 2. Open a new directory with O_DIRECTORY, fstat.st_mode should have the
-> - *    040000 (S_IFDIR) bit on.
->   */
-
-The numbered list has a single "1." item left. Plain prose would read
-better in the test catalog.
-
---- [PATCH 3/3] ---
-
-> + * Verify that :manpage:`fstat(2)` correctly identifies various
-> + * file types.
-
-"various file types" does not say which ones. The commit message already
-enumerates them, so how about moving that into the description, e.g.:
-
-  Verify that :manpage:`fstat(2)` reports the correct file type in
-  st_mode for regular files, directories, FIFOs, character devices and
-  block devices.
-
-> +#include <sys/sysmacros.h>
-> +#include <fcntl.h>
-> +
-> +#include "tst_test.h"
-
-O_PATH is used below but only <fcntl.h> is included. LTP carries a
-fallback definition in include/lapi/fcntl.h for headers that predate
-O_PATH, so "lapi/fcntl.h" should be included as well.
-
-> +	TST_EXP_EXPR((buf.st_mode & S_IFMT) == tc->exp_type, "checking %s", tc->path);
-
-On failure this only prints the path, not what was expected. Something
-like "fstat() reports the expected type for %s" carries more information.
-
-Also, for the character and block device cases only S_IFMT is checked
-while st_rdev is ignored. Would it be worth comparing it against
-makedev(1, 3) / makedev(7, 3) as well? statx01.c checks major/minor for
-its device file.
-
-> +static void cleanup(void)
-> +{
-> +	if (!access(REG_FILE, F_OK))
-> +		SAFE_UNLINK(REG_FILE);
-> +
-> +	if (!access(DIR_FILE,  F_OK))
-> +		SAFE_RMDIR(DIR_FILE);
-> +
-> +	if (!access(FIFO_FILE, F_OK))
-> +		SAFE_UNLINK(FIFO_FILE);
-> +
-> +	if (!access(CHR_DEV, F_OK))
-> +		SAFE_UNLINK(CHR_DEV);
-> +
-> +	if (!access(BLK_DEV, F_OK))
-> +		SAFE_UNLINK(BLK_DEV);
-> +}
-
-Is any of this needed? Everything is created inside the framework tmpdir,
-which is removed recursively at the end of the test, and MOUNT_PATH is
-either a plain directory in that tmpdir or a tmpfs the framework unmounts
-itself (prepare_and_mount_dev_fs() in lib/tst_test.c). Nothing here
-outlives the test.
-
-open11.c does the same touch/mkdir/mknod setup with .needs_devfs and has
-no cleanup() at all.
-
-Minor: "access(DIR_FILE,  F_OK)" has a double space.
-
-> +	.mntpoint = MOUNT_PATH,
-> +	.needs_devfs = 1,
-> +	.needs_tmpdir = 1,
-> +	.needs_root = 1,
-
-.needs_tmpdir is redundant here, .mntpoint already implies the tmpdir
-(see needs_tmpdir() in lib/tst_test.c). open11.c and fsetxattr02.c set
-only .needs_devfs and .mntpoint.
-
-Verdict - Needs revision
-
-Pre-existing issues:
-
-open01.c includes <errno.h> but never uses errno.
-
----
-Note:
-
-The agent can sometimes produce false positives although often its
-findings are genuine. If you find issues with the review, please
-comment this email or ignore the suggestions.
-
-Regards,
-LTP AI Reviewer
+> 
+> > Should test2 report TCONF (or split the two assertions) when
+> > CONFIG_IMA_WRITE_POLICY is not available?
+> With requiring test2 to be run on kernel >= v4.5 (I'll add it to v2) everything
+> should work even with this patch (unmodified behavior on >= v4.5, avoid write
+> policy on < 4.5 when doing the check for ima_policy.sh test1 and for other IMA
+> tests).
+> 
+> > Verdict - Needs revision
+> 
+> 
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
