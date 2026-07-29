@@ -4,82 +4,101 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D24B4C53200
-	for <ltp@archiver.kernel.org>; Wed, 29 Jul 2026 14:34:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 283DCC54F55
+	for <ltp@archiver.kernel.org>; Wed, 29 Jul 2026 14:54:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1785336885; h=to : date :
+ message-id : in-reply-to : references : mime-version : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-type :
+ content-transfer-encoding : sender : from;
+ bh=4jcVR7XtbUUg2kY4ERC0/N5qvWITyEP1gA4jMTCPzqM=;
+ b=qL/GdEl4jw/eM7xdsZKBnveT4M8bNAWWx6AseHj/ohaYbB9n1SpnFkueKTTixLbvpUliz
+ RVyWAlCa+PzoJlJ95e4+5iuiVJOcI5QhQHNQcnqrUztCHLKXu6GJZ+lFLPVUEQBgjSikVGU
+ brQNubSet2NucKlDh97nET+sSkTfkXs=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6118E3E7293
-	for <ltp@archiver.kernel.org>; Wed, 29 Jul 2026 16:34:03 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 797DF3E6201
+	for <ltp@archiver.kernel.org>; Wed, 29 Jul 2026 16:54:45 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E70823E4B5C
- for <ltp@lists.linux.it>; Wed, 29 Jul 2026 16:33:16 +0200 (CEST)
-Received: from mail-pz2-x00.google.com (mail-pz2-x00.google.com
- [IPv6:2607:f8b0:4864:3b::])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 743053E138C
+ for <ltp@lists.linux.it>; Wed, 29 Jul 2026 16:54:24 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 4ECAC60082D
- for <ltp@lists.linux.it>; Wed, 29 Jul 2026 16:33:16 +0200 (CEST)
-Received: by mail-pz2-x00.google.com with SMTP id
- 41be03b00d2f7-c96739a46acso484791a12.1
- for <ltp@lists.linux.it>; Wed, 29 Jul 2026 07:33:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1785335595; x=1785940395; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
- :reply-to:content-type;
- bh=jiXGYGCXO7h7EeCM2MuTzzyRyTf1MJJh0ciC6MGz7N0=;
- b=DCqpb+s551aUmvm5SodSlUwVtWW5tZQYg61j9xDasnUQ2c/7dkFowFt40arOFzWU2H
- 80DPeEH42x6SfDzSM9tc2d55xFoDaHR+Ui9+p7O5R4ZBlAEoSkjfeZ7XxQprRRti3lqX
- C7rXNbYjxtlyQrwc4eDGLCVXKgmqzPSHg/mBg9EHiixhpagOyQNbvLJwo0jPJut6x31I
- rO9sek+Z+pO7rgS37Lu1diDq/Xl/cS56Y4qzifqYKlcz6Y3/7oDo5n1mG27NT99UhEka
- tmRhtksk7pMtAm5jI2bcn6j0Me378GQTNxvF3iyE12GwwkwYj5l6rPs5/jR5H62pHyLY
- sm8w==
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id E43251A002D7
+ for <ltp@lists.linux.it>; Wed, 29 Jul 2026 16:54:23 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1785336861;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=y0xhu1HZxL6d/jTfBG/S21CDxJ8mefhr3/WR163hBbo=;
+ b=WCD4TdDWis7MxtGgap2c+XQMbPi2SR1fqLzN8FfRHxMk/qBnkGX+MlF+D2ve77+tXyDTv5
+ kx8XCQa3WjSy7CYX43mgfZeYpF+rZMr9zchzMLVv9ayVwt9lpXobWHkgG7/Bw6YHPXHCoi
+ Qh2X9Bk1HPxXTKLUMJkGLSY9l2DKRLw=
+Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
+ [209.85.160.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-354-rnIUssjoMRKOSXsvjh0rlw-1; Wed, 29 Jul 2026 10:54:20 -0400
+X-MC-Unique: rnIUssjoMRKOSXsvjh0rlw-1
+X-Mimecast-MFC-AGG-ID: rnIUssjoMRKOSXsvjh0rlw_1785336859
+Received: by mail-qt1-f199.google.com with SMTP id
+ d75a77b69052e-51a8b0a08d2so8764361cf.0
+ for <ltp@lists.linux.it>; Wed, 29 Jul 2026 07:54:20 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1785335595; x=1785940395;
+ d=1e100.net; s=20251104; t=1785336859; x=1785941659;
  h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:to:from:x-gm-gg:x-gm-message-state:from:to
- :cc:subject:date:message-id:reply-to:content-type;
- bh=jiXGYGCXO7h7EeCM2MuTzzyRyTf1MJJh0ciC6MGz7N0=;
- b=c3AZEwqmec6nlaN54za4i15RmDBDHwkpSZm4nySYrFgGUlB2CzctX6rUclwa1RX2yd
- wk71un3UKagjPbgUdSV4iJv0BKG1FXi5uzZohJQTVCqhy5NhQD/kpxXkFn7mRXu72c8Y
- c6Kxz0i7YQJ7+vqamgBEJ+R6GSMgO2F7UJPe/4EpOUT8bccans6LozgV3pP2ExHV5VdN
- vafgXC3tq1WgTRaC3JfRszKyacaD9Zy9HlNDoQeCe+/ITNsh3CS6XWNbgKr8OZc9/uvc
- wRiNkRl3GdwP2VfJ/NAQcWMLy0UMyK34Re8LaK3a2gF3D/6eka1hgL8+GKEfT46JfZOu
- gQag==
-X-Gm-Message-State: AOJu0YwlZmBmCy8BpL9Oobsf2+0WOfBhgHRzupSUULoM4FfL1Udw7EGx
- VfZe1lsOZrOQEirvK8zqg2GymvJjYBJDpsgtNuMBrzNItIzsVEkMcaDk3s2nwN+EMOZR
-X-Gm-Gg: AR+sD12psXNPyGeWxe9xwW+KJ1bXhaMeIpSM2Yif1OheAwtO3AmBcDXnCYld7kAZMA4
- TjFAioeLyUEUDoJz+UDqzhP8/2KQMs+Qg+pWSSBYOWH+DBlRiB7wl5iTqi8JWFZZhJh+G8ivtbf
- 9cQ+lP5X5k1NkpHi+Kh+puulw9NGmIzsYQZZ9kS2tpzIqf0WcyfuPf9yX3oN0oKcVpGOztjmpiW
- Dn70zE70I0eYFzz+rfMRBgt/3AtfQvVXebQ7nxTZEcpxA6kRw5qoaeatceGPHpPmd/yZbEHnPQH
- 7Yheb+fxXXZSF/g7Uyr37vWR9ww6HYLfgg9/ER9BYXhmn/ej2XUokpaMtEvrLoVWfq6WB2X285G
- 6JDELWstO8PcEgXdbSiqjrr2Ynl1Rqawtz4mSSup3v/b4h5MGlliNCwcpIbhqJkEnJ1vRmKhGen
- /CeUXq1khIPmKMPCW+7eCmQTKXtxjCSt4G43j7Ru6oeCsNRnoAZVCNZLPi9QU4m+00NO9a0dgFn
- OGbRN8=
-X-Received: by 2002:a05:6a00:21cb:b0:848:4fd9:9a8f with SMTP id
- d2e1a72fcca58-84e9330a6f8mr6939186b3a.77.1785335594413; 
- Wed, 29 Jul 2026 07:33:14 -0700 (PDT)
-Received: from localhost.localdomain ([59.16.109.172])
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to:content-type;
+ bh=y0xhu1HZxL6d/jTfBG/S21CDxJ8mefhr3/WR163hBbo=;
+ b=gVjY3qLBOwZiBIgxRQA1kX4+tiC3rfatgxi07IHDnVWVDQKGO7Hgb3XiXBxSYOYSb8
+ pahcnpG8E4W4w3iolY29mb43a/iMo48biHlGNpJ3Ir/v3wEg6F5JAS49MLSNjG5tHkyi
+ /zsnhytX3Ql+pqTNBGTCd4rMmdHRea+/TKWUZc1Ihme3SWxDo5ANzbsBO9EcpNguIuEy
+ F5ObBIK9gW3TAPcKvci+8pUDW42c6Yw29EdywrlqByiGgxa7JTkDqkf1jReftMEZNhnj
+ ZkVyT0L9pWHgo2iJkKFVd/CSJiBc5RY+whTNrfuymbeFElHLgqJ3KB+IsAL3TskrzWmQ
+ LpDg==
+X-Gm-Message-State: AOJu0Yz+cDKEEtNUCW7lZr58/p4M7VUg5Xs8GGC8g6Y0DvLZRfJKoVJs
+ 7H2GHlO/ErCUO3qNumzZCdm056IN7DCA8k1HvFGoZV1JGLZzyokUvYsHHH4F9haW6oqmwzgJRBV
+ j5114V51YC2jNx5yBFCnrUyrHe//uvYXy11f2Op5IP70c7mAtINoqp07KQW9/re18LXHaszGDvQ
+ jnVNdzJUEEK5CsrgOn5B1rruudoBSJacPClDqm
+X-Gm-Gg: AR+sD11RkIuh4WUzJmKJO/YnrvcI8XGZkkt/52pN+t3so7Nx/4j5zOCRXNcQHl+OETd
+ 12qNy13AfsCfUtgd/w+qYSTG9RT4gwVqnG4m4LMMKJqybO1V7LO+2oqrCEMmoxt4Ca9L9yk8v0B
+ scFTuTzbFbpxMFvwa9ojImMfikwZn6diR8zZQ/lFhuj45rQtWA+0sRyyZC8/+FButzkQTbEJ3Pa
+ hNy2ahOp1wB3prqmNpiQDB31P9faLiCWBk7/1yaXYoF61QAakR0jSATkpPlpxlWdB91gWW6Vxjr
+ pl24csPd4/mXs9CexD8d4iOUuTtQ7b5doTNDjZiFJF1biMPZYR36hTmJ3gy1UlS5Ozv5sYrd0Cd
+ 9A9xiOoL5xHZB6M8EDThSweTgHA==
+X-Received: by 2002:ac8:7c42:0:b0:51c:7b13:6300 with SMTP id
+ d75a77b69052e-529d719d02bmr57750391cf.86.1785336859382; 
+ Wed, 29 Jul 2026 07:54:19 -0700 (PDT)
+X-Received: by 2002:ac8:7c42:0:b0:51c:7b13:6300 with SMTP id
+ d75a77b69052e-529d719d02bmr57750101cf.86.1785336858834; 
+ Wed, 29 Jul 2026 07:54:18 -0700 (PDT)
+Received: from sbertram-thinkpadp1gen5.bos.com ([67.189.222.97])
  by smtp.gmail.com with ESMTPSA id
- 41be03b00d2f7-cbdba63c743sm1008323a12.26.2026.07.29.07.33.13
- for <ltp@lists.linux.it>
+ d75a77b69052e-529e2b1a203sm20570591cf.1.2026.07.29.07.54.18
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 29 Jul 2026 07:33:13 -0700 (PDT)
-From: Jinseok Kim <always.starving0@gmail.com>
+ Wed, 29 Jul 2026 07:54:18 -0700 (PDT)
 To: ltp@lists.linux.it
-Date: Wed, 29 Jul 2026 23:32:03 +0900
-Message-ID: <20260729143243.8433-3-always.starving0@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20260729143243.8433-1-always.starving0@gmail.com>
-References: <20260729143243.8433-1-always.starving0@gmail.com>
+Date: Wed, 29 Jul 2026 10:53:17 -0400
+Message-ID: <20260729145321.4115712-1-sbertram@redhat.com>
+X-Mailer: git-send-email 2.55.0
+In-Reply-To: <20260728203333.3949671-1-sbertram@redhat.com>
+References: <20260728203333.3949671-1-sbertram@redhat.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+X-Mimecast-Spam-Score: 0
+X-Mimecast-MFC-PROC-ID: pRaK8QXZRdpUQj896vnJk_LKgqJasaUPn72yqTBW9Ks_1785336859
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v10 3/3] fstat: add test for multiple file types using
- fstat
+Subject: [LTP] [PATCH v8] semctl01: fix SEM_STAT failures under parallel LTP
+ runs
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,162 +110,123 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+From: Stephen Bertram via ltp <ltp@lists.linux.it>
+Reply-To: Stephen Bertram <sbertram@redhat.com>
+Cc: Stephen Bertram <sbertram@redhat.com>, fdarocha@redhat.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Following review feedback, create a dedicated fstat test that verifies
-that fstat() correctly identifies regular files, directories, FIFOs,
-character devices, and block devices.
+SEM_STAT was using the global high index from IPC_INFO, which is not
+stable when other IPC tests run in parallel and can abort the test with
+TBROK.
 
-Signed-off-by: Jinseok Kim <always.starving0@gmail.com>
+Signed-off-by: Stephen Bertram <sbertram@redhat.com>
 ---
-Changes in v10:
-- Document why root privileges are required.
-- Replace the S_IS*() switch with a single S_IFMT comparison.
-- Link to v9: https://lore.kernel.org/ltp/20260621090403.2236-2-always.starving0@gmail.com
+Test: ./kirk -w 4 -f syscalls_32 -p semctl01 -i 1000
 
-Changes in v9:
-- Open test files with O_PATH to avoid unnecessary device access
-- Link to v8: https://lore.kernel.org/ltp/20260604142029.2077-2-always.starving0@gmail.com
+Before changes:
+Total runs:  32000
+Runtime:    16m 32s
+Passed:     415968
+Failed:     0
+Skipped:    0
+Broken:     16
+Warnings:   0
 
-Changes in v8:
-- Link to the man page
-- Remove desc from tcase and TST_EXP_EXPR
-- Link to v7: https://lore.kernel.org/ltp/20260327152751.3637-1-always.starving0@gmail.com
----
- runtest/syscalls                           |  2 +
- testcases/kernel/syscalls/fstat/.gitignore |  2 +
- testcases/kernel/syscalls/fstat/fstat04.c  | 94 ++++++++++++++++++++++
- 3 files changed, 98 insertions(+)
- create mode 100644 testcases/kernel/syscalls/fstat/fstat04.c
+After changes:
+Total runs:  32000
+Runtime:    16m 34s
+Passed:     416000
+Failed:     0
+Skipped:    0
+Broken:     0
+Warnings:   0
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 43951df2a..a38743ded 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -436,6 +436,8 @@ fstat02 fstat02
- fstat02_64 fstat02_64
- fstat03 fstat03
- fstat03_64 fstat03_64
-+fstat04 fstat04
-+fstat04_64 fstat04_64
+Assisted-by: Cursor
 
- #fstatat64/newfstatat test cases
- fstatat01 fstatat01
-diff --git a/testcases/kernel/syscalls/fstat/.gitignore b/testcases/kernel/syscalls/fstat/.gitignore
-index 9b1089438..a1f538f7e 100644
---- a/testcases/kernel/syscalls/fstat/.gitignore
-+++ b/testcases/kernel/syscalls/fstat/.gitignore
-@@ -2,3 +2,5 @@
- /fstat02_64
- /fstat03
- /fstat03_64
-+/fstat04
-+/fstat04_64
-diff --git a/testcases/kernel/syscalls/fstat/fstat04.c b/testcases/kernel/syscalls/fstat/fstat04.c
-new file mode 100644
-index 000000000..c9a83989b
---- /dev/null
-+++ b/testcases/kernel/syscalls/fstat/fstat04.c
-@@ -0,0 +1,94 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
+ testcases/kernel/syscalls/semctl/semctl01.c | 40 ++++++++++++++++-----
+ 1 file changed, 32 insertions(+), 8 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/semctl/semctl01.c b/testcases/kernel/syscalls/semctl/semctl01.c
+index 5bd675ab6..151061995 100644
+--- a/testcases/kernel/syscalls/semctl/semctl01.c
++++ b/testcases/kernel/syscalls/semctl/semctl01.c
+@@ -210,13 +210,10 @@ static void func_rmid(void)
+ 
+ static void func_iinfo(int hidx)
+ {
+-	if (hidx >= 0) {
+-		sem_index = hidx;
++	if (hidx >= 0)
+ 		tst_res(TPASS, "the highest index is correct");
+-	} else {
+-		sem_index = 0;
++	else
+ 		tst_res(TFAIL, "the highest index is incorrect");
+-	}
+ }
+ 
+ static void func_sinfo(void)
+@@ -229,10 +226,10 @@ static void func_sinfo(void)
+ 
+ static void func_sstat(int semidx)
+ {
+-	if (semidx >= 0)
++	if (semidx == sem_id)
+ 		tst_res(TPASS, "id of the semaphore set is correct");
+ 	else
+-		tst_res(TFAIL, "id of the semaphore set is incorrect");
++		tst_res(TFAIL, "expected sem_id %d, got %d", sem_id, semidx);
+ }
+ 
+ static struct tcases {
+@@ -258,13 +255,40 @@ static struct tcases {
+ 	{&sem_id, 0, IPC_RMID, func_rmid, SEMUN_CAST & buf, NULL},
+ };
+ 
 +/*
-+ * Copyright (C) 2026 Jinseok Kim <always.starving0@gmail.com>
++ * SEM_STAT takes an index into the kernel's internal array, not a semid.
++ * Return the index that maps to this test's set.
 + */
-+/*\
-+ * Verify that :manpage:`fstat(2)` correctly identifies various
-+ * file types.
-+ *
-+ * Root privileges are required to create character and block device nodes.
-+ */
-+#define _GNU_SOURCE
-+
-+#include <sys/types.h>
-+#include <sys/stat.h>
-+#include <sys/sysmacros.h>
-+#include <fcntl.h>
-+
-+#include "tst_test.h"
-+
-+#define MOUNT_PATH	"test_mnt"
-+#define REG_FILE	"regfile"
-+#define DIR_FILE	"dirfile"
-+#define FIFO_FILE	"fifofile"
-+#define CHR_DEV	MOUNT_PATH "/chrdev"
-+#define BLK_DEV	MOUNT_PATH "/blkdev"
-+
-+static struct tcase {
-+	const char *path;
-+	mode_t exp_type;
-+} tcases[] = {
-+	{ REG_FILE,	S_IFREG },
-+	{ DIR_FILE,	S_IFDIR },
-+	{ FIFO_FILE,	S_IFIFO },
-+	{ CHR_DEV,	S_IFCHR },
-+	{ BLK_DEV,	S_IFBLK },
-+};
-+
-+static void verify_fstat(unsigned int i)
++static int get_sem_idx_from_id(int id)
 +{
-+	struct tcase *tc = &tcases[i];
-+	struct stat buf;
++	struct seminfo info;
++	struct semid_ds dummy_ds;
++	union semun arg;
++	int max_idx, i;
 +
-+	int flags = O_PATH;
-+	int fd;
++	arg.__buf = &info;
++	max_idx = SAFE_SEMCTL(id, 0, SEM_INFO, arg);
 +
-+	if (tc->exp_type == S_IFDIR)
-+		flags |= O_DIRECTORY;
++	arg.buf = &dummy_ds;
++	for (i = 0; i <= max_idx; i++) {
++		if (semctl(i, 0, SEM_STAT, arg) == id)
++			return i;
++	}
 +
-+	fd = SAFE_OPEN(tc->path, flags);
-+
-+	SAFE_FSTAT(fd, &buf);
-+	SAFE_CLOSE(fd);
-+
-+	TST_EXP_EXPR((buf.st_mode & S_IFMT) == tc->exp_type, "checking %s", tc->path);
++	return -1;
 +}
 +
-+static void setup(void)
-+{
-+	SAFE_TOUCH(REG_FILE, 0644, NULL);
-+	SAFE_MKDIR(DIR_FILE, 0755);
-+
-+	SAFE_MKNOD(FIFO_FILE, S_IFIFO | 0777, 0);
-+	SAFE_MKNOD(CHR_DEV, S_IFCHR | 0777, makedev(1, 3));
-+	SAFE_MKNOD(BLK_DEV, S_IFBLK | 0777, makedev(7, 3));
-+}
-+
-+static void cleanup(void)
-+{
-+	if (!access(REG_FILE, F_OK))
-+		SAFE_UNLINK(REG_FILE);
-+
-+	if (!access(DIR_FILE,  F_OK))
-+		SAFE_RMDIR(DIR_FILE);
-+
-+	if (!access(FIFO_FILE, F_OK))
-+		SAFE_UNLINK(FIFO_FILE);
-+
-+	if (!access(CHR_DEV, F_OK))
-+		SAFE_UNLINK(CHR_DEV);
-+
-+	if (!access(BLK_DEV, F_OK))
-+		SAFE_UNLINK(BLK_DEV);
-+}
-+
-+static struct tst_test test = {
-+	.tcnt = ARRAY_SIZE(tcases),
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.test = verify_fstat,
-+	.mntpoint = MOUNT_PATH,
-+	.needs_devfs = 1,
-+	.needs_tmpdir = 1,
-+	.needs_root = 1,
-+};
---
-2.43.0
+ static void verify_semctl(unsigned int n)
+ {
+ 	struct tcases *tc = &tests[n];
+ 	int rval;
+ 
+-	if (sem_id == -1)
++	if (sem_id == -1) {
+ 		sem_id = SAFE_SEMGET(IPC_PRIVATE, PSEMS, IPC_CREAT | IPC_EXCL | SEM_RA);
++		sem_index = get_sem_idx_from_id(sem_id);
++		if (sem_index < 0)
++			tst_brk(TBROK, "Failed to get sem_id to idx mapping");
++	}
+ 	if (tc->func_setup) {
+ 		switch (tc->cmd) {
+ 		case GETNCNT:
+-- 
+2.55.0
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
