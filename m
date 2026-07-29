@@ -4,106 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 542EEC54F51
-	for <ltp@archiver.kernel.org>; Wed, 29 Jul 2026 13:52:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EED48C53200
+	for <ltp@archiver.kernel.org>; Wed, 29 Jul 2026 14:33:32 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6D2A83E4BAA
-	for <ltp@archiver.kernel.org>; Wed, 29 Jul 2026 15:52:54 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id F17BC3E4EE4
+	for <ltp@archiver.kernel.org>; Wed, 29 Jul 2026 16:33:30 +0200 (CEST)
 Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 8B1663E1C4E
- for <ltp@lists.linux.it>; Wed, 29 Jul 2026 15:52:38 +0200 (CEST)
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
- [148.163.158.5])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id F0D1D3E138C
+ for <ltp@lists.linux.it>; Wed, 29 Jul 2026 16:33:13 +0200 (CEST)
+Received: from mail-pz2-x01.google.com (mail-pz2-x01.google.com
+ [IPv6:2607:f8b0:4864:3b::1])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id CFB2814001FA
- for <ltp@lists.linux.it>; Wed, 29 Jul 2026 15:52:37 +0200 (CEST)
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id
- 66TDHpbL017742; Wed, 29 Jul 2026 13:52:35 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
- :content-transfer-encoding:content-type:date:from:in-reply-to
- :message-id:mime-version:references:subject:to; s=pp1; bh=EK8Ejc
- 0UX0UM96czEtDStjhfrp+5jVJdUSq/N2OOyl8=; b=NWxrtBxieV2l9Qrunkg8lL
- qUQUk5PqNthyOhaVM49YhRLcpoTE/uKuTHiwqXWs58I5jpduE1qCazXiydl/OoSS
- 1mlaoqmYZ4fJNdyDL/2R6XInVqoPbV1lfhwRx/4rW+3OmQH+mye+Y26N1RV5TLuW
- dENYFFCOr568yw/m0CdX4/W1a+MjUUPqAgGTFGhb+2/6BBVsM1R9kQaFYvNiBOgK
- wmGTBV1pbdggGuhrT5gaW4NZRQ+trxWmbAsSSFwDeVQN/bWMLNf5oIW1zDttvfdo
- eZhI7Xv678+uEUErohEKANceiAvcqscHINUXMAX/8F+44eYPWeikOXaI1zMfXXTg
- ==
-Received: from ppma13.dal12v.mail.ibm.com
- (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4fmuyja6fu-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Wed, 29 Jul 2026 13:52:35 +0000 (GMT)
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
- by ppma13.dal12v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 66TDQGCE025857;
- Wed, 29 Jul 2026 13:52:34 GMT
-Received: from smtprelay05.dal12v.mail.ibm.com ([172.16.1.7])
- by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 4fn9pgerdw-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Wed, 29 Jul 2026 13:52:34 +0000 (GMT)
-Received: from smtpav03.dal12v.mail.ibm.com (smtpav03.dal12v.mail.ibm.com
- [10.241.53.102])
- by smtprelay05.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 66TDqYCO32309766
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Wed, 29 Jul 2026 13:52:34 GMT
-Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 4886958056;
- Wed, 29 Jul 2026 13:52:34 +0000 (GMT)
-Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 5B76658060;
- Wed, 29 Jul 2026 13:52:33 +0000 (GMT)
-Received: from [9.43.117.118] (unknown [9.43.117.118])
- by smtpav03.dal12v.mail.ibm.com (Postfix) with ESMTP;
- Wed, 29 Jul 2026 13:52:33 +0000 (GMT)
-Message-ID: <28415772-b9ba-481f-8a17-ceb5ef58ac61@linux.ibm.com>
-Date: Wed, 29 Jul 2026 19:22:31 +0530
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 466A71400BF9
+ for <ltp@lists.linux.it>; Wed, 29 Jul 2026 16:33:13 +0200 (CEST)
+Received: by mail-pz2-x01.google.com with SMTP id
+ 41be03b00d2f7-ca7a25cd87dso779857a12.1
+ for <ltp@lists.linux.it>; Wed, 29 Jul 2026 07:33:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20251104; t=1785335591; x=1785940391; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:to
+ :from:from:to:cc:subject:date:message-id:reply-to:content-type;
+ bh=P4HewBbnFwm5bCvUnwtChybiE5XL2WeKxcZfQfU7Rhk=;
+ b=ZYeWdZslXd3hzZ5/Wezow9V1+GxORBWntk2wB9SgAf4i7e8RFi9lfbpom0ApCUsrI0
+ zLv8V55wEuw9QssGpKfgFihUZHEpwjhvon/qZhjnQfYObWdgm1EUX3IaBdn03O01ahRI
+ fSnJ4q+btyMZcK7ASfdQGP6oXajRR8X4dkPlZH84FRi5zuCp2bOeiIB/lKh+Hh7aaq7C
+ loQmdpwNWMh4SnHk89NZfVqgYv8CF68lWmT86mzQxL3Lbt0d/FLGBmztgK5+Emvk6KlL
+ O2TMSxaKZseRvgAOxlO6q73IUgbrCcitaKmuVmlra+FzG1knXHmzQOhMGngS+9Ac9rCm
+ Evvw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1785335591; x=1785940391;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:to
+ :from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to:content-type;
+ bh=P4HewBbnFwm5bCvUnwtChybiE5XL2WeKxcZfQfU7Rhk=;
+ b=bcT8ElZGVnRwuH0aw+gmIU1WdQMTgmWgqt1UIo8swOXcYmQd2ewXuWng93vCOItN0x
+ lFkFXzafHy/HMdXakqlbdRIqaJ5mHql+0GeL87wpUvX0FE1+XofTb9TBN1a92gyzmiyB
+ FDqa+hSsBnUM+2C7ifCignpiPbtG4EIzvauTpujLuGyl61QZEJTCOfdmRhbZza7Y6AgY
+ 3PIPw3syAETqwK7ZIHnjFMFDZTIBgz28qY4EeMpl6wl5RY+FtVHqBekjqSzCNVGPIhNA
+ jNVbAteRaEQhq7lqzt2F64ACjJkToUgy+T1nMotbvIq+GYCuN/QWvF/zaXbMMgBX82VJ
+ sYsA==
+X-Gm-Message-State: AOJu0YzisCjlmTZc9y5pPSatdFKYRpUVYGxcRMmLFVnxPOefaYXo3tMH
+ sGP4u1+ri1P/BvkhhQ9bFY2mMgvhM/0z3ZcC5Jfm32q9HvF9cd6HPlNfHR/pq+MvbJW6
+X-Gm-Gg: AR+sD112KwFBH7OEzW5OTNqRc+NOQFP1ZNIxtL5Rd0rJ3CTEviiasPBwRShtedSz/mJ
+ ip7Y+TQ0UasKW9ay81Ysc+FBx2AbwfacBtI1/l5TmITV24wn0Nr+fmdJtv1CsAKK6AsTkH8n45b
+ DEJ792Kc/Z05KfGAjRWq1GGiujtX7LMQjFXbdEzI61N2BD9bhPC1POWEf8BNqsiGtSR6g9qdplo
+ b6ouBny8TWJTOSP5ZxwLEcvXdHUCqa0ft/OXV/mJKw7+3ONnT+A8Ok0NBrxiYjOXdcn4t+WA4vf
+ Nx8Y/NShqScgshSvxPpvkBrdWNQaiTk+sg3WDwpNI0VEkLbB2R5NOaCbWUmqdY6ajz4+Dz83HRN
+ /ZuoPPN7ajhcutPC1vLVQKRKO7kXp//ruDWxgsjNBjjojCu8XjHheCGaeQeta4FLD3m8+Ht9zOV
+ v5AtrgMmUlSP8EPWh89iVm3t0q/PVKGFRCWxRpw3pa10/1818ZbRRweMJQeJJVMVvV0Mgwyvnnu
+ y9lZXU=
+X-Received: by 2002:a05:6a21:6e91:b0:3c3:859b:9178 with SMTP id
+ adf61e73a8af0-3c8ba4dc894mr8451489637.34.1785335591552; 
+ Wed, 29 Jul 2026 07:33:11 -0700 (PDT)
+Received: from localhost.localdomain ([59.16.109.172])
+ by smtp.gmail.com with ESMTPSA id
+ 41be03b00d2f7-cbdba63c743sm1008323a12.26.2026.07.29.07.33.09
+ for <ltp@lists.linux.it>
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 29 Jul 2026 07:33:10 -0700 (PDT)
+From: Jinseok Kim <always.starving0@gmail.com>
+To: ltp@lists.linux.it
+Date: Wed, 29 Jul 2026 23:32:01 +0900
+Message-ID: <20260729143243.8433-1-always.starving0@gmail.com>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Cyril Hrubis <chrubis@suse.cz>
-References: <20260616045414.9081-1-sachinp@linux.ibm.com>
- <20260616045414.9081-2-sachinp@linux.ibm.com> <amnxF9DZ5u2UYL95@yuki.lan>
-Content-Language: en-US
-From: Sachin Sant <sachinp@linux.ibm.com>
-In-Reply-To: <amnxF9DZ5u2UYL95@yuki.lan>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Spam-Info: AW1haW4tMjYwNzI5MDExNCBTYWx0ZWRfX2YNk0BQBvQOj
- 5DYWiwS+3w9ZspkU2ZM3wW681CgCEQ98GwU5lnCkmybKRVnqEruaOQnaqEgMz+0EAOSXNkvf7mn
- Bgh0UNmPMJ0f1LlPhQA+6QSdCiD2Wds=
-X-Proofpoint-GUID: 1iB1IKXsLukMRfYQpre8PdPGVBVM0xh7
-X-Proofpoint-ORIG-GUID: 1iB1IKXsLukMRfYQpre8PdPGVBVM0xh7
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNzI5MDExNCBTYWx0ZWRfX7YMDny1msJUm
- qe5rTS5NC3je50lQH3jCiSUUBcvll3bDtdrxq5u2INkdbg1xdoK9QOzcamNx2jpTCl2L+/KxNAC
- 4ie9pc1PYfPB62Q/iytwaHdgQw9dX7AY/4VPro1/Gd8Gh+s0MhzhP8zSD3TTSznf+4Prj0tIn8n
- BCTxhJ6GNUTJqdGtKusX6h2nEEiIw+X7AAL725JVeeYdTLZ4tdj8FMb2K8ygcWlCHX24Fepour0
- is2tC/J83PjTAJyi9Yo50cjX1aMPIvf9Fb7LbJfSv4mmjMLEgnkL3OK6WesXA2qqb3qz0uUJE/a
- kjWcAB/Tgc1PYIRgY+/ah0vFPi1uwFFbNcba/KIO65B8KLzGlLe22zqg4JiUX4QT1KfDWEuj2KQ
- 5Evsdx+v+/MlQqrxHKBrI7vbiBS/xgvQUW4JQNOxrrQg/x4xh3ZpGFhI+CIp849n2uVbT0wBAVC
- orEHZQJCVp6GFzaZcjQ==
-X-Authority-Analysis: v=2.4 cv=X5Vi7mTe c=1 sm=1 tr=0 ts=6a6a05a3 cx=c_pps
- a=AfN7/Ok6k8XGzOShvHwTGQ==:117 a=AfN7/Ok6k8XGzOShvHwTGQ==:17
- a=IkcTkHD0fZMA:10 a=RAioF0-LDSMA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=RnoormkPH1_aCDwRdu11:22 a=Y2IxJ9c9Rs8Kov3niI8_:22 a=tsiYnCHysR4RgFDZqrwA:9
- a=QEXdDO2ut3YA:10
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.134,FMLib:17.12.100.49
- definitions=2026-07-29_05,2026-07-28_02,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- clxscore=1015 impostorscore=0 lowpriorityscore=0 phishscore=0
- priorityscore=1501 malwarescore=0 spamscore=0 suspectscore=0 bulkscore=0
- adultscore=0 classifier=typeunknown authscore=0 authtc= authcc=
- route=outbound adjust=0 reason=mlx scancount=1 engine=8.22.0-2606150000
- definitions=main-2607290114
 X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v12 1/8] fs/acl: Add ACL_USER_OBJ permission test
+Subject: [LTP] [PATCH v10 1/3] open01: fix cleanup file descriptor check
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -115,41 +88,45 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
+Initialize fd to -1 and check it against -1 in cleanup().
 
+File descriptor 0 is valid, so checking fd > 0 may skip closing an
+successfully opened file.
 
-On 29/07/26 5:54 pm, Cyril Hrubis wrote:
-> Hi!
-> I've cleaned up the patchset and pushed all the acl_* tests, thanks.
->
-> We already have xattr tests in syscalls/{set,get}_xattr that cover basic
-> xattr operations I haven't xattr_test01 for that reason. If coverage is
-> lacking there the xattr tests should be put there.
-Thank you.
-> The main changes:
->
-> Added SAFE_ACL_SET_FILE() since the code to handle EOPNOTSUPP was
-> repeated in each test. I've also weeded out some of the cleanup, there
-> is no point in unlinking files or freeing memory before we call
-> tst_brk() since that will be handled by the test cleanup and OS process
-> memory teardown.
->
-> Also weeded out the file removal in various branches in the middle of
-> the test and in the test setup(). Each test cleans up the files at the
-> start of the test function. With that there is no point in doing the
-> cleanup anywhere else but cleanup().
->
+Signed-off-by: Jinseok Kim <always.starving0@gmail.com>
+---
+ testcases/kernel/syscalls/open/open01.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
--- 
-Thanks
-- Sachin
+diff --git a/testcases/kernel/syscalls/open/open01.c b/testcases/kernel/syscalls/open/open01.c
+index 1cefb4790..f1a3720aa 100644
+--- a/testcases/kernel/syscalls/open/open01.c
++++ b/testcases/kernel/syscalls/open/open01.c
+@@ -24,7 +24,7 @@
+ #define TEST_FILE	"testfile"
+ #define TEST_DIR	"testdir"
 
+-static int fd;
++static int fd = -1;
 
+ static struct tcase {
+ 	char *filename;
+@@ -67,7 +67,7 @@ static void setup(void)
+
+ static void cleanup(void)
+ {
+-	if (fd > 0)
++	if (fd != -1)
+ 		SAFE_CLOSE(fd);
+ }
+
+--
+2.43.0
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
