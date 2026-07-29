@@ -4,100 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 977B8C53219
-	for <ltp@archiver.kernel.org>; Wed, 29 Jul 2026 19:33:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4D793C53200
+	for <ltp@archiver.kernel.org>; Wed, 29 Jul 2026 20:19:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1785353623; h=to : date :
- message-id : in-reply-to : references : mime-version : subject :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1785356368; h=message-id :
+ date : mime-version : to : references : in-reply-to : subject :
  list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=Co+9Echa/nHLDcMKSDsTXQvCiX4Nv4/kwzrxBKtcj3Q=;
- b=ieTNtrgDTKbx+i2zE+Fxi7QRqimyzgFQm/Nz7mh9ExNjrE/agBBylbwr2IxOrk6Wf03FT
- NU4n0Lm7FOTILAMf4VZk6lwLfnvL4g6KAMyw3FWKRVIWhWfCEoEGnsE1+zsNCbUWmr7Rgog
- qum1aKfPwriEyyGqpo7scnk+UhQ8u14=
+ list-subscribe : from : reply-to : cc : content-transfer-encoding :
+ content-type : sender : from;
+ bh=9RjtQHqgZX5XLQ4gQlN5WZJB/b8fP85biekVgxNVFdI=;
+ b=Y4ZBtd1uOur9AT8xUfzMPNDD9pv3MOGSr2hOu3/H48XHfG/2E08bAcbUAqe53Z3CpWtmV
+ wMcpVMJ7+dX+u5YRrXEcocwenxsubwR8ZsNREQ4KTzGvRlFa68oLTqP9gkgriNbJJnTB0p2
+ hARlcEbAiuOU3P0+c2WS3X7SVGhMMC4=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8DFD53E145D
-	for <ltp@archiver.kernel.org>; Wed, 29 Jul 2026 21:33:43 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 4C9563E7293
+	for <ltp@archiver.kernel.org>; Wed, 29 Jul 2026 22:19:28 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id DBDE13D2634
- for <ltp@lists.linux.it>; Wed, 29 Jul 2026 21:33:22 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id B54013E1664
+ for <ltp@lists.linux.it>; Wed, 29 Jul 2026 22:19:07 +0200 (CEST)
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com
+ [IPv6:2a00:1450:4864:20::334])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id D482C100075F
- for <ltp@lists.linux.it>; Wed, 29 Jul 2026 21:33:18 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1785353597;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=rl2QYf/YZDAyGWfo4hjnhMXq9DHPMtuuJwJaPeT+QTA=;
- b=UDGYZVRmEcFJp0OgRS7eQyJ/dL6jIF2f+HSoWIIjuQlGkFdxiEhmzsEM+KxmKYvt76bEqU
- f9bR2TvOyfBtRse/nD1dNUrQyBJkBfSYK1JfpKwGBmVZrSmqd6KkIqZ9HG5PC2dZBg+Lww
- GFmzvvmICEoAqg/RYCWJUh0vjMnVgBw=
-Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
- [209.85.160.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-227-3AObn56TN3-EQbZvE4BKQw-1; Wed, 29 Jul 2026 15:33:14 -0400
-X-MC-Unique: 3AObn56TN3-EQbZvE4BKQw-1
-X-Mimecast-MFC-AGG-ID: 3AObn56TN3-EQbZvE4BKQw_1785353594
-Received: by mail-qt1-f198.google.com with SMTP id
- d75a77b69052e-51c083f1818so15268221cf.0
- for <ltp@lists.linux.it>; Wed, 29 Jul 2026 12:33:14 -0700 (PDT)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 0DB042001C6
+ for <ltp@lists.linux.it>; Wed, 29 Jul 2026 22:19:06 +0200 (CEST)
+Received: by mail-wm1-x334.google.com with SMTP id
+ 5b1f17b1804b1-4954a2e73a9so8623715e9.3
+ for <ltp@lists.linux.it>; Wed, 29 Jul 2026 13:19:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1785356346; x=1785961146; darn=lists.linux.it;
+ h=content-transfer-encoding:content-type:in-reply-to:from
+ :content-language:references:cc:to:subject:user-agent:mime-version
+ :date:message-id:from:to:cc:subject:date:message-id:reply-to
+ :content-type; bh=yteK99NdPx8rdcyNP1Wze6NZu6eb29JHuOMitsqpjFY=;
+ b=MWuchGZx3yHMRLDg8j2BRLNTfTa9i4P9GrKgV0ebYjUQOq5p49RtLu/+JqNjuK0g6G
+ zj838CxKFLWO6yanA2OrsZtvosRv3VlYGv0/VSa6fyAMxeTFCkvyvyiJWzVAZgZ3Llz+
+ IRTlzXdQ8y0Zku926zYpiBtb3ApeBzr56BhhYEYD7epz81uc582vop7FG5yb06ykUP/o
+ uwIjmh5827a85d+sAQeno+V73QebCCHlgsMtO3fIrcRjiJLEnLZKn2vhYPSy7PCqVrZW
+ 0jsb8S5uxnLRuVwEbmWg4cPI8ZGDkyskuvHW3V1kj8d54SxHH89cHXMahXXtMnAZFU/3
+ bakA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1785353594; x=1785958394;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to:content-type;
- bh=rl2QYf/YZDAyGWfo4hjnhMXq9DHPMtuuJwJaPeT+QTA=;
- b=b2OTIhqHXcijNH+OAm9n2S+NnqN21UMo+aZj6piG/nFifly9fux2UJDr0VL9aRAarv
- QZvfi6o6cZmzbCiGrQy6Twj6EyvvebBdjvcoUYOD8x+019rFfJe/RpgCRfGeZNz3nT8X
- uyoSyhiROrX70b1P3XMRd2onBn4FR5xpn5PKctsySn147AYzsCXqMjN9z6swHpUWqWOV
- RVhwEOG33yv4HmxDYzGh/miyVZRvZbx2m8VWPW5LJ0iSvn8PJa57hA5v8LmfeWLmzdTR
- Bl+rwgOIcW22ycdMz42KQE5JHma70a5ZMGd+PC1JeR2p+fdui7+ap6nF7Ip59ue4UyaB
- 7yrg==
-X-Gm-Message-State: AOJu0YzEnk11srWIr2cvVG9cLQW9SCybMhgrSMW01zZYIzvcS92QoPQ2
- Ba77BDwo060DCHKHeW5HdyCgpo/YKGdQJehxAGrIS4f52e5b1wx3lG+dwSdia3FHJLWGNwdOJwJ
- AsixWrY3BwlD/CoHtAbTQ8PgJv8/38O/mvnHSONYt3SZsTbJsWewlFg+1PnGU8SjLw4P6t2vQnf
- Pkno24DhWnbda8UHbW64HH0HyP2rsn1/dq/V8f
-X-Gm-Gg: AR+sD12GEURbTJzC3YVgcfscfmRm51MZ5fN2196nNbQxN+YlIrNdDmglY6WptgdIKpP
- Ew0qIJkHilyBy6BrvNOPs1gHxXN5t+qmEDWrvbGRPk9jA+mlgnv5b80Ff0vuORiA8gByenA4n7U
- 7rjbp2iJYobXQJnUrho+e/X0xYZ544wJ1OSpiIF/3NkgRTZbWKcQiS013BtqTKkGbtxBXE6h3U9
- 2IPQT2hWvZQ1wX5rVX0ZEidVO6POS1KCmaT3g2IQ43xCJMv9U/y40AH5yFFX1pwythtm5LQSxUl
- M1BwPB8rJTvsBpEkWMFIaUx3RnswQ29OoAmI7RJt5ax9yyuuOx3ZIMj9leoVbGMQqUtgsSU8vCm
- Hw5HkTWTgYaPnViWi3FwEsX+azg==
-X-Received: by 2002:a05:622a:2515:b0:528:1dd:628 with SMTP id
- d75a77b69052e-529d7197335mr74682141cf.72.1785353594203; 
- Wed, 29 Jul 2026 12:33:14 -0700 (PDT)
-X-Received: by 2002:a05:622a:2515:b0:528:1dd:628 with SMTP id
- d75a77b69052e-529d7197335mr74681761cf.72.1785353593516; 
- Wed, 29 Jul 2026 12:33:13 -0700 (PDT)
-Received: from sbertram-thinkpadp1gen5.bos.com ([67.189.222.97])
+ d=1e100.net; s=20251104; t=1785356346; x=1785961146;
+ h=content-transfer-encoding:content-type:in-reply-to:from
+ :content-language:references:cc:to:subject:user-agent:mime-version
+ :date:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to:content-type;
+ bh=yteK99NdPx8rdcyNP1Wze6NZu6eb29JHuOMitsqpjFY=;
+ b=DWRm0BGG5ZrPzmiiD/w25XTMcxzXn0N/0qLRoL25wEXc/UFABiLRVzxT2LtV28fCbg
+ VLH6Vrjplz10xajVQH2t0EdmbNkc9urUJLkJMoFENmSXuJHWt9gGWndsMlUIA3wOoxBn
+ t+I/0txHZdeqLH7SXEZoVma74YED/2914rmGoZ8I2a7omSxmINm13SNw/K28Da19Xyv0
+ nO/QHHHkgVhc3d7S6+7mWZyNbw3fxNZWJEzwOFr5qG6vaa9vH/4V9AvSefqsgMZC+35d
+ 6wPHpjZ4Hnbm0xyST4kqm8ZuXoCGiMv4T1I41KDxum11ZKjhE+z0FmRdjWj+RB9p4bg8
+ k3+w==
+X-Gm-Message-State: AOJu0Yzq6Hf2p8EevSDw4q4iNMKZQH++2iuIa4LXt8wux1cf2PLBmxIY
+ xLoBHS0tHGVllHEIYshfvzxZ2EBwuJi7qn7QbHcWXvz7UyvJnGIGi1iV+XHLCXoD6ZD1IksyF3Z
+ tQFfbqSA=
+X-Gm-Gg: AR+sD13WHB9l7fKaMehohMxntSV+qsOlBzqwcZu5aSVmNOsPsi9Ugj4NfWK8pnm7u0F
+ ePOj0Yop2wH/juG719gVfm+s9XFwbegKu15Fe91QNBNv7tpCS6jIpHqoC8xDi89CvRE+Y58AHC6
+ y+JzjloZgRorFDSsvr0cyaDZNLyuGXdfOgfP2IIgFnBfjGFnrZ0BTSua03OVCfwtV4Y3aO3xUd/
+ w1q2TA2DGFv5ZhbZY8XY5hvgh3zQRn3l8vv0lmCAhaasbkiuAPvTxZtvzZpS9l0t3j4HN62pglp
+ PQJpRoBGXyS5x7Km2AEx6ZpBlYkpPCfWlRLK6JWY86oC4wS7tJKlNwuDK/cZYjmh9pzXG6ODkft
+ xXlZzZESBHBgVNkiS3zZoHrUACik52Ue7D2jxNgIv/HD6V4dk3YNrxAbjHcl0bOhOT6t1feiXba
+ 0Hepk4oTvICAYlFkwiwUJrrMH92yMsaPbGgddwy1QqxYuoDmJWHs3HD/QsspxeF5hGGr/B201YY
+ k4zhA==
+X-Received: by 2002:a05:600c:3115:b0:495:71fc:3a64 with SMTP id
+ 5b1f17b1804b1-49800cc59f9mr218925e9.25.1785356346296; 
+ Wed, 29 Jul 2026 13:19:06 -0700 (PDT)
+Received: from ?IPV6:2a07:b241:1004:8300::1000? ([2a07:b241:1004:8300::1000])
  by smtp.gmail.com with ESMTPSA id
- d75a77b69052e-529e30fc51fsm25456831cf.30.2026.07.29.12.33.12
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 29 Jul 2026 12:33:12 -0700 (PDT)
-To: ltp@lists.linux.it
-Date: Wed, 29 Jul 2026 15:33:05 -0400
-Message-ID: <20260729193307.4187107-1-sbertram@redhat.com>
-X-Mailer: git-send-email 2.55.0
-In-Reply-To: <20260729145321.4115712-1-sbertram@redhat.com>
-References: <20260729145321.4115712-1-sbertram@redhat.com>
+ 5b1f17b1804b1-496c46160dfsm165112875e9.10.2026.07.29.13.19.05
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Wed, 29 Jul 2026 13:19:05 -0700 (PDT)
+Message-ID: <5e27b4ff-af04-49ef-a830-934164486892@suse.com>
+Date: Wed, 29 Jul 2026 22:19:04 +0200
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: 7tw7GWemj93SLG_iN5WASsxwihAADpsqOkeP2grl0DM_1785353594
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+User-Agent: Mozilla Thunderbird
+To: Petr Vorel <pvorel@suse.cz>
+References: <20260729095730.29185-1-pvorel@suse.cz>
+ <20260729095730.29185-3-pvorel@suse.cz>
+ <56ad6458-25b4-4eee-ab1e-8d3c6d489aa8@suse.com>
+ <20260729133640.GA36478@pevik>
+Content-Language: en-US
+In-Reply-To: <20260729133640.GA36478@pevik>
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v10] semctl01: fix SEM_STAT failures under parallel
- LTP runs
+Subject: Re: [LTP] [PATCH v2 2/5] lib: Add support for max_kver to struct
+ tst_test and tst_fs
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -109,145 +106,98 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Stephen Bertram via ltp <ltp@lists.linux.it>
-Reply-To: Stephen Bertram <sbertram@redhat.com>
-Cc: Stephen Bertram <sbertram@redhat.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+From: Avinesh Kumar via ltp <ltp@lists.linux.it>
+Reply-To: Avinesh Kumar <avinesh.kumar@suse.com>
+Cc: ltp@lists.linux.it
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-SEM_STAT was using the global high index from IPC_INFO, which is not
-stable when other IPC tests run in parallel and can abort the test with
-TBROK.
-
-Signed-off-by: Stephen Bertram <sbertram@redhat.com>
----
-Test: ./kirk -w 4 -f syscalls_32 -p semctl01 -i 1000
-
-Before changes:
-Total runs:  32000
-Runtime:    16m 32s
-Passed:     415968
-Failed:     0
-Skipped:    0
-Broken:     16
-Warnings:   0
-
-After changes:
-Total runs:  32000
-Runtime:    16m 36s
-Passed:     416000
-Failed:     0
-Skipped:    0
-Broken:     0
-Warnings:   0
-
-Assisted-by: Cursor
-
- testcases/kernel/syscalls/semctl/semctl01.c | 67 ++++++++++++++++++---
- 1 file changed, 58 insertions(+), 9 deletions(-)
-
-diff --git a/testcases/kernel/syscalls/semctl/semctl01.c b/testcases/kernel/syscalls/semctl/semctl01.c
-index 5bd675ab6..c2aee0eb0 100644
---- a/testcases/kernel/syscalls/semctl/semctl01.c
-+++ b/testcases/kernel/syscalls/semctl/semctl01.c
-@@ -210,12 +210,27 @@ static void func_rmid(void)
- 
- static void func_iinfo(int hidx)
- {
--	if (hidx >= 0) {
--		sem_index = hidx;
--		tst_res(TPASS, "the highest index is correct");
-+	int semmsl, semmns, semopm, semmni;
-+
-+	/*
-+	 * Return value is the highest used index; SAFE_SEMCTL already
-+	 * rejects negatives. Limits are what IPC_INFO actually fills.
-+	 */
-+	tst_res(TINFO, "IPC_INFO highest index %d (our index %d)",
-+		hidx, sem_index);
-+
-+	SAFE_FILE_SCANF(PATH_KERN_SEM, "%d %d %d %d",
-+			&semmsl, &semmns, &semopm, &semmni);
-+
-+	if (ipc_buf.semmsl == semmsl && ipc_buf.semmns == semmns &&
-+		ipc_buf.semopm == semopm && ipc_buf.semmni == semmni) {
-+		tst_res(TPASS, "IPC_INFO seminfo matches %s", PATH_KERN_SEM);
- 	} else {
--		sem_index = 0;
--		tst_res(TFAIL, "the highest index is incorrect");
-+		tst_res(TFAIL,
-+			"IPC_INFO seminfo %d %d %d %d, expected %d %d %d %d from %s",
-+			ipc_buf.semmsl, ipc_buf.semmns, ipc_buf.semopm,
-+			ipc_buf.semmni, semmsl, semmns, semopm, semmni,
-+			PATH_KERN_SEM);
- 	}
- }
- 
-@@ -227,12 +242,40 @@ static void func_sinfo(void)
- 		tst_res(TPASS, "number of semaphore sets is correct");
- }
- 
--static void func_sstat(int semidx)
-+static void func_sstat(int semid)
- {
--	if (semidx >= 0)
-+	if (semid == sem_id)
- 		tst_res(TPASS, "id of the semaphore set is correct");
- 	else
--		tst_res(TFAIL, "id of the semaphore set is incorrect");
-+		tst_res(TFAIL, "expected sem_id %d, got %d", sem_id, semid);
-+}
-+
-+/*
-+ * SEM_STAT takes an index into the kernel's internal array, not a semid.
-+ * Return the index that maps to this test's set.
-+ */
-+static int get_sem_idx_from_id(int sem_id)
-+{
-+	struct seminfo info;
-+	struct semid_ds dummy_ds;
-+	union semun arg;
-+	int max_idx, i;
-+
-+	arg.__buf = &info;
-+	/* SEM_INFO ignores semid; but SAFE_SEMCTL requires an lvalue */
-+	max_idx = SAFE_SEMCTL(sem_id, 0, SEM_INFO, arg);
-+
-+	arg.buf = &dummy_ds;
-+	for (i = 0; i <= max_idx; i++) {
-+		/*
-+		 * Bare semctl: unused/unreadable indices fail with
-+		 * EINVAL/EACCES; SAFE_SEMCTL would abort the test.
-+		 */
-+		if (semctl(i, 0, SEM_STAT, arg) == sem_id)
-+			return i;
-+	}
-+
-+	return -1;
- }
- 
- static struct tcases {
-@@ -263,8 +306,14 @@ static void verify_semctl(unsigned int n)
- 	struct tcases *tc = &tests[n];
- 	int rval;
- 
--	if (sem_id == -1)
-+	if (sem_id == -1) {
- 		sem_id = SAFE_SEMGET(IPC_PRIVATE, PSEMS, IPC_CREAT | IPC_EXCL | SEM_RA);
-+		sem_index = get_sem_idx_from_id(sem_id);
-+		if (sem_index < 0)
-+			tst_brk(TBROK,
-+				"Failed to get sem_id %d to idx mapping", sem_id);
-+		tst_res(TINFO, "sem_id=%i maps to kernel index=%i", sem_id, sem_index);
-+	}
- 	if (tc->func_setup) {
- 		switch (tc->cmd) {
- 		case GETNCNT:
--- 
-2.55.0
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+CgpPbiA3LzI5LzI2IDM6MzYgUE0sIFBldHIgVm9yZWwgd3JvdGU6Cj4gSGkgQXZpbmVzaCwKPiAK
+Pj4gSGkgUGV0ciwKPiAKPj4gZmV3IGNvbW1lbnRzIGJlbG93Cj4gVGhhbmtzIQo+IAo+PiBPbiA3
+LzI5LzI2IDExOjU3IEFNLCBQZXRyIFZvcmVsIHdyb3RlOgo+Pj4gU2lnbmVkLW9mZi1ieTogUGV0
+ciBWb3JlbCA8cHZvcmVsQHN1c2UuY3o+Cj4+PiAtLS0KPj4+IFRoZSBzYW1lIGFzIHYxLgo+IAo+
+Pj4gICAgaW5jbHVkZS90c3RfdGVzdC5oIHwgIDkgKysrKysrKystCj4+PiAgICBsaWIvdHN0X3Rl
+c3QuYyAgICAgfCAzOSArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysKPj4+
+ICAgIDIgZmlsZXMgY2hhbmdlZCwgNDcgaW5zZXJ0aW9ucygrKSwgMSBkZWxldGlvbigtKQo+IAo+
+Pj4gZGlmZiAtLWdpdCBhL2luY2x1ZGUvdHN0X3Rlc3QuaCBiL2luY2x1ZGUvdHN0X3Rlc3QuaAo+
+Pj4gaW5kZXggYzY5MzYyNDg1ZS4uMDkxMDY2MDgyNyAxMDA2NDQKPj4+IC0tLSBhL2luY2x1ZGUv
+dHN0X3Rlc3QuaAo+Pj4gKysrIGIvaW5jbHVkZS90c3RfdGVzdC5oCj4+PiBAQCAtMjgwLDYgKzI4
+MCw5IEBAIHN0cnVjdCB0c3RfdWxpbWl0X3ZhbCB7Cj4+PiAgICAgKgo+Pj4gICAgICogQG1pbl9r
+dmVyOiBBIG1pbmltdW0ga2VybmVsIHZlcnNpb24gc3VwcG9ydGluZyB0aGUgZmlsZXN5c3RlbSB3
+aGljaCBoYXMgYmVlbgo+Pj4gICAgICogICAgICAgICAgICBjcmVhdGVkIHdpdGggbWtmcy4KPj4+
+ICsgKgo+Pj4gKyAqIEBtYXhfa3ZlcjogQSBtYXhpbXVtIGtlcm5lbCB2ZXJzaW9uIHN1cHBvcnRp
+bmcgdGhlIGZpbGVzeXN0ZW0gd2hpY2ggaGFzIGJlZW4KPj4+ICsgKiAgICAgICAgICAgIGNyZWF0
+ZWQgd2l0aCBta2ZzLgo+Pj4gICAgICovCj4+PiAgICBzdHJ1Y3QgdHN0X2ZzIHsKPj4+ICAgIAlj
+b25zdCBjaGFyICp0eXBlOwo+Pj4gQEAgLTI5Miw2ICsyOTUsNyBAQCBzdHJ1Y3QgdHN0X2ZzIHsK
+Pj4+ICAgIAljb25zdCB2b2lkICptbnRfZGF0YTsKPj4+ICAgIAljb25zdCBjaGFyICptaW5fa3Zl
+cjsKPj4+ICsJY29uc3QgY2hhciAqbWF4X2t2ZXI7Cj4+PiAgICB9Owo+Pj4gICAgLyoqCj4+PiBA
+QCAtMzAxLDcgKzMwNSw5IEBAIHN0cnVjdCB0c3RfZnMgewo+Pj4gICAgICogICAgICAgIGFuZCBl
+YWNoIHRpbWUgcGFzc2VkIGFuIGluY3JlYXNpbmcgY291bnRlciB2YWx1ZS4KPj4+ICAgICAqIEBv
+cHRpb25zOiBBbiBOVUxMIG9wdHN0ciB0ZXJtaW5hdGVkIGFycmF5IG9mIHN0cnVjdCB0c3Rfb3B0
+aW9uLgo+Pj4gICAgICoKPj4+IC0gKiBAbWluX2t2ZXI6IEEgbWluaW1hbCBrZXJuZWwgdmVyc2lv
+biB0aGUgdGVzdCBjYW4gcnVuIG9uLiBlLmcuICIzLjEwIi4KPj4+ICsgKiBAbWluX2t2ZXI6IEEg
+bWluaW1hbCBrZXJuZWwgdmVyc2lvbiB0aGUgdGVzdCBjYW4gcnVuIG9uLiBlLmcuICI0LjQiLgo+
+PiBzL21pbmltYWwvbWluaW11bQo+IAo+IFlvdSBzcG90dGVkIG1vcmUgZ3JhbW1hciBlcnJvcnMg
+c28gSSB0cnVzdCB5b3UgOikuIEJ1dCBjYW4geW91IHBsZWFzZSBkb3VibGUKPiBjaGVjayB0aGF0
+IGl0J8SRIHJlYWxseSBjb3JyZWN0PyBNaW5pbWFsIGlzIGFuIGFkamVjdGl2ZSwgbWluaW11bSBp
+cyBhbiBhZGplY3RpdmUKPiBidXQgYWxzbyBhIG5vdW4gYW5kIGFuIGFkdmVyYi4KPiAKPiBXaGVu
+IGdvb2dsaW5nIEkgZXZlbiBmb3VuZCB1c2Ugb2YgYm90aCBpbiB0aGUgc2FtZSBkb2N1bWVudCA6
+KQo+IGh0dHBzOi8va3ViZXJuZXRlcy5pby9kb2NzL3JlZmVyZW5jZS9ub2RlL2tlcm5lbC12ZXJz
+aW9uLXJlcXVpcmVtZW50cy8KPiAiaGF2ZSBtaW5pbXVtIGtlcm5lbCB2ZXJzaW9uIHJlcXVpcmVt
+ZW50cyIKPiAibWluaW1hbCBrZXJuZWwgdmVyc2lvbiByZXF1aXJlbWVudCIKSSBzZWUgd2UgYXJl
+IHVzaW5nIG1pbmltYWwgaW4gbWFueSBwbGFjZXMgYWxyZWFkeS4gSSB0aGluayBib3RoIHdvcmRp
+bmdzCmFyZSBjb3JyZWN0LiBKdXN0IHRoYXQgJ21heGltYWwga2VybmVsIHZlcnNpb24nIHNvdW5k
+ZWQgYSBiaXQgb2RkIHRvIG1lLgpTbyBwbGVhc2UgaWdub3JlIG15IGNvbW1lbnQgaGVyZS4KPiAK
+Pj4+ICsgKgo+Pj4gKyAqIEBtYXhfa3ZlcjogQSBtYXhpbWFsIGtlcm5lbCB2ZXJzaW9uIHRoZSB0
+ZXN0IGNhbiBydW4gb24uIGUuZy4gIjcuMiIuCj4+IHMvbWF4aW1hbC9tYXhpbXVtCj4gZHR0bwo+
+IAo+PiBBbHNvLCBJIGFzc3VtZSB0ZXN0IHdpbGwgKm5vdCBiZSBza2lwcGVkKiBvbiBrZXJuZWwg
+dmVyc2lvbnMKPj4gNy4xLjEsIDcuMS4yIGV0YyBqdXN0IHdpdGgKPj4gLm1heF9rdmVyPSI3LjEi
+Cj4gCj4gR29vZCBwb2ludCwgdGhhbmtzID0+IHYzIChzaWdoKS4KPiAKPiBjaGVja19tYXhfa3Zl
+cigpIG5lZWRzIHRvIGhhdmUgdGhpcyBjb25kaXRpb24gdG8gdGFrZSBhbiBhY2NvdW50IHRoZSBz
+dWJsZXZlbC4KPiAKPiAtaWYgKHRzdF9rdmVyY21wKHYxLCB2MiwgdjMpID4gMCkgewo+ICtpZiAo
+dHN0X2t2ZXJjbXAodjEsIHYyLCB2MykgPj0gMTAyNCkgewo+IAkJbXNnID0gIlRoZSB0ZXN0IHJl
+cXVpcmVzIGtlcm5lbCAlcyBvciBvbGRlciI7CkFuZCB3aWxsIHRoaXMgYmUgZmluZSB3aXRoIC0K
+Lm1heF9rdmVyPSI3LjEuNSIKb24gU1VUIHdpdGggdjcuMi4wID8KCnNvcnJ5LCBoYXZlbid0IHRl
+c3RlZCB5ZXQuCgo+IC4uLgo+IAo+IFN1YmxldmVsIGNhbiBiZSBhYm92ZSAyNTUgc2luY2UgNC40
+LjI1Ngo+IGh0dHBzOi8vbHduLm5ldC9tbC9saW51eC1rZXJuZWwvMjAyMTAyMDgxNDU4MDUuODk4
+NjU4MDU1QGxpbnV4Zm91bmRhdGlvbi5vcmcvCj4gaHR0cHM6Ly9naXQua2VybmVsLm9yZy9wdWIv
+c2NtL2xpbnV4L2tlcm5lbC9naXQvdG9ydmFsZHMvbGludXguZ2l0L2NvbW1pdC8/aWQ9OWI4MmYx
+M2U3ZWYzCj4gCj4gQnV0IGl0IHNob3VsZCBiZSBiZWxvdyAxMDI0IChwcmFjdGljYWxseSB0aGUg
+aGlnaGVzdCBzdWJsZXZlbCBoYXMgYmVlbiAzMzcpLgo+IAo+IEtpbmQgcmVnYXJkcywKPiBQZXRy
+Cj4gCj4+IG1heWJlIHdlIHNob3VsZCBjbGFyaWZ5Lgo+IAo+Pj4gICAgICoKPj4+ICAgICAqIEBz
+dXBwb3J0ZWRfYXJjaHM6IEEgTlVMTCB0ZXJtaW5hdGVkIGFycmF5IG9mIGFyY2hpdGVjdHVyZXMg
+dGhlIHRlc3QgcnVucyBvbgo+Pj4gICAgICogICAgICAgICAgICAgICAgICAgZS5nLiB7Ing4Nl82
+NCwgIng4NiIsIE5VTEx9LiBDYWxscyB0c3RfaXNfb25fYXJjaCgpIHRvCj4+PiBAQCAtNTUxLDYg
+KzU1Nyw3IEBAIHN0cnVjdCB0c3RfZnMgewo+Pj4gICAgCXN0cnVjdCB0c3Rfb3B0aW9uICpvcHRp
+b25zOwo+Pj4gICAgCWNvbnN0IGNoYXIgKm1pbl9rdmVyOwo+Pj4gKwljb25zdCBjaGFyICptYXhf
+a3ZlcjsKPj4+ICAgIAljb25zdCBjaGFyICpjb25zdCAqc3VwcG9ydGVkX2FyY2hzOwo+Pj4gZGlm
+ZiAtLWdpdCBhL2xpYi90c3RfdGVzdC5jIGIvbGliL3RzdF90ZXN0LmMKPj4+IGluZGV4IDc3OGEx
+ZmVkNDAuLmZhMzhiM2E3YTMgMTAwNjQ0Cj4+PiAtLS0gYS9saWIvdHN0X3Rlc3QuYwo+Pj4gKysr
+IGIvbGliL3RzdF90ZXN0LmMKPj4+IEBAIC0xMDg3LDYgKzEwODcsMzYgQEAgc3RhdGljIGJvb2wg
+Y2hlY2tfbWluX2t2ZXIoY29uc3QgY2hhciAqbWluX2t2ZXIsIGNvbnN0IGludCBicmtfbm9zdXBw
+KQo+Pj4gICAgCXJldHVybiB0cnVlOwo+Pj4gICAgfQo+Pj4gKy8qCj4+PiArICogQ2hlY2sgZm9y
+IHRoZSBtYXhpbWFsIHJlcXVpcmVkIGtlcm5lbCB2ZXJzaW9uLgo+Pj4gKyAqCj4+PiArICogcmV0
+dXJuOiB0cnVlIGlmIHRoZSBrZXJuZWwgdmVyc2lvbiBpcyBsb3cgZW5vdWdoLCBmYWxzZSBvdGhl
+cndpc2UuCj4gCj4+IFRoaXMgc291bmRzIGEgYml0IGNvbmZ1c2luZy4gSG93IGFib3V0LQo+IAo+
+PiBDaGVjayB0aGUgcnVubmluZyBrZXJuZWwgYWdhaW5zdCB0aGUgbGFzdCB2ZXJzaW9uIHRoZSB0
+ZXN0IGFwcGxpZXMgdG8uCj4gCj4gTWFrZXMgc2Vuc2UuIEJhc2VkIG9uIGNoZWNrX21pbl9rdmVy
+KCksIHdoaWNoIHdhcyByZW5hbWVkIGZyb20gY2hlY2tfa3ZlcigpIGluCj4gdGhlIHByZXZpb3Vz
+IGNvbW1pdC4gQ291bGQgeW91IGhhdmUgbG9vayBvbiB0aGVzZSBhcyB3ZWxsLiBBbnl3YXksIGlm
+IHlvdSBoYXZlCj4gdGltZSwgaGF2aW5nIGEgbG9vayBvbiBkb2NzIHdvcmRpbmcgYXMgYSBzZXBh
+cmF0ZSBlZmZvcnQgd291bGQgaGVscC4Kc3VyZSwgSSB3aWxsIHNlZSBpZiBJIGZpbmQgc29tZXRo
+aW5nIHdvcnRoIHJlcG9ydGluZy4KCj4gCj4+IHJldHVybjogdHJ1ZSBpZiB0aGUga2VybmVsIGlz
+IG9sZCBlbm91Z2gsIGZhbHNlIG90aGVyd2lzZS4KPiAKPiArMQo+IAo+Pj4gKyAqLwo+Pj4gK3N0
+YXRpYyBib29sIGNoZWNrX21heF9rdmVyKGNvbnN0IGNoYXIgKm1heF9rdmVyLCBjb25zdCBpbnQg
+YnJrX25vc3VwcCkKPj4+ICt7Cj4+PiArCWNoYXIgKm1zZzsKPj4+ICsJaW50IHYxLCB2MiwgdjM7
+Cj4+PiArCj4+PiArCWlmICh0c3RfcGFyc2Vfa3ZlcihtYXhfa3ZlciwgJnYxLCAmdjIsICZ2Mykp
+IHsKPj4+ICsJCXRzdF9yZXMoVFdBUk4sCj4+PiArCQkJIkludmFsaWQga2VybmVsIHZlcnNpb24g
+JXMsIGV4cGVjdGVkICUlZC4lJWQuJSVkIiwKPj4gSSB3b3VsZG4ndCBzYXkgJ2tlcm5lbCB2ZXJz
+aW9uIGlzIGludmFsaWQnLiBtYXliZSB0ZXN0IGlzbid0Cj4+IHN1cHBvcnRlZC9hcHBsaWNhYmxl
+IG9uLi4KPiAKPiB0c3RfcGFyc2Vfa3ZlcigpIHJldHVybnMgMSBvbiBlcnJvciA9PiB0aGlzIGlz
+IHJlYWxseSBhbiBlcnJvciBjaGVjay4KPiBPdGhlciB0aGluZyBpcyB0aGF0IHRoZSBzYW1lIGVy
+cm9yIGhhbmRsaW5nIGlzIG9uIGJvdGggcGxhY2VzLCBidXQgdGhhdCdzIHZlcnkKPiBtaW5vci4K
+c29ycnksIG15IGJhZC4gSSBtaXN1bmRlcnN0b29kIHRoaXMuIFBsZWFzZSBpZ25vcmUuCj4gCj4g
+S2luZCByZWdhcmRzLAo+IFBldHIKPiAuLi4KPiAKPj4gVGhhbmtzLAo+PiBBdmluZXNoCgoKLS0g
+Ck1haWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3RzLmxpbnV4Lml0L2xpc3RpbmZvL2x0cAo=
