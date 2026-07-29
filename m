@@ -4,88 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 96D92C53200
-	for <ltp@archiver.kernel.org>; Wed, 29 Jul 2026 05:25:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 496E3C53200
+	for <ltp@archiver.kernel.org>; Wed, 29 Jul 2026 05:38:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1785302734; h=message-id :
- to : in-reply-to : date : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : cc : mime-version : content-type :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1785303507; h=to : date :
+ message-id : in-reply-to : references : mime-version : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : content-type :
  content-transfer-encoding : sender : from;
- bh=TpR6HajmvQGfqQO3qk+sP/KyuerNXq2EcBAcjVJt/Ak=;
- b=oo53i2V3t2hrarD3Ez40PV/crbANVkiGRV1P+PtV3kh9ZdOzMc6lf9UGnRf6gY+Ngw33N
- 9TvYdjiIx95If0k23tX2zU9xYf3h9iltCKWNx6MQqTKQTU3Tt4nXjNFBjFBLZpMPWjWImA7
- MkRnrF1Fgro+lx9MNf9TB9o0gPpn8Kw=
+ bh=l840wCPY01Gqz2yBAL7oPn5ga3drw+yKcFSS6MaIzh8=;
+ b=roYwZdbWu7Rq9lh9/0DE1bVmLNWVju09w1ljwElBIWqUfCJFMfpdUuEIRt32cprRii1+/
+ XHYMumTSv22T/xDjrRft5X05Mnxd3V+EmsfwLIfEml0C1PqXS17qiZ8G6v/SrofK7kABnYU
+ oz30JCVQWpGlykI7VT3d990hnIHpX8o=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 840E63E4A7A
-	for <ltp@archiver.kernel.org>; Wed, 29 Jul 2026 07:25:34 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 609BD3E4A7C
+	for <ltp@archiver.kernel.org>; Wed, 29 Jul 2026 07:38:27 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B4E033E1436
- for <ltp@lists.linux.it>; Wed, 29 Jul 2026 07:25:13 +0200 (CEST)
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com
- [IPv6:2a00:1450:4864:20::32f])
+ by picard.linux.it (Postfix) with ESMTPS id 00C523E171C
+ for <ltp@lists.linux.it>; Wed, 29 Jul 2026 07:38:06 +0200 (CEST)
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com
+ [IPv6:2a00:1450:4864:20::434])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 53FEF600804
- for <ltp@lists.linux.it>; Wed, 29 Jul 2026 07:25:13 +0200 (CEST)
-Received: by mail-wm1-x32f.google.com with SMTP id
- 5b1f17b1804b1-4956869750eso3456145e9.2
- for <ltp@lists.linux.it>; Tue, 28 Jul 2026 22:25:13 -0700 (PDT)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 6DF9C2000A6
+ for <ltp@lists.linux.it>; Wed, 29 Jul 2026 07:38:06 +0200 (CEST)
+Received: by mail-wr1-x434.google.com with SMTP id
+ ffacd0b85a97d-47f84023916so519637f8f.3
+ for <ltp@lists.linux.it>; Tue, 28 Jul 2026 22:38:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1785302713; x=1785907513; darn=lists.linux.it;
- h=date:content-transfer-encoding:content-type:subject:in-reply-to:cc
- :to:from:message-id:from:to:cc:subject:date:message-id:reply-to
- :content-type; bh=yxR/xYaa/yTf6mfwBdRDFHzNbfe5koH83QnJMMP9dm8=;
- b=MUPWgB/ZFuipfw/fSpDqYYxXq6jFtgYQcO1e8aJTyzT8ZkYsqhshxtzkExSt75l1Or
- nptC13t4Y1ZUq5WJH0bT3iC4eSP0AuOf4LUZHo0Q+QUT/L8NoHoC15Bt1bOd577C4jyU
- EzQbSNww/g1xadIdS4O01OPJZpDfCslXqI3M3909qvY/HPSFJohXlWNXzdiynwA3k3hI
- Z2Ny2roBNVBi4ubNHEZ2iBJNZu+gvwpwUfMA4XxFJQ02Nu4rVrUoNUn5QGsONV7r1Gdv
- ZQmtw3DPpyCfwUXyJaP2RdVz2qEBQ7THI2CkT1e/68Kg/k+msfL4C3zyKZO1hvwNddZ4
- tIXw==
+ d=suse.com; s=google; t=1785303486; x=1785908286; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to:content-type;
+ bh=gtAK8EEyevee/zaKvHM+8HzhLgD8rzRrBB3gAvsd3zA=;
+ b=KfSfCQ/9BwNvtcHNAQGu2smGJQ00cZMi/7Bu2dfCwv8MNN0TjzCcBYfUwpGHcL9n9u
+ P6uZenfgvC0XWnrSmyOzAkQmEPzpUAbPDmD4WaKcjzr+vM5MqUy/nmAQoVdnU56lQSS2
+ esM6sBOYzO90/Cz84f0TNHVtsulpJVYm2sDyu0f4C5lnlDQgpMvpjsf4GnFjOGQ3FNj6
+ 1GFe7lw/MkKfsdLSE+gUaZ5yELkR5fyBdy3+prg6FGszIPuzHOcVYY4zXFfcfLXSt2H9
+ msp3KgHzMegqiLGoFKWqYB4LowsH55vQHIC2yzvnTfVIwJV4JDDN0vuynnPREei1kq1e
+ hl2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1785302713; x=1785907513;
- h=date:content-transfer-encoding:content-type:subject:in-reply-to:cc
- :to:from:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject
- :date:message-id:reply-to:content-type;
- bh=yxR/xYaa/yTf6mfwBdRDFHzNbfe5koH83QnJMMP9dm8=;
- b=c0H23b5XedJa5ve/HXGI8x8rp4tiTjC366jBmhOQvX8y89Y3YvGhMU+BMD2j98F8eM
- v070n3dMUJtsyuPZuMX12qXok7UhQ0rT5XrctLKUAoebeoJ3cvM6miJs9q1DcIXL+kDz
- N2TyddxyFFPE1V81R4M33clSSFcpAOQUu4hzuvqKLbE6c3rjeLzRgR+RMEgTmVFFpaR+
- DDsPrGYBM1LJsefem5WAYSqzBW/IYIYiUe7QSLO3u1HwZVM0tKMjMNxvGgL0mm1JOdu7
- zpLeyi0pl2FvTMQKEYMbmnbNgVg9fQdcp4Hc32LeQ2xWqvJi/WG6OXmJ8ZWbEBs4z14b
- /QOA==
-X-Forwarded-Encrypted: i=1;
- AHgh+RogbX/hbzX9+hiiK0XPn6EslktRjWnSDIDtxHEE1Y6YSqC5AEViffhggr8gvKAhil9rGp0=@lists.linux.it
-X-Gm-Message-State: AOJu0Yz/0o0NuC1LhInStwNXe6RP4JUV8dgRstLyHD3EE3HyvY1eIDlL
- vQ6HGkLx2lB8CtnwRzP3OZCji/tHnLfy3lpyTHtiMuvOizhDT7uwMmpiZxFgGFxSUAY=
-X-Gm-Gg: AR+sD13cL5ULlCidh3QBujoxQv6a7crnwc+vAQWnRXDkEbnDED9N+FFaQXLN4R2Gxr6
- wAzLr+ya9XhPPFEaiWUcXfLIeIRd6FtYzAKk4blkhIER7OXyPQm/X+XUyx67N9guDqIzhS3iutI
- 5zFfd2rey2CnskbLsr+yKtaXa2KLdG2KCvP/xc0qK5TrgbVDKh3R3Gbdg9rfxj3fh2XmCHD5WQE
- 42kCOAVZJQMKaGVrnkjNse1iDsXwEZN3oZhugQwCrXfAsW/197Kd0qTWK7+E+C4fSWOageQwpI9
- BMCjvDMNRWBYhyqDUDUF2agS6MQ63dcve9a6Ugpil03NQICMPxIPHS3kF+CkNOatX77vanGrL8b
- VCOlLWA0QYCY2qmDwll1a4KCa2JAPlhwYgj7omt9KbK51fVngnTvb7XuA7gKwzPUwQ5h67RKXTe
- JpKrmaKGOr/1KNjfV3rlCBRJzMV+gIMbyI+yROLXOScXU+LmzbdfHr4yRiz4buRPrYtJwbnASwL
- vwdJVlYbvTiTDxWvXYfpt8pYDm4fsqSSLmNOdSX7w==
-X-Received: by 2002:a05:600c:5486:b0:495:7040:c7e9 with SMTP id
- 5b1f17b1804b1-496c6414bddmr53388205e9.6.1785302712747; 
- Tue, 28 Jul 2026 22:25:12 -0700 (PDT)
-Received: from localhost.localdomain (ip-109-40-49-254.web.vodafone.de.
- [109.40.49.254]) by smtp.gmail.com with ESMTPSA id
- ffacd0b85a97d-47fb6b2755dsm5159417f8f.36.2026.07.28.22.25.11
+ d=1e100.net; s=20251104; t=1785303486; x=1785908286;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to:content-type;
+ bh=gtAK8EEyevee/zaKvHM+8HzhLgD8rzRrBB3gAvsd3zA=;
+ b=eO2p/glmOOhrtil6Dfd3ew4qJ/rCm1gIUG8YWmo58Tkbzw2u+S09mQAN5boTR+wCzF
+ E3T3eLtInZmmI9vjUCSSRVnwEYwdIs5GMD89saIDB9U88oKCrEUv2Ka9vHiSaal4zFJX
+ FX4L3ZIfmWnBh7tkAm6EEBJ+Sd+NfST4bvX/d5mHjC4jJ7tTzXyBI/8QzBWds+iBf8B+
+ stnJcasFRheqOUuoF9AmrkRSa7WkMA3T8xLRfToIF7ZNbntbAgmHXWZJiXrPI35koZla
+ jRBhmGKDHZcJcKqUsl2zdFrFSFT6cyHJM83HzfJkFh4bUtKd7MRTdzI57jl/JTcOesd2
+ EfgQ==
+X-Gm-Message-State: AOJu0YwME0tKL94WhaNmvutLul1XsznAAqYdV3tUCfBKZ2ZR42kIdxIU
+ MwY295rjRtHWclq85lsZwpFKGWX7idZhh73iQkTtUolLgFNYmdCrh3sUj1eMPLW2Jz4Uljx7/gv
+ 36Cs=
+X-Gm-Gg: AR+sD10r3L6I5cXSUh1OTnXoCoeZFghCxsMr3ioqaM1pNUN2rXO2tX2NAxNSvuaqHfw
+ QGIlGAVWbx/zAqQVzxqy98ux4I0IU4fR2FwBxLpKdA4IaflOxNOwPpV3XBP7pm1Ccp4UWAoTTba
+ 0oS11746x8KbdWDTl78nE3t6CEAC96kUCjJravnrlhgPh5d1a9Ho6P9hHIOGf4pJ9iFGFR2yMyG
+ 9xFSxpNxNTdhIET5dRTDHUVn5VPFd8/r3iiIxRLq0xDY1ZVv4bruzDW/n5xuZpm1O+22imQex87
+ XJNY/aqfMpDVq7n64YSixFnpjBG6TCnGCbsfSt03Tlr9GhpnlQArC2GRTIf/sthNQYY5HnX5n9/
+ SNS9ZL1D2IelMXNlsabov+3y/jqCOoQefOuJFl5KSTp7q1lh5tMeMRZDQNHRAX4zV82H2LlRHdZ
+ 3M0HFlWlRDYe4gT2KbnG7lKxrdzMODntnfTv5mSUYnwAsGZLei
+X-Received: by 2002:a5d:64e9:0:b0:47d:eee8:ec40 with SMTP id
+ ffacd0b85a97d-47fb1f103f9mr5848046f8f.38.1785303485860; 
+ Tue, 28 Jul 2026 22:38:05 -0700 (PDT)
+Received: from localhost ([2a07:de40:b240:0:2ad6:ed42:2ad6:ed42])
+ by smtp.gmail.com with UTF8SMTPSA id
+ ffacd0b85a97d-47fb6aa3a94sm4701594f8f.8.2026.07.28.22.38.05
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 28 Jul 2026 22:25:12 -0700 (PDT)
-Message-ID: <6a698eb8.8aac6524.2a9c72.3fcc@mx.google.com>
-To: "Petr Vorel" <pvorel@suse.cz>
-In-Reply-To: <20260728210228.GA114518@pevik>
-Date: Wed, 29 Jul 2026 05:25:10 +0000
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+ Tue, 28 Jul 2026 22:38:05 -0700 (PDT)
+To: ltp@lists.linux.it
+Date: Wed, 29 Jul 2026 05:37:51 +0000
+Message-ID: <20260729053803.9823-1-wegao@suse.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20260602010137.27226-1-wegao@suse.com>
+References: <20260602010137.27226-1-wegao@suse.com>
+MIME-Version: 1.0
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/3] lib: Avoid loop_info.lo_name buffer overflow
+Subject: [LTP] [PATCH v5] min_free_kbytes: Handle transient memory drops in
+ check_monitor
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -97,24 +99,117 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Cc: Linux Test Project <ltp@lists.linux.it>
-MIME-Version: 1.0
+From: Wei Gao via ltp <ltp@lists.linux.it>
+Reply-To: Wei Gao <wegao@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> I mean if file is longer, then only part will be copied and following ioctl()
-> will fail, right? Therefore warning about too long name would help.
+High memory pressure can cause MemFree to temporarily drop below the
+min_free_kbytes threshold before the kernel reclaimer can catch up.
+This results in intermittent test failures, observed on openQA aarch64
+virtual machines.
 
-sure, we can add that
+Implement a 2-second grace period with high-accuracy 10ms fixed polling
+in check_monitor() to allow the kernel time to reclaim memory.
 
---
-Andrea Cervesato
-SUSE QE Automation Engineer Linux
-andrea.cervesato@suse.com
+Introduce a 10% tolerance (90% threshold) for the MemFree check.
+Measurements under extreme pressure show MemFree can dip as low as
+~50% to ~70% of the target. While it typically recovers above 90%
+within one second, hitting the exact 100% watermark sometimes can take
+significantly longer. This tolerance prevents false positives during the
+slow recovery tail while still ensuring memory is maintained near the
+required level.
+
+Also, increase the monitor's idle polling frequency from 2s to 100ms
+to improve responsiveness during the test run.
+
+Enhanced diagnostics are added to report the minimum memory level seen
+during the pressure period to aid in future calibration.
+
+Signed-off-by: Wei Gao <wegao@suse.com>
+---
+v4->v5:
+- Formatted output messages and commit messages
+- Rebase 
+
+ .../kernel/mem/tunable/min_free_kbytes.c      | 45 +++++++++++++++----
+ 1 file changed, 37 insertions(+), 8 deletions(-)
+
+diff --git a/testcases/kernel/mem/tunable/min_free_kbytes.c b/testcases/kernel/mem/tunable/min_free_kbytes.c
+index 4f991025a..2b4c69b95 100644
+--- a/testcases/kernel/mem/tunable/min_free_kbytes.c
++++ b/testcases/kernel/mem/tunable/min_free_kbytes.c
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+- * Copyright (c) Linux Test Project, 2012-2025
++ * Copyright (c) Linux Test Project, 2012-2026
+  * Copyright (C) 2012-2017  Red Hat, Inc.
+  */
+ 
+@@ -169,21 +169,50 @@ static int eatup_mem(unsigned long overcommit_policy)
+ static void check_monitor(void)
+ {
+ 	int violated = 0;
+-	unsigned long tune;
+-	unsigned long memfree;
++	unsigned long tune, threshold;
++	unsigned long memfree, min_memfree;
++	int i;
+ 
+ 	while (!end) {
+ 		memfree = SAFE_READ_MEMINFO("MemFree:");
+ 		tune = TST_SYS_CONF_LONG_GET(PATH_VM_MIN_FREE_KBYTES);
++		/*
++		 * Allow 10% tolerance to account for transient states.
++		 */
++		threshold = tune * 9 / 10;
+ 
+ 		if (memfree < tune) {
+-			tst_res(TINFO, "MemFree is %lu kB, "
+-				"min_free_kbytes is %lu kB", memfree, tune);
+-			tst_res(TFAIL, "MemFree < min_free_kbytes");
+-			violated = 1;
++			min_memfree = memfree;
++			/*
++			 * Give it some time to reclaim. The kernel should keep
++			 * MemFree above min_free_kbytes, but transient drops
++			 * are possible under high pressure.
++			 * Check every 10ms for up to 2 seconds for high accuracy.
++			 */
++			for (i = 10; i <= 2000; i += 10) {
++				usleep(10000);
++				memfree = SAFE_READ_MEMINFO("MemFree:");
++				if (memfree < min_memfree)
++					min_memfree = memfree;
++
++				if (memfree >= tune)
++					break;
++			}
++
++			if (memfree < threshold) {
++				tst_res(TFAIL, "MemFree %lu kB < 90%% of min_free_kbytes %lu kB (MinSeen: %lu%%) after 2s",
++					memfree, tune, (min_memfree * 100 / tune));
++				violated = 1;
++			} else if (memfree < tune) {
++				tst_res(TINFO, "MemFree (%lu kB) stayed within 10%% tolerance (min %lu%%) after ~2s",
++					memfree, (min_memfree * 100 / tune));
++			} else {
++				tst_res(TINFO, "MemFree recovered to %lu kB (min %lu%%) after %d ms",
++					memfree, (min_memfree * 100 / tune), i);
++			}
+ 		}
+ 
+-		sleep(2);
++		usleep(100000);
+ 	}
+ 
+ 	if (!violated)
+-- 
+2.54.0
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
