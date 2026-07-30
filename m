@@ -4,87 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AEA2BC55165
-	for <ltp@archiver.kernel.org>; Thu, 30 Jul 2026 13:07:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0EF9CC55165
+	for <ltp@archiver.kernel.org>; Thu, 30 Jul 2026 13:38:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1785416829; h=message-id :
- to : in-reply-to : date : subject : list-id : list-unsubscribe :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1785418707; h=to : date :
+ message-id : mime-version : subject : list-id : list-unsubscribe :
  list-archive : list-post : list-help : list-subscribe : from :
- reply-to : cc : mime-version : content-type :
- content-transfer-encoding : sender : from;
- bh=hKsupOwWGH9ejeWD5LtTOUfLRNMybKjljmC7oBcEOEg=;
- b=KNf0lzYlwiKuMW7EJ+Lblako+X+kDaOih4BH7fXAq6j5W+oXWdbfotBnuP51K2ZvLF9oV
- DJqzHPGSJqUsfLkuvoonOORVzF+zuEot4DegpfulFOfW8bE5JxZpHLNtQQr3BpbvXBp3YiI
- CQ/bXpkX8TbV92jUuwIQleJXSuXX4JM=
+ reply-to : content-type : content-transfer-encoding : sender : from;
+ bh=xSBbey/p9VFzJHyNQ5NrwBvC6+GzKlKoq2DJQJBOxZ8=;
+ b=IJPzbyVELzXnawV9i2Qg67CalMmeYWDwLmJ1Zvy346MPxyMwrL1zwnAEM6wWjWaQw+aOh
+ f1ktdIcqsARaQZwt53EpvuQos1JuxESRmHKyxHAEsJ3o8Dzjx498hoyKowsz4hqhW1grBm6
+ 5CkdgwTNOLQwR8cGVw+SAIWJtBKVHuU=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 065F43E722B
-	for <ltp@archiver.kernel.org>; Thu, 30 Jul 2026 15:07:09 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 22A423E7254
+	for <ltp@archiver.kernel.org>; Thu, 30 Jul 2026 15:38:27 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B7D9D3CD529
- for <ltp@lists.linux.it>; Thu, 30 Jul 2026 15:06:48 +0200 (CEST)
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com
- [IPv6:2a00:1450:4864:20::429])
+ by picard.linux.it (Postfix) with ESMTPS id 1D9B33E1C9D
+ for <ltp@lists.linux.it>; Thu, 30 Jul 2026 15:38:06 +0200 (CEST)
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com
+ [IPv6:2a00:1450:4864:20::336])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 3107210007A5
- for <ltp@lists.linux.it>; Thu, 30 Jul 2026 15:06:48 +0200 (CEST)
-Received: by mail-wr1-x429.google.com with SMTP id
- ffacd0b85a97d-47f84023916so1993715f8f.3
- for <ltp@lists.linux.it>; Thu, 30 Jul 2026 06:06:48 -0700 (PDT)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 7671A60042A
+ for <ltp@lists.linux.it>; Thu, 30 Jul 2026 15:38:06 +0200 (CEST)
+Received: by mail-wm1-x336.google.com with SMTP id
+ 5b1f17b1804b1-4954d29264cso9910775e9.2
+ for <ltp@lists.linux.it>; Thu, 30 Jul 2026 06:38:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1785416807; x=1786021607; darn=lists.linux.it;
- h=date:content-transfer-encoding:content-type:subject:in-reply-to:cc
- :to:from:message-id:from:to:cc:subject:date:message-id:reply-to
- :content-type; bh=m+Ch9GQPCyLgYRuCxkUv3V+MX/kD9JgY1jesgZ5QIWw=;
- b=LKhZqw4o/1+r7GIGuXojIMenMgzXJNeJilAuj2A+Ob1z89QH0LRUyJeGCnsuD8uMU/
- HS3ztUTYi6qrTIfeFJjVdm0OeY/Eek3EpGvgG0u0k5fT/m++Wf3+AST7YlzBxTPTkIaD
- adxyu8e2IeqUIGvOKySZjxwnINGke50oQyw99DJgcJtXARL5xmVUmCCRkmZSphqoTKxb
- B8vTigGJy9D3/S6I08GwJFO1pX0zYAIjQK1ZAeHh1WLkWf/nwXfnW7XPklGJe0NDux6O
- WQuPgQbedkFBH/gIjoymEBkDx06JngseAtDUcjvex32MQdZue4fMRLQYFvY/uHhVxcFn
- yEcA==
+ d=suse.com; s=google; t=1785418686; x=1786023486; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+ bh=RYOf+8y0ImB9lRp4DIBfBJeYGSTMt/dRqA6S9s2bz8g=;
+ b=fK+lshtfAy/hx9E4/xXMTsvmL5dhnBV9P8zuM8AgqApUi3v/iLJJxfTrZ/Bl7zm6Fl
+ +Xl85BVQAdVlCHaQ0P4GDq8WWXid2MkUajuqtgPGF/nv1P55UzJo7bd8cp8BOyXjYj3L
+ X5Dk1WnSUJMJYa5ndwcv7PE2PLSytffbMtvbc6rlUVZClvPD6/oAReom9Q/euk2qxq5b
+ fvHvvmqLf6NzfbqBD15eGJttSx49fBtCA46ebWihsukqgoO5IglLnikdIS7BGgrOUOpp
+ /Yz/Km4K5UhmRsGwqTDBpJjH7Frb+bPoBrUlyC7jAvlA1tVkMMtwO8PMxnT1tipzKUpP
+ vpyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1785416807; x=1786021607;
- h=date:content-transfer-encoding:content-type:subject:in-reply-to:cc
- :to:from:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject
- :date:message-id:reply-to:content-type;
- bh=m+Ch9GQPCyLgYRuCxkUv3V+MX/kD9JgY1jesgZ5QIWw=;
- b=GZyoxXESThfh5U/g+NdFW5FHiXhBtOMXeWyKUMRdG2BVTos6emc/yeHgCwp0aaEfB4
- 2QP3LLy+2sjYILgMRzJMCgZ3ofuiBc7fn4cTLn6Y/WGfcr2lPOBZCyiTRqZT8xYpbS53
- HRHB/Wpws9zyF1R6jiHeexh9hGWNrqWtjXyN7amt1dlwDcDw9W8jMGoAnQbSB+5zzCKO
- wKpBWSOIVLbro1AaTbOkH+7ySEPgUc6qb27j9s2KYXEKQsQT3rbfIZ+KBfW4fV2gzKUV
- 89TY2lSGxmzSJCsmnX29HC/PBQzZ9VE7+6EqKs3IOBZmCaVFeb1uFPDFyUad71CXGGXl
- Z4sA==
-X-Gm-Message-State: AOJu0YxxviYpplCytC99iuDQvMazvNH8MfHnlFxc6Q5jdl5Oww/PzY2u
- UuXNCtBCa8DoH8+iUf/V3vz+GAuWFvZ9kX+LSmP5ns1zbduV1TjxIs3OrQQnTTjNIwU0F9RydzY
- go9bHywcy1g==
-X-Gm-Gg: AR+sD102RKSSngAK/o9T5mV+/y6zj+/MEjeOs/DVn8uXsdZaJQIFWu6lY29mqfv5AoX
- aAn2rlvrmszHiVIA9Nqv+i1eFo9sj+Tr5/zYqv3V5nvB7ogahS470/kAf9Vo6dTdyD5l71mV6Rg
- wU5X+Z5rSxv9BJ5+TRJLaxWt12qr+V5yL4Pf4uUzvcql0H3p5P73wtv8HyPHUwI2kbCbfqzqd+7
- JhYYDP7G0hUdu7kk5s9ML12pCZ5nlrYmUW5QbzFbLKuw1LYt+U/0cuFwprZPkVEh3EiDoKT8f90
- ILmRqzWD5R3gemPEbiG3brL7HhCMYbCIvnq9NBo8ZI8V6O3iuuCoZ2SV4dcD45RvXZgiwInjWDz
- QRlqjeQd5MU036+VikH+YKGg7vr3eMxCgagcwyfPEw+3TEIsr6QqqoHaqGWO+WXPXo27Y1sIs5M
- PIuUuzyU44gAT0xhUwzSzppUo+b2payuJ8UB5I6pF2VM6f7M4KS7zsrMcCGrkTo7G+/JFgCXHp/
- IfrB+UMjM4Q/6Nxp2rIIwwRfTC9ln3uDLP/CA==
-X-Received: by 2002:a05:6000:402b:b0:47d:fa32:c895 with SMTP id
- ffacd0b85a97d-47fc820c1famr3873490f8f.50.1785416807100; 
- Thu, 30 Jul 2026 06:06:47 -0700 (PDT)
-Received: from localhost.localdomain (p4fcc8213.dip0.t-ipconnect.de.
- [79.204.130.19]) by smtp.gmail.com with ESMTPSA id
- ffacd0b85a97d-47fc893fe58sm9865824f8f.31.2026.07.30.06.06.46
+ d=1e100.net; s=20251104; t=1785418686; x=1786023486;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to:content-type;
+ bh=RYOf+8y0ImB9lRp4DIBfBJeYGSTMt/dRqA6S9s2bz8g=;
+ b=AiyevMLJvmBuOWepUMotFJOhJsulg7FGu97VFlMqN7eMCxaD6a4b7CJnxwqHLWbmKY
+ LgXQEm4rBVOlSbqWsLtluzSV4C9otRihoVGPXUoZH/PrHWYcLoC7v49FIu5dqsOW+YGR
+ 9gEOv8qk2UEiFrneMJSgJL/ZXwh4BmqrPmwfcWe6zCj1vOqDHSG1aKBaqZw1itXzOJoJ
+ k+jJ1PR1kDo64rROINwfs5wfUttxkvXWOeIDMjQO4hoyG83MruhdfW15qAo+OTrRB0ou
+ b9Fm0rbPRJyzl0/aI8ublOAXIydRv2lxcIUPDAupBHTGZ5C3y+pY4z4OaiQZ5jOztjrr
+ 568Q==
+X-Gm-Message-State: AOJu0YzClZoxMpQsYKqPcfPG9zKPpBdXbqL0FdMU/Yt8ZSMua4nt2J5z
+ mOf9uQTLZJVktoK7ht8bPV6sfo1ZbjPYvlF8Sh3PBxzuv4DvGEv/gTIj44Vp+754nLMbWOO0P5O
+ E29r+3KQ=
+X-Gm-Gg: AR+sD13mT+YfHcqpy9bvCM47BWHRzTKDUdHTKkPgo1Gph/7p3G25bw1VWRyVyp3LQQW
+ 8ijPGjt2EE+A9JG4/hK5VACRNV8TQaiPu9/VW/fUEXgN1k+8rILzqyYET+khrN0iOT1iR1czEB+
+ EiaIZuWypLYfflNYzYZcvjTkfGe/qYfpSz7TCk0LI4gHoQXbQkudHcZpIydNk3p1zfW5LPpgySj
+ IillMkwY9ghJBmiKaifA6CUMRY0XhIZ+IQjaESWqaUeLf3QNJ4yimFjQste9zU9+WTbuSA9H3lz
+ ZyzVT42geqRyyQP9Ig89HPIEKKrfKE8ho+fK+jxl+jDd6puA+YFn7FuEZn3MVM4mW5ENWj718uq
+ ciEFbGCVG2mIuoHklQHMEKCQoOcYw7ACPIeNStkZok44ZCkHYZujtJXMDovU8X8IFT0Tss1cha1
+ 6W6oVYjhbwg8ajs6WQohXYkqeknT6dYrbRtAkalSLPXCETmfo=
+X-Received: by 2002:a05:600c:3154:b0:495:4d5c:903e with SMTP id
+ 5b1f17b1804b1-49804c15481mr7845835e9.7.1785418685762; 
+ Thu, 30 Jul 2026 06:38:05 -0700 (PDT)
+Received: from localhost ([2a07:b241:1004:8300::1000])
+ by smtp.gmail.com with ESMTPSA id
+ ffacd0b85a97d-47fc8940da6sm6242563f8f.32.2026.07.30.06.38.05
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 30 Jul 2026 06:06:46 -0700 (PDT)
-Message-ID: <6a6b4c66.9325fd96.a3326.16f7@mx.google.com>
-To: "Andrea Cervesato" <andrea.cervesato@suse.de>
-In-Reply-To: <20260730-shell_oom_protection-v2-0-be1de2baa83d@suse.com>
-Date: Thu, 30 Jul 2026 13:06:46 +0000
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+ Thu, 30 Jul 2026 06:38:05 -0700 (PDT)
+To: ltp@lists.linux.it
+Date: Thu, 30 Jul 2026 15:37:58 +0200
+Message-ID: <20260730133804.131074-1-avinesh.kumar@suse.com>
+X-Mailer: git-send-email 2.55.0
+MIME-Version: 1.0
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 0/2] OOM protection for shell tests
+Subject: [LTP] [PATCH] inode01: increase dev_min_size to fit the peak usage
+ in parallel scenario
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -96,24 +95,52 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Cc: Linux Test Project <ltp@lists.linux.it>, Li Wang <liwang@hygon.cn>
-MIME-Version: 1.0
+From: Avinesh Kumar via ltp <ltp@lists.linux.it>
+Reply-To: Avinesh Kumar <avinesh.kumar@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Li,
+From: Avinesh Kumar <avinesh.kumar@suse.com>
 
-can you please take a look at this patch?
+The parallel scenario keeps every worker's tree on the device at the same
+time. On exfat each object costs a full cluster and mkfs.exfat defaults to
+32K cluster size for a volume above 256M, causing ENOSPC on a 300M device.
+Increase the dev_min_size to 512M.
 
-Thanks,
---
-Andrea Cervesato
-SUSE QE Automation Engineer Linux
-andrea.cervesato@suse.com
+tst_test.c:1985: TINFO: === Testing on exfat ===
+tst_test.c:1291: TINFO: Formatting /dev/loop0 with exfat opts='' extra opts=''
+tst_test.c:1303: TINFO: Mounting /dev/loop0 to /var/tmp/LTP_inoLqT9T5/mntpoint fstyp=exfat flags=0
+inode01.c:241: TINFO: Testing single-process small tree (depth=3 fanout=4 repetitions=100 workers=1)
+inode01.c:228: TPASS: Created and verified 28 objects in mntpoint/inode.5827
+inode01.c:241: TINFO: Testing parallel larger trees (depth=6 fanout=6 repetitions=8 workers=5)
+inode01.c:61: TBROK: write(3,0x7ffcea2c2370,73) failed: ENOSPC (28)
+tst_test.c:478: TINFO: Child process reported TBROK killing the test
+inode01.c:64: TBROK: mkdir(mntpoint/inode.5832/00001457/00001701/00001862/00001890/00001907/00001911, 0777) failed: ENOSPC (28)
+
+Fixes: 8ea955383e00 ("inode: convert to new API and merge into a single test")
+Signed-off-by: Avinesh Kumar <avinesh.kumar@suse.com>
+---
+ testcases/kernel/fs/inode/inode01.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/testcases/kernel/fs/inode/inode01.c b/testcases/kernel/fs/inode/inode01.c
+index 219238553562..de88f4c8c969 100644
+--- a/testcases/kernel/fs/inode/inode01.c
++++ b/testcases/kernel/fs/inode/inode01.c
+@@ -256,7 +256,7 @@ static struct tst_test test = {
+ 	.mount_device = 1,
+ 	.all_filesystems = 1,
+ 	.needs_root = 1,
+-	.dev_min_size = 300,
++	.dev_min_size = 1024,
+ 	.forks_child = 1,
+ 	.needs_checkpoints = 1,
+ 	.timeout = 300,
+-- 
+2.55.0
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
