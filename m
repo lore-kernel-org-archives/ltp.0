@@ -4,113 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A09E6C55165
-	for <ltp@archiver.kernel.org>; Thu, 30 Jul 2026 13:06:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AEA2BC55165
+	for <ltp@archiver.kernel.org>; Thu, 30 Jul 2026 13:07:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1785416829; h=message-id :
+ to : in-reply-to : date : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : cc : mime-version : content-type :
+ content-transfer-encoding : sender : from;
+ bh=hKsupOwWGH9ejeWD5LtTOUfLRNMybKjljmC7oBcEOEg=;
+ b=KNf0lzYlwiKuMW7EJ+Lblako+X+kDaOih4BH7fXAq6j5W+oXWdbfotBnuP51K2ZvLF9oV
+ DJqzHPGSJqUsfLkuvoonOORVzF+zuEot4DegpfulFOfW8bE5JxZpHLNtQQr3BpbvXBp3YiI
+ CQ/bXpkX8TbV92jUuwIQleJXSuXX4JM=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id BFD223E7254
-	for <ltp@archiver.kernel.org>; Thu, 30 Jul 2026 15:06:24 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 065F43E722B
+	for <ltp@archiver.kernel.org>; Thu, 30 Jul 2026 15:07:09 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id DCE583E7477
- for <ltp@lists.linux.it>; Thu, 30 Jul 2026 15:05:41 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id B7D9D3CD529
+ for <ltp@lists.linux.it>; Thu, 30 Jul 2026 15:06:48 +0200 (CEST)
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com
+ [IPv6:2a00:1450:4864:20::429])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 766761400324
- for <ltp@lists.linux.it>; Thu, 30 Jul 2026 15:05:40 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 1E4484083;
- Thu, 30 Jul 2026 13:05:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1785416728; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=LW0JO12SqVVJK/qLzfrPiTl2ZZIgjyXu5g1wp/nW3p0=;
- b=FBwfweiAhcM5ANbFX6IrUhNeufEaRD6TkeV+VnQi34pdcdUNRODTQDbG9XilMLHnheiOrB
- 576pdF5nKuZMRJcClPxsFAucmeip1aUhEIl3Aeg/F9xx0I98+BZ2Mquva7W+yrB40I8Iri
- 6f7h1sujHhpA4H5eQyYikBK1K3+WkIo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1785416728;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=LW0JO12SqVVJK/qLzfrPiTl2ZZIgjyXu5g1wp/nW3p0=;
- b=C3QrwSkkG/wH3G9co0V4GEwOGZ85aw3l8sXiyZhAi8HEPZwkxSITK6IrUfU1qLuh6rVcVY
- bjxN6MgKQP+dD5Dw==
-Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.de header.s=susede2_rsa header.b="a0Awo/J/";
- dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b="t1yC8/2+"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1785416724; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=LW0JO12SqVVJK/qLzfrPiTl2ZZIgjyXu5g1wp/nW3p0=;
- b=a0Awo/J/t8eaGkE5EtUO5b5ZKKmJh881ExC0GXabkA8RVl/mnN6nYFNXVSXdiyKMDY8+f8
- +vRphRDpx7qxXAfAcDpMP69T6mW0d12oavPkAhM6XLFajmO/aHUVD6q265pEhurWihDXgS
- G3rQnwwO4b/ej0H/HEJVb3qAt7vvWlE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1785416724;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=LW0JO12SqVVJK/qLzfrPiTl2ZZIgjyXu5g1wp/nW3p0=;
- b=t1yC8/2+VxQoQH4oRYeR76cNO7i9gpIBjskmms7VCCEuPS9IpA1trey4pUUQMxbbXYyJCw
- uBjwqEe3uqmdruAg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0109B779D0;
- Thu, 30 Jul 2026 13:05:23 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id QNISOhNMa2qATQAAD6G6ig
- (envelope-from <andrea.cervesato@suse.de>); Thu, 30 Jul 2026 13:05:23 +0000
-From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Thu, 30 Jul 2026 15:05:24 +0200
-MIME-Version: 1.0
-Message-Id: <20260730-shell_oom_protection-v2-2-be1de2baa83d@suse.com>
-References: <20260730-shell_oom_protection-v2-0-be1de2baa83d@suse.com>
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 3107210007A5
+ for <ltp@lists.linux.it>; Thu, 30 Jul 2026 15:06:48 +0200 (CEST)
+Received: by mail-wr1-x429.google.com with SMTP id
+ ffacd0b85a97d-47f84023916so1993715f8f.3
+ for <ltp@lists.linux.it>; Thu, 30 Jul 2026 06:06:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1785416807; x=1786021607; darn=lists.linux.it;
+ h=date:content-transfer-encoding:content-type:subject:in-reply-to:cc
+ :to:from:message-id:from:to:cc:subject:date:message-id:reply-to
+ :content-type; bh=m+Ch9GQPCyLgYRuCxkUv3V+MX/kD9JgY1jesgZ5QIWw=;
+ b=LKhZqw4o/1+r7GIGuXojIMenMgzXJNeJilAuj2A+Ob1z89QH0LRUyJeGCnsuD8uMU/
+ HS3ztUTYi6qrTIfeFJjVdm0OeY/Eek3EpGvgG0u0k5fT/m++Wf3+AST7YlzBxTPTkIaD
+ adxyu8e2IeqUIGvOKySZjxwnINGke50oQyw99DJgcJtXARL5xmVUmCCRkmZSphqoTKxb
+ B8vTigGJy9D3/S6I08GwJFO1pX0zYAIjQK1ZAeHh1WLkWf/nwXfnW7XPklGJe0NDux6O
+ WQuPgQbedkFBH/gIjoymEBkDx06JngseAtDUcjvex32MQdZue4fMRLQYFvY/uHhVxcFn
+ yEcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1785416807; x=1786021607;
+ h=date:content-transfer-encoding:content-type:subject:in-reply-to:cc
+ :to:from:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject
+ :date:message-id:reply-to:content-type;
+ bh=m+Ch9GQPCyLgYRuCxkUv3V+MX/kD9JgY1jesgZ5QIWw=;
+ b=GZyoxXESThfh5U/g+NdFW5FHiXhBtOMXeWyKUMRdG2BVTos6emc/yeHgCwp0aaEfB4
+ 2QP3LLy+2sjYILgMRzJMCgZ3ofuiBc7fn4cTLn6Y/WGfcr2lPOBZCyiTRqZT8xYpbS53
+ HRHB/Wpws9zyF1R6jiHeexh9hGWNrqWtjXyN7amt1dlwDcDw9W8jMGoAnQbSB+5zzCKO
+ wKpBWSOIVLbro1AaTbOkH+7ySEPgUc6qb27j9s2KYXEKQsQT3rbfIZ+KBfW4fV2gzKUV
+ 89TY2lSGxmzSJCsmnX29HC/PBQzZ9VE7+6EqKs3IOBZmCaVFeb1uFPDFyUad71CXGGXl
+ Z4sA==
+X-Gm-Message-State: AOJu0YxxviYpplCytC99iuDQvMazvNH8MfHnlFxc6Q5jdl5Oww/PzY2u
+ UuXNCtBCa8DoH8+iUf/V3vz+GAuWFvZ9kX+LSmP5ns1zbduV1TjxIs3OrQQnTTjNIwU0F9RydzY
+ go9bHywcy1g==
+X-Gm-Gg: AR+sD102RKSSngAK/o9T5mV+/y6zj+/MEjeOs/DVn8uXsdZaJQIFWu6lY29mqfv5AoX
+ aAn2rlvrmszHiVIA9Nqv+i1eFo9sj+Tr5/zYqv3V5nvB7ogahS470/kAf9Vo6dTdyD5l71mV6Rg
+ wU5X+Z5rSxv9BJ5+TRJLaxWt12qr+V5yL4Pf4uUzvcql0H3p5P73wtv8HyPHUwI2kbCbfqzqd+7
+ JhYYDP7G0hUdu7kk5s9ML12pCZ5nlrYmUW5QbzFbLKuw1LYt+U/0cuFwprZPkVEh3EiDoKT8f90
+ ILmRqzWD5R3gemPEbiG3brL7HhCMYbCIvnq9NBo8ZI8V6O3iuuCoZ2SV4dcD45RvXZgiwInjWDz
+ QRlqjeQd5MU036+VikH+YKGg7vr3eMxCgagcwyfPEw+3TEIsr6QqqoHaqGWO+WXPXo27Y1sIs5M
+ PIuUuzyU44gAT0xhUwzSzppUo+b2payuJ8UB5I6pF2VM6f7M4KS7zsrMcCGrkTo7G+/JFgCXHp/
+ IfrB+UMjM4Q/6Nxp2rIIwwRfTC9ln3uDLP/CA==
+X-Received: by 2002:a05:6000:402b:b0:47d:fa32:c895 with SMTP id
+ ffacd0b85a97d-47fc820c1famr3873490f8f.50.1785416807100; 
+ Thu, 30 Jul 2026 06:06:47 -0700 (PDT)
+Received: from localhost.localdomain (p4fcc8213.dip0.t-ipconnect.de.
+ [79.204.130.19]) by smtp.gmail.com with ESMTPSA id
+ ffacd0b85a97d-47fc893fe58sm9865824f8f.31.2026.07.30.06.06.46
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Thu, 30 Jul 2026 06:06:46 -0700 (PDT)
+Message-ID: <6a6b4c66.9325fd96.a3326.16f7@mx.google.com>
+To: "Andrea Cervesato" <andrea.cervesato@suse.de>
 In-Reply-To: <20260730-shell_oom_protection-v2-0-be1de2baa83d@suse.com>
-To: Linux Test Project <ltp@lists.linux.it>
-X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1785416723; l=1308;
- i=andrea.cervesato@suse.com; s=20251210; h=from:subject:message-id;
- bh=lZQqU5TLYzy5l4kw9C/wNIRaj7IOQUav8rtWK7OFgeg=;
- b=SbecD/gt74IIkQlBBGpulOW9owWOG3MzdidiysaJpCIkoJMb/IB2y1qSPmZySu1gzy9EjOMwE
- HtgqiCowt4oDeAROx2WiV6P7j1i1HIofgFTkKP1y1r4ov7auIAcC14K
-X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
- pk=zKY+6GCauOiuHNZ//d8PQ/UL4jFCTKbXrzXAOQSLevI=
-X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000];
- R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; RCVD_TLS_ALL(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
- DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- MIME_TRACE(0.00)[0:+]; RCPT_COUNT_TWO(0.00)[2];
- DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; FROM_HAS_DN(0.00)[];
- TO_DN_ALL(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:email,suse.de:dkim];
- RCVD_COUNT_TWO(0.00)[2]; DKIM_TRACE(0.00)[suse.de:+]
-X-Rspamd-Queue-Id: 1E4484083
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+Date: Thu, 30 Jul 2026 13:06:46 +0000
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 2/2] memcg_stress: survive OOM by targeting the
- stressors
+Subject: Re: [LTP] [PATCH v2 0/2] OOM protection for shell tests
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -122,43 +96,24 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Cc: Linux Test Project <ltp@lists.linux.it>, Li Wang <liwang@hygon.cn>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Andrea Cervesato <andrea.cervesato@suse.com>
+Hi Li,
 
-The single-cgroup subtest intentionally lets one process fault in the
-whole memory budget to push the system to its memory ceiling, so hitting
-the OOM killer is an expected part of the stress. The problem is that the
-OOM killer could reap the driver script, turning that expected pressure
-into a spurious TBROK.
+can you please take a look at this patch?
 
-Activate OOM protection so the driver script won't be the OOM victim.
-
-Fixes: 02961a7b2bb4 ("memcg_stress_test.sh: Fix reserved mem calculate")
-Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
----
- testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh b/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh
-index 47cac9af8bec970b7fb338c5469ab73d55267740..f32161f3f52a500d83cb2f6465adfb5130055dba 100755
---- a/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh
-+++ b/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh
-@@ -14,6 +14,7 @@ TST_CLEANUP=cleanup
- TST_CNT=2
- TST_NEEDS_ROOT=1
- TST_NEEDS_CMDS="mount umount cat kill mkdir rmdir grep awk cut"
-+TST_OOM_PROTECTION=1
- 
- # Each test case runs for 900 secs when everything fine
- # therefore the default 5 mins timeout is not enough.
-
--- 
-2.51.0
-
+Thanks,
+--
+Andrea Cervesato
+SUSE QE Automation Engineer Linux
+andrea.cervesato@suse.com
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
