@@ -4,86 +4,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C3796C54FD2
-	for <ltp@archiver.kernel.org>; Thu, 30 Jul 2026 09:05:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5C70DC54FDF
+	for <ltp@archiver.kernel.org>; Thu, 30 Jul 2026 09:44:18 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id ED6863E7225
-	for <ltp@archiver.kernel.org>; Thu, 30 Jul 2026 11:05:03 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 6C83A3E7229
+	for <ltp@archiver.kernel.org>; Thu, 30 Jul 2026 11:44:16 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 95A4A3C241C
- for <ltp@lists.linux.it>; Thu, 30 Jul 2026 11:04:47 +0200 (CEST)
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com
- [IPv6:2607:f8b0:4864:20::432])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 2A63D3E29BF
+ for <ltp@lists.linux.it>; Thu, 30 Jul 2026 11:44:00 +0200 (CEST)
+Received: from out-182.mta1.migadu.com (out-182.mta1.migadu.com
+ [95.215.58.182])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 03F93200155
- for <ltp@lists.linux.it>; Thu, 30 Jul 2026 11:04:47 +0200 (CEST)
-Received: by mail-pf1-x432.google.com with SMTP id
- d2e1a72fcca58-8487214ad2bso2823419b3a.1
- for <ltp@lists.linux.it>; Thu, 30 Jul 2026 02:04:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1785402285; x=1786007085; darn=lists.linux.it;
- h=content-transfer-encoding:content-type:in-reply-to:from
- :content-language:references:cc:to:subject:user-agent:mime-version
- :date:message-id:from:to:cc:subject:date:message-id:reply-to
- :content-type; bh=1/6J6ucR4GbWI2YxDssa/8j2LrgF5bx6Ax8fh4VMWrc=;
- b=OzCZFVIE2U0Wl2fFxg9MbgHkqNuAS9dnv9w7CSi7jPDv/eqVG/6Md9e8j1hU1qOh9f
- w8HcZJOC50aboQDPqEWeUkUiT9rSDsftV1tb3gE/lNheKQbvSs+8bbyO6m1SyijmNtpJ
- UH9ssSgdZCEq9MtbyjNOJ+z/aeqqf1GAN+Vh1Awqp8Vv1q50qgrSDnMX3LDCoDvXUJZX
- +L7puGGqu9eKwYBlUtfANAttEa58fXFJGo5+IN/qigNAVonywAx27Hv1akTC72je6cfq
- NAHobr2olfpLU6hfhhe8kzxvqazl6apxnkmj21+7fc8lSVhBTEITfSs2uY+lyqF9qz4I
- G8Mw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1785402285; x=1786007085;
- h=content-transfer-encoding:content-type:in-reply-to:from
- :content-language:references:cc:to:subject:user-agent:mime-version
- :date:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
- :message-id:reply-to:content-type;
- bh=1/6J6ucR4GbWI2YxDssa/8j2LrgF5bx6Ax8fh4VMWrc=;
- b=iWUcgWb5bdnx9/4oDMiOOTusChFqP7VSYaKHcgExahejJTLHdR24SIQhaC/thzjfPg
- MYJq+BS177Fy/uLWMIiSIjUXceQVdofKIcptkcTDfaXBOWfMJ6DDrJ7ESh0/kKfVldSb
- UMDVikdR3L68utzW0o0w8EVzq5U2j9CyTrx2O192YboNSq0503ite/s9HK4TYAZd/aSp
- WfJiTfXZersotCSt+LXTrIQbUFd1pgKdI8SvEF4fg+vQ198r1pIr4oYeQw2iiL+U8Vtd
- G7pMTgTejR4CWDeQTGSSZ+OxbrHpQF40C2kUSxz8Ix3jiqQmV/ZNX0wBeWZowDUMBCYv
- EOVw==
-X-Forwarded-Encrypted: i=1;
- AHgh+RoysLCk+6qoGzl1X/hHloFlqXMhWluozAl5lBiTpWbN8PT1xzmtBr0FyITkRtc+4hQ9MRk=@lists.linux.it
-X-Gm-Message-State: AOJu0Yzd92NuOvAD6lasoOM6ODyXRpytezwl8AzVMvwoId3MxKCMIusF
- MREz34WgmXi1msXLnRUIC1lGbe0LzRsS3kZRJs+PkLc51F8W3h0cVzJq
-X-Gm-Gg: AR+sD100lFZuOJEuYa4aHdSrr/Mv2raTzHraLyk1V+rjU7sJai9QAK2YImh6XDL9S90
- M2pj+r8rCTQr7gAxRCT2wZX10eVg/lsenY8SUKw2BjZx27ixwzZTAmSW6XQzt7TNxLHcxvfpR8E
- +URTeYRyLVmRwkaDB2Roi6KCBGXzjks0sX8Hw1T3L3JTFSecpW4ECglMbsswgnm4UmzeaKwSQXZ
- tYUO/wYZnHNsxphW5k4/wcv6G54FSIreCmpARNLrjSRS5zkGElaHZk7sYCZleOX539t9duECiAO
- KQ639rkuqZk8ujOzmh9aihJEOaj6FTxiMllNrJUxMGcYP/Zzrcxz6d6MZQiftAgcG5ppluw8p/p
- k/3SdHOdwlovKd5ofRz8SpeYD5g+lCEx08twWpGJjJ2tcinzQ4tIJse9ZQDXcKBc6ULqswN8+9Q
- NNc5LaKJ26TZ5cU/BSTArwXEsgwSbtgLYbymjtj0FWrS02F0tgb1duZeN9oqTONO0Extabd7BG2
- BZqcdg05kQ=
-X-Received: by 2002:a05:6a00:3d04:b0:848:56d4:3288 with SMTP id
- d2e1a72fcca58-84ebc21af74mr1978258b3a.4.1785402285409; 
- Thu, 30 Jul 2026 02:04:45 -0700 (PDT)
-Received: from [10.22.68.143] ([118.201.124.118])
- by smtp.gmail.com with ESMTPSA id
- 41be03b00d2f7-cbdb824d421sm1889260a12.10.2026.07.30.02.04.43
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Thu, 30 Jul 2026 02:04:44 -0700 (PDT)
-Message-ID: <77cf7e28-c8a4-4017-9ca7-425739d7378f@gmail.com>
-Date: Thu, 30 Jul 2026 17:04:41 +0800
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 31A72600867
+ for <ltp@lists.linux.it>; Thu, 30 Jul 2026 11:43:58 +0200 (CEST)
+Date: Thu, 30 Jul 2026 17:43:42 +0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+ t=1785404638;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=bqT2KvyEp5YYHjD47gFW14mRqfoW2Zr8e7GvvDCiVOE=;
+ b=b+rzmFh6VtWNQ584zg/0MuUzmh2BCfPuhbvqLSqk9V6t4u8rw864TL0l5vbVPxuuDZPD22
+ X5uzroYeijTJm6SjX9TAb+g8Fcsbru6p8WPFZn7lBVXi7dc42Ku8IdL2AUptfwgcFKzzXj
+ Phem86Mw/fufO4mp7hRqLCuCnlePLZg=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and
+ include these headers.
+From: Li Wang <li.wang@linux.dev>
+To: linuxtestproject.agent@gmail.com
+Message-ID: <amscznCD4ZBNSU_T@linux.dev>
+Mail-Followup-To: linuxtestproject.agent@gmail.com, ltp@lists.linux.it,
+ liwang@hygon.cn
+References: <20260730074120.180101-1-li.wang@linux.dev>
+ <20260730082901.3960-1-linuxtestproject.agent@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Cyril Hrubis <chrubis@suse.cz>,
- Andrea Cervesato <andrea.cervesato@suse.com>
-References: <CAOB9oOZaAan2bKWzu2XLeGkZVV1RO39YWuucmQK0tvvgVE4rUA@mail.gmail.com>
- <6a57ad4a.c799ffc2.29dc52.6d38@mx.google.com> <amsRGxrUfMnjDlFT@yuki.lan>
-Content-Language: en-US
-From: Tang Yizhou <tangyeechou@gmail.com>
-In-Reply-To: <amsRGxrUfMnjDlFT@yuki.lan>
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20260730082901.3960-1-linuxtestproject.agent@gmail.com>
+X-Migadu-Flow: FLOW_OUT
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] Revert "tpci: unbind driver in test_assign_resources()"
+Subject: Re: [LTP] madvise09: restore cgroup v1 memory limits with numeric
+ values
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -95,42 +60,107 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: linuxtestproject.agent@gmail.com, ltp@lists.linux.it,
- Hongtao Zhang <zhanghongtao35@huawei.com>
+Cc: ltp@lists.linux.it, liwang@hygon.cn
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On 30/7/26 4:53 pm, Cyril Hrubis wrote:
-> Hi!
->>> We recently confirmed this commit does cause a flood of I/O errors on
->>> the root filesystem in our testing, leaving the machine unusable until
->>> reboot.
->>>
->>> Given that, we'd appreciate the community helping to decide soon
->>> whether the revert is warranted.
->>
->> Are you 100% sure that is caused by the patch you want to revert?
->> Because the patch looked ok to me when I reviewed. We need to have
->> more context and info around the issue which has been generated in
->> order to avoid any workaround for a system/kernel bug.
+On Thu, Jul 30, 2026 at 08:29:01AM +0000, linuxtestproject.agent@gmail.com wrote:
+> Hi Li,
 > 
-> AFAIK the testing module grabs first device available on the system and
-> uses it for testing. Which means that if you are unlucky it's your
-> network card, or disk controller and you force reload it on a live
-> system.
+> On Thu, 30 Jul 2026, Li Wang wrote:
+> > madvise09: restore cgroup v1 memory limits with numeric values
 > 
-> And honestly the PCI test should be either rewritten and cleaned up to
-> do something more sensible or just removed. As it is it's too fragile.
+> --- [PATCH 1/2] ---
 > 
+> > +	if (TST_CG_VER_IS_V1(tst_cg, "memory")) {
+> > +		SAFE_CG_PRINTF(tst_cg, "memory.max", "%lld", ori_mem_limit);
+> > +
+> > +		if (swap_accounting_enabled)
+> > +			SAFE_CG_PRINTF(tst_cg, "memory.swap.max", "%lld", ori_swap_limit);
+> > +	} else {
+> 
+> Doesn't this hit EINVAL again on v1, just with a different value?
+> 
+> On the retry path the cgroup still carries the limits written by the
+> previous child at the end of child():
+> 
+> 	memory.max      = mem_limit  = 16 * PAGES * page_size  (8MB @4K)
+> 	memory.swap.max = swap_limit = 2 * mem_limit           (16MB @4K)
+> 
+> On v1 these alias to memory.limit_in_bytes and
+> memory.memsw.limit_in_bytes, and the kernel enforces
+> memory.max <= memsw.max in mem_cgroup_resize_max()
+> (mm/memcontrol-v1.c):
+> 
+> 	limits_invariant = memsw ? max >= READ_ONCE(memcg->memory.max) :
+> 				   max <= memcg->memsw.max;
+> 	if (!limits_invariant) {
+> 		mutex_unlock(&memcg_max_mutex);
+> 		ret = -EINVAL;
+> 		break;
+> 	}
+> 
+> ori_mem_limit is the v1 default (PAGE_COUNTER_MAX, ~8EB), which is well
+> above the 16MB memsw limit still installed. So writing memory.max first
+> should fail with EINVAL and SAFE_CG_PRINTF aborts with TBROK.
+> 
+> When raising the limits the writes have to go memsw first:
+> 
+> 	if (swap_accounting_enabled)
+> 		SAFE_CG_PRINTF(tst_cg, "memory.swap.max", "%lld", ori_swap_limit);
+> 
+> 	SAFE_CG_PRINTF(tst_cg, "memory.max", "%lld", ori_mem_limit);
+> 
+> The lowering sequence further down stays as it is, since lowering
+> memory.max first keeps the invariant.
 
-Thank you for your feedback. It is very helpful to us.
+Yes, good point. On cgroup v1 the retry path is raising both limits back
+to their original values, and raising memory.limit_in_bytes before
+memory.memsw.limit_in_bytes can violate the v1 invariant
+memory.limit_in_bytes <= memory.memsw.limit_in_bytes while the old memsw
+limit is still installed.
+
+I will fix this in V2.
+
+> 
+> >  	/*
+> >  	 * Reset cgroup memory limits to default ("max") in case this is a retry run.
+> 
+> The comment above the hunk still says the limits are reset to "max",
+> which is now only true for the v2 branch. Could it be reworded to cover
+> both cases?
+
+Sure, this can be rewriten.
+
+> 
+> > -	if (SAFE_CG_HAS(tst_cg, "memory.swap.max"))
+> > +	if (TST_CG_VER_IS_V1(tst_cg, "memory"))
+> > +		SAFE_CG_SCANF(tst_cg, "memory.max", "%lld", &ori_mem_limit);
+> > +
+> > +	if (SAFE_CG_HAS(tst_cg, "memory.swap.max")) {
+> >  		swap_accounting_enabled = 1;
+> > -	else
+> > +
+> > +		if (TST_CG_VER_IS_V1(tst_cg, "memory"))
+> > +			SAFE_CG_SCANF(tst_cg, "memory.swap.max", "%lld", &ori_swap_limit);
+> 
+> TST_CG_VER_IS_V1() expands to a tst_cg_ver() call and is evaluated three
+> times across setup() and child(). Would storing it once in a static
+> (e.g. "static int cg_v1;") be simpler, given child() needs it anyway?
+
+Hmm, this is a little bit nitpicking.
+
+> Minor: LTP usually spells such saved values "orig_*", so orig_mem_limit
+> and orig_swap_limit would match the rest of the tree.
+
+Sure, orig_* looks better.
+
 
 -- 
-Best Regards,
-Yi
-
+Regards,
+Li Wang
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
