@@ -4,83 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 64FDDC531D0
-	for <ltp@archiver.kernel.org>; Thu, 30 Jul 2026 08:29:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5CCA3C54FD2
+	for <ltp@archiver.kernel.org>; Thu, 30 Jul 2026 08:49:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1785401365; h=message-id :
+ to : in-reply-to : date : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : cc : mime-version : content-type :
+ content-transfer-encoding : sender : from;
+ bh=RWBj789HCSiUrKB8R4V2KKfYWo3b/dWdN6e1tu5kcT0=;
+ b=FdiE7j9K+rozipOwoSTDOGE/DeHWquijyJLaSV4bmQ2DkNwSV5Mnlpax6UYvtUXrSpEP9
+ pyNCEs6JKIiJGTEC5QLREYWXpf+mgQkxMO7MledmMh/J1ix+m4k/xxAdsm9QRFfWXy9i1ON
+ 46H2WksKKRyUy0ReARyY9EA7L36ty38=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 3C46A3E532F
-	for <ltp@archiver.kernel.org>; Thu, 30 Jul 2026 10:29:20 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 5C5353E5859
+	for <ltp@archiver.kernel.org>; Thu, 30 Jul 2026 10:49:25 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 308F13E2BCE
- for <ltp@lists.linux.it>; Thu, 30 Jul 2026 10:29:04 +0200 (CEST)
-Received: from mail-qk2-x02.google.com (mail-qk2-x02.google.com
- [IPv6:2607:f8b0:4864:34::2])
+ by picard.linux.it (Postfix) with ESMTPS id 40E743E49EA
+ for <ltp@lists.linux.it>; Thu, 30 Jul 2026 10:49:06 +0200 (CEST)
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com
+ [IPv6:2a00:1450:4864:20::333])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 67B111A00792
- for <ltp@lists.linux.it>; Thu, 30 Jul 2026 10:29:04 +0200 (CEST)
-Received: by mail-qk2-x02.google.com with SMTP id
- af79cd13be357-921382c469dso36547985a.1
- for <ltp@lists.linux.it>; Thu, 30 Jul 2026 01:29:04 -0700 (PDT)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id B1EA2600722
+ for <ltp@lists.linux.it>; Thu, 30 Jul 2026 10:49:05 +0200 (CEST)
+Received: by mail-wm1-x333.google.com with SMTP id
+ 5b1f17b1804b1-49550ec592cso3009995e9.0
+ for <ltp@lists.linux.it>; Thu, 30 Jul 2026 01:49:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1785400143; x=1786004943; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to:content-type;
- bh=Xn07CEidBdhAxiDIo3QveE0Q2VeOnMD9uAZ9ZSkn6vc=;
- b=pHqA0jJPT2ndfVqawixLIRbHQS0huunN87MD2ybH7bfgfGnZ/5fBXVTsI3FtA6bvJa
- iTeHKLGmt/ehFR3UXa5+UlbiqqkBnYgOTrnP9gU/Fr2Q7LMLuvIAhYXceHKQZ7ORhKox
- Db8XjdSzS7nPtu4i2QLADWVmozKUqAWVFk7yd7sjFwsRqzdJpdUmyN/gBcOmQKlAyft4
- DE38pE5VsbBZU4P3aDQZUCU+/OzWmkiaVosKEuyZbLBi0/3D8Rs3XDPTeOpwQDXZuyyA
- bvPj2S3wjjpkT5YnL3PcKRqzsZY3RgZhdvUaM/kx+W0krABXYZAzQj8COvaApjS+zL9/
- PDnA==
+ d=suse.com; s=google; t=1785401345; x=1786006145; darn=lists.linux.it;
+ h=date:content-transfer-encoding:content-type:subject:in-reply-to:cc
+ :to:from:message-id:from:to:cc:subject:date:message-id:reply-to
+ :content-type; bh=nIYZV4wIwN0c0BMAf0MMCsM9Xjm5KWqPcbqWD98uGZ0=;
+ b=R9kyksWn0taIpSB3NDdHlSbjTY7EaEtp/RsOBrairLzK4QTK8iYYUvYvEHD56NUqzV
+ AOxW5IpChGNKBcGLTyeDJoYjrfCJ3WE4C4N0ohia037f+2Abbr8MfwcliqF5GcFjodv+
+ CELYC561x5DRFOwkWXy6HxIr0pF0cIm1u0/8oQmEP/AZgi/1ZncZyrdynQ2aDXhmN8I4
+ aYdd6G7lz7ZZnd5HihfNyhLmaPOxxvlTyPyUM+9ca6J1TC8lrw+wMbn5otnKcYVhojqM
+ yYmLO2fLEhF0tggIKiCu0yPgK/XlQDr7Pzt2G/ZuVQN8cGoCBqSb1yOPbo/8SovY1HeW
+ iDSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1785400143; x=1786004943;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to:content-type;
- bh=Xn07CEidBdhAxiDIo3QveE0Q2VeOnMD9uAZ9ZSkn6vc=;
- b=XDjldNQNgTuEAB5UYXB+CmtLqI9W8llAorvpBkrE0tun4qf4LJiSKshc0Zq7hvlrJ+
- E5naJii60FPKESrcixEJsXka0rw8cfnviYRuHbfuRTSfudFSxM2fJ4jMUQqZSW4OkIhv
- Dfp13qD+o8L2mGziKeQExKdIV2d3s6W9E269Z2RPiO/lFwMWUtqfZiY+Q8g3Vf4dJh/T
- uwf+TNxksZczalHUR9wEnb3u80V3jKffL4Zh7rddvgezi0pP7SEBuBdx/Ky88TzM+BK7
- 0Hd6dhi4hfX8Z3e0KodyBAdiDEBkV+KDl4bl5IUFmpiytsAVIi+tPr+VowJeGtcpG8ie
- 0ePA==
-X-Gm-Message-State: AOJu0YywGdcn/VZA+PiKRHatj+6X9/MCctGvnEmPH+YeSzkmW3twAwX/
- ScxvQSWgEwKSv8vTQr4VyUxmKjqGm9m0gaG/8/ye8qhw/qVJ7lXDa93z
-X-Gm-Gg: AR+sD11NU1ffckvLZV/yjf1GxG4Uvku79HY+XYS8AmoFykhg7eZiLQyPI8ovWHqGIWO
- 6EAffNwVhNGo1zrSCH4Pc1Wv2EwLi1VyRsuREc5eGmE0dl1deGQ3F5wKH4StrJB3O+vi1j+USzA
- Sba7R/QdPEEFWkwp2gb32e5iPPP0BBCIioDnnBF9issxgqArqiHFB2shFFF5TMuOBf3BZ384HSA
- ybQ5PNIhp97Nl8OQhTrEh1K0xLlt2YgvbjuLC/GhMG2HDLJoGUqRwl8GRfSGP8elTOUjxJmaeqn
- uZIj95S9eWQe07uemrMCyOisibE+d9t6kjHFoPw5pRqcWSk+eG01MhxUQSoGb4dY22NSGyQhcEq
- abO55EtzwR08kV11GNJxy09PvnVvhwcUPlfkiSTcDyAC9nZ6X9j6Kbd3oakZy3rfyAaAJXAGdzz
- hRmx30Ea7rDLjoI1OiC53eFw+kfifaksmc5Iqq5GN/Dsl/9KKueP5U7de82MUWr+HZSBPLvaAfg
- GfZpRGr+TDl+Rgk8G8KCnPfBD5XSuFg2XBmfT8xwPVnWvOLDELtH3Z3KYaWBsBkr/vop6BFdFY=
-X-Received: by 2002:a05:620a:40c2:b0:930:c12d:b915 with SMTP id
- af79cd13be357-93485f99a97mr147830685a.18.1785400142790; 
- Thu, 30 Jul 2026 01:29:02 -0700 (PDT)
-Received: from
- runnervm7i58z.f4gzbl3y3u1eff0aeziqr4glla.cx.internal.cloudapp.net
- ([20.57.77.194]) by smtp.gmail.com with ESMTPSA id
- af79cd13be357-933e7318323sm366060185a.23.2026.07.30.01.29.02
+ d=1e100.net; s=20251104; t=1785401345; x=1786006145;
+ h=date:content-transfer-encoding:content-type:subject:in-reply-to:cc
+ :to:from:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject
+ :date:message-id:reply-to:content-type;
+ bh=nIYZV4wIwN0c0BMAf0MMCsM9Xjm5KWqPcbqWD98uGZ0=;
+ b=jgIFq4EVju9xDL14LKzRT+Rlgy4UZTR+p0fYJkaC7qhngeKXmOePrUZguT9jyShF5T
+ kevqVvRKKclMzbqNLu0a4FKWygKLuKr/USLQGZNjwtWBWuKvkpjpmddmC1+00RvAbK19
+ yPoMmWYndEyhX+NJd8P0M/oQWCT8O1sDkiqkb7eai//NlCBcO4+K7ZHp/T/BTRUGEJCR
+ s4VMQL2+F/rvd7M50+I9MqCsYff1qjnV808iSUocwdw0EWX+XJcLMuwnR04feFdZ/v/m
+ BjMLWJ0UkRX4WgGtHFc4awmOioOWmYq/gHrSlDynZVt+Sp5K9lJeFnocqGs10EW/ZkuL
+ O2kg==
+X-Gm-Message-State: AOJu0YyDhIkLOgMfBLlNhV6wkDuGTZYOy2ZUA1CrqdjmFl4Fnq7V9ooS
+ E/LshV9Xp7pBvaPvKp2NZ8FNNzGAGj62O9C9aRkADxC20MIgcVrlP/ARbuWMfwzP+zwM0/xu5nM
+ eFxI+0Zm4gw==
+X-Gm-Gg: AR+sD11O5IDGR9iYuGhxwzrnyK7lXYMX38jFaj3kDvT4TOhJBtEXlE8kSwu5MdTtvuf
+ ZjTYqEtX9blIraMytcEn+K4hT+ELLDbFWRH0lCrYzsHbHsBY1tmWeuhrpWhrnV6rzxurpScFOz/
+ 2CgfOfhs2dl0/D+BR2z0F4mQuy6uaoJS+b4u5PZoDmuFpGUy48nBmv3DZoIobNYvAaV7uCiIOrx
+ FfbGbq7rnydemEt+NNInOjPmuFQuhRKV1tw0R3pGI8cZGla/d3V0MumKm+XoWOa4bsrlUWbkl5o
+ CLO4Ksc6RgyJfZh1w60DON81XSPJWmCOLYTWvkUxfvNVawQS7JRO5TBfC3uMz4kgHs6g5ECb9nk
+ gljfv2SlyL9GHuPRp5cWxJCJYLIyWBfdKpLIPxKhYvVG+7h8TdBzJlYra9pnWi4xw19oHstEgIv
+ vT8BkqYLL7sB6/MvvR9vtyoaqDIUKUIsivOiE5T8t8IF5ENUPAkBT3TWjdQ+xfgfZSEw4ArbQg4
+ z4jdBQIUMCIKL6WcVkC9vEiANaqh1dRmedfmYEcWbujpdwXxDT/2t8yfh8BSVUefJo+stU=
+X-Received: by 2002:a05:600c:a01:b0:495:4f84:7280 with SMTP id
+ 5b1f17b1804b1-49801ee1d85mr17882765e9.4.1785401344987; 
+ Thu, 30 Jul 2026 01:49:04 -0700 (PDT)
+Received: from localhost.localdomain
+ (p200300ef2f11090014709bbbefdc2d5d.dip0.t-ipconnect.de.
+ [2003:ef:2f11:900:1470:9bbb:efdc:2d5d])
+ by smtp.gmail.com with ESMTPSA id
+ 5b1f17b1804b1-498011e5febsm40363525e9.3.2026.07.30.01.49.04
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 30 Jul 2026 01:29:02 -0700 (PDT)
-From: linuxtestproject.agent@gmail.com
-To: Li Wang <li.wang@linux.dev>
-Date: Thu, 30 Jul 2026 08:29:01 +0000
-Message-ID: <20260730082901.3960-1-linuxtestproject.agent@gmail.com>
-X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260730074120.180101-1-li.wang@linux.dev>
-References: <20260730074120.180101-1-li.wang@linux.dev>
-MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+ Thu, 30 Jul 2026 01:49:04 -0700 (PDT)
+Message-ID: <6a6b1000.3527643f.2a6277.1af0@mx.google.com>
+To: "Cyril Hrubis" <chrubis@suse.cz>
+In-Reply-To: <20260715123612.1684984-2-chrubis@suse.cz>
+Date: Thu, 30 Jul 2026 08:49:04 +0000
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] madvise09: restore cgroup v1 memory limits with numeric
- values
+Subject: Re: [LTP] [PATCH v2 1/5] syscalls: Add epoll_ctl07
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -92,104 +98,21 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
 Cc: ltp@lists.linux.it
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Li,
+Reviewed-by: Andrea Cervesato <andrea.cervesato@suse.com>
 
-On Thu, 30 Jul 2026, Li Wang wrote:
-> madvise09: restore cgroup v1 memory limits with numeric values
-
---- [PATCH 1/2] ---
-
-> +	if (TST_CG_VER_IS_V1(tst_cg, "memory")) {
-> +		SAFE_CG_PRINTF(tst_cg, "memory.max", "%lld", ori_mem_limit);
-> +
-> +		if (swap_accounting_enabled)
-> +			SAFE_CG_PRINTF(tst_cg, "memory.swap.max", "%lld", ori_swap_limit);
-> +	} else {
-
-Doesn't this hit EINVAL again on v1, just with a different value?
-
-On the retry path the cgroup still carries the limits written by the
-previous child at the end of child():
-
-	memory.max      = mem_limit  = 16 * PAGES * page_size  (8MB @4K)
-	memory.swap.max = swap_limit = 2 * mem_limit           (16MB @4K)
-
-On v1 these alias to memory.limit_in_bytes and
-memory.memsw.limit_in_bytes, and the kernel enforces
-memory.max <= memsw.max in mem_cgroup_resize_max()
-(mm/memcontrol-v1.c):
-
-	limits_invariant = memsw ? max >= READ_ONCE(memcg->memory.max) :
-				   max <= memcg->memsw.max;
-	if (!limits_invariant) {
-		mutex_unlock(&memcg_max_mutex);
-		ret = -EINVAL;
-		break;
-	}
-
-ori_mem_limit is the v1 default (PAGE_COUNTER_MAX, ~8EB), which is well
-above the 16MB memsw limit still installed. So writing memory.max first
-should fail with EINVAL and SAFE_CG_PRINTF aborts with TBROK.
-
-When raising the limits the writes have to go memsw first:
-
-	if (swap_accounting_enabled)
-		SAFE_CG_PRINTF(tst_cg, "memory.swap.max", "%lld", ori_swap_limit);
-
-	SAFE_CG_PRINTF(tst_cg, "memory.max", "%lld", ori_mem_limit);
-
-The lowering sequence further down stays as it is, since lowering
-memory.max first keeps the invariant.
-
->  	/*
->  	 * Reset cgroup memory limits to default ("max") in case this is a retry run.
-
-The comment above the hunk still says the limits are reset to "max",
-which is now only true for the v2 branch. Could it be reworded to cover
-both cases?
-
-> -	if (SAFE_CG_HAS(tst_cg, "memory.swap.max"))
-> +	if (TST_CG_VER_IS_V1(tst_cg, "memory"))
-> +		SAFE_CG_SCANF(tst_cg, "memory.max", "%lld", &ori_mem_limit);
-> +
-> +	if (SAFE_CG_HAS(tst_cg, "memory.swap.max")) {
->  		swap_accounting_enabled = 1;
-> -	else
-> +
-> +		if (TST_CG_VER_IS_V1(tst_cg, "memory"))
-> +			SAFE_CG_SCANF(tst_cg, "memory.swap.max", "%lld", &ori_swap_limit);
-
-TST_CG_VER_IS_V1() expands to a tst_cg_ver() call and is evaluated three
-times across setup() and child(). Would storing it once in a static
-(e.g. "static int cg_v1;") be simpler, given child() needs it anyway?
-
-Minor: LTP usually spells such saved values "orig_*", so orig_mem_limit
-and orig_swap_limit would match the rest of the tree.
-
---- [PATCH 2/2] ---
-
-> +Li Wang <li.wang@linux.dev> <liwang@hygon.cn>
-
-Patch 1/2 is already signed off with liwang@hygon.cn, so would it make
-sense to order this one first in the series?
-
-Verdict - Needs revision
-
----
-Note:
-
-The agent can sometimes produce false positives although often its
-findings are genuine. If you find issues with the review, please
-comment this email or ignore the suggestions.
-
-Regards,
-LTP AI Reviewer
+--
+Andrea Cervesato
+SUSE QE Automation Engineer Linux
+andrea.cervesato@suse.com
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
