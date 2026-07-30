@@ -4,102 +4,101 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E291AC5516D
-	for <ltp@archiver.kernel.org>; Thu, 30 Jul 2026 19:54:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 71D89C5516E
+	for <ltp@archiver.kernel.org>; Thu, 30 Jul 2026 19:54:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1785441263; h=to : date :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1785441282; h=to : date :
  message-id : in-reply-to : references : mime-version : subject :
  list-id : list-unsubscribe : list-archive : list-post : list-help :
  list-subscribe : from : reply-to : cc : content-type :
  content-transfer-encoding : sender : from;
- bh=GVxweHb3R+i5tvW07sG8XKxUiXV9BIg3RIQ7z4t0/GI=;
- b=Cu1E5I4tQJcv7puZxEojfZOOO3sv3KW9KFzlSpnGUF+dil5EWDShrohPyZevxxoMvYh9z
- 6ah6pbM1HRSAWfrdF+XZF7baS7L3uoy1P2E6BuIeBUW7g6Ew7wUtucAv0nSRVno9LJEwW7U
- oGRtnwM4tSbLi0H50keGGUVdyziOhhc=
+ bh=Mi2BA6KfZ6pkrcGSTgd4+432FFRqblovI+XL1OsUN2A=;
+ b=cMsM0vcERNIiS1cdAH+4/l64dpdZ0Ewtg50mRVkC6/3kIWL5HDyESoapj+rbRCCvfw//y
+ dFyDwhijKhanYAr1AmyuetQ+dJCZHdMsdJpGL84Unt4so1CgGN4potuz35o06dG6In1WO7H
+ wZuCAeZMZrTWjbtMwOaNG6eODb18gEs=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C0EB13E7636
-	for <ltp@archiver.kernel.org>; Thu, 30 Jul 2026 21:54:23 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id A2C4A3E7281
+	for <ltp@archiver.kernel.org>; Thu, 30 Jul 2026 21:54:42 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 7BE383E49F7
- for <ltp@lists.linux.it>; Thu, 30 Jul 2026 21:54:01 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 3E6953E7636
+ for <ltp@lists.linux.it>; Thu, 30 Jul 2026 21:54:07 +0200 (CEST)
 Received: from us-smtp-delivery-124.mimecast.com
  (us-smtp-delivery-124.mimecast.com [170.10.129.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id CBCFF600700
- for <ltp@lists.linux.it>; Thu, 30 Jul 2026 21:54:00 +0200 (CEST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 90AE81A0037F
+ for <ltp@lists.linux.it>; Thu, 30 Jul 2026 21:54:05 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1785441239;
+ s=mimecast20190719; t=1785441244;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=Qe2ysZs7rPyWAp4gwEZ1tGzJAp5sGsqm8pfbLxsG75A=;
- b=fpBB06MUb6Xd6Ff3erSCg4/Ad8/KTfpWoX5qYm/360CtQWRDsaU8nQz1/1dQKjitcbysC+
- hmOnQcGwJPTKDqcGsXMRYZbf1/1Iv+ZXE63yCrAKVHuva1snpwWqmEYUaIJG2dlutx8jY+
- FfoUJqLS5ulOd4zz+Fv70aG4+BD/2Tc=
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
- [209.85.222.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ bh=w96pf3mWppwoLq2pRTB+nyAoSXU6TgB4D0zAO8E3PJU=;
+ b=beOLK8j2ZpYRgs3WkYflGZ1FzJfSTDPmBFJPsXRuDx/2Vph2BREDZk0WkE28Q4XOhQnawx
+ gJ+PC1z0C1Wr4yiI+29mm8hsbhPtqjJf4aXPi2unT9GVZchTaqa+M/l+YlH0izso0SF/06
+ ULjAP6kP7wPXZvACJKOYLZ4Mh7X8xTc=
+Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
+ [209.85.222.197]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-37-QtDlPTIGMDCsPZztMStcsg-1; Thu, 30 Jul 2026 15:53:57 -0400
-X-MC-Unique: QtDlPTIGMDCsPZztMStcsg-1
-X-Mimecast-MFC-AGG-ID: QtDlPTIGMDCsPZztMStcsg_1785441237
-Received: by mail-qk1-f199.google.com with SMTP id
- af79cd13be357-92e6ed4fe99so45976585a.0
- for <ltp@lists.linux.it>; Thu, 30 Jul 2026 12:53:57 -0700 (PDT)
+ us-mta-633-J07z9W-OPpGwKXPwbM_KPg-1; Thu, 30 Jul 2026 15:54:01 -0400
+X-MC-Unique: J07z9W-OPpGwKXPwbM_KPg-1
+X-Mimecast-MFC-AGG-ID: J07z9W-OPpGwKXPwbM_KPg_1785441241
+Received: by mail-qk1-f197.google.com with SMTP id
+ af79cd13be357-92e53b8a302so24890585a.1
+ for <ltp@lists.linux.it>; Thu, 30 Jul 2026 12:54:01 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1785441237; x=1786046037;
+ d=1e100.net; s=20251104; t=1785441241; x=1786046041;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to:content-type;
- bh=Qe2ysZs7rPyWAp4gwEZ1tGzJAp5sGsqm8pfbLxsG75A=;
- b=BiqVb7NJgbbdyf1MGNT59PLk/nd967ccPEI9vYlJo9gPe8LEdXXelpYZXecI3/nt09
- N0T2BbI0l5MowERlqhStSfFQy37cwsArJExKcUimHQItAQ0V+FK6MtrWO7AW+U2MNyoM
- 4OhfAZwWwjc7EX+SGoiXNku2cxuPq9iB5Q8B1uwwr1SOFHH6iQIKvj0iggsAZ5Pm3fex
- dnlXIAGKQuk1zRA+VIAUu0eGkj0B/aqsxESU5zsR0I7gg86SJ5MYIiLWdwqW2LHwr42M
- f1u3vyp8Oe2QLLzDvHPn8XVDTyPEnlsJOGkZf+tA94FHGMos70T4BwkhrsvVA3gpj668
- VgIg==
-X-Gm-Message-State: AOJu0Yz9QXhZgw8NDKJ7KWinpCKpPbesvhL8ozgctkzvXv0cqPHVYIlA
- In8mgF1QBdxlF9q6BFYmhs8i3Ut8XhTl0IgNLKQRkV5mP5cz0kSKySV/5km+dPv3mrbk/do0px8
- S9+8sNXw6Nx0MYZGmQQnHDuI3xrpdl8WhNiMuxAwA7NqLeEVeGSfBy8DEGL5W1FyNjbGHZjBIrb
- waAq1KAvDrlYfCilk2DRnZMruCm8hkTDdgKvGp
-X-Gm-Gg: AR+sD11rcB0/PpDTHKzTSIPdaCmtUv6ZY7GyWy6hnGgk7lpODgHNHFUl/t6NDdUU+Dk
- jzLTakAAVwY266k50r0OR8sxAMzheoMfi7L2cWnn29m6j5RQU2olJwOTCfXhauKQLQOhviE9U99
- w94QKJkETGOnimEsaJnJR2MpYIorczgHeVIWi9L2Ds830Qljb9NNwyVWYHPjWXEg4lJ+9fK1A3w
- OyRD30aejtwkUPsnESOz61oWNwCaL6kJHr+5eJus7DirR52zCMHd8HhCyztJkSif12HtvPE4hDe
- PNyyxeC5hVpJAti3TeQRnpSNyYZX6cZZsLdVNIDzY7asLhXXpoifVquUoGeyxqY4MP9UyAeBC4c
- V95dX9+iFx4FYKY7E787Z8B6WIQ==
-X-Received: by 2002:a05:620a:6b84:b0:915:abc4:b570 with SMTP id
- af79cd13be357-934861449admr349049485a.48.1785441236593; 
- Thu, 30 Jul 2026 12:53:56 -0700 (PDT)
-X-Received: by 2002:a05:620a:6b84:b0:915:abc4:b570 with SMTP id
- af79cd13be357-934861449admr349047185a.48.1785441235957; 
- Thu, 30 Jul 2026 12:53:55 -0700 (PDT)
+ bh=w96pf3mWppwoLq2pRTB+nyAoSXU6TgB4D0zAO8E3PJU=;
+ b=gARP43QisMqVbdm7rCVNUZFxtZAsPDaOD4B7hYIJmTIPb0q5gQLYygaIhvQ6zH7Htm
+ f5XAGntRpaOcW3CFyE1YEhIaci6N6slgzbczGZc6TQtAeVtzKXYkbez4vWjZ73cExx07
+ DTOGSFyHx9vVfQ6TvE+zk2LHhFOxkz9cIxrgchA+xuzsUP3BgHy36lyNA9AROwlqQdCc
+ uPy4TEdPgLgT1jtfHvyBeBvoFpjkWgdP87bIWkXjqEuQ5qVWDYi+HZGBkJEj1A66fo4H
+ qJ6XZqNwQg4Xe8F9xvjdNID3IOsK9Zq03eKdvzRVVA0OFcuxnA8z70tKf5Zj1YN8EcaX
+ kWqw==
+X-Gm-Message-State: AOJu0Yz6XvG633CT/qA4e+/8zOL/QO/ivWXOhigVIPtNnLuGHKNWAzU4
+ GcBTEgsPRc5jYnWWM/m6+odadsRkO/iEUARmEscOIHtqhBMBualm0/0NBuhPyaHcSnCPdFTI1Y/
+ qaVuDYoeT+vWJy3GfPN32r6RTeRNsSrDPzQLh2Di+xUqJKwO9iEUeDhhasff8u4y3Yw/mnnniqS
+ qEeoeqyb+f5G98LOgHtzkEnKtK9F2PL4nCRMCh
+X-Gm-Gg: AR+sD10G3PFdo2IgJ4UUCHLx3mfnljLUibEa7E1naaphPhjnViSNjNPZpSwBS3010pG
+ miolErbGUMd40GOWRhEmwFxRM8/wVMN+VbzLc/Rh3+YKDy8H2gE7XgCIcXbMpqgbyz8V2MxJ4/X
+ kgs+h0bN6PQH6GTFmvixPC4ZKH11x0y/XdBUUKe4R862dIc2PxCSsqctwfEdP0Rsw+DU5MHMHlq
+ NwZgsjgxLwKsafMLxrnjUqGBMKLBYXy0mqJHbt6RHGu1W/hmm9swi5JyXkNCMQDTg/HPzl0A9dJ
+ 5B4F/P3EO9X/ODbR/1atNMhSZOgsFyZf8yH2o4YMPJu/PBl9OxxnMIn7kesYVIyovy++GCfdz6c
+ 6RpYflbm/OBKmY3fdFumKXQOjvw==
+X-Received: by 2002:a05:620a:a0cc:20b0:92e:8037:c871 with SMTP id
+ af79cd13be357-93486ee45fcmr345853185a.74.1785441240786; 
+ Thu, 30 Jul 2026 12:54:00 -0700 (PDT)
+X-Received: by 2002:a05:620a:a0cc:20b0:92e:8037:c871 with SMTP id
+ af79cd13be357-93486ee45fcmr345850585a.74.1785441240248; 
+ Thu, 30 Jul 2026 12:54:00 -0700 (PDT)
 Received: from sbertram-thinkpadp1gen5.bos.com ([67.189.222.97])
  by smtp.gmail.com with ESMTPSA id
- af79cd13be357-933e73181e1sm479185485a.25.2026.07.30.12.53.53
+ af79cd13be357-933e73181e1sm479185485a.25.2026.07.30.12.53.58
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 30 Jul 2026 12:53:54 -0700 (PDT)
+ Thu, 30 Jul 2026 12:53:58 -0700 (PDT)
 To: ltp@lists.linux.it
-Date: Thu, 30 Jul 2026 15:49:50 -0400
-Message-ID: <20260730194953.274721-2-sbertram@redhat.com>
+Date: Thu, 30 Jul 2026 15:49:51 -0400
+Message-ID: <20260730194953.274721-3-sbertram@redhat.com>
 X-Mailer: git-send-email 2.55.0
 In-Reply-To: <20260730194953.274721-1-sbertram@redhat.com>
 References: <20260730171956.237584-1-sbertram@redhat.com>
  <20260730194953.274721-1-sbertram@redhat.com>
 MIME-Version: 1.0
 X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: MnYu7i9lfKPy9XA0a9Y3VEjukDOoag-JkFCp1nBI5gk_1785441237
+X-Mimecast-MFC-PROC-ID: N_A7FbUVt6taByVQJC19uW56FBveBJ8c_qJACd47gwM_1785441241
 X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v1 1/2] newipc: Factor out generic
- get_ipc_idx_from_id() helper
+Subject: [LTP] [PATCH v1 2/2] semctl01: fix SEM_STAT failures under parallel
+ LTP runs
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -121,114 +120,158 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 From: Stephen Bertram <sbertram@redhat.com>
 
-get_shm_idx_from_id()'s per-index STAT loop will be needed again for
-semctl01's SEM_STAT lookup. Move it into a generic get_ipc_idx_from_id()
-helper in libs/newipc, taking a per-family stat() wrapper, so IPC tests
-that need to translate an id to its live kernel index can share one
-implementation instead of duplicating the loop.
+SEM_STAT relied on the global high index from IPC_INFO to find this
+test's semaphore set. That index is not stable when other IPC tests run
+concurrently, and could trigger TBROK aborts under parallel LTP runs.
+Look up the index for this test's own semaphore set instead, using the
+get_ipc_idx_from_id() helper shmctl01 already shares.
 
-shmctl01 is converted to use the new helper. No functional change.
+This also updates func_iinfo(), which no longer derives sem_index, and
+func_sstat() now also verifies the semaphore data SEM_STAT returns
+(sem_nsems, sem_perm.mode), not just the id used to locate it.
 
 Signed-off-by: Stephen Bertram <sbertram@redhat.com>
 Assisted-by: Cursor:Sonnet-5
 ---
-Test: ./kirk -w 4 -f syscalls_32 -p shmctl01 -i 1000
+Test: ./kirk -w 4 -f syscalls_32 -p semctl01 -i 1000
+Before changes:
+Total runs:  32000
+Runtime:    16m 32s
+Passed:     415968
+Failed:     0
+Skipped:    0
+Broken:     16
+Warnings:   0
+
 After changes:
 Total runs:  32000
-Runtime:    24m 57s
-Passed:     384000
+Runtime:    16m 37s
+Passed:     416000
 Failed:     0
 Skipped:    0
 Broken:     0
 Warnings:   0
 
- include/tse_newipc.h                        | 20 ++++++++++++++++++++
- libs/newipc/tse_newipc.c                    | 13 +++++++++++++
- testcases/kernel/syscalls/shmctl/shmctl01.c | 14 +++++++-------
- 3 files changed, 40 insertions(+), 7 deletions(-)
+ testcases/kernel/syscalls/semctl/Makefile   |  2 +-
+ testcases/kernel/syscalls/semctl/semctl01.c | 76 +++++++++++++++++----
+ 2 files changed, 65 insertions(+), 13 deletions(-)
 
-diff --git a/include/tse_newipc.h b/include/tse_newipc.h
-index 1d3bbd129..175a60234 100644
---- a/include/tse_newipc.h
-+++ b/include/tse_newipc.h
-@@ -49,4 +49,24 @@ void *probe_free_addr(const char *file, const int lineno);
- #define PROBE_FREE_ADDR() \
- 	probe_free_addr(__FILE__, __LINE__)
+diff --git a/testcases/kernel/syscalls/semctl/Makefile b/testcases/kernel/syscalls/semctl/Makefile
+index 0e7223998..1f1ec9c81 100644
+--- a/testcases/kernel/syscalls/semctl/Makefile
++++ b/testcases/kernel/syscalls/semctl/Makefile
+@@ -8,6 +8,6 @@ LTPLIBS = ipc newipc
+ include $(top_srcdir)/include/mk/testcases.mk
  
-+/**
-+ * get_ipc_idx_from_id() - Find the kernel index of an IPC resource by id.
-+ *
-+ * @id: The msqid/semid/shmid to look for.
-+ * @max_idx: Highest kernel index to search, from IPC_INFO/SEM_INFO/SHM_INFO.
-+ * @stat_fn: Per-family *_STAT wrapper called as stat_fn(idx, buf) for
-+ *           each idx in [0, max_idx]; must return the id at idx, or -1
-+ *           on error, without aborting the test.
-+ * @buf: Buffer passed through to @stat_fn.
-+ *
-+ * SysV *_STAT commands (MSG_STAT/SEM_STAT/SHM_STAT) take a kernel array
-+ * index rather than the id returned by *get(), and that index is not
-+ * guaranteed to match the id when other IPC users are active. This walks
-+ * the live indices to find the one that currently maps to @id.
-+ *
-+ * Return: The kernel index mapping to @id, or -1 if none was found.
-+ */
-+int get_ipc_idx_from_id(int id, int max_idx,
-+			int (*stat_fn)(int idx, void *buf), void *buf);
-+
- #endif /* tse_newipc.h */
-diff --git a/libs/newipc/tse_newipc.c b/libs/newipc/tse_newipc.c
-index f7edda6b5..aee286a31 100644
---- a/libs/newipc/tse_newipc.c
-+++ b/libs/newipc/tse_newipc.c
-@@ -86,3 +86,16 @@ void *probe_free_addr(const char *file, const int lineno)
+ semctl06: LTPLDLIBS = -lltpipc
+-semctl02 semctl03 semctl04 semctl05 semctl07 semctl08 semctl09: LTPLDLIBS = -lltpnewipc
++semctl01 semctl02 semctl03 semctl04 semctl05 semctl07 semctl08 semctl09: LTPLDLIBS = -lltpnewipc
  
- 	return addr;
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/syscalls/semctl/semctl01.c b/testcases/kernel/syscalls/semctl/semctl01.c
+index 5bd675ab6..398cb3028 100644
+--- a/testcases/kernel/syscalls/semctl/semctl01.c
++++ b/testcases/kernel/syscalls/semctl/semctl01.c
+@@ -210,13 +210,16 @@ static void func_rmid(void)
+ 
+ static void func_iinfo(int hidx)
+ {
+-	if (hidx >= 0) {
+-		sem_index = hidx;
+-		tst_res(TPASS, "the highest index is correct");
+-	} else {
+-		sem_index = 0;
+-		tst_res(TFAIL, "the highest index is incorrect");
+-	}
++	/*
++	 * Return value is the highest used index. Our set is alive, so the
++	 * highest used index must be at least our index.
++	 */
++	if (hidx >= sem_index)
++		tst_res(TPASS, "IPC_INFO highest index %d >= our index %d",
++			hidx, sem_index);
++	else
++		tst_res(TFAIL, "IPC_INFO highest index %d < our index %d",
++			hidx, sem_index);
  }
-+
-+int get_ipc_idx_from_id(int id, int max_idx,
-+			int (*stat_fn)(int idx, void *buf), void *buf)
-+{
-+	int i;
-+
-+	for (i = 0; i <= max_idx; i++) {
-+		if (stat_fn(i, buf) == id)
-+			return i;
+ 
+ static void func_sinfo(void)
+@@ -227,12 +230,54 @@ static void func_sinfo(void)
+ 		tst_res(TPASS, "number of semaphore sets is correct");
+ }
+ 
+-static void func_sstat(int semidx)
++/*
++ * SEM_STAT fills buf the same way IPC_STAT does. sem_nsems and
++ * sem_perm.mode (set via IPC_SET earlier) verify SEM_STAT's own data,
++ * not just the id already used to find sem_index.
++ */
++static void func_sstat(int semid)
+ {
+-	if (semidx >= 0)
+-		tst_res(TPASS, "id of the semaphore set is correct");
++	if (semid != sem_id) {
++		tst_res(TFAIL, "expected sem_id %d, got %d", sem_id, semid);
++		return;
 +	}
 +
-+	return -1;
-+}
-diff --git a/testcases/kernel/syscalls/shmctl/shmctl01.c b/testcases/kernel/syscalls/shmctl/shmctl01.c
-index 05aea58cc..bfc11fa39 100644
---- a/testcases/kernel/syscalls/shmctl/shmctl01.c
-+++ b/testcases/kernel/syscalls/shmctl/shmctl01.c
-@@ -224,20 +224,20 @@ static void dummy_sighandler(int sig)
- 	(void)sig;
- }
- 
-+static int shm_stat(int idx, void *buf)
-+{
-+	return shmctl(idx, SHM_STAT, buf);
++	if (buf.sem_nsems == PSEMS && buf.sem_perm.mode == (SEM_RA | NEWMODE))
++		tst_res(TPASS, "id and semaphore STAT info are correct (id=%d)",
++			sem_id);
+ 	else
+-		tst_res(TFAIL, "id of the semaphore set is incorrect");
++		tst_res(TFAIL, "nsems=%d (expected %d), mode=%o (expected %o)",
++			(int)buf.sem_nsems, PSEMS,
++			buf.sem_perm.mode, (SEM_RA | NEWMODE));
 +}
 +
- static int get_shm_idx_from_id(int shm_id)
- {
- 	struct shm_info dummy;
- 	struct shmid_ds dummy_ds;
--	int max_idx, i;
++/*
++ * SAFE_SEMCTL() would abort the test on per-index failures.
++ */
++static int sem_stat(int idx, void *buf)
++{
++	union semun arg;
++
++	arg.buf = buf;
++	return semctl(idx, 0, SEM_STAT, arg);
++}
++
++/*
++ * SEM_STAT takes an index into the kernel's internal array, not a semid.
++ * Return the index that maps to this test's set.
++ */
++static int get_sem_idx_from_id(int id)
++{
++	struct seminfo info;
++	struct semid_ds dummy_ds;
++	union semun arg;
 +	int max_idx;
- 
- 	max_idx = SAFE_SHMCTL(shm_id, SHM_INFO, (void *)&dummy);
- 
--	for (i = 0; i <= max_idx; i++) {
--		if (shmctl(i, SHM_STAT, &dummy_ds) == shm_id)
--			return i;
--	}
--
--	return -1;
-+	return get_ipc_idx_from_id(shm_id, max_idx, shm_stat, &dummy_ds);
++
++	arg.__buf = &info;
++	/* SEM_INFO ignores semid; but SAFE_SEMCTL requires an lvalue */
++	max_idx = SAFE_SEMCTL(id, 0, SEM_INFO, arg);
++
++	return get_ipc_idx_from_id(id, max_idx, sem_stat, &dummy_ds);
  }
  
- static void setup(void)
+ static struct tcases {
+@@ -263,8 +308,15 @@ static void verify_semctl(unsigned int n)
+ 	struct tcases *tc = &tests[n];
+ 	int rval;
+ 
+-	if (sem_id == -1)
++	if (sem_id == -1) {
+ 		sem_id = SAFE_SEMGET(IPC_PRIVATE, PSEMS, IPC_CREAT | IPC_EXCL | SEM_RA);
++		sem_index = get_sem_idx_from_id(sem_id);
++		if (sem_index < 0)
++			tst_brk(TBROK,
++				"Failed to get sem_id %d to idx mapping", sem_id);
++		tst_res(TINFO, "sem_id=%d maps to kernel index=%d",
++			sem_id, sem_index);
++	}
+ 	if (tc->func_setup) {
+ 		switch (tc->cmd) {
+ 		case GETNCNT:
 -- 
 2.55.0
 
