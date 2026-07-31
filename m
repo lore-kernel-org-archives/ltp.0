@@ -4,82 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CF4BBC5516D
-	for <ltp@archiver.kernel.org>; Fri, 31 Jul 2026 10:42:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A9BF7C5516D
+	for <ltp@archiver.kernel.org>; Fri, 31 Jul 2026 10:52:05 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id F0FA63E5A46
-	for <ltp@archiver.kernel.org>; Fri, 31 Jul 2026 12:42:05 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id D2CA73E7205
+	for <ltp@archiver.kernel.org>; Fri, 31 Jul 2026 12:52:03 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1C7B23E25FB
- for <ltp@lists.linux.it>; Fri, 31 Jul 2026 12:41:50 +0200 (CEST)
-Received: from mail-pj2-x03.google.com (mail-pj2-x03.google.com
- [IPv6:2607:f8b0:4864:39::3])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 264CD3E2D15
+ for <ltp@lists.linux.it>; Fri, 31 Jul 2026 12:51:48 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 851A2600AA0
- for <ltp@lists.linux.it>; Fri, 31 Jul 2026 12:41:50 +0200 (CEST)
-Received: by mail-pj2-x03.google.com with SMTP id
- 98e67ed59e1d1-381072761d4so536114a91.0
- for <ltp@lists.linux.it>; Fri, 31 Jul 2026 03:41:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1785494509; x=1786099309; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to:content-type;
- bh=HA/qMPZLYftyJWs5mgKwPJLVSwrJ2RPf/w0T0nioJt8=;
- b=P3oNw8/WlbMR6IQRlUk84tWJY3QB1B3RsDsWYLGewM712yp2kkADKai8j5/z02XA/6
- hv73HYKgHUix+Hq6NL+vBdRoX8EfJobpVLUgdAssOxVzLYMbTfMu0IfbUv5iTF0Af5qo
- dE8XKjxbFmW8o6da3nhcxqwCyU24Q9l/TyQeV7Coa+TzMHH5gwnwH2wgBsjbnKUyvou7
- fEIULGA+K66H5ir0+t7wRGYthI95d+7vIhqhuFlRi0gx2VJaAO1Fb1iLyvs2Ais8cFGc
- C0U3uLBPLt0I5MypWnHwuJL+8Q2yowonJnafzEKuleJ7v71NK7ocWpWKuRPytndwUNrg
- cvmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1785494509; x=1786099309;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to:content-type;
- bh=HA/qMPZLYftyJWs5mgKwPJLVSwrJ2RPf/w0T0nioJt8=;
- b=YrjIJYR38cJYHgWYUBKewJJLrkiqMHM3SlFg0BviE/c6hJKsgFnciCKO7YyIx7TZuE
- wXYappnOY7i7OfwpbDxHxFwZ4Z6r8dwmkwI0kv47E7YO4LewoGqcaJxq20yamw7jhRl4
- /+O0XnRvpd+xYfeY3rAsZv9+5AIYzjvwRzwfICCisxP5++JIexNhXwH/+sIgjLLnad+E
- Vr8stKwnyV8HGe3xViLUEZjKebACi0ApuMJ+gdlIU9afvkSg3KZBMhY4eUuCUvUyHuxk
- JBZVDqO+KVYQcn1j07cZsOVa6oJVpfBy9KJCHpCPOdmmyf4T2BM3kGMtJOUTnva9NKaj
- wGrQ==
-X-Gm-Message-State: AOJu0YwvM60ifkdaGJ7p86oNLjKPvVPj7IbKlBkUnp/0b1LL6H282EPX
- FQtM7+6Gg985hBrc0ZzHoy/ORDpSAEvA9vcx3WQ9BVdonaxRjj4lfLv5LeGaJfuA
-X-Gm-Gg: AR+sD12wFamDiZtElOJiT7O322M9lyvQ2+phNt93L/SDgUEU7Wt+I6Jy11zPvYlWtc8
- iWRDBp0cIx+NpHcCZkbHO8sofLAb4MtV9n/e9wRYr02JStecPiDY/et3feJEBjr6ABwMOMkuqsz
- F8JofiBlrESbTwg3Fe2bImDDZo02oJoDgXrOKO01qwv4avZpPr780YiSVHgHOIGN8p6yJOlV3BH
- B6WviQ6BEIqJhUPCCl8uscq9WmYR1R6FQGzf3oikw0dthQjrXHYkiNG+sgeqX3mwbSHSaW/LxbI
- e3kBNfPd0WHkjmTzTiqp5Le5QMM2JW03jaRUnf8v5b7RMbpjU56LELxMngr5AT/dDX05R1GLHbO
- 36/Pr11zafe5R1gOZMqa42jXB3r6l6P4otePeLwG+vk0zvFezKFnh8j979uaBazseiCX2xrSTa1
- rv0X0ganHY6np3C3EPz5zHaUfpu6VnF4wh4oZVWSsnfx8TwVk3neND5bFJvTBUv7R3LMbYPF2gu
- ujBNmggrvbkcp4CQ/118jf69Y6U9+nwkLhgFStf+7H7ZJIoasS+bOLkJoL2n9lhbnSs0N6qEfh+
- cw==
-X-Received: by 2002:a05:6a21:1f8e:b0:3c3:bdce:27c1 with SMTP id
- adf61e73a8af0-3c91b381c94mr1421085637.51.1785494508916; 
- Fri, 31 Jul 2026 03:41:48 -0700 (PDT)
-Received: from
- runnervmvrwv9.s0dhqrvhcoxedfv3gzip5zasqg.dx.internal.cloudapp.net
- ([172.185.54.254]) by smtp.gmail.com with ESMTPSA id
- 5a478bee46e88-3153e044912sm5379539eec.15.2026.07.31.03.41.48
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 31 Jul 2026 03:41:48 -0700 (PDT)
-From: linuxtestproject.agent@gmail.com
-To: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Fri, 31 Jul 2026 10:41:47 +0000
-Message-ID: <20260731104147.9091-1-linuxtestproject.agent@gmail.com>
-X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260731-cve-2026-64600-v3-1-192da4ddf707@suse.com>
-References: <20260731-cve-2026-64600-v3-1-192da4ddf707@suse.com>
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 86CC36002CA
+ for <ltp@lists.linux.it>; Fri, 31 Jul 2026 12:51:47 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 327247DEDC;
+ Fri, 31 Jul 2026 10:51:42 +0000 (UTC)
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1785495102; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=/W7Z2AJsog0feHx0N1TrdhKPGyuuoDJxFzAtWNLUu3E=;
+ b=qE6r/yX9oyffYZWhKS2B9qZulZyaQiPEsM9prbhJ/Uc++SEo0A0fFaAqDGVfX4ErA/F5p1
+ YWnuAj3Ra4Px9eRI23W5kAQoGMuPama/sRGhUc8P3rZ6uQceV0PVkM5FzkDIKAoakKYLhq
+ OcAswAhSwcPT+b1zSEzEK6NKpyqfsAI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1785495102;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=/W7Z2AJsog0feHx0N1TrdhKPGyuuoDJxFzAtWNLUu3E=;
+ b=THM4ky6w6/MsnEZek8RIJy/sY+qvWUbNcn5Cg/rUjVYCWiloeD6nADj4uViBdv66FicUvh
+ eMVK/Fs2i+Jx3wDg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B6790779C7;
+ Fri, 31 Jul 2026 10:51:41 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id mAZsJz1+bGoTJwAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Fri, 31 Jul 2026 10:51:41 +0000
+From: Petr Vorel <pvorel@suse.cz>
+To: ltp@lists.linux.it
+Date: Fri, 31 Jul 2026 12:51:28 +0200
+Message-ID: <20260731105132.187177-2-pvorel@suse.cz>
+X-Mailer: git-send-email 2.55.0
+In-Reply-To: <20260731105132.187177-1-pvorel@suse.cz>
+References: <20260731105132.187177-1-pvorel@suse.cz>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	REPLY(-4.00)[]
+X-Rspamd-Queue-Id: 327247DEDC
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] cve: reproducer for cve-2026-64600
+Subject: [LTP] [PATCH v3 1/5] lib: Rename function check_kver() =>
+ check_min_kver()
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,41 +89,70 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Andrea,
+Preparation for a next commit.
 
-On Fri, 31 Jul 2026, Andrea Cervesato wrote:
-> cve: reproducer for cve-2026-64600
-
-> 	while (!stop_pressure) {
-> 		SAFE_PWRITE(1, fd, wbuf, blksize, 0);
-> 		SAFE_FTRUNCATE(fd, 0);
-> 		SAFE_FSYNC(fd);
-> 	}
-
-Could the write be synced before the truncate? The truncate can discard the
-dirty page and delayed allocation before writeback, so fsync() only persists
-the empty file. This also differs from the documented
-write/fdatasync/truncate sequence and may leave the XFS log without the
-allocation pressure needed to widen the vulnerable window, causing false
-passes on affected kernels.
-
-Verdict - Needs revision
-
+Reviewed-by: Avinesh Kumar <avinesh.kumar@suse.com>
+Reviewed-by: Andrea Cervesato <andrea.cervesato@suse.com>
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
-Note:
+The same as in v2.
 
-The agent can sometimes produce false positives although often its
-findings are genuine. If you find issues with the review, please
-comment this email or ignore the suggestions.
+ lib/tst_test.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-Regards,
-LTP AI Reviewer
+diff --git a/lib/tst_test.c b/lib/tst_test.c
+index 5c3607016e..778a1fed40 100644
+--- a/lib/tst_test.c
++++ b/lib/tst_test.c
+@@ -1058,11 +1058,11 @@ static void do_exit(int ret)
+ }
+ 
+ /*
+- * Check for the required kernel version.
++ * Check for the minimal required kernel version.
+  *
+  * return: true if the kernel version is high enough, false otherwise.
+  */
+-static bool check_kver(const char *min_kver, const int brk_nosupp)
++static bool check_min_kver(const char *min_kver, const int brk_nosupp)
+ {
+ 	char *msg;
+ 	int v1, v2, v3;
+@@ -1461,7 +1461,7 @@ static void do_setup(int argc, char *argv[])
+ 		tst_brk(TCONF, "Test needs to be run as root");
+ 
+ 	if (tst_test->min_kver)
+-		check_kver(tst_test->min_kver, 1);
++		check_min_kver(tst_test->min_kver, 1);
+ 
+ 	if (tst_test->skip_in_lockdown && tst_lockdown_enabled() > 0)
+ 		tst_brk(TCONF, "Kernel is locked down, skipping test");
+@@ -1584,7 +1584,7 @@ static void do_setup(int argc, char *argv[])
+ 				tst_check_cmd(tst_test->filesystems->mkfs_ver, 1);
+ 
+ 			if (tst_test->filesystems && tst_test->filesystems->min_kver)
+-				check_kver(tst_test->filesystems->min_kver, 1);
++				check_min_kver(tst_test->filesystems->min_kver, 1);
+ 
+ 			prepare_device(tst_test->filesystems);
+ 		}
+@@ -1988,7 +1988,7 @@ static void run_tcase_on_fs(struct tst_fs *fs, const char *fs_type)
+ 	if (fs->mkfs_ver && !tst_check_cmd(fs->mkfs_ver, 0))
+ 		return;
+ 
+-	if (fs->min_kver && !check_kver(fs->min_kver, 0))
++	if (fs->min_kver && !check_min_kver(fs->min_kver, 0))
+ 		return;
+ 
+ 	prepare_device(fs);
+-- 
+2.55.0
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
