@@ -4,96 +4,107 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 644EAC5516D
-	for <ltp@archiver.kernel.org>; Fri, 31 Jul 2026 12:18:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CEDEFC5516D
+	for <ltp@archiver.kernel.org>; Fri, 31 Jul 2026 12:20:17 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9D1673E71D9
-	for <ltp@archiver.kernel.org>; Fri, 31 Jul 2026 14:18:26 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 58D6A3E911C
+	for <ltp@archiver.kernel.org>; Fri, 31 Jul 2026 14:20:14 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id CE4CF3E4AD2
- for <ltp@lists.linux.it>; Fri, 31 Jul 2026 14:18:09 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ by picard.linux.it (Postfix) with ESMTPS id 8E3EE3E4AD2
+ for <ltp@lists.linux.it>; Fri, 31 Jul 2026 14:19:58 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 38BC614004FD
- for <ltp@lists.linux.it>; Fri, 31 Jul 2026 14:18:08 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 0A592600AFF
+ for <ltp@lists.linux.it>; Fri, 31 Jul 2026 14:19:56 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 35C4E3F3D;
- Fri, 31 Jul 2026 12:18:00 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 3DE153F08;
+ Fri, 31 Jul 2026 12:19:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1785500284; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1785500395; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=p5f9teHL9+i6WmQArTEmGpQrMjSwAAUf+nw18m0PiRI=;
- b=HMUZm8JuszU/v1EcYf0lllo9XVvVP/yTgkuaE01Qcfr0GbmxTL5d+FqVPO7pKsnm+Nbuzs
- O4niuR+vKebAPxHc1cNojKF9MizQ6cWO57J2KZmhQBXx17vmPgDYYjmPgqh8qvLJzht+tl
- jyZBSs6z5ilVUKT5sm3iQ8i5HcB9vfs=
+ bh=dVB38Efa5hz/AQNVBpz+2Mh2ekWywVU70HoMX58Mgwc=;
+ b=o6+5OfC6k/B8waVJg+wI0Qxom/kWnlVo3N9P80mtPvBf+MyAMezgDlMo+UuW7BLTH1UVM1
+ tW+JPd+kNJAgwZczPTE6KdyzUJucfpdZlinbHVDaH7M27R0AQ4SD0z9V6amDRuqUazX+lo
+ 4rPWPB7wEAiQXGG16dOnM1o4MACZAJA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1785500284;
+ s=susede2_ed25519; t=1785500395;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=p5f9teHL9+i6WmQArTEmGpQrMjSwAAUf+nw18m0PiRI=;
- b=3bZ5Ewav8b9T8PWJNSid2518NiNFYm+Z29cuI8SuGRE5dqcEJRPqsuixJSbgIkowG/4kH3
- +wq6O8V209EEsQDQ==
+ bh=dVB38Efa5hz/AQNVBpz+2Mh2ekWywVU70HoMX58Mgwc=;
+ b=fLCefkeeFgzfFmdLg7xmyYumzlrHx4K/UP6DuWgdwJFgtuXHgwtsBXKYIOuJND3bLCO7Vk
+ QFvt/rjSn+oJUZBw==
 Authentication-Results: smtp-out2.suse.de;
-	none
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=o6+5OfC6;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=fLCefkee
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1785500280; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1785500395; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=p5f9teHL9+i6WmQArTEmGpQrMjSwAAUf+nw18m0PiRI=;
- b=eRJEtxUJD9jesv5Urlrq6sHE0KWk4cuJsS8JktfUGtBRQcj6g4AeNv6s5/InznAmxbCRU8
- nJdsRGOlvY7hbK8C2TR2F3XRn3YLD6osYsxsHCvD/YkUPRilYuyLk9N0IMnd1GZtA0DAUs
- ELdKxp+F+WTtjcVpp1P9qNwVWeKMRL4=
+ bh=dVB38Efa5hz/AQNVBpz+2Mh2ekWywVU70HoMX58Mgwc=;
+ b=o6+5OfC6k/B8waVJg+wI0Qxom/kWnlVo3N9P80mtPvBf+MyAMezgDlMo+UuW7BLTH1UVM1
+ tW+JPd+kNJAgwZczPTE6KdyzUJucfpdZlinbHVDaH7M27R0AQ4SD0z9V6amDRuqUazX+lo
+ 4rPWPB7wEAiQXGG16dOnM1o4MACZAJA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1785500280;
+ s=susede2_ed25519; t=1785500395;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=p5f9teHL9+i6WmQArTEmGpQrMjSwAAUf+nw18m0PiRI=;
- b=TW4OX77B6s8zJtEe1Ozn9ZtkbUntFpURBt9gZ2IuwekDYdbOqCIpet1AW9Kq4m8VA6W5fz
- ICj+R7U+5JZEy9DQ==
+ bh=dVB38Efa5hz/AQNVBpz+2Mh2ekWywVU70HoMX58Mgwc=;
+ b=fLCefkeeFgzfFmdLg7xmyYumzlrHx4K/UP6DuWgdwJFgtuXHgwtsBXKYIOuJND3bLCO7Vk
+ QFvt/rjSn+oJUZBw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1B145779B0;
- Fri, 31 Jul 2026 12:18:00 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2586C779B0;
+ Fri, 31 Jul 2026 12:19:55 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id r1sWBXiSbGp1fAAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Fri, 31 Jul 2026 12:18:00 +0000
-Date: Fri, 31 Jul 2026 14:17:59 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id p9MzCOuSbGp/fgAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Fri, 31 Jul 2026 12:19:55 +0000
+Date: Fri, 31 Jul 2026 14:19:54 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
 To: Andrea Cervesato <andrea.cervesato@suse.com>
-Message-ID: <amySdwkUDnYyQSNK@yuki.lan>
-References: <20260715123612.1684984-3-chrubis@suse.cz>
- <6a6b3120.16149c93.268d1c.58c5@mx.google.com>
+Message-ID: <amyS6pAiDXPKZTVj@yuki.lan>
+References: <20260715123612.1684984-4-chrubis@suse.cz>
+ <6a6b31b5.3d30ac2e.39874.ecbc@mx.google.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <6a6b3120.16149c93.268d1c.58c5@mx.google.com>
-X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+In-Reply-To: <6a6b31b5.3d30ac2e.39874.ecbc@mx.google.com>
+X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: 3DE153F08
+X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[99.99%];
  NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-0.998]; MIME_GOOD(-0.10)[text/plain];
- ARC_NA(0.00)[]; MISSING_XM_UA(0.00)[]; MIME_TRACE(0.00)[0:+];
- RCVD_VIA_SMTP_AUTH(0.00)[]; RCPT_COUNT_TWO(0.00)[2];
- RCVD_TLS_ALL(0.00)[];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ MIME_TRACE(0.00)[0:+]; MISSING_XM_UA(0.00)[];
+ RCVD_TLS_ALL(0.00)[]; RCPT_COUNT_TWO(0.00)[2];
+ TO_DN_SOME(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
+ FROM_HAS_DN(0.00)[]; DWL_DNSWL_BLOCKED(0.00)[suse.cz:dkim];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:dkim,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,yuki.lan:mid];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
- FROM_EQ_ENVFROM(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- RCVD_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[yuki.lan:mid, suse.cz:email,
- imap1.dmz-prg2.suse.org:helo]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+ DKIM_TRACE(0.00)[suse.cz:+]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 2/5] syscalls: Add epoll_wait13
+Subject: Re: [LTP] [PATCH v2 3/5] syscalls: Add epoll_wait14
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -112,52 +123,10 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> >		if (fds[i][0] > 0) {
-> >			  SAFE_CLOSE(fds[i][0]);
-> >			  SAFE_CLOSE(fds[i][1]);
-> >		}
-> 
-> It's worth to change the statement to check for fd != -1.
-> Otherwise:
+> Same comment of epoll_wait13: we should use fd != -1 inside the
+> statement. Otherwise:
 
-Fixed with:
-
-diff --git a/testcases/kernel/syscalls/epoll_wait/epoll_wait13.c b/testcases/kernel/syscalls/epoll_wait/epoll_wait13.c
-index 8a8446baa..53a75ef1a 100644
---- a/testcases/kernel/syscalls/epoll_wait/epoll_wait13.c
-+++ b/testcases/kernel/syscalls/epoll_wait/epoll_wait13.c
-@@ -56,15 +56,28 @@ static void close_fds(int fds[][2], int n)
-        int i;
- 
-        for (i = 0; i < n; i++) {
--               if (fds[i][0] > 0) {
-+               if (fds[i][0] != -1) {
-                        SAFE_CLOSE(fds[i][0]);
-                        SAFE_CLOSE(fds[i][1]);
-                }
-        }
- }
- 
-+static void init_fds(int fds[][2], int n)
-+{
-+       int i;
-+
-+       for (i = 0; i < n; i++) {
-+               fds[i][0] = -1;
-+               fds[i][1] = -1;
-+       }
-+}
-+
- static void setup(void)
- {
-+       init_fds(ready_fds, NREADY);
-+       init_fds(quiet_fds, NQUIET);
-+
-        epfd = SAFE_EPOLL_CREATE1(0);
- 
-        register_fds(ready_fds, NREADY, 0);
-
-And pushed, thanks.
+Similar fix here, and pushed, thanks.
 
 -- 
 Cyril Hrubis
