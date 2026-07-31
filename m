@@ -4,90 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 87A20C54F54
-	for <ltp@archiver.kernel.org>; Fri, 31 Jul 2026 07:59:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F3BA0C55167
+	for <ltp@archiver.kernel.org>; Fri, 31 Jul 2026 08:21:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1785484782; h=message-id :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1785486062; h=message-id :
  to : in-reply-to : date : subject : list-id : list-unsubscribe :
  list-archive : list-post : list-help : list-subscribe : from :
  reply-to : cc : mime-version : content-type :
  content-transfer-encoding : sender : from;
- bh=RWBj789HCSiUrKB8R4V2KKfYWo3b/dWdN6e1tu5kcT0=;
- b=Be8aSLL67oZA9u/OfMQWkD2iv+7g1Xe0ym+9n1UkxpDhC6iuDuF4CcfnuYKMGKhjPQvXC
- apfAuD6O0TVjsb0T5YfYpkfih+v6pLmqV/7rgpxX3HyeyXvgi888RMiLqluBL0KgCRheo6G
- wRLxMkhpZ2TD2sWC5eiHQjEL4XH1iRQ=
+ bh=02ZrE+xrV7m6YjVaWVJ89gR0pUKRLz9r/MKPuhZzsTo=;
+ b=q5qRDQ6aRg9/rLqI5qoHrBI/zD6gfEVxO9wB8k1sEdw3yy0pVs+sFe9P4D5bHiOD0kJ7E
+ w1wCJjS/WQWGgpKDoaVVLSSfmWIvYlgwu8qI/5rlPHLFI5S5ejuUx09ODqI/glfKcCHmAj0
+ yVaY51rKOBgbkOLIHxAyp3DCbFlB7H8=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A07AC3E286A
-	for <ltp@archiver.kernel.org>; Fri, 31 Jul 2026 09:59:42 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 2B3863E2D18
+	for <ltp@archiver.kernel.org>; Fri, 31 Jul 2026 10:21:02 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D4F803E286A
- for <ltp@lists.linux.it>; Fri, 31 Jul 2026 09:59:20 +0200 (CEST)
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com
- [IPv6:2a00:1450:4864:20::42a])
+ by picard.linux.it (Postfix) with ESMTPS id 72B383E2448
+ for <ltp@lists.linux.it>; Fri, 31 Jul 2026 10:20:41 +0200 (CEST)
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com
+ [IPv6:2a00:1450:4864:20::434])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 3184B200A0F
- for <ltp@lists.linux.it>; Fri, 31 Jul 2026 09:59:20 +0200 (CEST)
-Received: by mail-wr1-x42a.google.com with SMTP id
- ffacd0b85a97d-47de0093c42so616632f8f.3
- for <ltp@lists.linux.it>; Fri, 31 Jul 2026 00:59:20 -0700 (PDT)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 18CB2600B01
+ for <ltp@lists.linux.it>; Fri, 31 Jul 2026 10:20:41 +0200 (CEST)
+Received: by mail-wr1-x434.google.com with SMTP id
+ ffacd0b85a97d-4728c12ba97so401962f8f.0
+ for <ltp@lists.linux.it>; Fri, 31 Jul 2026 01:20:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1785484759; x=1786089559; darn=lists.linux.it;
+ d=suse.com; s=google; t=1785486040; x=1786090840; darn=lists.linux.it;
  h=date:content-transfer-encoding:content-type:subject:in-reply-to:cc
  :to:from:message-id:from:to:cc:subject:date:message-id:reply-to
- :content-type; bh=nIYZV4wIwN0c0BMAf0MMCsM9Xjm5KWqPcbqWD98uGZ0=;
- b=RETgU5YBwxTsDZdRJYa+X16k1QZBWDGf8UZ05J56M2gSyenWZS9xNEU6lOp4dmxrX8
- Bgp6X6dMTwXvQybdyfcQhvAHsZHbTmIyMpxEAJJbGzu6b9Nn88h5ZL3mX2a5zeMNJsS4
- wA/M40vv2bdu1xXwnW2Mj4NHD/vQNHcBR7qhghAKufIqSi8zvnsf91xxQ7wZsLW4kxYB
- xqi8QqRX3e7v3jkibgl8lqfd5bEXNKNyolcsIrjuXq1G1I0wkZzgnjQ3ervoBezQA38M
- 6GLEjxATKnhdKUpUGfKEflJCMORccF/mTxiJYt96gK435Jhn/SmxG1uC9E11bKWNoK+u
- UhKg==
+ :content-type; bh=afQfzzwbY2trC1NXyoxp5js3LRYMr57xWt2SrBT+LR0=;
+ b=Xfvw4iwSSC1sebrUBzl6FwNsBfTMYmmW6FCQCEUoi8jU5TKUjVDvEoZOqf3eCBcg4M
+ 0NXRNzWg6n9ab5fUHO4S/5LgaTyYQiQIVdnlrhIJW0eOdirlLaLVn9hce/LVJhlsCsW3
+ XYuTpxReXrvBIwZi6Rlmrgb0vPPaDbOluELZmE1NswFgfmVj18eQcGbYjkvWVF9ODcnz
+ IhcJq59pZpj3V4Dsy/kuyzueWcUsNoIpSWPsBj5Sa9Q7n04mquWpl/d+b/pfy5+UkYgi
+ UbId6Un843iZebC09NSkYDYQjL5tCy5PcjSuutLbmWblMIRMzoCX9t836Vc4Kp2RKxwi
+ fbSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1785484759; x=1786089559;
+ d=1e100.net; s=20251104; t=1785486040; x=1786090840;
  h=date:content-transfer-encoding:content-type:subject:in-reply-to:cc
  :to:from:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject
  :date:message-id:reply-to:content-type;
- bh=nIYZV4wIwN0c0BMAf0MMCsM9Xjm5KWqPcbqWD98uGZ0=;
- b=Md7xlzxJkmAFMhdnQvnh76smFLJOa+dsoase+MO5vBGgJAEywhOcxa70eg14JzvhO+
- hy6+Yb6TINadQqbAU4J1EtrWPdfVIpoLiDeav6TFlh7oyzeIB1R5SadSILFq/2X+1Fjb
- nsaE31N8TU79BpEVWXFdqELUhJcZyOFtnW0areB8tDjxzZJW1KAulqHNCCmfWqf9RBDW
- vA9OrjF1gSCPLJZSKybJlsiNxGGaaM0ep3e/tY5f2ToJkftlCgMxlu2Rhbzq7yKwYnia
- Cps9LkM+Qlx7MZRul2lbPvGlrxX3tQE+GKdPiJWPNNzA/Hzl1coUKCFuoc3LaCWprLpY
- ZdOA==
-X-Gm-Message-State: AOJu0Yys30x9vKjtp5CDqBINdNj2IZsgN7OYZ2bxZA3WNuEMKW89djuP
- GSoyiwoo9NbftlpjsvTSkQvckFnQ+IeM/Nj5nJNBrhbXRDUv6iNdEDXbvfx3FpMmnOEX7zLNDlk
- 82+eLUW5NDA==
-X-Gm-Gg: AR+sD11yzxkkeWaoMDcVFLNwrTQO8x7kZf9m0WQEHBa0d9kh1LpYMDUu4vECqin05Pm
- ANsBZoMs+G5eNgCfJYdcTdiOH80oG7I0rjdivlc0WwvU6dlCUIJTltcMOLD7YXcQFfGum0zfChU
- kSTVKeLqGPKF42euE5DRq78WzMckr6n44AGIQ/3ODGb+apPO/wIgPx5pDqHlFGLoOgSCF7bZjHU
- qxg6x6OXtC5NLnx6+40qZG7xD/tNS/2OQlhFZ6S8X1vP4HUnjqTBPXv+bc90XGpDmKu3wp0arhD
- ZR/EEPY+LVt+LRL+yqda9lDNe3r/eRZQPRm8bnm8M8R4bK6WS7raTHD2Tp1NfM6+Yuwt8e++RVM
- JA/LfYxOatkamZNCRIN2onOXWRniIG0YjB356pUr6gaRrmiX5N958A/AysENnyEg3E4c4iqFPrm
- FTZYB4VI09wyI5YWiNCpoHfIRPd6DCxcpfovcsqmqegr9/9gWGm3oob+6h+4NYGQtcC2z4F9h+P
- fmHDbAm0+4t6zXRQRCTcAOZv1z/hlO3DfEQdK04XaY3Yrm5P0rFE6lPR9VuVxxaFlBrQyA=
-X-Received: by 2002:a05:6000:4209:b0:47f:881f:74a8 with SMTP id
- ffacd0b85a97d-47fd2b40da3mr2476639f8f.28.1785484759516; 
- Fri, 31 Jul 2026 00:59:19 -0700 (PDT)
+ bh=afQfzzwbY2trC1NXyoxp5js3LRYMr57xWt2SrBT+LR0=;
+ b=F5RpnjVHOJp+1Cw5tffG8hBGqnHbaa1xvRh42gACARzWLa43BAmbUoEy1xeNAruZ+i
+ fbp8d6G9SVoFTGXIkkaLESS46vkbLET+W8HgXcofetBnS094v6yoq6b3qsv0kiGffl/f
+ UwxvQ9ZJDMODeBUdcEOCfmHrVRni0eagEpSwo2r4ADNExPfZKm12FgMj1rVcn1rWBdcb
+ miVzk41MjWsmL1REquGdVpRmOKeHOcPEVWt/9eYCqFDTEG6vumPnYsqWxhxcdeg8qDlY
+ xJauvkaPDoDc3Wtba2OHTJdGspT6GfHVsN99l0qzIEGuASwC/pPR/n2H7Vu6o0YLQQoC
+ KrbA==
+X-Gm-Message-State: AOJu0YxANdHTN1EEO8nw9k52ch5sniZp1KPaS66CrInWoU5g/t4NRc/s
+ XSvUUPxV0G3jHywyrtzZ4xUfNODP51mcY5jiWkisUzdYxmaJFydsfmUNf5CKpLX4ujEcov7OKqG
+ dw4+Tt0d8FA==
+X-Gm-Gg: AR+sD12e9/VFp7CTZYAZi0nKTnvhTFHEFG1JhqYBEqZTDU6GtHZ0yYhvPDVXfaYmK2U
+ 2YdvuiWYrpMU/QzDXHQ5vBaOlZJ4x5bP2DJC4JQUAzA157yCvEObRoqfinFNFpH00q4fOnubmmS
+ uMV/o6HefYuSjrA3vsFO75YPzquqIG/6QOP+vQ/PZV44x9dSRh1JwO+thNgoY2v5cX/jfxhd3+8
+ BPnRgDWX9TU9lBAaExwQIeSXU4hFYcLnIlU819vpYXuUcrnP1vQahibYUu3Hr/bovrPp75CnxZE
+ f7dssZSYPWkTISXavU755f+aeqE7e0V/H2zwCyhKTOHBPoTJfvcypIGcsKfAFdGnIREKFwNzryr
+ s9KOYoL3Cbmi8HP9H+ufjPOwQRAv3WLlnDwNtihqtxX4+fM6RmYwzpWu1SHJT62kgSRXGcXOK+u
+ t/cDj7yDpMhYNHNpR1+N6V2FKNZzZJJBv4H3zNdj9rneSrFvSQVRTKfiaclUN2ElAoBPf4Aej5p
+ CtC7YBFS+FKFaIvQQBO915kRzAB6a2+EdI+paEF9KiI0/+3VjjIIIUKv/aVIn6cMfoChaw=
+X-Received: by 2002:a05:6000:25ef:b0:47f:73ea:37c0 with SMTP id
+ ffacd0b85a97d-47fd2b5a375mr2596928f8f.52.1785486040417; 
+ Fri, 31 Jul 2026 01:20:40 -0700 (PDT)
 Received: from localhost.localdomain
  (p200300ef2f11090014709bbbefdc2d5d.dip0.t-ipconnect.de.
  [2003:ef:2f11:900:1470:9bbb:efdc:2d5d])
  by smtp.gmail.com with ESMTPSA id
- ffacd0b85a97d-47fd41e2484sm1940813f8f.11.2026.07.31.00.59.19
+ ffacd0b85a97d-47fd41e2961sm2609424f8f.13.2026.07.31.01.20.39
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 31 Jul 2026 00:59:19 -0700 (PDT)
-Message-ID: <6a6c55d7.9b582779.1de776.5996@mx.google.com>
-To: "Wake Liu via ltp" <ltp@lists.linux.it>
-In-Reply-To: <20260731071545.1334046-1-wakel@google.com>
-Date: Fri, 31 Jul 2026 07:59:18 +0000
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+ Fri, 31 Jul 2026 01:20:39 -0700 (PDT)
+Message-ID: <6a6c5ad7.d9578069.1a429d.2ed8@mx.google.com>
+To: "Shaojie Sun" <sunshaojie@kylinos.cn>
+In-Reply-To: <20260731031343.1298712-1-sunshaojie@kylinos.cn>
+Date: Fri, 31 Jul 2026 08:20:39 +0000
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] clock_gettime03: Extend tolerance on slow kernel
- configs
+Subject: Re: [LTP] [PATCH v3 0/3] Add CPU cgroup v2 tests ported from
+ kselftest
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -101,15 +100,39 @@ List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 From: Andrea Cervesato via ltp <ltp@lists.linux.it>
 Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Cc: Wake Liu <wakel@google.com>, ltp@lists.linux.it
+Cc: ltp@lists.linux.it
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Reviewed-by: Andrea Cervesato <andrea.cervesato@suse.com>
+Hi Shaojie,
 
+we didn't receive any answer about the reason of introducing this
+into LTP. kselftests are not working? are they unmaintained?
+
+But more importantly: once we introduce these rewrite into LTP, 
+who's gonna maintain them?
+
+We already had an example of kselftests tests rewritten in
+memcontrol02/03 and (as you can see from the history of this ML)
+these are causing lots of issues and false positives. Mostly,
+unfixable.
+
+What I personally see, it's a duplication of code between projects
+and even if LTP core library has a "better" cgroup support than
+ksefltests, still, there's a risk we are going to maintain something
+that is breaking and someone has to figure our why/what needs a fix.
+
+kselftests almost come "for free" and many people are already using
+them all around the world to test cgroups.
+
+For this reason, I'm against adding these tests into LTP, unless
+there's a valid maintenance plan for the future.
+
+
+Kind Regards,
 --
 Andrea Cervesato
 SUSE QE Automation Engineer Linux
