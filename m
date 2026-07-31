@@ -4,100 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D4488C55171
-	for <ltp@archiver.kernel.org>; Fri, 31 Jul 2026 05:46:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D02AEC55167
+	for <ltp@archiver.kernel.org>; Fri, 31 Jul 2026 06:15:09 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id BD31B3E71D6
-	for <ltp@archiver.kernel.org>; Fri, 31 Jul 2026 07:46:29 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id D484E3E2D1D
+	for <ltp@archiver.kernel.org>; Fri, 31 Jul 2026 08:15:07 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0ED273CF29D
- for <ltp@lists.linux.it>; Fri, 31 Jul 2026 07:46:13 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 0AA7B3E2A65
+ for <ltp@lists.linux.it>; Fri, 31 Jul 2026 08:14:49 +0200 (CEST)
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com
+ [IPv6:2607:f8b0:4864:20::741])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 643551A00924
- for <ltp@lists.linux.it>; Fri, 31 Jul 2026 07:46:11 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 55B7F7D3E6;
- Fri, 31 Jul 2026 05:45:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1785476761; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=W3/E7LSVbXJJWXelX2Ed3QSHQs379facTNhl+KGkrLc=;
- b=15GyBWbR5YBuSP0u3GOa5hjQVqbtU/wFcVVCVAO8R1LdV60NNdkAW6SoYfAYL3GdBHlDJ6
- RK2xnRbcq1+KlIaIzoTkMKH1He6RsgSmkjDi01HdcdaQ73+guirLCCjud+PZw7qrEWjRa8
- scHsW+q0Jx+butdZZqQaXkKm5T5++vw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1785476761;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=W3/E7LSVbXJJWXelX2Ed3QSHQs379facTNhl+KGkrLc=;
- b=+g3uIc2Qcnp7G+u8PR+0kp65OD4V45PLmebB53wWrW1AjD+4+CY5ntYGpscelT9+hOF/bn
- oldBPO7oCni3IbBw==
-Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="nl/rL/tB";
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=fBZm1nFH
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1785476757; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=W3/E7LSVbXJJWXelX2Ed3QSHQs379facTNhl+KGkrLc=;
- b=nl/rL/tBKq/Mztb2iWTaMr9sA/fCt/RNqUdbzzRHApyEpzZGidT+/S3t3UEDeXrjjlMyFv
- 1YmNGSlqnpK5ywAMpbswnJBc43fPP8IcuMj2+82F0/2ii4olGYMp5GubktMnqknqIdaZxM
- AwhIx+5WcQhHHIB8fEblnHd2/ZttyFY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1785476757;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=W3/E7LSVbXJJWXelX2Ed3QSHQs379facTNhl+KGkrLc=;
- b=fBZm1nFH+nrTCFh6agyCberRyxVBHr5jIQ5dwQhZuwe5AUIYdfdxbksBkpht0lOlo9mSwn
- CGi3YGGEHfoDRUBA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A7894779B0;
- Fri, 31 Jul 2026 05:45:55 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 37xcH5M2bGptfQAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Fri, 31 Jul 2026 05:45:55 +0000
-From: Petr Vorel <pvorel@suse.cz>
-To: ltp@lists.linux.it
-Date: Fri, 31 Jul 2026 07:45:47 +0200
-Message-ID: <20260731054548.133241-1-pvorel@suse.cz>
-X-Mailer: git-send-email 2.53.0
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id B3E766008A0
+ for <ltp@lists.linux.it>; Fri, 31 Jul 2026 08:14:48 +0200 (CEST)
+Received: by mail-qk1-x741.google.com with SMTP id
+ af79cd13be357-93108a3c326so98245885a.1
+ for <ltp@lists.linux.it>; Thu, 30 Jul 2026 23:14:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20251104; t=1785478487; x=1786083287; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to:content-type;
+ bh=3a3sJR1oxOqCDQ+1WZpDkCAgMd+5B+6Lq/PPB/Y3a9c=;
+ b=AmLcQzD6LcmOcvljrwqtmqdaNAu5YFZenOxEJ4albyJfbBAF2/reMwbZBYmDKU6bHs
+ Hw7YdulaWBEF2bdjz+CREskbiUpW6AXZdRGDFpMMHevooYEEjkPYH13fUXaXJIGdwYMS
+ 2eRiD5QaHM3fb64YQFMBRFmnhCK9oyrSOyMH12D+WN+FV5RCYp2qLqplZoagmWxG56+x
+ DHBCYEZQQ0K0GRKbot8QcrkPScjp5RzlrW9Pt9GEGuz+8Hk4QYvaerYZqg2GpN6vcKBl
+ 5MivzMXdlYJXHxEwiBfx1C8xCGT2YundZDt8BfGFLNtxkH2r++aOq10ZUwscfYIqWuVd
+ Sfug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1785478487; x=1786083287;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to:content-type;
+ bh=3a3sJR1oxOqCDQ+1WZpDkCAgMd+5B+6Lq/PPB/Y3a9c=;
+ b=rBeVPyymmebPNof3HuIJcNjbHMdx5+/GDiyK2LQpK82XLM62Jtn+lTELdvn+5HbY6b
+ JJ3CtBMNbBtwXtsI1TcDsYKi6KgefIxCdu7O127uESHKtH1HzkEa70LCkOev7l4D6UZt
+ XyveNX2wGo8ywwsMb84ftUGrmJCK/b1/f4+S1sTSwjCgdiWwbihvK6xGjkvIyS42oUnQ
+ fCFC5Gp7I+4hf7l1o1RNopd/zQUCRgJXn7GxlVEaDIlE2oDf6cAnRBcpCt26Q/ghebpb
+ rDjCvkTs6l8c8kSK61a3CPQGcnJpfdAsAHzOeeRg1owpAGYK4iDDDBKp9dkad3TvKUJ8
+ lGbg==
+X-Gm-Message-State: AOJu0YwQ2XSPpLhmeb3cZ8jxaU1nZ3TnSgMrtVppa6nM8q0altnHV9jK
+ HFXtGKmxS4ULBUzRy6pVszBSfgPWZqel1UnSjETBzQ25L62tIpeiIsmf
+X-Gm-Gg: AR+sD11kmFjK22RwpJyxx2PW1kzF9uPC2fVCmhuThzkqA9uiHJr3SNXeuCKf0fdCMP+
+ lRFsiKANXVxeFE+oSXOzafEBb7I/NwRPJV04f0dhMrrfE1mmecmOWrJq1yJy+CRyR3xIX9FT3If
+ UItgCqBntmd1c8gB8Wqeh4RAtntBvtuWMJinUunu3Rs1YygVgFFoW/NCOq8FvOT69LHMLiXw9RC
+ sFe9ArmCU+5G6ridpR2aY4aj4i8/1/WaFu4Vy6ThO2qV9bQhbErFEA4kgd34bILb7NDi8jRXESc
+ DUrXLhDn49S+//jtG92R+Fnkb0IUc8TstLY0sthFlR59LnxTcGrdFPPnSjIw27ZVszUVlLRT+ef
+ jITky1JAkPWJfbwHaLXmfEoxq2Q7Nt9boLT1+pvS2H+qgsxYtFM3C2yuYwVuS5c6O+xEKNbIzob
+ lq4v8rly+T7NWT1j+ono/l8AwznEsn+PNZvbO5bkR096X2e10vdsVBm4X5D4WZso7chhxCZDwjH
+ UduG8Z2pO+yhojZUC3PFljIgKQv1cabVaOXl1cGgGqy4yQvrl2wMXaJ+9axnddugPDzxLvadLw9
+ 2XU=
+X-Received: by 2002:a05:620a:708d:b0:934:8f0a:c68e with SMTP id
+ af79cd13be357-93497427602mr55410885a.5.1785478487339; 
+ Thu, 30 Jul 2026 23:14:47 -0700 (PDT)
+Received: from
+ runnervmvrwv9.43bcwkqot5wunoncdo4jh425pd.bx.internal.cloudapp.net
+ ([172.174.157.134]) by smtp.gmail.com with ESMTPSA id
+ 6a1803df08f44-908434a26basm3711956d6.12.2026.07.30.23.14.47
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Thu, 30 Jul 2026 23:14:47 -0700 (PDT)
+From: linuxtestproject.agent@gmail.com
+To: Petr Vorel <pvorel@suse.cz>
+Date: Fri, 31 Jul 2026 06:14:46 +0000
+Message-ID: <20260731061446.4022-1-linuxtestproject.agent@gmail.com>
+X-Mailer: git-send-email 2.54.0
+In-Reply-To: <20260731054548.133241-1-pvorel@suse.cz>
+References: <20260731054548.133241-1-pvorel@suse.cz>
 MIME-Version: 1.0
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: 55B7F7D3E6
-X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
- R_MISSING_CHARSET(0.50)[];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RCVD_TLS_ALL(0.00)[]; DKIM_TRACE(0.00)[suse.cz:+];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- TO_DN_SOME(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- RCPT_COUNT_SEVEN(0.00)[9]; RCVD_VIA_SMTP_AUTH(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:mid, suse.cz:email, suse.cz:dkim,
- suse.com:email, checkpatch.pl:url, imap1.dmz-prg2.suse.org:helo,
- imap1.dmz-prg2.suse.org:rdns]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 1/1] Switch to patchwork.kernel.org
+Subject: Re: [LTP] Switch to patchwork.kernel.org
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -109,90 +92,28 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-LTP project decided to move from https://patchwork.ozlabs.org/
-to https://patchwork.kernel.org/.
+Hi Petr,
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
+On Fri, Jul 31, 2026 at 07:45:47AM +0200, Petr Vorel wrote:
+> Switch to patchwork.kernel.org
+
+Verdict - Reviewed
+
 ---
- .b4-config                       | 2 +-
- .github/pull_request_template.md | 2 +-
- README.rst                       | 2 +-
- ci/tools/patchwork.sh            | 2 +-
- doc/maintainers/patch_review.rst | 2 +-
- 5 files changed, 5 insertions(+), 5 deletions(-)
+Note:
 
-diff --git a/.b4-config b/.b4-config
-index aea68ad8f6..c2766cd4fb 100644
---- a/.b4-config
-+++ b/.b4-config
-@@ -2,7 +2,7 @@
- # See https://b4.docs.kernel.org/en/latest/config.html
- [b4]
-     send-series-to = Linux Test Project <ltp@lists.linux.it>
--    pw-url = https://patchwork.ozlabs.org/
-+    pw-url = https://patchwork.kernel.org/
-     pw-project = ltp
- 
-     # other checkpatch.pl options from .checkpatch.conf are used
-diff --git a/.github/pull_request_template.md b/.github/pull_request_template.md
-index e2c076ddd5..1149edf7c5 100644
---- a/.github/pull_request_template.md
-+++ b/.github/pull_request_template.md
-@@ -4,7 +4,7 @@
- * Although we *occasionally* also accept GitHub pull requests, the *preferred* way is sending patches to our mailing list: https://lore.kernel.org/ltp/
- There is an example how to use it: https://github.com/linux-test-project/ltp/wiki/C-Test-Case-Tutorial#7-submitting-the-test-for-review (using git format-patch and git send-email).
- LTP mailing list is archived at: https://lore.kernel.org/ltp/.
--We also have a patchwork instance: https://patchwork.ozlabs.org/project/ltp/list/.
-+We also have a patchwork instance: https://patchwork.kernel.org/project/ltp/list/.
- 
- * Commits should be signed: Signed-off-by: Your Name <me@example.org>, see
- https://www.kernel.org/doc/html/latest/process/submitting-patches.html#sign-your-work-the-developer-s-certificate-of-origin
-diff --git a/README.rst b/README.rst
-index 9853222fbe..06600cf20f 100644
---- a/README.rst
-+++ b/README.rst
-@@ -24,6 +24,6 @@ Some references:
- * `Source code <https://github.com/linux-test-project/ltp>`_
- * `Releases <https://github.com/linux-test-project/ltp/releases>`_
- * `Mailing List <http://lists.linux.it/listinfo/ltp>`_
--* `Working patches (patchwork) <https://patchwork.ozlabs.org/project/ltp/list/>`_
-+* `Working patches (patchwork) <https://patchwork.kernel.org/project/ltp/list/>`_
- * `Working patches (lore.kernel.org) <https://lore.kernel.org/ltp>`_
- * `#ltp @ libera chat <https://libera.chat/>`_
-diff --git a/ci/tools/patchwork.sh b/ci/tools/patchwork.sh
-index 5c58bee5d8..71155704c0 100755
---- a/ci/tools/patchwork.sh
-+++ b/ci/tools/patchwork.sh
-@@ -7,7 +7,7 @@
- #
- # Copyright (c) 2025 Andrea Cervesato <andrea.cervesato@suse.com>
- 
--PATCHWORK_URL="${PATCHWORK_URL:-https://patchwork.ozlabs.org}"
-+PATCHWORK_URL="${PATCHWORK_URL:-https://patchwork.kernel.org}"
- PATCHWORK_SINCE="${PATCHWORK_SINCE:-3600}"
- PATCHWORK_MAX_SINCE="${PATCHWORK_MAX_SINCE:-86400}"
- PATCHWORK_CI_PREFIX="${PATCHWORK_CI_PREFIX:-github-build}"
-diff --git a/doc/maintainers/patch_review.rst b/doc/maintainers/patch_review.rst
-index 50e4f8ccf8..0665e492ec 100644
---- a/doc/maintainers/patch_review.rst
-+++ b/doc/maintainers/patch_review.rst
-@@ -126,7 +126,7 @@ Commit messages should have
- * LTP documentation should be kept up to date.
- 
- After patch is accepted or rejected, set correct state and archive in the
--`LTP patchwork instance <https://patchwork.ozlabs.org/project/ltp/list/>`_.
-+`LTP patchwork instance <https://patchwork.kernel.org/project/ltp/list/>`_.
- 
- New tests
- ---------
--- 
-2.53.0
+The agent can sometimes produce false positives although often its
+findings are genuine. If you find issues with the review, please
+comment this email or ignore the suggestions.
 
+Regards,
+LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
