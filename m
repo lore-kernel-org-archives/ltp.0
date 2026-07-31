@@ -4,96 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CC2F9C54F54
-	for <ltp@archiver.kernel.org>; Fri, 31 Jul 2026 11:48:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1785498517; h=message-id :
- date : mime-version : to : references : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-transfer-encoding :
- content-type : sender : from;
- bh=RSJBm+5giQHldVUbu8GBl0yNO6otjchluVHXhpfkWXI=;
- b=HKXJxo1DlejipxkoYWl1YYONx6uVLOgGbKf/jPkkvlZTbC/+tcDBaOy0FPDt7YyKKq6/p
- HkVjIcMwywiXhp45CNy06XldTL2D4eNjTVMQh1CaNF7SM9NK+/oE7cu3c64z9ee0fpAe3Bw
- 17RqjB5Z3YRy6gF5DRGuHjuiidouwIo=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 82F6EC54F54
+	for <ltp@archiver.kernel.org>; Fri, 31 Jul 2026 11:52:35 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D331B3E62F0
-	for <ltp@archiver.kernel.org>; Fri, 31 Jul 2026 13:48:37 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id B827A3E71D1
+	for <ltp@archiver.kernel.org>; Fri, 31 Jul 2026 13:52:33 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id CBE623E25FB
- for <ltp@lists.linux.it>; Fri, 31 Jul 2026 13:48:17 +0200 (CEST)
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com
- [IPv6:2a00:1450:4864:20::62f])
+ by picard.linux.it (Postfix) with ESMTPS id 8356F3E25FB
+ for <ltp@lists.linux.it>; Fri, 31 Jul 2026 13:52:18 +0200 (CEST)
+Received: from mail-qv2-x00.google.com (mail-qv2-x00.google.com
+ [IPv6:2607:f8b0:4864:33::])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 12D7D600AAB
- for <ltp@lists.linux.it>; Fri, 31 Jul 2026 13:48:17 +0200 (CEST)
-Received: by mail-ej1-x62f.google.com with SMTP id
- a640c23a62f3a-c197eaaab00so136700666b.0
- for <ltp@lists.linux.it>; Fri, 31 Jul 2026 04:48:17 -0700 (PDT)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 105DF1A00CA9
+ for <ltp@lists.linux.it>; Fri, 31 Jul 2026 13:52:18 +0200 (CEST)
+Received: by mail-qv2-x00.google.com with SMTP id
+ 6a1803df08f44-8fda6ac0586so4066316d6.1
+ for <ltp@lists.linux.it>; Fri, 31 Jul 2026 04:52:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1785498496; x=1786103296; darn=lists.linux.it;
- h=content-transfer-encoding:content-type:in-reply-to:from
- :content-language:references:cc:to:subject:user-agent:mime-version
- :date:message-id:from:to:cc:subject:date:message-id:reply-to
- :content-type; bh=P/vAoso4bha0Me0lUGuaHV4H49YG7EQ9FBgTWn42rRc=;
- b=fGJOO1MJnQ9VOUereQfR0ahTLP2HCyJTwZue52g81CKuveR/biAnL0rZCvTxyUQqzW
- UUc1zT9CC1bjwbXZnIwR1wKrD+ZGsWMfBXeOh/wMYYTAUneuYyDAleTPX3gvecBeLIGF
- BKlSCLpCqD6QdkwkDRt/svQ0rxiZ8oLrs7IipCaGfdRJFFNa1ZsdAQJtYwYxcZ31Mjxx
- qXFkZosYhzbkSPLhdn4x3SvpXArk3KXvRtGNTc86l9iwGoHkkxdzIZk4p9nyzJLh5oRU
- 7oFlHh5l6qQf6xaTItn1dwoz9+VCrFHoL16ekZ3gDTOoXbNn5cCh5dKX4HdYID05i0oC
- /5GA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1785498496; x=1786103296;
- h=content-transfer-encoding:content-type:in-reply-to:from
- :content-language:references:cc:to:subject:user-agent:mime-version
- :date:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+ d=gmail.com; s=20251104; t=1785498736; x=1786103536; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to:content-type;
- bh=P/vAoso4bha0Me0lUGuaHV4H49YG7EQ9FBgTWn42rRc=;
- b=AXtXQkE2umS63EGsNdtFPdtwnb0Bzz0vCx9Fvz6BZ1ExENUW8ghMUJE5ZMMRn3I1tS
- YQ7qSAWuOvw5RzfdTrR4iz4w0nLwnFh9fI7EBIF55y7Iiw0GG0LEYusnOF20aHOMsoDS
- rvTZom4hPCBj+u5ACpJkUhDCwyBRUk9ritL5BxAEUdxxcpj32hfGL32HgdLzZbSnbqSy
- Ny9N+EWQxORrV0c3vshBsh7Y3mNOb6VHhHucUr2rdXbfb8hvg0zzRcRhMkfSqMLmm3N3
- EG7i8w0K1UQIIPLnxwX3G0pa+S4i/lUaMCTjVrNMydr7nl4xWD/onESZk5QKFPZIfRxh
- IfXQ==
-X-Forwarded-Encrypted: i=1;
- AHgh+RqhEpBMI0d7OH+52lAyb345FbmEQeq4Qs6xDwTsfb69qVG1tJFnic/XnAXt/IsImf4Nzlo=@lists.linux.it
-X-Gm-Message-State: AOJu0YzhZNrXayGWTMgBxOPSBoUeOY6ZBfpnAWLME7DaDPs2zFoN1TA8
- bJEE7+JDTh3i3Koi9HGnjyOifqG8oIwesu+hKCiXmqQc4pb251kbZUuikoF/9FLzLH8Z3sRloX2
- nKLRuUMoz9w==
-X-Gm-Gg: AR+sD12XTZO6PKn6R+MBC5WmHS/Jy6hcFM+O77OoygeWck113iuJALK0NCVVHPZR07J
- u6rNg9Lgej4QeyB37subFqYl7k7wAsLKiCEGyIK2AkddAAiQGdSF0AUVSx6FXbSaK4/ZDqMKjrL
- vhUuWzSbjrC0F8fhMFNdVyNjfR9E7pmhZa1EesomxPnophTSTtP3HOYZfuinhxDKxbshkkf7Bx6
- jXR7D7AUG5A3hXYY8iGt/LtWW1N11TPhtJm56iGO1E9/OKcqWpsqtGpFrShszXo1zxENrCynvN+
- xBVdZZlfCPIdStU0kI9SqtJPRwU4WZVgVUmInV74hKqKd1+8sPp4GX61iHtqqCdC+2NyJbJGXAP
- yPCOk0zJI/K/hoWS5VX9LYjtvTQ2gXeZOAnlPPbBQREP5GlbfKfjIi+O0UrTBhTafa7pCL6hyK3
- tEdNkUI8konab8zXgLpUhhHFpNw1l3L9FA/y95L/myALKvMMvn4lqkeTpU/7hZIG6HkqOVcgrEH
- s8MBA==
-X-Received: by 2002:a17:907:1b1a:b0:c1f:9e0b:e029 with SMTP id
- a640c23a62f3a-c1fd25384c5mr102788766b.39.1785498496389; 
- Fri, 31 Jul 2026 04:48:16 -0700 (PDT)
-Received: from ?IPV6:2a07:b241:1004:8300::1000? ([2a07:b241:1004:8300::1000])
- by smtp.gmail.com with ESMTPSA id
- a640c23a62f3a-c1fd452d93dsm129882366b.49.2026.07.31.04.48.15
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Fri, 31 Jul 2026 04:48:15 -0700 (PDT)
-Message-ID: <31966d61-11a4-40ac-870b-0b9d2066ade5@suse.com>
-Date: Fri, 31 Jul 2026 13:48:14 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
+ bh=YyAmqFwuMUXfZDDwkftfQzo9zrGyrFBbR1/vZmYvwx4=;
+ b=LoWAK1caGJEo7zzqAUGUL2SB2GOqcUt2tuvg7SlgHkeTYV0CwnhuWEH7TMAFuL0IUF
+ 5LHq9oyCHytU9EdsHdtnLWa0ygMFRwCdmIue08uHHLXVIOQHFcPJQkszmttKWmvHR8qg
+ N+sq0iEKmR1MS4FKpgPRTlAm7eLnt6bubIKTQjNspz2nEHbFxxXv04iepYTIyhpBF70G
+ vlcIjq9fDdyUoAcfNpoTUGCLjsTwFncgsctfGoYzBWfQJud1ezwtF0dWRKHITTXijjEL
+ YekSy9XPavEgoG5trfPg26ymlH2AUX55X7/Q+moRw0p4xlgF1LvknhhUKiMv/5oJ/C9J
+ ansQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1785498736; x=1786103536;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to:content-type;
+ bh=YyAmqFwuMUXfZDDwkftfQzo9zrGyrFBbR1/vZmYvwx4=;
+ b=Sy9Z1wodacOB1nvYqclD9iu0Pz04jSna3b08oQkI6N05bjZjpONTD4BUz7r2ur8tIq
+ 8gdBQnUMAEgvmtF5eMfHuyozombIudiuybxWNdhN+GJnnzBtqjmppDaDVv5Xs4nbBvtP
+ h0vSKMNAHDfsnE8AVKZFJDvk7xAx3msxxvkT2T4m992qbC9kVaR3o++snq7ls79KWVsh
+ zN8MnJeWxrFLDKFiA/Y4uC6Um+W/h+/7ib/MeZqpo3+W5khpKmjFx/Kq6ErjNowA7ipI
+ nQu83DTv6gW8VDOb4/QJd4v0DEdEdSzSnm5Uc4vTuWVhcy9/pDtnprG5ytVW2l8NnKQT
+ HVtQ==
+X-Gm-Message-State: AOJu0Yz52xFJLTNqRX5s9sd0ptbdUBjLL1hwM+CzopDEh8/qk2w/q7+l
+ TuS8uv2Q133uKhCMlhLcbs5pzbmNsWAFo1PBG+mevVCkxKRiPojupbhL
+X-Gm-Gg: AR+sD12BIJAFJ0DOnBmm91V1zGWCELsXmWGL8CGOg7PJFSnUzF7S++fIDzK+Dj8UB0o
+ 6JX1gkNXbQprRwNZHY31a/RQ7Ix2dWDKi1s9dKmSI0V6rDe8dHTjaxmMDY6ftrIv/PI+aM8wmUg
+ kiUwN54tENScGfhy33yXWhsNEzBi+/LZY+ESd+7r13I0iFdhO76phdDmm84nwRaM8lltZJHiKy9
+ CZY7NXKw30530NQBv2ODdHg++CLvcOM+v7gGUZX2CQgGL7Qe7nNFJbEUkjFiSX1IJnjud63EFn9
+ EcPwmhWyXsCxJBoOtpO8NmCgo/ZWgHIBW5NbqmjfZSC/WGazikE6MhG5s2HK0WxocCiQHSYcBkg
+ HfmXG+HrG1pcc6qMHCq91dhnZwg2NgvzqrFBI8FN9JjX/rLOXT8L0Y49axnwzOg3L9vBPvWoHeG
+ d94eiGWCx0d7lzBe37+kqpg31roTPH+S2iMeDo+aRjdnaNtPvX8lJq+nQVHjFg+CpdWKLXQ2gK1
+ lxK6mCXcNCZ1vMasc4pPOtHun2i2PINfbu8YBmybuYo3pViv7L64hjiWQPGigYbral3VX0GyTLZ
+X-Received: by 2002:a05:6214:4908:b0:8ef:31b6:74e8 with SMTP id
+ 6a1803df08f44-9084219de9cmr30790496d6.10.1785498736541; 
+ Fri, 31 Jul 2026 04:52:16 -0700 (PDT)
+Received: from
+ runnervmvrwv9.4spcgtrrpnuuxis0joratmmoqc.bx.internal.cloudapp.net
+ ([20.102.102.64]) by smtp.gmail.com with ESMTPSA id
+ 6a1803df08f44-908435ed43esm8610056d6.40.2026.07.31.04.52.16
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 31 Jul 2026 04:52:16 -0700 (PDT)
+From: linuxtestproject.agent@gmail.com
 To: Petr Vorel <pvorel@suse.cz>
-References: <20260731105132.187177-1-pvorel@suse.cz>
- <20260731105132.187177-3-pvorel@suse.cz>
-Content-Language: en-US
-In-Reply-To: <20260731105132.187177-3-pvorel@suse.cz>
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+Date: Fri, 31 Jul 2026 11:52:15 +0000
+Message-ID: <20260731115215.8956-1-linuxtestproject.agent@gmail.com>
+X-Mailer: git-send-email 2.54.0
+In-Reply-To: <20260731105132.187177-2-pvorel@suse.cz>
+References: <20260731105132.187177-2-pvorel@suse.cz>
+MIME-Version: 1.0
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3 2/5] lib: Add support for max_kver to struct
- tst_test and tst_fs
+Subject: Re: [LTP] lib: Rename function check_kver() => check_min_kver()
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -105,150 +91,92 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Avinesh Kumar via ltp <ltp@lists.linux.it>
-Reply-To: Avinesh Kumar <avinesh.kumar@suse.com>
 Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
+Hi Petr,
 
+On Fri, 31 Jul 2026, Petr Vorel wrote:
+> lib: Rename function check_kver() => check_min_kver()
 
-On 7/31/26 12:51 PM, Petr Vorel wrote:
-> max_kver adds a support to require a maximal kernel version the test can
-> run on. e.g. "7.2" (mainline release) or "6.1.180" (stable release).
-> 
-> NOTE: Mainline release is sufficient on any stable release (test with
-> .min_kver = "7.1" runs also on kernel 7.1.5). Stable releases are
-> compared as expected.
-> 
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> ---
-> Changes v2->v3:
-> * Allow to pass mainline release (e.g. max_version = "7.1") on any stable
->    release (e.g. 7.1.5). Stable releases (e.g. 7.1.5) are compared as
->    expected. For this I'd like an explicit ack.
-> 
->   include/tst_test.h | 13 ++++++++++++-
->   lib/tst_test.c     | 47 ++++++++++++++++++++++++++++++++++++++++++++++
->   2 files changed, 59 insertions(+), 1 deletion(-)
-> 
-> diff --git a/include/tst_test.h b/include/tst_test.h
-> index c69362485e..318b2f79b7 100644
-> --- a/include/tst_test.h
-> +++ b/include/tst_test.h
-> @@ -280,6 +280,9 @@ struct tst_ulimit_val {
->    *
->    * @min_kver: A minimum kernel version supporting the filesystem which has been
->    *            created with mkfs.
-> + *
-> + * @max_kver: A maximum kernel version supporting the filesystem which has been
-> + *            created with mkfs.
->    */
->   struct tst_fs {
->   	const char *type;
-> @@ -292,6 +295,7 @@ struct tst_fs {
->   	const void *mnt_data;
->   
->   	const char *min_kver;
-> +	const char *max_kver;
->   };
->   
->   /**
-> @@ -301,7 +305,13 @@ struct tst_fs {
->    *        and each time passed an increasing counter value.
->    * @options: An NULL optstr terminated array of struct tst_option.
->    *
-> - * @min_kver: A minimal kernel version the test can run on. e.g. "3.10".
-> + * @min_kver: A minimal kernel version the test can run on. e.g. "4.4" (mainline
-> + * release) or "6.1.180" (stable release).
-> + *
-> + * @max_kver: A maximal kernel version the test can run on. e.g. "7.2" (mainline
-> + * release) or "6.1.180" (stable release). NOTE: Mainline release is sufficient
+--- [PATCH 1/5] ---
+
+> Preparation for a next commit.
+
+Could the message explain that the rename distinguishes the minimum-version
+helper from the new maximum-version helper, without referring to a later
+patch? The current body does not explain the change independently.
+
+--- [PATCH 2/5] ---
+
 > + * on any stable release (test with ``min_kver = "7.1"`` runs also on kernel
 > + * 7.1.5). Stable releases are compared as expected.
->    *
->    * @supported_archs: A NULL terminated array of architectures the test runs on
->    *                   e.g. {"x86_64, "x86", NULL}. Calls tst_is_on_arch() to
-> @@ -551,6 +561,7 @@ struct tst_fs {
->   	struct tst_option *options;
->   
->   	const char *min_kver;
-> +	const char *max_kver;
->   
->   	const char *const *supported_archs;
->   
-> diff --git a/lib/tst_test.c b/lib/tst_test.c
-> index 778a1fed40..8b9abe716a 100644
-> --- a/lib/tst_test.c
-> +++ b/lib/tst_test.c
-> @@ -1087,6 +1087,44 @@ static bool check_min_kver(const char *min_kver, const int brk_nosupp)
->   	return true;
->   }
->   
-> +/*
-> + * Check for the maximal required kernel version.
-> + *
-> + * return: true if the kernel version is low enough, false otherwise.
-> + */
-> +static bool check_max_kver(const char *max_kver, const int brk_nosupp)
-> +{
-> +	char *msg;
-> +	int dots, i, v1, v2, v3;
-> +
-> +	if (tst_parse_kver(max_kver, &v1, &v2, &v3)) {
-> +		tst_res(TWARN,
-> +			"Invalid kernel version %s, expected %%d.%%d.%%d",
-> +			max_kver);
-> +	}
-> +
+
+Could this example use ``max_kver``? As written, the new field documents the
+opposite API.
+
 > +	for (i=0, dots=0; max_kver[i]; i++)
-> +		dots += (max_kver[i] == '.');
-> +
-> +	/*
-> +	 * For mainline kernel release without patch level (single dot e.g. "7.1")
-> +	 * ignore v3 (the sublevel): 7.1.x is always ok.
-> +	 * Do *not* ignore v3 on stable kernel release (2 dots, e.g. 7.1.5).
-> +	 */
-> +	if (tst_kvercmp(v1, v2, v3) > (dots == 1 ? 1023 : 0)) {
-> +		msg = "The test requires kernel %s or older";
-> +
-> +		if (brk_nosupp)
-> +			tst_brk(TCONF, msg, max_kver);
-> +		else
-> +			tst_res(TCONF, msg, max_kver);
-> +
-> +		return false;
-> +	}
-> +
-> +	return true;
-> +}
 
-Hi Petr,
-This looks good. I tested it (and other patches) as well.
+Could spaces be added around both assignment operators to follow kernel
+coding style?
 
-on my system, test runs fine -
-tst_test.c:2097: TINFO: Tested kernel: 7.1.4-1-default
-...
+--- [PATCH 3/5] ---
 
-and
-on >=7.2
+> +	.max_kver = "6.10",
 
-# ./fanotify20
-tst_test.c:1118: TCONF: The test requires kernel 7.1 or older
+Could this test be allowed to run again on Linux 7.2? In that tree,
+do_open_execat() calls exe_file_deny_write_access() and returns ETXTBSY when
+the executable is open for writing (fs/exec.c:800-802).
 
+A permanent maximum version therefore reports TCONF for behavior that is
+valid again. It cannot represent the temporary 6.11 through 7.1 behavior
+window.
 
-so feel free to add
-Tested-by: Avinesh Kumar <avinesh.kumar@suse.com>
-Reviewed-by: Avinesh Kumar <avinesh.kumar@suse.com>
+--- [PATCH 4/5] ---
 
-for whole series.
+> +	.max_kver = "6.10",
 
-Thanks,
-Avinesh
+Could creat07 also be allowed to run again on Linux 7.2? The exec path makes
+i_writecount negative through exe_file_deny_write_access(), and creat() then
+reaches get_write_access(), which returns ETXTBSY for a negative count
+(include/linux/fs.h:2813-2816).
 
+This maximum bound suppresses valid 7.2 coverage and cannot describe the
+temporary 6.11 through 7.1 behavior window.
 
+--- [PATCH 5/5] ---
+
+> Because the above flag combinations are already "tested" by the tests
+> that use them and we don't have any tests that >= 5.10 has support for
+> FAN_MARK_FILESYSTEM etc just simply skip the test on v7.2.
+
+Could this claim be corrected? Other tests exercise FAN_REPORT_TID and
+FAN_REPORT_PIDFD separately, but fanotify20 is the only LTP test combining
+them.
+
+> +	.max_kver = "7.1",
+
+Could the first case instead expect success when thread pidfds are supported,
+while retaining the second valid-combination check? Linux 7.2 now uses
+task_pid(current) for FAN_REPORT_TID and creates a thread pidfd
+(fs/notify/fanotify/fanotify.c:843-849 and
+fs/notify/fanotify/fanotify_user.c:906-913). Skipping the whole test removes
+the only coverage of the newly valid combination.
+
+Verdict - Needs revision
+
+---
+Note:
+
+The agent can sometimes produce false positives although often its
+findings are genuine. If you find issues with the review, please
+comment this email or ignore the suggestions.
+
+Regards,
+LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
