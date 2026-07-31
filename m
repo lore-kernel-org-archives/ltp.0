@@ -4,78 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 529E4C55167
-	for <ltp@archiver.kernel.org>; Fri, 31 Jul 2026 07:16:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CDAB6C55167
+	for <ltp@archiver.kernel.org>; Fri, 31 Jul 2026 07:25:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1785482171; h=date :
- mime-version : message-id : to : subject : list-id : list-unsubscribe
- : list-archive : list-post : list-help : list-subscribe : from :
- reply-to : cc : content-type : content-transfer-encoding : sender :
- from; bh=wIGnTyfq5KdY4QAAYXhWruenZCeyVMeVb9ZGMjCETIU=;
- b=RJGNnttvDAIhG/wWZIm+NgIX+Zv25D/hS2EKS8RI3LF03UhP2f02lNK9ERhbpezK2CSmP
- macCvifkU6AL+ZYqHU7DHFOspBH7Jl/ezasAx1jWFlKdqC7V0HMKAyBiLqA7ch5sVn316U6
- Dq0dmUtYGlT98xCSurnzh11Wp4QGWtU=
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1785482738; h=message-id :
+ date : mime-version : to : references : in-reply-to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-transfer-encoding :
+ content-type : sender : from;
+ bh=0fr/DKSL0xyQb+n9w8kvEwl4JXKjLUPm8uwxTCrapZM=;
+ b=VE1ZjkBB5e17vtVRqoDeJ7EWK5wYvYHrj734+OdL7vdlNQysvkHF5aoi7N//+oN5gdEP9
+ GGPGIEHKh+7hvZiCeo4viEEQvQk+WV8I+0EQTSuWs0vfISPrmw9yly38hyfeBoEMD1RbsHp
+ hIpbcuyEH6rnUZjRprobOA8q4vKKU8k=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 3B8DA3E2D1A
-	for <ltp@archiver.kernel.org>; Fri, 31 Jul 2026 09:16:11 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 0C73D3E2D20
+	for <ltp@archiver.kernel.org>; Fri, 31 Jul 2026 09:25:38 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 979CB3E2958
- for <ltp@lists.linux.it>; Fri, 31 Jul 2026 09:15:50 +0200 (CEST)
-Received: from mail-pf1-x445.google.com (mail-pf1-x445.google.com
- [IPv6:2607:f8b0:4864:20::445])
+ by picard.linux.it (Postfix) with ESMTPS id 80DB73E2958
+ for <ltp@lists.linux.it>; Fri, 31 Jul 2026 09:25:17 +0200 (CEST)
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com
+ [IPv6:2a00:1450:4864:20::535])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 3AC401A00A4F
- for <ltp@lists.linux.it>; Fri, 31 Jul 2026 09:15:50 +0200 (CEST)
-Received: by mail-pf1-x445.google.com with SMTP id
- d2e1a72fcca58-8484b9fb055so2082870b3a.0
- for <ltp@lists.linux.it>; Fri, 31 Jul 2026 00:15:50 -0700 (PDT)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id A8AF01A00A45
+ for <ltp@lists.linux.it>; Fri, 31 Jul 2026 09:25:16 +0200 (CEST)
+Received: by mail-ed1-x535.google.com with SMTP id
+ 4fb4d7f45d1cf-69c7ab350e9so1039993a12.0
+ for <ltp@lists.linux.it>; Fri, 31 Jul 2026 00:25:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=google.com; s=20251104; t=1785482148; x=1786086948; darn=lists.linux.it;
- h=content-type:cc:to:from:subject:message-id:mime-version:date:from
- :to:cc:subject:date:message-id:reply-to:content-type;
- bh=nBzV8L3eKyvIj4lLEnAaJyQ+wdhSUy44CZN5L7yvjF0=;
- b=TyEqPvZDToHQW5xPufo0jfDGhvyDXQWbyrFTZDWATUm+gwS+J60lfCer3cziXZuSP5
- fBrDx8/vaUl3AnsU3/GYD7NHtpkXmyqR8wcid3uQ0GdBICjJW5n78FGHZ0TzHUARURT/
- +oA/5eqFH+UfdLSjpVH+S7V8p0yn04ntyeQPmoZNv4yqtRAwq3Kqyk+1t9g40lshINER
- qs8GKOl9P/bxxjfO4Tu9PKO0nZYjmpmYNcCsT2McSO4AuJ+MkA5QApqvRHZj3YRpuc4K
- c3fs3XKnXrmxJT+qdFdHNQ5spZZrVY3Wiwrw9UxEz2/z7q59vKKx0iANyQYYmqWvml6v
- MWIA==
+ d=suse.com; s=google; t=1785482716; x=1786087516; darn=lists.linux.it;
+ h=content-transfer-encoding:content-type:in-reply-to:from:cc
+ :content-language:references:to:subject:user-agent:mime-version:date
+ :message-id:from:to:cc:subject:date:message-id:reply-to:content-type;
+ bh=TqBdPWwaK4JVxnDUy/u5Gkwn1mPdcEoj+LJFLoEdoJU=;
+ b=Y05kWqgCwovgpgdBV7DcIm3jkZ7FbYzp8/EzmLuDOzRevSiMHi7vY5BolXuFQcqWuE
+ RD3CLt97kVgGV8THaQgb94bZBXM/LLbDERWTtwiRbNfti3JPVQettq05ptVVasDsRUAe
+ pmjauRI1aK5oUhvqjhWUSlk/a6Bqk1YB/ofC3YGdCI5IW8NPzxF/MMQEcfbwhD+/p9b+
+ +QtU0YRySjpuRk46e/Fbv7q/mOz+KLFOso38Ikzv83J7bOjvdz4WEqSzzV83e+G0peCh
+ peeOCAO4sioWMofXmd47bsE4LeOTtFPjZWMB3dphU68a11lDdF85MFcMrdxWt/0MYMGP
+ ZO1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1785482148; x=1786086948;
- h=content-type:cc:to:from:subject:message-id:mime-version:date
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
- :content-type;
- bh=nBzV8L3eKyvIj4lLEnAaJyQ+wdhSUy44CZN5L7yvjF0=;
- b=C4Yen6MyB3X4IghO6LvNu5PjQK8SDk6c7voXAh5VACDevyfurpYVjPIbOI4wAgWbsD
- HMoTsgvFPO/J1/1P+GxRPOL9sgOU6TYs9a9zZJZZ0d6BF3o0UY5PM+Kak/u5SqgkgQry
- 7FXIr3lxsGXv+HDpc7lcienlrN+QZqBdKU5F95dC75K9wGiT0pqnT5CyL0nCQ3GM9ovf
- 8LNxjl1kWgClnQnAVpuETRADfpSU76U71uR1t54LmLK60gI2klV9LU4pTWoAFAwej86R
- 7C0KmLtlrT95npVRW9IV6fEMXw3d9Fp/3imzNldY/saD2urTMwQW/aV/rJ9dgAZ60u8H
- 8Usg==
-X-Gm-Message-State: AOJu0Ywz/HxBcqUkNQiwJoio+5yV271pBy+rDDJbLSipb1VmnlRZDotH
- 89xz0Mse1Qtv5pzTdp7pYQBfQEG7lWsmbAvneOjTw2kqWQn1xsGQMTbjA+svU2ic9P7xqcNqYtY
- yMQVDbRPiYUd2jDGkLRWJNsbZsrzvrSj10V7P+FhNAO8GEVhZo6/kSdFyFkuZfN/lnRIjy3c1Gc
- sPgxAWfXZbFJXTWbIAlG6HECWaGQ==
-X-Received: from pfblm12.prod.google.com
- ([2002:a05:6a00:3c8c:b0:847:99d5:ef10])
- (user=wakel job=prod-delivery.src-stubby-dispatcher) by
- 2002:a05:6a00:2e26:b0:846:1698:638b
- with SMTP id d2e1a72fcca58-84ed6bf561cmr837989b3a.27.1785482148162; Fri, 31
- Jul 2026 00:15:48 -0700 (PDT)
-Date: Fri, 31 Jul 2026 07:15:45 +0000
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.55.0.508.g3f0d502094-goog
-Message-ID: <20260731071545.1334046-1-wakel@google.com>
-To: ltp@lists.linux.it
+ d=1e100.net; s=20251104; t=1785482716; x=1786087516;
+ h=content-transfer-encoding:content-type:in-reply-to:from:cc
+ :content-language:references:to:subject:user-agent:mime-version:date
+ :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to:content-type;
+ bh=TqBdPWwaK4JVxnDUy/u5Gkwn1mPdcEoj+LJFLoEdoJU=;
+ b=YxQOMAaV4VM2cm0vzUIfnZvBOv8rHjJrvQhROmRL1KA6ZBsYQWssY80e/k7l9zk4xf
+ Dh8GBjNXC/p9CWjLaQleuoMoVzzEO8Sf5dsAD/R/MJFP9VBI8VW8WqqlxdqrTouhwtn6
+ vGLVrzZifI+MBK3sAJnP2z4Rs8sLy2hGboXa2qRwRfRoJwgtyp9MvKt00EPr5aW5ljQu
+ yE0Z4tJPlqjq667cteafx+3HsnhQDjEuUHHDghwXKr1V/2DgHRO2EbGhIcqOMI20Kt47
+ x8uio8T+VOZfAQntIozEKg2y+39RxyRVDzRPzAYpxemovR9RpRSpxW1KihBmMuqQUPKj
+ Mtyg==
+X-Gm-Message-State: AOJu0Yyed7Ni1uakD/01jUCXEZO9GW27FkuBEUzZrxyBGEmPZkuWxPii
+ 7wm4Uok3S1IUkZKNYoQTJ9VqCcsx9JgmoydxajNe741dki724pGju6mzG+qwcy6j/Do=
+X-Gm-Gg: AR+sD12Zqc+y6DmZB0Yti80KQjaR8z3TZbs5v4ai8PNx0BmiMP5Vcbuya7lCMJS6fbn
+ jw2cGuLhk2b9jhm4kozMQtxMXRezR+l8cH31MR/K4XwcYkjMobox3MeauGUA7N74TGPlhxdlRIo
+ 0aiP0eVaAmFNtTv7LrElMYdM0INecx2ArPodEJExHiyL1iAXwDvbIvA2e9O1F3jmu3s4yks521t
+ QZs9bow78UWzXq1SL5UpK+mhXGLm3zc+yhs2Y0Jamx6+9uFP48P/XPtzlgCsbXAUU71PDDHIjSy
+ BCmTWFnjnxNYwUKRewYnzRUa7pUkk05/BolLZB7jev+Dq31/Z+pBBU9tDwUrn9NHQfEeqrY8O4l
+ aQbHNGDHh330OScLjYuRLPNm8NcaiIIyuN5CWJATFdATN33Cnhm6u0o6hH4W4ZcQS0/fu7lF40V
+ LIJpIAKRODUton8SMrgVtx4Lv2uM/gCNQr5ctrynzxme0wWIzliGgKp1JPtxID5ESSMuqhYPg0S
+ 8+tfxlUi17y76og
+X-Received: by 2002:a17:907:9303:b0:c1f:bada:4b2a with SMTP id
+ a640c23a62f3a-c1fd250d2cbmr40249066b.31.1785482715803; 
+ Fri, 31 Jul 2026 00:25:15 -0700 (PDT)
+Received: from ?IPV6:2a07:b241:1004:8300::1000? ([2a07:b241:1004:8300::1000])
+ by smtp.gmail.com with ESMTPSA id
+ a640c23a62f3a-c1fd445432dsm44028166b.41.2026.07.31.00.25.15
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Fri, 31 Jul 2026 00:25:15 -0700 (PDT)
+Message-ID: <67369208-fbca-4bae-8a24-bb26ae62293e@suse.com>
+Date: Fri, 31 Jul 2026 09:25:14 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+To: Petr Vorel <pvorel@suse.cz>
+References: <20260731054548.133241-1-pvorel@suse.cz>
+Content-Language: en-US
+In-Reply-To: <20260731054548.133241-1-pvorel@suse.cz>
 X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] clock_gettime03: Extend tolerance on slow kernel
- configs
+Subject: Re: [LTP] [PATCH 1/1] Switch to patchwork.kernel.org
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -87,53 +101,22 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Wake Liu via ltp <ltp@lists.linux.it>
-Reply-To: Wake Liu <wakel@google.com>
-Cc: Wake Liu <wakel@google.com>
-Content-Type: text/plain; charset="us-ascii"
+From: Avinesh Kumar via ltp <ltp@lists.linux.it>
+Reply-To: Avinesh Kumar <avinesh.kumar@suse.com>
+Cc: ltp@lists.linux.it
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Debugging/instrumentation kernel configs (like KASAN, LOCKDEP, etc.)
-can significantly degrade performance, causing the time namespace
-offset checks to exceed the default 10ms tolerance.
+Hi Petr,
 
-Use tst_has_slow_kconfig() to detect these slow configurations and
-multiply the delta tolerance by 10, preventing false test failures
-on slow/debug kernels.
+This is great, Thank you!
 
-Signed-off-by: Wake Liu <wakel@google.com>
----
- testcases/kernel/syscalls/clock_gettime/clock_gettime03.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+Reviewed-by: Avinesh Kumar <avinesh.kumar@suse.com>
 
-diff --git a/testcases/kernel/syscalls/clock_gettime/clock_gettime03.c b/testcases/kernel/syscalls/clock_gettime/clock_gettime03.c
-index 495030c07e..665a1107b8 100644
---- a/testcases/kernel/syscalls/clock_gettime/clock_gettime03.c
-+++ b/testcases/kernel/syscalls/clock_gettime/clock_gettime03.c
-@@ -16,6 +16,7 @@
- #include "time64_variants.h"
- #include "tst_safe_clocks.h"
- #include "tst_timer.h"
-+#include "tst_kconfig.h"
- #include "lapi/sched.h"
- 
- static struct tcase {
-@@ -117,6 +118,11 @@ static void setup(void)
- 		delta *= 10;
- 	}
- 
-+	if (tst_has_slow_kconfig()) {
-+		tst_res(TINFO, "Slow kernel config detected, multiply the delta by 10.");
-+		delta *= 10;
-+	}
-+
- 	now.type = then.type = parent_then.type = tv->ts_type;
- 	tst_res(TINFO, "Testing variant: %s", variants[tst_variant].desc);
- 	parent_ns = SAFE_OPEN("/proc/self/ns/time_for_children", O_RDONLY);
--- 
-2.55.0.508.g3f0d502094-goog
+Regards,
+Avinesh
 
 
 -- 
