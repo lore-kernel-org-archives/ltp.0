@@ -4,109 +4,104 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9E0CAC5516D
-	for <ltp@archiver.kernel.org>; Fri, 31 Jul 2026 12:20:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 07CD3C5516D
+	for <ltp@archiver.kernel.org>; Fri, 31 Jul 2026 12:27:43 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 517A73E7200
-	for <ltp@archiver.kernel.org>; Fri, 31 Jul 2026 14:20:42 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id D7D613E7205
+	for <ltp@archiver.kernel.org>; Fri, 31 Jul 2026 14:27:41 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E8EE73E4AD2
- for <ltp@lists.linux.it>; Fri, 31 Jul 2026 14:20:25 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 3EA353E4AD2
+ for <ltp@lists.linux.it>; Fri, 31 Jul 2026 14:27:26 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 793C01A00CC2
- for <ltp@lists.linux.it>; Fri, 31 Jul 2026 14:20:25 +0200 (CEST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id CD3C91400268
+ for <ltp@lists.linux.it>; Fri, 31 Jul 2026 14:27:25 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 82B767DF3C;
- Fri, 31 Jul 2026 12:20:16 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id AE25A7DF43;
+ Fri, 31 Jul 2026 12:27:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1785500420;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ t=1785500840; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=5sLw+/sr0Ux2UcvOmgdfClPK6sux2FNVOqIQVfC/vdY=;
- b=GOUzk7PxIkAFvTG662h5UPZxWskkxOajUHTip2pC3wnplVa1MvGf5CcWWAsc/gbmiA6ySn
- ahPHCqkVa9VpnDXp2lyspT2+kmDn2gyDgzB+M0XrcLeFgUFhecs2sjzk033mYJYKxgMmlj
- +CVoFkWOpQ+QxcxWwTD+I0pVYsx0Lqs=
+ bh=WOz403kmqomB+/TNUhkKuGbpgGdZHR3pPDS3JRBEgVU=;
+ b=FvTXPOtXiTmUBQa0ZWqIXvBZQJXhnxeI19vgyPmBXFOxqQ0PRgBf/IxqBWpjEkd0II0Xs1
+ xRPv0rIMrJ3L/WfKypgi7HElv6N4lJLBlPh1WwNnGWyr79MHQn1Z7EYkc+2kYikLHzIYFE
+ NtXNKfx4jKj/gdRF/d1p65GG30Wh9VA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1785500420;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ s=susede2_ed25519; t=1785500840;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=5sLw+/sr0Ux2UcvOmgdfClPK6sux2FNVOqIQVfC/vdY=;
- b=J5ODmD53gNws5qi0IsXpfAn1OEPwaKKb3n6xnNaVHWKMYcIrAlhzdGQ7SpqC3c/TvvYc73
- w8mVzws4J0a6gCCA==
+ bh=WOz403kmqomB+/TNUhkKuGbpgGdZHR3pPDS3JRBEgVU=;
+ b=6lCz0TvCtw2L0cB6ymTAASinuJMNtCUtaYcCgjnBkzjzs+7WXYVdXnwu5or3O2rGpcs6oW
+ oQSm0QYTPxWdoqCw==
 Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=04w4GW1w;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=opWMeRBk
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="s/05MbGY";
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=pcKmKENr
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1785500416;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ t=1785500836; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=5sLw+/sr0Ux2UcvOmgdfClPK6sux2FNVOqIQVfC/vdY=;
- b=04w4GW1wXmql4wgdQMvWftfszoKnmS4XHEc6daup16zMKPRWdUtR5JXTtdiPt/9TLDMBs4
- Nmf3MT/YCCDwHSYitkakQGKafVoU1Kj94+UTZqUFu8q8rebrpQkNy5SDgagAbGCPpD9CRr
- bxpKcGULEcg156t7FpvNfnMi2ETdJ2g=
+ bh=WOz403kmqomB+/TNUhkKuGbpgGdZHR3pPDS3JRBEgVU=;
+ b=s/05MbGYFba779ifuZ5xQBvP5KsJQYZV48PIeAp3nK4CTzrdbmUo1gouoncAC1O40RWB9i
+ 4mvMhxX08InNe7HtRwSPEorZITev8Z3XU8fjIvjpkvBkHeKvUeG5E3pYT8w54v+hEsvUGC
+ HPOW+IqHg/t5AsC+wjX/uUHW0vUAGsE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1785500416;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ s=susede2_ed25519; t=1785500836;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=5sLw+/sr0Ux2UcvOmgdfClPK6sux2FNVOqIQVfC/vdY=;
- b=opWMeRBkAAOlK0WjJ6pxOEVFoZHHg+cxlPGm2jbzqxkVGNlZnswNBTOozSfPnrEFaEFuXB
- qpyxUqylOr3escCQ==
+ bh=WOz403kmqomB+/TNUhkKuGbpgGdZHR3pPDS3JRBEgVU=;
+ b=pcKmKENrrLE0Y/MY5c6I+yiIV11pSH6rX8fkOmrWwwMamKXnV6j1/A7Gsh0WRCzhYBpiiN
+ mlihqaBzezY/FnCQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 10B5D779B0;
- Fri, 31 Jul 2026 12:20:15 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9CCB0779B0;
+ Fri, 31 Jul 2026 12:27:16 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id FajdN/+SbGqafgAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Fri, 31 Jul 2026 12:20:15 +0000
-Date: Fri, 31 Jul 2026 14:20:09 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: linuxtestproject.agent@gmail.com
-Message-ID: <20260731122009.GA196217@pevik>
-References: <20260731105132.187177-2-pvorel@suse.cz>
- <20260731115215.8956-1-linuxtestproject.agent@gmail.com>
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 1bwtJKSUbGqBBgAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Fri, 31 Jul 2026 12:27:16 +0000
+Date: Fri, 31 Jul 2026 14:27:12 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Andrea Cervesato <andrea.cervesato@suse.com>
+Message-ID: <amyUoFd52hLeFLs_@yuki.lan>
+References: <20260715123612.1684984-5-chrubis@suse.cz>
+ <6a6b3256.9325fd96.a3326.fd87@mx.google.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20260731115215.8956-1-linuxtestproject.agent@gmail.com>
-X-Spamd-Result: default: False [-2.21 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- SUSPICIOUS_RECIPS(1.50)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
- MID_RHS_NOT_FQDN(0.50)[]; HAS_REPLYTO(0.30)[pvorel@suse.cz];
+In-Reply-To: <6a6b3256.9325fd96.a3326.fd87@mx.google.com>
+X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
  R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; FREEMAIL_ENVRCPT(0.00)[gmail.com];
+ MX_GOOD(-0.01)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ RCVD_TLS_ALL(0.00)[]; ARC_NA(0.00)[]; MIME_TRACE(0.00)[0:+];
+ MISSING_XM_UA(0.00)[]; TO_DN_SOME(0.00)[];
+ RCPT_COUNT_TWO(0.00)[2];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- ARC_NA(0.00)[];
+ URIBL_BLOCKED(0.00)[suse.cz:email,suse.cz:dkim,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
  SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- FREEMAIL_TO(0.00)[gmail.com]; TO_DN_SOME(0.00)[];
- MIME_TRACE(0.00)[0:+]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- RCVD_TLS_ALL(0.00)[]; RCPT_COUNT_THREE(0.00)[4];
- RCVD_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[]; DKIM_TRACE(0.00)[suse.cz:+];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.cz:replyto,suse.cz:dkim];
- RCVD_VIA_SMTP_AUTH(0.00)[]; TAGGED_RCPT(0.00)[];
- MISSING_XM_UA(0.00)[]; REPLYTO_EQ_FROM(0.00)[]
-X-Rspamd-Queue-Id: 82B767DF3C
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:dkim,yuki.lan:mid,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
+ DKIM_TRACE(0.00)[suse.cz:+]
+X-Rspamd-Queue-Id: AE25A7DF43
 X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
 X-Rspamd-Action: no action
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] lib: Rename function check_kver() => check_min_kver()
+Subject: Re: [LTP] [PATCH v2 4/5] syscalls: Add epoll_wait15
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -118,116 +113,47 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
 Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi all,
+Hi!
+> > +	if (epoll_wait(efd, &ev, 1, 2000) == 1)
+> > +		tst_atomic_add_return(1, woken);
+> 
+> Maybe here we can track errors via TWARN just in case?
 
-> Hi Petr,
+Changed to:
 
-> On Fri, 31 Jul 2026, Petr Vorel wrote:
-> > lib: Rename function check_kver() => check_min_kver()
+diff --git a/testcases/kernel/syscalls/epoll_wait/epoll_wait15.c b/testcases/kernel/syscalls/epoll_wait/epoll_wait15.c
+index 5460a4ab5..612908e97 100644
+--- a/testcases/kernel/syscalls/epoll_wait/epoll_wait15.c
++++ b/testcases/kernel/syscalls/epoll_wait/epoll_wait15.c
+@@ -51,8 +51,14 @@ static void child(void)
 
-> --- [PATCH 1/5] ---
+        TST_CHECKPOINT_WAKE(0);
 
-> > Preparation for a next commit.
+-       if (epoll_wait(efd, &ev, 1, 2000) == 1)
++       TEST(epoll_wait(efd, &ev, 1, 2000));
++
++       if (TST_RET == 1) {
+                tst_atomic_add_return(1, woken);
++       } else {
++               tst_res(TWARN | TTERRNO,
++                       "epoll_wait() returned %li expected 1", TST_RET);
++       }
 
-> Could the message explain that the rename distinguishes the minimum-version
-> helper from the new maximum-version helper, without referring to a later
-> patch? The current body does not explain the change independently.
+        SAFE_CLOSE(efd);
+        exit(0);
 
-Hm, I'm not sure if that's needed
 
-> --- [PATCH 2/5] ---
+And pushed, thanks.
 
-> > + * on any stable release (test with ``min_kver = "7.1"`` runs also on kernel
-> > + * 7.1.5). Stable releases are compared as expected.
-
-> Could this example use ``max_kver``? As written, the new field documents the
-> opposite API.
-
-Ah, thanks! Before merge I'll amend:
-
-- * on any stable release (test with ``min_kver = "7.1"`` runs also on kernel
-+ * on any stable release (test with ``max_kver = "7.1"`` runs also on kernel
-
-> > +	for (i=0, dots=0; max_kver[i]; i++)
-
-> Could spaces be added around both assignment operators to follow kernel
-> coding style?
-
-Ah, thanks! Before merge I'll amend:
-
--	for (i=0, dots=0; max_kver[i]; i++)
-+	for (i = 0, dots = 0; max_kver[i]; i++)
-
-> --- [PATCH 3/5] ---
-
-> > +	.max_kver = "6.10",
-
-> Could this test be allowed to run again on Linux 7.2? In that tree,
-> do_open_execat() calls exe_file_deny_write_access() and returns ETXTBSY when
-> the executable is open for writing (fs/exec.c:800-802).
-
-> A permanent maximum version therefore reports TCONF for behavior that is
-> valid again. It cannot represent the temporary 6.11 through 7.1 behavior
-> window.
-
-@Cyril @Andrea could you also please double check?
-
-> --- [PATCH 4/5] ---
-
-> > +	.max_kver = "6.10",
-
-> Could creat07 also be allowed to run again on Linux 7.2? The exec path makes
-> i_writecount negative through exe_file_deny_write_access(), and creat() then
-> reaches get_write_access(), which returns ETXTBSY for a negative count
-> (include/linux/fs.h:2813-2816).
-
-> This maximum bound suppresses valid 7.2 coverage and cannot describe the
-> temporary 6.11 through 7.1 behavior window.
-
-@Cyril @Andrea could you also please double check?
-
-> --- [PATCH 5/5] ---
-
-> > Because the above flag combinations are already "tested" by the tests
-> > that use them and we don't have any tests that >= 5.10 has support for
-> > FAN_MARK_FILESYSTEM etc just simply skip the test on v7.2.
-
-> Could this claim be corrected? Other tests exercise FAN_REPORT_TID and
-> FAN_REPORT_PIDFD separately, but fanotify20 is the only LTP test combining
-> them.
-
-Hm, do we care when Amir is ok with it?
-
-Kind regards,
-Petr
-
-> > +	.max_kver = "7.1",
-
-> Could the first case instead expect success when thread pidfds are supported,
-> while retaining the second valid-combination check? Linux 7.2 now uses
-> task_pid(current) for FAN_REPORT_TID and creates a thread pidfd
-> (fs/notify/fanotify/fanotify.c:843-849 and
-> fs/notify/fanotify/fanotify_user.c:906-913). Skipping the whole test removes
-> the only coverage of the newly valid combination.
-
-> Verdict - Needs revision
-
-> ---
-> Note:
-
-> The agent can sometimes produce false positives although often its
-> findings are genuine. If you find issues with the review, please
-> comment this email or ignore the suggestions.
-
-> Regards,
-> LTP AI Reviewer
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
