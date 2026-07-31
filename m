@@ -4,90 +4,99 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6B3CEC54F54
-	for <ltp@archiver.kernel.org>; Fri, 31 Jul 2026 10:53:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 95BCFC54F54
+	for <ltp@archiver.kernel.org>; Fri, 31 Jul 2026 10:53:18 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id EBCEF3E71DC
-	for <ltp@archiver.kernel.org>; Fri, 31 Jul 2026 12:53:02 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 8A99B3E71DC
+	for <ltp@archiver.kernel.org>; Fri, 31 Jul 2026 12:53:16 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A663D3E7218
- for <ltp@lists.linux.it>; Fri, 31 Jul 2026 12:51:58 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 8F49C3E7207
+ for <ltp@lists.linux.it>; Fri, 31 Jul 2026 12:52:02 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de
  [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 171E1200AD5
- for <ltp@lists.linux.it>; Fri, 31 Jul 2026 12:51:57 +0200 (CEST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 254382003BB
+ for <ltp@lists.linux.it>; Fri, 31 Jul 2026 12:52:01 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 8D5803EF6;
- Fri, 31 Jul 2026 10:51:41 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 0D292402A;
+ Fri, 31 Jul 2026 10:51:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1785495105; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=v7GRqTvMdG58Dh0Oltbtiweqzr0GbF+d8l0WYBeT/oM=;
- b=j2xmvNZykzSoPMppTNqY76u44TIpMqnOaMt7QPLcCBOUkF/T3bzQcdJu8PYCOfkTPGoOZY
- 5BeUsaBZuUXRunsDYjK4U/7POa6zgNFpBNsA3kCaPx6bsN1Mu2D6MIIT38BGblf4mxnymt
- ILFT7YZmSDoSDx3y6qGuQmhuhwpSa0w=
+ t=1785495107; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=qH1ExVsewMRELcTY+PJY79GijawlAp74mN9x7XblzuE=;
+ b=bL/jdwFvepoELgr1tDmUW8z9jzZwkdq6hzlwlVFJYR4YHgbTfiHXzPNgAO3ZJOQiE8Gael
+ CB066931JKe6vOSqpz0BwoUVpAgl4CjgJUvXiyE655kuPu2R7n/rNoqHrEMljG2YZb93TV
+ RcN5AEqBoxqleoxlkdOxXi6Yq0Aoqk8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1785495105;
+ s=susede2_ed25519; t=1785495107;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=v7GRqTvMdG58Dh0Oltbtiweqzr0GbF+d8l0WYBeT/oM=;
- b=Zqydd9ks4j0iAK+9g6bRMnNvjFamTQ6Kxo9Xr58AQcLR7qxVPOCxnwdGb8li8Rj4PQKl8T
- 5Pmb5mnLQhTWveCw==
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=qH1ExVsewMRELcTY+PJY79GijawlAp74mN9x7XblzuE=;
+ b=ZVLF/tUuIOZOZRvMH2tsFceuRGVo4gn1G4q/G9EKk6R5V9GlgdO0LCDy4J1ZjtAqL2y1J/
+ a+2X22+1AI+iqQCA==
 Authentication-Results: smtp-out2.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1785495101; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=v7GRqTvMdG58Dh0Oltbtiweqzr0GbF+d8l0WYBeT/oM=;
- b=JucWnEImKiShmeMZE8j127T9aEwbFxyIf8AZIiW/jQCprdJJQaWDhlSF59npI+TXpWd+/m
- hSSyY1MjWS48rPbQwB5Y7oCVrV1pKtbmR9hkW3MXexjg0HgwRQ/WdCuh6rrw4aC6rbmkdk
- wmpIBIdNrh0xYDTmimAdZwHa0Vb7zwg=
+ t=1785495103; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=qH1ExVsewMRELcTY+PJY79GijawlAp74mN9x7XblzuE=;
+ b=UqtXFcfnUcDuxhyECcXBcVQ6fkU4NiuTgWKcDt5UymGxecx9b5+CCIIbISVHZnDSzztjOz
+ qwYJVPqK1lHCcTC3MMR0KAIYkNiUrRb/GMWgCh6qDRp6+1M9jDgzgPzriBCc2A0ZMWe8qf
+ /j30MpesZZIMIabPEgxCINlASmGnJM0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1785495101;
+ s=susede2_ed25519; t=1785495103;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=v7GRqTvMdG58Dh0Oltbtiweqzr0GbF+d8l0WYBeT/oM=;
- b=vjQudmZfu2CM1NdLsURIMeAAdx1sFtLGKl0CKbYbIuQEHZMsgk9wqlrcO697V0iy+heK4Y
- tU151pBKbeGRCRCA==
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=qH1ExVsewMRELcTY+PJY79GijawlAp74mN9x7XblzuE=;
+ b=EgnqMew2hQn7dXo7T1Lb7y+WiygxMdNPlxpaMujFD3qjKUosTiMYgWtOxELOX649mgnMCQ
+ L7LGKVNcbgGmi1Dg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 89824779C6;
- Fri, 31 Jul 2026 10:51:40 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D3418779D7;
+ Fri, 31 Jul 2026 10:51:42 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id tU3fHzx+bGoTJwAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Fri, 31 Jul 2026 10:51:40 +0000
+ by imap1.dmz-prg2.suse.org with ESMTPSA id GECTMj5+bGoTJwAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Fri, 31 Jul 2026 10:51:42 +0000
 From: Petr Vorel <pvorel@suse.cz>
 To: ltp@lists.linux.it
-Date: Fri, 31 Jul 2026 12:51:27 +0200
-Message-ID: <20260731105132.187177-1-pvorel@suse.cz>
+Date: Fri, 31 Jul 2026 12:51:31 +0200
+Message-ID: <20260731105132.187177-5-pvorel@suse.cz>
 X-Mailer: git-send-email 2.55.0
+In-Reply-To: <20260731105132.187177-1-pvorel@suse.cz>
+References: <20260731105132.187177-1-pvorel@suse.cz>
 MIME-Version: 1.0
-X-Spamd-Result: default: False [-2.79 / 50.00]; BAYES_HAM(-3.00)[99.99%];
- MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
- R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.19)[-0.974];
- MIME_GOOD(-0.10)[text/plain];
+X-Spamd-Result: default: False [-6.79 / 50.00]; REPLY(-4.00)[];
+ BAYES_HAM(-3.00)[100.00%]; MID_CONTAINS_FROM(1.00)[];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; R_MISSING_CHARSET(0.50)[];
+ NEURAL_HAM_SHORT(-0.19)[-0.967]; MIME_GOOD(-0.10)[text/plain];
+ RCVD_COUNT_TWO(0.00)[2]; FROM_HAS_DN(0.00)[]; ARC_NA(0.00)[];
+ MIME_TRACE(0.00)[0:+]; TO_DN_SOME(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:email,suse.cz:mid,suse.com:email];
+ FROM_EQ_ENVFROM(0.00)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- TO_DN_SOME(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; RCVD_TLS_ALL(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[]; FROM_HAS_DN(0.00)[];
- RCPT_COUNT_FIVE(0.00)[6]; FROM_EQ_ENVFROM(0.00)[];
- RCVD_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:mid,imap1.dmz-prg2.suse.org:helo]
+ RCPT_COUNT_FIVE(0.00)[6]; RCVD_TLS_ALL(0.00)[]
 X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3 0/5] Add support for .max_kver
+Subject: [LTP] [PATCH v3 4/5] creat07: Use .max_kver
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -104,36 +113,49 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Changes v2->v3:
-* Allow to pass mainline release (e.g. max_version = "7.1") on any stable
-  release (e.g. 7.1.5). Stable releases (e.g. 7.1.5) are compared as
-  expected. For this I'd like an explicit ack.
+Reviewed-by: Andrea Cervesato <andrea.cervesato@suse.com>
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+The same as in v2.
 
-Link to v2:
-https://lore.kernel.org/ltp/6a6a2091.9b80fa5d.4e4ae.7aac@mx.google.com/T/#t
+ testcases/kernel/syscalls/creat/creat07.c | 14 ++++----------
+ 1 file changed, 4 insertions(+), 10 deletions(-)
 
-Changes v1->v2:
-* Fixed version 6.11 => 6.10 (execve04, creat07)
-* Fixed version 7.2 => 7.1 (fanotify20)
-
-Link to v1:
-https://lore.kernel.org/ltp/20260729091717.23042-1-pvorel@suse.cz/T/#t
-https://patchwork.ozlabs.org/project/ltp/list/?series=516120&state=*
-
-Petr Vorel (5):
-  lib: Rename function check_kver() => check_min_kver()
-  lib: Add support for max_kver to struct tst_test and tst_fs
-  execve04: Use .max_kver
-  creat07: Use .max_kver
-  fanotify20: Skip on v7.2
-
- include/tst_test.h                            | 13 ++++-
- lib/tst_test.c                                | 57 +++++++++++++++++--
- testcases/kernel/syscalls/creat/creat07.c     | 14 ++---
- testcases/kernel/syscalls/execve/execve04.c   | 14 ++---
- .../kernel/syscalls/fanotify/fanotify20.c     |  4 ++
- 5 files changed, 76 insertions(+), 26 deletions(-)
-
+diff --git a/testcases/kernel/syscalls/creat/creat07.c b/testcases/kernel/syscalls/creat/creat07.c
+index c7b85ee694..2b15d79b47 100644
+--- a/testcases/kernel/syscalls/creat/creat07.c
++++ b/testcases/kernel/syscalls/creat/creat07.c
+@@ -6,6 +6,9 @@
+ 
+ /*\
+  * Check that :manpage:`creat(2)` sets ETXTBSY correctly.
++ *
++ * NOTE: write to executed file is allowed since 6.11-rc1:
++ * 2a010c412853 ("fs: don't block i_writecount during exec")
+  */
+ 
+ #include <sys/types.h>
+@@ -47,19 +50,10 @@ static void verify_creat(void)
+ 	SAFE_WAITPID(pid, NULL, 0);
+ }
+ 
+-static void setup(void)
+-{
+-	if ((tst_kvercmp(6, 11, 0)) >= 0) {
+-		tst_brk(TCONF, "Skipping test, write to executed file is "
+-			"allowed since 6.11-rc1.\n"
+-			"2a010c412853 (\"fs: don't block i_writecount during exec\")");
+-	}
+-}
+-
+ static struct tst_test test = {
+-	.setup = setup,
+ 	.test_all = verify_creat,
+ 	.needs_checkpoints = 1,
++	.max_kver = "6.10",
+ 	.forks_child = 1,
+ 	.resource_files = (const char *const []) {
+ 		TEST_APP,
 -- 
 2.55.0
 
