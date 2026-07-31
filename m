@@ -4,88 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 94F81C55167
-	for <ltp@archiver.kernel.org>; Fri, 31 Jul 2026 10:22:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1785493322; h=message-id :
- to : in-reply-to : date : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : cc : mime-version : content-type :
- content-transfer-encoding : sender : from;
- bh=34fdjgQNrJAJRUGIWtXYUqE5GgrCLEsJhJtSlI/xQdY=;
- b=Ojqtf1TmaDVCds4UZE0MDDU9WoxS47No9tu4c5kad7o78LjOGmz53BEdG17XbzP+UIgtP
- wiJ2PyYSZngdmgY/Y3oqe0BTbItTaFKGgi8ujWqh+Mf8aobQBVbPy748BtMuxxXVtgNz5g3
- 2Guc3Vqlp708NuHTd4j5H19jDVkvLx4=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CF4BBC5516D
+	for <ltp@archiver.kernel.org>; Fri, 31 Jul 2026 10:42:07 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 46B6C3E71D4
-	for <ltp@archiver.kernel.org>; Fri, 31 Jul 2026 12:22:02 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id F0FA63E5A46
+	for <ltp@archiver.kernel.org>; Fri, 31 Jul 2026 12:42:05 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 666943E2202
- for <ltp@lists.linux.it>; Fri, 31 Jul 2026 12:21:41 +0200 (CEST)
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com
- [IPv6:2a00:1450:4864:20::636])
+ by picard.linux.it (Postfix) with ESMTPS id 1C7B23E25FB
+ for <ltp@lists.linux.it>; Fri, 31 Jul 2026 12:41:50 +0200 (CEST)
+Received: from mail-pj2-x03.google.com (mail-pj2-x03.google.com
+ [IPv6:2607:f8b0:4864:39::3])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 7D2E760097D
- for <ltp@lists.linux.it>; Fri, 31 Jul 2026 12:21:41 +0200 (CEST)
-Received: by mail-ej1-x636.google.com with SMTP id
- a640c23a62f3a-c15d3cd51b2so98266466b.3
- for <ltp@lists.linux.it>; Fri, 31 Jul 2026 03:21:41 -0700 (PDT)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 851A2600AA0
+ for <ltp@lists.linux.it>; Fri, 31 Jul 2026 12:41:50 +0200 (CEST)
+Received: by mail-pj2-x03.google.com with SMTP id
+ 98e67ed59e1d1-381072761d4so536114a91.0
+ for <ltp@lists.linux.it>; Fri, 31 Jul 2026 03:41:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1785493301; x=1786098101; darn=lists.linux.it;
- h=date:content-transfer-encoding:content-type:subject:in-reply-to:cc
- :to:from:message-id:from:to:cc:subject:date:message-id:reply-to
- :content-type; bh=kuPSF5DA5kUKtzsujCUy981zMHn6OKsgw6LQ7prm57Q=;
- b=WxXDUxfJ6UfvvSS1Vj/kkJvq5uVch6FtCwbNT8SsQwz1kXmGCu1HQ5AUfIuyIS503Q
- ic2WXaIs1jtn7HaHGeH8jZxFWUdfutf2D91Ygg9CgmdmGzcfefDRitQKh0wBS7j436MW
- MbGY/0UqCE8fi3CsPFJNltOGO/djQZg/l6ha4XQKkj5dcq7vba4iPCZbDXT6yRUlblsw
- vmrcNBaIT0ieyYnYultbSQHo3XFnMY1mIhwxhlFhbNJYWkbH9lKJNSpMls4v3WB0B9FW
- 1M7JCY4ZjrO1Xb0R8gkbBcTY7bJU+Tq5SzaJ7RTVnT0/+/d9h+vPBPIb2SyMHoz27h7z
- YKRQ==
+ d=gmail.com; s=20251104; t=1785494509; x=1786099309; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to:content-type;
+ bh=HA/qMPZLYftyJWs5mgKwPJLVSwrJ2RPf/w0T0nioJt8=;
+ b=P3oNw8/WlbMR6IQRlUk84tWJY3QB1B3RsDsWYLGewM712yp2kkADKai8j5/z02XA/6
+ hv73HYKgHUix+Hq6NL+vBdRoX8EfJobpVLUgdAssOxVzLYMbTfMu0IfbUv5iTF0Af5qo
+ dE8XKjxbFmW8o6da3nhcxqwCyU24Q9l/TyQeV7Coa+TzMHH5gwnwH2wgBsjbnKUyvou7
+ fEIULGA+K66H5ir0+t7wRGYthI95d+7vIhqhuFlRi0gx2VJaAO1Fb1iLyvs2Ais8cFGc
+ C0U3uLBPLt0I5MypWnHwuJL+8Q2yowonJnafzEKuleJ7v71NK7ocWpWKuRPytndwUNrg
+ cvmw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1785493301; x=1786098101;
- h=date:content-transfer-encoding:content-type:subject:in-reply-to:cc
- :to:from:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject
- :date:message-id:reply-to:content-type;
- bh=kuPSF5DA5kUKtzsujCUy981zMHn6OKsgw6LQ7prm57Q=;
- b=Km/PuLn4c+qV44vtdF1RaidC6pbzeAxJQijcuyy1d5RYbLduaz1ffaE+CxGkWmcOOA
- JtrZ4tLf3L9nPyGZ3WZHH/rey6+a87/GXjeplrK5HI0kw94AxHAYg5rLqN5NUMw6ut7F
- fbHMBcPckqn44iOAoZwA/vn0BNm1NnDscBZF5hPAuXb0m7xSEQwdWSecKiM01pkVS+uw
- 8DjnckF+GGoGPapqXkqEHA2k0N+G6Sk+Q76jovnkTTFCwYg4MrTyeQAiaVbIszidhsdA
- qOWFIhAy9ramq5dbJn0jdagBeZ8b2N9DNCyNLj1J4fef+kTFOByXdkr8DF8c4+uAeFpU
- E5jg==
-X-Gm-Message-State: AOJu0YzBuNchq10VRIDN95pBH6wrk+aZ1pMPIxJm64GBxYWhxLjI4PMV
- Tr1PRNyflphUoPR5bSQDSIW8t39qz/BUAum06RAkfOwMyporvjPSBozgHXkZgsia4sxOTCFQfrU
- LEFbWtjTpQg==
-X-Gm-Gg: AR+sD123R4T0GPGISwgu6FpoNDTVWOROjUjtzCQZjwMujds42h+2Eh7cAi6kbuPeqFw
- nn75zf/y5ONu0YwapP8MoKisKPFyfdrSniP387GEX2nxGQpiNzBH9AFkv73f/MGmRL6+l9BUi9v
- Bhd2mcI7QQ5FAajtkcWwghWAuNx2dgZblDF4K18rkukQTT3Gwm7NUIUrhj3ArOkZrvlGsKGw7BK
- LOET2jUhp+6gaXnsN2hwPDpMexewNWFT5AY/cLxdUKqgvdPq91wzJnbDTH7s5oE8pTIUwc6AHV3
- XzsnvbZdYDudrsi94tMpGOUB8qGFccIjLIRn/NKfrthQXpjpfx6aUxmy5xqaXLT3DtK0mSg5llK
- /p0hvabUWa1Vr80TU0pZEDbrbIBS09w6+v8mRKFPQUmjFQup08rF0PIPoqYa2szZsgaqi5Zy5Av
- LyPynDskvnoWoTwCmJIUDTErQgyO4i+z6Wq1X3ie2EZ4K/eX+T0fcl+DYe04iTaijgQlEOGmzEd
- S0AyrgFIFjvz+aP+b0YIzZzkg8rzE+w5XtIQg==
-X-Received: by 2002:a17:906:9c8a:b0:c12:9a13:47c with SMTP id
- a640c23a62f3a-c1fd23bdaeemr77288466b.2.1785493300831; 
- Fri, 31 Jul 2026 03:21:40 -0700 (PDT)
-Received: from localhost.localdomain (p4fcc8213.dip0.t-ipconnect.de.
- [79.204.130.19]) by smtp.gmail.com with ESMTPSA id
- ffacd0b85a97d-47fd42d91bfsm3576261f8f.15.2026.07.31.03.21.40
+ d=1e100.net; s=20251104; t=1785494509; x=1786099309;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to:content-type;
+ bh=HA/qMPZLYftyJWs5mgKwPJLVSwrJ2RPf/w0T0nioJt8=;
+ b=YrjIJYR38cJYHgWYUBKewJJLrkiqMHM3SlFg0BviE/c6hJKsgFnciCKO7YyIx7TZuE
+ wXYappnOY7i7OfwpbDxHxFwZ4Z6r8dwmkwI0kv47E7YO4LewoGqcaJxq20yamw7jhRl4
+ /+O0XnRvpd+xYfeY3rAsZv9+5AIYzjvwRzwfICCisxP5++JIexNhXwH/+sIgjLLnad+E
+ Vr8stKwnyV8HGe3xViLUEZjKebACi0ApuMJ+gdlIU9afvkSg3KZBMhY4eUuCUvUyHuxk
+ JBZVDqO+KVYQcn1j07cZsOVa6oJVpfBy9KJCHpCPOdmmyf4T2BM3kGMtJOUTnva9NKaj
+ wGrQ==
+X-Gm-Message-State: AOJu0YwvM60ifkdaGJ7p86oNLjKPvVPj7IbKlBkUnp/0b1LL6H282EPX
+ FQtM7+6Gg985hBrc0ZzHoy/ORDpSAEvA9vcx3WQ9BVdonaxRjj4lfLv5LeGaJfuA
+X-Gm-Gg: AR+sD12wFamDiZtElOJiT7O322M9lyvQ2+phNt93L/SDgUEU7Wt+I6Jy11zPvYlWtc8
+ iWRDBp0cIx+NpHcCZkbHO8sofLAb4MtV9n/e9wRYr02JStecPiDY/et3feJEBjr6ABwMOMkuqsz
+ F8JofiBlrESbTwg3Fe2bImDDZo02oJoDgXrOKO01qwv4avZpPr780YiSVHgHOIGN8p6yJOlV3BH
+ B6WviQ6BEIqJhUPCCl8uscq9WmYR1R6FQGzf3oikw0dthQjrXHYkiNG+sgeqX3mwbSHSaW/LxbI
+ e3kBNfPd0WHkjmTzTiqp5Le5QMM2JW03jaRUnf8v5b7RMbpjU56LELxMngr5AT/dDX05R1GLHbO
+ 36/Pr11zafe5R1gOZMqa42jXB3r6l6P4otePeLwG+vk0zvFezKFnh8j979uaBazseiCX2xrSTa1
+ rv0X0ganHY6np3C3EPz5zHaUfpu6VnF4wh4oZVWSsnfx8TwVk3neND5bFJvTBUv7R3LMbYPF2gu
+ ujBNmggrvbkcp4CQ/118jf69Y6U9+nwkLhgFStf+7H7ZJIoasS+bOLkJoL2n9lhbnSs0N6qEfh+
+ cw==
+X-Received: by 2002:a05:6a21:1f8e:b0:3c3:bdce:27c1 with SMTP id
+ adf61e73a8af0-3c91b381c94mr1421085637.51.1785494508916; 
+ Fri, 31 Jul 2026 03:41:48 -0700 (PDT)
+Received: from
+ runnervmvrwv9.s0dhqrvhcoxedfv3gzip5zasqg.dx.internal.cloudapp.net
+ ([172.185.54.254]) by smtp.gmail.com with ESMTPSA id
+ 5a478bee46e88-3153e044912sm5379539eec.15.2026.07.31.03.41.48
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 31 Jul 2026 03:21:40 -0700 (PDT)
-Message-ID: <6a6c7734.a294856b.805ea.987d@mx.google.com>
-To: "Wake Liu via ltp" <ltp@lists.linux.it>
-In-Reply-To: <20260731071545.1334046-1-wakel@google.com>
-Date: Fri, 31 Jul 2026 10:21:39 +0000
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+ Fri, 31 Jul 2026 03:41:48 -0700 (PDT)
+From: linuxtestproject.agent@gmail.com
+To: Andrea Cervesato <andrea.cervesato@suse.de>
+Date: Fri, 31 Jul 2026 10:41:47 +0000
+Message-ID: <20260731104147.9091-1-linuxtestproject.agent@gmail.com>
+X-Mailer: git-send-email 2.54.0
+In-Reply-To: <20260731-cve-2026-64600-v3-1-192da4ddf707@suse.com>
+References: <20260731-cve-2026-64600-v3-1-192da4ddf707@suse.com>
+MIME-Version: 1.0
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] clock_gettime03: Extend tolerance on slow kernel
- configs
+Subject: Re: [LTP] cve: reproducer for cve-2026-64600
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -97,21 +91,41 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Cc: Wake Liu <wakel@google.com>, ltp@lists.linux.it
-MIME-Version: 1.0
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Merged, Thanks!
+Hi Andrea,
 
---
-Andrea Cervesato
-SUSE QE Automation Engineer Linux
-andrea.cervesato@suse.com
+On Fri, 31 Jul 2026, Andrea Cervesato wrote:
+> cve: reproducer for cve-2026-64600
+
+> 	while (!stop_pressure) {
+> 		SAFE_PWRITE(1, fd, wbuf, blksize, 0);
+> 		SAFE_FTRUNCATE(fd, 0);
+> 		SAFE_FSYNC(fd);
+> 	}
+
+Could the write be synced before the truncate? The truncate can discard the
+dirty page and delayed allocation before writeback, so fsync() only persists
+the empty file. This also differs from the documented
+write/fdatasync/truncate sequence and may leave the XFS log without the
+allocation pressure needed to widen the vulnerable window, causing false
+passes on affected kernels.
+
+Verdict - Needs revision
+
+---
+Note:
+
+The agent can sometimes produce false positives although often its
+findings are genuine. If you find issues with the review, please
+comment this email or ignore the suggestions.
+
+Regards,
+LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
