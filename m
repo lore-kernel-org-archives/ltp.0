@@ -4,82 +4,50 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2742CC55172
-	for <ltp@archiver.kernel.org>; Sat,  1 Aug 2026 11:27:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5AB7CC55173
+	for <ltp@archiver.kernel.org>; Sat,  1 Aug 2026 11:49:24 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A98853EA6B2
-	for <ltp@archiver.kernel.org>; Sat,  1 Aug 2026 13:27:41 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id CF42F3EA682
+	for <ltp@archiver.kernel.org>; Sat,  1 Aug 2026 13:49:22 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C04963E9858
- for <ltp@lists.linux.it>; Sat,  1 Aug 2026 13:27:26 +0200 (CEST)
-Received: from mail-yx2-x04.google.com (mail-yx2-x04.google.com
- [IPv6:2607:f8b0:4864:41::4])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 4A69D3EA67C
+ for <ltp@lists.linux.it>; Sat,  1 Aug 2026 13:49:06 +0200 (CEST)
+Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com
+ [91.218.175.171])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 2C59D6001E9
- for <ltp@lists.linux.it>; Sat,  1 Aug 2026 13:27:26 +0200 (CEST)
-Received: by mail-yx2-x04.google.com with SMTP id
- 956f58d0204a3-667d5749f90so1260299d50.1
- for <ltp@lists.linux.it>; Sat, 01 Aug 2026 04:27:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1785583645; x=1786188445; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to:content-type;
- bh=fm5qIp/RTC++Tq8npe2r6Fqe7km+d9InIBfXM6xFkLA=;
- b=bRPTFdp/ec4GwlG7fLr3MSMUk8Al1Kzk+eD7manFa0049cMsgtvlt5FQtIuWvJNi6f
- P4pi57CqKELMlYxghNhAYUP+GIVQtx7b4pKAzBdu4E4C8dgYUmE3Tch7vj4+B+cBj+0s
- ZmyePhsODfGnVfRbJS2WQ6C8dQjqSvfqns7mlYpP/1JJuBeNWq3b8LZi8JAGIEe1+qMy
- 7eztW9qrOnFioEZE/SaAMVrm8cFbIrET2ExpHT36+6MuWsmbMy7+Uw5Pq8FpG5vEy3cN
- N2mi58j3xMErfBM3GhgKDUkmd97K24xvUb6Xl6dJy8DoXv1or3wSjUAPG5lo46rPpidd
- p2Aw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1785583645; x=1786188445;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to:content-type;
- bh=fm5qIp/RTC++Tq8npe2r6Fqe7km+d9InIBfXM6xFkLA=;
- b=CuFRJ52Hu87ygWf6cvh/1KW6/K7XLWkPu1Z72PQUYwtYS0kJsjYu/9VNOTLgGYccv2
- MZc9HXr46i1f34jQfHqPTfYx0mgSyFh+HVCH/PSzjYpjZ3vEKuwNa9iRFhWpGBEqaZZr
- rP9lWpaZe4QY4T0GBr9+Vr958jLDJh15Edtgj0vuKGvm9xDunqxB0Y52ky8mvUAkoBbX
- hIXOhQ1+u8eK0UelGnWFtlo+BwxQnOdRbt1VPi6ltpKQwRUbgmQm2hRWSx9u/uDyChaN
- a5JlnrPZ4vDeJPVEE1xqj8WLPNaTDpQb9t/6+aZPEV0odEKBjryad1EyxyBT1U3Qok3n
- 1vpw==
-X-Gm-Message-State: AOJu0Yydv7gvmQzY5zF5gbGPJsoF7O3HIf0/0LUL1nsCoVDSMC6G0Ehf
- 3XqhkSQsjR8PMZHudiM5EdLdvKPDY8eUUPAYu209Sf/NOhssGIn7e9QF
-X-Gm-Gg: AR+sD12ciRfajESdJ5lQSlKo6Gy63wHapVnvt5XhhQga8W8TEqY7r+GpNqEVvSMYQ6I
- Nc2trGPIckYBg27s7lLPH9ZbEevGRagk+JjEJJddvCTchzJkrJvP6u63jq115caXP28aMuwnk3Y
- AJutkDUBSUb5Ku0f0zTsgATCCQ7FrIph4uKYdNBAot55KwiTuajiQnZBAXdPD9dW2vwqC6GN4Ya
- YXRYiy39gUPqLM5y6ptvBW6hPyZ0zohDbTr2sp0B6EOfTrNLNktFZFWWYk5F8k9XbXB4ZhDk2bL
- sNC4YjO0y2uzPpYa9Is1bVz79hESOGfwnVfks7Cgu9uw6pSqrAZDl+c4qOUvnL4mBqJrx9fJ0d0
- l7t0P5RqVhRnASxZLxJrF1xrLa6Y6P5OQS79Yx2uFjmzwaXYRj02rpK4Q+DFHUzkFXK8aq68XMN
- csjtHJTWSkuDQO5dHwBX6aMzBg8yN+6Ico+Xk2tuYBu0QCThxRfZLvtJkh+ghrw/p02go0dnr87
- N+Ku8U1ofgAmw/akTrg6vjalem06YbRw5pMPp7Gh+g91x0OS0YhdeiiU3ffZ4gMJe17bU1m7vBP
- 1UT4HrEeptff
-X-Received: by 2002:a53:c24e:0:b0:668:7115:1b79 with SMTP id
- 956f58d0204a3-6694effe0d2mr3693917d50.12.1785583644738; 
- Sat, 01 Aug 2026 04:27:24 -0700 (PDT)
-Received: from
- runnervmvrwv9.xvc5d54zgiqe3i3qbzi5g12n0e.ex.internal.cloudapp.net
- ([64.236.134.52]) by smtp.gmail.com with ESMTPSA id
- 956f58d0204a3-66949036561sm2203053d50.20.2026.08.01.04.27.24
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sat, 01 Aug 2026 04:27:24 -0700 (PDT)
-From: linuxtestproject.agent@gmail.com
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 59C591400077
+ for <ltp@lists.linux.it>; Sat,  1 Aug 2026 13:49:04 +0200 (CEST)
+Date: Sat, 1 Aug 2026 19:48:54 +0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+ t=1785584943;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=NM5AggfZA2kC4GO0SbzBaxUiDSaF5n1TyOxyYcSJa4s=;
+ b=wXhS6L/7Bk68OQBteLYxTmyMQ+DO15Ub3vUYuQMBm77SGR+cCY/AatVUI3eWKRMbHLEKTF
+ ZKZrtkoREHU8Ma4N4w/X0TgXoSEr6htaxVVQPLXZ7qFcUo7aQ6k9hkAi1YoSL9rjA8LcmO
+ yKCI/0GkK9BDtLq3wRTAyXLP2nNVckg=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and
+ include these headers.
+From: Li Wang <li.wang@linux.dev>
 To: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Sat,  1 Aug 2026 11:27:23 +0000
-Message-ID: <20260801112723.9180-1-linuxtestproject.agent@gmail.com>
-X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260801-cve-ghostlock-v1-1-178f698f9702@suse.com>
-References: <20260801-cve-ghostlock-v1-1-178f698f9702@suse.com>
+Message-ID: <am3dJgE_4tMWnsh1@linux.dev>
+Mail-Followup-To: Andrea Cervesato <andrea.cervesato@suse.de>,
+ Linux Test Project <ltp@lists.linux.it>
+References: <20260730-shell_oom_protection-v2-0-be1de2baa83d@suse.com>
+ <20260730-shell_oom_protection-v2-1-be1de2baa83d@suse.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20260730-shell_oom_protection-v2-1-be1de2baa83d@suse.com>
+X-Migadu-Flow: FLOW_OUT
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] lapi/prctl: add more fallback definitions
+Subject: Re: [LTP] [PATCH v2 1/2] shell: add optional OOM protection
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,47 +59,92 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+Cc: Linux Test Project <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Andrea,
+Andrea Cervesato wrote:
 
-On Aug 1, 2026, Andrea Cervesato wrote:
-> lapi/prctl: add more fallback definitions
+> --- a/testcases/lib/tst_test.sh
+> +++ b/testcases/lib/tst_test.sh
+> @@ -28,6 +28,57 @@ export TST_USR_GID="${LTP_USR_GID:-65534}"
+>  trap "tst_brk TBROK 'test interrupted'" INT
+>  trap "unset _tst_setup_timer_pid; tst_brk TBROK 'test terminated'" TERM
+>  
+> +_tst_set_oom_score_adj()
+> +{
+> +	local value="$1"
+> +	local path="/proc/self/oom_score_adj"
+> +
+> +	[ -e "$path" ] || return 0
+> +
+> +	echo "$value" > "$path" 2>/dev/null || return 0
+> +}
+> +
+> +_tst_enable_oom_protection()
+> +{
+> +	_tst_set_oom_score_adj -1000
+> +}
+> +
+> +_tst_disable_oom_protection()
+> +{
+> +	_tst_set_oom_score_adj 0
+> +}
+> +
+> +_tst_run_oom_protected()
+> +{
+> +	local _tst_pid
+> +	local _tst_ret
+> +
+> +	# Shield the harness from the OOM killer and run the test in a child.
+> +	# The child keeps the default oom_score_adj so that it, and any process
+> +	# it spawns, stay killable under memory pressure while the harness
+> +	# survives to report results.
+> +	_tst_enable_oom_protection
+> +
+> +	(
+> +		_tst_disable_oom_protection
+> +		_TST_OOM_PROTECTION=0
+> +		export _TST_OOM_PROTECTION
+> +		tst_run "$@"
+> +	) &
+> +	_tst_pid=$!
+> +
+> +	wait "$_tst_pid"
+> +	_tst_ret=$?
+> +
+> +	if [ "$_tst_ret" -eq 137 ]; then
+> +		tst_res TINFO "Test was SIGKILLed: OOM killer or timeout?"
+> +		tst_res TINFO "On a slow machine try exporting LTP_TIMEOUT_MUL > 1"
+> +		tst_brk TBROK "Test killed!"
+> +	fi
+> +
+> +	exit "$_tst_ret"
+> +}
+> +
+>  _tst_do_cleanup()
+>  {
+>  	if [ -n "$TST_DO_CLEANUP" -a -n "$TST_CLEANUP" -a -z "$LTP_NO_CLEANUP" ]; then
+> @@ -680,12 +731,16 @@ tst_run()
+>  	local _tst_pattern='[='\''"} \t\/:`$\;|].*'
+>  	local ret
+>  
+> +	if [ "$TST_OOM_PROTECTION" = 1 -a "$_TST_OOM_PROTECTION" != 0 ]; then
+> +		_tst_run_oom_protected "$@"
+> +	fi
 
---- [PATCH 2/2] ---
+In the C library, OOM protection for the LTP library and harness
+is enabled by default. But in such Shell implementation, we have to
+explicitly enable it via 'TST_OOM_PROTECTION=1'.
 
-> +	static const int try_sizes[] = {
-> +		MAX_AUXV_QWORDS,
-> +		MAX_AUXV_QWORDS - 4,
-> +		MAX_AUXV_QWORDS - 8
-> +	};
-> [...]
-> +		valid_auxv_size = try_sizes[i] * sizeof(uint64_t);
+If we keep them consistent and remove the TST_OOM_PROTECTION
+variable, things will become easier I guess :).
 
-Could these sizes either use the native word size, or could the test be
-restricted to the 64-bit architectures on which the reproducer works?
-
-On i386, the smallest attempted size is 320 bytes, but the kernel's
-saved_auxv is only 56 * sizeof(unsigned long), or 224 bytes.
-prctl_set_mm_map() therefore rejects all three attempts, and setup reports
-TBROK. With no supported_archs restriction, the cve runtest entry runs this
-test on 32-bit x86.
-
-Verdict - Needs revision
-
----
-Note:
-
-The agent can sometimes produce false positives although often its
-findings are genuine. If you find issues with the review, please
-comment this email or ignore the suggestions.
-
+-- 
 Regards,
-LTP AI Reviewer
+Li Wang
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
