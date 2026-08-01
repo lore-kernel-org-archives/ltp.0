@@ -4,79 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 66AB1C5516F
-	for <ltp@archiver.kernel.org>; Sat,  1 Aug 2026 07:30:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F09A6C5516F
+	for <ltp@archiver.kernel.org>; Sat,  1 Aug 2026 07:30:43 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7BB813E9830
-	for <ltp@archiver.kernel.org>; Sat,  1 Aug 2026 09:30:28 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id C65253E9510
+	for <ltp@archiver.kernel.org>; Sat,  1 Aug 2026 09:30:41 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6C5623E950C
- for <ltp@lists.linux.it>; Sat,  1 Aug 2026 09:30:14 +0200 (CEST)
-Received: from mail-qk2-x09.google.com (mail-qk2-x09.google.com
- [IPv6:2607:f8b0:4864:34::9])
+ by picard.linux.it (Postfix) with ESMTPS id 5BD633E9838
+ for <ltp@lists.linux.it>; Sat,  1 Aug 2026 09:30:23 +0200 (CEST)
+Received: from mail-pj2-x03.google.com (mail-pj2-x03.google.com
+ [IPv6:2607:f8b0:4864:39::3])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id C32A26006ED
- for <ltp@lists.linux.it>; Sat,  1 Aug 2026 09:30:13 +0200 (CEST)
-Received: by mail-qk2-x09.google.com with SMTP id
- af79cd13be357-930f7b1eb68so78767285a.0
- for <ltp@lists.linux.it>; Sat, 01 Aug 2026 00:30:13 -0700 (PDT)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 4B2371A00611
+ for <ltp@lists.linux.it>; Sat,  1 Aug 2026 09:30:23 +0200 (CEST)
+Received: by mail-pj2-x03.google.com with SMTP id
+ 98e67ed59e1d1-38111ea8a88so1239825a91.1
+ for <ltp@lists.linux.it>; Sat, 01 Aug 2026 00:30:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1785569412; x=1786174212; darn=lists.linux.it;
+ d=gmail.com; s=20251104; t=1785569422; x=1786174222; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to:content-type;
- bh=9gi3IdbbxXUm3n+XNiXgFGdKU4ioKyj5TMhA4QLM470=;
- b=kRt28sTt9maa1HZBQYDsIOnTqze8m5hjrNs5vSuzdMW8UQvQL4RTdeQ7ImIFQM+Z59
- P4qW4uNI5I3p6A1T+oBuzdjre1ZYBn8jb3nPm8PCnMasxnN7y1/Y5Hg4fTBRRX4IKzeW
- 3CxrqunvaFN8kLuZEbOFWPoDklRgkGAWjPR4eZX6d/cUr8Dbzb63NXgey1NQst0tDKQR
- oe6Xa5kfwhhL0jDsQqnMbEhdrrHVX/gY8y/S9RixBQDrxLa2xPG2MAHtUlwWPeZ4TusZ
- huQeKSiL5gXJP4Y72nnYcThNcrCM2v7GDKVurM2WmsKpU2Zvpl0Z+LeyzKBRvjtZucuq
- KFCQ==
+ bh=unW1I/uSiOyS6tohZwjoVoBuNH7rhvwZe2ch1y0V0mQ=;
+ b=OdDKc2+862y03TBWO++2bTaNUs52QDb8BHSidRPLgQ9R9m5qq80L80DbseRuzvS5NW
+ 3DJiv/Nn8uQestl7FdgrAYPmlYiEfwFeHAM0xNEIQ8FS1hsUbtDLdYzda7riZ0csrW7m
+ N9nV8xhIQf37LL4f8aHYISPUeQsrTq1r6yHpUgjKn1jae+o5QOwVMYz3rpLWDTOHh+3C
+ NOsb3Elh017E5WdaL2y97j+PKh1f1be4QGdJWLe3HpASZOYD1X/ECJabRsEAEybfQ0RU
+ af5GWD8YCwZbj9bDbLpkwzp5eXbUCOxQq3/awPHQsRu296AMJB2q8LV0Ke4UBviitiVE
+ Mi2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1785569412; x=1786174212;
+ d=1e100.net; s=20251104; t=1785569422; x=1786174222;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to:content-type;
- bh=9gi3IdbbxXUm3n+XNiXgFGdKU4ioKyj5TMhA4QLM470=;
- b=em4hIIHgQradSM/kiBvJz5ICSsKOMTAzNaxTmBNQCPZPiQjZqWGUxnuehOowEDyTaA
- S7KnGHMKJTUYhfUJ0ssHbAccyQhJoA7ayF58ALMh1vsDM3n8R58KbDx0YGb5EVjCIauh
- RQYoEtzP3zZXgdSkHahBfHCFwyLgScGzNCeMmiU5NF1c0DoL8brYqM0csmKXfVLriD9b
- CStgOSfq8ura9DVicdh9CBDT9CZ3B739dO7Ni2OYf3Ku3lX2BEyXlrdSq/JY9g+mIlzI
- BY8J8nWF5XP/4B5ieOs0Fs3gPmeBd9J3n+9aj+negCCqwowmoeZ/9sdEdwW/+YVD3dn3
- UXPA==
-X-Gm-Message-State: AOJu0YxmWqHyIP/6N0BVOQysL+MNNvwVraiaidjSqHxacRPPGzsHJePX
- cH38ZOhmAHi57tJpLqRxKMAafnojyskIeSNAHLhIiQkSUSaQufTR5q/b
-X-Gm-Gg: AR+sD11ZQqh2gr6gfsg/wu6qvGkstIg5VBHXJrH3+zG7o+JW0EfN45AoIaD7/20Uo6V
- 9DPQ9UvSYzQEFQrSUeBUKsIMD8lBG0uFu3mzgg6rM+nesWnmXAYB6/5TkufpaMAe0S0PF1KR+97
- 97Qe22HgyiWWbvlAmfERqqqsAeJD9I8LOql/5It7oqJPEXelClGuf2n/b60d9WZkkoAzEo3QI96
- EMzpfFS+8YbK1SjZnlrlMuIWYFtR5J1dDYtm7QRUiNCJVI++MyidUuA8fm2VWrswKDffPg192DQ
- 4GPn36AHVt9jVivDxzmWa7h5xaxeb4loMyv4C5kDQyFhxEITb3hb6tUt0Yi1csfhpUNXWZBXsfM
- 3/zt9oNQ1RLCLBGG1u9Ic6v4QGyaqSWpw2Mzr6npPUqqfP8gShA62fpdMe3rE1sSUNgGQnfsm4m
- MIrvVvPk4Csk0ljwbeUlVoz/6JFoAwOmWTGbxtCqQCyS0uiPkOCH1Jnb8I0g/kAPs09o2+OA0TL
- 0VKzvDOzShlrF7NlF5Q9jdoQUB1u5Cz1qkmUIY4wH497yI1WLbD9/4bVhF/0bOVvuNNxzAYG5ae
-X-Received: by 2002:a05:620a:6f8f:20b0:92b:81fb:87b7 with SMTP id
- af79cd13be357-934a078349bmr429497485a.13.1785569412283; 
- Sat, 01 Aug 2026 00:30:12 -0700 (PDT)
+ bh=unW1I/uSiOyS6tohZwjoVoBuNH7rhvwZe2ch1y0V0mQ=;
+ b=Dqxkiw/BnrCilsbCCGDeyieGP1FcrI9wzAWAc25D296P1TpJJBHNiO72XeIxwoTGsB
+ cV5Typsdq/RwLZbPLXfBDpkxY1+yV694BNgpC3iAZUwvmWh/dRva8kUIPOnybn3PR+2Z
+ WAMUhn4EEm84djYr/6SM8s6gc1NBQSKBNuDqfceWKhc7J+/TR0a8rJApcGPdhHauvU4i
+ TvF/+L1E3SPFKdg3Zo67srqSyT4d2t+xfUB+fLRtQhJEXCXaoYW8ERX7ZqTPrB9n93ge
+ rFO8RH1VRJsheWciTgaDSNr3VYB+MQ39ZxYvCxh9konYpNmq6bNVUOSk1mQm/qbWPpFX
+ 15+g==
+X-Gm-Message-State: AOJu0YyzsuT3NrYDlJ85Epcr4I0H2jMQXneiqqHCAOWmaEjES/tzLuFb
+ Nojb2XlnmR5Wyf7T2e6ahaYpXvx4u4PhTLTcZO/o0bsc3pwuTc9hYSB+1L6FeVzK
+X-Gm-Gg: AR+sD10fo5vg4LITAo9h9HEcxTZpQBt7+DaPi+WpEzc6YDuX4eLUzFbX1hcP8nn10Dr
+ cUqUZBv2CSxGVCogEVswbPMmY/Bk0Qk3xMjXiN6PqENey4pHlyaXHqMqBYSlFRetpbmnibBoOr5
+ 3aNGlAtDHdrFQ64yFU3Htpz0r136RdVwe4I+BV8pop/TMYRSbIi2nQBePARWPY7U0J9CGqBRmf7
+ hg17MLnzsclg22/RK1NLyGXnF3VIIdTvgG05wwPsSXg+w1Azd1J1eTjJpB1swsl0U7W2D7YLJJp
+ vlfce0ZXYtqvLL0inMKLEJtZSZH7s0lRV3OeKynsvVy/UEhXxGZiITBPWjxbshv9VX4YjXxADU7
+ zvI+Mv/A6FeENMEYZqjc1hH1USFgc7Hq35fri5mQffQPOI2R1L0F2R4lSfMvXr9QiLw/FpqnVgW
+ LIWeDbfVQmK75yZpe28ye0nIncjxGUOMs/K7JdjXNfUvv7Vbm0xNBbDkY1yf+xidSEiUf3xUX/k
+ enrPQCQTvJLK3tYtYsVSr9KJd0M9XLZMYolCtjEk5Ac8Yzo5NsS/VjJbIsqNBpX+B0vuQQRunF9
+X-Received: by 2002:a17:90b:51c3:b0:38e:4114:d8c7 with SMTP id
+ 98e67ed59e1d1-38fbc0b4881mr2695757a91.0.1785569421630; 
+ Sat, 01 Aug 2026 00:30:21 -0700 (PDT)
 Received: from
- runnervmvrwv9.ehj4x1d5yekefaajqsxkgfvqfa.bx.internal.cloudapp.net
- ([20.231.101.40]) by smtp.gmail.com with ESMTPSA id
- af79cd13be357-9349bc5379bsm228053085a.16.2026.08.01.00.30.11
+ runnervmvrwv9.ykf55hypnykulgqgjyfh40wznf.xx.internal.cloudapp.net
+ ([4.155.149.108]) by smtp.gmail.com with ESMTPSA id
+ 98e67ed59e1d1-38fb2b8c5c5sm1049015a91.4.2026.08.01.00.30.21
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sat, 01 Aug 2026 00:30:11 -0700 (PDT)
+ Sat, 01 Aug 2026 00:30:21 -0700 (PDT)
 From: linuxtestproject.agent@gmail.com
 To: Yeswanth Krishna Tellakula <yeswanth@linux.ibm.com>
-Date: Sat,  1 Aug 2026 07:30:11 +0000
-Message-ID: <20260801073011.8913-1-linuxtestproject.agent@gmail.com>
+Date: Sat,  1 Aug 2026 07:30:20 +0000
+Message-ID: <20260801073020.8923-1-linuxtestproject.agent@gmail.com>
 X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260731044216.33618-1-yeswanth@linux.ibm.com>
-References: <20260731044216.33618-1-yeswanth@linux.ibm.com>
+In-Reply-To: <20260731041949.26465-1-yeswanth@linux.ibm.com>
+References: <20260731041949.26465-1-yeswanth@linux.ibm.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] cgroup/cgroup_core03: convert to new LTP API with
  parameterised subtests
@@ -102,52 +103,49 @@ Hi Yeswanth,
 On Fri, 31 Jul 2026, Yeswanth Krishna Tellakula wrote:
 > cgroup/cgroup_core03: convert to new LTP API with parameterised subtests
 
-> static void run(unsigned int n)
-> {
-> 	int i;
+> +	if (n == 0) {
+> +		*data_ptr = 0;
+> +		num_pids = PID_NUM;
+> +
+> +		for (i = 0; i < num_pids; i++)
+> +			pids[i] = cg_run_nowait(cg_child);
+> +
+> +		TST_CHECKPOINT_WAIT(0);
+> +	}
+> +
+> +	switch (n) {
+> +	case 0:
+> +		test_cg_kill_procs_count();
+> +		break;
+> +	case 1:
+> +		test_cg_kill_trigger();
+
+Could this sequence remain in one .test_all callback? After run(0) returns,
+the LTP runner calls tst_reap_children(), which blocks waiting for the paused
+children. The callback that writes to cgroup.kill is therefore never reached,
+and the test times out.
+
+Helper functions can still report the individual checks, but no live child
+can remain when a .test callback returns.
+
+> + * [Description]
+> + *
+> + * Functional test for cgroup.kill interface (cgroupv2).
+
+Could the deprecated [Description] marker be removed? Test catalog comments
+begin directly with the description; only [Algorithm] is a supported section
+marker.
+
+> cgroup/cgroup_core03: convert to new LTP API with parameterised subtests
 >
-> 	/* Fork wave: only needed before the first subtest. */
-> 	if (n == 0) {
-> 		*data_ptr = 0;
-> 		num_pids = PID_NUM;
->
-> 		for (i = 0; i < num_pids; i++)
-> 			pids[i] = cg_run_nowait(cg_child);
->
-> 		TST_CHECKPOINT_WAIT(0);
-> 	}
->
-> 	switch (n) {
-> 	case 0:
-> 		test_cg_kill_procs_count();
-> 		break;
-> 	case 1:
-> 		test_cg_kill_trigger();
-
-Critical: Could these dependent stages remain in one .test_all callback?
-After run(0) returns, run_tests() unconditionally calls
-tst_reap_children(). That blocks in wait() because every child is paused,
-while cgroup.kill is not written until run(1). Consequently run(1) is never
-reached and the test times out.
-
-> /*\
->  * [Description]
-
-Minor: Could the deprecated [Description] header be removed? Introductory
-prose is already treated as the description, and this header is forbidden in
-new C test documentation.
-
-> 	.needs_root = 1,
-
-Minor: Could the high-level description explain why root is required? The
-new root-only requirement is not documented as required by the root-usage
-rule.
-
+> The test used the old .test_all single-function style.
+> [...]
 > No functional behaviour change.
 
-Minor: Could this claim be removed? The patch adds root-only gating and
-kernel-taint failure checking, changes the timeout, and changes result
-reporting, so it changes observable behavior even apart from the hang above.
+Could the commit message describe this as a callback-model refactoring rather
+than a new API conversion? The existing test already uses tst_test.h and
+struct tst_test, and the callback split currently changes behavior by causing
+the timeout above.
 
 Verdict - Needs revision
 
