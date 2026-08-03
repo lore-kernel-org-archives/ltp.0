@@ -4,97 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 45A78C55175
-	for <ltp@archiver.kernel.org>; Mon,  3 Aug 2026 09:30:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1785749430; h=mime-version :
- references : in-reply-to : date : message-id : to : subject : list-id
- : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=1qTuow1oo3qhwdJsU964iKnYOQxJorgt7pCM5E9ZhFw=;
- b=oME18FKfnxHBS8XT9sGQ7r+DGZsOBYx3nQ/FbFf18y5SD8kV09ImYmNq4WghvqYxTKRK8
- fEagRK6x9b0QrUxDpG6NQMelhvqgfFE/2/LyFs/REgPQ+UbbiVsMs13lggUzxN+sHD3g71k
- UHsDza8BZV2eAkJiVtzUN0ERqQqnlik=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7F525C5518E
+	for <ltp@archiver.kernel.org>; Mon,  3 Aug 2026 09:37:15 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id CD6F53E4B7F
-	for <ltp@archiver.kernel.org>; Mon,  3 Aug 2026 11:30:30 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 049673E7191
+	for <ltp@archiver.kernel.org>; Mon,  3 Aug 2026 11:37:14 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9C3D93C27B3
- for <ltp@lists.linux.it>; Mon,  3 Aug 2026 11:30:11 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id BF06C3E0E1D
+ for <ltp@lists.linux.it>; Mon,  3 Aug 2026 11:36:57 +0200 (CEST)
+Received: from mail-qk2-x04.google.com (mail-qk2-x04.google.com
+ [IPv6:2607:f8b0:4864:34::4])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id B32F81000619
- for <ltp@lists.linux.it>; Mon,  3 Aug 2026 11:30:10 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1785749409;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=jNBIiLQPUnYGy8j15m7MgCIPW2IIz0fkX4+wXAZsLU8=;
- b=HmrdcKc6usiG4z2+tvwHaIYtilOsCdIcD9tD7bTPYzCdMO0E2NVCc463r04as0Zu2xhCuf
- Gb5vDllcO0UbQzpPLezLMakBpe0QBTdRfhQlTSqwyAw1xaD4grpDREXKOGxC98m+nGUPrH
- 9risqgSh/5z0M2UIcHxH1t4SIEdU/q0=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-633-qQ8U-ikPPZu4lpB743lgog-1; Mon, 03 Aug 2026 05:30:07 -0400
-X-MC-Unique: qQ8U-ikPPZu4lpB743lgog-1
-X-Mimecast-MFC-AGG-ID: qQ8U-ikPPZu4lpB743lgog_1785749407
-Received: by mail-wr1-f69.google.com with SMTP id
- ffacd0b85a97d-473ac08a6a4so2515183f8f.0
- for <ltp@lists.linux.it>; Mon, 03 Aug 2026 02:30:07 -0700 (PDT)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 518D160062C
+ for <ltp@lists.linux.it>; Mon,  3 Aug 2026 11:36:57 +0200 (CEST)
+Received: by mail-qk2-x04.google.com with SMTP id
+ d75a77b69052e-51c26eb5e81so9198991cf.1
+ for <ltp@lists.linux.it>; Mon, 03 Aug 2026 02:36:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20251104; t=1785749816; x=1786354616; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to:content-type;
+ bh=hozlzYIlXf/CH0iQ8lgg5cq098/H/haFJ3d8DC3t/pU=;
+ b=S+T5bIro9/uVZsBeZNJ3BBegbUSItqevaW+MfxE5BAeORxWXse1gEYFBQq5ncXkFJ7
+ wWXGqBCd6B1HC9ovCVo+ctNmdkLUCTQ8QfM9jDKCTJGgpeRQeAhvvgLgY9TsA4QkTjVz
+ +NvMVD3LnTBCCGoH5RooVYq+Fr246hm0NxHgw/Afcsr9MplEe4t/TY6xZTzvD9S0u9pj
+ L5amaf447UpaiuDU8lSrfL+XGXD01nHGBnQlVo71O6fXw7LHAysANxVs1GJtrYd7ek9z
+ i5Nulhz0ByATz0Xl+foT+TdISMLohee+uP1x5US4S8lp5gncMRrAXSbvBAouJ7HbJdbt
+ QDyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1785749406; x=1786354206;
- h=content-transfer-encoding:content-type:cc:to:subject:message-id
- :date:from:in-reply-to:references:mime-version:x-gm-gg
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
- :content-type;
- bh=jNBIiLQPUnYGy8j15m7MgCIPW2IIz0fkX4+wXAZsLU8=;
- b=mVpva5hKp35kNG3EjKem01LgaoWwiC+EvmaIKWQNAYiDatkGGxIDUc7F+pKQddtQPw
- YrEzsPG41GR3IAuLAzTg47ypYTmadkGHckp9ptDE1mCnwEiHxYYuX7mj1kLTV2kBRMjh
- jHNz0SJj/FGG+9Fy1Nhv7nIkA9Q/7xmVpTsHEYBd2gXH7fYMyTg2go4GieCl4wngWkmd
- gVC5SnfUgEKkJ8CmKo/5lLQzqztGc72W7XNFM2yklguEr6bjBp5PrjwGWyqEREBqq/G3
- SoMYJpxV97nS0goeLyOa07ALugZ5koErnbFvPmhV1hMHW8yLQf7EMUqw0X5Ok6QLiXjr
- wLtA==
-X-Forwarded-Encrypted: i=1;
- AHgh+RrVtMPa2W9l9NFPaaFnNlPE+4Ev4Rqc9VTnHu5pUzijQTA9AbfLMPb/iXYSxYREAF1/Ce8=@lists.linux.it
-X-Gm-Message-State: AOJu0Yx2AtWat//8pGM+34d0bRkA2x1E4IBkqyF8C7rQNSWV8g/LzaDK
- IeF37hhtQKJaXH60t9muwVZyeQYicpTYBcPCBrcy56WSD7b8F2il/eEoi1taP95XgHwW5h5Ggbc
- 0FXPH7VV4QeetZ7vAHy23e03UfmQv7jZkzE/J4zdRhkHgoAJQuHMguubclIl8qHOhcGUlNS2sQX
- +FdQE3oWP5U5NYa/0D57UjKCiDJPM=
-X-Gm-Gg: AR+sD12/sJEnL8WrprJ8m4Q7O/pOK8p4Ea5YczShYOzmFEDs5aFbSGd2t7Wp8tW2bGb
- a7sb1gEBCuer1ArSGZZldz20KDtFxHxC+hG9eq/2jaGoLCtB2s/EHyILeO29v21I6dUuUTk1ExF
- nbaBBQqTg+F7Yj4yiTS3JIusGmUGJSroyQrgRdD4fjwE2OdWD64p7I90NT
-X-Received: by 2002:a05:6000:29d7:b0:46e:230f:d095 with SMTP id
- ffacd0b85a97d-47fd72ab2e7mr13915778f8f.7.1785749406671; 
- Mon, 03 Aug 2026 02:30:06 -0700 (PDT)
-X-Received: by 2002:a05:6000:29d7:b0:46e:230f:d095 with SMTP id
- ffacd0b85a97d-47fd72ab2e7mr13915721f8f.7.1785749406221; Mon, 03 Aug 2026
- 02:30:06 -0700 (PDT)
+ d=1e100.net; s=20251104; t=1785749816; x=1786354616;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to:content-type;
+ bh=hozlzYIlXf/CH0iQ8lgg5cq098/H/haFJ3d8DC3t/pU=;
+ b=ePo7XMmhrgk+ZXPaxB/uDzOQ9WWmXrCInUUvR41g6FNlWYrJCMvZMhVKHsmwXHm6S0
+ BS9BjEE1EDjlhvkwNk4Ewx5VDm5lvP7vUXSh3yIE1Tr25qbs+N2Nitkhmwf7HjAT2VcL
+ ODlBIDP80kefmhPuqShRM5CNuRZjpnB8Zwx78yyrAKKyWeoBEbr0nWrCDmpTEuoMm0xU
+ FoCrT6DrrPgdvXYvPmq1PRMaY03JZw1jLD/FC7Gi/UcL3//wRYQKXGpH94b39SrX6V01
+ ks8WP4GOJL6Qv7ViSmHgguCHB/kHP1Br70KGXSgCkPgUmuJnYuPv8AZZGt9P4/svKNwO
+ IrVg==
+X-Gm-Message-State: AOJu0YxKFuLOq3QfvsmAaVBzPmjN3TQvKRf3ToN7v7Xek9qBBIzW6D+c
+ swLsMB4oG7F3EPWx5HTTCqh9oHxgwIe6zBH0F5gir6ifnjkwfpIAyadd
+X-Gm-Gg: AR+sD10TYo7gpZVMHxkanjlUpvP93ed2wo2qzYKBThs1nNTL+buCHA/OQSucdopC0sq
+ NFnlw+GcnABtqUHSZdhWpThQoTYCB7cwpa/TAfRm5TB4E9h8Q+2XLuZ/SqarjDpB7yVzCbGXprz
+ Qj4ZyfqzFydc9mIwXewaQF2C1sGckbDyAVuTY5+mWbJdnpPpUtlFe+Fm0hMFYLBw84ES7x4RfSr
+ FVe6enGoXsCJT9I7sxo1UdnqXARfffhGPwnEq3D29EDvqu/5YzjiLAUU+Nsap0gUCE3YhPX3LL7
+ noLiaQf/WSk/FfT2vZS0GSW91wlJFz619spZt78cdyk/Y3JwTB+xYtXtGIatd45eiVmKQ4neKuM
+ LVrS1+z4miWn+hP2wDU/gz9dovdGjuEcyQqF+YcYmPQXYSZfwmiECmNe87osvdvRt6S0uyU35Mk
+ cYPegQXb8snX3XBzMCi6K4L2cVKBaUnuoYMRvZw64qSob/q5Q4caCtOl64fLhdsODv5rnOKU2kc
+ CtvdQ5izgtTw4WxgqTUrpIV0crIMkxRuVunIMpc+x4kVW8mkjuUJb2q4F+DjBbHCOtN3/rjDWcE
+X-Received: by 2002:a05:622a:588c:b0:517:7d9a:a88 with SMTP id
+ d75a77b69052e-52b56796734mr183681561cf.37.1785749815906; 
+ Mon, 03 Aug 2026 02:36:55 -0700 (PDT)
+Received: from
+ runnervmvrwv9.pqtex04ndr1ebezct4p0ipab4d.bx.internal.cloudapp.net
+ ([20.106.231.42]) by smtp.gmail.com with ESMTPSA id
+ 6a1803df08f44-908432a1e44sm70829906d6.2.2026.08.03.02.36.55
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 03 Aug 2026 02:36:55 -0700 (PDT)
+From: linuxtestproject.agent@gmail.com
+To: Andrea Cervesato <andrea.cervesato@suse.de>
+Date: Mon,  3 Aug 2026 09:36:54 +0000
+Message-ID: <20260803093654.9064-1-linuxtestproject.agent@gmail.com>
+X-Mailer: git-send-email 2.54.0
+In-Reply-To: <20260803-cve-ghostlock-v2-1-b60588853140@suse.com>
+References: <20260803-cve-ghostlock-v2-1-b60588853140@suse.com>
 MIME-Version: 1.0
-References: <20260731054548.133241-1-pvorel@suse.cz>
- <6a6c5226.d5b2c389.166717.d42a@mx.google.com>
- <20260803091348.GA216243@pevik>
-In-Reply-To: <20260803091348.GA216243@pevik>
-Date: Mon, 3 Aug 2026 11:29:49 +0200
-X-Gm-Features: AUfX_mzwGOdKQHk-qPAqaGMQIK2wEJYXUT-PAFb_ocHYodtsU3zMsNF9TcEAcAc
-Message-ID: <CAASaF6xC0wxDm+UDBVpmoZesPHuGsP5kEnpRqL=zLeDxNxTcMw@mail.gmail.com>
-To: Petr Vorel <pvorel@suse.cz>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: MNswUF4zy-Swr58a2SKEjz8ybBGMgVVIm69Y9FC6Tyk_1785749407
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/1] Switch to patchwork.kernel.org
+Subject: Re: [LTP] lapi/prctl: add more fallback definitions
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -106,37 +90,56 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Jan Stancek via ltp <ltp@lists.linux.it>
-Reply-To: Jan Stancek <jstancek@redhat.com>
 Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gTW9uLCBBdWcgMywgMjAyNiBhdCAxMToxNOKAr0FNIFBldHIgVm9yZWwgPHB2b3JlbEBzdXNl
-LmN6PiB3cm90ZToKPgo+IEhpIGFsbCwKPgo+IHNpbmNlIHdlIGhhdmUgYWxsIGFjdGl2ZSBMVFAg
-bWFpbnRhaW5lcnMgZW5hYmxlZCBhcyBwYXRjaHdvcmsgbWFpbnRhaW5lcnMgaW4gdGhlCj4ga2Vy
-bmVsLm9yZyBpbnN0YW5jZSBbMV0gSSdkIGxpa2UgaW4gZmV3IGhvdXJzIG1lcmdlIHRoaXMgcGF0
-Y2ggdG8gZmluYWxseSBtb3ZlCj4gdG8gcGF0Y2h3b3JrLmtlcm5lbC5vcmcuIEZZSSB3ZSBhbHJl
-YWR5IGhhdmUgMTggcGF0Y2hlcyBvbiBpdCwgQUkgcmV2aWV3IGlzCj4gdGhlcmUgYXMgd2VsbC4K
-Pgo+IEBDeXJpbCBATGkgQEphbjogQ291bGQgeW91IHBsZWFzZSBhY2sgdGhpcyBwYXRjaD8KCkFj
-a2VkLWJ5OiBKYW4gU3RhbmNlayA8anN0YW5jZWtAcmVkaGF0LmNvbT4KCj4KPiBJIHdvbmRlciB3
-aGVuIHRvIHN0b3AgcmVjZWl2aW5nIHBhdGNoZXMgb24gdGhlIG9sZCBvemxhYnMgaW5zdGFuY2Ug
-WzJdIFdlIHNob3VsZAo+IHByb2JhYmx5IGFzayBmb3IgaXQgc29vbiBzbyB0aGF0IHBlb3BsZSBk
-b24ndCB0aGluayB3ZSBzdG9wIG1haW50YWluaW5nIGl0LiBJCgpBZ3JlZWQsIEkgdGhpbmsgd2Ug
-YWxyZWFkeSBjYW4gYXNrIGZvciB0aGF0LgoKPiBob3BlZCB0aGF0IHRoZSBsYXN0IHBhdGNoIG9u
-IHRoYXQgaW5zdGFuY2Ugd291bGQgYmUgIlN3aXRjaCB0bwo+IHBhdGNod29yay5rZXJuZWwub3Jn
-IiBbM10sIGJ1dCB0aGVyZSBhcmUgbmV3IHBhdGNoZXMgbm93LiBPVE9IIHdlIHRoZW4gbm8gbG9u
-Z2VyCj4gZ2V0IHVwZGF0ZXMgZm9yIHRoZSBvbGQgcGF0Y2hzZXRzICh0aGVyZSBhcmUgNTQgcGF0
-Y2hlcyB3aGljaCBhcmVuJ3Qgb24gdGhlIG5ldwo+IGtlcm5lbC5vcmcgaW5zdGFuY2UgKyBhbHJl
-YWR5IDYgZHVwbGljYXRlcykuCj4KPiBPdGhlciBxdWVzdGlvbiBpcyB3aGVuIHRvIGFzayBhYm91
-dCBmb3IgcmVtb3ZpbmcgdGhlIG9sZCBpbnN0YW5jZS4gSSdkIGtlZXAgaXQKPiBhdCBsZWFzdCBm
-b3Igc29tZSB0aW1lIChjYW4gYmUgdXNlZnVsICsgdGhlcmUgbWlnaHQgYmUgYm9va21hcmtzLCBp
-bnN0YW5jZSBoYXMKPiAxMzA3OSBwYXRjaGVzLCBmaXJzdCBvbmUgaW4gMjAxOC0wMi0yOCkuIFdE
-WVQ/CgpJJ2Qga2VlcCBpdCB0b28gZm9yIG5vdy4KCj4KPiBLaW5kIHJlZ2FyZHMsCj4gUGV0cgo+
-Cj4gWzFdIGh0dHBzOi8vcGF0Y2h3b3JrLmtlcm5lbC5vcmcvcHJvamVjdC9sdHAvCj4gWzJdIGh0
-dHBzOi8vcGF0Y2h3b3JrLm96bGFicy5vcmcvcHJvamVjdC9sdHAvbGlzdC8KPiBbM10gaHR0cHM6
-Ly9wYXRjaHdvcmsub3psYWJzLm9yZy9wcm9qZWN0L2x0cC9wYXRjaC8yMDI2MDczMTA1NDU0OC4x
-MzMyNDEtMS1wdm9yZWxAc3VzZS5jei8KPgoKCi0tIApNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6
-Ly9saXN0cy5saW51eC5pdC9saXN0aW5mby9sdHAK
+Hi Andrea,
+
+On Mon, 3 Aug 2026, Andrea Cervesato wrote:
+> lapi/prctl: add more fallback definitions
+
+--- [PATCH 1/2] ---
+
+> +#ifndef PR_SET_MM_MAP_SIZE
+> +# define PR_SET_MM_MAP_SIZE	15
+> +#endif
+> +
+> +#if !defined(HAVE_STRUCT_PRCTL_MM_MAP) && !defined(PR_SET_MM_MAP_SIZE)
+
+Could this declaration be gated only on HAVE_STRUCT_PRCTL_MM_MAP?
+PR_SET_MM_MAP_SIZE is defined immediately above, so the second condition is
+always false. On systems where configure finds no struct prctl_mm_map, the
+fallback is therefore never declared and the test fails to compile.
+
+--- [PATCH 2/2] ---
+
+> +	run_spray();
+> +
+> +	TST_CHECKPOINT_WAKE(CP_SPRAYED);
+> +	TST_CHECKPOINT_WAIT(CP_SETATTR_DONE);
+
+Could sched_setattr() run while PR_SET_MM_MAP is still copying the controlled
+auxv? Here all prctl calls return before the checkpoint wake, and the waiter
+then executes checkpoint futex syscalls before the main thread starts the
+chain walk. The controlled user_auxv stack array is no longer live and can be
+overwritten, allowing a vulnerable kernel to survive and be reported as
+TPASS. The referenced PoC keeps the prctl copy active while sched_setattr()
+runs so that the forged waiter remains live during the chain walk.
+
+Verdict - Needs revision
+
+---
+Note:
+
+The agent can sometimes produce false positives although often its
+findings are genuine. If you find issues with the review, please
+comment this email or ignore the suggestions.
+
+Regards,
+LTP AI Reviewer
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
