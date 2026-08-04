@@ -4,91 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0506EC55822
-	for <ltp@archiver.kernel.org>; Tue,  4 Aug 2026 13:12:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1785849157; h=message-id :
- to : in-reply-to : date : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : cc : mime-version : content-type :
- content-transfer-encoding : sender : from;
- bh=NsagkOn+XsI0+wE1aJZFcm2NNZySEdBXPeokTJRwYwc=;
- b=OsDjPcSR0zTsgNVqQen7A7LTludObmVkkpAuPQD1vqR2rasL4UBM/xbxUl5qyqil5C4aQ
- wDWFlG2to9DwmOCeSDvFB8xxkuNmAWteDmDpM0O402PPxIwwvLsi6sH/YhJewqPbks4aYKJ
- VuKbelW1c/4TshFmGBdKfnkmFRM4BWI=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 128B9C55822
+	for <ltp@archiver.kernel.org>; Tue,  4 Aug 2026 13:17:49 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B3E623E7188
-	for <ltp@archiver.kernel.org>; Tue,  4 Aug 2026 15:12:37 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 510C13E718C
+	for <ltp@archiver.kernel.org>; Tue,  4 Aug 2026 15:17:48 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9E8DB3CC870
- for <ltp@lists.linux.it>; Tue,  4 Aug 2026 15:12:18 +0200 (CEST)
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com
- [IPv6:2a00:1450:4864:20::42f])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 498C13CC870
+ for <ltp@lists.linux.it>; Tue,  4 Aug 2026 15:17:33 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 0041F600060
- for <ltp@lists.linux.it>; Tue,  4 Aug 2026 15:12:17 +0200 (CEST)
-Received: by mail-wr1-x42f.google.com with SMTP id
- ffacd0b85a97d-47f703a9d05so2774860f8f.0
- for <ltp@lists.linux.it>; Tue, 04 Aug 2026 06:12:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1785849137; x=1786453937; darn=lists.linux.it;
- h=date:content-transfer-encoding:content-type:subject:in-reply-to:cc
- :to:from:message-id:from:to:cc:subject:date:message-id:reply-to
- :content-type; bh=epx9vCawovgE+pNwE4vCOHUiWSfpDuTVRZs/0mARrCg=;
- b=ZfPDi4XXsZxk2054UAOYfZF6eoPEN6IPph70yCrBb56clPgDuk2jeipUzSdH7s7myz
- PRkww4xVBGBqDUC5T2L/v1u9D7kotL19De2063QzkjJKNYS8N8ybUwlO6IZJujL6Auux
- 7QqWDjXEZ6cAYpTBa0WIZ/6EK0GhC8lKNJ5Pt2fu3esqX5frSdJHGjOMzRMJKFXDp01d
- pcnF+Ib396mxjq1NoiC9r5+dduhlhPWTN9HYcc+Verake3ElEgdTL96nE//ioiO6NY4M
- rvmJuZKiI4aMOLTX9L7evmuip+P3gvCSW30lIOJMFPEH4CdlLCmCzkWAL14udVxa4yQi
- asvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1785849137; x=1786453937;
- h=date:content-transfer-encoding:content-type:subject:in-reply-to:cc
- :to:from:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject
- :date:message-id:reply-to:content-type;
- bh=epx9vCawovgE+pNwE4vCOHUiWSfpDuTVRZs/0mARrCg=;
- b=d6xuSS57QTSXE/0UGxYny+SHYMwc/QIiCDqlHgN9oLKH71MJLwo2lL6u7oHqRI3ro9
- 9P3dqsM7EA1aSJV04r8fytFL+IgMNx2Afqkp88GjHr/bm71LXCtP65/jDX5iRwQyhSR6
- yJjyXx48E5OL1Yj061gP54rpD4FkWM7qTuuTF8dA5Y0B6UMbTPYG36fBxmw+5pi2hVtn
- DOEh5qEnDYFd8Hip581NWawiNIvhpLFJuAOfUG9ATldS9diA45giCIEDo6GYPPaK5O9r
- T6vHcQMnDK+kkNJxZ0lBYpJx/MnzfuvapIimL6ba6GXLonj6pm83ZsFX495pGrR34IDh
- J+Eg==
-X-Forwarded-Encrypted: i=1;
- AHgh+RquEjSPNXWm/y9Yqi0Gh14FbhSRDs679R0POafcwz25ydZoIiAVIm39ePWXyERpjQ9Jj0g=@lists.linux.it
-X-Gm-Message-State: AOJu0Yzx7Khsm5NOnMTFEzTKntn+s2ILcV+u56NIaLD6LnbWk/9tUHIR
- WLBrrC8rXAbiPNLEDKRUAdit0+lTfxtG0HffzAzr1pnlp8tJRascA2/0hwzhPI7eiZhwdQKcp+3
- JNu5Rt1A=
-X-Gm-Gg: AR+sD12l7GH6zz0CP3AYdX//KBmhOogfmC3ABr/sblO27rE1wEbm7nrJIrS1HsD1+NK
- DsQQWqZHflhiKxugZI15dSTGxchHIFRmui12qXptKJhQ2PYJ75pqpfC/apu17DSMFjDnwbv6zDH
- rR1ZN1FShD14FpGoo3fJMzDCWy/b6ehJfGfnpzX/Axti+Fc5FG77IvPxx+c7hGKxmiE8GbzHz8L
- vbaYJSgvX5mi+DNOPP+NB0RrkEmtmV4mGsEGwMX7CICH9e2OApI1J6f3LRXs5IX/kxdUxVEClBn
- AY6WfeEueuJY51zBXLf0hagVg3ZUd5gHJbb7UKxLKetnPFbFoQspgVQZQkVpTL34ZJG8oNB8jxC
- H50Tf078UFOYTIxdiVkfnESsDVXCEkQGlTcamBZjRWePABZeFBgS36/sSBjEcCeAluhKRmt43v9
- gmEaHC6qpvtZKBVsLp422iBcKInXsUs0jodzRRP3hEl9rFxNe5xrzTUXNbKEJM+zZMi22c0LpHb
- ljJ8nzlN0H/gUQLCOZMDTun+nwC1TMAasVN8x89sLD4KsaSZiHyH1dviGG6BQQceyu6hA6QgNO3
- ggaqOkyF1yXs9a8/3w3EQs3qRzK/z7zEvwYVlQ==
-X-Received: by 2002:a5d:6f0c:0:b0:47f:9096:3ef8 with SMTP id
- ffacd0b85a97d-47fd9cedfeamr36968653f8f.10.1785849137418; 
- Tue, 04 Aug 2026 06:12:17 -0700 (PDT)
-Received: from p200300ef2f11090032755c67e6ad8da4.dip0.t-ipconnect.de
- (p200300ef2f11090014709bbbefdc2d5d.dip0.t-ipconnect.de.
- [2003:ef:2f11:900:1470:9bbb:efdc:2d5d])
- by smtp.gmail.com with ESMTPSA id
- ffacd0b85a97d-47fd458b73asm40623928f8f.29.2026.08.04.06.12.16
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 04 Aug 2026 06:12:16 -0700 (PDT)
-Message-ID: <6a71e530.159d33f9.a396c.0aff@mx.google.com>
-To: "Tang Yizhou" <tangyeechou@gmail.com>
-In-Reply-To: <77cf7e28-c8a4-4017-9ca7-425739d7378f@gmail.com>
-Date: Tue, 04 Aug 2026 13:12:16 +0000
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 7681F1A0080C
+ for <ltp@lists.linux.it>; Tue,  4 Aug 2026 15:17:31 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id E70717F727;
+ Tue,  4 Aug 2026 13:17:30 +0000 (UTC)
+Authentication-Results: smtp-out1.suse.de;
+	none
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id CDDC9779BB;
+ Tue,  4 Aug 2026 13:17:30 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id JdtFMGrmcWpOfAAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Tue, 04 Aug 2026 13:17:30 +0000
+Date: Tue, 4 Aug 2026 15:17:25 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Andrea Cervesato <andrea.cervesato@suse.de>
+Message-ID: <20260804131725.GE257786@pevik>
+References: <20260804-shell_oom_protection-v3-1-fe42b15d034c@suse.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20260804-shell_oom_protection-v3-1-fe42b15d034c@suse.com>
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	REPLY(-4.00)[]
+X-Rspamd-Queue-Id: E70717F727
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] Revert "tpci: unbind driver in test_assign_resources()"
+Subject: Re: [LTP] [PATCH v3] shell: enable OOM protection by default
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -100,55 +71,194 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Cc: linuxtestproject.agent@gmail.com, ltp@lists.linux.it,
- Hongtao Zhang <zhanghongtao35@huawei.com>
-MIME-Version: 1.0
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: Linux Test Project <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Tang,
+Hi Andrea,
 
-> On 30/7/26 4:53 pm, Cyril Hrubis wrote:
-> > Hi!
-> >>> We recently confirmed this commit does cause a flood of I/O errors on
-> >>> the root filesystem in our testing, leaving the machine unusable until
-> >>> reboot.
-> >>>
-> >>> Given that, we'd appreciate the community helping to decide soon
-> >>> whether the revert is warranted.
-> >>
-> >> Are you 100% sure that is caused by the patch you want to revert?
-> >> Because the patch looked ok to me when I reviewed. We need to have
-> >> more context and info around the issue which has been generated in
-> >> order to avoid any workaround for a system/kernel bug.
-> > 
-> > AFAIK the testing module grabs first device available on the system and
-> > uses it for testing. Which means that if you are unlucky it's your
-> > network card, or disk controller and you force reload it on a live
-> > system.
-> > 
-> > And honestly the PCI test should be either rewritten and cleaned up to
-> > do something more sensible or just removed. As it is it's too fragile.
-> > 
-> 
-> Thank you for your feedback. It is very helpful to us.
-> 
-> -- 
-> Best Regards,
-> Yi
-> 
+> Add TST_OOM_PROTECTION to activate/deactivate OOM protection in shell
+> tests. When enabled, the shell harness shields itself from the OOM
+> killer and runs the test in a child process, so it survives memory
+> pressure and can still report results (e.g. during memcg stress tests).
 
-Are you going to work on a new patch? what we do with this one?
+C API just enables OOM protection unconditionally. Why we allow to disable it?
+Also, I would not allow to disable it until any test actually needs that.
 
-Regards,
---
-Andrea Cervesato
-SUSE QE Automation Engineer Linux
-andrea.cervesato@suse.com
+> Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+> ---
+> Under Li's idea, implement a OOM protection mechanism for the shell
+Li would deserve his credit via Suggested-by: :). And it's not only for the
+credit itself, but (maybe more important) when there is something later on
+others know whom to ask for the details.
+
+> tests so we can avoid OOM for memcg stress tests.
+Ah, it's for memcg stress tests. Maybe people in the future appreciate to know
+this, IMHO it should be part of the commit message.
+
+> ---
+> Changes in v3:
+> - simplify oom code
+> - enable OOM protection by default
+> - Link to v2: https://lore.kernel.org/20260730-shell_oom_protection-v2-0-be1de2baa83d@suse.com
+
+> Changes in v2:
+> - update shell OOM protection functional test
+> - Link to v1: https://lore.kernel.org/20260713-shell_oom_protection-v1-0-b732e8647894@suse.com
+> ---
+>  doc/developers/writing_tests.rst             |  3 +++
+>  lib/newlib_tests/runtest.sh                  |  1 +
+>  lib/newlib_tests/shell/tst_oom_protection.sh | 31 ++++++++++++++++++++++++
+>  testcases/lib/tst_test.sh                    | 35 +++++++++++++++++++++++++++-
+>  4 files changed, 69 insertions(+), 1 deletion(-)
+
+> diff --git a/doc/developers/writing_tests.rst b/doc/developers/writing_tests.rst
+> index 4db57898fcf08b83e68be996f666e91c418838fc..2d5bc294083fa2b89212714f0a6c5e5c3f22777a 100644
+> --- a/doc/developers/writing_tests.rst
+> +++ b/doc/developers/writing_tests.rst
+> @@ -549,6 +549,9 @@ LTP C And Shell Test API Comparison
+>      * - not applicable
+>        - TST_FS_TYPE
+
+> +    * - not applicable
+> +      - TST_OOM_PROTECTION
+If we really want to keep the variable, I'd for C part instead of "not
+applicable" wrote:
+_equivalent of OOM protection enabled in C API (tst_enable_oom_protection())_
+
+And, more important, if we add new variable to tst_test.sh, IMHO it should be
+documented in the only docs we have for it: doc/old/Shell-Test-API.asciidoc.
+
+> diff --git a/lib/newlib_tests/runtest.sh b/lib/newlib_tests/runtest.sh
+> index 71808ef8b8d5545f52d6014bc070145f952915e9..7e2d0a2ac329fc1d825c2fe0b6f7c09d4f2b0064 100755
+> --- a/lib/newlib_tests/runtest.sh
+> +++ b/lib/newlib_tests/runtest.sh
+> @@ -44,6 +44,7 @@ shell/tst_check_driver.sh
+>  shell/tst_check_kconfig0[1-5].sh
+>  shell/tst_mount_device.sh
+>  shell/tst_mount_device_tmpfs.sh
+> +shell/tst_oom_protection.sh
++1
+
+>  shell/tst_skip_filesystems.sh
+>  shell/net/*.sh}"
+
+> diff --git a/lib/newlib_tests/shell/tst_oom_protection.sh b/lib/newlib_tests/shell/tst_oom_protection.sh
+> new file mode 100755
+> index 0000000000000000000000000000000000000000..22993511c64845712e4fa9fc942e9869121d7e0b
+> --- /dev/null
+> +++ b/lib/newlib_tests/shell/tst_oom_protection.sh
+> @@ -0,0 +1,31 @@
+> +#!/bin/sh
+> +# SPDX-License-Identifier: GPL-2.0-or-later
+> +# Copyright (c) 2026 Linux Test Project
+> +
+> +TST_TESTFUNC=do_test
+> +
+> +read_oom_score_adj() {
+> +	cat "/proc/$1/oom_score_adj" 2>/dev/null
+Why this masking stderr? It should be always OK to read.
+
+> +}
+> +
+> +do_test() {
+> +	local harness_score child_score
+> +
+> +	harness_score=$(read_oom_score_adj "$$")
+> +
+> +	if [ "$harness_score" = -1000 ]; then
+> +		tst_res TPASS "shell harness is protected from OOM by default"
+> +
+> +		child_score=$(tst_oom_unprotect read_oom_score_adj self)
+> +		if [ "$child_score" = 0 ]; then
+> +			tst_res TPASS "unprotected child process has oom_score_adj reset to 0"
+> +		else
+> +			tst_res TFAIL "unprotected child process oom_score_adj is $child_score, expected 0"
+> +		fi
+> +	else
+> +		tst_res TCONF "shell harness OOM protection unavailable"
+> +	fi
+> +}
+> +
+> +. tst_test.sh
+> +tst_run
+> diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
+> index b3e7e29bbf7b52de4cb65665751005cb4df156a8..70fa19e4dadfdceb92821a02fbce7cf6686d9c4e 100644
+> --- a/testcases/lib/tst_test.sh
+> +++ b/testcases/lib/tst_test.sh
+> @@ -15,6 +15,7 @@ export TST_CONF=0
+>  export TST_COUNT=1
+>  export TST_ITERATIONS=1
+>  export TST_TMPDIR_RHOST=0
+> +export TST_OOM_PROTECTION="${TST_OOM_PROTECTION:-1}"
+>  export TST_LIB_LOADED=1
+
+>  # see testcases/lib/tst_runas.c
+> @@ -28,6 +29,34 @@ export TST_USR_GID="${LTP_USR_GID:-65534}"
+>  trap "tst_brk TBROK 'test interrupted'" INT
+>  trap "unset _tst_setup_timer_pid; tst_brk TBROK 'test terminated'" TERM
+
+> +_tst_set_oom_score_adj()
+> +{
+> +	local value="$1"
+> +	local path="/proc/self/oom_score_adj"
+> +
+> +	[ -e "$path" ] || return 0
+If you don't reuse the return value you can use just "return"
+
+Also, C API in set_oom_score_adj() warns:
+tst_res(TINFO, "oom_score_adj does not exist, skipping the adjustment");
+
+> +
+> +	echo "$value" > "$path" 2>/dev/null || return 0
+
+Do we want to hide "permission denied"? C API in set_oom_score_adj() uses
+capability. If you want to really match the behavior with C API, you could
+create C binary helper testcases/lib/tst_*.c which would just call
+set_oom_score_adj(). But I'd be pragmatic, if the tests which needs it have
+TST_NEEDS_ROOT=1 (and memcg_lib.sh sets it), you might just write shell code
+which will behave similar like C code (except using capability, of course).
+
+I would not hide "permission denied". At least similarly match C API in
+set_oom_score_adj():
+
+if ! echo "$value" > "$path"; then
+	tst_res TWARN "Can't adjust score"
+fi
+
+I.e. no masking stderr), return is not used. And even if you want to use
+function return value, $? will be taken from echo, e.g.:
+
+$ echo foo > /asdf; echo $?
+bash: /asdf: Permission denied
+1
+
+> +}
+> +
+> +_tst_enable_oom_protection()
+> +{
+> +	_tst_set_oom_score_adj -1000
+> +}
+> +
+> +_tst_disable_oom_protection()
+> +{
+> +	_tst_set_oom_score_adj 0
+> +}
+> +
+> +tst_oom_unprotect()
+> +{
+> +	_tst_disable_oom_protection
+> +	if [ $# -gt 0 ]; then
+> +		"$@"
+Because there is only single use of tst_oom_unprotect(), I would call
+"read_oom_score_adj self" here. More readable, more secure ("$@" is kind of
+eval).
+
+Kind regards,
+Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
