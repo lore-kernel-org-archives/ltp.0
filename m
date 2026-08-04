@@ -4,90 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 06B83C55822
-	for <ltp@archiver.kernel.org>; Tue,  4 Aug 2026 14:06:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 12363C55184
+	for <ltp@archiver.kernel.org>; Tue,  4 Aug 2026 15:25:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1785852384; h=message-id :
- to : in-reply-to : date : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : cc : mime-version : content-type :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1785857115; h=date :
+ in-reply-to : mime-version : references : message-id : to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-type :
  content-transfer-encoding : sender : from;
- bh=gSK/KF9DHmLcJ3O3ilN4XEdqgzdTqDcyG4Z0PvO3hlE=;
- b=e48yEVpf/cUSwoob2v4gDogJIDtqYzGf/ZpZuQC2ZRdFySI+2k+yPENltGCyWP8R2F4wx
- QcJQOmGAaOj8zmDjmRmLSG9WvDwspkQRvP9jN4OjjTFPXEhz8p48dS6Lt1dvNjBcmsWfBko
- y46Wtm8Y4cWALfHGJHRBeYSBEGVtcjY=
+ bh=WPhx8c3+LX7jRVboF5bj5Rpv4xnLQD+xtygUaaIunNM=;
+ b=bU0fXuQfs8skWKK1jS6Irpw7DLJbiH1nKxcxjmRD1UNd9x7vxY4u8wiInKEMK6U+dqqQJ
+ Duq4NLVIw2S1VYauJ3my2SpXcavJkwq4psD1pURIKuOj0bRrmAVKjNdY3aa+lr0rWsbhqDu
+ lzu3paYvJE/zw8TYjH4FCyLhh75Qfss=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 676493E7185
-	for <ltp@archiver.kernel.org>; Tue,  4 Aug 2026 16:06:24 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 519563E90C6
+	for <ltp@archiver.kernel.org>; Tue,  4 Aug 2026 17:25:15 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 4C6BF3E1A7E
- for <ltp@lists.linux.it>; Tue,  4 Aug 2026 16:06:05 +0200 (CEST)
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com
- [IPv6:2a00:1450:4864:20::335])
+ by picard.linux.it (Postfix) with ESMTPS id 4F5CD3E7169
+ for <ltp@lists.linux.it>; Tue,  4 Aug 2026 17:24:55 +0200 (CEST)
+Received: from mail-pj1-x1047.google.com (mail-pj1-x1047.google.com
+ [IPv6:2607:f8b0:4864:20::1047])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 8C53D6008EF
- for <ltp@lists.linux.it>; Tue,  4 Aug 2026 16:06:04 +0200 (CEST)
-Received: by mail-wm1-x335.google.com with SMTP id
- 5b1f17b1804b1-4921eed3fa2so19715765e9.0
- for <ltp@lists.linux.it>; Tue, 04 Aug 2026 07:06:04 -0700 (PDT)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id B2C4B200906
+ for <ltp@lists.linux.it>; Tue,  4 Aug 2026 17:24:54 +0200 (CEST)
+Received: by mail-pj1-x1047.google.com with SMTP id
+ 98e67ed59e1d1-38fcaa5f82cso3171908a91.3
+ for <ltp@lists.linux.it>; Tue, 04 Aug 2026 08:24:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1785852364; x=1786457164; darn=lists.linux.it;
- h=date:content-transfer-encoding:content-type:subject:in-reply-to:cc
- :to:from:message-id:from:to:cc:subject:date:message-id:reply-to
- :content-type; bh=F/5FW+28bQ9pfwYVUbVH92LjZAvj+E3CmMoQiSqFXjY=;
- b=Lek563GIhKW7hjlUpKypFEUFILBg22mmvkkNwBBAAeDs8EC/TrgI6IbFp8A3KMge5n
- vD+L4r89JDKN8bMsVJ4X812a4sEhf87BcTPWEaG53QcwC8t0/HTizlQmYCp2jE0Je7B0
- KgkqmGltQy+n+6zCRyqdwaZzyZNUt0XItyPnhlFifyRxH8UQQIqfCNj5XPwgqZrbkJZ4
- TRy2lg1O4GcyYJQytPa6e/79Kd9A4hPiK8BmtgBZDWIQiA1xav7zx5E/So8UkJpUqQb2
- vmTDyJy5c+QT2pAGuxYrCFhp2a9CMOnzPIodTf7YNS6R+ic9OwKLtb1BcS0BlCluLkgq
- X4sw==
+ d=google.com; s=20251104; t=1785857093; x=1786461893; darn=lists.linux.it;
+ h=content-type:cc:to:from:subject:message-id:references:mime-version
+ :in-reply-to:date:from:to:cc:subject:date:message-id:reply-to
+ :content-type; bh=d4lT6m3tQ3SUahwLeIlEnhgAiemgbv2dDScSisdU5XU=;
+ b=OJnkiMmlTYniVVAqLITA21fC8eG6X36/+ZpKFlkVPdbviGADBmiUzvsfHpjy40fNtr
+ 2aYFC+Te8Zm/hkpW3qwE4UJzS4k3A7J13MQdSHj54H4O+lFgJn5BGXzwhqmm4tpPTA+I
+ UkxVQ0e9+Sq9nmQAUwg5AwKQY5xMhAu03t/qUuz+SRCthqERvQk6qKXK2pUhoS9y9JyX
+ H5fzJI4s+Z+lCi66iIfpHMiMd+/qjg1SzD0eXHj1NYQ5sDOXx5gJPaCBYnjptn6Oe3oK
+ zhCSorLYPQQbGBwpSJrZjPrLmSgKq94yVvTOe5rl5MSOSxG51xcmBhlDztkvzNUdj/WX
+ GTNw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1785852364; x=1786457164;
- h=date:content-transfer-encoding:content-type:subject:in-reply-to:cc
- :to:from:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject
- :date:message-id:reply-to:content-type;
- bh=F/5FW+28bQ9pfwYVUbVH92LjZAvj+E3CmMoQiSqFXjY=;
- b=NvndRNcndzttMm02MZS2mT8lXocxr8r5uwL+e1PpWYFbROuW+xOgViGjlBOsnwvB+b
- N3ScS1mEedcSW1pwkejIh4zWxeiJSrNk6D9XGWZZXK6bE9bsq/I8RhsKi/YdIi/oMnRk
- DuI0yQ0I7AVGvAqMzX8zHDXo8JEkM8G3g+Z45T1hIQKlMrUYxu9ueN4sEfWjUm0d/hQr
- aMQh0BQKlSNarVXUP04YQmXhNAfa38pu/Z1jSOC66ddUR9sUrQF6IDkivktPUQ0MI9u4
- TX/meH1KUxhqmKyh11NbQNXFheAOIa1j8fefPdTHNgHG68f0O35pNIRY8LAd7lpOnwpg
- m1kg==
-X-Gm-Message-State: AOJu0YxPR0RpTydYMruzjOAx07PHXmfg66Cc70tEmGPqxyUDtSlC/FRu
- ag6PoRe2+bT3r9ILmWnu/XantTSBiuWO6untM3N38ev+fqHKpyWobUYLxZCwXhJZPvTtfLmxYMX
- Uli8qxwU=
-X-Gm-Gg: AR+sD11KrIofU9bJ15NEEi/jrF9GD5bTXN3cgL96HJjkbDgTKvLhvTJDGTNuQxbWhng
- lvJmglIGMU/o/L3W2oaIHI85zKQrZexoXJ6iQumRmN+NI/8YVFBlSQYSL6Ts0EkbcqiUBMP8SJa
- Z421nl8jzxdKbhC79A0LLd3hjxuzlD/NXoO6DtnMxfDoE8DGkubhPPlzRu60wZ1axP4x0RUeppP
- AtWT0lZNYN0CXR9LUvn5er/fS/DtUS0A9oSccXoKgXEgisx8iUvVqyQnX/XmJAKkms/4Doyyi14
- xoINA+Mv8BZDC8PZGf+A/Zl8FlnOMR6UEOszyQhI13WglF8W6O+pcHs28qLMzfn6/zxF3WFY5D2
- E9msT53dEH3Im0/sT4+jD/1ZQWVlSqE62G1NJYhPHCztqGb3SMheuJzHXT1kEM6pHOBDqvbvxFa
- 3eCf9U2e4MiABHjvxdJkXuT4ph2NY3MaJ9czDrEgci/2GFysEjo+7VFS5VTUdqNerYQLHLC+NxJ
- DeapnwtTkgTpkDHGz02cARdcym/UVezWl//E7TC/LgweBCD1o16rBDjt51HBKDz1gwmvADMFVIQ
- Md1eTFL67odT+/5cMDpGVS7X89bI782I14mwJQ==
-X-Received: by 2002:a05:600c:e48a:b0:493:c634:952 with SMTP id
- 5b1f17b1804b1-4980c66d76emr254114805e9.7.1785852363879; 
- Tue, 04 Aug 2026 07:06:03 -0700 (PDT)
-Received: from p200300ef2f11090032755c67e6ad8da4.dip0.t-ipconnect.de
- (p200300ef2f11090014709bbbefdc2d5d.dip0.t-ipconnect.de.
- [2003:ef:2f11:900:1470:9bbb:efdc:2d5d])
- by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-4994a0f7bf4sm90328655e9.11.2026.08.04.07.06.03
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 04 Aug 2026 07:06:03 -0700 (PDT)
-Message-ID: <6a71f1cb.87c5160c.6fd18.8323@mx.google.com>
-To: "Petr Vorel" <pvorel@suse.cz>
-In-Reply-To: <20260317225124.GA371512@pevik>
-Date: Tue, 04 Aug 2026 14:06:02 +0000
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+ d=1e100.net; s=20251104; t=1785857093; x=1786461893;
+ h=content-type:cc:to:from:subject:message-id:references:mime-version
+ :in-reply-to:date:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to:content-type;
+ bh=d4lT6m3tQ3SUahwLeIlEnhgAiemgbv2dDScSisdU5XU=;
+ b=Au1YW2ZvtfIvRC0NnUd++N0WTTadnZ9aOEHQ158Gy+JLhDQx761xmyg7SoGEnkmtEw
+ ryAYEEZpgRMYGNzGdOa9/FmMjrkwXlNg9g1dfrLFRzxJCEM2kgaLX0JYinowYAa6RZZE
+ RKxrTFsM4rvBHtofU4XDB3cSbMHoisrZVTPItFhYX69XZmpwDeciIVlEPFJWCUUPC8+J
+ bZ1Y5DqFXHVOWAF7kj9N4XqgZb8SoTrzkb5FBJhkcoHbRuhKg7Im2CUHKzPn2RAZBjsG
+ Ld8NnRz65da9uVE0UK+malGqtVJGVHqj0CAM1WJIm3fY5D4Ry4VrrNk9abTvIvqKSRai
+ PFWQ==
+X-Gm-Message-State: AOJu0YwGy/mDmMm3ANdPyEcaT0mz4xMMUXlGRbfz+HPP9SWKyZ5YcJo3
+ AtS2P0utX9o8tyiJSrYetMbAF0Mnrf/u45ZzC4M67u/e2FA+UX7R/OwaXmHW2LdhZJ+wt916cfZ
+ 0KwrnK+Ax2fGEsm0+4RXgd7T5RveyPSNllUVjwIuXQ2c4FkKbQi2yxQeR9qC3tt47M94Xvq+m4N
+ XumceyDfOaiSYeOhKPC5z6A9ctJg==
+X-Received: from pjbmp4.prod.google.com ([2002:a17:90b:1904:b0:384:f6e1:ff81])
+ (user=wakel job=prod-delivery.src-stubby-dispatcher) by
+ 2002:a17:90b:2ccf:b0:38f:57f0:1f4b
+ with SMTP id 98e67ed59e1d1-38fbc576496mr11890231a91.35.1785857092561; Tue, 04
+ Aug 2026 08:24:52 -0700 (PDT)
+Date: Tue,  4 Aug 2026 15:24:50 +0000
+In-Reply-To: <anFjaQ--3q38-psW@linux.dev>
+Mime-Version: 1.0
+References: <anFjaQ--3q38-psW@linux.dev>
+X-Mailer: git-send-email 2.55.0.571.g244d577d93-goog
+Message-ID: <20260804152450.921218-1-wakel@google.com>
+To: ltp@lists.linux.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] tst_kconfig: Don't consider
- CONFIG_FAULT_INJECTION slow
+Subject: [LTP] [PATCH v3] lib: Use backoff polling to wait for loop device
+ nodes
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -99,30 +89,83 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Cc: ltp@lists.linux.it
-MIME-Version: 1.0
+From: Wake Liu via ltp <ltp@lists.linux.it>
+Reply-To: Wake Liu <wakel@google.com>
+Cc: wakel@google.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Petr,
+On systems where loop device node creation is asynchronous (such as Android
+containers or systems with slow udev startup), calling stat() or open()
+immediately after LOOP_CTL_GET_FREE can transiently fail because the
+device file (e.g. /dev/loopX) has not been fully populated in time.
 
-sorry for the delay.
+Introduce an exponential-backoff retry loop in both
+tst_find_free_loopdev() and tst_attach_device() (starting at 1ms delay,
+doubling each try, capped at 100ms) to wait for the device node to be
+successfully populated.
 
-> 
-> Do you mean to look if /sys/kernel/debug/fail*/verbose exist and contain 2?
-> 
-> https://origin.kernel.org/doc/html/latest/fault-injection/fault-injection.html#configure-fault-injection-capabilities-behavior
+This improves the robustness of loop device allocations on asynchronous
+virtualized environments while minimizing unnecessary delays on responsive
+systems.
 
-Yes, that was my idea
+Link: https://lore.kernel.org/ltp/20260803152754.3991113-1-wakel@google.com/
+Signed-off-by: Wake Liu <wakel@google.com>
+---
+v2 -> v3:
+ - Reuse LTP native TST_RETRY_FN_EXP_BACKOFF() macro in tst_common.h to simplify code.
 
---
-Andrea Cervesato
-SUSE QE Automation Engineer Linux
-andrea.cervesato@suse.com
+v1 -> v2:
+ - Strictly clamp backoff delay to 100ms (prevent overflow exceeding cap).
+ - Skip usleep on final loop iteration to avoid unnecessary idle delay.
+ - Reduce max attempts to 30 (stat) and 15 (open) to bound worst-case timeout.
+
+ lib/tst_device.c | 13 +++++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
+
+diff --git a/lib/tst_device.c b/lib/tst_device.c
+index d3c53a1a1..a3c0992e0 100644
+--- a/lib/tst_device.c
++++ b/lib/tst_device.c
+@@ -82,7 +82,7 @@ static int set_dev_path(char *dev, char *path, size_t path_len)
+ 
+ int tst_find_free_loopdev(char *path, size_t path_len)
+ {
+-	int ctl_fd, dev_fd, rc, i;
++	int ctl_fd, dev_fd, rc, i, path_set;
+ 	struct loop_info loopinfo;
+ 	char buf[PATH_MAX];
+ 
+@@ -93,8 +93,13 @@ int tst_find_free_loopdev(char *path, size_t path_len)
+ 		rc = ioctl(ctl_fd, LOOP_CTL_GET_FREE);
+ 		close(ctl_fd);
+ 		if (rc >= 0) {
+-			if (path && set_dev_loop_path(rc, path, path_len))
+-				tst_brkm(TBROK, NULL, "Could not stat loop device %i", rc);
++			if (path) {
++				path_set = TST_RETRY_FN_EXP_BACKOFF(
++					set_dev_loop_path(rc, path, path_len),
++					TST_RETVAL_EQ0, 1);
++				if (path_set)
++					tst_brkm(TBROK, NULL, "Could not stat loop device %i", rc);
++			}
+ 			tst_resm(TINFO, "Found free device %d '%s'",
+ 				rc, path ?: "");
+ 			return rc;
+@@ -156,7 +161,7 @@ int tst_attach_device(const char *dev, const char *file)
+ 	int dev_fd, file_fd;
+ 	struct loop_info loopinfo;
+ 
+-	dev_fd = open(dev, O_RDWR);
++	dev_fd = TST_RETRY_FN_EXP_BACKOFF(open(dev, O_RDWR), TST_RETVAL_GE0, 1);
+ 	if (dev_fd < 0) {
+ 		tst_resm(TWARN | TERRNO, "open('%s', O_RDWR) failed", dev);
+ 		return 1;
+-- 
+2.55.0.571.g244d577d93-goog
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
