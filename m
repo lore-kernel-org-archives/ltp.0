@@ -4,100 +4,109 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E9864C5518F
-	for <ltp@archiver.kernel.org>; Tue,  4 Aug 2026 09:59:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A76C2C55172
+	for <ltp@archiver.kernel.org>; Tue,  4 Aug 2026 10:04:58 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 24A9E3E716C
-	for <ltp@archiver.kernel.org>; Tue,  4 Aug 2026 11:59:55 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id D55E83D00A7
+	for <ltp@archiver.kernel.org>; Tue,  4 Aug 2026 12:04:56 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 36ABC3E01E7
- for <ltp@lists.linux.it>; Tue,  4 Aug 2026 11:59:39 +0200 (CEST)
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
- [148.163.158.5])
+ by picard.linux.it (Postfix) with ESMTPS id 90FD73C332C
+ for <ltp@lists.linux.it>; Tue,  4 Aug 2026 12:04:40 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 05CEE6007BB
- for <ltp@lists.linux.it>; Tue,  4 Aug 2026 11:59:38 +0200 (CEST)
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id
- 6748J0eJ236789 for <ltp@lists.linux.it>; Tue, 4 Aug 2026 09:59:37 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
- :content-transfer-encoding:date:from:message-id:mime-version
- :subject:to; s=pp1; bh=+wpq2NKu6NTeO2VprKfzmltZ1eRG+0vwuTwIJgdDp
- 9g=; b=IuFYxOB38cJ8UBJ6H5MitZDauy/cD4621kbYnfg0uu/PPWkRnw3EMsR3A
- k1fAZsUNaNPJlG1yqrw5IXTm3uyRkSr19HuY8f/sxXUrRjRtmyWJwn2KTnoAQXH7
- akxqRy92E49htrT8GmPZxo/XbUQXBV1+6egFJaSujL03Yh+32UHremurYOqGiefy
- aVtgUjlIjFi4YzUsAnIFq+CAsq8kJomZH31DEzTS4w9Ojf8i6Km9QkGRUj5zmAyc
- OSMN6ZjSNNXeiCwNL+Mg+LCQhxKPRL9hAvVIsV+AaQo5edi/RsO8sx+TLN8/aYUn
- +tkawbE/779x/e28am8XeQquj9JVw==
-Received: from ppma13.dal12v.mail.ibm.com
- (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4fs67hn4ru-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
- for <ltp@lists.linux.it>; Tue, 04 Aug 2026 09:59:37 +0000 (GMT)
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
- by ppma13.dal12v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 6749uHHo010080
- for <ltp@lists.linux.it>; Tue, 4 Aug 2026 09:59:36 GMT
-Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
- by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 4fswbg96ys-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
- for <ltp@lists.linux.it>; Tue, 04 Aug 2026 09:59:36 +0000 (GMT)
-Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com
- [10.20.54.104])
- by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 6749xUIX19595984
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Tue, 4 Aug 2026 09:59:30 GMT
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 4E87D2004D;
- Tue,  4 Aug 2026 09:59:30 +0000 (GMT)
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 2EE1E20043;
- Tue,  4 Aug 2026 09:59:29 +0000 (GMT)
-Received: from li-49acbccc-2994-11b2-a85c-d51b89e344f1.ibm.com.com (unknown
- [9.39.27.45]) by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTP;
- Tue,  4 Aug 2026 09:59:28 +0000 (GMT)
-From: Pavithra <pavrampu@linux.ibm.com>
-To: ltp@lists.linux.it
-Date: Tue,  4 Aug 2026 15:29:25 +0530
-Message-ID: <20260804095925.495813-1-pavrampu@linux.ibm.com>
-X-Mailer: git-send-email 2.55.0
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 8FA271A0069F
+ for <ltp@lists.linux.it>; Tue,  4 Aug 2026 12:04:39 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id F108D3E0A;
+ Tue,  4 Aug 2026 10:04:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1785837874; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=bgUbQGJriqsK5pqRgJXiiEyltEhTfeF2QqEIktifQ/w=;
+ b=zRyO6Q7/oA4jd46HSg4AAv2BIfOxKAbi9q9zrr7brqFxpUr9ImX+NBjevNadL137HuUUWP
+ lRyHknPx6Nl2nKn4sUc5cEARNaQJwJ4R5YxLGAjSuZkg44OLMEVs2/sScn0vPjoqiLLKGk
+ uvTqsRVvrcd7981BYyhwn1ZTNXBdou8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1785837874;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=bgUbQGJriqsK5pqRgJXiiEyltEhTfeF2QqEIktifQ/w=;
+ b=9t/IMip9ijjRF988CtN5K6nIfPGQXl9IYhIZe6dlbH7N5crtCv/9cUC4VndC5ek1lnFvyD
+ oBU3epf2XVN/QNBA==
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="uO91b/4N";
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=6NuLOpX1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1785837869; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=bgUbQGJriqsK5pqRgJXiiEyltEhTfeF2QqEIktifQ/w=;
+ b=uO91b/4NxJszh0r5srfCu9KaXKPqAkN4ASyYDVzbGmAqSScahiZuhYdvmplFm3jB8ucdb8
+ C8TcfO85kZeGqwc8kcULfvVDF1nilzArDhD9hyY+kW68NxRD59hFBpkXUm/+Bf3aArekmt
+ Kd3YBLH6BXXhth4glDpmYh7YVx7xxXo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1785837869;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=bgUbQGJriqsK5pqRgJXiiEyltEhTfeF2QqEIktifQ/w=;
+ b=6NuLOpX1yYvEClDeQLx04Mq7Zwd/qSO9Vcw8gQ8q6b9pciFMWOXRjcHRhcTmBgFysQhXU3
+ NOShwHIwJtqVzECQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id DCC6A779BE;
+ Tue,  4 Aug 2026 10:04:29 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 6qLlNS25cWokOgAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Tue, 04 Aug 2026 10:04:29 +0000
+Date: Tue, 4 Aug 2026 12:04:30 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Pavithra <pavrampu@linux.ibm.com>
+Message-ID: <anG5Luzze1ffLUKi@yuki.lan>
+References: <20260717160234.1163566-1-pavrampu@linux.ibm.com>
 MIME-Version: 1.0
-X-TM-AS-GCONF: 00
-X-Proofpoint-Spam-Info: AW1haW4tMjYwODA0MDA3NyBTYWx0ZWRfX24JTfIlMVJNf
- ObvOI8i0VkNEpJZOLGpYdjZfNzVTCBivUBufNtVNYFsgypNlFG2j7NYOtzKG0p/6pFnEodE+UQO
- qlxu7VRpC/3CbmwEiRa1Ds/visRoTh8=
-X-Authority-Analysis: v=2.4 cv=I7VVgtgg c=1 sm=1 tr=0 ts=6a71b809 cx=c_pps
- a=AfN7/Ok6k8XGzOShvHwTGQ==:117 a=AfN7/Ok6k8XGzOShvHwTGQ==:17
- a=Sv0fKeRqtYgA:10 a=VkNPw1HP01LnGYTKEx00:22 a=RnoormkPH1_aCDwRdu11:22
- a=Y2IxJ9c9Rs8Kov3niI8_:22 a=VnNF1IyMAAAA:8 a=0YfwdPmnKRl0EDIO7f8A:9
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwODA0MDA3NyBTYWx0ZWRfX24OMRLKROV57
- zrBUNMQL4nzabf6v18ZxlqR66VNfvHjiSUxYIfC685X/kfCIZyFfQcZJt1ou+IPjttPMytt/4ti
- evt+w1P/PNebb7FsIxSMKGWcnK0Z1wb4d7peIOGUClamIR0Orx+s4IXXxLRTv5EUM+MoW8slf0P
- YJZfJuZEFcZN9JT7B1WB8Ha5Ec1cExmLIQmGhM0qAi6cBu83//ogigAwAOtYCWHeICQ1uzN5nVj
- uoleJLPiBus/sKUdch8/XU3IApiljFWYjK3yhJKEqExnepTb/Fu0mVTN/gxTq6rnWbxKqXxlYq3
- 4zpHv8Bj7SiGI/+gl2UkAi1wFo12HcAS1jRqo91Y9Eo7ktSqEs3OcOaArmuNC8MqDRZLyjeK6UL
- K+52R0yqjn7O0IxBJ5w1gcF9O7lEYKz/oAt14bs/nfzWzrv2/UjMpcmhSSAX5xwlgnyh9cSPCLq
- Or40MUwPj1X3K6jaMJg==
-X-Proofpoint-ORIG-GUID: NoEVKxPdd248voYa3Ks60R8xXi5LkGIy
-X-Proofpoint-GUID: NoEVKxPdd248voYa3Ks60R8xXi5LkGIy
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1176,Hydra:6.1.134,FMLib:17.12.100.49
- definitions=2026-08-04_02,2026-08-03_02,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- bulkscore=0 impostorscore=0 clxscore=1015 priorityscore=1501 suspectscore=0
- malwarescore=0 adultscore=0 lowpriorityscore=0 phishscore=0 spamscore=0
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.22.0-2606150000 definitions=main-2608040077
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20260717160234.1163566-1-pavrampu@linux.ibm.com>
+X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
+ MISSING_XM_UA(0.00)[];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ TO_DN_SOME(0.00)[]; MIME_TRACE(0.00)[0:+];
+ RCVD_TLS_ALL(0.00)[]; RCPT_COUNT_TWO(0.00)[2];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ RCVD_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
+ FROM_HAS_DN(0.00)[];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.cz:email,suse.cz:dkim];
+ DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ TO_MATCH_ENVRCPT_ALL(0.00)[];
+ URIBL_BLOCKED(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,linux.it:url,suse.cz:email,suse.cz:dkim];
+ DKIM_TRACE(0.00)[suse.cz:+]
+X-Rspamd-Queue-Id: F108D3E0A
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] memcg/memcontrol05: add cgroup v2 task migration
- charge accounting test
+Subject: Re: [LTP] [PATCH] hugetlb/hugemmap: add hugemmap33 to test
+ hugetlbfs quota accounting
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -109,214 +118,345 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: pavrampu@linux.ibm.com
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Verify that in cgroup v2, memory charges remain pinned to the cgroup
-that allocated them when a task migrates, and that new allocations after
-migration are charged to the destination cgroup.
+Hi!
+> diff --git a/runtest/hugetlb b/runtest/hugetlb
+> index 8ee0e6f82..dbb05a9bc 100644
+> --- a/runtest/hugetlb
+> +++ b/runtest/hugetlb
+> @@ -35,6 +35,7 @@ hugemmap29 hugemmap29
+>  hugemmap30 hugemmap30
+>  hugemmap31 hugemmap31
+>  hugemmap32 hugemmap32
+> +hugemmap33 hugemmap33
+>  hugemmap34 hugemmap34
+>  hugemmap35 hugemmap35
+>  hugemmap05_1 hugemmap05 -m
+> diff --git a/testcases/kernel/mem/.gitignore b/testcases/kernel/mem/.gitignore
+> index 0e59035df..0dd0345c8 100644
+> --- a/testcases/kernel/mem/.gitignore
+> +++ b/testcases/kernel/mem/.gitignore
+> @@ -35,6 +35,7 @@
+>  /hugetlb/hugemmap/hugemmap30
+>  /hugetlb/hugemmap/hugemmap31
+>  /hugetlb/hugemmap/hugemmap32
+> +/hugetlb/hugemmap/hugemmap33
+>  /hugetlb/hugemmap/hugemmap34
+>  /hugetlb/hugemmap/hugemmap35
+>  /hugetlb/hugeshmat/hugeshmat01
+> diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap33.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap33.c
+> new file mode 100644
+> index 000000000..f5b2a6335
+> --- /dev/null
+> +++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap33.c
+> @@ -0,0 +1,275 @@
+> +// SPDX-License-Identifier: LGPL-2.1-or-later
+> +/*
+> + * Copyright (C) 2005-2007 David Gibson & Adam Litke, IBM Corporation.
+> + * Copyright (c) Linux Test Project, 2024
+> + * Copyright (C) 2025-2026 Naveed & Pavithra, IBM Corporation.
+> + * Assisted with AI tools
+> + */
+> +
+> +/*\
+> + * Test hugetlbfs quota accounting with filesystem size limits.
+> + *
+> + * The number of global huge pages available to a mounted hugetlbfs filesystem
+> + * can be limited using a quota mechanism by setting the size attribute at
+> + * mount time. Older kernels did not properly handle quota accounting in a
+> + * number of cases (e.g., for MAP_PRIVATE pages, and with MAP_SHARED reservation).
+> + *
+> + * This test replays some scenarios on a privately mounted filesystem with
+> + * quota to check for regressions in hugetlbfs quota accounting.
+> + *
+> + * Root is required to mount the quota-limited hugetlbfs instance.
+> + */
+> +
+> +#define _GNU_SOURCE
+> +#include <sys/types.h>
+> +#include <sys/wait.h>
+> +#include <sys/vfs.h>
+> +#include <sys/statfs.h>
+> +#include <sys/mount.h>
+> +
+> +#include "hugetlb.h"
+> +
+> +#define MNTPOINT "hugetlbfs/"
+> +
+> +static long hpage_size;
+> +static int private_resv;
+> +static char quota_mnt[PATH_MAX];
+> +static int quota_mounted;
+> +
+> +/* map action flags */
+> +#define ACTION_COW		0x0001
+> +#define ACTION_TOUCH		0x0002
+> +
+> +/* Test result expectations */
+> +#define EXPECT_SUCCESS	0
+> +#define EXPECT_SIGNAL	1
+> +#define EXPECT_FAILURE	2
+> +
+> +static void verify_quota_stat(long tot, long free, long avail)
+> +{
+> +	struct statfs s;
+> +
+> +	SAFE_STATFS(quota_mnt, &s);
+> +
+> +	if ((long)s.f_blocks != tot || (long)s.f_bfree != free || (long)s.f_bavail != avail) {
+> +		tst_res(TFAIL,
+> +			"Bad quota counters: total=%li (expected %li), "
+> +			"free=%li (expected %li), avail=%li (expected %li)",
+> +			(long)s.f_blocks, tot, (long)s.f_bfree, free,
+> +			(long)s.f_bavail, avail);
+> +	}
+> +}
+> +
+> +static void do_map(unsigned long size, int mmap_flags, int action_flags)
+> +{
+> +	int fd;
+> +	char *a = MAP_FAILED, *b, *c = MAP_FAILED;
+> +	char path[PATH_MAX + 32];
+> +
+> +	snprintf(path, sizeof(path), "%s/test_file_%d", quota_mnt, getpid());
+> +	fd = SAFE_OPEN(path, O_CREAT | O_RDWR, 0600);
+> +	SAFE_UNLINK(path);
+> +
+> +	a = mmap(NULL, size, PROT_READ | PROT_WRITE, mmap_flags, fd, 0);
+> +	if (a == MAP_FAILED) {
+> +		if (errno == ENOMEM || errno == ENOSPC) {
+> +			tst_res(TINFO | TERRNO, "mmap failed as expected due to quota");
+> +			goto cleanup_fd;
+> +		}
+> +		tst_brk(TBROK | TERRNO, "mmap failed unexpectedly");
+> +	}
+> +
+> +	if (action_flags & ACTION_TOUCH) {
+> +		for (b = a; b < a + size; b += hpage_size)
+> +			*b = 1;
+> +	}
+> +
+> +	if (action_flags & ACTION_COW) {
+> +		c = mmap(NULL, size, PROT_READ | PROT_WRITE, MAP_PRIVATE, fd, 0);
+> +		if (c == MAP_FAILED) {
+> +			if (errno == ENOMEM || errno == ENOSPC) {
+> +				tst_res(TINFO | TERRNO, "COW mapping failed as expected due to quota");
+> +				goto cleanup_a;
+> +			}
+> +			tst_brk(TBROK | TERRNO, "COW mapping failed unexpectedly");
+> +		}
+> +
+> +		if (*c != 1) {
+> +			tst_res(TINFO, "Data mismatch when setting up COW");
+> +			goto cleanup_c;
+> +		}
+> +		*c = 0;
+> +		SAFE_MUNMAP(c, size);
+> +	}
+> +
+> +	SAFE_MUNMAP(a, size);
+> +	SAFE_CLOSE(fd);
+> +	return;
+> +
+> +cleanup_c:
+> +	SAFE_MUNMAP(c, size);
+> +cleanup_a:
+> +	SAFE_MUNMAP(a, size);
+> +cleanup_fd:
+> +	SAFE_CLOSE(fd);
+> +	exit(1);
+> +}
+> +
+> +static void run_quota_test(int expected_result,
+> +			   unsigned long size, int mmap_flags,
+> +			   int action_flags)
+> +{
+> +	pid_t pid;
+> +	int status;
+> +	int actual_result;
+> +
+> +	pid = SAFE_FORK();
+> +	if (pid == 0) {
+> +		do_map(size, mmap_flags, action_flags);
+> +		exit(0);
+> +	}
+> +
+> +	SAFE_WAITPID(pid, &status, 0);
+> +
+> +	if (WIFEXITED(status)) {
+> +		if (WEXITSTATUS(status) == 0)
+> +			actual_result = EXPECT_SUCCESS;
+> +		else
+> +			actual_result = EXPECT_FAILURE;
 
-Signed-off-by: Pavithra <pavrampu@linux.ibm.com>
----
- runtest/controllers                           |   1 +
- testcases/kernel/controllers/memcg/.gitignore |   1 +
- .../kernel/controllers/memcg/memcontrol05.c   | 160 ++++++++++++++++++
- 3 files changed, 162 insertions(+)
- create mode 100644 testcases/kernel/controllers/memcg/memcontrol05.c
+Test results must not be propagated via exit values, PASS/FAIL must be
+reported exactly at the spot in the code where it happened.
 
-diff --git a/runtest/controllers b/runtest/controllers
-index 93c52c439..a9050ef0e 100644
---- a/runtest/controllers
-+++ b/runtest/controllers
-@@ -24,6 +24,7 @@ memcontrol01 memcontrol01
- memcontrol02 memcontrol02
- memcontrol03 memcontrol03
- memcontrol04 memcontrol04
-+memcontrol05 memcontrol05
- 
- cgroup_fj_function_debug cgroup_fj_function.sh debug
- cgroup_fj_function_cpuset cgroup_fj_function.sh cpuset
-diff --git a/testcases/kernel/controllers/memcg/.gitignore b/testcases/kernel/controllers/memcg/.gitignore
-index 3883cede6..8b9f6005c 100644
---- a/testcases/kernel/controllers/memcg/.gitignore
-+++ b/testcases/kernel/controllers/memcg/.gitignore
-@@ -9,3 +9,4 @@ memcontrol01
- memcontrol02
- memcontrol03
- memcontrol04
-+memcontrol05
-diff --git a/testcases/kernel/controllers/memcg/memcontrol05.c b/testcases/kernel/controllers/memcg/memcontrol05.c
-new file mode 100644
-index 000000000..96621c478
---- /dev/null
-+++ b/testcases/kernel/controllers/memcg/memcontrol05.c
-@@ -0,0 +1,160 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright (c) 2026 IBM
-+ * Author : Pavithra <pavrampu@linux.ibm.com>
-+ */
-+
-+/*\
-+ * Origin: testcases/kernel/controllers/memctl/memctl_testplan.txt
-+ * Verify memory controller charge accounting during task migration.
-+ *
-+ * Two child cgroups (group_a, group_b) are created under the test cgroup.
-+ * A worker process is placed in group_a and allocates a known amount of
-+ * anonymous memory, touching every page to ensure physical allocation.
-+ *
-+ * Test 1 - No charge transfer on migration:
-+ *   The worker is migrated to group_b by writing its PID to
-+ *   group_b/cgroup.procs. In cgroup v2 memory charges are never
-+ *   transferred on task migration; they remain pinned to the cgroup
-+ *   that allocated them. group_b/memory.current must not increase
-+ *   beyond its baseline after the migration.
-+ *
-+ * Test 2 - New allocations charged to destination cgroup:
-+ *   After migration the worker allocates an additional chunk of memory.
-+ *   This new allocation must be charged to group_b, so
-+ *   group_b/memory.current must increase from the post-migration
-+ *   baseline.
-+ */
-+
-+#define _GNU_SOURCE
-+
-+#include <stdbool.h>
-+#include <stdlib.h>
-+#include <sys/types.h>
-+#include <sys/wait.h>
-+#include "tst_test.h"
-+#include "memcontrol_common.h"
-+
-+#define ALLOC_SIZE	MB(60)
-+#define ALLOC_SIZE2	MB(20)
-+
-+enum checkpoints {
-+	WORKER_ALLOC_DONE,
-+	WORKER_RESUME,
-+	WORKER_ALLOC2_DONE,
-+	WORKER_EXIT,
-+};
-+
-+static struct tst_cg_group *group_a;
-+static struct tst_cg_group *group_b;
-+static bool worker_resumed;
-+
-+static void worker(void)
-+{
-+	char *buf1, *buf2;
-+
-+	SAFE_CG_PRINTF(group_a, "cgroup.procs", "%d", getpid());
-+
-+	buf1 = SAFE_MMAP(NULL, ALLOC_SIZE, PROT_READ | PROT_WRITE,
-+			 MAP_PRIVATE | MAP_ANONYMOUS | MAP_POPULATE, -1, 0);
-+
-+	TST_CHECKPOINT_WAKE(WORKER_ALLOC_DONE);
-+
-+	TST_CHECKPOINT_WAIT(WORKER_RESUME);
-+
-+	buf2 = SAFE_MMAP(NULL, ALLOC_SIZE2, PROT_READ | PROT_WRITE,
-+			 MAP_PRIVATE | MAP_ANONYMOUS | MAP_POPULATE, -1, 0);
-+
-+	TST_CHECKPOINT_WAKE(WORKER_ALLOC2_DONE);
-+
-+	TST_CHECKPOINT_WAIT(WORKER_EXIT);
-+
-+	SAFE_MUNMAP(buf1, ALLOC_SIZE);
-+	SAFE_MUNMAP(buf2, ALLOC_SIZE2);
-+}
-+
-+static void test_memcg_task_migration(void)
-+{
-+	pid_t pid;
-+	long baseline_b, after_migrate, after_alloc2, current_a;
-+	worker_resumed = false;
-+
-+	group_a = tst_cg_group_mk(tst_cg, "group_a");
-+	group_b = tst_cg_group_mk(tst_cg, "group_b");
-+
-+	SAFE_CG_SCANF(group_b, "memory.current", "%ld", &baseline_b);
-+	tst_res(TINFO, "group_b baseline memory.current=%ld", baseline_b);
-+
-+	pid = SAFE_FORK();
-+	if (!pid) {
-+		worker();
-+		exit(0);
-+	}
-+
-+	TST_CHECKPOINT_WAIT(WORKER_ALLOC_DONE);
-+
-+	SAFE_CG_SCANF(group_a, "memory.current", "%ld", &current_a);
-+	tst_res(TINFO, "group_a memory.current=%ld after alloc", current_a);
-+	if (current_a < (long)ALLOC_SIZE) {
-+		tst_res(TFAIL,
-+			"group_a memory.current (%ld) < ALLOC_SIZE (%ld)",
-+			current_a, (long)ALLOC_SIZE);
-+		goto done;
-+	}
-+	tst_res(TPASS,
-+		"group_a memory.current (%ld) >= ALLOC_SIZE (%ld)",
-+		current_a, (long)ALLOC_SIZE);
-+
-+	SAFE_CG_PRINTF(group_b, "cgroup.procs", "%d", pid);
-+	tst_res(TINFO, "Migrated worker PID %d to group_b", pid);
-+
-+	SAFE_CG_SCANF(group_b, "memory.current", "%ld", &after_migrate);
-+	tst_res(TINFO,
-+		"group_b memory.current=%ld after migration (baseline=%ld)",
-+		after_migrate, baseline_b);
-+
-+	TST_EXP_EXPR(after_migrate <= baseline_b + (long)MB(4),
-+		     "group_b memory.current (%ld) not increased after migration (baseline=%ld)",
-+		     after_migrate, baseline_b);
-+
-+	TST_CHECKPOINT_WAKE(WORKER_RESUME);
-+	worker_resumed = true;
-+	TST_CHECKPOINT_WAIT(WORKER_ALLOC2_DONE);
-+
-+	SAFE_CG_SCANF(group_b, "memory.current", "%ld", &after_alloc2);
-+	tst_res(TINFO, "group_b memory.current=%ld after second alloc (baseline=%ld)",
-+		after_alloc2, after_migrate);
-+
-+	TST_EXP_EXPR(after_alloc2 >= after_migrate + (long)ALLOC_SIZE2,
-+		     "group_b memory.current (%ld) increased by >= ALLOC_SIZE2 (%ld)",
-+		     after_alloc2, (long)ALLOC_SIZE2);
-+
-+done:
-+	if (!worker_resumed) {
-+		TST_CHECKPOINT_WAKE(WORKER_RESUME);
-+		TST_CHECKPOINT_WAIT(WORKER_ALLOC2_DONE);
-+	}
-+	TST_CHECKPOINT_WAKE(WORKER_EXIT);
-+	tst_reap_children();
-+
-+	group_a = tst_cg_group_rm(group_a);
-+	group_b = tst_cg_group_rm(group_b);
-+}
-+
-+static void cleanup(void)
-+{
-+	if (group_a)
-+		group_a = tst_cg_group_rm(group_a);
-+	if (group_b)
-+		group_b = tst_cg_group_rm(group_b);
-+}
-+
-+static struct tst_test test = {
-+	.test_all	= test_memcg_task_migration,
-+	.cleanup	= cleanup,
-+	.forks_child	= 1,
-+	.needs_root	= 1,
-+	.needs_checkpoints = 1,
-+	.needs_cgroup_ver  = TST_CG_V2,
-+	.needs_cgroup_ctrls = (const char *const []){ "memory", NULL },
-+};
+> +	} else {
+> +		actual_result = EXPECT_SIGNAL;
+> +	}
+> +
+> +	if (actual_result != expected_result) {
+> +		static const char * const result_names[] = {"success", "signal", "failure"};
+> +
+> +		tst_res(TFAIL,
+> +			"Unexpected result: expected %s, got %s",
+> +			result_names[expected_result],
+> +			result_names[actual_result]);
+> +	} else {
+> +		tst_res(TPASS, "Quota test passed as expected");
+> +	}
+> +}
+> +
+> +static int kernel_has_private_reservations(void)
+> +{
+> +	int fd;
+> +	long t, f, r, s;
+> +	long nt, nf, nr, ns;
+> +	void *p;
+> +	char path[PATH_MAX];
+> +
+> +	t = SAFE_READ_MEMINFO(MEMINFO_HPAGE_TOTAL);
+> +	f = SAFE_READ_MEMINFO(MEMINFO_HPAGE_FREE);
+> +	r = SAFE_READ_MEMINFO(MEMINFO_HPAGE_RSVD);
+> +	s = SAFE_READ_MEMINFO(MEMINFO_HPAGE_SURP);
+> +
+> +	snprintf(path, sizeof(path), "%s/test_priv_resv", MNTPOINT);
+> +	fd = SAFE_OPEN(path, O_CREAT | O_RDWR, 0600);
+> +	SAFE_UNLINK(path);
+> +
+> +	p = SAFE_MMAP(NULL, hpage_size, PROT_READ | PROT_WRITE,
+> +		      MAP_PRIVATE, fd, 0);
+> +
+> +	nt = SAFE_READ_MEMINFO(MEMINFO_HPAGE_TOTAL);
+> +	nf = SAFE_READ_MEMINFO(MEMINFO_HPAGE_FREE);
+> +	nr = SAFE_READ_MEMINFO(MEMINFO_HPAGE_RSVD);
+> +	ns = SAFE_READ_MEMINFO(MEMINFO_HPAGE_SURP);
+> +
+> +	SAFE_MUNMAP(p, hpage_size);
+> +	SAFE_CLOSE(fd);
+> +
+> +	/* Check if reservation was created for private mapping */
+> +	if ((nt == t + 1) && (nf == f + 1) && (ns == s + 1) && (nr == r + 1))
+> +		return 1;
+> +	else if ((nt == t) && (nf == f) && (ns == s)) {
+> +		if (nr == r + 1)
+> +			return 1;
+> +		else if (nr == r)
+> +			return 0;
+> +	}
+> +
+> +	tst_brk(TCONF, "Unexpected counter state - "
+> +		"T:%li F:%li R:%li S:%li -> T:%li F:%li R:%li S:%li",
+> +		t, f, r, s, nt, nf, nr, ns);
+> +	return -1;
+> +}
+
+Was this changed recently in kernel? Adding a git hash that changed the
+kernel behavior into the test description would help.
+
+Also if this was a bug, we have a rule in LTP not to work around kernel
+bugs, if kernel is broken it's fine that the test fails.
+
+> +static void run_test(void)
+> +{
+> +	int bad_priv_resv = private_resv ? EXPECT_FAILURE : EXPECT_SIGNAL;
+> +
+> +	tst_res(TINFO, "Testing unused quota cleanup for untouched mappings");
+> +	run_quota_test(EXPECT_SUCCESS, hpage_size, MAP_PRIVATE, 0);
+> +	verify_quota_stat(1, 1, 1);
+> +	run_quota_test(EXPECT_SUCCESS, hpage_size, MAP_SHARED, 0);
+> +	verify_quota_stat(1, 1, 1);
+> +
+> +	tst_res(TINFO, "Testing page instantiation within quota limits");
+> +	run_quota_test(EXPECT_SUCCESS, hpage_size, MAP_PRIVATE, ACTION_TOUCH);
+> +	run_quota_test(EXPECT_SUCCESS, hpage_size, MAP_SHARED, ACTION_TOUCH);
+> +
+> +	tst_res(TINFO, "Testing page instantiation over quota");
+> +	run_quota_test(EXPECT_FAILURE, 2 * hpage_size, MAP_SHARED, ACTION_TOUCH);
+> +
+> +	tst_res(TINFO, "Testing private mapping quota check");
+> +	run_quota_test(bad_priv_resv, 2 * hpage_size, MAP_PRIVATE, ACTION_TOUCH);
+> +
+> +	tst_res(TINFO, "Testing COW over quota");
+> +	run_quota_test(bad_priv_resv, hpage_size, MAP_SHARED,
+> +		       ACTION_TOUCH | ACTION_COW);
+> +	run_quota_test(bad_priv_resv, hpage_size, MAP_PRIVATE,
+> +		       ACTION_TOUCH | ACTION_COW);
+> +
+> +	tst_res(TINFO, "Testing operations within quota after failures");
+> +	run_quota_test(EXPECT_SUCCESS, hpage_size, MAP_SHARED, ACTION_TOUCH);
+> +	run_quota_test(EXPECT_SUCCESS, hpage_size, MAP_PRIVATE, ACTION_TOUCH);
+> +}
+> +
+> +static void setup(void)
+> +{
+> +	char mount_opts[BUFSIZ];
+> +
+> +	hpage_size = tst_get_hugepage_size();
+> +
+> +	/* Create a quota-limited hugetlbfs mount */
+> +	snprintf(quota_mnt, sizeof(quota_mnt), "%s/quota_test", MNTPOINT);
+> +	SAFE_MKDIR(quota_mnt, 0755);
+> +
+> +	snprintf(mount_opts, sizeof(mount_opts), "size=%luK",
+> +		 hpage_size / 1024);
+> +
+> +	if (mount("none", quota_mnt, "hugetlbfs", 0, mount_opts) == -1) {
+> +		if (errno == ENODEV)
+> +			tst_brk(TCONF, "hugetlbfs not supported");
+> +		tst_brk(TBROK | TERRNO, "mount() failed");
+> +	}
+> +	quota_mounted = 1;
+
+Since we cannot determine the size= parameter at a compile time (and
+hence cannot pass it in tst_test struct) wouldn't it make more sense to
+MS_REMOUNT the hugetlbfs already mounted in the test library with the
+size parameter? Would that work?
+
+It does seem strange to mount hugetlbfs twice and keep one mount unused.
+
+> +	tst_res(TINFO, "Mounted hugetlbfs with quota at %s (size=%luK)",
+> +		quota_mnt, hpage_size / 1024);
+> +
+> +	private_resv = kernel_has_private_reservations();
+> +	tst_res(TINFO, "Kernel %s private reservations",
+> +		private_resv ? "has" : "does not have");
+> +}
+> +
+> +static void cleanup(void)
+> +{
+> +	if (quota_mounted) {
+> +		SAFE_UMOUNT(quota_mnt);
+> +		SAFE_RMDIR(quota_mnt);
+> +	}
+> +}
+> +
+> +static struct tst_test test = {
+> +	.needs_root = 1,
+> +	.mntpoint = MNTPOINT,
+> +	.needs_hugetlbfs = 1,
+> +	.forks_child = 1,
+> +	.setup = setup,
+> +	.cleanup = cleanup,
+> +	.test_all = run_test,
+> +	.hugepages = {2, TST_NEEDS},
+> +};
+> -- 
+> 2.55.0
+> 
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
+
 -- 
-2.55.0
-
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
