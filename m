@@ -4,81 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 38C11C55174
-	for <ltp@archiver.kernel.org>; Wed,  5 Aug 2026 09:50:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AA7F0C55174
+	for <ltp@archiver.kernel.org>; Wed,  5 Aug 2026 09:50:49 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E624C3D064D
-	for <ltp@archiver.kernel.org>; Wed,  5 Aug 2026 11:50:34 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 2572A3E2D40
+	for <ltp@archiver.kernel.org>; Wed,  5 Aug 2026 11:50:48 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0F8C73C713B
- for <ltp@lists.linux.it>; Wed,  5 Aug 2026 11:49:55 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ by picard.linux.it (Postfix) with ESMTPS id 4E3AA3E01E7
+ for <ltp@lists.linux.it>; Wed,  5 Aug 2026 11:49:58 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 9EC1F6008C6
- for <ltp@lists.linux.it>; Wed,  5 Aug 2026 11:49:54 +0200 (CEST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 9B576200B36
+ for <ltp@lists.linux.it>; Wed,  5 Aug 2026 11:49:55 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 154204119;
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 76CCC7FD4D;
  Wed,  5 Aug 2026 09:49:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
  t=1785923384; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=iwROtMHCV2w7iaThEsHuDqDvdqnSilzEdVOv0LUQ700=;
- b=yZJF4p7wFnDdcA6Z4fSgoqs969YrBnzZ+r1vavKJwIbpjv8uXPjBXEcPqlBDDbmep2NsW4
- rJt4SCiA3IgDnAQM/lY65ppqpayAHfv4RWA3CDFejxFkn5WRD+BhmeYjX+aFs9bE2CktQU
- s3KGv8s8mmLBfivJ3JCJg/FmekVSFeQ=
+ bh=bapSFWOfv1N61bSo14lQ5JViIoCHTKr5JJUzOE07gus=;
+ b=NwJ+V2QKBkuKZ/I8GWhtnGmlXl9kBDIiVfvdEcwxSDyix8UZ9zibURDCBEpA8CgZgy7TEP
+ H0nBCXhI52rsPp//caayiUDwI/ZgwRQRrLq9XQdCZ5TAyRI0jkj3ewsHV38G5R9JrcMreG
+ 90veauOeU/JnGfYMjLHkxzVxqethCtk=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
  s=susede2_ed25519; t=1785923384;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=iwROtMHCV2w7iaThEsHuDqDvdqnSilzEdVOv0LUQ700=;
- b=Cf4vneLpDFrtFCOM9b1szEDN8iwYDt+Y2fPFyv81ZsFjOuiSWT+gS+fghu6po2sIdOiyBv
- e3+S8MLV0mjrfLDw==
-Authentication-Results: smtp-out2.suse.de;
+ bh=bapSFWOfv1N61bSo14lQ5JViIoCHTKr5JJUzOE07gus=;
+ b=gK+18mr6ZeAzPM7VTOwVGBW09YxAP5ndhtWBHHkWKgepT2ojlXRiONN/73RZiBgrkrMZjT
+ /5tB6yAPK51zvZBw==
+Authentication-Results: smtp-out1.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
  t=1785923380; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=iwROtMHCV2w7iaThEsHuDqDvdqnSilzEdVOv0LUQ700=;
- b=hVWwqaxSR9Ql+DVPLSmIfJs0+ukZNb690HXiUZ1bUEJuwwpl70si89+lv9M7wwppfhdVuJ
- p0AS/EFLBfORT26SciAhCOLWSEANfLrbVPPWhF1iWqYYaa61lO5QhArWjAY0/xBW9GuqUS
- 1pkjfM4jcQ1WH2gyyHF0lXEasMNMvfU=
+ bh=bapSFWOfv1N61bSo14lQ5JViIoCHTKr5JJUzOE07gus=;
+ b=n82dwxPfyopc9l59sytnwis3IxmEAbgh/mild+AC1eqsopAhmGN1w4zjmJPykV0Fa5Mfgq
+ cnEVUisYZv6h9Es0Hlp8EPSqZhcrEkEk98hz/ohZDU9odweSAfMGWLT5YN0OJ2zoynExdX
+ pcJWnRfkIVmj82cMW86ZNetUjEp5BPE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
  s=susede2_ed25519; t=1785923380;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=iwROtMHCV2w7iaThEsHuDqDvdqnSilzEdVOv0LUQ700=;
- b=V2mN2OSy4SlHOhKxFeAqEk5hJ6nylT154plGHcH+Z3ZtIwrOq0PUw849Htma+Nmhrsvnhu
- sOGBlc78sxCrSHBw==
+ bh=bapSFWOfv1N61bSo14lQ5JViIoCHTKr5JJUzOE07gus=;
+ b=1VNCNOsV3MPLHaU9L6vnRVqlDZ6K723qVYhVJS5rvPPZ90IZtfP1s/+eQcwG5sP3SvgQhh
+ oS/LP0MekQL0Y0CA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D3BDE779C2;
- Wed,  5 Aug 2026 09:49:39 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 35BC1779EB;
+ Wed,  5 Aug 2026 09:49:40 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id gB2VMTMHc2rvSAAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Wed, 05 Aug 2026 09:49:39 +0000
+ by imap1.dmz-prg2.suse.org with ESMTPSA id kB4sDDQHc2rvSAAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Wed, 05 Aug 2026 09:49:40 +0000
 From: Petr Vorel <pvorel@suse.cz>
 To: ltp@lists.linux.it
-Date: Wed,  5 Aug 2026 11:49:32 +0200
-Message-ID: <20260805094935.448896-2-pvorel@suse.cz>
+Date: Wed,  5 Aug 2026 11:49:34 +0200
+Message-ID: <20260805094935.448896-4-pvorel@suse.cz>
 X-Mailer: git-send-email 2.55.0
 In-Reply-To: <20260805094935.448896-1-pvorel@suse.cz>
 References: <20260805094935.448896-1-pvorel@suse.cz>
@@ -91,11 +91,11 @@ X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[99.99%];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  TO_MATCH_ENVRCPT_ALL(0.00)[]; FROM_HAS_DN(0.00)[];
  RCPT_COUNT_THREE(0.00)[3]; FROM_EQ_ENVFROM(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[readthedocs.org:url,suse.cz:mid,suse.cz:email,imap1.dmz-prg2.suse.org:helo];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:mid,suse.cz:email,imap1.dmz-prg2.suse.org:helo];
  RCVD_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 1/4] readthedocs: Update to Ubuntu 26.04, Sphinx 8.2.3
+Subject: [LTP] [PATCH 3/4] doc: Update linuxdoc, sphinxcontrib-spelling
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -112,47 +112,35 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Update readthedocs.org environment + local requirements.txt
-* Ubuntu 24.04 => 26.04
-* Sphinx 7.2.6 => 8.2.3 (based on Ubuntu 26.04 version to match local
-  development with readthedocs.org)
-* sphinx-rtd-theme 2.0.0 => 3.1.0 (required by Sphinx 8.2.3 update)
+Update to the latest versions:
+* linuxdoc: 20240924 => 20260504 (allowed to remove workaround
+  installing setuptools==81.0.0, required previous commit to not run
+  sphinx -v by default otherwise there would be too many kernel-doc INFO
+  messages)
+* sphinxcontrib-spelling: 7.7.0 => 8.0.2
 
-This helps to use newer Sphinx features.
+Removing setuptools==81.0.0 dependency fixes CVE-2026-59890 (score 6.1).
 
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- .readthedocs.yml     | 2 +-
- doc/requirements.txt | 4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ doc/requirements.txt | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
-diff --git a/.readthedocs.yml b/.readthedocs.yml
-index 51825da77f..bb70bce70d 100644
---- a/.readthedocs.yml
-+++ b/.readthedocs.yml
-@@ -1,7 +1,7 @@
- version: 2
- 
- build:
--  os: "ubuntu-24.04"
-+  os: "ubuntu-26.04"
-   tools:
-     python: "3.12"
-   apt_packages:
 diff --git a/doc/requirements.txt b/doc/requirements.txt
-index 442ff2eee6..f04676c7bd 100644
+index f04676c7bd..ac5b43e415 100644
 --- a/doc/requirements.txt
 +++ b/doc/requirements.txt
-@@ -1,7 +1,7 @@
- # Use the same sphinx as on readthedocs.org. When updated, make sure
- # sphinx-rtd-theme is compatible with sphinx.
--sphinx==7.2.6
--sphinx-rtd-theme==2.0.0
-+sphinx==8.2.3
-+sphinx-rtd-theme==3.1.0
+@@ -3,8 +3,5 @@
+ sphinx==8.2.3
+ sphinx-rtd-theme==3.1.0
  
- linuxdoc==20240924
- sphinxcontrib-spelling==7.7.0
+-linuxdoc==20240924
+-sphinxcontrib-spelling==7.7.0
+-
+-# workaround for linuxdoc <= 20240924
+-setuptools==81.0.0
++linuxdoc==20260504
++sphinxcontrib-spelling==8.0.2
 -- 
 2.55.0
 
