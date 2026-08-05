@@ -4,81 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4A4FCC2A09B
-	for <ltp@archiver.kernel.org>; Wed,  5 Aug 2026 02:54:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D2D60C2A09B
+	for <ltp@archiver.kernel.org>; Wed,  5 Aug 2026 03:11:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1785898484; h=date :
- in-reply-to : mime-version : references : message-id : to : subject :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1785899516; h=date : to :
+ message-id : references : mime-version : in-reply-to : subject :
  list-id : list-unsubscribe : list-archive : list-post : list-help :
  list-subscribe : from : reply-to : cc : content-type :
  content-transfer-encoding : sender : from;
- bh=h8o+1idcnCVYUyhl+1wzr8Yf2HCVVvoBfL9a2zLHq4w=;
- b=iFyH+OkrQ0MCklJz5CYVxCWfIMlbfAno4ezcKWXkak6Fr+bYw5tC1zGFQPLSanCXa4YoF
- 92rpW7gvfKYVygXheF2V+Znu99rE9/lsSx2UbBShqg+a0EFN9apxOSipMxSjJ8HlRBtYtUA
- Ej1ofFi7XNOX3uV9KdY0UtQmhmXE/EQ=
+ bh=LKvVcYXup2YU/XBYaWxhPrHVh5c0QVVWyeiH0Nm2pEY=;
+ b=advdePty3943Uj8ddzVEZDwu1lZqLXFheW28iMqaSG6iJ9zu/eTs7LnIMBMEZeKIZM3TK
+ 2Lk2iU3BhPTuK35xOmSxf2XqhNsADnTydQpwOaMUfIQxd4OCsD11RaA9XRGKklSpuCaG2Fm
+ Snf8oY9b/uR4TVRHlD9685HkZ5kp65k=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 648A33E5A26
-	for <ltp@archiver.kernel.org>; Wed,  5 Aug 2026 04:54:44 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 140B83E94A5
+	for <ltp@archiver.kernel.org>; Wed,  5 Aug 2026 05:11:56 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2D2BB3E2D22
- for <ltp@lists.linux.it>; Wed,  5 Aug 2026 04:54:22 +0200 (CEST)
-Received: from mail-pj1-x1047.google.com (mail-pj1-x1047.google.com
- [IPv6:2607:f8b0:4864:20::1047])
+ by picard.linux.it (Postfix) with ESMTPS id 320513E1460
+ for <ltp@lists.linux.it>; Wed,  5 Aug 2026 05:11:36 +0200 (CEST)
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com
+ [IPv6:2a00:1450:4864:20::32a])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 800B110009DB
- for <ltp@lists.linux.it>; Wed,  5 Aug 2026 04:54:22 +0200 (CEST)
-Received: by mail-pj1-x1047.google.com with SMTP id
- 98e67ed59e1d1-3823dcc1647so627076a91.3
- for <ltp@lists.linux.it>; Tue, 04 Aug 2026 19:54:22 -0700 (PDT)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 489A11A00362
+ for <ltp@lists.linux.it>; Wed,  5 Aug 2026 05:11:35 +0200 (CEST)
+Received: by mail-wm1-x32a.google.com with SMTP id
+ 5b1f17b1804b1-49558ce01afso2810125e9.1
+ for <ltp@lists.linux.it>; Tue, 04 Aug 2026 20:11:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=google.com; s=20251104; t=1785898461; x=1786503261; darn=lists.linux.it;
- h=content-type:cc:to:from:subject:message-id:references:mime-version
- :in-reply-to:date:from:to:cc:subject:date:message-id:reply-to
- :content-type; bh=86mRcYRg7BhOtYZmnE0TLxBMbzx3CY/H/I0HCRtGyqU=;
- b=YZ9aFwrs1aOtKcn3eUXHCvHho1ig6yfkewMG+zdIHU681WbS49dsnB5ixaHH/NMsiY
- fsmzGMfzwau3Av7rzKaaRzBbLK3AmBlEvOP5lEgG4kolBT0KV5NtuxOm872qeza93Xmp
- /4rLNNS4gKPkyk/Q8Zf0PeDPVjrH+4uVFf7zMJREUY8j3MFH9En/b15imjnndykMJmEM
- 6lf/1Xe6zYfFimRN6UFjnPC4OP+lsTstr/+CmI862akfWqJKuRggi10Z1Ib37mH8mql6
- sak5tIKKHnnR4E40lZPzGNW8bwnl2DjmOJuUFm/WUKhSQpCKkjZylC7Oc7cC+SZxBN6+
- Yngw==
+ d=suse.com; s=google; t=1785899494; x=1786504294; darn=lists.linux.it;
+ h=in-reply-to:content-disposition:content-type:mime-version
+ :references:message-id:subject:cc:to:from:date:from:to:cc:subject
+ :date:message-id:reply-to:content-type;
+ bh=/d1AHNvNEkw4vkD0o0uchpAfO6H6tqVuRAimU56gjRw=;
+ b=ICGSkiVI1BOOn+GdGyRRmhmt7MyO1c4s/dQMMxrdZ/Fn2Q1VcsG1VbC9w7vx4PqVzL
+ aKTJzSRn7oaMWSghEYJNU5wvKthFfEMJ6jKkhq0ZuN+t2qEBMtIlrwaGfTsJJiYyvq31
+ 3mesWYfAmVP5STLqjJi6wUyyY5DK4RQPMzCqNgxGVxhoswk2uWvzpo44znGuHB4jz37i
+ vYrdmplAmcepa6+DM3aCE+pfxU7x/Fl2CL7JBhAhGpw2EpioWSIullMbCJoQQl9wYmuk
+ IFYq8kXmUhdPD6jOrol2qc0VotAMOQ/WPkHsLJBnJmq6zLyuJT69Na563CM1VmLKjJOv
+ YwGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1785898461; x=1786503261;
- h=content-type:cc:to:from:subject:message-id:references:mime-version
- :in-reply-to:date:x-gm-message-state:from:to:cc:subject:date
- :message-id:reply-to:content-type;
- bh=86mRcYRg7BhOtYZmnE0TLxBMbzx3CY/H/I0HCRtGyqU=;
- b=dp8gyGIeOulVLQJBy+RItJHSfnQcWLDwZgUv9AyTmCuEwi/GfpPGoNbhOC6TOYHQgV
- V0DTPljuLYXlfWAZRMWzhm8vyHgctkcDZZv916NWoUHixSMNBZt+was+wF+3ta7qmJFU
- 5v2o94Yjt/oSdgxUhGB7CdK8KvNVLofWOaK2SjOClZeQxU6WfSLSonoVDhk5HA5E3uEu
- jWCzPiwvn2t9Hv+KOZMLm/gDDF/TYuObz20n+wGB4TMPiGjYLIs3VyofYOL0viVn2Ci6
- uUvdxHkNlBDKHXfFbVs9eLg606EaiLySfS4OwOgSKbsIZv82KWB7qPsa3ssv2IGahRhC
- FYDQ==
-X-Gm-Message-State: AOJu0YyhjG4ZSo3pHNPYiQGRXqYnkvwE2Fmc6c/hqWba8JDu+OkVqqmQ
- 8WZ8Uy2cUjBxcusLyz/18MKmm6wgNfuzkqMUqBZBt0pisqLagZZuHSIsArc3MlMhVeZXFf0+aBe
- j7n7jzNlCkwtW2bGiNQYaBX7yoivKISjc/DxeBXhAlpWw+JkhJcURZnHw1FwFjlIXOqu3pWIqyQ
- asCLoWQEeDm3VSGJj1ChhIt9RbRg==
-X-Received: from pjbgk2.prod.google.com ([2002:a17:90b:1182:b0:38d:f086:96])
- (user=wakel job=prod-delivery.src-stubby-dispatcher) by
- 2002:a17:90b:2f03:b0:381:a766:efc9
- with SMTP id 98e67ed59e1d1-3903c53404amr3892201a91.7.1785898460453; Tue, 04
- Aug 2026 19:54:20 -0700 (PDT)
-Date: Wed,  5 Aug 2026 02:54:18 +0000
-In-Reply-To: <anKexVXAkhsMGpZy@linux.dev>
-Mime-Version: 1.0
-References: <anKexVXAkhsMGpZy@linux.dev>
-X-Mailer: git-send-email 2.55.0.571.g244d577d93-goog
-Message-ID: <20260805025418.1249003-1-wakel@google.com>
-To: ltp@lists.linux.it
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+ d=1e100.net; s=20251104; t=1785899494; x=1786504294;
+ h=in-reply-to:content-disposition:content-type:mime-version
+ :references:message-id:subject:cc:to:from:date:x-gm-gg
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+ :content-type;
+ bh=/d1AHNvNEkw4vkD0o0uchpAfO6H6tqVuRAimU56gjRw=;
+ b=jxnbr7kmVeknddZtYCMSBGvWjzglZgW7CT9XGu2kuOhpyD6nneg0ithsXWZji9JxJ4
+ /00/FCLrqX8tTuxVII1XkGQSrN/zTBJw7MRqrxwgLA1q7U8td4fETBmQmriBXPGypYQm
+ vKMNmP7OzfV39b3oB1ehVvUwHOUtRbmXCQuvkoQK1Tjx+PEUK17Tr4Kk4pTFqRQLc7Kd
+ cIAmCmPi7NyUP1j1Royb0nwVvide7gZJwqfJ7us+ee+jWnUlrMb8cXu3/2DAGvMx4oZc
+ Gf77u1B6ZzEnVSaVBJ8IkG48gdNCRawpMupqAoD2v0KPSRi7ghZx4yrC8Sq9JIv2/TLK
+ Sfbw==
+X-Gm-Message-State: AOJu0YyXT+fAYadmZP/jyTcsmLKDxNkF2r1ciQbmakUFm4VNjicH8iRz
+ 0++UtAe6wjk3CVo7ciO0yg1s/bK/Pt+R8/SwMA2+E2nzwELZcXUWlpE223q9nuL8ag==
+X-Gm-Gg: AR+sD134eS/2pcjlzM39/gBs6XBikrLO/zaQLGG7bpMoOfu9S8PMS2EFDl3JGBRqfuy
+ xfhdX9N9pfmrTHmy8fVMXTbeyTyPOrE1Owy5F2ztbiISAsjKAinO62+Xq/zeR3uUPaYbGubm8fz
+ 2n3pYobC0ooya0q8Nd5SY50SlbaeyvfGd3SgWUOTMluH36V84bI9C1JFe0rAxRdsfhl6ldbZzBh
+ 6GmH0Y8JtUxOWs+PDz8BqM39PWlpWpEH2i4RLtU0Pjwb9HPdEPANFa3hmaE+cPKumKDfMj/Q2jU
+ /vwlxbiMu76C2RzAyyoZC8CN70AVp+svZybL1TgtQB8bUfU1ggetHGyIciEhaZH1oe09+ZY2VMu
+ PSFjGz3uPBnDQoylXYzv+s/6J/mKXvLQ1meN1xEHP73wz8Oh8HcaoGgju+xqFtMBqAU1URRm+fQ
+ OQ1NSGOuomJS1FDm66CNX1F94UPkAbcO3g1l5RvwYuCWnUrMOvFv88+2wy6m2YcXJuP3+jPwD0L
+ 8RSLg==
+X-Received: by 2002:a05:600c:d5:b0:493:cfe8:5b36 with SMTP id
+ 5b1f17b1804b1-4994e7457c6mr26000275e9.8.1785899494512; 
+ Tue, 04 Aug 2026 20:11:34 -0700 (PDT)
+Received: from autotest-wegao.qe.prg2.suse.org
+ ([2a07:de40:b240:0:2ad6:ed42:2ad6:ed42])
+ by smtp.gmail.com with ESMTPSA id
+ 5b1f17b1804b1-49949fcb0c5sm124707985e9.4.2026.08.04.20.11.34
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 04 Aug 2026 20:11:34 -0700 (PDT)
+Date: Wed, 5 Aug 2026 03:11:32 +0000
+To: linuxtestproject.agent@gmail.com
+Message-ID: <anKp5GokntftzFa3@autotest-wegao.qe.prg2.suse.org>
+References: <20260804010439.15195-1-wegao@suse.com>
+ <20260804041751.8871-1-linuxtestproject.agent@gmail.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20260804041751.8871-1-linuxtestproject.agent@gmail.com>
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v4] lib: Use backoff polling to wait for loop device
- nodes
+Subject: Re: [LTP] fsconfig04: Check FSCONFIG_SET_PATH
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -90,86 +102,76 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Wake Liu via ltp <ltp@lists.linux.it>
-Reply-To: Wake Liu <wakel@google.com>
-Cc: wakel@google.com
+From: Wei Gao via ltp <ltp@lists.linux.it>
+Reply-To: Wei Gao <wegao@suse.com>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On systems where loop device node creation is asynchronous (such as Android
-containers or systems with slow udev startup), calling stat() or open()
-immediately after LOOP_CTL_GET_FREE can transiently fail because the
-device file (e.g. /dev/loopX) has not been fully populated in time.
-
-Introduce an exponential-backoff retry loop in both
-tst_find_free_loopdev() and tst_attach_device() (starting at 1ms delay,
-doubling each try, capped at 100ms) to wait for the device node to be
-successfully populated.
-
-This improves the robustness of loop device allocations on asynchronous
-virtualized environments while minimizing unnecessary delays on responsive
-systems.
-
-Signed-off-by: Wake Liu <wakel@google.com>
----
-v3 -> v4:
- - Rebase onto the latest LTP HEAD.
- - Remove self-referencing Link in commit message.
-
-v2 -> v3:
- - Reuse LTP native TST_RETRY_FN_EXP_BACKOFF() macro in tst_common.h to simplify code.
-
-v1 -> v2:
- - Strictly clamp backoff delay to 100ms (prevent overflow exceeding cap).
- - Skip usleep on final loop iteration to avoid unnecessary idle delay.
- - Reduce max attempts to 30 (stat) and 15 (open) to bound worst-case timeout.
-
- lib/tst_device.c | 13 +++++++++----
- 1 file changed, 9 insertions(+), 4 deletions(-)
-
-diff --git a/lib/tst_device.c b/lib/tst_device.c
-index 744173ffe..00304711b 100644
---- a/lib/tst_device.c
-+++ b/lib/tst_device.c
-@@ -82,7 +82,7 @@ static int set_dev_path(char *dev, char *path, size_t path_len)
- 
- int tst_find_free_loopdev(char *path, size_t path_len)
- {
--	int ctl_fd, dev_fd, rc, i;
-+	int ctl_fd, dev_fd, rc, i, path_set;
- 	struct loop_info loopinfo;
- 	char buf[PATH_MAX];
- 
-@@ -93,8 +93,13 @@ int tst_find_free_loopdev(char *path, size_t path_len)
- 		rc = ioctl(ctl_fd, LOOP_CTL_GET_FREE);
- 		close(ctl_fd);
- 		if (rc >= 0) {
--			if (path && set_dev_loop_path(rc, path, path_len))
--				tst_brkm(TBROK, NULL, "Could not stat loop device %i", rc);
-+			if (path) {
-+				path_set = TST_RETRY_FN_EXP_BACKOFF(
-+					set_dev_loop_path(rc, path, path_len),
-+					TST_RETVAL_EQ0, 1);
-+				if (path_set)
-+					tst_brkm(TBROK, NULL, "Could not stat loop device %i", rc);
-+			}
- 			tst_resm(TINFO, "Found free device %d '%s'",
- 				rc, path ?: "");
- 			return rc;
-@@ -161,7 +166,7 @@ int tst_attach_device(const char *dev, const char *file)
- 			 LO_NAME_SIZE);
- 	}
- 
--	dev_fd = open(dev, O_RDWR);
-+	dev_fd = TST_RETRY_FN_EXP_BACKOFF(open(dev, O_RDWR), TST_RETVAL_GE0, 1);
- 	if (dev_fd < 0) {
- 		tst_resm(TWARN | TERRNO, "open('%s', O_RDWR) failed", dev);
- 		return 1;
--- 
-2.55.0.571.g244d577d93-goog
-
+On Tue, Aug 04, 2026 at 04:17:51AM +0000, linuxtestproject.agent@gmail.com wrote:
+> Hi Wei,
+> 
+> On Aug 4, 2026, Wei Gao wrote:
+> > fsconfig04: Check FSCONFIG_SET_PATH
+> 
+> > +	TEST(fsconfig(fd, FSCONFIG_SET_PATH, "journal_path", dev2, 0));
+> > +	if (TST_RET == -1) {
+> > +		if (TST_ERR == EOPNOTSUPP)
+> > +			tst_brk(TCONF, "fsconfig(FSCONFIG_SET_PATH) not supported");
+> > +		else
+> > +			tst_brk(TFAIL | TTERRNO, "fsconfig(FSCONFIG_SET_PATH) failed");
+> > +	}
+> 
+> Could this test be gated with .min_kver = "7.2"?
+> 
+> Before Linux 7.2, ext4 declared journal_path as a string parameter, so
+> FSCONFIG_SET_PATH is rejected with EINVAL rather than EOPNOTSUPP. Since
+> fsopen_supported_by_kernel() only gates fsopen at Linux 5.2, those kernels
+> reach the else branch and report TFAIL instead of TCONF.
+If fsconfig parameter is correct, return EINVAL should be an kernel bug.
+Current logic is correct.
+I guess AI mix wtih some old code with new API. But how to fix AI's rule is a
+question.
+> 
+> > +	SAFE_SSCANF(dev2, "/dev/%s", loop_name);
+> > +
+> > +	snprintf(path, sizeof(path), "/sys/block/%s/dev", loop_name);
+> > +	SAFE_FILE_SCANF(path, "%u:%u", &major, &minor);
+> 
+> Could the device number be obtained from stat(dev2).st_rdev instead?
+> 
+> tst_find_free_loopdev() also supports /dev/loop/N and /dev/block/loopN.
+> Those paths produce loop/N or block/loopN here, causing the test to read a
+> nonexistent sysfs path and terminate with TBROK.
+> 
+> > +	SAFE_MKFS(dev0, tst_device->fs_type, mkfs_opts_set_journal_dev1, NULL);
+> > +}
+> > +
+> > +static void run(void)
+> > +{
+> > +	...
+> > +	TEST(fsconfig(fd, FSCONFIG_SET_PATH, "journal_path", dev2, 0));
+> 
+> Could each iteration reset dev0 to dev1 or alternate the source and target
+> journal devices?
+> 
+> The first iteration persists dev2 in dev0's superblock. Every subsequent
+> -i iteration requests dev2 again, so it no longer exercises a dynamic
+> journal-device change.
+> 
+> Verdict - Needs revision
+> 
+> ---
+> Note:
+> 
+> The agent can sometimes produce false positives although often its
+> findings are genuine. If you find issues with the review, please
+> comment this email or ignore the suggestions.
+> 
+> Regards,
+> LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
