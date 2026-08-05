@@ -4,80 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D9FF1C55174
-	for <ltp@archiver.kernel.org>; Wed,  5 Aug 2026 17:33:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CD5FDC55ABA
+	for <ltp@archiver.kernel.org>; Wed,  5 Aug 2026 17:34:14 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D2B4E3E90C1
-	for <ltp@archiver.kernel.org>; Wed,  5 Aug 2026 19:33:52 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 2AE1E3E7161
+	for <ltp@archiver.kernel.org>; Wed,  5 Aug 2026 19:34:13 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A45973E2D22
- for <ltp@lists.linux.it>; Wed,  5 Aug 2026 19:33:36 +0200 (CEST)
-Received: from mail-pj2-x0b.google.com (mail-pj2-x0b.google.com
- [IPv6:2607:f8b0:4864:39::b])
+ by picard.linux.it (Postfix) with ESMTPS id CC53C3E90BE
+ for <ltp@lists.linux.it>; Wed,  5 Aug 2026 19:33:56 +0200 (CEST)
+Received: from mail-pj2-x03.google.com (mail-pj2-x03.google.com
+ [IPv6:2607:f8b0:4864:39::3])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 84BB1600A23
- for <ltp@lists.linux.it>; Wed,  5 Aug 2026 19:33:35 +0200 (CEST)
-Received: by mail-pj2-x0b.google.com with SMTP id
- 98e67ed59e1d1-38de693676dso883314a91.0
- for <ltp@lists.linux.it>; Wed, 05 Aug 2026 10:33:35 -0700 (PDT)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id E211D140006D
+ for <ltp@lists.linux.it>; Wed,  5 Aug 2026 19:33:55 +0200 (CEST)
+Received: by mail-pj2-x03.google.com with SMTP id
+ 98e67ed59e1d1-3810f0aba07so641048a91.1
+ for <ltp@lists.linux.it>; Wed, 05 Aug 2026 10:33:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1785951214; x=1786556014; darn=lists.linux.it;
+ d=gmail.com; s=20251104; t=1785951234; x=1786556034; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to:content-type;
- bh=S0BRheoUuJg7lcP2pVUg2m3ISoBCurfYwBgzZOcDkuQ=;
- b=T5YRLhOWozJAY5zV68W0t/V3OuWJSBXKb6eMn3kqJo02QiocBv6q20YtFaWw0KU8pA
- 4Zlcikls7LnD5PpI/WwrL1GlXRMVV6bmgbrSqBN5GDuoooW1PZuw0sLOJhBIGiJ7rA3T
- L0VojYxBo1RL2Img+IbkmWnOVlzQN5F8wVWxPhHZsxaMSJPPo6hMg0qGcMHFYnZ1pEV0
- n3TvLc4Ejhc4UpM6GPnJo+K/LnOlgl8ZLeuc1oq3Sfb/ygGP+q5crClCSfuVV8rBOytN
- zEkyykD4guZ3ZIpsg1sdVC7JNDQ+yoZV3oFGCl93pd+bcIQWaVJ4yzo4+fpEVflOgO7L
- 2VhQ==
+ bh=51Zff+8ED340nm8e8PbgPB4b2UzmfHRFoyofW5CC5YI=;
+ b=CBowkqYrPLBQbYGmg48n5xBJu4yqAXY1nRzSsmoAQIMfVR294p6jTbc7aUzmw9jAbu
+ ZZfMOmz4YNcDeQY0koKns8mYB2Cj3IWrq/cxVOj7i4DMDLSNOE2qLuaUb+s4OnD9oyeI
+ JqmaJ6uJVLsGP+73xp8a6cP9b0mzJzlMNrydeUz0V6JzabBOsDTegFhWsnObbIwTjfW4
+ UaQiFdmfW1A8ZCUgqUR3xogw8frkq2nFWFjtS4qrWj3UC8VvPPTVlLvJiXVCU+NCvKIx
+ ys0o/y4ywwAg7w3XYhoF1+vUHCqIPpWzYfFxR2K3CY3/t7Irs2kWUB7Wb8oaTvOcxFzz
+ QvCg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1785951214; x=1786556014;
+ d=1e100.net; s=20251104; t=1785951234; x=1786556034;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to:content-type;
- bh=S0BRheoUuJg7lcP2pVUg2m3ISoBCurfYwBgzZOcDkuQ=;
- b=lAp82V/P6EH2DYVfv1F/wBOCWvk/eY+tHttG0Kt99meM8xuGQvYSwP5ouh4btV1vCH
- 0rBuId8ZYwXc5anB+nqWeR8hRZOrd88EbAdQW6oef/IkZsY617lh6HT5xkGal7S0lcSR
- JX+D/AkWJm98ODqJv1sdL/Hx+eZhRx5C6B7sy4YT3isUa3R97m5YfFbFAaX1dCQxbSjT
- iPf3+MoyGYPeOGYX7y/tOp8c1WVaXX+SyhtSouuhTV1dzoFgdMi2F0g/rJh4z6VKUtE2
- mAENv4RnjhKXOoSpnACUECDIZzual9h3ZfmeggbudoQaKTf/RVjPPShSAGcdvpWy/uhp
- oNSw==
-X-Gm-Message-State: AOJu0Yx/EC2maX+sKeY2pSxFdqeEGGtDz+eLct2UNjcTT2N1yqVpq6Gi
- w9Qa5wYIDqGobPgTBpqMGbIVZoYYY6tLvAwNkaYYqrYWCwEYTrhdSIcr
-X-Gm-Gg: AR+sD12OwGYM6Ccp6S4/zF7SFrAQEVikL6jbhwjgeKUGS7OuCgJdwiRS3wxsmge/gdr
- P/SnfkTD36O8tEmeXSAhiW4IhcdbJHxknlvvO8wIGLZCqNRRr8M2uHleNKQFy5vvJyzlUvYsQ58
- 4Tsn45cIJo2tRUxcpmxR0//JG0ZxiWB/h3/Mc9pSaqeT+rlN8cfVY1YTTvEiuHIsg18ma+VeRhs
- FwW9Oy/WEtf7sy6zSHW3PED6bFvuRiRZ81u8lplTxJbJYbNZu/URchUcYxJAUlbCg+FzrJBf7VB
- Nn56t/tUqNN4f+3iQdCocz7G9rd3J695AlaSrNvN0pVJxxk9yIwHgCPOIW0XvWFyB6LSOZBAALg
- 6VVUkgTSMtC91nEUWTHzp7+KIR6KO65tOI5t/gkz5naFuFqDc2b18z3rEomkQvMOTDM3WUm7bni
- o9jH19LcqlnzrAKYPD/LMavJcsAbm0k7A/SJ8p2IQv8pFocjJKRBnPa6hM0Syly6rdMqeLDAsgH
- iqWrnivXlWeUOh9WgI3AU68fYh8/NKtYfH3D9gPBJVrv4/67ipOnt+OwwsjTyb+F/kMQP5SVWlf
-X-Received: by 2002:a05:6a21:a04:b0:3bf:9aa9:b2a4 with SMTP id
- adf61e73a8af0-3cb85ef91f7mr11091165637.20.1785951213638; 
- Wed, 05 Aug 2026 10:33:33 -0700 (PDT)
+ bh=51Zff+8ED340nm8e8PbgPB4b2UzmfHRFoyofW5CC5YI=;
+ b=O8ZS2Vdokk64AnzgaMcxdyqjN9lqC7SvvJz751Af9FoYlBMcxjJihhf3Tgawbas6OZ
+ JHgui+yJHIrKHQOK214mfWuhu6eF2NZQ5ULOV/YOLduo573Z+TKA127fE4nF5dyHzztp
+ cXT6QO3JgiS7YxRXVPGxYhxgxhNEnNhZ96Gly4SRyQG+43RAiAzpMOTrneg7ZtPF8L3R
+ eXmlkg1K8m3dhOUPLzx4ZsVJF8G98ZKBznUjSpz6dL0uNpTsjhxBk+4UzROCIxvTVSGv
+ 1JrCc2V8dig8otpyooz3MAMQG+xOG5tXgX6zIIeRO5rDGHbM2srsYp+LwrG2yCgE95BB
+ nBJg==
+X-Gm-Message-State: AOJu0YwmwzNItffStfhYJHuLI5/+YLQGxVvryAzC3p2GxgIO53G+0LCD
+ AIXmiyE4w9trXSTQ41hRkXomgoua4isPGrhORB6Yd8Axyl/b6h4tN/My
+X-Gm-Gg: AR+sD13/ggRDbbLR6G/K8I3J5x0bXjItc2deRRdvQ1D+NtVHfE0SQUTWrU42PVUh2Xs
+ GVMRVZbBzEjJgLKGjRfRJg0cPzjleg080k/ch4ux+RR2d4NgFt5XvrHVVQOnlRHsYwbhARBe4+z
+ uJO74gljpyMIHmTZOjRyS9FpEGH8gWPU3qr4fqXSzDGenKZ7TfuOBMzcXl8uoBeLRlZvjGYwawz
+ 8wg1016hgh7sC7h9o7l66NDQ6GyiNbq2lv89xFQD/ea7r14P4U1cGVYU1Pgf4MnkWGCXBNZSNwq
+ EdxQvTXmcqLEkeOyBjJJtpQv4+cB39GbI+BCXLyQlG3LTdOMg6rnNl660I0fDz4jIBc9vG/aGAy
+ V5/XDluex1rDijNdv9jG9/V1xhAtaxZkz3ebGsuh9MeV+zDhWycxPscMagWrg2HbonpDpGqZp85
+ 47isPxV+fiBIazj8sodIZ5ggnYgmftV1jxW7fbwFmBAHwdJ9umuApFnGb9IdF+anlrPi0pmanUI
+ GA/nLDrhTFW9WjG6Tbi+R1o2dAclynZZ00Ws+gcfPiMlnwjBZMlaOT5ni3XLv5Oqv037vr0
+X-Received: by 2002:a17:90b:4b81:b0:38e:7f1b:efa with SMTP id
+ 98e67ed59e1d1-3903c582798mr7548016a91.11.1785951233837; 
+ Wed, 05 Aug 2026 10:33:53 -0700 (PDT)
 Received: from
- runnervmvrwv9.qtkme5kclwxuvgk1gfqfrwzr2h.dx.internal.cloudapp.net
- ([68.220.56.242]) by smtp.gmail.com with ESMTPSA id
- 5a478bee46e88-31586777bdasm18896260eec.22.2026.08.05.10.33.32
+ runnervmvrwv9.lm5voez41cuu5k0eg3hjwl50ja.xx.internal.cloudapp.net
+ ([4.154.22.5]) by smtp.gmail.com with ESMTPSA id
+ 98e67ed59e1d1-3903927db6esm3568316a91.10.2026.08.05.10.33.53
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 05 Aug 2026 10:33:33 -0700 (PDT)
+ Wed, 05 Aug 2026 10:33:53 -0700 (PDT)
 From: linuxtestproject.agent@gmail.com
 To: Petr Vorel <pvorel@suse.cz>
-Date: Wed,  5 Aug 2026 17:33:31 +0000
-Message-ID: <20260805173331.4185-1-linuxtestproject.agent@gmail.com>
+Date: Wed,  5 Aug 2026 17:33:52 +0000
+Message-ID: <20260805173352.8682-1-linuxtestproject.agent@gmail.com>
 X-Mailer: git-send-email 2.54.0
 In-Reply-To: <20260805151451.648990-2-pvorel@suse.cz>
 References: <20260805151451.648990-2-pvorel@suse.cz>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] tst_kvercmp: Factor out error handling
 X-BeenThere: ltp@lists.linux.it
@@ -99,37 +98,30 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi Petr,
 
-On Wed, 5 Aug 2026, Petr Vorel wrote:
+On Wed, Aug 5, 2026, Petr Vorel wrote:
 > tst_kvercmp: Factor out error handling
 
---- [PATCH 2/9] ---
+--- [PATCH 1/9] ---
 
-> This is a preparation for struct tst_test max_kver member in the next
-> commit.
+> +static int _tst_parse_kver(const char *str_kver, int *v1, int *v2, int *v3)
 
-Could this explain the distinction between minimum- and maximum-version
-checks without referring to the next patch? Commit messages in a series
-should be self-contained.
-
---- [PATCH 5/9] ---
-
-> +	.max_kver = "7.1",
-
-Could only the FAN_REPORT_PIDFD | FAN_REPORT_TID case be adjusted or split
-instead? This skips every case on Linux 7.2 and newer, including
-FAN_REPORT_PIDFD | FAN_REPORT_FID | FAN_REPORT_DFID_NAME, whose expected
-behavior did not change. That permanently removes its regression coverage on
-newer kernels.
+Could this helper use an unreserved name such as parse_kver or
+tst_parse_kver_internal? Identifiers beginning with an underscore are
+reserved at file scope by C, and LTP's C rules explicitly prohibit them.
 
 --- [PATCH 6/9] ---
 
+> +static struct tst_test test = {
 > +	.min_kver = "4.4",
 > +	.max_kver = "5.0",
+> +	.test_all = do_test,
+> +};
 
-How does this exercise the successful min/max path on current kernels? It
-exits with TCONF on every kernel newer than 5.0, and runtest.sh accepts TCONF
-as success without calling do_test(). Could the upper bound be made safely
-higher than the running kernel, or otherwise deterministic?
+How can this self-test verify that a valid range is run? On kernel 7.2,
+the framework exits with TCONF before do_test() is called, and runtest.sh
+accepts TCONF as success. The test therefore remains green even if running
+a test inside a valid min/max range is broken. Could the test use a range
+containing the running kernel, or assert the gating result another way?
 
 --- [PATCH 7/9] ---
 
@@ -144,43 +136,28 @@ higher than the running kernel, or otherwise deterministic?
 > + * @b3: Second kernel patch level.
 > + */
 
-Could this document the return value? Callers need to know that a negative
-result means the first version is older, zero means equal, and a positive
-result means newer.
-
-> This will be heavily used in metaparse.c (speedup of metadata
-> generation) in the next commit.
-
-Could the reusable comparison need be explained without referring to the next
-patch? Commit messages in a series should be self-contained.
-
---- [PATCH 8/9] ---
-
-> Will be used for metadata.c in the next commit.
-
-Could this describe the host-tool link or build-order problem solved by the
-rule? The current body relies on the next patch and does not explain why host
-targets need MAKE_DEPS.
+Could this public API document its return value with the required kernel-doc
+Return: section? It should describe the negative, zero, and positive cases.
 
 --- [PATCH 9/9] ---
 
-> +	if (min_kver && max_kver) {
-> +		if (tst_kver_cmp(a1, a2, a3, b1, b2, b3) < 0) {
-
-Could this apply the same two-component max_kver semantics as
-check_max_kver()? For example, min_kver "7.1.5" and max_kver "7.1" is rejected
-as 7.1.5 > 7.1.0, although the API defines max_kver "7.1" to include every
-7.1.x kernel.
-
-> +include $(top_srcdir)/include/mk/testcases.mk
->
 > +metaparse: HOST_CFLAGS		+= -I$(abs_srcdir)/../include -L$(abs_builddir)/../lib
 > +metaparse: HOST_LDLIBS		+= -lltp
 
-How will this work for cross builds? metaparse is built with HOSTCC, while
-testcases.mk builds libltp.a with the target CC. A host linker cannot consume
-a target-architecture archive. Could the parsing and comparison code used by
-metaparse be built with HOSTCC or shared without linking the target library?
+How does this work for cross builds? metaparse is linked with HOSTCC, while
+lib/libltp.a is built with the target CC. HOSTCC cannot link
+target-architecture objects, so metadata generation fails with an
+incompatible object format. Could the needed parsing and comparison code be
+built with HOSTCC and kept free of target-library dependencies instead?
+
+> +	if (min_kver && max_kver) {
+> +		if (tst_kver_cmp(a1, a2, a3, b1, b2, b3) < 0) {
+> +			fprintf(stderr, "%s: min_kver (%s) > max_kver (%s)\n",
+
+Could this comparison apply the documented two-component max_kver semantics?
+For example, min_kver "7.1.5" and max_kver "7.1" is a valid nonempty range
+because max_kver "7.1" includes every 7.1.x stable release. This literal
+comparison treats the maximum as 7.1.0 and rejects that range.
 
 Verdict - Needs revision
 
