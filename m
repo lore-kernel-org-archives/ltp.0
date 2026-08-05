@@ -4,63 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2C5F1C55174
-	for <ltp@archiver.kernel.org>; Wed,  5 Aug 2026 15:16:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C725BC55ABA
+	for <ltp@archiver.kernel.org>; Wed,  5 Aug 2026 15:16:16 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8F8523E7617
-	for <ltp@archiver.kernel.org>; Wed,  5 Aug 2026 17:16:02 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 52AA33E7156
+	for <ltp@archiver.kernel.org>; Wed,  5 Aug 2026 17:16:15 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 07D813CE30B
+ by picard.linux.it (Postfix) with ESMTPS id 978FC3CE30B
  for <ltp@lists.linux.it>; Wed,  5 Aug 2026 17:15:07 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de
  [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id CE10F1400E10
- for <ltp@lists.linux.it>; Wed,  5 Aug 2026 17:15:06 +0200 (CEST)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 451536005F2
+ for <ltp@lists.linux.it>; Wed,  5 Aug 2026 17:15:07 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 2E8567F21B;
- Wed,  5 Aug 2026 15:15:05 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id B7E507F1F0;
+ Wed,  5 Aug 2026 15:15:01 +0000 (UTC)
 Authentication-Results: smtp-out1.suse.de;
 	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1785942901; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=Jj2f0KoMLtNcXeKc/O+A7s/9W0NEXL6BqQ7NOV3AXT4=;
+ b=Khnq0fElcrq1fBPfdsHADXH3JvMlKypH+F05uvznoeouDeYi3iYMtU9fXym8zNdA7drCYm
+ r+wJRUXrhLxQ86IZhhh2hfxAmpOM/fzNHW7C6oo5ue3+g5e1diojbOTrpSNay/kt7WCC9N
+ uJGyefPouZx7yl9Zz4IrRLgbyaosIKA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1785942901;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=Jj2f0KoMLtNcXeKc/O+A7s/9W0NEXL6BqQ7NOV3AXT4=;
+ b=mbmeG/TLB+dYsjxppZ2x9fJmIDWJyYYyHBNOz0/uLyE8uC4rSNFQMP9ke9QaY0cS+aBof/
+ F9w+Q86gVDdsRSAA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7DD11779F3;
- Wed,  5 Aug 2026 15:15:03 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 537A6779EC;
+ Wed,  5 Aug 2026 15:15:01 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id CEG3HXdTc2qsGgAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Wed, 05 Aug 2026 15:15:03 +0000
+ by imap1.dmz-prg2.suse.org with ESMTPSA id iCz4EXVTc2qsGgAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Wed, 05 Aug 2026 15:15:01 +0000
 From: Petr Vorel <pvorel@suse.cz>
 To: ltp@lists.linux.it
-Date: Wed,  5 Aug 2026 17:14:51 +0200
-Message-ID: <20260805151451.648990-10-pvorel@suse.cz>
+Date: Wed,  5 Aug 2026 17:14:44 +0200
+Message-ID: <20260805151451.648990-3-pvorel@suse.cz>
 X-Mailer: git-send-email 2.55.0
 In-Reply-To: <20260805151451.648990-1-pvorel@suse.cz>
 References: <20260805151451.648990-1-pvorel@suse.cz>
 MIME-Version: 1.0
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Rspamd-Queue-Id: 2E8567F21B
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
 X-Spamd-Result: default: False [-4.00 / 50.00];
 	REPLY(-4.00)[]
+X-Rspamd-Queue-Id: B7E507F1F0
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
 X-Rspamd-Action: no action
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v4 9/9] [RFC] metaparse: Check {min, max}_kver validity
+Subject: [LTP] [PATCH v4 2/9] lib: Rename function check_kver() =>
+ check_min_kver()
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,113 +94,63 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Check .max_kver and .min_kver validity. Exit generation with error when:
-* .max_kver or .min_kver is invalid
-* .min_kver > .max_kver
+This is a preparation for struct tst_test max_kver member in the next
+commit.
 
-Suggested-by: Li Wang <li.wang@linux.dev>
+Reviewed-by: Avinesh Kumar <avinesh.kumar@suse.com>
+Reviewed-by: Andrea Cervesato <andrea.cervesato@suse.com>
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
-New in v4.
+The same as in v3.
 
- lib/tst_test.c       |  2 ++
- metadata/Makefile    |  6 ++++--
- metadata/metaparse.c | 33 +++++++++++++++++++++++++++++++++
- 3 files changed, 39 insertions(+), 2 deletions(-)
+ lib/tst_test.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
 diff --git a/lib/tst_test.c b/lib/tst_test.c
-index 0d3714c709..11d233dcbd 100644
+index 351b155700..c42dcf14e4 100644
 --- a/lib/tst_test.c
 +++ b/lib/tst_test.c
-@@ -1496,6 +1496,8 @@ static void do_setup(int argc, char *argv[])
- 	if (tst_test->max_kver)
- 		check_max_kver(tst_test->max_kver, 1);
+@@ -1058,11 +1058,11 @@ static void do_exit(int ret)
+ }
  
-+	// TODO: Add runtime check tst_test->max_kver >= tst_test->min_kver.
-+
+ /*
+- * Check for the required kernel version.
++ * Check for the minimal required kernel version.
+  *
+  * return: true if the kernel version is high enough, false otherwise.
+  */
+-static bool check_kver(const char *min_kver, const int brk_nosupp)
++static bool check_min_kver(const char *min_kver, const int brk_nosupp)
+ {
+ 	char *msg;
+ 	int v1, v2, v3;
+@@ -1457,7 +1457,7 @@ static void do_setup(int argc, char *argv[])
+ 		tst_brk(TCONF, "Test needs to be run as root");
+ 
+ 	if (tst_test->min_kver)
+-		check_kver(tst_test->min_kver, 1);
++		check_min_kver(tst_test->min_kver, 1);
+ 
  	if (tst_test->skip_in_lockdown && tst_lockdown_enabled() > 0)
  		tst_brk(TCONF, "Kernel is locked down, skipping test");
+@@ -1580,7 +1580,7 @@ static void do_setup(int argc, char *argv[])
+ 				tst_check_cmd(tst_test->filesystems->mkfs_ver, 1);
  
-diff --git a/metadata/Makefile b/metadata/Makefile
-index af194bcc94..9ee2441669 100644
---- a/metadata/Makefile
-+++ b/metadata/Makefile
-@@ -3,13 +3,15 @@
+ 			if (tst_test->filesystems && tst_test->filesystems->min_kver)
+-				check_kver(tst_test->filesystems->min_kver, 1);
++				check_min_kver(tst_test->filesystems->min_kver, 1);
  
- top_srcdir		?= ..
- 
--include $(top_srcdir)/include/mk/env_pre.mk
--include $(top_srcdir)/include/mk/functions.mk
-+include $(top_srcdir)/include/mk/testcases.mk
- 
- MAKE_TARGETS		:= ltp.json
- HOST_MAKE_TARGETS	:= metaparse metaparse-sh
- INSTALL_DIR		= metadata
- 
-+metaparse: HOST_CFLAGS		+= -I$(abs_srcdir)/../include -L$(abs_builddir)/../lib
-+metaparse: HOST_LDLIBS		+= -lltp
-+
- .PHONY: ltp.json
- 
- ltp.json: metaparse metaparse-sh
-diff --git a/metadata/metaparse.c b/metadata/metaparse.c
-index cb141c3831..07a452a5a1 100644
---- a/metadata/metaparse.c
-+++ b/metadata/metaparse.c
-@@ -6,6 +6,7 @@
- 
- #define _GNU_SOURCE
- 
-+#include <assert.h>
- #include <search.h>
- #include <stdio.h>
- #include <string.h>
-@@ -15,6 +16,7 @@
- #include <errno.h>
- 
- #include "data_storage.h"
-+#include "tst_kvercmp.h"
- 
- #define INCLUDE_PATH_MAX 5
- #define GROUPS_TAG "@groups"
-@@ -1372,6 +1374,37 @@ int main(int argc, char *argv[])
+ 			prepare_device(tst_test->filesystems);
  		}
- 	}
+@@ -1984,7 +1984,7 @@ static void run_tcase_on_fs(struct tst_fs *fs, const char *fs_type)
+ 	if (fs->mkfs_ver && !tst_check_cmd(fs->mkfs_ver, 0))
+ 		return;
  
-+	/* Check max_kver >= min_kver */
-+	struct data_node *max_kver = data_node_hash_get(res, "max_kver");
-+	struct data_node *min_kver = data_node_hash_get(res, "min_kver");
-+	int a1, a2, a3, b1, b2, b3;
-+
-+	if (min_kver) {
-+		assert(min_kver->type == DATA_STRING);
-+		if (tst_parse_kver(min_kver->string.val, &b1, &b2, &b3)) {
-+			fprintf(stderr, "%s: wrong min_kver: '%s'\n",
-+				argv[optind], min_kver->string.val);
-+			return 1;
-+		}
-+	}
-+
-+	if (max_kver) {
-+		assert(max_kver->type == DATA_STRING);
-+		if (tst_parse_kver(max_kver->string.val, &a1, &a2, &a3)) {
-+			fprintf(stderr, "%s: wrong max_kver: '%s'\n",
-+					argv[optind], max_kver->string.val);
-+			return 1;
-+		}
-+	}
-+
-+	if (min_kver && max_kver) {
-+		if (tst_kver_cmp(a1, a2, a3, b1, b2, b3) < 0) {
-+			fprintf(stderr, "%s: min_kver (%s) > max_kver (%s)\n",
-+					argv[optind], min_kver->string.val, max_kver->string.val);
-+			return 1;
-+		}
-+	}
-+
- 	/* Normalize types */
- 	check_normalize_types(res, "", tst_test_typemap);
+-	if (fs->min_kver && !check_kver(fs->min_kver, 0))
++	if (fs->min_kver && !check_min_kver(fs->min_kver, 0))
+ 		return;
  
+ 	prepare_device(fs);
 -- 
 2.55.0
 
