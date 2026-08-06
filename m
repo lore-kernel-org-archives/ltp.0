@@ -4,81 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C5563C56208
-	for <ltp@archiver.kernel.org>; Thu,  6 Aug 2026 10:41:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DCF9AC55ABF
+	for <ltp@archiver.kernel.org>; Thu,  6 Aug 2026 10:42:08 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 2B5A33E2D1F
-	for <ltp@archiver.kernel.org>; Thu,  6 Aug 2026 12:41:14 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 689C43E28F2
+	for <ltp@archiver.kernel.org>; Thu,  6 Aug 2026 12:42:07 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A00823C2678
- for <ltp@lists.linux.it>; Thu,  6 Aug 2026 12:40:58 +0200 (CEST)
-Received: from mail-yx2-x03.google.com (mail-yx2-x03.google.com
- [IPv6:2607:f8b0:4864:41::3])
+ by picard.linux.it (Postfix) with ESMTPS id 4B6213C2678
+ for <ltp@lists.linux.it>; Thu,  6 Aug 2026 12:41:52 +0200 (CEST)
+Received: from mail-oi2-x02.google.com (mail-oi2-x02.google.com
+ [IPv6:2607:f8b0:4864:32::2])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 38DA42005C3
- for <ltp@lists.linux.it>; Thu,  6 Aug 2026 12:40:58 +0200 (CEST)
-Received: by mail-yx2-x03.google.com with SMTP id
- 00721157ae682-81e7a64294cso5337657b3.1
- for <ltp@lists.linux.it>; Thu, 06 Aug 2026 03:40:58 -0700 (PDT)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id DB04110005BE
+ for <ltp@lists.linux.it>; Thu,  6 Aug 2026 12:41:51 +0200 (CEST)
+Received: by mail-oi2-x02.google.com with SMTP id
+ 5614622812f47-4ab2d8e7e4cso549195b6e.1
+ for <ltp@lists.linux.it>; Thu, 06 Aug 2026 03:41:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1786012857; x=1786617657; darn=lists.linux.it;
+ d=gmail.com; s=20251104; t=1786012910; x=1786617710; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to:content-type;
- bh=zP8AtVzRtKePExhSp/kxTYBvn2L6Tzz00hfedEk5hEg=;
- b=iRvC0klpInuXxWRUBr/k8FAdHyAIzVp17w31Hmwfx61sRI3/xww/PttupfL+1Muuvd
- zp6KsRrn4Qh4p17cLVJQ9jZOlBhLnzYOmO+3U4tP2owCsnJSbE6nvwB1senXiXDJMcZ3
- VGXPty0XjxyhIKtdW0j0orCgAzTSAWBhkQbrMsx3rS8W7a/rfbKsr9rzUsxhZsmzcTUj
- UL08tsfYNvECYHqW7R3orc8DA/d4gE4xuUkJaTFDcRQvN3j4ezgfq1Ykc30BUS/LiyJ0
- DAR86SrK6mEDW7W9PA6zTd5oz1HypTf+h2c2AVTLwTOXONEaoW5cNoJHIyB5fgdNX2V5
- ExRw==
+ bh=SWkERVk2wvQU7mjbybEWVjKAqi38xhmf9RbrwYcJEj0=;
+ b=ajZg/zYiK27YTHJyVA8Y9j7eojbfUj/gmgW6Znp90OJF5I10R7gqNMjlT6lvmdvumN
+ 7ZSh68p4ZVAejeuuuVD2FSASbaXTjj0ODHhQut43PpHBAINIUTbDjMUtYXZ2e+vne2Fi
+ wpB+vhaSlL615Seq7QZtrPUdg4/ZiPiu11Uk2nyC6oDy0mE/reSWBS+JLe9phW1ump7z
+ 3HbJMQnUGoAid4E2oqHxW7wEl2Gt35mO+CW+muvzOGWI3tEqyWGDw641q8bl06B4dSrT
+ lvf1/pr/ae3Bh/RwVyXDvtir6V9M8b417uc++Z9tZcLGpJ5XSS/1Zlbw+o9ARXpv9XHB
+ wzuw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1786012857; x=1786617657;
+ d=1e100.net; s=20251104; t=1786012910; x=1786617710;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to:content-type;
- bh=zP8AtVzRtKePExhSp/kxTYBvn2L6Tzz00hfedEk5hEg=;
- b=RNcPGmz95Esh8ESQW1ToSxsGVhgUrUBWK4h7Ffe4p8oVkuT0etJJklnkaRNhAoAtBW
- 2BzYYKMh8NWnwdtrDk5duvyX4EFrLICkzUBvqpjHmaHeP/mPbD40IZBi0r9Xuri9yfyz
- Y8rXtyoPQBYtrscZot/sruQCmfdc7onCDruDG9osdXhu/YCEGX/RiGfj6h6bgLEoD9YZ
- aUwLUpx2vce1Wora8lASVF9E1rmILQK19Qho51HVWN+Cm8Hwo5ehWSYY2S4jQglws4Vj
- MJ4I7L8zmrE0CmpYKEnQSjduHxSCBfuO1tzof4NCZv3O+IFx8toKdRvb/xulsG7+0XHX
- cUDw==
-X-Gm-Message-State: AOJu0Yx3YnnhHAMfKQY2eSqihhWbLe45ZFrfqCtwoUmz/ISpuBOqfrO3
- ab7WRQ6TVYU53OM0pAV2+gJs2qR+c/noB3E//MoP9pvieW7qrEZybiSK
-X-Gm-Gg: AR+sD10Abi1jWTnAn1rxCM9bw8HjAsQEDSE70ihc+P67giTKKnljHG2bjYIaof+qUEY
- VA0w4v/e153h1AT+Cqr4Zz19NGdCsnlQ1rAu5n8fSGELREpx6xnBG02UyB9NZ+fkS150TSfv4Ds
- Ywv3Q24c+wYl8aHrn/vOPKt3yPG8xRkRXNyddobnAEX72FhjUsshxP3pcy2CR6a79MbjugY5j1d
- PieHO3qqtoJPRojFp/gNGrAmHvUVIZqWCs6CBE+oM+3Ecan4zzrTtWeIyDLos1epREiWA+EPK1t
- CZvaEtK48U0nF6ijgTcVc58Q1cA6CKqR5OAopQgoiQFMPPm/4rhWsJFv8FxmB7qN5m1fbkRrE3O
- gTkhF3cPZogYTxyXMntz0fR0q1OJJ4XIUKNiiWMMmqxhbLHbR9GY5O2na0+Z3vO/lsE7YxRySA7
- Nma7Hh8Wihb/cV1tztzyyeyQignMfPIclj7QZtyFJU+7fvO3hT9hP8btcTEYUVHwt/Mb6pQgM2A
- rSAhWfHvb4RyzzHRxpZT9LDhHMkZrziKM9+vJUP82Ziu5QZCckwYQs5Bed7YpcZKKxL8parFZzs
-X-Received: by 2002:a05:690c:7286:b0:81e:6a10:f90f with SMTP id
- 00721157ae682-8225ba2bd2fmr2477367b3.17.1786012856944; 
- Thu, 06 Aug 2026 03:40:56 -0700 (PDT)
+ bh=SWkERVk2wvQU7mjbybEWVjKAqi38xhmf9RbrwYcJEj0=;
+ b=RhzjPWj6uo9wYq6jetNYcFEAponUDotsK7kCdFTXJdEJ0V6w2YNyeNMf6CiPVFJrT5
+ ur6vg6e8vCVkBgjD4kC4P1c/fWWGSziQPy4Z402802AZI9zb1pjlEJBx/d0nUxnyZEoW
+ olpxyuXc7j052ILIvornBn6dTAJ7ORa6Gc5R2XsivZtcT1fCcs4ugdyVu6a3ZcI1M3Nl
+ 62IhyruxAHHprTg8y1Hw5HDc10HMe6cKiGsR/2QweEanaek4/l/vN8Li55pUVxMy2sj9
+ tuzbDXdGoAP4mUTDvmx+oraPjWodANUykAWoPXcXeE874+fjwEO7Z5apm/NqR9ZJbQor
+ OHPA==
+X-Gm-Message-State: AOJu0YyzTKfPuLKAn2aJui5wMqflZ8G2QTcYKCHYKxo9T89Rh/Mw/kQN
+ 7f39xW1x4j8NXpQ6C72kekUxqmVJW5wOpfxmU0rxfPcmEqlA+UKqhDGO
+X-Gm-Gg: AR+sD107hbVXYERAOegYWSAqpw9LqTjLAVeUPpTV6rqPeYi52gYKN96sAsjMlEbpUsL
+ yj1PvPHqANBmlAXqVYCWcBCqRckRQIrA9HoheXE7/euHhsnYAQOQgwGOa0FJueJKHcZ06Ir5Mrm
+ SnXhqQjmOCN5wgqEzNpruoA8PsWhsheR+dSUw2wW0WwC/pzoot3CgW3kEQSFba+bH4ld0UkwI3S
+ oLGBWub7TgJj+nO9BUCBqY0BXgb4B11gj4dGKnhmjA+HcsdUI6oZFXqbQu8N3XFAlWtZi+UyjeX
+ hTvBk5MsZhw9lLMOXnxydr9RX32amK5/ln8t7LMXSSzxeV2VVDRawzh6IHO6n22rLRDee2rwluK
+ Sdax+7/siICRwatcQPNAXxLhxQB6W4FcR8ZH4nEwLBbgGS6rrsZ6HV2nHpMxc86TaCcT2z/mVqy
+ EHh/ywftJgren/Gbt/oWxPpQ/PxA8JbWGl2rCF+eTgrJJAoNTqVjVJn63puoE4S063hz/gFnH+n
+ 4AHJAhRdUo4F9FLveIpmcJMnbPiekjXhDsWqOWSFgTFTcDkrx5tMQjmHjEFkZHilQl5alT66nY5
+ aw==
+X-Received: by 2002:a05:6808:1824:b0:4a0:97bc:53a4 with SMTP id
+ 5614622812f47-4afadf2d77amr7710793b6e.5.1786012910375; 
+ Thu, 06 Aug 2026 03:41:50 -0700 (PDT)
 Received: from
- runnervmvrwv9.floazsvxcilefmrd5phyrjbtph.ex.internal.cloudapp.net
- ([64.236.201.39]) by smtp.gmail.com with ESMTPSA id
- 00721157ae682-8201323141bsm36654597b3.15.2026.08.06.03.40.56
+ runnervmvrwv9.5pbdgxxwrqiuxfrk22vlocdl4h.gx.internal.cloudapp.net
+ ([172.202.100.55]) by smtp.gmail.com with ESMTPSA id
+ 5614622812f47-4afae7c50e9sm4180672b6e.17.2026.08.06.03.41.49
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 06 Aug 2026 03:40:56 -0700 (PDT)
+ Thu, 06 Aug 2026 03:41:49 -0700 (PDT)
 From: linuxtestproject.agent@gmail.com
 To: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Thu,  6 Aug 2026 10:40:55 +0000
-Message-ID: <20260806104055.4267-1-linuxtestproject.agent@gmail.com>
+Date: Thu,  6 Aug 2026 10:41:48 +0000
+Message-ID: <20260806104148.8947-1-linuxtestproject.agent@gmail.com>
 X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260806-tpci_refactoring-v2-1-bdc3a749ca02@suse.com>
-References: <20260806-tpci_refactoring-v2-1-bdc3a749ca02@suse.com>
+In-Reply-To: <20260806-cve-2026-64600-v6-1-26c11513c75a@suse.com>
+References: <20260806-cve-2026-64600-v6-1-26c11513c75a@suse.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] tpci: refactor kernel module
+Subject: Re: [LTP] cve: reproducer for cve-2026-64600
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -99,48 +101,9 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 Hi Andrea,
 
 On Thu, Aug 6, 2026, Andrea Cervesato wrote:
-> tpci: refactor kernel module
+> cve: reproducer for cve-2026-64600
 
---- [PATCH 2/2] ---
-
-> +	for (int i = 0; i < PCI_TCASES_NUM; ++i) {
-> +		if (i == PCI_DISABLE)
-> +			continue;
-
-Could the successful PCI_ENABLE and PCI_RESOURCES calls be balanced on all
-exit paths instead of unconditionally skipping PCI_DISABLE?
-
-In Linux 7.2, pci_enable_device() increments pci_dev.enable_cnt even when
-the device is already enabled, and pci_disable_device() must be called once
-for each successful enable. These two test cases therefore leak at least two
-enable references per run with -d, and more with -i. Unloading the test module
-does not restore that system-wide PCI state.
-
-> +		if (!is_target && is_destructive_test(i))
-> +			continue;
-> +
-> +		SAFE_FILE_PRINTF(DEV_TCASE, "%d", i);
-
-Could PCI_RESOURCES guarantee that the target's original driver is rebound
-before this destructive case is enabled?
-
-test_assign_resources() releases the driver before pci_assign_resource(), but
-only calls device_attach() when assignment returns zero. It also ignores a
-zero or negative device_attach() result and treats -EBUSY from assignment as
-TPASS. An assignment or reprobe failure can therefore leave the selected
-device unbound after the test, and module cleanup does not restore it.
-
-> Merge kernel module with the current test inside the same folder and
-> refactor tpci test using new API.
->
-> Now test has a -d option to select device for operating destructive
-> tests on target.
-
-Could the commit message explain why the directory merge, API conversion,
-and selective destructive execution are needed? The current body only
-restates what the patch changes.
-
-Verdict - Needs revision
+Verdict - Reviewed
 
 ---
 Note:
