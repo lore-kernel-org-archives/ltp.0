@@ -4,101 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 39702C56208
-	for <ltp@archiver.kernel.org>; Thu,  6 Aug 2026 10:32:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 28A9AC55ABF
+	for <ltp@archiver.kernel.org>; Thu,  6 Aug 2026 10:39:43 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 73C9A3E49DC
-	for <ltp@archiver.kernel.org>; Thu,  6 Aug 2026 12:32:16 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 708FC3E7064
+	for <ltp@archiver.kernel.org>; Thu,  6 Aug 2026 12:39:41 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 185433E2659
- for <ltp@lists.linux.it>; Thu,  6 Aug 2026 12:31:58 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 9B2FF3E2659
+ for <ltp@lists.linux.it>; Thu,  6 Aug 2026 12:39:24 +0200 (CEST)
+Received: from mail-pz2-x01.google.com (mail-pz2-x01.google.com
+ [IPv6:2607:f8b0:4864:3b::1])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 4F8561A00657
- for <ltp@lists.linux.it>; Thu,  6 Aug 2026 12:31:57 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 76B7F3DF3;
- Thu,  6 Aug 2026 10:31:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1786012312;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=McY2WTqKOZQmPJuJOYtVZi54cE9w1a9GsEuIg8Rau4s=;
- b=sZWv7/qnFw4lEgkYmFHOFGCft8mALRVaIm5gCutgX7TcNAjhDD92fZLfeI0YQsJbQ7wneu
- JE0WWKpt4RRWmj7nxk8fdefThR/yT8zQedZtZIXVQtpyqdygb/QpMfdrugAldojeEI9k5Z
- /PRpxTnuCna9KzPbTtrUIVsBfkuvV8g=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1786012312;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=McY2WTqKOZQmPJuJOYtVZi54cE9w1a9GsEuIg8Rau4s=;
- b=PjOocSFfDVGSEUWTYPSZcqW6c30i2In4t01K4gitTy+azwujmpqUYUstQkvyUxEcaa74tr
- XwaCnrefoEXSvPBw==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1786012308;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=McY2WTqKOZQmPJuJOYtVZi54cE9w1a9GsEuIg8Rau4s=;
- b=H1B1oo61IjGCpb8IBiS3tf9nLEbZATRpt5RhcrelaU3Qrsx+KmaZDF6pHLxpc9/HU68Dkh
- ysFP2O9VPfTsI/gjFxhTDsTR87DR1HoyBh0jLHUj0NK1qsgShh6n0xfcZzn3UCSVAkxBdY
- i8ueyRhgo8ujzXiIoeU/NiqN9XMXMEg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1786012308;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=McY2WTqKOZQmPJuJOYtVZi54cE9w1a9GsEuIg8Rau4s=;
- b=SLRHZASaCeUnQBtc3DaxIlJKvCrJo9RAnhKkmzcrDq7nxJj06LnTfEXyEx6BGA/gB98sYz
- zdXtWbOeAYiCk9AA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4E095779B6;
- Thu,  6 Aug 2026 10:31:48 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 7cMNEpRidGr5aQAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Thu, 06 Aug 2026 10:31:48 +0000
-Date: Thu, 6 Aug 2026 12:31:46 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Wei Gao <wegao@suse.com>
-Message-ID: <20260806103146.GA838915@pevik>
-References: <20260602010137.27226-1-wegao@suse.com>
- <20260729053803.9823-1-wegao@suse.com>
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 61A6D2005CC
+ for <ltp@lists.linux.it>; Thu,  6 Aug 2026 12:39:23 +0200 (CEST)
+Received: by mail-pz2-x01.google.com with SMTP id
+ 41be03b00d2f7-c9fcd903839so1078055a12.1
+ for <ltp@lists.linux.it>; Thu, 06 Aug 2026 03:39:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20251104; t=1786012761; x=1786617561; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to:content-type;
+ bh=slavshsVIuQWP7gcIuEMDveUwln8z8Ut7VMxaLmPnuk=;
+ b=rZERtT2uRDTNyNC+9cU/D3hkNdWaR5VWFnrJ14MLvBbOkXsHQMPRGbS0jpqr0HOGjk
+ lcXmFo4WBrJtShzHZuUCvrYTj80adSWedHuZj+iW56GiE2S+iq+i5xQPXdcmVDzyYp44
+ 5SXq8Zme2VxB6Q+L7fSSLV5woAlRHb5QrtiljsyZp0XbtoF1oc2iFVC51ZBr3IPOwefY
+ 9pCaggQNox1JMTc0mwwUVHVVLXTpX5yXgEb2Lq1ouBWfBG9RE4FiVTmfSfByVkj+tuSE
+ tH0kzyGkodL9nfVfu+SclJRh/1I/5t2IXbWYZXvjfl548+1nuWa07wvqRt9h2DItfICJ
+ RzEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1786012761; x=1786617561;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to:content-type;
+ bh=slavshsVIuQWP7gcIuEMDveUwln8z8Ut7VMxaLmPnuk=;
+ b=s33Gnk2/0CIAplIh/RgE1qbnCM5OayHND9i6cybfylXz1+lbxjKiRpZ8byUUkuuJ3H
+ LnTkhHF89wkhLbbaC23JmNfFussFn5nB/sYLBVx1FVwxayq3wRgY7VclKIeDq8X9L0Kx
+ 9/+DEffh48+wLwkTZbWNnCP+Yo0AWVXkMjGx7ogh30MzdY00/lcYuqhuesESqYRBbl1n
+ YcHSStW9UUnJ69JMhDTwkz+qsg3Yya7/HDwZlcmlddC67EBgAsk6v2/41NPsj0Xr3bun
+ 0MGSap3B1iQi6zFFgvWnnLnAzuLn9RX/qJjjcmzqEIbsXBR8ReD5IibbqyRfV9VivZAd
+ mK3A==
+X-Gm-Message-State: AOJu0YzJZUVuvliUCRG2O5tJ6CIlnxEzqq3KPkkyAkzeGqM7CIQisK/5
+ DxzQ0xtx0dvTY8Hn+mDLV04i8x/QDHQsBrbAG/qDHwTI3W89fBbRWSKv
+X-Gm-Gg: AR+sD13v6ozEjVe1h7UuSTsZefrBaR5iO+w8sxBk2ysmD16SIbQcusXmmXe32yC5hNi
+ 5WNHKssoQvK0KYOQBv58mAQ5vamJzjKMaHcoc6H4QlGQuHvFVsSXLXdoM5+y5RqyvIf4n0s7Ea6
+ 1Vc5hmADEaL6Sv/ZsU87jTK3XgtgPxufjouOJoDFn9FF9BNNgTXs/q8dyu82DerFbrsB909SAt+
+ 5/XJLTUP8ctVnnERRjf/Ck3hj0Z9rwp3CGwreKvMisA1N+wpyKER+Oa3O0ZloNtzm0ILmKuPAU0
+ A87BakVK13yyKVQDpE6Rn1MkyiywXMty+VJ8j462whCgt8XPOPv/x3gi/ELTXAb956p1Gmq6Mw8
+ 4zB4+BQq46XF7AUQYac1sBmsI+IPTwbesZpeGXVMxVLSxIsdIQVEnAMR9URsy7UI3W+TrQWsNR5
+ xH+NVlp0aWeXv/aW5Wuv0d+pjucJRDZdhwJ2gNKbVYv4Fa0Ts9lm0JAOghTncIQNf7QLmLFFXSK
+ R+CUX2V6lSC/cbsrmE9HOKCawPqRSFuWW9iQx1jjo/mMFg9GkAPifv/Lh+127SRi5kkDMPCrq7S
+ bA==
+X-Received: by 2002:a05:6a21:6014:b0:3c1:85d:fa2f with SMTP id
+ adf61e73a8af0-3cb85f4a66dmr18281647637.36.1786012761417; 
+ Thu, 06 Aug 2026 03:39:21 -0700 (PDT)
+Received: from
+ runnervmd93pd.fkpelg5r4hguxmdb5uu5df2fgc.dx.internal.cloudapp.net
+ ([20.184.150.167]) by smtp.gmail.com with ESMTPSA id
+ a92af1059eb24-13fca9111b6sm23100777c88.13.2026.08.06.03.39.20
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Thu, 06 Aug 2026 03:39:20 -0700 (PDT)
+From: linuxtestproject.agent@gmail.com
+To: Avinesh Kumar <avinesh.kumar@suse.com>
+Date: Thu,  6 Aug 2026 10:39:19 +0000
+Message-ID: <20260806103919.3882-1-linuxtestproject.agent@gmail.com>
+X-Mailer: git-send-email 2.54.0
+In-Reply-To: <20260806074713.158271-1-avinesh.kumar@suse.com>
+References: <20260806074713.158271-1-avinesh.kumar@suse.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20260729053803.9823-1-wegao@suse.com>
-X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- RCVD_VIA_SMTP_AUTH(0.00)[]; MISSING_XM_UA(0.00)[];
- MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
- RCVD_TLS_ALL(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; FROM_HAS_DN(0.00)[];
- RCPT_COUNT_THREE(0.00)[3]; FROM_EQ_ENVFROM(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,suse.cz:email];
- RCVD_COUNT_TWO(0.00)[2]; REPLYTO_EQ_FROM(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v5] min_free_kbytes: Handle transient memory drops
- in check_monitor
+Subject: Re: [LTP] nfs_lib: Skip NFS versions disabled on server
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -110,80 +91,28 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
 Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Wei,
+Hi Avinesh,
 
-> High memory pressure can cause MemFree to temporarily drop below the
-> min_free_kbytes threshold before the kernel reclaimer can catch up.
-> This results in intermittent test failures, observed on openQA aarch64
-> virtual machines.
+On 6 Aug 2026, Avinesh Kumar wrote:
+> nfs_lib: Skip NFS versions disabled on server
 
-> Implement a 2-second grace period with high-accuracy 10ms fixed polling
-> in check_monitor() to allow the kernel time to reclaim memory.
+Verdict - Reviewed
 
-> Introduce a 10% tolerance (90% threshold) for the MemFree check.
-> Measurements under extreme pressure show MemFree can dip as low as
-> ~50% to ~70% of the target. While it typically recovers above 90%
-> within one second, hitting the exact 100% watermark sometimes can take
-> significantly longer. This tolerance prevents false positives during the
-> slow recovery tail while still ensuring memory is maintained near the
-> required level.
+---
+Note:
 
-> Also, increase the monitor's idle polling frequency from 2s to 100ms
-> to improve responsiveness during the test run.
+The agent can sometimes produce false positives although often its
+findings are genuine. If you find issues with the review, please
+comment this email or ignore the suggestions.
 
-+1
-
-> Enhanced diagnostics are added to report the minimum memory level seen
-> during the pressure period to aid in future calibration.
-
-> +++ b/testcases/kernel/mem/tunable/min_free_kbytes.c
-...
->  	while (!end) {
->  		memfree = SAFE_READ_MEMINFO("MemFree:");
->  		tune = TST_SYS_CONF_LONG_GET(PATH_VM_MIN_FREE_KBYTES);
-> +		/*
-> +		 * Allow 10% tolerance to account for transient states.
-> +		 */
-> +		threshold = tune * 9 / 10;
-
->  		if (memfree < tune) {
-> -			tst_res(TINFO, "MemFree is %lu kB, "
-> -				"min_free_kbytes is %lu kB", memfree, tune);
-> -			tst_res(TFAIL, "MemFree < min_free_kbytes");
-> -			violated = 1;
-> +			min_memfree = memfree;
-> +			/*
-> +			 * Give it some time to reclaim. The kernel should keep
-> +			 * MemFree above min_free_kbytes, but transient drops
-> +			 * are possible under high pressure.
-> +			 * Check every 10ms for up to 2 seconds for high accuracy.
-> +			 */
-> +			for (i = 10; i <= 2000; i += 10) {
-> +				usleep(10000);
-You used i for usleep() in v1 and v2 [1]. Since v3 [2] you keep using
-usleep(10000), therefore we could have just simple loop (readability):
-
-			for (i = 0; i < 200; i++) {
-
-Otherwise LGTM, thanks! (I don't agree with AI that 90% threshold is
-hiding bugs). Please repost, so that we have patch in the new patchwork instance
-in patchwork.kernel.org (+ please create an user on that instance if you haven't
-already done), because old patchwork don't receive emails any more.
-
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
-
-Kind regards,
-Petr
-
-[1] https://lore.kernel.org/ltp/20260527050843.14963-1-wegao@suse.com/
-[2] https://lore.kernel.org/ltp/20260531134250.25279-1-wegao@suse.com/
+Regards,
+LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
