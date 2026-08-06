@@ -4,95 +4,105 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E415BC55ABF
-	for <ltp@archiver.kernel.org>; Thu,  6 Aug 2026 11:47:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BF329C55ABF
+	for <ltp@archiver.kernel.org>; Thu,  6 Aug 2026 11:52:31 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 553BD3E2E66
-	for <ltp@archiver.kernel.org>; Thu,  6 Aug 2026 13:47:16 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 4533D3E4B75
+	for <ltp@archiver.kernel.org>; Thu,  6 Aug 2026 13:52:30 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 17DA33C73AF
- for <ltp@lists.linux.it>; Thu,  6 Aug 2026 13:47:00 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ by picard.linux.it (Postfix) with ESMTPS id F03073E2BC0
+ for <ltp@lists.linux.it>; Thu,  6 Aug 2026 13:52:15 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 4D85660020C
- for <ltp@lists.linux.it>; Thu,  6 Aug 2026 13:47:00 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 4D295100034E
+ for <ltp@lists.linux.it>; Thu,  6 Aug 2026 13:52:15 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 7C6003E16;
- Thu,  6 Aug 2026 11:46:51 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 927D87FFE0;
+ Thu,  6 Aug 2026 11:52:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1786016815; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1786017130; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=gxhtM1buKxS7QR3hRZl1IXH621jT6hkz4JRLBhNq4qE=;
- b=PaA1YfCsQZOg3CGwZf28NGW0R2fg3iUGlQSP3PBWFC/gI5oh1HbvK8+eUmygMC4Z8A9JRW
- yDHQWwGv2QWek+zpzjqve9lAebyfpKe9NlVVZODa6yiTT1uoZUF9ZsWmEiD5s81IpXRhWP
- UsjvhAExDqp60BkXXhPbx3WI7TLoXJg=
+ bh=pY/wn4V6mJz0cRvwtO9oF1mjwoAYaGktD6kuD3eqOko=;
+ b=i8x5/Ro4iUCX333jmn7d6u1VJWMc3xnZW+ADK3H7+gfj/EsnomDshv0VtQBQbK5Z63W+Bf
+ XLxN3G7Q5fV08JXcF1dnNx6xdgvbyYWxpO4gehlLAuhBxb3vGsLIuSyQR9XgQx6ptlSA/w
+ SQk9DR5EHn87Jdf61emVbRN3Oo+BRvo=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1786016815;
+ s=susede2_ed25519; t=1786017130;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=gxhtM1buKxS7QR3hRZl1IXH621jT6hkz4JRLBhNq4qE=;
- b=WvXbWieDYl0UkCp+xBrQsXwmG1WQXYbxPSEZcohxLHwNy/6U5mqY2e5KL82Ee31IHo21rP
- 7oINFzlJV6aLvsAg==
-Authentication-Results: smtp-out2.suse.de;
-	none
+ bh=pY/wn4V6mJz0cRvwtO9oF1mjwoAYaGktD6kuD3eqOko=;
+ b=F+eg1ez68U5J7kj68G7TjQ4w+B+JUS1vpSVcWxtZbcMaF3VGmLAbOj/+mHcrJo0k84zXFz
+ El04153OZ3eKRoCw==
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="n/UDYsMC";
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=e2cW8ZWV
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1786016811; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1786017126; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=gxhtM1buKxS7QR3hRZl1IXH621jT6hkz4JRLBhNq4qE=;
- b=AICSl4CT/c580fZCCxbhnKT4otLgLaqYxdq1f/IDaK9Ye+BWkECwtzfdeB9Hej0OxI/7EM
- 54KRORBsLpVRdqW+oGBTyhoM74aQKbKosj1dtHvEt9L/k6U9wlR+TRUc73IVJTLVdAmQVh
- tJ5sg+FoEVWF8zmY5YtGmxgjjkzAk3Q=
+ bh=pY/wn4V6mJz0cRvwtO9oF1mjwoAYaGktD6kuD3eqOko=;
+ b=n/UDYsMCACdnFSKN7WiTyBhC2j2gv+hbsENPOpO/pAiQTBsBWI0R8LXclPVVL48xfnyNxG
+ cjvFe4/0YDP/WOB/Cqd3Yl+rWabnvWtjKR4+mwffJ3qawJItXuwOWIitaQcpnqpz61YZAh
+ wxvntq2SFauSX3FfSzsocC93IGUsvT8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1786016811;
+ s=susede2_ed25519; t=1786017126;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=gxhtM1buKxS7QR3hRZl1IXH621jT6hkz4JRLBhNq4qE=;
- b=TkBrEO8B3hTdElnR44J9xj6PDGJ2x7gl4qNZi+4qx1VvVLlhcoxCHOHkVAEjXMbDfFpkx7
- lJzFbjKp/NV++BDA==
+ bh=pY/wn4V6mJz0cRvwtO9oF1mjwoAYaGktD6kuD3eqOko=;
+ b=e2cW8ZWVsW9dcAufRVxjUx9JzGX3ZA7U9chbuQtYW3m+RnTPnmdEtrN8RUuk2HmptJjrbd
+ NGkT8wQwk+O6bCCA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6C7EA779B6;
- Thu,  6 Aug 2026 11:46:51 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 834BA779B6;
+ Thu,  6 Aug 2026 11:52:06 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id jSRuGSt0dGphNQAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Thu, 06 Aug 2026 11:46:51 +0000
-Date: Thu, 6 Aug 2026 13:45:43 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id nHyEH2Z1dGqzOgAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Thu, 06 Aug 2026 11:52:06 +0000
+Date: Thu, 6 Aug 2026 13:50:58 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
 To: Andrea Cervesato <andrea.cervesato@suse.de>
-Message-ID: <anRz55OQe2cjL12R@rei>
+Message-ID: <anR1Is0EQYGj6nvv@rei>
 References: <20260721-rewrite_mremap_testing_suite-v1-0-ec2c3cff6ea4@suse.com>
- <20260721-rewrite_mremap_testing_suite-v1-1-ec2c3cff6ea4@suse.com>
+ <20260721-rewrite_mremap_testing_suite-v1-2-ec2c3cff6ea4@suse.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20260721-rewrite_mremap_testing_suite-v1-1-ec2c3cff6ea4@suse.com>
-X-Spamd-Result: default: False [-3.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+In-Reply-To: <20260721-rewrite_mremap_testing_suite-v1-2-ec2c3cff6ea4@suse.com>
+X-Spamd-Result: default: False [-4.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- NEURAL_HAM_SHORT(-0.20)[-0.999]; MIME_GOOD(-0.10)[text/plain];
- RCPT_COUNT_TWO(0.00)[2]; RCVD_VIA_SMTP_AUTH(0.00)[];
- ARC_NA(0.00)[]; MISSING_XM_UA(0.00)[];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[];
+ DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from,2a07:de40:b281:106:10:150:64:167:received];
+ MISSING_XM_UA(0.00)[];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; MIME_TRACE(0.00)[0:+];
+ ARC_NA(0.00)[]; RCVD_TLS_ALL(0.00)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RCVD_TLS_ALL(0.00)[]; TO_DN_ALL(0.00)[]; FROM_HAS_DN(0.00)[];
- MIME_TRACE(0.00)[0:+]; FROM_EQ_ENVFROM(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ RCPT_COUNT_TWO(0.00)[2]; RCVD_COUNT_TWO(0.00)[2];
+ TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:dkim,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
+ TO_DN_ALL(0.00)[]; DKIM_TRACE(0.00)[suse.cz:+]
+X-Rspamd-Queue-Id: 927D87FFE0
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/5] mremap01: Convert to new API
+Subject: Re: [LTP] [PATCH 2/5] mremap02: Convert to new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -111,47 +121,19 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> -	/*
-> -	 * Call mmap to map virtual memory (memsize bytes) from the
-> -	 * beginning of temporary file (offset is 0) into memory.
-> -	 */
-> -	addr = mmap(0, memsize, PROT_WRITE, MAP_SHARED, fildes, 0);
-> +	for (ind = 0; ind < newsize; ind++)
-> +		addr[ind] = (char)ind;
->  
-> -	/* Check for the return value of mmap() */
-> -	if (addr == (char *)MAP_FAILED) {
-> -		tst_brkm(TBROK, cleanup, "mmaping Failed on %s", TEMPFILE);
-> -	}
-> +	SAFE_MSYNC(addr, newsize, MS_SYNC);
->  
-> -	/* Stretch the file to newsize of virtual memory block */
-> -	if (lseek(fildes, (off_t) newsize, SEEK_SET) != (off_t) newsize) {
-> -		tst_brkm(TBROK, cleanup, "lseek() to %d offset pos. Failed, "
-> -			 "error=%d : %s", newsize, errno, strerror(errno));
-> -	}
-> +	if (verify_file())
-> +		tst_res(TFAIL, "mremap()'d region did not sync to the file");
-> +	else
-> +		tst_res(TPASS, "Functionality of mremap() is correct");
->  
-> -	/* Write one byte data into temporary file */
-> -	if (write(fildes, "\0", 1) != 1) {
-> -		tst_brkm(TBROK | TERRNO, cleanup, "writing to %s failed",
-> -			 TEMPFILE);
-> -	}
+> -	/* Set the old virtual memory address */
+> -	addr = (char *)(addr + (memsize - 1));
+> +	if (TST_RET_PTR != MAP_FAILED)
+> +		SAFE_MUNMAP(TST_RET_PTR, new_size);
 
-We should probably ftruncate(fd, 0) here so that we start with the same
-state on -i 10.
-
-> +	SAFE_MUNMAP(addr, newsize);
-> +	addr = MAP_FAILED;
-
-Can we patch SAFE_MUNMAP() to set the addr to MAP_FAILED as we do in
-SAFE_CLOSE()?
+If we managed to remap the mapping the addr is no loger valid and we
+will pass address that is not inside a mapping on next iteration in -i
+10, I guess that we need to re-initialize page = SAFE_MMAP() and
+bad_addr = page+1;
 
 
 Otherwise:
+
 Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
 
 -- 
