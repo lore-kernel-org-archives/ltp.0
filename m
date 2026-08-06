@@ -4,83 +4,101 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 88793C55174
-	for <ltp@archiver.kernel.org>; Wed,  5 Aug 2026 17:36:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6E6AEC55ABF
+	for <ltp@archiver.kernel.org>; Thu,  6 Aug 2026 05:38:38 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id EC31C3E718A
-	for <ltp@archiver.kernel.org>; Wed,  5 Aug 2026 19:36:00 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 25D593E27FA
+	for <ltp@archiver.kernel.org>; Thu,  6 Aug 2026 07:38:36 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 7F2943C332C
- for <ltp@lists.linux.it>; Wed,  5 Aug 2026 19:35:45 +0200 (CEST)
-Received: from mail-oa1-x43.google.com (mail-oa1-x43.google.com
- [IPv6:2001:4860:4864:20::43])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id AA5A13C991D
+ for <ltp@lists.linux.it>; Thu,  6 Aug 2026 07:38:16 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 2F8DA1000448
- for <ltp@lists.linux.it>; Wed,  5 Aug 2026 19:35:43 +0200 (CEST)
-Received: by mail-oa1-x43.google.com with SMTP id
- 586e51a60fabf-456f7012050so106275fac.0
- for <ltp@lists.linux.it>; Wed, 05 Aug 2026 10:35:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1785951342; x=1786556142; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to:content-type;
- bh=BJLQjOIayu9r41U8LhTB9qHczHfTRVKv4ASissbB+38=;
- b=OcGjSJ98fduZajesNNNMRG26TF1zDv2emi1AEqCVtUSDSPvEPNWuPy7Vp0A9wZ1KF8
- f4n5/ZHIbKCumUulnIskxaMNK1dqijRKFqr7S+bNYgKWnkpbfyumRniHkpp0LFVHr7YK
- 6O6fqi9F5HpbFKhjMLpT9G+WZovtHzY4f0y6/WT5gp4YdnxXCbSJThlWFepgDdzWqS6B
- SmmlcsZ2T5el5zYzxpAUUmi33IEtJ4/JTiofTziwzFHWQyOqKxMZGiTQhjx/IfxoAPHA
- gmeMrIzmK6TxSj+tRXWFHXTab9z8/ElpRQ9BgyRbg0U5eBzx8co2brdeyxCbCLP8Z3FX
- k1Mw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1785951342; x=1786556142;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to:content-type;
- bh=BJLQjOIayu9r41U8LhTB9qHczHfTRVKv4ASissbB+38=;
- b=SWZJ7HGntK425RjNcROLmM6tT3/IIUcyUHIpiFXlyU8cMn32Kk8ZoXdeckAxhBuG7P
- 2K+OAaKF7LAjUa+TOcQDR41x6oHofXOWKVvZ/3RG1pUDbb59EvXZiYDY2rR9KTeGS+z/
- w/V0hKgJ9WyCO6puTqa6zuicovDoqdgzPUnww/QY6853EluTmeDEPcd9DFCgIxenAMOd
- 6NWSV6RWU/Gt9JEQp3uxNb/U6ThjCh7/2XZFCrjJuee6TZY6CnMDKbfxvP0Z2U2NGjr4
- bWf7kCO7+q+dVzIGzPiP8tQjNDXpVqUP//psfxJyQkWOuxBDSXnJmfvXSB1jim+xDLXG
- FcKQ==
-X-Gm-Message-State: AOJu0Yw96tQtql823qPYoDv8C5zMyPwWkhNGkMhBSkNpho+cp/GONujO
- OtHl7QGwV4tPV/aLU2N7mqrUxGQ3qd7pv4sQ4+bsRWlesIJuqn1WkI1t
-X-Gm-Gg: AR+sD12/UGpsAPvstd0WNaeInuCiqgKNyWWDyWvTnKBFqTH+kM0cUc745dXGWMiYi6f
- Thm4uh6LeoH/VUcyM99H/YOHUQGR2DhBHO6NEDbWQp3AhUKj0nsGq3LcRHG6zNDsfUCKdHDXJov
- tATlM0GC+xBL4QubkjstwskmVgr2SjtvUy38CtYtS0jXqBKRKgj/5tY14hAXBXvstx7NL5ifSvE
- YeNXGdAUIwSXmZrhgQKU7fgo9KlsWSbRxOUmR5fqxlEqnAix6m6S04RWrpJIPxWTSIzpAt+G7u9
- vf2PgB/7omBUU7PxebaBb+gTE0rO7Nf8kBEjjN8fZT3GJdzLNsG+mA/FS8DmhN8Ws/gnpjLxIEj
- ZfzEbIHGLVm4lvupjStcSdsBALujBjyLCD6Xn1f1IBNKw3jd6cBHs+nS+nsRJMrSn7nd+1TAeRu
- aTdh9x+pYH6xq2wA9Y8JeY9E6yeoXiygKxK+6VgbTnv89hBU97hBE03S1BzO8yo2TaGAghFGWNi
- nvgungYXroAVMixbTKOCKFNn1JvSKSEOpQGtKQKBlhJXGolXWThtBPKC6PXg9HOkL0R9a4vNZtX
- GA==
-X-Received: by 2002:a05:6870:3105:b0:456:e46a:1df8 with SMTP id
- 586e51a60fabf-459c27bbeb8mr552781fac.6.1785951341660; 
- Wed, 05 Aug 2026 10:35:41 -0700 (PDT)
-Received: from
- runnervmvrwv9.2hu41doa5igu3nug0dckgrlpfb.gx.internal.cloudapp.net
- ([135.119.38.208]) by smtp.gmail.com with ESMTPSA id
- 586e51a60fabf-4599e1c0c46sm3215131fac.2.2026.08.05.10.35.41
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 05 Aug 2026 10:35:41 -0700 (PDT)
-From: linuxtestproject.agent@gmail.com
-To: Petr Vorel <pvorel@suse.cz>
-Date: Wed,  5 Aug 2026 17:35:40 +0000
-Message-ID: <20260805173540.9276-1-linuxtestproject.agent@gmail.com>
-X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260805151451.648990-2-pvorel@suse.cz>
-References: <20260805151451.648990-2-pvorel@suse.cz>
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 4357E1400323
+ for <ltp@lists.linux.it>; Thu,  6 Aug 2026 07:38:15 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 6901F3DF6;
+ Thu,  6 Aug 2026 05:38:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1785994685;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=mMfwIH//B+Z+9mqDg25C3bBTqfT5J0N1G9mJG2Rb2Es=;
+ b=SUAr8lKj+29NrRKwJ6XBzbWdu9hEjTRm4Rn6R0pcG9gsGz8a0Ducnbj2zXtN3g4KCzHYkU
+ sIdI+pfQdSZSvzBJcDpQ2DVSEn0Sz+sevFNigKs/C0s2nFPUX981Y3AzXD7ErgD2HE3u+r
+ Z/7wpJOq7MO46jbY7RNbdudHItkE/5Q=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1785994685;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=mMfwIH//B+Z+9mqDg25C3bBTqfT5J0N1G9mJG2Rb2Es=;
+ b=/MaoPQxlzokcicaJpL43N4nSqKpXE+velEzbJziO9QujAqsIFIyaQONQOyciFaf5Y+XU17
+ hYEmb3TVjwG9u7Aw==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1785994681;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=mMfwIH//B+Z+9mqDg25C3bBTqfT5J0N1G9mJG2Rb2Es=;
+ b=NPu2vJUMQJTD6zlgscvsnyl9fAyRWCjSxxU8rysNJ2tlxJ7qDuDTzWo0/utRADLoR54u3+
+ 9R15FDaT8TD6XUeyzFxDZ1bVUclMWfoTbwqMLSnrX+UbPu5ysY26xqjPI7XIN1GwX/a5t6
+ MsdtI9SVOOK2KNBmlv1qqXUTS8aPmAg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1785994681;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=mMfwIH//B+Z+9mqDg25C3bBTqfT5J0N1G9mJG2Rb2Es=;
+ b=41sNNm5YExO2KihMeoKUH3KhVOOORSV31gepb3mFdcJMhvGpR1rl4fhZp5+QSRxhmWrxtY
+ mJ8vRcFKL7mUg9DQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3A8DA779B6;
+ Thu,  6 Aug 2026 05:38:01 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 65NADLkddGrjRQAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Thu, 06 Aug 2026 05:38:01 +0000
+Date: Thu, 6 Aug 2026 07:37:51 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: ltp@lists.linux.it
+Message-ID: <20260806053751.GA657385@pevik>
+References: <20260805151451.648990-1-pvorel@suse.cz>
+ <20260805151451.648990-10-pvorel@suse.cz>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20260805151451.648990-10-pvorel@suse.cz>
+X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ NEURAL_HAM_SHORT(-0.20)[-0.999]; MIME_GOOD(-0.10)[text/plain];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; MISSING_XM_UA(0.00)[];
+ MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
+ RCVD_TLS_ALL(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; FROM_HAS_DN(0.00)[];
+ RCPT_COUNT_FIVE(0.00)[6]; FROM_EQ_ENVFROM(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo];
+ RCVD_COUNT_TWO(0.00)[2]; REPLYTO_EQ_FROM(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] tst_kvercmp: Factor out error handling
+Subject: Re: [LTP] [PATCH v4 9/9] [RFC] metaparse: Check {min,
+ max}_kver validity
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -92,111 +110,38 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+Reply-To: Petr Vorel <pvorel@suse.cz>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Petr,
+Hi all,
 
-On Aug 5, 2026, Petr Vorel wrote:
-> tst_kvercmp: Factor out error handling
+I'm sorry, this last commit breaks out-of-tree build.
 
---- [PATCH 1/9] ---
+...
+> +++ b/metadata/Makefile
+> @@ -3,13 +3,15 @@
 
-> static int _tst_parse_kver(const char *str_kver, int *v1, int *v2, int *v3)
+>  top_srcdir		?= ..
 
-Could this be renamed to parse_kver? File-scope identifiers beginning with an
-underscore are reserved by C, and LTP's coding rules prohibit such names.
+> -include $(top_srcdir)/include/mk/env_pre.mk
+> -include $(top_srcdir)/include/mk/functions.mk
+> +include $(top_srcdir)/include/mk/testcases.mk
 
---- [PATCH 2/9] ---
+>  MAKE_TARGETS		:= ltp.json
+>  HOST_MAKE_TARGETS	:= metaparse metaparse-sh
+>  INSTALL_DIR		= metadata
 
-> This is a preparation for struct tst_test max_kver member in the next
-> commit.
+> +metaparse: HOST_CFLAGS		+= -I$(abs_srcdir)/../include -L$(abs_builddir)/../lib
+Either this is wrong, or the change in previous commit was not enough.
+Investigating.
 
-Could the motivation be stated without referring to the next patch? Each
-commit message should stand on its own rather than depend on series position.
+Kind regards,
+Petr
 
---- [PATCH 4/9] ---
-
-> 	if (TST_RET != -1) {
-> 		tst_res(TFAIL, "creat() succeeded unexpectedly");
-> 		return;
-> 	}
-
-Could this path kill and reap pid before returning? Removing the version gate
-makes it reachable on affected 6.11 and 6.12 kernels, but the child remains
-paused indefinitely. The framework then blocks in tst_reap_children() until
-the watchdog terminates the test instead of returning the intended TFAIL.
-
-> 	TEST(execve(TEST_APP, argv, environ));
-
-How is the writer child released when execve() succeeds on an affected
-kernel? The test process is replaced by execve_child, which reports TFAIL and
-exits, while the writer remains blocked in TST_CHECKPOINT_WAKE_AND_WAIT(0) and
-becomes an orphan.
-
---- [PATCH 5/9] ---
-
-> 	.max_kver = "7.1",
-
-Could the test keep running and only adjust the expected result of
-FAN_REPORT_PIDFD | FAN_REPORT_TID on kernels supporting thread pidfds? This
-test-wide limit also removes the
-FAN_REPORT_PIDFD | FAN_REPORT_FID | FAN_REPORT_DFID_NAME case on 7.2 and all
-newer kernels, and that exact combination is not tested elsewhere in LTP.
-
---- [PATCH 6/9] ---
-
-> 	.min_kver = "4.4",
-> 	.max_kver = "5.0",
-
-How can this exercise do_test() on current CI kernels? The current kernel must
-lie between the bounds; min_kver being less than max_kver is not sufficient.
-With this maximum, including on stable 7.2, the self-test only reports TCONF
-and never tests the new success path.
-
---- [PATCH 7/9] ---
-
-> int tst_kver_cmp(int a1, int a2, int a3, int b1, int b2, int b3);
-
-Could the new public function's kernel-doc include a Return: section
-describing the comparison result?
-
-> This will be heavily used in metaparse.c (speedup of metadata
-> generation) in the next commit.
-
-Could this motivation be stated without referring to the next patch? Each
-commit message should stand on its own.
-
---- [PATCH 8/9] ---
-
-> Will be used for metadata.c in the next commit.
-
-Could the commit message instead explain why host targets need access to
-MAKE_DEPS without depending on a later patch?
-
---- [PATCH 9/9] ---
-
-> metaparse: HOST_LDLIBS		+= -lltp
-
-How can this work for a cross-compilation? metaparse is built with HOSTCC, but
--lltp resolves to lib/libltp.a built with the target CC, so the host linker
-cannot consume the archive. Could the version helper be compiled with HOSTCC,
-or moved into an architecture-independent host library?
-
-Verdict - Needs revision
-
----
-Note:
-
-The agent can sometimes produce false positives although often its
-findings are genuine. If you find issues with the review, please
-comment this email or ignore the suggestions.
-
-Regards,
-LTP AI Reviewer
+> +metaparse: HOST_LDLIBS		+= -lltp
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
