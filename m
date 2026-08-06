@@ -4,114 +4,106 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 99B55C55ABF
-	for <ltp@archiver.kernel.org>; Thu,  6 Aug 2026 08:11:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 630C6C55ABF
+	for <ltp@archiver.kernel.org>; Thu,  6 Aug 2026 08:11:19 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A62873E5AB9
-	for <ltp@archiver.kernel.org>; Thu,  6 Aug 2026 10:11:03 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 92B8D3E264D
+	for <ltp@archiver.kernel.org>; Thu,  6 Aug 2026 10:11:17 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id BE8243C2BE6
- for <ltp@lists.linux.it>; Thu,  6 Aug 2026 10:10:46 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ by picard.linux.it (Postfix) with ESMTPS id 9A2EB3C2BE6
+ for <ltp@lists.linux.it>; Thu,  6 Aug 2026 10:10:47 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 24ECE2001D8
- for <ltp@lists.linux.it>; Thu,  6 Aug 2026 10:10:45 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id BB0791400B77
+ for <ltp@lists.linux.it>; Thu,  6 Aug 2026 10:10:46 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 3088E7FF26;
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 839573DF9;
  Thu,  6 Aug 2026 08:10:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1786003841; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=UtNpUaEHAmePFxj0uiHOF3PIfiH/eVTpYcX6UPErb6M=;
- b=d0f1/E85aUtsS34l2iIX+eLtaH8AgzEz12T/0BO2ylNrIWRFDuJgvXbnXQQbEX/P8Q390s
- o+pw+wib/aK3N5Vp1uofeeggWeTLt5DEN93htUsJWwIk35wzZydh/Z4JBeYgohGww9R3oo
- 9l8GKr1x+ubaIct/mGDxqsct5GYzzyo=
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=+z6LR+HwywviOYarpO5MZG/FcjTWNv4Y8jJ2blTUGBo=;
+ b=FTn5R0+uHUNQfilm2NHat74UtnPpNCKDa0WbaUYE0Ss5TyJ0YbI7CtBbG6+UPXmugiBRSV
+ D1ZkIVTtWMRn0rU/qbQS8gd34DmUGQbCE5FejI3lB5KdXON7dxsooJFbOX53xTVyIbvqME
+ X5zg3Kvk2y9U1nB+/5vx4OdAMBpcVjA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1786003841;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=UtNpUaEHAmePFxj0uiHOF3PIfiH/eVTpYcX6UPErb6M=;
- b=7Fgktiw7Lt7yPoC8+n9mdEsvC2TdFoMGFOZEON/94yee1Na72OpP7WE2cxcKQztYa811zo
- TNQuHYmwiTIjFhAA==
-Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.de header.s=susede2_rsa header.b=fMaQ7yxE;
- dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=kRnsuhHx
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=+z6LR+HwywviOYarpO5MZG/FcjTWNv4Y8jJ2blTUGBo=;
+ b=avEsbHGae3zPdqDanjIeE51GQuNpAgcg78tIap1YCARZf5zweSpnr+F31hYwjSKfsnDE70
+ BPISQyYF8VNdGsBw==
+Authentication-Results: smtp-out2.suse.de;
+	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1786003837; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=UtNpUaEHAmePFxj0uiHOF3PIfiH/eVTpYcX6UPErb6M=;
- b=fMaQ7yxE+KqvgpdywczmgWlEiYb0Z6au0kYrJS15+sFbNZSqfITnnWr5slf9n/uhjSzxp3
- t3wVzsYtCFZSsfdBy9av26ZYEzn2PCrWplCHP6Dt9bU1hfX7q9vzHxktzHLHUl/MiBkJp7
- oDznUH5xgtnbKz0lc2V0Cs3lqqRBnlA=
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=+z6LR+HwywviOYarpO5MZG/FcjTWNv4Y8jJ2blTUGBo=;
+ b=hdvektVQNTzs/dubmy0nEC3eP3OQ39kE8rtCtJaEAEnaB/3pYexmi7q2CSzhdz4OmehLxk
+ /lvGFDhDIcxKNKQ2KHjt6FuZEKWkjK/pzTzJWF2zxN9yHQiqriXwKJJZSEoV25lBEOapDH
+ BxX9v5QzTv4Q7xQRk+KKwn5lHU9wz8g=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1786003837;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=UtNpUaEHAmePFxj0uiHOF3PIfiH/eVTpYcX6UPErb6M=;
- b=kRnsuhHxbxs0LTxb62dynVN1ctU15zaVhOmCjCYBuuI3mJ2FiCN9VP4yOB4cUXpKekcv91
- 7ZhGMCNKjbCIAaAA==
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=+z6LR+HwywviOYarpO5MZG/FcjTWNv4Y8jJ2blTUGBo=;
+ b=S+QAORxr1wbX7uM+XaUVPiUaJGyif4ovprV7n7jlGrPNYfxJ0jAMgxX6UUU36+0CntPs1Y
+ G97ufZTOxIFHrbDw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 102AF779C0;
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 62827779C5;
  Thu,  6 Aug 2026 08:10:37 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id BJM8An1BdGrZWwAAD6G6ig
+ by imap1.dmz-prg2.suse.org with ESMTPSA id uBNLFn1BdGrZWwAAD6G6ig
  (envelope-from <andrea.cervesato@suse.de>); Thu, 06 Aug 2026 08:10:37 +0000
 From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Thu, 06 Aug 2026 10:10:35 +0200
-Message-Id: <20260806-tpci_refactoring-v2-0-bdc3a749ca02@suse.com>
+Date: Thu, 06 Aug 2026 10:10:37 +0200
 MIME-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAHtBdGoC/2WNQQ7CIBBFr9LMWgwQaKgr79E0Bum0nYXQQCWah
- ruLTVy5fH/+f7NDwkiY4NLsEDFTouAryFMDbrF+RkZjZZBcttxwxbbV0S3iZN0WIvmZtequOym
- FRe2gztZ6pNeh7IfKC6XafB8fsvimP5n+l2XBOFPOmtGoydhOX9Mz4dmFBwyllA96DkJhrwAAA
- A==
-X-Change-ID: 20260804-tpci_refactoring-64b59221ae5c
+Message-Id: <20260806-tpci_refactoring-v2-2-bdc3a749ca02@suse.com>
+References: <20260806-tpci_refactoring-v2-0-bdc3a749ca02@suse.com>
+In-Reply-To: <20260806-tpci_refactoring-v2-0-bdc3a749ca02@suse.com>
 To: Linux Test Project <ltp@lists.linux.it>
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1786003837; l=1502;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1786003837; l=15025;
  i=andrea.cervesato@suse.com; s=20251210; h=from:subject:message-id;
- bh=I05OSK5lTp8SkQoVM+2wFaBs2EInIAdqUYvzEiJnrP8=;
- b=9JzXLi3BTjW100cZd0mNzPr5puQM4ENTLUt2inybrMiZ/fO15BH9mfIGjNJxpe2Q2wpSOzjNN
- BNv7U8nmjJpD9hMreTiHVI1SNnfcDlbac2fVP9ygCLUR42vccJ1SVLj
+ bh=/oedm2rlZ5hc5wb4HOakxcUVdr56w+4Mh3h6w22UQog=;
+ b=R0n0Wtu4GoJJySzOIsYFUCRQtR0CQT6FrqwJ0loBAMfAvhvMxJYTp0v8Y8E0KGHx/b1uHt5At
+ fs4oEYFQPvJC0aNgk6MxBXewL9qxJneT0WpqXTzJ02dMQiJR3NqIr9r
 X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
  pk=zKY+6GCauOiuHNZ//d8PQ/UL4jFCTKbXrzXAOQSLevI=
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: 3088E7FF26
-X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  NEURAL_HAM_LONG(-1.00)[-1.000];
- R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- ARC_NA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ NEURAL_HAM_SHORT(-0.20)[-0.999]; MIME_GOOD(-0.10)[text/plain];
  RCPT_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
  DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- MIME_TRACE(0.00)[0:+]; RCVD_COUNT_TWO(0.00)[2];
- TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:mid,suse.de:dkim,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
- TO_DN_ALL(0.00)[]; DKIM_TRACE(0.00)[suse.de:+]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+ TO_DN_ALL(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ FROM_HAS_DN(0.00)[]; MIME_TRACE(0.00)[0:+];
+ FROM_EQ_ENVFROM(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo, oracle.com:email,
+ suse.com:mid, suse.com:email]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 0/2] tcpi refactoring
+Subject: [LTP] [PATCH v2 2/2] tpci: refactor test using new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -128,44 +120,465 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Rewrite the tcpi test so we use the new LTP API.
+From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-- rewrite kernel module
-- rewrite LTP test
-- merge kernel module and LTP test in the same folder
+Merge kernel module with the current test inside the same folder and
+refactor tpci test using new API.
+
+Now test has a -d option to select device for operating destructive
+tests on target.
 
 Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
-Changes in v2:
-- fix commit tag
-- check that device exists
-- skip PCI_DISABLE because it's an unreliable test
-- Link to v1: https://lore.kernel.org/20260805-tpci_refactoring-v1-0-4ca8d84f8a95@suse.com
-
----
-Andrea Cervesato (2):
-      tpci: refactor kernel module
-      tpci: refactor test using new API
-
  .../pci/{tpci_kernel => tpci}/.gitignore           |   3 +-
- testcases/kernel/device-drivers/pci/tpci/Makefile  |  22 ++
- .../pci/{tpci_kernel => tpci}/ltp_tpci.c           | 230 +++++++++++----------
- testcases/kernel/device-drivers/pci/tpci/tpci.c    | 166 +++++++++++++++
- testcases/kernel/device-drivers/pci/tpci/tpci.h    |  36 ++++
- .../kernel/device-drivers/pci/tpci_kernel/Makefile |  35 ----
- .../pci/tpci_kernel/pci-exp-tests-HOWTO            |  58 ------
- .../kernel/device-drivers/pci/tpci_kernel/tpci.h   |  43 ----
+ testcases/kernel/device-drivers/pci/tpci/Makefile  |  22 +++
+ .../pci/{tpci_kernel => tpci}/ltp_tpci.c           |   4 +-
+ testcases/kernel/device-drivers/pci/tpci/tpci.c    | 166 +++++++++++++++++++++
+ .../pci/{tpci_kernel => tpci}/tpci.h               |   0
+ .../kernel/device-drivers/pci/tpci_kernel/Makefile |  35 -----
  .../kernel/device-drivers/pci/tpci_user/.gitignore |   1 -
- .../kernel/device-drivers/pci/tpci_user/Makefile   |  20 --
- .../kernel/device-drivers/pci/tpci_user/tpci.c     | 115 -----------
- 11 files changed, 342 insertions(+), 387 deletions(-)
----
-base-commit: 12fcadf63a99fc4bec76f9b4715cda626256562f
-change-id: 20260804-tpci_refactoring-64b59221ae5c
+ .../kernel/device-drivers/pci/tpci_user/Makefile   |  20 ---
+ .../kernel/device-drivers/pci/tpci_user/tpci.c     | 115 --------------
+ 9 files changed, 192 insertions(+), 174 deletions(-)
 
-Best regards,
+diff --git a/testcases/kernel/device-drivers/pci/tpci_kernel/.gitignore b/testcases/kernel/device-drivers/pci/tpci/.gitignore
+similarity index 76%
+rename from testcases/kernel/device-drivers/pci/tpci_kernel/.gitignore
+rename to testcases/kernel/device-drivers/pci/tpci/.gitignore
+index ed4712e3adc194b8921e4daba28f8f5c9a8f94df..ec0d18ab921bf6a33e6495a596c1b19b48bbc66d 100644
+--- a/testcases/kernel/device-drivers/pci/tpci_kernel/.gitignore
++++ b/testcases/kernel/device-drivers/pci/tpci/.gitignore
+@@ -1,3 +1,4 @@
++/tpci
+ /ltp_tpci.ko
+ /*.mod.c
+ /modules.order
+@@ -5,4 +6,4 @@
+ /.*.ko
+ /.*.cmd
+ /Module.symvers
+-modules.livepatch
++/modules.livepatch
+diff --git a/testcases/kernel/device-drivers/pci/tpci/Makefile b/testcases/kernel/device-drivers/pci/tpci/Makefile
+new file mode 100644
+index 0000000000000000000000000000000000000000..ae80dec86e4731df3d0d994c21bf8cf87ceaf767
+--- /dev/null
++++ b/testcases/kernel/device-drivers/pci/tpci/Makefile
+@@ -0,0 +1,22 @@
++# SPDX-License-Identifier: GPL-2.0-or-later
++# Copyright (C) 2026 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
++
++ifneq ($(KERNELRELEASE),)
++
++obj-m := ltp_tpci.o
++
++else
++
++top_srcdir		?= ../../../../..
++
++include $(top_srcdir)/include/mk/testcases.mk
++
++REQ_VERSION_MAJOR	:= 2
++REQ_VERSION_PATCH	:= 6
++
++MAKE_TARGETS		:= tpci ltp_tpci.ko
++
++include $(top_srcdir)/include/mk/module.mk
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
++
++endif
+diff --git a/testcases/kernel/device-drivers/pci/tpci_kernel/ltp_tpci.c b/testcases/kernel/device-drivers/pci/tpci/ltp_tpci.c
+similarity index 99%
+rename from testcases/kernel/device-drivers/pci/tpci_kernel/ltp_tpci.c
+rename to testcases/kernel/device-drivers/pci/tpci/ltp_tpci.c
+index 033ac1f0008e358d1afd0240bf1a9855ec32e1fd..1a7a09661d2ad42d4bfec8dc53dce5ec34b30ff6 100644
+--- a/testcases/kernel/device-drivers/pci/tpci_kernel/ltp_tpci.c
++++ b/testcases/kernel/device-drivers/pci/tpci/ltp_tpci.c
+@@ -12,8 +12,8 @@
+  * driven through various sysfs interactions in a user-space program.
+  *
+  * For the functions of this module to work correctly, there must be a
+- * PCI / PCI-Express device somewhere in the system. The tests do not need
+- * a specific device; the first PCI device available will be grabbed.
++ * PCI / PCI-Express device somewhere in the system. The user-space test
++ * selects each device through the bus_slot sysfs file.
+  *
+  * The following test cases can be called from user-space:
+  *
+diff --git a/testcases/kernel/device-drivers/pci/tpci/tpci.c b/testcases/kernel/device-drivers/pci/tpci/tpci.c
+new file mode 100644
+index 0000000000000000000000000000000000000000..73f83f5cfc94dd30715de514890228c06cdb0b59
+--- /dev/null
++++ b/testcases/kernel/device-drivers/pci/tpci/tpci.c
+@@ -0,0 +1,166 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2013 Oracle and/or its affiliates. All Rights Reserved.
++ *  Author: Alexey Kodanev <alexey.kodanev@oracle.com>
++ * Copyright (C) 2026 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
++ */
++
++/*\
++ * Test various PCI and PCI-Express APIs using the ltp_tpci.ko kernel module.
++ *
++ * [Algorithm]
++ *
++ * - Loads the ltp_tpci.ko kernel module.
++ * - Iterates over all possible PCI buses (0-255) and slots (0-255).
++ * - Attempts to select each device by writing to the module's bus_slot sysfs file.
++ * - For each existing device, executes the available test cases.
++ *   Safe test cases are executed on all devices.
++ *   Destructive test cases are only executed on a target device specified via -d.
++ * - Reads the result from the result sysfs file and reports it using tst_res().
++ */
++
++#include "tst_test.h"
++#include "tst_module.h"
++#include "tpci.h"
++
++#define MODULE_NAME	PCI_DEVICE_NAME ".ko"
++#define DEV_RESULT	"/sys/devices/" PCI_DEVICE_NAME "/result"
++#define DEV_TCASE	"/sys/devices/" PCI_DEVICE_NAME "/tcase"
++#define DEV_BUSSLOT	"/sys/devices/" PCI_DEVICE_NAME "/bus_slot"
++
++static int module_loaded;
++static int devices_found;
++static char *target_device;
++static unsigned int target_bus;
++static unsigned int target_devfn;
++
++static int is_destructive_test(int tc)
++{
++	switch (tc) {
++	case FIND_BUS:
++	case FIND_CLASS:
++	case FIND_DEVICE:
++	case FIND_SUBSYS:
++	case MATCH_DEVICE:
++	case FIND_CAP:
++	case PCI_EXP_CAP_CONFIG:
++		return 0;
++	default:
++		return 1;
++	}
++}
++
++static void run_pci_testcases(const unsigned int bus, const unsigned int slot)
++{
++	int res;
++	int is_target = 0;
++
++	if (target_device && bus == target_bus && slot == target_devfn)
++		is_target = 1;
++
++	for (int i = 0; i < PCI_TCASES_NUM; ++i) {
++		if (i == PCI_DISABLE)
++			continue;
++
++		if (!is_target && is_destructive_test(i))
++			continue;
++
++		SAFE_FILE_PRINTF(DEV_TCASE, "%d", i);
++		SAFE_FILE_SCANF(DEV_RESULT, "%d", &res);
++
++		switch (res) {
++		case 0:
++			tst_res(TPASS, "PCI bus %02x slot %02x : Test-case '%d'",
++				bus, slot, i);
++			break;
++		case 1:
++			tst_res(TFAIL, "PCI bus %02x slot %02x : Test-case '%d'",
++				bus, slot, i);
++			break;
++		case 32:
++			tst_res(TCONF, "PCI bus %02x slot %02x : Test-case '%d'",
++				bus, slot, i);
++			break;
++		default:
++			tst_brk(TBROK, "unexpected result code %d from kernel module",
++				res);
++		}
++	}
++}
++
++static void run(void)
++{
++	char buf[16];
++	int fd, count;
++	int target_found = 0;
++
++	devices_found = 0;
++
++	for (int i = 0; i < MAX_BUS; ++i) {
++		for (int j = 0; j < MAX_DEVFN; ++j) {
++			/* set pci device for the test */
++			fd = SAFE_OPEN(DEV_BUSSLOT, O_WRONLY);
++			count = snprintf(buf, sizeof(buf), "%u", i << 8 | j);
++
++			if (write(fd, buf, count) < 0) {
++				if (errno == ENODEV) {
++					SAFE_CLOSE(fd);
++					continue;
++				}
++				SAFE_CLOSE(fd);
++				tst_brk(TBROK | TERRNO, "write to '%s' failed", DEV_BUSSLOT);
++			}
++			SAFE_CLOSE(fd);
++
++			if (target_device && (unsigned int)i == target_bus && (unsigned int)j == target_devfn)
++				target_found = 1;
++
++			devices_found++;
++			run_pci_testcases(i, j);
++		}
++	}
++
++	if (!devices_found)
++		tst_brk(TCONF, "no PCI device found on the system");
++
++	if (target_device && !target_found)
++		tst_brk(TCONF, "target PCI device %02x:%02x not found", target_bus, target_devfn);
++}
++
++static void cleanup(void)
++{
++	if (module_loaded)
++		tst_module_unload(MODULE_NAME);
++}
++
++static void setup(void)
++{
++	if (target_device) {
++		char tail;
++
++		if (sscanf(target_device, "%x:%x%c", &target_bus, &target_devfn, &tail) != 2 ||
++				target_bus > 0xff || target_devfn > 0xff) {
++			tst_brk(TBROK, "Invalid PCI device '%s', expected bus:devfn",
++				target_device);
++		}
++	}
++
++	tst_requires_module_signature_disabled();
++
++	if (tst_lockdown_enabled() > 0 || tst_secureboot_enabled() > 0)
++		tst_brk(TCONF, "Cannot load unsigned modules in Lockdown/Secure Boot");
++
++	tst_module_load(MODULE_NAME, NULL);
++	module_loaded = 1;
++}
++
++static struct tst_test test = {
++	.setup = setup,
++	.cleanup = cleanup,
++	.test_all = run,
++	.needs_root = 1,
++	.options = (struct tst_option[]) {
++		{"d:", &target_device, "Target PCI device for destructive tests (e.g. 00:28)"},
++		{}
++	},
++};
+diff --git a/testcases/kernel/device-drivers/pci/tpci_kernel/tpci.h b/testcases/kernel/device-drivers/pci/tpci/tpci.h
+similarity index 100%
+rename from testcases/kernel/device-drivers/pci/tpci_kernel/tpci.h
+rename to testcases/kernel/device-drivers/pci/tpci/tpci.h
+diff --git a/testcases/kernel/device-drivers/pci/tpci_kernel/Makefile b/testcases/kernel/device-drivers/pci/tpci_kernel/Makefile
+deleted file mode 100644
+index 6e1284d6cf53f078b610f175f2b2d899e6de8be5..0000000000000000000000000000000000000000
+--- a/testcases/kernel/device-drivers/pci/tpci_kernel/Makefile
++++ /dev/null
+@@ -1,35 +0,0 @@
+-# Copyright (c) 2013 Oracle and/or its affiliates. All Rights Reserved.
+-#
+-# This program is free software; you can redistribute it and/or
+-# modify it under the terms of the GNU General Public License as
+-# published by the Free Software Foundation; either version 2 of
+-# the License, or (at your option) any later version.
+-#
+-# This program is distributed in the hope that it would be useful,
+-# but WITHOUT ANY WARRANTY; without even the implied warranty of
+-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-# GNU General Public License for more details.
+-#
+-# You should have received a copy of the GNU General Public License
+-# along with this program; if not, write the Free Software Foundation,
+-# Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+-
+-ifneq ($(KERNELRELEASE),)
+-
+-obj-m := ltp_tpci.o
+-
+-else
+-
+-top_srcdir	?= ../../../../..
+-
+-include $(top_srcdir)/include/mk/env_pre.mk
+-
+-REQ_VERSION_MAJOR := 2
+-REQ_VERSION_PATCH := 6
+-
+-MAKE_TARGETS := ltp_tpci.ko
+-
+-include $(top_srcdir)/include/mk/module.mk
+-include $(top_srcdir)/include/mk/generic_leaf_target.mk
+-
+-endif
+diff --git a/testcases/kernel/device-drivers/pci/tpci_user/.gitignore b/testcases/kernel/device-drivers/pci/tpci_user/.gitignore
+deleted file mode 100644
+index b1817e5fba323c996651324b0879359fd941a43a..0000000000000000000000000000000000000000
+--- a/testcases/kernel/device-drivers/pci/tpci_user/.gitignore
++++ /dev/null
+@@ -1 +0,0 @@
+-/tpci
+diff --git a/testcases/kernel/device-drivers/pci/tpci_user/Makefile b/testcases/kernel/device-drivers/pci/tpci_user/Makefile
+deleted file mode 100644
+index 6ba346520e199cfe1673548179684c5c606e6e4b..0000000000000000000000000000000000000000
+--- a/testcases/kernel/device-drivers/pci/tpci_user/Makefile
++++ /dev/null
+@@ -1,20 +0,0 @@
+-# Copyright (c) 2013 Oracle and/or its affiliates. All Rights Reserved.
+-#
+-# This program is free software; you can redistribute it and/or
+-# modify it under the terms of the GNU General Public License as
+-# published by the Free Software Foundation; either version 2 of
+-# the License, or (at your option) any later version.
+-#
+-# This program is distributed in the hope that it would be useful,
+-# but WITHOUT ANY WARRANTY; without even the implied warranty of
+-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-# GNU General Public License for more details.
+-#
+-# You should have received a copy of the GNU General Public License
+-# along with this program; if not, write the Free Software Foundation,
+-# Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+-
+-top_srcdir		?= ../../../../..
+-
+-include $(top_srcdir)/include/mk/testcases.mk
+-include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/device-drivers/pci/tpci_user/tpci.c b/testcases/kernel/device-drivers/pci/tpci_user/tpci.c
+deleted file mode 100644
+index 687d2a62b0bccc2fa84bb401b61f7e467a630a41..0000000000000000000000000000000000000000
+--- a/testcases/kernel/device-drivers/pci/tpci_user/tpci.c
++++ /dev/null
+@@ -1,115 +0,0 @@
+-/*
+- * Copyright (c) 2013 Oracle and/or its affiliates. All Rights Reserved.
+- *
+- * This program is free software; you can redistribute it and/or
+- * modify it under the terms of the GNU General Public License as
+- * published by the Free Software Foundation; either version 2 of
+- * the License, or (at your option) any later version.
+- *
+- * This program is distributed in the hope that it would be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program; if not, write the Free Software Foundation,
+- * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+- *
+- * Author: Alexey Kodanev <alexey.kodanev@oracle.com>
+- *
+- */
+-
+-#define _GNU_SOURCE
+-#include <stdio.h>
+-#include <stdlib.h>
+-#include <unistd.h>
+-#include <string.h>
+-#include <errno.h>
+-
+-#include "test.h"
+-#include "tso_safe_macros.h"
+-#include "tso_module.h"
+-#include "tst_security.h"
+-
+-#include "../tpci_kernel/tpci.h"
+-
+-char *TCID = "test_pci";
+-int TST_TOTAL = PCI_TCASES_NUM;
+-
+-static const char module_name[]	= PCI_DEVICE_NAME ".ko";
+-static const char dev_result[]	= "/sys/devices/" PCI_DEVICE_NAME "/result";
+-static const char dev_tcase[]	= "/sys/devices/" PCI_DEVICE_NAME "/tcase";
+-static const char dev_busslot[]	= "/sys/devices/" PCI_DEVICE_NAME "/bus_slot";
+-static int module_loaded;
+-
+-static void cleanup(void)
+-{
+-	if (module_loaded)
+-		tst_module_unload(NULL, module_name);
+-}
+-
+-void setup(void)
+-{
+-	tst_require_root();
+-	tst_sig(FORK, DEF_HANDLER, cleanup);
+-	tst_requires_module_signature_disabled();
+-	if (tst_lockdown_enabled() > 0 || tst_secureboot_enabled() > 0)
+-		tst_brkm(TCONF, NULL, "Cannot load unsigned modules in Lockdown/Secure Boot");
+-}
+-
+-static void run_pci_testcases(int bus, int slot)
+-{
+-	int i, res;
+-	for (i = 0; i < TST_TOTAL; ++i) {
+-		/* skip pci disable test-case, it is manual */
+-		if (i == PCI_DISABLE)
+-			continue;
+-
+-		SAFE_FILE_PRINTF(cleanup, dev_tcase, "%d", i);
+-		SAFE_FILE_SCANF(cleanup, dev_result, "%d", &res);
+-
+-		tst_resm(res, "PCI bus %02x slot %02x : Test-case '%d'",
+-			bus, slot, i);
+-	}
+-}
+-
+-static void test_run(void)
+-{
+-	tst_module_load(cleanup, module_name, NULL);
+-	module_loaded = 1;
+-
+-	char buf[6];
+-	int i, j, fd, count;
+-
+-	for (i = 0; i < MAX_BUS; ++i) {
+-		for (j = 0; j < MAX_DEVFN; ++j) {
+-			/* set pci device for the test */
+-			fd = SAFE_OPEN(cleanup, dev_busslot, O_WRONLY);
+-			count = snprintf(buf, 6, "%u", i << 8 | j);
+-			errno = 0;
+-			if (write(fd, buf, count) < 0) {
+-				if (errno == ENODEV) {
+-					SAFE_CLOSE(cleanup, fd);
+-					continue;
+-				}
+-				tst_brkm(TBROK | TERRNO, cleanup,
+-					"write to '%s' failed", dev_busslot);
+-			}
+-			SAFE_CLOSE(cleanup, fd);
+-
+-			run_pci_testcases(i, j);
+-
+-		}
+-	}
+-}
+-
+-int main(void)
+-{
+-	setup();
+-
+-	test_run();
+-
+-	cleanup();
+-
+-	tst_exit();
+-}
+
 -- 
-Andrea Cervesato <andrea.cervesato@suse.com>
+2.51.0
 
 
 -- 
