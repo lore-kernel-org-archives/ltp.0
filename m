@@ -4,62 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2DAF2C5AC80
-	for <ltp@archiver.kernel.org>; Fri,  7 Aug 2026 02:00:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E144DC5AC7A
+	for <ltp@archiver.kernel.org>; Fri,  7 Aug 2026 02:52:13 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 915773E74A4
-	for <ltp@archiver.kernel.org>; Fri,  7 Aug 2026 04:00:53 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id CFFFE3E706A
+	for <ltp@archiver.kernel.org>; Fri,  7 Aug 2026 04:52:11 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9AAFE3C5880
- for <ltp@lists.linux.it>; Fri,  7 Aug 2026 04:00:37 +0200 (CEST)
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 79DE63E2802
+ for <ltp@lists.linux.it>; Fri,  7 Aug 2026 04:51:53 +0200 (CEST)
+Received: from mail-qv2-x01.google.com (mail-qv2-x01.google.com
+ [IPv6:2607:f8b0:4864:33::1])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id CFDE61000945
- for <ltp@lists.linux.it>; Fri,  7 Aug 2026 04:00:35 +0200 (CEST)
-X-UUID: c35b5a08920311f1aa26b74ffac11d73-20260807
-X-CID-O-RULE: Release_Ham
-X-CID-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.3.12, REQID:50453cce-e3f8-4b08-ae4f-454bf6b137d8, IP:20,
- URL:0,TC:0,Content:-5,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
- N:release,TS:15
-X-CID-INFO: VERSION:1.3.12, REQID:50453cce-e3f8-4b08-ae4f-454bf6b137d8, IP:20,
- UR
- L:0,TC:0,Content:-5,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
- release,TS:15
-X-CID-META: VersionHash:e7bac3a, CLOUDID:740678f7574374fe21320454acd67808,
- BulkI
- D:2608071000303IT7URXS,BulkQuantity:0,Recheck:0,SF:17|19|38|64|66|78|80|81
- |82|83|102|127|841|865|898,TC:nil,Content:0|15|52,EDM:-3,IP:-2,URL:0,File:
- nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR
- :0,DKP:0,BRR:0,BRE:0,ARC:0
-X-CID-BVR: 2,SSN|SDN
-X-CID-BAS: 2,SSN|SDN,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD
-X-CID-RHF: D41D8CD98F00B204E9800998ECF8427E
-X-UUID: c35b5a08920311f1aa26b74ffac11d73-20260807
-X-User: wangxuewen@kylinos.cn
-Received: from [192.168.111.73] [(223.70.159.239)] by mailgw.kylinos.cn
- (envelope-from <wangxuewen@kylinos.cn>)
- (Generic MTA with TLSv1.3 TLS_AES_128_GCM_SHA256 128/128)
- with ESMTP id 787896767; Fri, 07 Aug 2026 10:00:28 +0800
-Message-ID: <0a480ba8-f51b-43dc-83fb-0dda1fa85144@kylinos.cn>
-Date: Fri, 7 Aug 2026 10:00:25 +0800
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id F261A1400B8F
+ for <ltp@lists.linux.it>; Fri,  7 Aug 2026 04:51:52 +0200 (CEST)
+Received: by mail-qv2-x01.google.com with SMTP id
+ 6a1803df08f44-907838c5e2eso11468316d6.0
+ for <ltp@lists.linux.it>; Thu, 06 Aug 2026 19:51:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20251104; t=1786071112; x=1786675912; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to:content-type;
+ bh=vakz8LA10DLnIqpLuv0bhArG3UmRmTxLtMJ9zBvBOto=;
+ b=hGi4T3eNuiofb7hebXcS0JL31JbFUZwOzlMAdu1UnnzLkxPy1KVDeosQhHMOC1Yqx3
+ xVMncaQijxVq2QSs+9xTTiBJBtpqe0EC5g9G3KD9vCmnN94FN/+Tas5bfjTameO/zbHj
+ zf0mQSdhPQg0brXpGurkBaZ9H8bsmQQ7vQMLeJW221BlC3thdAif2lU+HF87andgP2lz
+ fj4oHx6HU2YX/nssRoqfYoNu/1+LyDzZSUyjuV7iECV7DMP8lwa1D9WPcPzaEYH00ZdU
+ wVJ0kzGZlnkpbVKQZXP3SnxhGn0ro9AzR0Kwl1fYcTilr7Ysj2Y86kxZPgTg99cSbqlF
+ /4cg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1786071112; x=1786675912;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to:content-type;
+ bh=vakz8LA10DLnIqpLuv0bhArG3UmRmTxLtMJ9zBvBOto=;
+ b=c3eyewArKArvRuNTnthqIq8aaiLGUmYUvfSRFX2Kyya/0w9Rgtk+Kyh2jsHtJ0hT4j
+ QcRYgE1oZPvHLXpyY3jLWuQ2nQmOTJEUPP69XBuHiKDaXDYAZ3yW1LeoOU1sik6mhHjl
+ 4EAEAWV2snGSzc++WG19VczBLo6r8wLehTjXAYURBF3FDU41bt6bi7EF0GKx9Lf5ajqO
+ G3sYZZxi0M/RXVfCd8SNPjcZb8JXryT/gmwGqTKZusZ/ujRzI7FvCbHalYCIl2+44Cap
+ AVCAj8D94oGidvyB8bD4xZc1Gepy2+28P4TyU4Du53uLUDpEx5sA9+RTsSUuFpn00du7
+ OhXQ==
+X-Gm-Message-State: AOJu0YwSkfbWYZZQb0xREaAs8I5BlWzhEDk1NqPQA0q2iBTmFI9aEgOw
+ VQzu8+LOyNue/XxTfWaEjA8JtkrMNaCEI7vsI4clxb3I1RliIasgKxbWPRevbKBc
+X-Gm-Gg: AR+sD11lTBPLDEqI7e05pAZ0jzpe/pYI3H7HQWJn+zYW1eo//u+HMnXOQoKmCqqPVIj
+ HJC+tLkzyB3qO7nRhdQNviWf5IskKLD2Jv7mgJvuTuSfbppUxfMOCr80XO01efwognEsWrFqBv7
+ 31/Zm4Y2An++dpkR/BEYEap0u48i2vco08LRdMRup0shMpXElQPh5tH8Yg8nxbjt15vqDyzy8os
+ IQib8FoYqspyFMiO/+7XknA3vrI7bTVZBGWShib+4adK/kzC4mKqSZKkjFBVcTxYu/nwgrFEvCG
+ zozKP6bzq4qaozwr5Q5fY5BIfnQLwg5GK0HFOn9GOXHtykcTHN6nLY9NhTAy6mV2AtoZdFjAWch
+ igghALuDcOf22qMMEKGVdgneZveDGpITPitck/6zjcD6E0JW0TEoJosjp0IvSRns6UX+diygb9B
+ 9K0KR9F9UKNRZiS1GnB9/lDDGJuCQfwJe55bUE2BKbWiyRo1tn41zwvQgZKRAKOfOMoJBFErVyd
+ paymzDkknNYjcNjAxf8y0+p/ehXhq0RPx6L1Enygt2JBuiHiqa6GToXQTVpJV0Kb7Kln/b94/xm
+X-Received: by 2002:a05:6214:2245:b0:8ea:184f:c15b with SMTP id
+ 6a1803df08f44-908812090ddmr237203976d6.14.1786071111613; 
+ Thu, 06 Aug 2026 19:51:51 -0700 (PDT)
+Received: from
+ runnervmvrwv9.f10dncn03soelb24l4hivhqg2e.bx.internal.cloudapp.net
+ ([4.227.169.202]) by smtp.gmail.com with ESMTPSA id
+ 6a1803df08f44-9088008fddcsm66584266d6.25.2026.08.06.19.51.51
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Thu, 06 Aug 2026 19:51:51 -0700 (PDT)
+From: linuxtestproject.agent@gmail.com
+To: Xuewen Wang <wangxuewen@kylinos.cn>
+Date: Fri,  7 Aug 2026 02:51:50 +0000
+Message-ID: <20260807025150.4081-1-linuxtestproject.agent@gmail.com>
+X-Mailer: git-send-email 2.54.0
+In-Reply-To: <20260807014416.1453266-1-wangxuewen@kylinos.cn>
+References: <20260807014416.1453266-1-wangxuewen@kylinos.cn>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: ltp@lists.linux.it, liwang@hygon.cn
-References: <20260805064053.916492-1-wangxuewen@kylinos.cn>
- <anLnmVKGARAsrV6O@linux.dev>
-From: Xuewen Wang <wangxuewen@kylinos.cn>
-In-Reply-To: <anLnmVKGARAsrV6O@linux.dev>
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] memcg/functional: fix memcg_failcnt
- intermittent timeout by disabling swap
+Subject: Re: [LTP] memcg/functional: fix memcg_failcnt intermittent timeout
+ by disabling swap
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -71,37 +92,53 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-SGkgTGkgV2FuZywKVGhhbmsgeW91IGZvciB0aGUgcmV2aWV3IGFuZCB0aGUgc3VnZ2VzdGlvbnMu
-IEkndmUgc2VudCB2MyB3aXRoIHRoZSBjaGFuZ2VzIHlvdSBwcm9wb3NlZDoKCi0gTW92ZSBzd2Fw
-b2ZmIHRvIGRvX3NldHVwKCkgYW5kIHN3YXBvbiB0byBkb19jbGVhbnVwKCkKLSBBZGp1c3QgdGhl
-IG9yZGVyIGluIGRvX2NsZWFudXAoKSB0byBzd2Fwb24gZmlyc3QsIHRoZW4gbWVtY2dfY2xlYW51
-cAoKUGxlYXNlIHRha2UgYSBsb29rIHdoZW4geW91IGhhdmUgdGltZS4KQmVzdCByZWdhcmRzLApY
-dWV3ZW4gV2FuZwoK5ZyoIDIwMjYvOC81IDE1OjM0LCBMaSBXYW5nIOWGmemBkzoKPiBIaSBYdWV3
-ZW4sCj4gCj4gWHVld2VuIFdhbmcgd3JvdGU6Cj4gCj4+IG1lbWNnX2ZhaWxjbnQuc2ggdGVzdHMg
-dGhlIG1lbW9yeS5mYWlsY250IGNvdW50ZXIgYnkgYWxsb2NhdGluZwo+PiByZWNsYWltYWJsZSBt
-ZW1vcnkgKG1tYXAtYW5vbi9tbWFwLWZpbGUvc2htKSBiZXlvbmQgYSB0aW55IGNncm91cAo+PiBs
-aW1pdCAoMSBwYWdlKS4gSXQgcmVsaWVzIG9uIHRoZSBwcm9jZXNzIGJlaW5nIE9PTS1raWxsZWQg
-c28gdGhhdAo+PiBzaWduYWxfbWVtY2dfcHJvY2VzcygpJ3Mgd2FpdCBsb29wIGV4aXRzLgo+Pgo+
-PiBXaXRoIHN3YXAgZW5hYmxlZCB0aGUga2VybmVsIHVzdWFsbHkgc3RpbGwgT09NLWtpbGxzIHRo
-ZSBwcm9jZXNzLAo+PiBidXQgb24gYXJtNjQgcmVjbGFpbSAoc3dhcCBvdXQpIHNvbWV0aW1lcyBz
-dWNjZWVkcyBpbnN0ZWFkOgo+PiB1c2FnZV9pbl9ieXRlcyBzdGF5cyBhdCB0aGUgbGltaXQgYW5k
-IHRoZSBwcm9jZXNzIGtlZXBzIHJ1bm5pbmcsCj4+IHNvIHRoZSB3YWl0IGxvb3AgdGltZXMgb3V0
-IChUQlJPSykgaW50ZXJtaXR0ZW50bHkuCj4+Cj4+IEV4YW1wbGUgZmFpbHVyZSBvbiBhcm02NCAo
-a2VybmVsIDYuNik6Cj4+ICAgbWVtY2dfZmFpbGNudCAyIFRCUk9LOiB0aW1lZCBvdXQgb24gbWVt
-b3J5LnVzYWdlX2luX2J5dGVzIDQwOTYgMCA4MTkyCj4+Cj4+IERpc2FibGUgc3dhcCBhcm91bmQg
-dGhlIGFsbG9jYXRpb24gYW5kIHJlLWVuYWJsZSBpdCBhZnRlcndhcmRzLAo+PiBtaXJyb3Jpbmcg
-d2hhdCBtZW1jZ19saW1pdF9pbl9ieXRlcy5zaCBhbHJlYWR5IGRvZXMgZm9yIHRoZSBzYW1lCj4+
-IHJlY2xhaW1hYmxlIG1lbW9yeSB0eXBlcy4KPiAKPiBUaGlzIGZpeCBtYWtlIHNlbnNlLCBidXQg
-SSdkIHJhdGhlciBnbyB3aXRoIGEgdGlkeSB3YXk6Cj4gCj4gLi4uCj4gVFNUX1NFVFVQPWRvX3Nl
-dHVwCj4gVFNUX0NMRUFOVVA9ZG9fY2xlYW51cAo+IAo+IGRvX3NldHVwKCkKPiB7Cj4gICAgICAg
-ICBtZW1jZ19zZXR1cAo+ICAgICAgICAgc3dhcG9mZiAtYQo+IH0KPiAKPiBkb19jbGVhbnVwKCkK
-PiB7Cj4gICAgICAgICBzd2Fwb24gLWEKPiAgICAgICAgIG1lbWNnX2NsZWFudXAKPiB9Cj4gCj4g
-Li4uCj4gCj4gTXkgUmVkIEhhdCBlbWFpbCBhZGRyZXNzIGlzIG5vIGxvbmdlciB1c2VkLiBQbGVh
-c2UgQ0MgbXkgbmV3Cj4gYWRkcmVzcyBmb3IgZnV0dXJlIHZlcnNpb25zOgo+IAo+ICAgbGkud2Fu
-Z0BsaW51eC5kZXYKPiBvcjoKPiAgIGxpd2FuZ0BoeWdvbi5jbgo+IAoKCi0tIApNYWlsaW5nIGxp
-c3QgaW5mbzogaHR0cHM6Ly9saXN0cy5saW51eC5pdC9saXN0aW5mby9sdHAK
+Hi Xuewen,
+
+On Fri, Aug 7, 2026, Xuewen Wang wrote:
+> memcg/functional: fix memcg_failcnt intermittent timeout by disabling swap
+
+> +do_setup()
+> +{
+> +	memcg_setup
+> +	swapoff -a
+> +}
+
+Could this use ROD so a failed swapoff aborts the test? swapoff can fail
+when there is not enough memory to page the swap contents back in.
+_tst_run_iterations() ignores the setup function's return status, so the
+test proceeds with swap enabled and the original intermittent timeout
+remains.
+
+> +do_cleanup()
+> +{
+> +	swapon -a
+> +	memcg_cleanup
+> +}
+
+Could cleanup restore only swap areas that were active before setup, and
+only if swapoff was attempted? TST_DO_CLEANUP is set before do_setup(), so
+a TCONF from memcg_setup() reaches this function before swapoff. swapon -a
+can then activate previously inactive fstab entries. Conversely, dynamically
+managed swap areas absent from fstab are disabled by swapoff -a but are not
+restored by swapon -a.
+
+Verdict - Needs revision
+
+---
+Note:
+
+The agent can sometimes produce false positives although often its
+findings are genuine. If you find issues with the review, please
+comment this email or ignore the suggestions.
+
+Regards,
+LTP AI Reviewer
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
