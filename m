@@ -4,104 +4,105 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3CE17C5AC7C
-	for <ltp@archiver.kernel.org>; Fri,  7 Aug 2026 12:17:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B3E55C5AC7A
+	for <ltp@archiver.kernel.org>; Fri,  7 Aug 2026 12:17:59 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 115873E7035
-	for <ltp@archiver.kernel.org>; Fri,  7 Aug 2026 14:17:44 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 2D87A3E701A
+	for <ltp@archiver.kernel.org>; Fri,  7 Aug 2026 14:17:58 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 632943CDD91
+ by picard.linux.it (Postfix) with ESMTPS id 703813E7005
  for <ltp@lists.linux.it>; Fri,  7 Aug 2026 14:17:27 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 7FAB21A0100F
- for <ltp@lists.linux.it>; Fri,  7 Aug 2026 14:17:25 +0200 (CEST)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 896DC10006B4
+ for <ltp@lists.linux.it>; Fri,  7 Aug 2026 14:17:26 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 1CD4A3E0E;
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 72AEC805F2;
  Fri,  7 Aug 2026 12:17:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1786105041; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=uToKoR6W63ZJx3MuvX/qYj8H79kfq5k0FWpIYPV/W24=;
- b=tyx0caosQuURBA0icOEIIMx6sypWh5I821nqCCTGu6MwAYde/v1bUpnXbkWt4+F+A86imA
- IyWePG/pHZTxS2ef8zIFEKm5Q8t0TgXwYyucdwET4+BvQ7KIN3UEwT9Fl8eHJTibpBd6YO
- O/rETprhvyVV8PtiWy6adOBQ6s5z3Q8=
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=kt5fzk8zOsRCztMpCxmOaRrHvyKmYfFVYQKXchjDurs=;
+ b=ZrSrt4FvGzcHRT3sSFeN8i8nvB1nonVZXCxhS10LszXoYklypYDvH6cF4AaMFsG+eAc/Rw
+ lYmNEp82eCHuNGLyi4uVpOzAFXpRbYnIcRsj7/qs1lIt2oG0Ujfxz2BBsn5ZbtN1xhlhwh
+ k/9MvTbH1hblcnjb2TUr9YaaF2tA3W8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1786105041;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=uToKoR6W63ZJx3MuvX/qYj8H79kfq5k0FWpIYPV/W24=;
- b=mk70m5XFS1jyDZil3iNlqh8JFAsTYnrOpOW9R1FL2lX1BiEdb1OUf5uTHv/nNaN5HFOcY3
- 82cQTK+IKncZhPDg==
-Authentication-Results: smtp-out2.suse.de;
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=kt5fzk8zOsRCztMpCxmOaRrHvyKmYfFVYQKXchjDurs=;
+ b=YoXuTfouWUYRuSQxzh5bQqBPrrIygA9lXNF47rvcOqV4ZIl8v2OzKbyJNrAjYJgmuOCvIC
+ 0YN43kl36Zi4fABg==
+Authentication-Results: smtp-out1.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1786105037; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=uToKoR6W63ZJx3MuvX/qYj8H79kfq5k0FWpIYPV/W24=;
- b=ZdwyqtsHGBwgaDxmndkPoyudpMpZeB12tOes5kiQayzq6hADABJ4wNxPbQoVL4OVKOgaq8
- Th58eeDPxn38QooMDsQLz+F8hh6sBu0aJX0eIJ0PjqjiW4zS2n5qUhNpbch5BqVUFo06b/
- DEHai6o5Lwig8LVtbju3klzrNULwazA=
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=kt5fzk8zOsRCztMpCxmOaRrHvyKmYfFVYQKXchjDurs=;
+ b=e9vtNgyG03v8pS/aKqXKt7LIXQZJmSM1XVLNZ7MkoeHnryw9k0kxhY01bG/ZUdOGmrTtGc
+ sWXFO4lK+YWNUGfOJub5bnGxu0CLSWupN/1MB3OwJJLwZdXqtf4NtnvEBA/yqJXt5XJ4ZH
+ Urm4VzASt6BT+gZKsYd11OoxId5/XZ8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1786105037;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=uToKoR6W63ZJx3MuvX/qYj8H79kfq5k0FWpIYPV/W24=;
- b=Qmd26TVP+J67mghjp82pb+yjhZmk3SUayQE9RWHu/FgYDsn4XcTmUbBehYU1Fi+Wmcu228
- HSvcB6u+emsWOfCg==
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=kt5fzk8zOsRCztMpCxmOaRrHvyKmYfFVYQKXchjDurs=;
+ b=QsDHLeTe7B2caDf7vs34pUFUVcvyBREQwDSJYB7a8k2mHunlCvJBCOXeow+P0nTsbF3yNj
+ iWvthzCjXj/houBw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D983B779B6;
- Fri,  7 Aug 2026 12:17:16 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 30B82779BF;
+ Fri,  7 Aug 2026 12:17:17 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id UXIYMszMdWqfLwAAD6G6ig
- (envelope-from <andrea.cervesato@suse.de>); Fri, 07 Aug 2026 12:17:16 +0000
+ by imap1.dmz-prg2.suse.org with ESMTPSA id wJHrCM3MdWqfLwAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>); Fri, 07 Aug 2026 12:17:17 +0000
 From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Fri, 07 Aug 2026 14:17:09 +0200
-Message-Id: <20260807-rewrite_mremap_testing_suite-v3-0-dcca6d4ac0f1@suse.com>
+Date: Fri, 07 Aug 2026 14:17:10 +0200
 MIME-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAMXMdWoC/4XNSw6CMBSF4a2Yjq0prSnVkfswhpRygTvgkd5SN
- YS9W0iMjnT4n8F3ZkbgEYiddzPzEJFw6FOo/Y651vYNcKxSMymkFrkU3MPdY4Ci89DZsQhAAfu
- moCmNvLLiZE3pjNKWJWL0UONj46+31C1SGPxze4vZur7h7DccMy44OOmUq2sN9nihieDgho6tb
- pQfy4j8jyWTleVaWDCgSlN+WcuyvADydZkmEwEAAA==
-X-Change-ID: 20260720-rewrite_mremap_testing_suite-da09a8bc836a
+Message-Id: <20260807-rewrite_mremap_testing_suite-v3-1-dcca6d4ac0f1@suse.com>
+References: <20260807-rewrite_mremap_testing_suite-v3-0-dcca6d4ac0f1@suse.com>
+In-Reply-To: <20260807-rewrite_mremap_testing_suite-v3-0-dcca6d4ac0f1@suse.com>
 To: Linux Test Project <ltp@lists.linux.it>
 X-Mailer: b4 0.16.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1786105036; l=1911;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1786105036; l=11303;
  i=andrea.cervesato@suse.com; s=20251210; h=from:subject:message-id;
- bh=rfFVAo3KS81jToRMsc+KOr3bBoyfOCSUR6CxtyZGm4k=;
- b=LGZ5HSDBERQPfCZwwQ+vC/7QUEX0+dFia6SB4Veejt9cxVZ9kcDG7dpml8u9b02syimpk6CRp
- JSZcGk0VvodCAaLYY5qRhcmSKGFsZgMh7jVv2Q/8vs3wZATuEFdGVwe
+ bh=2JURn5U0JTp7wpf89qlL2s2HmXzrSFSZMnpqoTdSKPY=;
+ b=ky1MyLhygre2kxTy08L2A6jHC/cUYNoa4IWkyG/YXeE9X8gAtP60xcCwCVebUMsRatkRg1DMZ
+ vDICtsfjQRNDVQkvG6FtbX8Kp/2CSTaVJrRkLqMD4M2zuxhVJvTy+st
 X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
  pk=zKY+6GCauOiuHNZ//d8PQ/UL4jFCTKbXrzXAOQSLevI=
 X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  NEURAL_HAM_LONG(-1.00)[-1.000];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- RCVD_VIA_SMTP_AUTH(0.00)[]; RCVD_TLS_ALL(0.00)[];
- ARC_NA(0.00)[]; MIME_TRACE(0.00)[0:+];
+ TO_MATCH_ENVRCPT_ALL(0.00)[];
  DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- TO_DN_ALL(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- FROM_HAS_DN(0.00)[]; RCPT_COUNT_THREE(0.00)[3];
- FROM_EQ_ENVFROM(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ ARC_NA(0.00)[]; TO_DN_ALL(0.00)[]; FROM_HAS_DN(0.00)[];
+ RCPT_COUNT_THREE(0.00)[3]; MIME_TRACE(0.00)[0:+];
+ FROM_EQ_ENVFROM(0.00)[]; RCVD_TLS_ALL(0.00)[];
+ RCVD_COUNT_TWO(0.00)[2]; RCVD_VIA_SMTP_AUTH(0.00)[];
  DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo, suse.com:email,
- suse.com:mid, linux.it:email]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+ suse.com:mid, suse.cz:email]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3 0/7] Rewrite mremap testing suite
+Subject: [LTP] [PATCH v3 1/7] mremap01: Convert to new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -118,52 +119,352 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-This rewrite has been done using multi-agent configuration that is now
-present in ltp-agent project.
+From: Andrea Cervesato <andrea.cervesato@suse.com>
 
+Convert the test to the new LTP API (tst_test.h) using a semantic
+rewrite. The test verifies that mremap() with MREMAP_MAYMOVE can grow a
+file-backed MAP_SHARED mapping, that the grown region is fully usable,
+and that its contents synchronize to the backing file via msync().
+
+The mapping work is performed per-iteration so that '-i' runs always
+grow a freshly created mapping instead of an already-grown one.
+
+Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
 Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
-Changes in v3:
-- mremap08: fix according to Cyril review
-- Link to v2: https://lore.kernel.org/20260807-rewrite_mremap_testing_suite-v2-0-1760ae8e3b8b@suse.com
-
-Changes in v2:
-- mremap05: remove MREMAP_FIXED | MMAP_MAYMOVE
-- mremap04: remove SysV stuff
-- mremap01: ftruncate every run() cycle
-- mremap02: reset bad address when mremap goes well
-- Link to v1: https://lore.kernel.org/20260721-rewrite_mremap_testing_suite-v1-0-ec2c3cff6ea4@suse.com
-
-To: Linux Test Project <ltp@lists.linux.it>
-
----
-Andrea Cervesato (7):
-      mremap01: Convert to new API
-      mremap02: Convert to new API
-      mremap03: Convert to new API
-      mremap04: Convert to new API
-      mremap05: Convert to new API
-      mremap08: Extract test from mremap05
-      mremap09: Add test for expanding over unmapped gap
-
- runtest/syscalls                            |   2 +
- testcases/kernel/syscalls/mremap/.gitignore |   2 +
- testcases/kernel/syscalls/mremap/Makefile   |   3 -
  testcases/kernel/syscalls/mremap/mremap01.c | 281 +++++++++-------------------
- testcases/kernel/syscalls/mremap/mremap02.c | 201 +++++---------------
- testcases/kernel/syscalls/mremap/mremap03.c | 203 ++++----------------
- testcases/kernel/syscalls/mremap/mremap04.c | 265 +++++---------------------
- testcases/kernel/syscalls/mremap/mremap05.c | 278 ++++++++-------------------
- testcases/kernel/syscalls/mremap/mremap08.c | 127 +++++++++++++
- testcases/kernel/syscalls/mremap/mremap09.c |  59 ++++++
- 10 files changed, 471 insertions(+), 950 deletions(-)
----
-base-commit: 12fcadf63a99fc4bec76f9b4715cda626256562f
-change-id: 20260720-rewrite_mremap_testing_suite-da09a8bc836a
+ 1 file changed, 85 insertions(+), 196 deletions(-)
 
-Best regards,
---  
-Andrea Cervesato <andrea.cervesato@suse.com>
+diff --git a/testcases/kernel/syscalls/mremap/mremap01.c b/testcases/kernel/syscalls/mremap/mremap01.c
+index 8c241d45c..c6f2cb6a9 100644
+--- a/testcases/kernel/syscalls/mremap/mremap01.c
++++ b/testcases/kernel/syscalls/mremap/mremap01.c
+@@ -1,237 +1,126 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+- *
+- *   Copyright (c) International Business Machines  Corp., 2001
+- *
+- *   This program is free software;  you can redistribute it and/or modify
+- *   it under the terms of the GNU General Public License as published by
+- *   the Free Software Foundation; either version 2 of the License, or
+- *   (at your option) any later version.
+- *
+- *   This program is distributed in the hope that it will be useful,
+- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- *   the GNU General Public License for more details.
+- *
+- *   You should have received a copy of the GNU General Public License
+- *   along with this program;  if not, write to the Free Software
+- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
++ * Copyright (c) International Business Machines Corp., 2001
++ * 07/2001 Ported by Wayne Boyer
++ * Copyright (c) Linux Test Project, 2026
+  */
+ 
+-/*
+- * Test Name: mremap01
+- *
+- * Test Description:
+- *  Verify that, mremap() succeeds when used to expand the existing
+- *  virtual memory mapped region to the requested size where the
+- *  virtual memory area was previously mapped to a file using mmap().
++/*\
++ * Verify that :manpage:`mremap(2)` succeeds when used to expand an existing
++ * virtual memory region that was previously mapped to a file with
++ * :manpage:`mmap(2)`.
+  *
+- * Expected Result:
+- *  mremap() should succeed returning the address of new virtual memory area.
+- *  The expanded mapped memory region should be accessible and able to
+- *  synchronize with the file.
++ * After growing the mapping with ``MREMAP_MAYMOVE``, the expanded region must
++ * be fully accessible and its contents must synchronize to the backing file
++ * with :manpage:`msync(2)`.
+  *
+- * Algorithm:
+- *  Setup:
+- *   Setup signal handling.
+- *   Create temporary directory.
+- *   Pause for SIGUSR1 if option specified.
++ * [Algorithm]
+  *
+- *  Test:
+- *   Loop if the proper options are given.
+- *   Execute system call
+- *   Check return code, if system call failed (return=-1)
+- *	Log the errno and Issue a FAIL message.
+- *   Otherwise,
+- *	Verify the Functionality of system call
+- *      if successful,
+- *		Issue Functionality-Pass message.
+- *      Otherwise,
+- *		Issue Functionality-Fail message.
+- *  Cleanup:
+- *   Print errno log and/or timing stats if options given
+- *   Delete the temporary directory created.
+- *
+- * Usage:  <for command-line>
+- *  mremap01 [-c n] [-f] [-i n] [-I x] [-P x] [-t]
+- *     where,  -c n : Run n copies concurrently.
+- *             -f   : Turn off functionality Testing.
+- *	       -i n : Execute test n times.
+- *	       -I x : Execute test for x seconds.
+- *	       -P x : Pause for x seconds between iterations.
+- *	       -t   : Turn on syscall timing.
+- *
+- * HISTORY
+- *	07/2001 Ported by Wayne Boyer
+- *
+- *      11/09/2001 Manoj Iyer (manjo@austin.ibm.com)
+- *	Modified.
+- *	- #include <linux/mman.h> should not be included as per man page for
+- *	  mremap, #include <sys/mman.h> alone should do the job. But inorder
+- *	  to include definition of MREMAP_MAYMOVE defined in bits/mman.h
+- *	  (included by sys/mman.h) __USE_GNU needs to be defined.
+- *	  There may be a more elegant way of doing this...
+- *
+- * RESTRICTIONS:
+- *  None.
++ * - create a temporary file and stretch it to the initial mapping size
++ * - map the file with ``MAP_SHARED`` and ``PROT_WRITE``
++ * - stretch the file to the new (larger) size before growing the mapping
++ * - grow the mapping with mremap() and ``MREMAP_MAYMOVE``
++ * - write every byte of the grown region to prove it is usable
++ * - synchronize the region to the backing file with ``MS_SYNC``
++ * - read the data back from the backing file to prove it was synchronized
+  */
+ 
+ #define _GNU_SOURCE
+-#include <unistd.h>
+ #include <errno.h>
+ #include <sys/mman.h>
+-#include <fcntl.h>
+-
+-#include "test.h"
+-#include "tso_safe_macros.h"
++#include "tst_test.h"
++#include "tst_safe_prw.h"
+ 
+ #define TEMPFILE	"mremapfile"
+ 
+-char *TCID = "mremap01";
+-int TST_TOTAL = 1;
+-char *addr;			/* addr of memory mapped region */
+-int memsize;			/* memory mapped size */
+-int newsize;			/* new size of virtual memory block */
+-int fildes;			/* file descriptor for tempfile */
+-
+-void setup();			/* Main setup function of test */
+-void cleanup();			/* cleanup function for the test */
++static char *addr = MAP_FAILED;
++static size_t memsize;
++static size_t newsize;
++static int fildes = -1;
+ 
+-int main(int ac, char **av)
++static void setup(void)
+ {
+-	int ind;		/* counter variable */
++	int pagesz = getpagesize();
+ 
+-	tst_parse_opts(ac, av, NULL, NULL);
++	memsize = 1000 * pagesz;
++	newsize = memsize * 2;
+ 
+-	tst_count = 0;
++	fildes = SAFE_OPEN(TEMPFILE, O_RDWR | O_CREAT, 0666);
++}
+ 
+-	setup();
++static int verify_file(void)
++{
++	size_t offsets[3];
++	unsigned int i;
++	char got;
+ 
+-	/*
+-	 * Call mremap to expand the existing mapped
+-	 * memory region (memsize) by newsize limits.
+-	 */
+-	addr = mremap(addr, memsize, newsize, MREMAP_MAYMOVE);
++	offsets[0] = 0;
++	offsets[1] = newsize / 2;
++	offsets[2] = newsize - 1;
+ 
+-	/* Check for the return value of mremap() */
+-	if (addr == MAP_FAILED)
+-		tst_brkm(TFAIL | TERRNO, cleanup, "mremap failed");
++	for (i = 0; i < ARRAY_SIZE(offsets); i++) {
++		size_t off = offsets[i];
+ 
+-	/*
+-	 * Attempt to initialize the expanded memory
+-	 * mapped region with data. If the map area
+-	 * was bad, we'd get SIGSEGV.
+-	 */
+-	for (ind = 0; ind < newsize; ind++) {
+-		addr[ind] = (char)ind;
+-	}
++		SAFE_PREAD(1, fildes, &got, 1, (off_t)off);
+ 
+-	/*
+-	 * Memory mapped area is good. Now, attempt
+-	 * to synchronize the mapped memory region
+-	 * with the file.
+-	 */
+-	if (msync(addr, newsize, MS_SYNC) != 0) {
+-		tst_resm(TFAIL | TERRNO, "msync failed to synch "
+-			 "mapped file");
+-	} else {
+-		tst_resm(TPASS, "Functionality of "
+-			 "mremap() is correct");
++		if (got != (char)off) {
++			tst_res(TFAIL, "file[%zu] == 0x%02x, expected 0x%02x",
++				off, (unsigned char)got, (unsigned char)off);
++			return 1;
++		}
+ 	}
+ 
+-	cleanup();
+-	tst_exit();
++	return 0;
+ }
+ 
+-/*
+- * void
+- * setup() - performs all ONE TIME setup for this test.
+- *
+- * Get system page size, Set the size of virtual memory area and the
+- * new size after resize,
+- * Creat a temporary directory and a file under it.
+- * Stratch the file size to the size of virtual memory area and
+- * write 1 byte (\0). Map the temporary file for the length of virtual
+- * memory (memsize) into memory.
+- */
+-void setup(void)
++static void run(void)
+ {
+-	int pagesz;		/* system's page size */
+-
+-	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+-
+-	TEST_PAUSE;
+-
+-	/* Get the system page size */
+-	if ((pagesz = getpagesize()) < 0) {
+-		tst_brkm(TFAIL, NULL,
+-			 "getpagesize failed to get system page size");
+-	}
++	size_t ind;
+ 
+-	/* Get the size of virtual memory area to be mapped */
+-	memsize = (1000 * pagesz);
+-
+-	/* Get the New size of virtual memory block after resize */
+-	newsize = (memsize * 2);
+-
+-	tst_tmpdir();
++	/*
++	 * Establish a fresh memsize mapping for every iteration so mremap()
++	 * always grows a newly created mapping instead of an already-grown one.
++	 */
++	SAFE_FTRUNCATE(fildes, 0);
++	SAFE_LSEEK(fildes, (off_t)memsize, SEEK_SET);
++	SAFE_WRITE(SAFE_WRITE_ALL, fildes, "\0", 1);
+ 
+-	/* Creat a temporary file used for mapping */
+-	if ((fildes = open(TEMPFILE, O_RDWR | O_CREAT, 0666)) < 0)
+-		tst_brkm(TBROK | TERRNO, cleanup, "opening %s failed",
+-			 TEMPFILE);
++	addr = SAFE_MMAP(0, memsize, PROT_READ | PROT_WRITE, MAP_SHARED,
++			 fildes, 0);
+ 
+-	/* Stretch the file to the size of virtual memory area */
+-	if (lseek(fildes, (off_t) memsize, SEEK_SET) != (off_t) memsize) {
+-		tst_brkm(TBROK | TERRNO, cleanup,
+-			 "lseeking to %d offset pos. failed", memsize);
+-	}
++	SAFE_LSEEK(fildes, (off_t)newsize, SEEK_SET);
++	SAFE_WRITE(SAFE_WRITE_ALL, fildes, "\0", 1);
+ 
+-	/* Write one byte data into temporary file */
+-	if (write(fildes, "\0", 1) != 1) {
+-		tst_brkm(TBROK, cleanup, "writing to %s failed", TEMPFILE);
+-	}
++	TESTPTR(mremap(addr, memsize, newsize, MREMAP_MAYMOVE));
++	addr = TST_RET_PTR;
++	if (addr == MAP_FAILED)
++		tst_brk(TFAIL | TTERRNO, "mremap failed");
+ 
+-	/*
+-	 * Call mmap to map virtual memory (memsize bytes) from the
+-	 * beginning of temporary file (offset is 0) into memory.
+-	 */
+-	addr = mmap(0, memsize, PROT_WRITE, MAP_SHARED, fildes, 0);
++	for (ind = 0; ind < newsize; ind++)
++		addr[ind] = (char)ind;
+ 
+-	/* Check for the return value of mmap() */
+-	if (addr == (char *)MAP_FAILED) {
+-		tst_brkm(TBROK, cleanup, "mmaping Failed on %s", TEMPFILE);
+-	}
++	SAFE_MSYNC(addr, newsize, MS_SYNC);
+ 
+-	/* Stretch the file to newsize of virtual memory block */
+-	if (lseek(fildes, (off_t) newsize, SEEK_SET) != (off_t) newsize) {
+-		tst_brkm(TBROK, cleanup, "lseek() to %d offset pos. Failed, "
+-			 "error=%d : %s", newsize, errno, strerror(errno));
+-	}
++	if (verify_file())
++		tst_res(TFAIL, "mremap()'d region did not sync to the file");
++	else
++		tst_res(TPASS, "Functionality of mremap() is correct");
+ 
+-	/* Write one byte data into temporary file */
+-	if (write(fildes, "\0", 1) != 1) {
+-		tst_brkm(TBROK | TERRNO, cleanup, "writing to %s failed",
+-			 TEMPFILE);
+-	}
++	SAFE_MUNMAP(addr, newsize);
+ }
+ 
+-/*
+- * void
+- * cleanup() - performs all ONE TIME cleanup for this test at
+- *             completion or premature exit.
+- *	       Unmap the mapped memory area done in the test.
+- *	       Close the temporary file.
+- *	       Remove the temporary directory.
+- */
+-void cleanup(void)
++static void cleanup(void)
+ {
++	if (addr != MAP_FAILED)
++		SAFE_MUNMAP(addr, newsize);
+ 
+-	/* Unmap the mapped memory */
+-	if (munmap(addr, newsize) != 0)
+-		tst_brkm(TBROK | TERRNO, NULL, "munmap failed");
+-
+-	/* Close the temporary file */
+-	SAFE_CLOSE(NULL, fildes);
+-
+-	tst_rmdir();
++	if (fildes != -1)
++		SAFE_CLOSE(fildes);
+ }
++
++static struct tst_test test = {
++	.setup = setup,
++	.cleanup = cleanup,
++	.test_all = run,
++	.needs_tmpdir = 1,
++};
+
+-- 
+2.51.0
 
 
 -- 
