@@ -4,53 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AFE24C5AC7A
-	for <ltp@archiver.kernel.org>; Fri,  7 Aug 2026 06:21:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 63631C5AC7C
+	for <ltp@archiver.kernel.org>; Fri,  7 Aug 2026 06:23:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1786083818; h=message-id :
+ to : in-reply-to : date : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : cc : mime-version : content-type :
+ content-transfer-encoding : sender : from;
+ bh=D0t+hz8X5b5kHUTcGKYMbwPebn7Gw7V4hW3BLq3/UxE=;
+ b=VnPGd4c0q9l+LNxuQNcmNKmMc4wJRD4kmMkiyuNFTcDvoq9zl4s0sE/4uEswGF78oKD+j
+ M5xth71fQwkWVfQQRghTSPLaR73/ffcsNlAZX3OUUKilFwJhQVp3ltfM3pRYZY59bOYIexc
+ PmdZLWQ8L785uFeayunnLU9FfxPJzk4=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6FBEB3E2E6E
-	for <ltp@archiver.kernel.org>; Fri,  7 Aug 2026 08:21:45 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 684913E2C2E
+	for <ltp@archiver.kernel.org>; Fri,  7 Aug 2026 08:23:38 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6F1423E2443
- for <ltp@lists.linux.it>; Fri,  7 Aug 2026 08:21:30 +0200 (CEST)
-Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com
- [IPv6:2001:41d0:1004:224b::b3])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 3DE813E2443
+ for <ltp@lists.linux.it>; Fri,  7 Aug 2026 08:23:17 +0200 (CEST)
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com
+ [IPv6:2a00:1450:4864:20::32f])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 0DC651A00F7D
- for <ltp@lists.linux.it>; Fri,  7 Aug 2026 08:21:27 +0200 (CEST)
-Date: Fri, 7 Aug 2026 14:20:23 +0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
- t=1786083686;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=gWiVJ+CTRrpb0Hv1ZZZTiZAVI7K8ne6j78C+rOLvxvg=;
- b=V0fMQ9QvYgkfV1AsCdDfJBGQwXEBo8D+RE44LtmOe+ry41o6PZHVzHuJLkZEvJmUjPFECu
- W/u6la4rdvXvFGi9Tj/lMxiat3wBRbC3hBx64pFiaZVltvmp+H5w8abor5uqnrOvZjeMa+
- m5ErbndsN2SiWEzBrhaEXem3bpWN1tA=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and
- include these headers.
-From: Li Wang <li.wang@linux.dev>
-To: Andrea Cervesato <andrea.cervesato@suse.com>,
- Xuewen Wang <wangxuewen@kylinos.cn>
-Message-ID: <anV5J8HZ-agTZpAB@linux.dev>
-Mail-Followup-To: Andrea Cervesato <andrea.cervesato@suse.com>,
- Xuewen Wang <wangxuewen@kylinos.cn>,
- linuxtestproject.agent@gmail.com, ltp@lists.linux.it
-References: <anVWjUOj6Oi5sBbz@linux.dev>
- <6a756e7a.cc089686.309364.c33e@mx.google.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <6a756e7a.cc089686.309364.c33e@mx.google.com>
-X-Migadu-Flow: FLOW_OUT
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 2350910009E3
+ for <ltp@lists.linux.it>; Fri,  7 Aug 2026 08:23:17 +0200 (CEST)
+Received: by mail-wm1-x32f.google.com with SMTP id
+ 5b1f17b1804b1-49556f97a9dso19110825e9.1
+ for <ltp@lists.linux.it>; Thu, 06 Aug 2026 23:23:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1786083796; x=1786688596; darn=lists.linux.it;
+ h=date:content-transfer-encoding:content-type:subject:in-reply-to:cc
+ :to:from:message-id:from:to:cc:subject:date:message-id:reply-to
+ :content-type; bh=pQbGTQxd0NGghEJlmeFGNJuZZj0CVMzK+enjeip0SRU=;
+ b=DOawb/O8YD9AHMyrKpkP5h1PjaVL8PnkHdYOHeTmyh4ORHUy3MIwOujl0MZBShKCZ4
+ uPLBi3Kd/+RC37cfIFGXRjvIh/HeWJVGeMohxdUGZnLrC4Q/BhUWWFLIVgZBiD7Y8D4j
+ Mm6Ox/wMr/cgW8XXEgdJnA2nhbFGNEb+RWOL1XIat3+krp61BKDh1MwhZ9I8D1QXlRNI
+ DznBuVGqGiuTeIwMYA6GuSaZpis+LYthwX7RdDDgLupfAZzK/vVRfGl05dgWaUzLFsLg
+ ChtQ5ZNS8T2UdMK3x34rXL438v56fP5cmRZx2t+zRSvVdufmqeDcinCP+4j8q0EvVmoC
+ 0yTg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1786083796; x=1786688596;
+ h=date:content-transfer-encoding:content-type:subject:in-reply-to:cc
+ :to:from:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject
+ :date:message-id:reply-to:content-type;
+ bh=pQbGTQxd0NGghEJlmeFGNJuZZj0CVMzK+enjeip0SRU=;
+ b=pOHGaNufhmUPXlmmzWOLD0fHLrlbuzZyvN97GFlqnF/oA7/O9JMdulShTQ8EkOukfr
+ C0MBjhiSkEE/Odb0lToow0DpkJwWsLFpsWV3ZGyzEDp6H+Q3VIfMuPaOQkmxm8LA3jOG
+ QcUZnwNOEL7FfeZQE50DQZeC5zW3MwxbszLbqNXirKXoWqs5Ix51U6HhMZ0KFWrrFZcp
+ S630lh3gAjan1iyTJJXShsXuaiyyQlymlHixwoNSKQ2MpIoyKUkBztcPYg6l7aFQzbC+
+ oocqSILdoVuEQ3yhsgvni1kqIOTCBTqA5q+YnocZpCnrFGg/CurhUlpbxglLm0FFbd7Y
+ P/Zg==
+X-Forwarded-Encrypted: i=1;
+ AHgh+RoXcRZEChX8MNjx6y2Wq4c8o+XWUahL9Wl8VqhDarzUfD8MVfT/p3Foyy5s0qc8K3YDT40=@lists.linux.it
+X-Gm-Message-State: AOJu0YyIHlx+7he7qujg+y0PH0cf8FPANZ5ZtGRU3EYdZyUvQ6PGkH4i
+ eeYj9e2/eHt0BeLPgp4y4OOAm0H+SAJdrjaa+IjkH+3XwKTgNwwIYM42/yeMzk/GOSlyrFn/Jgk
+ evQ6JtiRUTw==
+X-Gm-Gg: AR+sD11lFXbnzSLabBTFv5hU+pzDudqPAuCZS4VHkfrlmetbAhdSf2Sp1kRu9r+/4kV
+ gtNq7nrWt33+EyOA44qt4Szd7nSd5PlUZO0h9Nt7nR8TcFGXmJMD/17xAfIBHxup8aB1vhagcDT
+ xDtLmVzeU3hoSYdPD3/1uhXzOmwjx2Hn7ILWMJHAKg979JV4buCGO+ycwLXVclidOq2L9xr0i2c
+ uuGn6N8g6votEJtqgf6rsUn4QxEnhsj7jyJ33EmbHWtflW74vu8W5K/5l9dYOpKSTy8m4egoitr
+ FIgV6zNJQRtwgnC2UlHNF63+IwrY4d2kp0C203BOrKVZWZlhREs0niaS4HCOWSekbIyJtNy4ap3
+ Lb8TimJdmWWl4PB5RFr02kZt17w9irOFFxG2VAD06TmmN1T1D2je96Q6uXD/McY/nwIweAqkc2Q
+ KCvtywGKZwC4NDefpgHd5YhQpGlX2VfgbBWZeVbS0gAG+phAHvQTf9iaM7J7gtNrq3tv/eENvt+
+ 10Lujk=
+X-Received: by 2002:a05:600c:37c9:b0:495:4b24:1b64 with SMTP id
+ 5b1f17b1804b1-4994e6eacc1mr293753595e9.0.1786083796511; 
+ Thu, 06 Aug 2026 23:23:16 -0700 (PDT)
+Received: from 192.168.1.121 ([151.62.110.28])
+ by smtp.gmail.com with ESMTPSA id
+ 5b1f17b1804b1-4995e9a4803sm9094255e9.0.2026.08.06.23.23.15
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Thu, 06 Aug 2026 23:23:16 -0700 (PDT)
+Message-ID: <6a7579d4.5dfca4bd.124bf4.ac84@mx.google.com>
+To: "Cyril Hrubis" <chrubis@suse.cz>
+In-Reply-To: <anSMBJKH8bjhJcs5@rei>
+Date: Fri, 07 Aug 2026 06:23:15 +0000
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] memcg/functional: fix memcg_failcnt intermittent timeout
- by disabling swap
+Subject: Re: [LTP] [PATCH 4/5] mremap04: Convert to new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -62,70 +98,37 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it, linuxtestproject.agent@gmail.com
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Cc: Linux Test Project <ltp@lists.linux.it>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Xuewen, Andrea,
+Hi Cyril,
 
-On Fri, Aug 07, 2026 at 05:34:49AM +0000, Andrea Cervesato wrote:
-> Hi Li,
+> > +	 * Pass old_size of one page while the segment is two pages: the
+> > +	 * mismatch is intentional and must be preserved.
+> >  	 */
 > 
-> > Fair point that ignoring the return status defeats the purpose. But I'd
-> > rather not TBROK on a swapoff failure, that's an environment limitation,
-> > not a test failure. Especially swapoff here is an enhancement but not
-> > a hard requirement for this test.
+> Wouldn't this be enough for the mremap() to fail even with regular
+> mmap()? I do not see what the test needs the sysv shm for.
+
+actually yes, but I think the original idea was to mix SysV with mremap()
+syscall.
+
 > 
-> I agree.
-> 
-> > That is a bit over-engineering.
-> > 
-> > If an inactive fstab entry gets activated by swapon -a, that arguably
-> > points to a misconfigured test host rather than something this test
-> > should work around.
-> 
-> And also here. Unfortunately we don't have enough data for shell tests,
-> so AI agent is not really working well in there..
-> 
-> Honestly I don't know how to fix this but adding more examples which
-> we don't have..
+> Also the interaction between SysV shm and mremap() seems to be more
+> complicated and may warrant more tests.
 
-No worries, AI agent being too strict in reviewing is not a bad thing.
-It inspires me to think about something maybe in a different way.
+mmmh, any idea?
 
-Like this patch, I am now thinking if we can just limit it only
-inside the cgroup:
-
---- a/testcases/kernel/controllers/memcg/functional/memcg_failcnt.sh
-+++ b/testcases/kernel/controllers/memcg/functional/memcg_failcnt.sh
-@@ -17,18 +17,17 @@ TST_CLEANUP=do_cleanup
- do_setup()
- {
-        memcg_setup
--       swapoff -a
- }
-
- do_cleanup()
- {
--       swapon -a
-        memcg_cleanup
- }
-
- do_test()
- {
-        ROD echo $MEMORY_LIMIT \> memory.limit_in_bytes
-+       ROD echo 0 \> memory.swappiness
-
-        start_memcg_process $2 -s ${MEMORY_TO_ALLOCATE}
-        ROD echo $MEMCG_PROCESS_PID \> tasks
-
-@Xuewen, can you try this patch and see if it can solve your problem?
-
--- 
-Regards,
-Li Wang
+--
+Andrea Cervesato
+SUSE QE Automation Engineer Linux
+andrea.cervesato@suse.com
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
