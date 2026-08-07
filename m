@@ -4,115 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BBC72C5AC7A
-	for <ltp@archiver.kernel.org>; Fri,  7 Aug 2026 08:16:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5827CC5AC7C
+	for <ltp@archiver.kernel.org>; Fri,  7 Aug 2026 08:20:14 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0DD013E5A24
-	for <ltp@archiver.kernel.org>; Fri,  7 Aug 2026 10:16:37 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id A323E3E2649
+	for <ltp@archiver.kernel.org>; Fri,  7 Aug 2026 10:20:12 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B004B3E2644
- for <ltp@lists.linux.it>; Fri,  7 Aug 2026 10:15:47 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 004A53C0F03
+ for <ltp@lists.linux.it>; Fri,  7 Aug 2026 10:19:56 +0200 (CEST)
+Received: from mail-pj2-x03.google.com (mail-pj2-x03.google.com
+ [IPv6:2607:f8b0:4864:39::3])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id BABB52009CA
- for <ltp@lists.linux.it>; Fri,  7 Aug 2026 10:15:46 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 6CC7E804E6;
- Fri,  7 Aug 2026 08:15:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1786090541; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=lNEeGm2kBmCVGafd4YUemma0D2j1Hh0kOAxuWRGfocw=;
- b=Tv/PkC+8m4S60/d1s3niN/31M6jBBwFTG8o0w2own9AMNW0Uf31ECKdG0/uqRm4omDPUmV
- dpVx+8oomNxb+MMEsQRw/qp/V7CXTj0oiqs/EezSyrDhLY0aUbTQspPGZQ8jAHE/JWT8oy
- YXf9iW1Nx57m5KaXkOLIQAI+i1u3tsk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1786090541;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=lNEeGm2kBmCVGafd4YUemma0D2j1Hh0kOAxuWRGfocw=;
- b=zxY3f5vPi/YvjaFA7Kv1OzUKxx0fHlS3AkpYglg2iA1BdOwqUHTiiyELrkMLNDCsWnn8rx
- VTWd11AIak4RXwBA==
-Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.de header.s=susede2_rsa header.b=X8YFRwSv;
- dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=PdOj7jDm
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1786090537; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=lNEeGm2kBmCVGafd4YUemma0D2j1Hh0kOAxuWRGfocw=;
- b=X8YFRwSvkTz4CqK1CjiXpH5B2pCad+KQJD1pTrElVxbaLtNLyPe7QFcqJWx9U+K7a0skOn
- l3T9svj4rS8ipsHgbhPbDSVIJLuDuUJb+DurX7gClGsZ0AFvpuHIYlIYTLucS1b1H9Wwn/
- 5v8cWT6seimvbEVBIXlJ0t0pfCLY/jA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1786090537;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=lNEeGm2kBmCVGafd4YUemma0D2j1Hh0kOAxuWRGfocw=;
- b=PdOj7jDm9s06Ve+Cs/4KVamRccEjK2/mCIFMnm/DfskmO3U+ow3Wr/4l0QfTyPq1ZOcYtL
- SOUvcFpQzHJb4uAg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 371BC779C3;
- Fri,  7 Aug 2026 08:15:37 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id WBlrCimUdWrpPwAAD6G6ig
- (envelope-from <andrea.cervesato@suse.de>); Fri, 07 Aug 2026 08:15:37 +0000
-From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Fri, 07 Aug 2026 10:15:36 +0200
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 571FB1400BDF
+ for <ltp@lists.linux.it>; Fri,  7 Aug 2026 10:19:56 +0200 (CEST)
+Received: by mail-pj2-x03.google.com with SMTP id
+ 98e67ed59e1d1-3810f0aba07so1560951a91.1
+ for <ltp@lists.linux.it>; Fri, 07 Aug 2026 01:19:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20251104; t=1786090795; x=1786695595; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to:content-type;
+ bh=FLyt+21DeZvjB9ImyI2LPsEgxznqDJQvSWwLqEMnMVE=;
+ b=Sz7c09gjWIj0AIhUMZTKVf/d0FsHIrITCThyvJ7ppPu1U5lwjKuKZVyv3T96Pi5utb
+ 4eStUkNuoy1A4kZh1Egpi/FHBTo4bH4dT36cSgAdkO1JsNrfsUnjwUTM7SUqlWYibwM7
+ GXobUEbtaz7ewh+64/6lL4qiab7jQPJ3gtqAdemXYTkxHixN785vNnWGaGW4i3Z6SAug
+ 2siO00P1l7fQ95iBsw7flCadVpje7h4OsIMwW0Qo0JQcQRQRD1pDkpTSj/lbffjpYIKR
+ eF+f+PrCiw3kR1SisMltb111zBMiKvVKB/7Dpio0eYl0wt7nB4PyXHQDjue0jYQo4T1N
+ zmxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1786090795; x=1786695595;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to:content-type;
+ bh=FLyt+21DeZvjB9ImyI2LPsEgxznqDJQvSWwLqEMnMVE=;
+ b=dhMemGqyZ89JLfhCaMekfVC0Ol6AuP7llcDa9s7mcjqEoNOXLA6YVwTdmSNggSnU1d
+ JAMxAK1PUKc9kIR+NRRhgYFe9TRkBboK9iSqm2/ERF3kuC/vzP6ruQrLzymyR5kRt/7S
+ LuC5rEIaJ3l2e4a7TwHtcfLuraDRcmw0D22xVMTrXqZq1+fZwjb7Yz0a8oEIyzKthGCm
+ qrGCDUn/yjdcepMNgUufobKOsEoR0WRByPZkU1OKf5ztyPVNsGL4cKA3mOJArbJ0juQp
+ 1WUHf60X/ERH3ySwG95XfcoIM/WMitHQ7rxMGBl2k0TYBqAzGFA1niYxhai9P9QP7zK4
+ 2Bjg==
+X-Gm-Message-State: AOJu0Yw8cOL0aOFgqaUo0f6cizq3EwpnXFRj1gGDp/TBBGlrhiC6dSZY
+ 0Yqb9Obc8YHN9UtVxike52rFtyT6cvQI/+t7xNIj30YcuEbYalElV/vF
+X-Gm-Gg: AR+sD109g1XoIq/c4QpnCTqb2L3z/d0Qc6qUy/t8lAOoClRL3qG1dnqjDRWcRnRAP8T
+ vht9iZvngQ95Z38Hl4g5j0bsMsIyWq2jNW4XnDMHciBf/c6svZ/cK5bdG2M57QZ+82AtvlMLj46
+ emi894GhgQgwTT9bHjLw5pDPRX9T00BdjKmy2xNYu1DFrn/7vCSX0e6QFpA8LG9L0B5G5yM+Vnw
+ yTgKvwlY+8u70kTjFivWKRAerVudt9RngbwrVj8snPaLhv1coNiuQUjzohFFvrQNvnER9tAvegJ
+ YBAaTdHZwxN+hoVIBJfRuCFgM1rQUowzK2S4YZfpObcF3k+vqYmeLFvBhReIAXhBvajFbqBkmrf
+ dDSFDECoKYHzqY00/h/tNvYQVkET4T+1gNjT5H1GL+d8Jmh5hMyWDTiTiTn2Lext/02eXcaT4sI
+ EL6gd4Hf/kzk0ORJVOeQLOwe432Eidt6/OdpZmbGMR71QYxKQbNyhnaymWXQjmaV42DXU8eku5a
+ vV0f6qyreO20S6JvmTkigD2brPYSGGWiG+tquNFDraFiGercph1tjD13bAwujjdKj6c7rbQ7NoQ
+X-Received: by 2002:a05:6a21:600f:b0:3c3:8651:b317 with SMTP id
+ adf61e73a8af0-3cb85e2b72fmr25151646637.10.1786090794654; 
+ Fri, 07 Aug 2026 01:19:54 -0700 (PDT)
+Received: from
+ runnervmvrwv9.zp1jdlg1lluuxdof1vfzjm5fwc.dx.internal.cloudapp.net
+ ([13.83.160.135]) by smtp.gmail.com with ESMTPSA id
+ a92af1059eb24-141019b4244sm4718688c88.4.2026.08.07.01.19.53
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 07 Aug 2026 01:19:54 -0700 (PDT)
+From: linuxtestproject.agent@gmail.com
+To: Andrea Cervesato <andrea.cervesato@suse.de>
+Date: Fri,  7 Aug 2026 08:19:52 +0000
+Message-ID: <20260807081952.9062-1-linuxtestproject.agent@gmail.com>
+X-Mailer: git-send-email 2.54.0
+In-Reply-To: <20260807-rewrite_mremap_testing_suite-v2-1-1760ae8e3b8b@suse.com>
+References: <20260807-rewrite_mremap_testing_suite-v2-1-1760ae8e3b8b@suse.com>
 MIME-Version: 1.0
-Message-Id: <20260807-convert_fallocate_suite-v2-2-3761f7b74b1f@suse.com>
-References: <20260807-convert_fallocate_suite-v2-0-3761f7b74b1f@suse.com>
-In-Reply-To: <20260807-convert_fallocate_suite-v2-0-3761f7b74b1f@suse.com>
-To: Linux Test Project <ltp@lists.linux.it>
-X-Mailer: b4 0.16.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1786090536; l=7460;
- i=andrea.cervesato@suse.com; s=20251210; h=from:subject:message-id;
- bh=jqfKy4ijIlWSd9pqdXZgPVg9KHgDX69XvrBfn/skH/M=;
- b=7LAnuQMzbRroOae5vfcpOSOsr3MUU1UqjjBUgkAxFboWWbcnzEd/ZZoKCTcoxdw/U7RptnX4z
- ylqoYfAVp+8B8WNZEeHOJwCsUKH3kJ9g6WSrTRDvF2ExFOXC0NF7OMn
-X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
- pk=zKY+6GCauOiuHNZ//d8PQ/UL4jFCTKbXrzXAOQSLevI=
-X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000];
- R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
- MIME_TRACE(0.00)[0:+]; DWL_DNSWL_BLOCKED(0.00)[suse.de:dkim];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- RCPT_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
- DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:email,suse.de:dkim,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
- TO_DN_ALL(0.00)[]; DKIM_TRACE(0.00)[suse.de:+]
-X-Rspamd-Queue-Id: 6CC7E804E6
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 2/2] fallocate02: Convert to new API
+Subject: Re: [LTP] mremap01: Convert to new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -124,256 +90,84 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Andrea Cervesato <andrea.cervesato@suse.com>
+Hi Andrea,
 
-Convert the fallocate02 test case from the legacy LTP API (test.h) to the
-new tst_test API using a table-driven struct tcase[] and TST_EXP_FAIL for
-each error-path oracle.
+On Fri, 7 Aug 2026, Andrea Cervesato wrote:
+> mremap01: Convert to new API
 
-Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+--- [PATCH 1/6] ---
+
+> 	if (verify_file())
+> 		tst_res(TFAIL, "mremap()'d region did not sync to the file");
+> 	else
+> 		tst_res(TPASS, "Functionality of mremap() is correct");
+
+Could verify_file() report the final result directly instead of returning
+test status to run()? It already emits TFAIL for a mismatched byte, so the
+current failure path reports a second TFAIL at the call site.
+
+--- [PATCH 3/6] ---
+
+>  * - Obtain an unmapped address via ``tst_get_bad_addr()``.
+> 	bad_addr = tst_get_bad_addr(NULL);
+
+Could this create and unmap a memsize-sized range instead?
+tst_get_bad_addr() maps one PROT_NONE page and returns that still-mapped
+page. Thus old_address itself is mapped, and EFAULT depends on old_size
+extending beyond it, contrary to the description and commit message.
+
+--- [PATCH 4/6] ---
+
+> -LTPLIBS = ipc
+> +LTPLIBS = newipc
+> -mremap04: LTPLDLIBS  = -lltpipc
+> +mremap04: LTPLDLIBS  = -lltpnewipc
+
+Could both IPC library assignments be removed? The rewritten test removes
+all SysV IPC usage, does not include tst_newipc.h or call GETIPCKEY(), and no
+other test in this directory uses either IPC library.
+
+The commit message also says that the new test uses SysV shared memory and
+GETIPCKEY(). Could it describe the actual anonymous mmap rewrite instead?
+
+--- [PATCH 5/6] ---
+
+> Convert the mremap05 test case from the legacy LTP API to the new
+> tst_test API.
+
+Could the body explain why this rewrite removes the two successful
+MREMAP_FIXED cases from mremap05 and splits them into a separate test? The
+current text only restates the subject and leaves the coverage change
+unexplained.
+
+--- [PATCH 6/6] ---
+
+> 	if (ret != new_address)
+> 		tst_res(TFAIL, "%s: ret %p, expected %p", tc->msg, ret, new_address);
+> 	else if (check_pattern(tc->msg, ret, tc->new_pages) == 0)
+> 		tst_res(TPASS, "%s", tc->msg);
+
+Could check_pattern() report the final TPASS or TFAIL itself, or could the
+content check remain in run()? It currently emits TFAIL and propagates a
+status back to run() to decide whether to emit TPASS.
+
+Verdict - Needs revision
+
 ---
- testcases/kernel/syscalls/fallocate/fallocate02.c | 193 +++++++---------------
- 1 file changed, 61 insertions(+), 132 deletions(-)
+Note:
 
-diff --git a/testcases/kernel/syscalls/fallocate/fallocate02.c b/testcases/kernel/syscalls/fallocate/fallocate02.c
-index 4469f02f2..d31d2a1e4 100644
---- a/testcases/kernel/syscalls/fallocate/fallocate02.c
-+++ b/testcases/kernel/syscalls/fallocate/fallocate02.c
-@@ -1,164 +1,93 @@
--/******************************************************************************
-- *	Copyright (c) International Business Machines  Corp., 2007
-- *	Author: Sharyathi Nagesh <sharyathi@in.ibm.com>
-- ******************************************************************************/
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) International Business Machines  Corp., 2007
-+ * Author: Sharyathi Nagesh <sharyathi@in.ibm.com>
-+ */
- 
--/***************************************************************************
-- * This program is free software;  you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License as published by
-- * the Free Software Foundation; either version 2 of the License, or
-- * (at your option) any later version.
-+/*\
-+ * Verify that :manpage:`fallocate(2)` fails with the expected error codes:
-  *
-- * This program is distributed in the hope that it will be useful,
-- * but WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-- * GNU Library General Public License for more details.
-- *
-- * You should have received a copy of the GNU General Public License
-- * along with this program; if not, write to the Free Software
-- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
--***************************************************************************/
--
--/*
-- * DESCRIPTION
-- *	check fallocate() with various error conditions that should produce
-- *	EBADF, EINVAL and EFBIG.
-+ * - EBADF when the file descriptor is opened read-only.
-+ * - EINVAL when the offset or length is negative, or the length is zero.
-+ * - EFBIG when the requested range exceeds the maximum file size (only
-+ *   tested on 64-bit offset ABIs).
-  */
- 
- #define _GNU_SOURCE
- 
--#include <stdio.h>
--#include <stdlib.h>
--#include <endian.h>
--#include <errno.h>
--#include <sys/stat.h>
--#include <sys/types.h>
--#include <fcntl.h>
--#include <inttypes.h>
--#include <sys/utsname.h>
--#include <limits.h>
--
--#include "test.h"
--#include "tso_safe_macros.h"
-+#include "tst_test.h"
- #include "lapi/fallocate.h"
- #include "lapi/abisize.h"
- 
--#define BLOCKS_WRITTEN		12
--#ifdef TEST_DEFAULT
--# define DEFAULT_TEST_MODE	0
--#else
--# define DEFAULT_TEST_MODE	1
--#endif
--#define OFFSET			12
--#define FNAMER			"test_file1"
--#define FNAMEW			"test_file2"
--#define BLOCK_SIZE		1024
--#define MAX_FILESIZE            (LLONG_MAX / 1024)
--
--static void setup(void);
--static void fallocate_verify(int);
--static void cleanup(void);
-+#define BLOCKS_WRITTEN	12
-+#define OFFSET		12
-+#define FNAMER		"test_file1"
-+#define FNAMEW		"test_file2"
-+#define BLOCK_SIZE	1024
-+#define MAX_FILESIZE	(LLONG_MAX / BLOCK_SIZE)
- 
--static int fdw;
--static int fdr;
-+static int fdr = -1;
-+static int fdw = -1;
- 
--static struct test_data_t {
-+static struct tcase {
- 	int *fd;
--	char *fname;
--	int mode;
- 	loff_t offset;
- 	loff_t len;
--	int error;
--} test_data[] = {
--	{&fdr, FNAMER, DEFAULT_TEST_MODE, 0, 1, EBADF},
--	{&fdw, FNAMEW, DEFAULT_TEST_MODE, -1, 1, EINVAL},
--	{&fdw, FNAMEW, DEFAULT_TEST_MODE, 1, -1, EINVAL},
--	{&fdw, FNAMEW, DEFAULT_TEST_MODE, BLOCKS_WRITTEN, 0, EINVAL},
--	{&fdw, FNAMEW, DEFAULT_TEST_MODE, BLOCKS_WRITTEN, -1, EINVAL},
--	{&fdw, FNAMEW, DEFAULT_TEST_MODE, -(BLOCKS_WRITTEN+OFFSET), 1, EINVAL},
-+	int exp_errno;
-+} tcases[] = {
-+	{&fdr, 0, 1, EBADF},
-+	{&fdw, -1, 1, EINVAL},
-+	{&fdw, 1, -1, EINVAL},
-+	{&fdw, BLOCKS_WRITTEN, 0, EINVAL},
-+	{&fdw, BLOCKS_WRITTEN, -1, EINVAL},
-+	{&fdw, -(BLOCKS_WRITTEN + OFFSET), 1, EINVAL},
- #if defined(TST_ABI64) || _FILE_OFFSET_BITS == 64
--	{&fdw, FNAMEW, DEFAULT_TEST_MODE, MAX_FILESIZE, 1, EFBIG},
--	{&fdw, FNAMEW, DEFAULT_TEST_MODE, 1, MAX_FILESIZE, EFBIG},
-+	{&fdw, MAX_FILESIZE, 1, EFBIG},
-+	{&fdw, 1, MAX_FILESIZE, EFBIG},
- #endif
- };
- 
--TCID_DEFINE(fallocate02);
--int TST_TOTAL = ARRAY_SIZE(test_data);
--
--int main(int ac, char **av)
--{
--	int lc;
--	int i;
--
--	tst_parse_opts(ac, av, NULL, NULL);
--
--	setup();
--
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--
--		tst_count = 0;
--
--		for (i = 0; i < TST_TOTAL; i++)
--			fallocate_verify(i);
--	}
--
--	cleanup();
--
--	tst_exit();
--}
--
- static void setup(void)
- {
-+	char buf[BLOCK_SIZE];
- 	int i;
- 
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
--
--	TEST_PAUSE;
--
--	tst_tmpdir();
--
--	fdr = SAFE_OPEN(cleanup, FNAMER, O_RDONLY | O_CREAT, S_IRUSR);
-+	fdr = SAFE_OPEN(FNAMER, O_RDONLY | O_CREAT, 0400);
-+	fdw = SAFE_OPEN(FNAMEW, O_RDWR | O_CREAT, 0700);
- 
--	fdw = SAFE_OPEN(cleanup, FNAMEW, O_RDWR | O_CREAT, S_IRWXU);
--
--	char buf[BLOCK_SIZE];
- 	memset(buf, 'A', BLOCK_SIZE);
- 	for (i = 0; i < BLOCKS_WRITTEN; i++)
--		SAFE_WRITE(cleanup, SAFE_WRITE_ALL, fdw, buf, BLOCK_SIZE);
--}
-+		SAFE_WRITE(SAFE_WRITE_ALL, fdw, buf, BLOCK_SIZE);
- 
--static void fallocate_verify(int i)
--{
--	TEST(fallocate(*test_data[i].fd, test_data[i].mode,
--		       test_data[i].offset * BLOCK_SIZE,
--		       test_data[i].len * BLOCK_SIZE));
--	if (TEST_ERRNO != test_data[i].error) {
--		if (TEST_ERRNO == EOPNOTSUPP ||
--		    TEST_ERRNO == ENOSYS) {
--			tst_brkm(TCONF, cleanup,
--				 "fallocate system call is not implemented");
--		}
--		tst_resm(TFAIL | TTERRNO,
--			 "fallocate(%s:%d, %d, %" PRId64 ", %" PRId64 ") "
--			 "failed, expected errno:%d", test_data[i].fname,
--			 *test_data[i].fd, test_data[i].mode,
--			 test_data[i].offset * BLOCK_SIZE,
--			 test_data[i].len * BLOCK_SIZE, test_data[i].error);
--	} else {
--		tst_resm(TPASS | TTERRNO,
--			 "fallocate(%s:%d, %d, %" PRId64 ", %" PRId64 ") "
--			 "returned %d", test_data[i].fname, *test_data[i].fd,
--			 test_data[i].mode, test_data[i].offset * BLOCK_SIZE,
--			 test_data[i].len * BLOCK_SIZE, TEST_ERRNO);
--	}
-+	TEST(fallocate(fdw, FALLOC_FL_KEEP_SIZE, 0, BLOCK_SIZE));
-+	if (TST_RET == -1 && (TST_ERR == EOPNOTSUPP || TST_ERR == ENOSYS))
-+		tst_brk(TCONF, "fallocate() not supported");
- }
- 
- static void cleanup(void)
- {
--	if (fdw > 0)
--		SAFE_CLOSE(NULL, fdw);
--	if (fdr > 0)
--		SAFE_CLOSE(NULL, fdr);
-+	if (fdw != -1)
-+		SAFE_CLOSE(fdw);
-+	if (fdr != -1)
-+		SAFE_CLOSE(fdr);
-+}
- 
--	tst_rmdir();
-+static void verify_fallocate(unsigned int n)
-+{
-+	struct tcase *tc = &tcases[n];
-+
-+	TST_EXP_FAIL(fallocate(*tc->fd, FALLOC_FL_KEEP_SIZE,
-+			       tc->offset * BLOCK_SIZE,
-+			       tc->len * BLOCK_SIZE), tc->exp_errno,
-+		     "fallocate(%d, %lld, %lld)", *tc->fd,
-+		     (long long)(tc->offset * BLOCK_SIZE),
-+		     (long long)(tc->len * BLOCK_SIZE));
- }
-+
-+static struct tst_test test = {
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.test = verify_fallocate,
-+	.tcnt = ARRAY_SIZE(tcases),
-+	.needs_tmpdir = 1,
-+};
+The agent can sometimes produce false positives although often its
+findings are genuine. If you find issues with the review, please
+comment this email or ignore the suggestions.
 
--- 
-2.51.0
-
+Regards,
+LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
