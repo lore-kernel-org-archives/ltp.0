@@ -4,81 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F11EFC5ACAB
-	for <ltp@archiver.kernel.org>; Fri,  7 Aug 2026 13:06:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D1EF0C5AC7A
+	for <ltp@archiver.kernel.org>; Fri,  7 Aug 2026 14:19:11 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 5A8443E7018
-	for <ltp@archiver.kernel.org>; Fri,  7 Aug 2026 15:06:46 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id BB7E43E701A
+	for <ltp@archiver.kernel.org>; Fri,  7 Aug 2026 16:19:09 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D96633E7034
- for <ltp@lists.linux.it>; Fri,  7 Aug 2026 15:06:03 +0200 (CEST)
-Received: from mail-oa2-x01.google.com (mail-oa2-x01.google.com
- [IPv6:2607:f8b0:4864:30::1])
+ by picard.linux.it (Postfix) with ESMTPS id CC21C3CDD91
+ for <ltp@lists.linux.it>; Fri,  7 Aug 2026 16:18:53 +0200 (CEST)
+Received: from mail-pj2-x02.google.com (mail-pj2-x02.google.com
+ [IPv6:2607:f8b0:4864:39::2])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id A1CE51A01060
- for <ltp@lists.linux.it>; Fri,  7 Aug 2026 15:06:02 +0200 (CEST)
-Received: by mail-oa2-x01.google.com with SMTP id
- 586e51a60fabf-4511f6a63edso183392fac.1
- for <ltp@lists.linux.it>; Fri, 07 Aug 2026 06:06:02 -0700 (PDT)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 29E6E600A3D
+ for <ltp@lists.linux.it>; Fri,  7 Aug 2026 16:18:53 +0200 (CEST)
+Received: by mail-pj2-x02.google.com with SMTP id
+ d9443c01a7336-2ccbff2e6a7so19751365ad.1
+ for <ltp@lists.linux.it>; Fri, 07 Aug 2026 07:18:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1786107961; x=1786712761; darn=lists.linux.it;
+ d=gmail.com; s=20251104; t=1786112331; x=1786717131; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to:content-type;
- bh=7lIvWjiCTl5qTxkmVqQQcLrBBYoZgjMGo2MNtvuBpak=;
- b=AE/M0qN0qSNbFm9cFQ6lGARy4SVqvJOlMU3PIlv8y3WcV3+q7R9BSv7hCtTHAC76uT
- XsgtOwdQ0sZdmni9u77RZRDCWnZCMbNztHQ8RMWBhzwFKkic3hzWB7YOIQvXdVZ6caHN
- PUj5Wi140HZhCEurHLfJ2cj80+vt4kzdCTpio+MNECJU/JBbj4xAsfR0n0s/MAOttB9V
- WncEMSt8w1oQYSn2h70eYOZMNpKq/i/cH5ItDLMBI+CulLyvgkndAze+srQNXLJXzI7l
- Xjmx1WRez8InZU41dt2xlFhTivxlGMXiR2jApZTVS3wJuV/PYZCtNmW6QZkDMggtd1Sp
- IDAg==
+ bh=3hlqs92sBuLH7B5JO8hDdL37IeNGiTDQGYELdvx3TsY=;
+ b=YCg+PbUo7GsEwtLQ3/fCDzLXAFl/IaI5Njs9OcKDdI/KwLlA76+qm2A3E43HY6mtAv
+ xMLp9YSKXDy8m8mVBryGAAushAwu2MYaKsyRqcfcJ0SGWjfYhpxOmru48ZKlsGMetxDO
+ SRCkqD8d1W4lELktJhEJ4YGG50Z7VEOXVDJerShJEqaBc6iVGYG88wrV0zPjd7q28bQ8
+ DZqpZDUZz2Wir+zcNBDMsyX5XtsNGIozbAyBxpy0nHfuMT8MtxtfKIHRW51aWLB+U7Rd
+ vXPUrLKC2qMAQCXEzy5T/PSRe4BCwmNZGhvIi6RmrDKrRcaFsY8rqEBqPGK49Q5EsXjO
+ JZQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1786107961; x=1786712761;
+ d=1e100.net; s=20251104; t=1786112331; x=1786717131;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to:content-type;
- bh=7lIvWjiCTl5qTxkmVqQQcLrBBYoZgjMGo2MNtvuBpak=;
- b=oujZdcTQzm+fvCPywoSc1d76ffT9fdWz30c/KOfIre2SKKq/AI26HBwOfjgfXV9i1W
- E8gRrr59DRqJrSwMcy5QK6RvEqz36flrzUkObytJKLA2xNxvUpu23R12X+OC9zO7bVwC
- TZc/9W+Xfq3O51REV3dqwrvZ8HC6U7dUh6bvJHnXP6EbYCllOjvywtc0yfzbpWhILoJp
- ahH7wXl5HY+B5fX8oMUdb9LsY+IhAVA/ayBANB+E5OM3EIOQL72m+K1/XuwSaGKopZCx
- tyl13B/00ksWn0krnKy90PyvjK1CvzgirBVYVeuD0/dqNakApiUmrQlK/lIJXdrlxniJ
- sBUA==
-X-Gm-Message-State: AOJu0YyaPseGM53Q5VYtdkw7QkFkJhJehZrjid39GVXDXOfiJTuTdyc4
- rgcyG+RAPuhcTHoiT3fsn8aSR/Y5E5DIZTuCiYBhAlAqZHDAQf/wh7jK
-X-Gm-Gg: AR+sD10p6zfPxIjQLzUsZlzQaptmxXLWOYf2fh63GFR3JqjHGoqhoumLcl3OHjMdWsd
- hmefhplgHUvXR3a/qUSI7BuKFi3yEPxAceA6+8Z9k4f4RSuNTJn1hbJj87vUA13cXRUFjiv5zom
- TFdIn9x7+19Hn7pDrOZzQBARKzsISE0QIqEBwdrTJDsYySfmietteRscBekCAfG/LmvpokgjPG0
- Uy2CQu4k2j/pcPA5qko/GsSwUPAHMVExg/zAjizkKUfLW45YYUs8eXqXTuOLy5FhpNwgoCoTZsZ
- X00wx49p2F9kDBvqv6uAhvX8dQ/8tLspc7Nh1gprjCcOiYB7574E3IYawxeQjzraA2xq4atiSVu
- t1ypzQSbTxQUTMmahgMA2S6LwUj3eUKM7ZjdkSXoaeTAcw+KCmB5dgJtvRvz85RUmujhJA3pAtS
- 25B2BCs+emlszZ1U6AsbqdPcjndLrYlG/GiFb2BoWAQYJ3Dj8uUwmVbXxG4/kU0jqWSwRa8zoZ3
- rKxu5VFKzXBEXhifdSbYXi5ig0McSdeqVSYjT0DMq3uAkYApBQzPPqwW0FH6WanFkqFvwVlBrMo
-X-Received: by 2002:a05:6870:a786:b0:449:bccf:bb67 with SMTP id
- 586e51a60fabf-45a0efb002dmr193663fac.5.1786107960938; 
- Fri, 07 Aug 2026 06:06:00 -0700 (PDT)
+ bh=3hlqs92sBuLH7B5JO8hDdL37IeNGiTDQGYELdvx3TsY=;
+ b=K9f2juuQNWFIpq0BdrrFMhNuJPEuoCr6qmW6v/Yfnj+nrLUuMbRxkILTJZtJ/6VKyG
+ Mgx8wNXBw8inai2ph1Tt+amKgPfbVw8kfCOm2G+bE5vaCG+HlTDGLmgRBewGZE8HOSpd
+ CA5Jkn2s5JLjSScH06fTbq+VFfI2yaDIlzZRUEP70EQgyitCmcQEhfXJhztT/TWOSLCe
+ o7KyfD3KBp16SUjJA2iWDHfLRBZevQnlQ1EEmxCC3zxF8zG41Rb0f0fHHQgQC57xYbGJ
+ v0pMqJDAhWwIN9MsbKfd0o5u3zr1coVJWWKDrxGYERIR7OMpVrRSuFMEW0kTkyqxTKpP
+ aXRA==
+X-Gm-Message-State: AOJu0YwkpJ7NflMVG2jf3aoDB/UQjmsnwNsRaVXA94QKwpRa3lyIX4Cf
+ p70+DEWEmpNlMTxFUThlvFSf0vGmcTcNHtTlCYqIIlApzR7BsgYOnefA
+X-Gm-Gg: AR+sD13ivRUR0vufla7o0Cty1t7wSgBLQvJmBzuMbZmhoO5//RNoCsorHZvZj9e7ssv
+ r9K9CSVjrMu6Fym3KJxT7/zr2nmFGhDBT2kVyyLSrR2Rf8tnUdduaq5fHqyRqO5RdTsAB9qknGU
+ 6Ga1ior6Aa1KV3fOUG6Sk3sW4on2uaP0CDCeOw2lA2h6qPNvWIrfWWVE7nfZHD2W6lLdIeIRN/d
+ Za3xZ6ApFe23uuLiggleVQfFsaF04BZpyTzIikeq+1sRWhL0hU+FnbhJ7JNzBrMuEl1zEPnyI2u
+ wsy/geUL80lVTYfnmdqeQXEmRAeOmSWEGNMWJf4CiEgKL0f/h0ruAaVilVME2BbrWv3e1d9gGg3
+ sm5Tc0TeBmGi60Eji3+qDnd645EeGWVp9P28N9mx8hrStbqtwArFvpLN+tRwHEFHiCIIXRGqz/a
+ XCKMcQhBNWjzKMVyvUeUZteYFgKCGHBrf0y8/xOEiz+PohjxgJoSQDQoYrZgqV3XdZ+ykmPF58y
+ xMGYwfKXISzVk8N5gwciSQGDuSr0fsafDBLUvPWYHMVvwqxUdfpsA6hSzKDw2o9xu5V4oY24Es0
+ NQ==
+X-Received: by 2002:a17:903:ac4:b0:2cf:a1c0:d4ca with SMTP id
+ d9443c01a7336-2d0ca961ad6mr301743585ad.22.1786112331226; 
+ Fri, 07 Aug 2026 07:18:51 -0700 (PDT)
 Received: from
- runnervmvrwv9.hdmk0zmo1nxubn2t0wytbqw1ec.gx.internal.cloudapp.net
- ([20.46.239.183]) by smtp.gmail.com with ESMTPSA id
- 586e51a60fabf-459f1a76701sm1919173fac.5.2026.08.07.06.05.59
+ runnervmvrwv9.dgolgrmsjpeulka1dcwqiikfqe.dx.internal.cloudapp.net
+ ([52.190.140.103]) by smtp.gmail.com with ESMTPSA id
+ 5a478bee46e88-315beb88413sm12554645eec.18.2026.08.07.07.18.50
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 07 Aug 2026 06:06:00 -0700 (PDT)
+ Fri, 07 Aug 2026 07:18:50 -0700 (PDT)
 From: linuxtestproject.agent@gmail.com
-To: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Fri,  7 Aug 2026 13:05:58 +0000
-Message-ID: <20260807130558.8420-1-linuxtestproject.agent@gmail.com>
+To: Disha Goel <disgoel@linux.ibm.com>
+Date: Fri,  7 Aug 2026 14:18:49 +0000
+Message-ID: <20260807141849.4616-1-linuxtestproject.agent@gmail.com>
 X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260807-rewrite_mremap_testing_suite-v3-1-dcca6d4ac0f1@suse.com>
-References: <20260807-rewrite_mremap_testing_suite-v3-1-dcca6d4ac0f1@suse.com>
+In-Reply-To: <20260807130523.49068-1-disgoel@linux.ibm.com>
+References: <20260807130523.49068-1-disgoel@linux.ibm.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] mremap01: Convert to new API
+Subject: Re: [LTP] memcg/memcontrol02: fix fd leak in cleanup path
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -96,79 +97,38 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Andrea,
+Hi Disha,
 
-On Fri, 7 Aug 2026, Andrea Cervesato wrote:
-> mremap01: Convert to new API
+On Fri, Aug 7, 2026, Disha Goel wrote:
+> memcg/memcontrol02: fix fd leak in cleanup path
 
---- [PATCH 1/7] ---
+--- [PATCH 1/2] ---
 
-> static int verify_file(void)
-> {
-> [...]
-> 			tst_res(TFAIL, "file[%zu] == 0x%02x, expected 0x%02x",
-> 				off, (unsigned char)got, (unsigned char)off);
-> 			return 1;
-> [...]
-> 	if (verify_file())
-> 		tst_res(TFAIL, "mremap()'d region did not sync to the file");
+> fd is initialized to 0 (a valid file descriptor) so the cleanup()
+> guard 'if (fd > -1)' would never trigger.
 
-Could verify_file() report the final result directly instead of returning
-pass/fail status to run()? A mismatch currently produces both the precise
-byte failure and a second generic TFAIL for the same check.
+Could this explanation be corrected? Zero is greater than -1, and the
+cleanup guard is added by this patch rather than being an existing guard.
+The relevant problem is that -1 is needed to distinguish an unopened
+descriptor before cleanup tries to close it.
 
---- [PATCH 3/7] ---
+> +	if (fd > -1)
+> +		SAFE_CLOSE(fd);
 
->  * - Obtain an unmapped address via ``tst_get_bad_addr()``.
-> [...]
-> 	bad_addr = tst_get_bad_addr(NULL);
+Could this use `fd != -1` instead? LTP file descriptors use -1 as the
+invalid sentinel, and the LTP convention requires this form for cleanup
+guards.
 
-Could this use an address that is actually unmapped, or describe the
-partial-VMA case that is really tested? tst_get_bad_addr() creates and
-retains a one-page PROT_NONE mapping, so old_address itself is mapped.
+--- [PATCH 2/2] ---
 
-On Linux 7.2 this returns EFAULT because memsize extends beyond that
-one-page VMA, not because old_address points to an unmapped region. The
-description, algorithm, and commit message therefore claim different
-coverage from the executed path.
+> #include <inttypes.h>
+>
+> -		tst_res(TINFO, "Child %d in %s: Allocating anon: %"PRIdPTR,
+> +		tst_res(TINFO, "Child %d in %s: Allocating anon: %zu",
 
---- [PATCH 4/7] ---
-
-> Rewrite the test to use TST_EXP_FAIL_PTR_VOID() to verify that
-> mremap() fails with MAP_FAILED and ENOMEM when growing an existing
-> SysV shared memory mapping in place
-> [...]
-> Switch the Makefile from libltpipc to libltpnewipc
-
-Could the commit message be updated to match the patch? The code replaces
-SysV shared memory with a private anonymous mapping and removes the IPC
-library dependency; it does not use libltpnewipc or GETIPCKEY().
-
---- [PATCH 5/7] ---
-
-> Convert the mremap05 test case from the legacy LTP API to the new
-> tst_test API.
-
-Could the body explain why this semantic rewrite is needed and mention
-that the positive MREMAP_FIXED cases are split into the later dedicated
-test? It currently only restates the subject and does not give the
-motivation or explain the series dependency.
-
---- [PATCH 6/7] ---
-
-> static int check_pattern(char *addr, size_t pages)
-> {
-> [...]
-> 		if (got != exp)
-> 			return 1;
-> [...]
-> 	else if (check_pattern(ret, tc->new_pages))
-> 		tst_res(TFAIL, "%s: pattern mismatch", tc->msg);
-
-Could check_pattern() report the result where the mismatch is detected
-instead of propagating pass/fail through its return value? Reporting the
-offset and observed value there would also make the failure actionable
-rather than producing only "pattern mismatch".
+Could the now-unused `<inttypes.h>` include be removed from both
+memcontrol03.c and memcontrol04.c? This patch replaces every `PRIdPTR`
+use in both files.
 
 Verdict - Needs revision
 
