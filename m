@@ -4,108 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3DAFFC2A09B
-	for <ltp@archiver.kernel.org>; Fri,  7 Aug 2026 18:49:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D8989C2A09B
+	for <ltp@archiver.kernel.org>; Fri,  7 Aug 2026 20:12:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1786133552; h=to : date :
+ message-id : mime-version : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : content-type : content-transfer-encoding : sender : from;
+ bh=b8nM5+UxwY+nVqKfwTTSpD87xbJoS3tEb1m9rVCLEGQ=;
+ b=ez+DUHvpXdusccciEUx1kV7CbCSS+JK/DPmJdMvpF7l1dHTFyOB6hK67stYZdEhOtJI6A
+ ruuce9k1xUXP8Vdf5gTn3zeDWVXhML4H6xChiZUvH1loITODxS+joYN7xg3g4ZzECvv5zLZ
+ 37O0FgzDlVG2x63iONyuGRP/OlmIJV4=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 58AA23E586E
-	for <ltp@archiver.kernel.org>; Fri,  7 Aug 2026 20:49:32 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 1353E3E7035
+	for <ltp@archiver.kernel.org>; Fri,  7 Aug 2026 22:12:32 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1DAF33CFA2B
- for <ltp@lists.linux.it>; Fri,  7 Aug 2026 20:49:13 +0200 (CEST)
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
- [148.163.158.5])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id A20B13E27F1
+ for <ltp@lists.linux.it>; Fri,  7 Aug 2026 22:12:12 +0200 (CEST)
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com
+ [IPv6:2a00:1450:4864:20::32d])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 3225B2003B5
- for <ltp@lists.linux.it>; Fri,  7 Aug 2026 20:49:12 +0200 (CEST)
-Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id
- 677Imon92187755; Fri, 7 Aug 2026 18:49:11 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
- :content-transfer-encoding:content-type:date:from:in-reply-to
- :message-id:mime-version:references:subject:to; s=pp1; bh=uL9Sbq
- o344dX4Hx33UITUq52ZG7x9ZSWpCr08dldau4=; b=ooonFvIxX/49Eg7NFWw8lo
- WVf2y9f6T6ljFgFInynq9wDHZK9p2qLXLjwUsNTAQ7O3Ur/imZmP+QR0e3aPiHyE
- oIL3Ul+6hwsClqkpZz/dqujxYYl7HfwV3BA4YjKSwTLNLpneX73vojOr1KJ81Ry+
- OTzIBZ1G9XYiylPdLP6Dn8D1Kk508dXSw+7JsjPDrGbPGChKP4iPDJyYLnPgWL2u
- 7+xbG2CdeQSN66Q9nNH9XEPkWtPcziDTVOst1czhUKRGZDfCN7fXLyF+ALiaZenY
- bA5VAr0Ovx367UiZ8WcL+1uwpuLh2fxhzX90LnIQRAqADpJRJRFKmqqHGWZxFqXQ
- ==
-Received: from ppma22.wdc07v.mail.ibm.com
- (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4fvy02d87s-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Fri, 07 Aug 2026 18:49:11 +0000 (GMT)
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
- by ppma22.wdc07v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 677IfHWX001236;
- Fri, 7 Aug 2026 18:49:10 GMT
-Received: from smtprelay05.wdc07v.mail.ibm.com ([172.16.1.72])
- by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4fsugwh1wx-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Fri, 07 Aug 2026 18:49:10 +0000 (GMT)
-Received: from smtpav06.dal12v.mail.ibm.com (smtpav06.dal12v.mail.ibm.com
- [10.241.53.105])
- by smtprelay05.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 677In9xI17629844
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Fri, 7 Aug 2026 18:49:10 GMT
-Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id CE4635805D;
- Fri,  7 Aug 2026 18:49:09 +0000 (GMT)
-Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 7E9A658055;
- Fri,  7 Aug 2026 18:49:09 +0000 (GMT)
-Received: from li-43857255-d5e6-4659-90f1-fc5cee4750ad.ibm.com (unknown
- [9.61.26.181]) by smtpav06.dal12v.mail.ibm.com (Postfix) with ESMTP;
- Fri,  7 Aug 2026 18:49:09 +0000 (GMT)
-Message-ID: <1ffedf290548a2fbfb1670ad53ec5d57e0f27178.camel@linux.ibm.com>
-From: Mimi Zohar <zohar@linux.ibm.com>
-To: Petr Vorel <pvorel@suse.cz>
-In-Reply-To: <20260803131942.GB246496@pevik>
-References: <20260728114224.1055009-1-pvorel@suse.cz>
- <20260728125815.4069-1-linuxtestproject.agent@gmail.com>
- <20260728133556.GA1128467@pevik>
- <7279643f66b2ea6d6888716f7923363c2f59b6eb.camel@linux.ibm.com>
- <20260803131942.GB246496@pevik>
-Date: Fri, 07 Aug 2026 14:49:09 -0400
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id A9D2A1000482
+ for <ltp@lists.linux.it>; Fri,  7 Aug 2026 22:12:11 +0200 (CEST)
+Received: by mail-wm1-x32d.google.com with SMTP id
+ 5b1f17b1804b1-495757ccbc1so40148695e9.2
+ for <ltp@lists.linux.it>; Fri, 07 Aug 2026 13:12:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1786133531; x=1786738331; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:to
+ :from:from:to:cc:subject:date:message-id:reply-to:content-type;
+ bh=tZIsRAcBURV/q2qhhj3ZpGXH5GsP5+M4kGx7rGBQVQQ=;
+ b=Xsod2dWF6iWmB28xZVwrsHGt2TaRDWmCTM2EiumWPsgKSCqsv582bH/IEskgJR9Pel
+ NT3lqGqU3N2Jq/iGiy11bcbUwt9wcOae633okT5uP2HoWIXpfHVCSkxDCrIIjKMC94i7
+ CWbLzGXVaizgu4ksVp1Lv/UFauepPORz/eVY+v4R7teDN3nYTVZ3J+BMwcjt1LU1+Kwk
+ yETVdNaimlY9izU65pGfBYltQ0Yc7J9epHa5RWtR9HYrjQ1IVPdpoazVsHe8bH5jmjX4
+ NyNC1z6mzcvC1gqt3kPsR31nqOTJ7TwMhjcFm7JGg/QZR6n79kTtSbeOd8e7Mk/jqu87
+ sAtQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1786133531; x=1786738331;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:to
+ :from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to:content-type;
+ bh=tZIsRAcBURV/q2qhhj3ZpGXH5GsP5+M4kGx7rGBQVQQ=;
+ b=FNxoXzxSOzG0peSvTiA/KtYx70QtZsGwyQF839OQcQZn826lNnbtFs4FFJt4G1Kj9G
+ H7kJxQ6IMih8fdmSuf0pXjS5buTtEcc0AyO/UKu0bKvZdsj0JC9Yiifrt+TuDhO5V837
+ 3TJHD+xntStvXN/yBVQyt7NFax3h9/coRKIrQlUE7cc73CwMteEyl+5CnE7Z8X2RfDoU
+ FXBZNxmpgZVEZiIKbpnIfdW52GD7t7dHOLg1CfDVyL8yIjSeD/SuhH1uI7B8NzEBk8nZ
+ 4CHmayNJ+FFa83E0UZJFFPaHvMpnI8Gv5+J8hqCfYYKIU1Vn+udW0WsuEnbMM/VYB30o
+ s9lg==
+X-Gm-Message-State: AOJu0Yy2SpRJYg+196Mwd55SL65QVm6BAaFwxUF30tz40tgcRH5slNUX
+ VguDNYA784wPRZVeAlAx2uTKTp0WVPpPXHAT5tjsz00TZcic/oJVkKTJwbjxKN6CkhVWdldQUYZ
+ 0UOeY6ag=
+X-Gm-Gg: AR+sD12ii6XyMTxGQlsVH/xqf3Lrg74dcmwsZF8DiXf66AD8Jzo2VD1qGB+yi10/KEd
+ 5XvAqMeNyL8tPnADrtvGWp8DNyRwnPvALyD4hv69rmP+iZTW3QvegDGAo7Y/Ea04e+JIFw5mFra
+ LIaC8QhUt7zFHFRw5FP5RGbe0Uepcl4k4rxJg4+G20sMPlPT6QW5Y1fVTXV1zo84g61dm5dO/ZD
+ YnOnH+gw1WUFq0aHuesbj3OTagSuPGcaQuOXuILHfuuWPoLBWaY7EGKY1Hks+s4Z9j9on61zLls
+ O0BeFCjZPC55cFVhBw6Kj23cFjaG6MogY9GwuDX18spOGHPpuIJmsUFGxm5aMd5AonienmLrn94
+ zA2FXfc6rhPCjz+avD5mvQVzhH/QKo/akodDKIjh7HnVsua+AKU0nZx5lHHzglRPKxXT9f10otr
+ 6iJpls0EcYQm2D42TjaumoMYMu5yPO6Tr418JYtNgcz+4ozvw=
+X-Received: by 2002:a05:6000:a92:b0:47f:943a:45fa with SMTP id
+ ffacd0b85a97d-47fec63ebc2mr31888496f8f.29.1786133530870; 
+ Fri, 07 Aug 2026 13:12:10 -0700 (PDT)
+Received: from localhost ([2a07:b241:1004:8300::1000])
+ by smtp.gmail.com with ESMTPSA id
+ ffacd0b85a97d-480021f90f8sm7846444f8f.26.2026.08.07.13.12.10
+ for <ltp@lists.linux.it>
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 07 Aug 2026 13:12:10 -0700 (PDT)
+To: ltp@lists.linux.it
+Date: Fri,  7 Aug 2026 22:12:08 +0200
+Message-ID: <20260807201209.116225-1-avinesh.kumar@suse.com>
+X-Mailer: git-send-email 2.55.0
 MIME-Version: 1.0
-User-Agent: Evolution 3.58.3 (3.58.3-1.fc43) 
-X-TM-AS-GCONF: 00
-X-Proofpoint-Reinject: loops=2 maxloops=12
-X-Authority-Analysis: v=2.4 cv=G6ws1dk5 c=1 sm=1 tr=0 ts=6a7628a7 cx=c_pps
- a=5BHTudwdYE3Te8bg5FgnPg==:117 a=5BHTudwdYE3Te8bg5FgnPg==:17
- a=IkcTkHD0fZMA:10 a=Sv0fKeRqtYgA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=RnoormkPH1_aCDwRdu11:22 a=V8glGbnc2Ofi9Qvn3v5h:22 a=aCwNQFKuUpxus5D-iSYA:9
- a=QEXdDO2ut3YA:10
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwODA3MDE0NyBTYWx0ZWRfX7FoRUk2mstIh
- Iw5m/oQNxd0XPRyHELIe+31cQq9ciQPOYvUCbLc9fkg+P+9D2PDlvfnyx8u28r/sj5UrMaN0RHi
- cgRiAQcvZgkgt/a0MFnSm/ep0uLQK3fJd178NYDICbBWmp2TbeMCVziEpc7ZVTKnQiZIPYT8e0I
- kbXD5DP3KyXI44kljXnh/IyMp1pmkV0UXdm4qPlzbJFN7vOROVGyHScB0UKPx0poKAuaQlh+rVO
- VB5SZ17pBTvq8Nd7mf9PKpiC+LLL9d2lwR+PUxD4Jc3dsXqhFSrIFxVPLqb5MYBL/eGUjlEuRD5
- TI0Ohxnk1p6cKyuYpGkBp9Idma/p3zp13S86gKJd0+M1pZmSjPJFKGoIDa2qvXHGFnZ3XuN+23C
- 3J2pKJ9+M1EL+6CMD7A4FD6UkNVYItCF2cNX//zR7GQxgtPQtKRp0Hm/FAHFvNUvto/zaEfz+L7
- ij4zQZTO7MZ9sNAgk5w==
-X-Proofpoint-ORIG-GUID: 7DXgU4h-pFHlQ9xKPbPjVJCvP4pn9xcY
-X-Proofpoint-Spam-Info: AW1haW4tMjYwODA3MDE0NyBTYWx0ZWRfX96WnsJ7iP6uS
- XwJFUBqpQ93WYW+chmTqAS9AY3uqbn4amTMPeWa0DFPr/zrztWOuyhbmJy1qCWdBAYDfDJ4U6Ch
- akFJGeCzgnjblXq1O8o4rqgt6kDNw2I=
-X-Proofpoint-GUID: 38RT8zg4nJohzV9gIKgG-073rTgYngCd
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1176,Hydra:6.1.134,FMLib:17.12.100.49
- definitions=2026-08-07_04,2026-08-07_01,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- impostorscore=0 spamscore=0 lowpriorityscore=0 suspectscore=0 malwarescore=0
- phishscore=0 priorityscore=1501 adultscore=0 bulkscore=0 clxscore=1015
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.22.0-2606150000 definitions=main-2608070147
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] ima_setup.sh: Fix check_policy_writable() for kernel < 4.5
+Subject: [LTP] [PATCH] openposix: timer_*/speculative: Handle SIGSEGV on
+ invalid timer ID
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -117,51 +96,203 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: linux-integrity@vger.kernel.org, ltp@lists.linux.it,
- linuxtestproject.agent@gmail.com
+From: Avinesh Kumar via ltp <ltp@lists.linux.it>
+Reply-To: Avinesh Kumar <avinesh.kumar@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Petr, 
+From: Avinesh Kumar <avinesh.kumar@suse.com>
 
-On Mon, 2026-08-03 at 15:19 +0200, Petr Vorel wrote:
+timer_delete/speculative/5-1, timer_getoverrun/speculative/6-1,
+timer_gettime/speculative/6-1 and timer_settime/speculative/12-1
+all pass a bogus value as an invalid timer_t timerid.
+On i586, glibc dereferences timer_t as a pointer into
+internal state, and the bogus pointer causes a SIGSEGV
+instead of the tests' expected EINVAL:
 
-[...] 
+  timer_delete_sp[22499]: segfault at 7f4982f0 ip b7e07824 sp bfa4c140 error 4 in libc.so.6[a4824,b7d87000+191000]
 
-> Do you agree that test2 in ima_policy.sh should be skipped on kernel < 4.5? If
-> you consider useful running the test also on these old kernels I could just
-> correct the commit message for older kernel or simply ignore that fact (just add
-> a comment to the test that it's irrelevant for < 4.5. (I know 4.4 is not
-> supported any more, in fact it's just for SLES and possibly other LTS distros
-> still supporting this old kernel, but I still appreciate your opinion.
+POSIX defines no required behavior for an invalid timer ID (EINVAL is
+only a recommendation), so a SIGSEGV is just as valid an outcome.
 
-Test 2 says, ""verify that policy file is not opened concurrently and able to
-loaded multiple times". Prior to 4.5, a policy cannot be loaded multiple times.
-I agree ima_policy.sh: test2 should be skipped on kernels prior to 4.5.
+Signed-off-by: Avinesh Kumar <avinesh.kumar@suse.com>
+---
+ .../interfaces/timer_delete/speculative/5-1.c | 19 ++++++++++++++++++
+ .../timer_getoverrun/speculative/6-1.c        | 19 ++++++++++++++++++
+ .../timer_gettime/speculative/6-1.c           | 20 +++++++++++++++++++
+ .../timer_settime/speculative/12-1.c          | 20 +++++++++++++++++++
+ 4 files changed, 78 insertions(+)
 
-> 
-> 
-> > > > Should test2 report TCONF (or split the two assertions) when
-> > > > CONFIG_IMA_WRITE_POLICY is not available?
-> 
-> FYI we could sooner or later start using kernel config (e.g. look into
-> CONFIG_IMA_WRITE_POLICY and CONFIG_IMA_READ_POLICY as many LTP tests and now
-> even LTP library require kernel config (we resisted long time add kernel config
-> as a hard dependency, but finally Cyril added support in 2018).
-
-Nice!
-
-> 
-> But more important for me would be to migrate LTP IMA tests to shell loader [1]
-> or even rewrite to C API. We have deprecated tst_test.sh API some time ago.
-
-Oh!  Sure, sounds good.
-
-thanks,
-
-Mimi
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/timer_delete/speculative/5-1.c b/testcases/open_posix_testsuite/conformance/interfaces/timer_delete/speculative/5-1.c
+index 912cf5800e6f..fb46c3e7dabb 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/timer_delete/speculative/5-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/timer_delete/speculative/5-1.c
+@@ -12,17 +12,36 @@
+ 
+ #include <time.h>
+ #include <stdio.h>
++#include <stdlib.h>
+ #include <errno.h>
++#include <signal.h>
+ #include "posixtest.h"
+ 
+ #define BOGUSTIMERID 99999
+ 
++/*
++ * when timerid argument does not correspond to a timer ID returned by
++ * timer_create(), POSIX recommends EINVAL, but SIGSEGV is also
++ * valid outcome.
++ */
++static void sigsegv_handler(int signum PTS_ATTRIBUTE_UNUSED)
++{
++	printf("Got SIGSEGV when calling timer_delete() with an invalid timer ID\n");
++	printf("Test PASSED\n");
++	exit(PTS_PASS);
++}
++
+ int test_main(int argc PTS_ATTRIBUTE_UNUSED, char **argv PTS_ATTRIBUTE_UNUSED)
+ {
+ 	timer_t tid;
+ 	int tval = BOGUSTIMERID;
++	struct sigaction sa = { .sa_handler = sigsegv_handler };
++
+ 	tid = (timer_t) & tval;
+ 
++	sigfillset(&sa.sa_mask);
++	sigaction(SIGSEGV, &sa, NULL);
++
+ 	if (timer_delete(tid) == -1) {
+ 		if (errno == EINVAL) {
+ 			printf
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/timer_getoverrun/speculative/6-1.c b/testcases/open_posix_testsuite/conformance/interfaces/timer_getoverrun/speculative/6-1.c
+index 6e18560e5084..429b08379e9c 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/timer_getoverrun/speculative/6-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/timer_getoverrun/speculative/6-1.c
+@@ -12,17 +12,36 @@
+ 
+ #include <time.h>
+ #include <stdio.h>
++#include <stdlib.h>
+ #include <errno.h>
++#include <signal.h>
+ #include "posixtest.h"
+ 
+ #define BOGUSTID 9999
+ 
++/*
++ * when timerid argument does not correspond to a timer ID returned by
++ * timer_create(), POSIX recommends EINVAL, but SIGSEGV is also
++ * valid outcome.
++ */
++static void sigsegv_handler(int signum PTS_ATTRIBUTE_UNUSED)
++{
++	printf("Got SIGSEGV when calling timer_getoverrun() with an invalid timer ID\n");
++	printf("Test PASSED\n");
++	exit(PTS_PASS);
++}
++
+ int test_main(int argc PTS_ATTRIBUTE_UNUSED, char **argv PTS_ATTRIBUTE_UNUSED)
+ {
+ 	timer_t tid;
+ 	int tval = BOGUSTID;
++	struct sigaction sa = { .sa_handler = sigsegv_handler };
++
+ 	tid = (timer_t) & tval;
+ 
++	sigfillset(&sa.sa_mask);
++	sigaction(SIGSEGV, &sa, NULL);
++
+ 	if (timer_getoverrun(tid) == -1) {
+ 		if (EINVAL == errno) {
+ 			printf("fcn returned -1 and errno=EINVAL\n");
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/timer_gettime/speculative/6-1.c b/testcases/open_posix_testsuite/conformance/interfaces/timer_gettime/speculative/6-1.c
+index d09c2f70901d..c124497153a9 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/timer_gettime/speculative/6-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/timer_gettime/speculative/6-1.c
+@@ -12,17 +12,37 @@
+ 
+ #include <time.h>
+ #include <stdio.h>
++#include <stdlib.h>
+ #include <errno.h>
++#include <signal.h>
+ #include "posixtest.h"
+ 
+ #define BOGUSTID 9999
+ 
++/*
++ * when timerid argument does not correspond to a timer ID returned by
++ * timer_create(), POSIX recommends EINVAL, but SIGSEGV is also
++ * valid outcome.
++ */
++static void sigsegv_handler(int signum PTS_ATTRIBUTE_UNUSED)
++{
++	printf("Got SIGSEGV when calling timer_gettime() with an invalid timer ID\n");
++	printf("Test PASSED\n");
++	exit(PTS_PASS);
++}
++
+ int test_main(int argc PTS_ATTRIBUTE_UNUSED, char **argv PTS_ATTRIBUTE_UNUSED)
+ {
+ 	timer_t tid;
+ 	struct itimerspec its;
+ 	int tval = BOGUSTID;
++	struct sigaction sa = { .sa_handler = sigsegv_handler };
++
+ 	tid = (timer_t) & tval;
++
++	sigfillset(&sa.sa_mask);
++	sigaction(SIGSEGV, &sa, NULL);
++
+ 	if (timer_gettime(tid, &its) == -1) {
+ 		if (EINVAL == errno) {
+ 			printf("fcn returned -1 and errno==EINVAL\n");
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/timer_settime/speculative/12-1.c b/testcases/open_posix_testsuite/conformance/interfaces/timer_settime/speculative/12-1.c
+index 5d4e1dda30ba..056f75448ea8 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/timer_settime/speculative/12-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/timer_settime/speculative/12-1.c
+@@ -11,17 +11,37 @@
+ 
+ #include <time.h>
+ #include <stdio.h>
++#include <stdlib.h>
+ #include <errno.h>
++#include <signal.h>
+ #include "posixtest.h"
+ 
+ #define BOGUSTID 9999
+ 
++/*
++ * when timerid argument does not correspond to a timer ID returned by
++ * timer_create(), POSIX recommends EINVAL, but SIGSEGV is also
++ * valid outcome.
++ */
++static void sigsegv_handler(int signum PTS_ATTRIBUTE_UNUSED)
++{
++	printf("Got SIGSEGV when calling timer_settime() with an invalid timer ID\n");
++	printf("Test PASSED\n");
++	exit(PTS_PASS);
++}
++
+ int test_main(int argc PTS_ATTRIBUTE_UNUSED, char **argv PTS_ATTRIBUTE_UNUSED)
+ {
+ 	timer_t tid;
+ 	struct itimerspec its;
+ 	int tval = BOGUSTID;
++	struct sigaction sa = { .sa_handler = sigsegv_handler };
++
+ 	tid = (timer_t) & tval;
++
++	sigfillset(&sa.sa_mask);
++	sigaction(SIGSEGV, &sa, NULL);
++
+ 	its.it_interval.tv_sec = 0;
+ 	its.it_interval.tv_nsec = 0;
+ 	its.it_value.tv_sec = 0;
+-- 
+2.55.0
 
 
 -- 
