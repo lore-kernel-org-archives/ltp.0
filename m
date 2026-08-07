@@ -4,84 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5E568C2A09B
-	for <ltp@archiver.kernel.org>; Fri,  7 Aug 2026 20:43:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CB5B6C5AD05
+	for <ltp@archiver.kernel.org>; Fri,  7 Aug 2026 23:18:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1786144697; h=date :
+ in-reply-to : mime-version : references : message-id : to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-type :
+ content-transfer-encoding : sender : from;
+ bh=EYNNTP6oXIrxtgRgGqp3445pKx5x1ZT97sMpX1ZcYKE=;
+ b=MLq+vHEVcBFapVmPCmY0chRzm7Qm0TMQAUfK7EtCQCkJ2rVwZr5QDb/NsCbSGtYzzNL5p
+ xJz7x5NTxmDFxwFMaZ0H/IWQrqVBv5hk3hyxpveAFauG3TL0XduExaqPmlYED7nsF+b/Kh0
+ rI9jylM4opFZV06e8990IwWlqgtcMlA=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 46BA83E6FFC
-	for <ltp@archiver.kernel.org>; Fri,  7 Aug 2026 22:43:13 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 979FC3E7018
+	for <ltp@archiver.kernel.org>; Sat,  8 Aug 2026 01:18:17 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D43063E2649
- for <ltp@lists.linux.it>; Fri,  7 Aug 2026 22:42:56 +0200 (CEST)
-Received: from mail-pz2-x01.google.com (mail-pz2-x01.google.com
- [IPv6:2607:f8b0:4864:3b::1])
+ by picard.linux.it (Postfix) with ESMTPS id 4E1A83C73AF
+ for <ltp@lists.linux.it>; Sat,  8 Aug 2026 01:17:56 +0200 (CEST)
+Received: from mail-pj1-x1045.google.com (mail-pj1-x1045.google.com
+ [IPv6:2607:f8b0:4864:20::1045])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 3D4C5200B8A
- for <ltp@lists.linux.it>; Fri,  7 Aug 2026 22:42:56 +0200 (CEST)
-Received: by mail-pz2-x01.google.com with SMTP id
- 41be03b00d2f7-ca7a25cd87dso3080651a12.1
- for <ltp@lists.linux.it>; Fri, 07 Aug 2026 13:42:56 -0700 (PDT)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 87C73600EA8
+ for <ltp@lists.linux.it>; Sat,  8 Aug 2026 01:17:56 +0200 (CEST)
+Received: by mail-pj1-x1045.google.com with SMTP id
+ 98e67ed59e1d1-38e5a616d07so64442a91.2
+ for <ltp@lists.linux.it>; Fri, 07 Aug 2026 16:17:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1786135374; x=1786740174; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to:content-type;
- bh=UtjLG3h1RSXsWWxdbUX/D6RkotPbmso0gA7NO6toJP8=;
- b=MgNDt/yz/YhwxwAsPpLZtjRPbUyE96a0xIsggs2TIkqwlh5SZ3vXk8mkerNvRgrKVl
- 2Nnb69RBNQ4UyajveOoABl6eMxgG5KDOxNpxhgNw8PdsP+mxtqjGCdGWDVMOfKbk7d8n
- ShWF5fLUBP3NZ+lKOeKNXlbW1hhWBsCe7SeErK1h7Io4icK1+jr5vm9u8IGSKv7a/4d0
- pmVugXJzfpXkxLara0TJzI9aSV+MlxnqnCJLuoAd6eVEyyMwQFuqr6+ZZiLAObdAdLOX
- 1Lc/WzEs2qmHkgLzpK8iLp8U3MQ1aUiDuQnHu3PUndlgr/y4FmehLobgSXnrKJwUFQR8
- 7Q+g==
+ d=google.com; s=20251104; t=1786144675; x=1786749475; darn=lists.linux.it;
+ h=content-type:cc:to:from:subject:message-id:references:mime-version
+ :in-reply-to:date:from:to:cc:subject:date:message-id:reply-to
+ :content-type; bh=bd1pdGdCFy9f73nv+gG0P1eepbxX+FqbIrjaMHLDy8U=;
+ b=reLIuw/5Mt9qtFvLMwxYc/u2xRpph0zx0B5tyty4KDRO95GzJLNZ5Q+Jow5je+ZmYH
+ PQv/oAPqSwiS8mpHaETfiiyOjvRpUfq1g9c0IZEvBeFNsAboukWydKK9v77SXJ4B6XUb
+ NJmpTPAlKvjW7UnCy8Vg9bkYlcQHLKWXgvRk+f4Nd+Wp6CJdA8E0TyjhzL2SFZYVFLfl
+ cvVPK1f2Sj5BupcqpAnRGaQ48Lk+coKrNPM4plhAkp+a7Eg3dTtbAN6xSrcAPUCiwOu8
+ 6WQEVZazlU+k5TMvsTY+QlCd7FeSEQ4vXWfudRG2lp3/y33uViq0CJng5wgu9rXBt9md
+ kUSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1786135374; x=1786740174;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to:content-type;
- bh=UtjLG3h1RSXsWWxdbUX/D6RkotPbmso0gA7NO6toJP8=;
- b=Zoh7S2bEbR42FkIXxsYOMhv/1ST7K+yO1nKd2Jes55+/gFUX4Az9hyusW6MsPADffj
- s0M5D0auzgK1nV7NtQ4b1pY8bFnQXwoanVop6nDzTFWJN5mrCAmH7svDFGCKkwJ5ZH9A
- 56QoXKnZOhztPHkuZDlV0Wnj3pusJP+QI3cvyuSFksbZ6BuDTQIldAnLUua7dU0xAKbn
- 5fJtCc//+lCdOVQEs1V2XJY6arBz/MwC/m7L6zKBDpZcU8U92l4hhlKj53dO6Bm0afKe
- elxe2an0se4SLK55+W87JAQN02TgqwkSRbGKnCFgJlneXvyfCw5Lh0aAK3L0NcW07CXt
- scjw==
-X-Gm-Message-State: AOJu0YycpS4IKi69ErV/DFhKPBYuChwGxn6gKCx3qcf4Yk4j2p+p/vQB
- DfDAGhVX0TcxKV69edWNe/TUV0/7dwJqFNMHeSbhcy4szux9AqIcwXfW
-X-Gm-Gg: AR+sD12FZqKowYw7/EgGPv2i6NWnW0yJwzxQyLfzRxXkGvmwDSyYJ1hRYoch+5B6Nbn
- +Fl2FwlCif/iGlPsiFo00zRaHoxFPgaMyvbAyGL31br1TTeuRmpfYRf5kQBaDMhCWvy5SmXo2dz
- PYDpiryENNs54ZVPzMPhrxnbaYIgOxy5mAU7+snDPVGi70/LF9hVeWHJoBUkqV/4QHjy3TNw1oa
- mE8GfjXozyKNZ6YPxTJE73uQzsdwDGkaNKGXaPQLgkiTLb0xaRX83YSdpM7hKyNDjDYpZNe0yxY
- cbe2see7Ocg4M8ag8pButr8N9T5RpjcMOfROJo398KcwXCACYoTk2KBE7B9DT63DrIrRuG2HHID
- +LVd6XNBXSdoQnfAcl62YHYR7TJzCv6L/hDDhj8gE446QiQCFStMjel26tOItHPRaxP2hhD78Fp
- Gd7DPTrWXdUIxjaR+FHduwNwYBvlbT4NxpHKIy6S5GGg4EijVM1wMtd1BmgGHiCsi0A4Pibr7HD
- iSMR4jpZyHN1UzKyV3IP26evNvt+mwhriMrTQo4cy5eez2s+VL/Dx9OKmCTlDbQ+QPFN0HuHG5M
- V8cXQmLBYUp/
-X-Received: by 2002:a05:6a00:3cd5:b0:845:d650:b75f with SMTP id
- d2e1a72fcca58-84f5df3c774mr6396728b3a.8.1786135374247; 
- Fri, 07 Aug 2026 13:42:54 -0700 (PDT)
-Received: from
- runnervmvrwv9.5mota3rayj3elfrkaatbuxrvgb.xx.internal.cloudapp.net
- ([20.29.188.144]) by smtp.gmail.com with ESMTPSA id
- d2e1a72fcca58-84f5a3fe7d6sm1544870b3a.26.2026.08.07.13.42.53
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 07 Aug 2026 13:42:53 -0700 (PDT)
-From: linuxtestproject.agent@gmail.com
-To: Avinesh Kumar <avinesh.kumar@suse.com>
-Date: Fri,  7 Aug 2026 20:42:52 +0000
-Message-ID: <20260807204252.34887-1-linuxtestproject.agent@gmail.com>
-X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260807201209.116225-1-avinesh.kumar@suse.com>
-References: <20260807201209.116225-1-avinesh.kumar@suse.com>
-MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+ d=1e100.net; s=20251104; t=1786144675; x=1786749475;
+ h=content-type:cc:to:from:subject:message-id:references:mime-version
+ :in-reply-to:date:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to:content-type;
+ bh=bd1pdGdCFy9f73nv+gG0P1eepbxX+FqbIrjaMHLDy8U=;
+ b=NA8nSoQybb55lXYE+yPV2VlwACLe4Y7fY5Owwkw9v7Q4CW2AFry1VwH4xMENBjMUx/
+ cvWnh/nsq2imnZHtZHAlIytfwgJqrRs482i+hmV3gSe+0soHKMpcYejwsh5HMOUOA48a
+ blSgvTAQ+e9KVOhuIkwOLSnsu848MSzmvxLgDKIpQeKIztLWdjpBIoWuwzORh30vxPXO
+ WfcdzkKyU+Uun7EzxHhhJgKz8gwqx475GWxB2jJyMIrN+uha+vE0A/vnSajoTYCV8lCm
+ QQ83EWOS9DZPmXUXcV2ceULU4zWBABpNTJU9VmeqeyHMdQ7U6aEdcXRO2DNoF2JzmIMt
+ LMeA==
+X-Gm-Message-State: AOJu0YzDbPINd8s5px7RxXV2fs3R1KzhFcDtAAtmPA/wECMzRKxf5D9i
+ JEtzrVMLYW7//eJkNe1j6sQQGZ1+I4BPFRxkQl1B+UVNVn1IfszAvTKy+TxhtNCKIwE1pT8EOie
+ 77LsoT8FkrCYO5c98hIJfBbYfsDn+Dd2IuTLQP7+mLcNx2sjpHipcsVMy/F+n5zG/m2MBdka/6c
+ H97j84ZxBcfgXHuZApPzqhazA4zA==
+X-Received: from pjzh4.prod.google.com ([2002:a17:90a:ea84:b0:37d:ce7c:cbd6])
+ (user=wakel job=prod-delivery.src-stubby-dispatcher) by
+ 2002:a17:90b:3950:b0:37f:b0a9:1a68
+ with SMTP id 98e67ed59e1d1-392822afd23mr3654592a91.7.1786144674592; Fri, 07
+ Aug 2026 16:17:54 -0700 (PDT)
+Date: Fri,  7 Aug 2026 23:17:52 +0000
+In-Reply-To: <20260807105634.2837348-1-wakel@google.com>
+Mime-Version: 1.0
+References: <20260807105634.2837348-1-wakel@google.com>
+X-Mailer: git-send-email 2.55.0.654.g21b8a5bc05-goog
+Message-ID: <20260807231752.3218267-1-wakel@google.com>
+To: ltp@lists.linux.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] openposix: timer_*/speculative: Handle SIGSEGV on invalid
- timer ID
+Subject: [LTP] [PATCH v2] inode01: Use uint64_t to prevent inode truncation
+ on 32-bit
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -93,40 +89,78 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+From: Wake Liu via ltp <ltp@lists.linux.it>
+Reply-To: Wake Liu <wakel@google.com>
+Cc: Wake Liu <wakel@google.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Avinesh,
+On 32-bit architectures, ino_t is typically 32-bit, whereas the kernel
+and struct stat may support 64-bit inode numbers (e.g. st_ino is
+unsigned long long).
 
-On Aug 7, 2026, Avinesh Kumar wrote:
-> openposix: timer_*/speculative: Handle SIGSEGV on invalid timer ID
+The conversion of inode01 to the new API introduced tracking of inodes
+in an array of struct inode_info, which used ino_t. This causes 64-bit
+inode numbers to be truncated to 32-bit when running as a 32-bit binary
+on a filesystem that uses 64-bit inodes.
 
-> +static void sigsegv_handler(int signum PTS_ATTRIBUTE_UNUSED)
-> +{
-> +	printf("Got SIGSEGV when calling timer_delete() with an invalid timer ID\n");
-> +	printf("Test PASSED\n");
-> +	exit(PTS_PASS);
-> +}
+This truncation can lead to false duplicate inode reports and test
+failures.
 
-Could all four new handlers use PTS_WRITE_MSG() and _exit() instead?
-printf() and exit() are not async-signal-safe. Since SIGSEGV is raised while
-libc is processing the invalid timer ID, calling them invokes undefined
-behavior and may hang instead of reliably reporting a pass.
+Fix this by using uint64_t for tracking inode numbers throughout the
+test.
 
-Verdict - Needs revision
-
+Signed-off-by: Wake Liu <wakel@google.com>
 ---
-Note:
+v1 -> v2:
+ - Also change record_inode() parameter type to uint64_t to prevent truncation before assignment.
 
-The agent can sometimes produce false positives although often its
-findings are genuine. If you find issues with the review, please
-comment this email or ignore the suggestions.
+ testcases/kernel/fs/inode/inode01.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-Regards,
-LTP AI Reviewer
+diff --git a/testcases/kernel/fs/inode/inode01.c b/testcases/kernel/fs/inode/inode01.c
+index 2816ad61a..50b5311a4 100644
+--- a/testcases/kernel/fs/inode/inode01.c
++++ b/testcases/kernel/fs/inode/inode01.c
+@@ -36,7 +36,7 @@ static struct tcase {
+ };
+ 
+ struct inode_info {
+-	ino_t ino;
++	uint64_t ino;
+ 	char path[PATH_MAX];
+ };
+ 
+@@ -68,13 +68,13 @@ static void create_tree(const struct tcase *tc, const char *parent,
+ }
+ 
+ static void record_inode(struct inode_info *inodes, unsigned int idx,
+-			 const char *path, ino_t ino)
++			 const char *path, uint64_t ino)
+ {
+ 	inodes[idx].ino = ino;
+ 	snprintf(inodes[idx].path, sizeof(inodes[idx].path), "%s", path);
+ }
+ 
+-static ino_t verify_file(const struct tcase *tc, const char *path)
++static uint64_t verify_file(const struct tcase *tc, const char *path)
+ {
+ 	char buf[PATH_MAX];
+ 	char extra;
+@@ -128,7 +128,7 @@ static void verify_tree(const struct tcase *tc, const char *parent,
+ 	for (i = 0; i < tc->fanout; i++, create_file = !create_file) {
+ 		char path[PATH_MAX];
+ 		unsigned int my_id;
+-		ino_t ino;
++		uint64_t ino;
+ 
+ 		snprintf(path, sizeof(path), "%s/%08u", parent, ++*id);
+ 
+-- 
+2.55.0.654.g21b8a5bc05-goog
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
