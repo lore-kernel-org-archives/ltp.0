@@ -4,101 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4AC60C5AC67
-	for <ltp@archiver.kernel.org>; Sat,  8 Aug 2026 17:03:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 71E42C55174
+	for <ltp@archiver.kernel.org>; Sat,  8 Aug 2026 17:33:43 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C0E9C3E705A
-	for <ltp@archiver.kernel.org>; Sat,  8 Aug 2026 19:03:14 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 7C0CE3E700E
+	for <ltp@archiver.kernel.org>; Sat,  8 Aug 2026 19:33:41 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E92523E29B4
- for <ltp@lists.linux.it>; Sat,  8 Aug 2026 19:02:58 +0200 (CEST)
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
- [148.163.158.5])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 192F83E5C9C
+ for <ltp@lists.linux.it>; Sat,  8 Aug 2026 19:33:24 +0200 (CEST)
+Received: from mail-pj2-x01.google.com (mail-pj2-x01.google.com
+ [IPv6:2607:f8b0:4864:39::1])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id E828D14002B8
- for <ltp@lists.linux.it>; Sat,  8 Aug 2026 19:02:56 +0200 (CEST)
-Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id
- 678H1xWb606017 for <ltp@lists.linux.it>; Sat, 8 Aug 2026 17:02:55 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
- :content-transfer-encoding:date:from:message-id:mime-version
- :subject:to; s=pp1; bh=/LXk2Il5V2NQJy+tToAwlop0WyYQ3Dlrkye94oMvT
- vM=; b=Cn5Htb27CHYQrbwoTALRIgcPKO2++qxVEB9tSv0fsHGET9Z5Ljig4CN6W
- wPQFmsrisoAyZiFrnWrGRh/PuBR7p34h/LkkKUYZ6qnO5U5iiIaesDtnuXmYiHJi
- ohmGf9HiQFyAIKL/dfAtU+YdEd5IIZ3NWR/rKMJbRVcOqY9bCXNAQTBvu6nYRfdD
- giQXdQeG4baxgsbg4PeL3MrTdXl7gXeG2JYaEOTvZmMjtov8hgNR4Um0KM9Wp2Nn
- ukTqqOvPxwvQHWU9I13EUQua/xUOiXLTgfVA5/VJKdT9tQYYNh6Wgr2io8Wz2n82
- BQTz3opuOsrsJSc+CuKkdS9/rQyNg==
-Received: from ppma12.dal12v.mail.ibm.com
- (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4fwvkchms4-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
- for <ltp@lists.linux.it>; Sat, 08 Aug 2026 17:02:55 +0000 (GMT)
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
- by ppma12.dal12v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 678Gud23007232
- for <ltp@lists.linux.it>; Sat, 8 Aug 2026 17:02:54 GMT
-Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
- by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 4fsu4r471s-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
- for <ltp@lists.linux.it>; Sat, 08 Aug 2026 17:02:54 +0000 (GMT)
-Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com
- [10.20.54.100])
- by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 678H2oWq16711962
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Sat, 8 Aug 2026 17:02:50 GMT
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id AE20B2004F;
- Sat,  8 Aug 2026 17:02:50 +0000 (GMT)
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id A736220040;
- Sat,  8 Aug 2026 17:02:49 +0000 (GMT)
-Received: from li-49acbccc-2994-11b2-a85c-d51b89e344f1.ibm.com.com (unknown
- [9.124.213.124])
- by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTP;
- Sat,  8 Aug 2026 17:02:49 +0000 (GMT)
-From: Pavithra <pavrampu@linux.ibm.com>
-To: ltp@lists.linux.it
-Date: Sat,  8 Aug 2026 22:32:45 +0530
-Message-ID: <20260808170245.1548019-1-pavrampu@linux.ibm.com>
-X-Mailer: git-send-email 2.55.0
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 92855600136
+ for <ltp@lists.linux.it>; Sat,  8 Aug 2026 19:33:24 +0200 (CEST)
+Received: by mail-pj2-x01.google.com with SMTP id
+ 98e67ed59e1d1-37fb1883fbfso206990a91.0
+ for <ltp@lists.linux.it>; Sat, 08 Aug 2026 10:33:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20251104; t=1786210403; x=1786815203; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to:content-type;
+ bh=ZPfT2vZnWLXxWqvh99lWHjQfKg9i/lfZrF8ozHLRaHo=;
+ b=ar5PqyiqXN4kZsG0ud7VqytsTJSqo1t/o6Vz2V7dVhRnDr9ZZROnfOWx9KEbwfMW5U
+ mdpYaJywd4KEy+QbyLfj1SYttdsEoHYxHu/9Aif/xaB2igKPu6DfRmZcAwkcpQUwDo0/
+ jBkieaqA5oYBuXk20Du6TbTCk1oOai/W1P74YCNBoFQ1ZyMoa07B2zLx4LmIiOBG9VuQ
+ +tx+e8N49FOX44P464Dap1lu5i07GKQhO1weg4G+N3osWD+M3QQPD/NvFNhXPDQ2YMbf
+ Yxu+PKLtyJKBWM+6yXwOXD2ZQIzrhhevpxE4RkCWpwUbjLJX23+z5noGlbPUbpbArQmC
+ bUiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1786210403; x=1786815203;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to:content-type;
+ bh=ZPfT2vZnWLXxWqvh99lWHjQfKg9i/lfZrF8ozHLRaHo=;
+ b=qAyZExdODKE05PLxAjYPF23N8gGxomUQL3sdsx9C7oiX6+zgP5u2Gu6Iw8U5MyG1oR
+ mbxdYYX7wzW+XfuYoLd2CXxicZ8xH3y7tYc0eUqUIrL7XCm/z7O1v07D6zb4ngcU43A9
+ it3QZK4vw+Z9xU975XMW/16BzEXkUBue7foVfSraBoX3hfzmCFKqoLXNhbSvG9kSQ6Az
+ 9vvlVqz63l+ngSWMNUWwI4nxMbQLGHnCuvsN/0QPIjsPbAIw+UC0EMeP3XlwsSRiNpvD
+ k+ehKh/BijYx1e1FDb8t1x/TTueCNKJ9iiLz3oR8/Ml1hTA6y+M0OUvOeuAFekSpkogs
+ ETag==
+X-Gm-Message-State: AOJu0Yz2wh1Li6t6Z+mD6eHx/pTAXagwYrR/flNdQnn5weimIWXe0cPR
+ G/vVQKfMiDGfAgXecsOvu9IfgSe5VQ0fe4OGSQ7W68yxAlatmNJf+2GL
+X-Gm-Gg: AR+sD13dE8PhslFK8ZAJAcmAb3uVUcqIkFspKrWeBMZ7AtI9+4WMp7mFwYvGPbVLNGa
+ 0LVG766f7wjMBlsYn7m2Vh06dLYY6vPtjG3QL6XH1aSCWAVv9neaTkGWN5FlD2xqOeV1CG6LwfK
+ X52TQ473QNPISz7JrhfeZx3DqZ+e+8jI9u2Goa0ZGl/jiOAoWIuDbmgM0JePXZ7CJDr+2SHovcS
+ +ONKvxgxoW5GKbLb1U2ossdBwVWe5XCMSx+xoENtDuxdoKCPj1I/AwGSt9EqI2Q932x4D0gj1Ey
+ zfRTV0gFuJrT0hhUbWRirIwK0Ae8ZptB81cJEEo5GLvvHhVRNep82F47lNYsTIZqbFY+fA6EuvV
+ pqXbKfXIS6eNY5ynYkz03Su1BGSldq0385wninkhnvNb+dqzReLNbRvafoLg2gKn1a4JGNRzIt3
+ zLDdd/fGPFF95LQnTh9XMD5v0hmc0ikLcZ9DbM8/SJDh2pXSJzcas0BzDTd6afbeoIAOAZFvH2e
+ 3ScQdyTB5NlXgsBSHKIbrdrcAZn8xvf/i5JKWfROGFPpHtgLLbwqVJbjzOYIpLkR48RE8W+XJ0r
+ Gyk=
+X-Received: by 2002:a17:90a:ec85:b0:380:f85c:94b4 with SMTP id
+ 98e67ed59e1d1-3909d8075eamr20024982a91.7.1786210402860; 
+ Sat, 08 Aug 2026 10:33:22 -0700 (PDT)
+Received: from
+ runnervmvrwv9.fkzuwk3srtzuziqu02k1cpypyb.yx.internal.cloudapp.net
+ ([172.208.158.163]) by smtp.gmail.com with ESMTPSA id
+ 5a478bee46e88-315be568bd3sm21022389eec.0.2026.08.08.10.33.22
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Sat, 08 Aug 2026 10:33:22 -0700 (PDT)
+From: linuxtestproject.agent@gmail.com
+To: Pavithra <pavrampu@linux.ibm.com>
+Date: Sat,  8 Aug 2026 17:33:21 +0000
+Message-ID: <20260808173321.9129-1-linuxtestproject.agent@gmail.com>
+X-Mailer: git-send-email 2.54.0
+In-Reply-To: <20260808170245.1548019-1-pavrampu@linux.ibm.com>
+References: <20260808170245.1548019-1-pavrampu@linux.ibm.com>
 MIME-Version: 1.0
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: -ca1UX_ONdEvdL11YON8SZirtNecGiBT
-X-Authority-Analysis: v=2.4 cv=J86aKgnS c=1 sm=1 tr=0 ts=6a77613f cx=c_pps
- a=bLidbwmWQ0KltjZqbj+ezA==:117 a=bLidbwmWQ0KltjZqbj+ezA==:17
- a=Sv0fKeRqtYgA:10 a=VkNPw1HP01LnGYTKEx00:22 a=RnoormkPH1_aCDwRdu11:22
- a=V8glGbnc2Ofi9Qvn3v5h:22 a=VwQbUJbxAAAA:8 a=VnNF1IyMAAAA:8
- a=Xv_4H9WuqN-auS47JK8A:9
-X-Proofpoint-ORIG-GUID: -ca1UX_ONdEvdL11YON8SZirtNecGiBT
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwODA4MDE0NiBTYWx0ZWRfXzBNVZ0+Zf8P+
- TSdWlxVdru7rdyvNSoXdsrWnCfxLKlYGMf94sbTjT4+4wi0QOQl1SdZRy6gvRcefy8814+jDbNG
- hsq+VFmJ1ElVjHdp8Bpf8vmO5OtH6m0rP1ejXv3ZWu04AwiEtI/7xkQhRIsN3ducswRRF5jv4pN
- lgM7ntygy5+MtZhHpfjdzIGWubbRQQWwnhLQvWzaT3riSEyjviFlNDoCpgNLOl3LBZpV3AaMy/q
- 3QBTvkQ2+pFz+imjMjTAh3bqdZDsXFpvbPHELDdadsPqz5kPMJh9eeL7yfyIyu3OAV7nUOYm3H2
- HbnZ2uTtUEJgwl4DJesrsUaK6f0Z+JKHzYzAbBpflC95UEmYxOG2qWhzabxPJA6m7ul4GTaDoxR
- AjknsAL5wnvZviRzIvalN2BsuMkehYxkQ/393rCKU/8HKUVT2CfbUlLF+t064GmZv4cax74w2Ay
- giL6eM2QYhhoJXyL7Zw==
-X-Proofpoint-Spam-Info: AW1haW4tMjYwODA4MDE0NiBTYWx0ZWRfX8mHtUnyo8KFx
- KYFcSgbNLDZoL517QMs1Kb6e7CCfWs+4re5vTCMzVdiRM1ZaJTjrVNiuW0RRThfi3zWL2/q9JN0
- 3oMEoyHQHQP6LQHzVVqGcmvJmtezprQ=
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1176,Hydra:6.1.134,FMLib:17.12.100.49
- definitions=2026-08-08_06,2026-08-07_01,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- clxscore=1015 priorityscore=1501 suspectscore=0 malwarescore=0 adultscore=0
- phishscore=0 impostorscore=0 lowpriorityscore=0 bulkscore=0 spamscore=0
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.22.0-2606150000 definitions=main-2608080146
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v6] hugemmap/hugemmap41: Migrate ptrace-write-hugepage
- from libhugetlbfs
+Subject: Re: [LTP] hugemmap/hugemmap41: Migrate ptrace-write-hugepage from
+ libhugetlbfs
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -110,197 +93,69 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: pavrampu@linux.ibm.com
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-This test verifies that ptrace POKEDATA and PEEKDATA operations work
-correctly on hugepage-backed memory regions. Migrating it to LTP as
-libhugetlbfs is not actively maintained.
+Hi Pavithra,
 
-Signed-off-by: Pavithra <pavrampu@linux.ibm.com>
+On Sat, Aug 8, 2026, Pavithra wrote:
+> hugemmap/hugemmap41: Migrate ptrace-write-hugepage from libhugetlbfs
+
+> +/hugetlb/hugemmap/hugemmap41
+
+Could this entry be placed in
+testcases/kernel/mem/hugetlb/hugemmap/.gitignore as /hugemmap41 instead?
+New test binaries should be ignored in their leaf test directory rather
+than extending the legacy testcases/kernel/mem/.gitignore list.
+
+> +	p = SAFE_MMAP(NULL, hpage_size, PROT_READ|PROT_WRITE, MAP_SHARED,
+
+Could spaces be added around the "|" operator? make check-hugemmap41
+reports this line as a kernel style violation.
+
+> +	TST_EXP_EQ_LU((unsigned long)TST_RET, CONST);
+> +}
+> +
+> +static void run_test(void)
+> +{
+> [...]
+> +	do_poke(cpid, p);
+> +	do_poke(cpid, p + getpagesize());
+> [...]
+> +	tst_res(TPASS, "ptrace write to hugepage succeeded");
+
+Could the unconditional TPASS be removed? If either equality check reports
+a mismatch, this line still claims that the operation succeeded. The two
+TST_EXP_EQ_LU() calls already report their own pass results.
+
+> +	.tags = (struct tst_tag[]) {
+> +		{"linux-git", "ebed4bfc8da8"},
+> +		{}
+> +	},
+
+Which ptrace regression is this tag intended to identify? ebed4bfc8da8 is
+"hugetlb: fix absurd HugePages_Rsvd", which fixes reservation accounting
+after truncating a mapped hugetlbfs file. This test neither truncates the
+file nor checks HugePages_Rsvd, so a failure would print an unrelated
+missing-fix hint.
+
+Could the tag be removed, or replaced with the full 40-character hash of
+the actual ptrace/hugetlb fix?
+
+Verdict - Needs revision
+
 ---
-v5 -> v6:
-- Use TST_EXP_EQ_LU((unsigned long)TST_RET, CONST) instead of TST_EXP_EQ_LI() to preserve unsigned long semantics and prevent sign-extension failure on 32-bit targets.
-link to v5: https://lore.kernel.org/ltp/20260808150238.1526150-1-pavrampu@linux.ibm.com/
----
- runtest/hugetlb                               |   1 +
- testcases/kernel/mem/.gitignore               |   1 +
- .../kernel/mem/hugetlb/hugemmap/hugemmap41.c  | 136 ++++++++++++++++++
- 3 files changed, 138 insertions(+)
- create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap41.c
+Note:
 
-diff --git a/runtest/hugetlb b/runtest/hugetlb
-index 6b35c1f42..621c9718a 100644
---- a/runtest/hugetlb
-+++ b/runtest/hugetlb
-@@ -40,6 +40,7 @@ hugemmap35 hugemmap35
- hugemmap36 hugemmap36
- hugemmap37 hugemmap37
- hugemmap38 hugemmap38
-+hugemmap41 hugemmap41
- hugemmap05_1 hugemmap05 -m
- hugemmap05_2 hugemmap05 -s
- hugemmap05_3 hugemmap05 -s -m
-diff --git a/testcases/kernel/mem/.gitignore b/testcases/kernel/mem/.gitignore
-index e63a6dde7..9e706e1c8 100644
---- a/testcases/kernel/mem/.gitignore
-+++ b/testcases/kernel/mem/.gitignore
-@@ -40,6 +40,7 @@
- /hugetlb/hugemmap/hugemmap36
- /hugetlb/hugemmap/hugemmap37
- /hugetlb/hugemmap/hugemmap38
-+/hugetlb/hugemmap/hugemmap41
- /hugetlb/hugeshmat/hugeshmat01
- /hugetlb/hugeshmat/hugeshmat02
- /hugetlb/hugeshmat/hugeshmat03
-diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap41.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap41.c
-new file mode 100644
-index 000000000..70f29edb8
---- /dev/null
-+++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap41.c
-@@ -0,0 +1,136 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (C) 2005-2006 David Gibson & Adam Litke, IBM Corporation.
-+ * Copyright (c) 2026 Pavithra <pavrampu@linux.ibm.com>
-+ */
-+
-+/*\
-+ * Test :manpage:`ptrace(2)` write to hugepage memory.
-+ *
-+ * A child process maps a hugepage via hugetlbfs, zeroes it, and sends
-+ * the mapped address to the parent. The parent attaches with
-+ * :manpage:`ptrace(2)`, then uses PTRACE_POKEDATA and PTRACE_PEEKDATA
-+ * to write and read back a known value at two different offsets within
-+ * the hugepage, verifying that ptrace operates correctly on
-+ * hugepage-backed memory regions.
-+ *
-+ * Requires root to mount hugetlbfs and for :manpage:`ptrace(2)`
-+ * PTRACE_ATTACH to work across processes when ptrace_scope is
-+ * restrictive.
-+ */
-+
-+#include <stdlib.h>
-+#include <string.h>
-+#include <sys/mman.h>
-+#include <sys/ptrace.h>
-+#include <sys/types.h>
-+#include <sys/wait.h>
-+
-+#include "tst_test.h"
-+#include "hugetlb.h"
-+
-+#define CONST	0xdeadbeefL
-+#define MNTPOINT "hugetlbfs/"
-+
-+static long hpage_size;
-+static int fd = -1;
-+
-+static void child(int hugefd, int pipefd[2])
-+{
-+	void *p;
-+
-+	SAFE_CLOSE(pipefd[0]);
-+
-+	p = SAFE_MMAP(NULL, hpage_size, PROT_READ|PROT_WRITE, MAP_SHARED,
-+		      hugefd, 0);
-+
-+	memset(p, 0, hpage_size);
-+
-+	tst_res(TINFO, "Child mapped data at %p", p);
-+
-+	SAFE_WRITE(SAFE_WRITE_ALL, pipefd[1], &p, sizeof(p));
-+	SAFE_CLOSE(pipefd[1]);
-+
-+	pause();
-+	/* Child is killed by parent via SIGKILL, so cleanup is not reached */
-+}
-+
-+static void do_poke(pid_t pid, void *p)
-+{
-+	tst_res(TINFO, "Poking at %p...", p);
-+	SAFE_PTRACE(PTRACE_POKEDATA, pid, p, (void *)CONST);
-+
-+	tst_res(TINFO, "Peeking at %p...", p);
-+	TEST(ptrace(PTRACE_PEEKDATA, pid, p, NULL));
-+	if (TST_ERR)
-+		tst_brk(TFAIL | TTERRNO, "ptrace(PEEKDATA) failed");
-+
-+	TST_EXP_EQ_LU((unsigned long)TST_RET, CONST);
-+}
-+
-+static void run_test(void)
-+{
-+	int pipefd[2];
-+	pid_t cpid;
-+	void *p;
-+	int status;
-+
-+	fd = tst_creat_unlinked(MNTPOINT, 0, 0600);
-+
-+	SAFE_PIPE(pipefd);
-+
-+	cpid = SAFE_FORK();
-+
-+	if (cpid == 0) {
-+		child(fd, pipefd);
-+		exit(0);
-+	}
-+
-+	SAFE_CLOSE(pipefd[1]);
-+	SAFE_READ(1, pipefd[0], &p, sizeof(p));
-+	SAFE_CLOSE(pipefd[0]);
-+
-+	tst_res(TINFO, "Parent received address %p", p);
-+
-+	SAFE_PTRACE(PTRACE_ATTACH, cpid, NULL, NULL);
-+
-+	SAFE_WAITPID(cpid, &status, 0);
-+	if (!WIFSTOPPED(status))
-+		tst_brk(TBROK, "Child %d was not stopped", cpid);
-+
-+	do_poke(cpid, p);
-+	do_poke(cpid, p + getpagesize());
-+
-+	SAFE_KILL(cpid, SIGKILL);
-+	SAFE_WAITPID(cpid, &status, 0);
-+
-+	SAFE_CLOSE(fd);
-+
-+	tst_res(TPASS, "ptrace write to hugepage succeeded");
-+}
-+
-+static void setup(void)
-+{
-+	hpage_size = tst_get_hugepage_size();
-+}
-+
-+static void cleanup(void)
-+{
-+	if (fd != -1)
-+		SAFE_CLOSE(fd);
-+}
-+
-+static struct tst_test test = {
-+	.tags = (struct tst_tag[]) {
-+		{"linux-git", "ebed4bfc8da8"},
-+		{}
-+	},
-+	.needs_root = 1,
-+	.mntpoint = MNTPOINT,
-+	.needs_hugetlbfs = 1,
-+	.hugepages = {1, TST_NEEDS},
-+	.forks_child = 1,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.test_all = run_test,
-+};
--- 
-2.55.0
+The agent can sometimes produce false positives although often its
+findings are genuine. If you find issues with the review, please
+comment this email or ignore the suggestions.
 
+Regards,
+LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
