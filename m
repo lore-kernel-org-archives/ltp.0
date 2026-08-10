@@ -4,99 +4,99 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8B07EC5AD7B
-	for <ltp@archiver.kernel.org>; Mon, 10 Aug 2026 17:32:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 559E8C5B567
+	for <ltp@archiver.kernel.org>; Mon, 10 Aug 2026 17:39:52 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 2FE403D04D2
-	for <ltp@archiver.kernel.org>; Mon, 10 Aug 2026 19:32:27 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id B99473D0474
+	for <ltp@archiver.kernel.org>; Mon, 10 Aug 2026 19:39:50 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D4E483CBF02
- for <ltp@lists.linux.it>; Mon, 10 Aug 2026 19:32:11 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+ by picard.linux.it (Postfix) with ESMTPS id 2889D3CBF46
+ for <ltp@lists.linux.it>; Mon, 10 Aug 2026 19:39:36 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 26ADC2001AF
- for <ltp@lists.linux.it>; Mon, 10 Aug 2026 19:32:11 +0200 (CEST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 948BB1A006B9
+ for <ltp@lists.linux.it>; Mon, 10 Aug 2026 19:39:35 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id B4F503E13;
- Mon, 10 Aug 2026 17:32:01 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 5608980F8A;
+ Mon, 10 Aug 2026 17:39:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1786383125;
+ t=1786383570;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=vcBZzk1oQ1lZR/d0Cww8joNSqdhEyuQW4oN/ivG0D7o=;
- b=grGngs28L4UKQtbWq7HXhQUgo7A+tKfOjFRYen+a726y7uipr5Ld6nj53+QiEEEEyy3unh
- fKZ815WkI6IiUD7RY3WFv5dDcBKRRSINWvvzLCnmj/DKzTmk6cv8fq6gYKSt+7N1Piw0jB
- pL8KrvK+p1uXI2GfvZ4qR6vlwscrPw8=
+ bh=YzzYXj0PcGE/VnonOE7M21V/1agll7kzTNFAaYJ9X3M=;
+ b=AqaTTzFAlPuGh62T4dKX9tZk/VF9UYEanCigDcAJej8HmPRpb5xIE+tX3r9QkTAJD5D8kP
+ eY1OD9xyri6YYHk57IzZSRo68KtCvAQ6pXJyVSTVDouxNL7kEBI8eMDEaU11mw9DFnbokf
+ cjCl4gRr7k/JvLJEw5PwypRu2576AWc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1786383125;
+ s=susede2_ed25519; t=1786383570;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=vcBZzk1oQ1lZR/d0Cww8joNSqdhEyuQW4oN/ivG0D7o=;
- b=vAywPVomOHZbSKGgZMj+B/yX7F0s4ixkjRxgr/pLWDsfJR8L+UJbOt9nsd8Ii/3NBhXU59
- gWbAZZ+4UGB9IRBw==
-Authentication-Results: smtp-out2.suse.de;
+ bh=YzzYXj0PcGE/VnonOE7M21V/1agll7kzTNFAaYJ9X3M=;
+ b=WEZpzcVeALk8vs81jiNMZ35En39p8FnPF+0NTTNrDMLUmrxGZ0mj+BOnAgUjy8U76WnzVL
+ kQiaEp62co7od6DA==
+Authentication-Results: smtp-out1.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1786383121;
+ t=1786383566;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=vcBZzk1oQ1lZR/d0Cww8joNSqdhEyuQW4oN/ivG0D7o=;
- b=nCq8ZHRmEcz5xBsEUCUtmvdn2poMRrf2aUkGFT9cj9CN8X2Cx39zYApPLiBm0KetsB7Wdk
- FnwNhSkoiqAGnG3c+J/ELu0rtc5yEtCq/Ho8L/+JdokHyWCrKWaLtSG5kv/I/lzMG8kPlp
- SI22t/GoNfpwl+jgOuTm6gomlYPa8nY=
+ bh=YzzYXj0PcGE/VnonOE7M21V/1agll7kzTNFAaYJ9X3M=;
+ b=fo0ULzcvNM3tQ19RRabtNhw8MbOmV9NKRFYecVoCH0uhgoXt2G7HbIJuy8F2h0Iqdm+dq5
+ dGD/2Yd1nxJZZvnyaCtKiKHIZxF3NMlOEjXG4ra/AAb+zMeeIV0H+++SolK7U2tG08fqur
+ dF7rj4ZMOFTUDrGW1Q/PjUa6bNIN3Q0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1786383121;
+ s=susede2_ed25519; t=1786383566;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=vcBZzk1oQ1lZR/d0Cww8joNSqdhEyuQW4oN/ivG0D7o=;
- b=7qUZpU1UzyaCkcmWeB2nOcbBIuH33nATfwx+FbdXvdEOtYTjEJeP+mY1OkJExU6loQV02o
- TtyoR6aJs9F5PRDg==
+ bh=YzzYXj0PcGE/VnonOE7M21V/1agll7kzTNFAaYJ9X3M=;
+ b=EO93LFjRCevFWOcXDyT1K9qDYNui3ttU8+CDk1hvJry7jkMEzxtmP/taQOzifDziVv6VIh
+ ecj2MHfPGEYQ3rBA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 39DE6779B6;
- Mon, 10 Aug 2026 17:32:01 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2AB3B779B2;
+ Mon, 10 Aug 2026 17:39:26 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id VI7KCBELempYBAAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Mon, 10 Aug 2026 17:32:01 +0000
-Date: Mon, 10 Aug 2026 19:31:58 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 1ZJiB84MemqvCgAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Mon, 10 Aug 2026 17:39:26 +0000
+Date: Mon, 10 Aug 2026 19:39:20 +0200
 From: Petr Vorel <pvorel@suse.cz>
 To: Andrea Cervesato <andrea.cervesato@suse.de>
-Message-ID: <20260810173158.GD1049677@pevik>
-References: <20260810-shell_oom_protection-v4-1-4dac0dbb0414@suse.com>
+Message-ID: <20260810173920.GE1049677@pevik>
+References: <20260810-sctphantom-v1-0-f8e9ee72a648@suse.com>
+ <20260810-sctphantom-v1-1-f8e9ee72a648@suse.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20260810-shell_oom_protection-v4-1-4dac0dbb0414@suse.com>
-X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+In-Reply-To: <20260810-sctphantom-v1-1-f8e9ee72a648@suse.com>
+X-Spamd-Result: default: False [-3.49 / 50.00]; BAYES_HAM(-3.00)[99.99%];
  NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
  HAS_REPLYTO(0.30)[pvorel@suse.cz];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
- MIME_TRACE(0.00)[0:+]; MISSING_XM_UA(0.00)[];
- RCVD_TLS_ALL(0.00)[];
+ NEURAL_HAM_SHORT(-0.19)[-0.972]; MIME_GOOD(-0.10)[text/plain];
+ RCVD_TLS_ALL(0.00)[]; ARC_NA(0.00)[]; MISSING_XM_UA(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; MIME_TRACE(0.00)[0:+];
+ RCPT_COUNT_TWO(0.00)[2];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; FROM_HAS_DN(0.00)[];
  TO_DN_ALL(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[]; RCPT_COUNT_THREE(0.00)[3];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,tst_test.sh:url,suse.cz:replyto];
- REPLYTO_EQ_FROM(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:replyto,suse.cz:email];
+ RCVD_COUNT_TWO(0.00)[2]; REPLYTO_EQ_FROM(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v4] shell: enable OOM protection by default
+Subject: Re: [LTP] [PATCH 1/2] sctp: add lapi fallback definitions
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -115,176 +115,44 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Andrea,
+Hi: Andrea,
 
-...
-> diff --git a/lib/newlib_tests/shell/tst_oom_protection.sh b/lib/newlib_tests/shell/tst_oom_protection.sh
-> new file mode 100755
-> index 000000000..564680700
-> --- /dev/null
-> +++ b/lib/newlib_tests/shell/tst_oom_protection.sh
-> @@ -0,0 +1,34 @@
-> +#!/bin/sh
-> +# SPDX-License-Identifier: GPL-2.0-or-later
-> +# Copyright (c) 2026 Linux Test Project
-> +
-> +TST_TESTFUNC=do_test
-> +
-> +read_oom_score_adj() {
-> +	cat "/proc/$1/oom_score_adj"
-> +}
-> +
-> +do_test() {
-> +	local harness_score body_score
-> +
-> +	# $$ points to the protected harness, while /proc/self is the
-> +	# unprotected child that actually runs the test body.
-> +	harness_score=$(read_oom_score_adj "$$")
-> +	body_score=$(read_oom_score_adj self)
-> +
-> +	if [ "$harness_score" != -1000 ]; then
-> +		tst_res TCONF "shell harness OOM protection unavailable"
-> +		return
-> +	fi
-> +
-> +	tst_res TPASS "shell harness is protected from OOM by default"
-> +
-> +	if [ "$body_score" = 0 ]; then
-> +		tst_res TPASS "test body runs in an unprotected child (oom_score_adj=0)"
-> +	else
-> +		tst_res TFAIL "test body oom_score_adj is $body_score, expected 0"
-> +	fi
-> +}
-> +
-> +. tst_test.sh
-> +tst_run
-> diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
-> index b3e7e29bb..e42e562f5 100644
-> --- a/testcases/lib/tst_test.sh
-> +++ b/testcases/lib/tst_test.sh
-> @@ -28,6 +28,48 @@ export TST_USR_GID="${LTP_USR_GID:-65534}"
->  trap "tst_brk TBROK 'test interrupted'" INT
->  trap "unset _tst_setup_timer_pid; tst_brk TBROK 'test terminated'" TERM
+> +/* SCTP wire format values, see include/linux/sctp.h in the kernel */
++1 for that comment.
 
-> +_tst_set_oom_score_adj()
-> +{
-> +	local value="$1"
-> +	local path="/proc/self/oom_score_adj"
+> +#ifndef SCTP_CID_INIT
+> +# define SCTP_CID_INIT		1
+> +#endif
 > +
-> +	if [ ! -e "$path" ]; then
-> +		tst_res TINFO "oom_score_adj does not exist, skipping the adjustment"
-> +		return
-> +	fi
+> +#ifndef SCTP_CID_INIT_ACK
+> +# define SCTP_CID_INIT_ACK	2
+> +#endif
 > +
-> +	if ! echo "$value" > "$path"; then
-> +		tst_res TWARN "Can't adjust score"
-> +	fi
-> +}
+> +#ifndef SCTP_CID_ASCONF_ACK
+> +# define SCTP_CID_ASCONF_ACK	0x80
+> +#endif
 > +
-> +_tst_enable_oom_protection()
-> +{
-> +	_tst_set_oom_score_adj -1000
-> +}
+> +#ifndef SCTP_CID_ASCONF
+> +# define SCTP_CID_ASCONF		0xc1
+> +#endif
 > +
-> +_tst_disable_oom_protection()
-> +{
-> +	_tst_set_oom_score_adj 0
-> +}
+> +#ifndef SCTP_PARAM_IPV4_ADDRESS
+> +# define SCTP_PARAM_IPV4_ADDRESS	5
+> +#endif
 > +
-> +_tst_write_results()
-> +{
-> +	[ "$TST_CHILD" = 1 ] || return 0
-Yes, $TST_CHILD is here visible, because it's run from the child...
+> +#ifndef SCTP_PARAM_DEL_IP
+> +# define SCTP_PARAM_DEL_IP	0xc002
+> +#endif
+> +
+> +#ifndef SCTP_PARAM_ERR_CAUSE
+> +# define SCTP_PARAM_ERR_CAUSE	0xc003
+I hope cpu_to_be16(0xc003) is really on all supported archs 0xc003 :).
 
-> +	[ -n "$TST_RESULTS_FILE" ] || return 0
-> +
-> +	echo "$TST_PASS $TST_FAIL $TST_BROK $TST_WARN $TST_CONF $TST_COUNT" \
-> +		> "$TST_RESULTS_FILE"
-> +}
-> +
-> +_tst_read_results()
-> +{
-> +	[ -s "$TST_RESULTS_FILE" ] || return 0
-> +
-> +	read TST_PASS TST_FAIL TST_BROK TST_WARN TST_CONF TST_COUNT \
-> +		< "$TST_RESULTS_FILE"
-> +}
-> +
->  _tst_do_cleanup()
->  {
->  	if [ -n "$TST_DO_CLEANUP" -a -n "$TST_CLEANUP" -a -z "$LTP_NO_CLEANUP" ]; then
-> @@ -48,6 +90,15 @@ _tst_do_exit()
-
->  	_tst_do_cleanup
-
-> +	# When running as the unprotected test child, only propagate the
-> +	# results back to the protected harness which does the teardown and
-> +	# prints the summary.
-> +	if [ "$TST_CHILD" = 1 ]; then
-... but as agent noted $TST_CHILD is not visible here in _tst_do_exit() because
-that's run from parent shell => nack.
-
-> +		_tst_cleanup_timer
-> +		_tst_write_results
-> +		exit 0
-> +	fi
-> +
->  	cd "$LTPROOT"
->  	[ "$TST_MOUNT_FLAG" = 1 ] && tst_umount
-
-> @@ -788,10 +839,34 @@ tst_run()
-
->  	TST_MNTPOINT="${TST_MNTPOINT:-$PWD/mntpoint}"
-
-> -	if [ "$TST_ALL_FILESYSTEMS" = 1 ]; then
-> -		_tst_run_tcases_per_fs
-> -	else
-> -		_tst_run_iterations
-> +	# Protect the harness so it survives memory pressure and can
-> +	# still report results, then run the test body in a child that
-> +	# resets OOM protection. This way workloads forked by the test
-> +	# remain killable, mirroring the C test harness.
-> +	_tst_enable_oom_protection
-> +
-> +	TST_RESULTS_FILE=$(mktemp "${TMPDIR:-/tmp}/ltp_${TST_ID}_res.XXXXXX")
-Hm, writing temporary file directly to TMPDIR is not optimal, but if that was
-the only problem I'd be ok with it.
-
-> +	(
-> +		TST_CHILD=1
-Agent is correct, this is not visible in the parent shell => I doubt it will
-work.
-
-Also this is supposed to fix memcg stress tests, but it touches all shell test
-=> very effective way to broke many tests in single commit with great change to
-get it quickly reverted :).
-
-IMHO we should really rewrite the tests which does not work in tst_test.sh API
-into C API (better) or to the shell loader. Further complicate tst_test.sh is
-a way to hell.
+Anyway, the rest LGTM.
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
 
 Kind regards,
 Petr
-
-> +		_tst_disable_oom_protection
-> +		trap '_tst_cleanup_timer; _tst_write_results' EXIT
-> +
-> +		if [ "$TST_ALL_FILESYSTEMS" = 1 ]; then
-> +			_tst_run_tcases_per_fs
-> +		else
-> +			_tst_run_iterations
-> +		fi
-> +	) &
-> +
-> +	wait $!
-> +	ret=$?
-> +
-> +	_tst_read_results
-> +	rm -f "$TST_RESULTS_FILE"
-> +
-> +	if [ $ret -gt 128 ]; then
-> +		tst_res TBROK "Test killed by signal $((ret - 128))!"
->  	fi
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
