@@ -4,83 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5069DC5AC82
-	for <ltp@archiver.kernel.org>; Mon, 10 Aug 2026 05:28:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 419FBC5AC82
+	for <ltp@archiver.kernel.org>; Mon, 10 Aug 2026 08:30:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1786350634; h=date :
+ in-reply-to : mime-version : references : message-id : to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-type :
+ content-transfer-encoding : sender : from;
+ bh=/y6snLaqrzv1CUC3n2/YWh0BJ6kYM0F7gC7GcB9b8UY=;
+ b=mmvx25sv/8ktbCx0g1FOsKzSjUuCyWWFAYUEplSevLJ8oTuMHTFW66zkeG1EFhj2skYF9
+ bkTJw+Va3zBGPdXp7okIb5gToajB/ijvs07Jg3VMJZQUVqklBWqXCXVHLpQAMT9nXF8yrUY
+ GZguXJkzDrpMUAHuvU33ZfelUvF3z8M=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C59943CD382
-	for <ltp@archiver.kernel.org>; Mon, 10 Aug 2026 07:28:22 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 606E73CE2BE
+	for <ltp@archiver.kernel.org>; Mon, 10 Aug 2026 10:30:34 +0200 (CEST)
 Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 826DD3CC629
- for <ltp@lists.linux.it>; Mon, 10 Aug 2026 07:28:04 +0200 (CEST)
-Received: from mail-pj2-x0a.google.com (mail-pj2-x0a.google.com
- [IPv6:2607:f8b0:4864:39::a])
+ by picard.linux.it (Postfix) with ESMTPS id 196363CD5FB
+ for <ltp@lists.linux.it>; Mon, 10 Aug 2026 10:30:13 +0200 (CEST)
+Received: from mail-pf1-x445.google.com (mail-pf1-x445.google.com
+ [IPv6:2607:f8b0:4864:20::445])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 10A01140019E
- for <ltp@lists.linux.it>; Mon, 10 Aug 2026 07:28:04 +0200 (CEST)
-Received: by mail-pj2-x0a.google.com with SMTP id
- d9443c01a7336-2cf49dc298bso14006375ad.0
- for <ltp@lists.linux.it>; Sun, 09 Aug 2026 22:28:03 -0700 (PDT)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 75D2E1400178
+ for <ltp@lists.linux.it>; Mon, 10 Aug 2026 10:30:13 +0200 (CEST)
+Received: by mail-pf1-x445.google.com with SMTP id
+ d2e1a72fcca58-84e375d9736so2304737b3a.2
+ for <ltp@lists.linux.it>; Mon, 10 Aug 2026 01:30:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1786339682; x=1786944482; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to:content-type;
- bh=J7FRQXUaOzNAV0WiEluN7bGSD38VeElor/e9QciqeN0=;
- b=Mh/U1lOvNHrZv1r5OKMuzs8LX0qJFb3qpxcOIaRsNGPWBe3PJNeX8S9fycaoDrm4Sg
- ovjof0LnGzXp8+NfQZvg3SrHbeblVyZNvKfYLnenAILpbZMpjVYEmMs5b5xYj0RCwEi4
- ktuiNT+YeYKaYejzUzNozrMUL6FLvWiUD+AlO4t2xCBsuQQgqN1I80LotyBEO46UqGcD
- fAOv8xmjPiRGcjKEJsFVjIWxXrWiQl0HnRFVHiUwod/AChUYOuT3e++0YAS/wnJPRUMx
- Zv58l2TkFWomlYYAAgXH5ZPkvDSGySLcOZnUN+lf1xB/b4syQ358bYb0RUTzBBsTLa/x
- KlKg==
+ d=google.com; s=20251104; t=1786350612; x=1786955412; darn=lists.linux.it;
+ h=content-type:cc:to:from:subject:message-id:references:mime-version
+ :in-reply-to:date:from:to:cc:subject:date:message-id:reply-to
+ :content-type; bh=wJQWDfMHmvETtN5XPJWE7wG1FSbO+rJ73edFskNtooE=;
+ b=t62wdgEfDFy+62b/sSqRLm9sJR8Y6eTfQ2R/xgI/bJHVVz9lDuxtT85YwVUG5XQM/c
+ w5NoUTAUWgXRHTkb/PaPFhsC2VenR1ijUP52IfV72iTs7f90PFafROAl0a7j92RuWDPX
+ 2YpAhNKXuxBtTHQ/JysKYU4l27341jSfNuwaP2hjAyFBcZYvzU3uotulmL4nDUzcSF0m
+ MDBIHDJRL4UK5KxvQ7X95sMMyE35xbRoo6fDL1OH4XWyB+CtEL9GFn01+Bl5Q2LL+x0h
+ cEwhD67lef1m0jpWlyElejBJjUEwQoYYxI5qe239Im3UoThmmGKzmvVHQpbS7JSxsYcJ
+ 5QEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1786339682; x=1786944482;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to:content-type;
- bh=J7FRQXUaOzNAV0WiEluN7bGSD38VeElor/e9QciqeN0=;
- b=Dd9v8K6grpn4EXHdi9E+e8OgOBxhpJurh+9eQI+9plj2kHx8nWxXYi3FVjlbfCRXPt
- eRBslnfhTQzrhLAnYjseYZNSGH0/k4GjM51ZlTHMk+4a+WqB1lFZPPr2U/fUDBmGoqWL
- k3ZtbN3Cb4TbmrDRKs5xDN6SYmJ+kE5XGLfyrEjoWKPPn0RkMwfoy340KbfpqS5qYfdi
- AU2t3N6h4qEU1PBt1UUTk3KWARJ7wyF06azvCKQ7xVI7vN6ZwqSppD85p/GnNMRiK2WU
- knnfRKHZsZnCobij0uciDlPGIQddoOGFyLtrWmxQnqIUmejGp8tUpqHT2K+olHsFXduA
- gRSQ==
-X-Gm-Message-State: AOJu0YysUuQao5325K/t5ICpc2+CWEYZZuk+8nqBg8b9Yc4lVqR3+tcd
- 7fzX0u6QkzZNPL3476aIjC4mgjSUo1ubZrufTcZXHjx93DupHhW3qZ9Z
-X-Gm-Gg: AR+sD12fOlioytiA2vEArc1aqAHYUe8h83Vsk4lhbLxjTm6CwqnJtydX/VqdqsCXwvB
- w4yJTruRrH5qIYrl0DP94AndNLwE3i2zq1X481p9vQBZBsOhwyte9CMvP4NnihnGpPMa726k3F2
- GoCv+K/flmcLw8hQr97rFGU+BV2ZBJSHDqmqEWkS0StMMp+WYu8J4FDlsu5FQhqFsCuJMWuWCrQ
- So6Qa1CQYMk+f+gtSt8300zcRu0yAC76mJicmFga4fbqGoPa397msrdyJYw8ZzT+hjpv97q3Seg
- ZHB039xV7Jdy8VMm60SkVKbh3tm8ALdGPD/JuAmxix0Ct20aX7L3JBli4xaRqTRBP7dMhapL1Mi
- GKEwYGSEEEkfPbfOdGHZM7gdIehm9rLMt9DFe6D6c6XZvclEs76ijv2QYJ1kiSnLKSUmEZ1FjSL
- K9XDuhNYtZ7HgD1qdJ49npXCVtkC6k/9HebF9IXHMJmwI0M0r4dbPwnksRgPZ2HRBx8/nb/1Dg9
- SYFvDdginYT3ImDOy+aWzSeKoF0JV5E4hvVhLpHKMQvFBFHF0/fS2f7ADFFUNjSq50KuoMre59k
- IDg/ILTHIiU=
-X-Received: by 2002:a17:902:db05:b0:2ca:6d87:cda0 with SMTP id
- d9443c01a7336-2d294b4b169mr231166105ad.6.1786339682271; 
- Sun, 09 Aug 2026 22:28:02 -0700 (PDT)
-Received: from
- runnervmvrwv9.zp1jdlg1lluuxdof1vfzjm5fwc.dx.internal.cloudapp.net
- ([13.83.160.129]) by smtp.gmail.com with ESMTPSA id
- 5a478bee46e88-315beb87d3bsm40643937eec.14.2026.08.09.22.28.01
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sun, 09 Aug 2026 22:28:01 -0700 (PDT)
-From: linuxtestproject.agent@gmail.com
-To: Wake Liu <wakel@google.com>
-Date: Mon, 10 Aug 2026 05:28:00 +0000
-Message-ID: <20260810052800.4140-1-linuxtestproject.agent@gmail.com>
-X-Mailer: git-send-email 2.54.0
+ d=1e100.net; s=20251104; t=1786350612; x=1786955412;
+ h=content-type:cc:to:from:subject:message-id:references:mime-version
+ :in-reply-to:date:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to:content-type;
+ bh=wJQWDfMHmvETtN5XPJWE7wG1FSbO+rJ73edFskNtooE=;
+ b=qolnosyNFnbfi1dPc46k3okojxXDPp13y+cjzLhGJ4pLef3dQjXuqNsJzUunk6gYXG
+ qfpS4bNtKuOrxqPx+qCRm2IwmELL+GtBSzA3f+9CPRvYWhZ/DBd0KT0OTa03fxi8RXNp
+ OBdBz2GWaj5SVDl189nIeKYPlhBe97QFuqy4QKfma575zdFnz/b6ZBmzl8/15cDOtjk+
+ SMKNbBt7NZNNOsNLM3XC/BVWPrQwDcPFsFWdTj84I9mvH84GCabkOxGLZrfIPSxwV2vY
+ tte3avRi6+gOnMOZcz7zqDLCX2ov9ZSSdJSrkl6tVsdNwKcpBmLrRx1pwDJ36tQY3vfa
+ QZZw==
+X-Gm-Message-State: AOJu0YyQMa+WEbZTRF6nsOQXKP9cbjV2aWwP3OJv/MDts5iJgVFjcich
+ ax4D8Fxec7Kpb7QtEJe+jQEeTt9oVPFhlk7Byxtn6kRKc4sbv0p0yjku7pFFiu2rD9gaagU/jom
+ rCHMmKoq3tqthczlOxbCQMfb1QWeMqKDD4GhMKC2/b2SyN2nj6iSoO9aNW6W/rqHkQFwZMW5b0s
+ 0Ut8snqyXYtJ2C+eq37gevI30WeA==
+X-Received: from pfbil10.prod.google.com ([2002:a05:6a00:8d4a:b0:84b:9a60:c9])
+ (user=wakel job=prod-delivery.src-stubby-dispatcher) by
+ 2002:a05:6a00:bd0e:b0:847:8b0f:2508
+ with SMTP id d2e1a72fcca58-84f2dfc8c37mr48255821b3a.13.1786350611377; Mon, 10
+ Aug 2026 01:30:11 -0700 (PDT)
+Date: Mon, 10 Aug 2026 08:30:09 +0000
 In-Reply-To: <20260810041738.1714971-1-wakel@google.com>
+Mime-Version: 1.0
 References: <20260810041738.1714971-1-wakel@google.com>
-MIME-Version: 1.0
+X-Mailer: git-send-email 2.55.0.654.g21b8a5bc05-goog
+Message-ID: <20260810083009.1846957-1-wakel@google.com>
+To: ltp@lists.linux.it
 X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] controllers/cpuacct: Dynamically adjust cpuacct_task
+Subject: [LTP] [PATCH] controllers/cpuacct: Dynamically adjust cpuacct_task
  execution time
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
@@ -93,37 +90,123 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+From: Wake Liu via ltp <ltp@lists.linux.it>
+Reply-To: Wake Liu <wakel@google.com>
+Cc: Wake Liu <wakel@google.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Wake,
+The test helper cpuacct_task currently runs for 10ms (virtual time)
+before exiting. On some systems (e.g. fast virtual machines or under
+heavy load), this short duration can lead to 0 usage being recorded in
+cpuacct.usage cgroup file due to timing resolution or scheduling delay,
+especially when running small configurations like cpuacct_1_1.
 
-On Mon, 10 Aug 2026, Wake Liu wrote:
-> controllers/cpuacct: Dynamically adjust cpuacct_task execution time
+However, unconditionally increasing the duration for all runs (e.g. to
+100ms) would cause large stress tests like cpuacct_100_100 (which runs
+10,000 tasks) to timeout on systems with few CPUs.
 
-> +	local duration=$((100000 / nbprocess))
+Resolve this by:
+1. Modifying cpuacct_task to accept an optional duration argument.
+2. Modifying cpuacct.sh to calculate the duration dynamically based on
+   nbprocess, ensuring each subgroup gets at least 100ms of aggregate
+   CPU time, while clamping the per-process duration to a minimum of
+   10ms to avoid timeouts in large stress tests.
+3. Validating nsubgroup and nprocess arguments in cpuacct.sh setup() to
+   ensure they are positive integers, avoiding division by zero or fatal
+   arithmetic errors in shell.
 
-Could nbprocess be validated as a positive integer at the start of setup()?
-It comes directly from the second command-line argument, while TST_POS_ARGS
-checks only the argument count. With `cpuacct.sh 1 0` (or nonnumeric input),
-dash treats the arithmetic error as fatal, so execution bypasses
-_tst_do_cleanup() after setup has created and possibly mounted the cgroup
-hierarchy, leaving those resources behind.
-
-Verdict - Needs revision
-
+Signed-off-by: Wake Liu <wakel@google.com>
 ---
-Note:
+ .../kernel/controllers/cpuacct/cpuacct.sh     | 17 +++++++++++++++-
+ .../kernel/controllers/cpuacct/cpuacct_task.c | 20 ++++++++++++++++---
+ 2 files changed, 33 insertions(+), 4 deletions(-)
 
-The agent can sometimes produce false positives although often its
-findings are genuine. If you find issues with the review, please
-comment this email or ignore the suggestions.
+diff --git a/testcases/kernel/controllers/cpuacct/cpuacct.sh b/testcases/kernel/controllers/cpuacct/cpuacct.sh
+index 97a395cd5..deb103a30 100755
+--- a/testcases/kernel/controllers/cpuacct/cpuacct.sh
++++ b/testcases/kernel/controllers/cpuacct/cpuacct.sh
+@@ -84,6 +84,16 @@ check_limits()
+ 
+ setup()
+ {
++	case "$max" in
++		""|*[!0-9]*) tst_brk TBROK "nsubgroup must be a positive integer" ;;
++		*) [ "$max" -gt 0 ] || tst_brk TBROK "nsubgroup must be a positive integer" ;;
++	esac
++
++	case "$nbprocess" in
++		""|*[!0-9]*) tst_brk TBROK "nprocess must be a positive integer" ;;
++		*) [ "$nbprocess" -gt 0 ] || tst_brk TBROK "nprocess must be a positive integer" ;;
++	esac
++
+ 	if ! grep -q -w cpuacct /proc/cgroups; then
+ 		tst_brk TCONF "cpuacct not supported on this system"
+ 	fi
+@@ -139,10 +149,15 @@ do_test()
+ {
+ 	tst_res TINFO "Creating $max subgroups each with $nbprocess processes"
+ 
++	local duration=$((100000 / nbprocess))
++	if [ "$duration" -lt 10000 ]; then
++		duration=10000
++	fi
++
+ 	# create and attach process to subgroups
+ 	for i in `seq 1 $max`; do
+ 		for j in `seq 1 $nbprocess`; do
+-			cpuacct_task $testpath/subgroup_$i/tasks &
++			cpuacct_task "$testpath/subgroup_$i/tasks" "$duration" &
+ 			echo $! >> task_pids
+ 		done
+ 	done
+diff --git a/testcases/kernel/controllers/cpuacct/cpuacct_task.c b/testcases/kernel/controllers/cpuacct/cpuacct_task.c
+index 677d6d401..caeecf064 100644
+--- a/testcases/kernel/controllers/cpuacct/cpuacct_task.c
++++ b/testcases/kernel/controllers/cpuacct/cpuacct_task.c
+@@ -38,12 +38,21 @@ int main(int argc, char **argv)
+ {
+ 	FILE *f;
+ 	struct sigaction sa;
++	int duration_us = 10000;
+ 
+-	if (argc != 2) {
+-		fprintf(stderr, "Usage: %s /cgroup/.../tasks\n", argv[0]);
++	if (argc < 2 || argc > 3) {
++		fprintf(stderr, "Usage: %s /cgroup/.../tasks [duration_us]\n", argv[0]);
+ 		return 1;
+ 	}
+ 
++	if (argc == 3) {
++		duration_us = atoi(argv[2]);
++		if (duration_us <= 0) {
++			fprintf(stderr, "Invalid duration: %s\n", argv[2]);
++			return 1;
++		}
++	}
++
+ 	f = fopen(argv[1], "a");
+ 	if (!f) {
+ 		perror("fopen failed");
+@@ -62,7 +71,12 @@ int main(int argc, char **argv)
+ 		return 1;
+ 	}
+ 
+-	struct itimerval it = {.it_value = {.tv_sec = 0, .tv_usec = 10000}};
++	struct itimerval it = {
++		.it_value = {
++			.tv_sec = duration_us / 1000000,
++			.tv_usec = duration_us % 1000000
++		}
++	};
+ 
+ 	setitimer(ITIMER_VIRTUAL, &it, NULL);
+ 	for (;;);
+-- 
+2.55.0.654.g21b8a5bc05-goog
 
-Regards,
-LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
