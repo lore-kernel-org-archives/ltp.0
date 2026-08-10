@@ -4,101 +4,112 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1BFFDC5AD7B
-	for <ltp@archiver.kernel.org>; Mon, 10 Aug 2026 17:03:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 85EFBC5B56A
+	for <ltp@archiver.kernel.org>; Mon, 10 Aug 2026 17:15:04 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 690DD3D066D
-	for <ltp@archiver.kernel.org>; Mon, 10 Aug 2026 19:03:40 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id A727A3D046F
+	for <ltp@archiver.kernel.org>; Mon, 10 Aug 2026 19:15:02 +0200 (CEST)
 Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D55F03CF68D
- for <ltp@lists.linux.it>; Mon, 10 Aug 2026 19:03:23 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ by picard.linux.it (Postfix) with ESMTPS id 6DB9A3CC174
+ for <ltp@lists.linux.it>; Mon, 10 Aug 2026 19:14:45 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 22CC2600673
- for <ltp@lists.linux.it>; Mon, 10 Aug 2026 19:03:22 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id B726F6002C6
+ for <ltp@lists.linux.it>; Mon, 10 Aug 2026 19:14:44 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 2C22980DE2;
- Mon, 10 Aug 2026 17:03:14 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 3C36380F0A;
+ Mon, 10 Aug 2026 17:14:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1786381398;
+ t=1786382079;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=HP9xtQC5UDG4tH59N52j/DEDAPg6V9ei1SXdwp5vAHs=;
- b=3SXaQ49MgNNsCDfYRHBBJjzK8ieDOQG6G0VtOzRcPB9aNa32+nVLyukbECjseWJhk4rcYj
- lxk13698aofaTqH0naZuei4BPiER6Ug0WcZx7X1V/GLcOGKUkoYXenaek5YV1PkebNlnnF
- zVzNN4sy3CqXF7yzNevK/e7Pn4lD8S4=
+ bh=gyljK6+28ca+nNLJjvuOx2hseC/0VvRxSxV892v/9jE=;
+ b=IILO9Nl18myMKcKD2h1V3qeMtIPkXGRNtQOFDmsNNXaYlI8R/zzU6ImjE/G96zAOeCzEFi
+ 9CIBnrQYTqwCGPr7JziTBsXWRG4K68PXyAuGedyCEPz4KLrIFV+6h11d4qAOeUB+9RlNpg
+ QAP+j/eCeQ/hWrj/fo0vNkeXaiIjCuw=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1786381398;
+ s=susede2_ed25519; t=1786382079;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=HP9xtQC5UDG4tH59N52j/DEDAPg6V9ei1SXdwp5vAHs=;
- b=pWaYCZvskP8uH7N4pO+3ekO3C4ba8l4e5GALsMg0QR/77tLecrugnY/g4z7xFbU0CqaMHT
- u2O2Oo+vYwi404AQ==
+ bh=gyljK6+28ca+nNLJjvuOx2hseC/0VvRxSxV892v/9jE=;
+ b=yrtsilpomNnwpNsgtlHNRXzjQjWR35LI6EWKTQZAbOc6YYE0PCERu8x96s0mjBP2fCQJua
+ NUeBwUGJHwuekfAA==
 Authentication-Results: smtp-out1.suse.de;
-	none
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=gq1M3uZS;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=H2ZNPJK6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1786381394;
+ t=1786382075;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=HP9xtQC5UDG4tH59N52j/DEDAPg6V9ei1SXdwp5vAHs=;
- b=sYBzKxntTHq7/OJrg2pCHNTPTUgSjB1KVjVARrTqFVJwiFcW7kr/e5JNFiOkQbF1a4ND0S
- azi/Cn0w/T9q0Q5jiXK9YEeOmYyJj+g0q9sNSA2BTfvkKjJ2g6dCgRJpn11YmFtJvuXPn+
- pb4ism6cPSebbmbboNFpCd/RGpyVBy4=
+ bh=gyljK6+28ca+nNLJjvuOx2hseC/0VvRxSxV892v/9jE=;
+ b=gq1M3uZS4Op583GhY4dpDzE3Ms1d4IPbuUIlXur+1bjYm6wBW8av7XbHS84ngxUHaW2eKK
+ duwTCWCSo9EKmo7FuFiVyD8uFWTaGvVMXpENQ353IxbGTNw3kNwK57znVcRdm+T3JSrOm/
+ luutB3wQlj+9sJQ6PRjBH2/Wq+VwEwM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1786381394;
+ s=susede2_ed25519; t=1786382075;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=HP9xtQC5UDG4tH59N52j/DEDAPg6V9ei1SXdwp5vAHs=;
- b=rio5Cbns0WB1/GdQ1PnTRqy1+5rDxeuKif8/XQ4noMb6qliLpfKkj2H8cy7qCJ1SwF+ZN8
- TDsRtAVnNMRXjABQ==
+ bh=gyljK6+28ca+nNLJjvuOx2hseC/0VvRxSxV892v/9jE=;
+ b=H2ZNPJK6sxJPnZA+xv4A0WM1ZvzarBI5LxR0yE2yByakBFJdMuxV04ScJFuyUBpGZ8WINi
+ ymq7Gx+BbHqx8FCQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0E76F779B2;
- Mon, 10 Aug 2026 17:03:14 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 13338779B2;
+ Mon, 10 Aug 2026 17:14:35 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id HgCRAlIEemouaAAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Mon, 10 Aug 2026 17:03:14 +0000
-Date: Mon, 10 Aug 2026 19:03:12 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id Ll80A/sGemp5cgAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Mon, 10 Aug 2026 17:14:35 +0000
+Date: Mon, 10 Aug 2026 19:14:29 +0200
 From: Petr Vorel <pvorel@suse.cz>
 To: linuxtestproject.agent@gmail.com
-Message-ID: <20260810170312.GB1049677@pevik>
-References: <20260810160048.1040517-2-pvorel@suse.cz>
- <20260810165728.3981-1-linuxtestproject.agent@gmail.com>
+Message-ID: <20260810171429.GC1049677@pevik>
+References: <20260810-shell_oom_protection-v4-1-4dac0dbb0414@suse.com>
+ <20260810131014.85243-1-linuxtestproject.agent@gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20260810165728.3981-1-linuxtestproject.agent@gmail.com>
-X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+In-Reply-To: <20260810131014.85243-1-linuxtestproject.agent@gmail.com>
+X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
  HAS_REPLYTO(0.30)[pvorel@suse.cz];
- NEURAL_HAM_SHORT(-0.20)[-0.996]; MIME_GOOD(-0.10)[text/plain];
- FREEMAIL_TO(0.00)[gmail.com]; TAGGED_RCPT(0.00)[];
- ARC_NA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- MIME_TRACE(0.00)[0:+]; MISSING_XM_UA(0.00)[];
- FREEMAIL_ENVRCPT(0.00)[gmail.com]; RCPT_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,imap1.dmz-prg2.suse.org:helo]; 
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ TO_DN_SOME(0.00)[];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ FREEMAIL_TO(0.00)[gmail.com]; MIME_TRACE(0.00)[0:+];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RCVD_TLS_ALL(0.00)[]; TO_DN_NONE(0.00)[];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ ARC_NA(0.00)[]; FREEMAIL_ENVRCPT(0.00)[gmail.com];
+ DKIM_TRACE(0.00)[suse.cz:+]; RCPT_COUNT_THREE(0.00)[3];
+ RCVD_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
+ FROM_HAS_DN(0.00)[]; RCVD_TLS_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.cz:replyto,suse.cz:dkim];
+ TAGGED_RCPT(0.00)[];
+ DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ MISSING_XM_UA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
  REPLYTO_EQ_FROM(0.00)[]
+X-Rspamd-Queue-Id: 3C36380F0A
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
 X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] tst_kvercmp: Factor out error handling
+Subject: Re: [LTP] shell: enable OOM protection by default
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -117,65 +128,60 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi all,
+Hi Andrea,
 
-> Hi Petr,
+> Hi Andrea,
 
-> On Mon, Aug 10, 2026, Petr Vorel wrote:
-> > [PATCH 1/7] tst_kvercmp: Factor out error handling
+> On Aug 10, 2026, Andrea Cervesato wrote:
+> > shell: enable OOM protection by default
 
-> --- [PATCH 2/7] ---
+> > +	if ! echo "$value" > "$path"; then
+> > +		tst_res TWARN "Can't adjust score"
+> > +	fi
 
-> > This is a preparation for struct tst_test max_kver member in the next
-> > commit.
+> Could this avoid reporting TWARN when CAP_SYS_RESOURCE is absent, as
+> tst_memutils.c does? Lowering oom_score_adj requires that capability, so
+> every unprivileged shell test now gets a warning result. The new self-test
+> itself reports TCONF but exits 36 because this TWARN remains counted.
 
-> Could this avoid referring to the next patch so that the commit message is
-> self-contained? For example, it could say that the rename makes room for a
-> corresponding maximum kernel-version check.
+Ah, this really needs to be guarded behind  if [ "$(id -ru)" != 0 ]; then 
 
-I would not really bother with it.
+If you're in a mood for it, you could factor out [ "$(id -ru)" != 0 ] check into
+it's own function tst_check_root or tst_is_root which would be then used in
+tst_require_root and in this function.
 
-> --- [PATCH 3/7] ---
+I repeat my suggestion from last revision: add a helper into testcases/lib which
+will just call C function. That way the behavior will be the same (use
+capabilities). That would be more clearer solution.
 
-> > NOTE: Mainline release is sufficient on any stable release (test with
-> > .min_kver = "7.1" runs also on kernel 7.1.5). Stable releases are
-> > compared as expected.
+Kind regards,
+Petr
 
-> Should this say ".max_kver" instead? This paragraph documents the new maximum
-> version semantics, and the corresponding header uses max_kver.
+> > +	(
+> > +		TST_CHILD=1
+> > +		_tst_disable_oom_protection
+> > +		trap '_tst_cleanup_timer; _tst_write_results' EXIT
+> > +
+> > +		if [ "$TST_ALL_FILESYSTEMS" = 1 ]; then
+> > +			_tst_run_tcases_per_fs
+> > +		else
+> > +			_tst_run_iterations
+> > +		fi
+> > +	) &
+> > +
+> > +	wait $!
+> > +	ret=$?
 
-Yes, I need to amend the commit message before merging.
+> How can the protected parent perform cleanup if this child is OOM-killed
+> or times out? TST_DO_CLEANUP and TST_MOUNT_FLAG are set only in the
+> subshell. On an abnormal child exit, the parent therefore reports TBROK
+> without calling TST_CLEANUP or unmounting a device mounted by
+> _prepare_device(), leaving external test state behind.
 
-> --- [PATCH 6/7] ---
+Sounds serious :). I'll comment on the patch itself.
 
-> > static struct tst_test test = {
-> > 	.setup = do_setup,
-> > +	.max_kver = "7.1",
-> > 	.test = do_test,
-
-> Could the changed PIDFD/TID expectation be handled without skipping the whole
-> test on 7.2? The second case,
-> FAN_REPORT_PIDFD | FAN_REPORT_FID | FAN_REPORT_DFID_NAME, is still a valid
-> success case in the 7.2 fanotify_init() implementation, and no other LTP test
-> uses that exact combination. The newly supported PIDFD/TID combination is not
-> exercised elsewhere either.
-
-No, kernel maintainers are ok with it as changing the test would be a bit complicated
-(and I've been mentioning this on every version).
-
-> --- [PATCH 7/7] ---
-
-> > + * Basic test to test that .min_kver and .max_kver can be used together.
-> > + * Test should TCONF or TPASS.
-
-> Could this test use bounds that make TPASS deterministic? runtest.sh accepts
-> both TPASS and TCONF, so a regression that always rejects tests whenever both
-> fields are set still leaves this self-test green. On kernels newer than 7.2,
-> the callback is not exercised at all.
-
-Well, last time I had old version and it asked for 7.2. Anyway, this was exactly
-the reason why I had 5.0 last time. I can change to whatever version somebody
-suggests, maybe going back to 5.0 would be good.
+Kind regards,
+Petr
 
 > Verdict - Needs revision
 
