@@ -4,82 +4,101 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CCE84C5AD55
-	for <ltp@archiver.kernel.org>; Mon, 10 Aug 2026 13:10:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D1526C5AE49
+	for <ltp@archiver.kernel.org>; Mon, 10 Aug 2026 14:34:16 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 08D5E3CF918
-	for <ltp@archiver.kernel.org>; Mon, 10 Aug 2026 15:10:34 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id C64C23D02EF
+	for <ltp@archiver.kernel.org>; Mon, 10 Aug 2026 16:34:14 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C8B6B3CEF0D
- for <ltp@lists.linux.it>; Mon, 10 Aug 2026 15:10:17 +0200 (CEST)
-Received: from mail-qk2-x08.google.com (mail-qk2-x08.google.com
- [IPv6:2607:f8b0:4864:34::8])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 51B673CB306
+ for <ltp@lists.linux.it>; Mon, 10 Aug 2026 16:33:58 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 879A014004EB
- for <ltp@lists.linux.it>; Mon, 10 Aug 2026 15:10:17 +0200 (CEST)
-Received: by mail-qk2-x08.google.com with SMTP id
- af79cd13be357-9349a22b22fso34308385a.1
- for <ltp@lists.linux.it>; Mon, 10 Aug 2026 06:10:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1786367416; x=1786972216; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to:content-type;
- bh=QBSkHyoGoIl/dgffvtuXY0oSR1lmn84vsvlU214oCbk=;
- b=OGM9ShPyiDeXo/TLppyhO6nNKJlHj/U16+kxh6Bbg3R0TEEeDI4AxZY1iH5QvuDS5t
- 0j+NV7kIK/g/cBpjqY8vONP+hlMELwAnvg3rhbtagcDPxyZmgZxuB/oBOExIGYo2QRqY
- chQpOnz/rTFKw09vctx8XanpIvgwHzKTetsGIGIZbuv0YM7M8nHhRF6DkjkVXk5gi9d5
- mvxewSCwT0MzQE3LUpgLug1or4vVudtQBc9FPM52GCObqzM4JGWpAQNtUnGRk6DLpIlA
- Fa1WLlf+b1YgOvv7QJWh+OUunfRnPP/bgvkyQE+9S1/LNnZSoP0R+IK9pyRyMIkxzpMG
- UiHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1786367416; x=1786972216;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to:content-type;
- bh=QBSkHyoGoIl/dgffvtuXY0oSR1lmn84vsvlU214oCbk=;
- b=G2FU2IRb3ApGKVst2Y33fm3Z6Wq2U4nr0HVPzwnGxzgwW4IZ8kt4QZB/eVGfuWtuMN
- TD4G1TKFqAMP/8mo38yefoNKgH0JD8AybJnn8JvC1VODq1MAwQgaFgVkRNxQZk3KrJw+
- Cwb9ugSYS4+nGSmj100HbJLMSvQsMrTPKHmmnZnKp6UkfdzP5K/ldcYs9w61x3KwUKU5
- os8FFzIk0xkAVhD0wSvSlGQQzOHhrTNxWb3pDFpXy4cAaKT4ncrueogfwXTufoZAkMsW
- 3L+4bWSojI8/MeWwXnLTDOgrEP2lMDxtjnZAFOiJCMglSZnMETzZW8i+78GNqVsLn1ZD
- 9nGg==
-X-Gm-Message-State: AOJu0YzSRyUj+J5BV9n/G9LKLh4IapKNMEMCLmakhnhLfdVODdyFICC7
- h5BCAMi0byudAmL0nyx9HlDd2krVuC8VQjPFKho0J/ggkCg7T54invXW
-X-Gm-Gg: AR+sD13Zfjiy3PdzWDHLISHosfkoIq18MiNlVcGxe9kGYWGOYZ/IYg9m96AFZY8y7Hb
- QBSwyirmpVbwIXf8UWRaeoM3Jib/lvBXEDYz1451/GXrLheke4lJslqmCRFQgK3kAUURKHJ05y1
- 1SMo8X6d9kd0liwt6J8lQSBDy1f5vFLmIHo73XkyoJ1SGpgTz+fpbZac16VxC9Uxkm+oOHRqslh
- 5qxMchc/YCIqfJQoWB/bYbEh81t5919bTV63L1va33+dJV5n9zUBmze0NOaiSAi7qcJL+I9nHVC
- uoq8qo+UjpITP9/1F3bYshhfUKXcdZimot0MNql7c+vHdmru2jtmTmzBixDAhNkBSjxOup+omPF
- 0TCmwr1AB0QLm1vfdA+qwmrmwUTDPLpCldQ7CWdgqEcc77mDYZJtXre5i1XFa9CqPXUWPW33fNp
- cfF9FGWwGF1Hc9n1hpnyC1r4cc2W0WUuORHwzuuNlDjTqnbpJiPXsQSzbdPUg+9We3ahbn8eyi5
- lKwnEHryfzSSZyrqVgW8YMaDy4XLbpohJu7wVD/7svvAwREzyN9fTM6Ygr8jTeTEcsnskqk+rBW
- N64=
-X-Received: by 2002:a05:622a:406:b0:528:38b1:b547 with SMTP id
- d75a77b69052e-52ce5f63df0mr433070151cf.8.1786367415791; 
- Mon, 10 Aug 2026 06:10:15 -0700 (PDT)
-Received: from
- runnervmvrwv9.o5uvs2yvdcze3ixmawegsz4hpa.bx.internal.cloudapp.net
- ([172.172.205.208]) by smtp.gmail.com with ESMTPSA id
- af79cd13be357-9366e03230esm782156285a.5.2026.08.10.06.10.15
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 10 Aug 2026 06:10:15 -0700 (PDT)
-From: linuxtestproject.agent@gmail.com
-To: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Mon, 10 Aug 2026 13:10:14 +0000
-Message-ID: <20260810131014.85243-1-linuxtestproject.agent@gmail.com>
-X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260810-shell_oom_protection-v4-1-4dac0dbb0414@suse.com>
-References: <20260810-shell_oom_protection-v4-1-4dac0dbb0414@suse.com>
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id C116C600764
+ for <ltp@lists.linux.it>; Mon, 10 Aug 2026 16:33:56 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id EB8403DFC;
+ Mon, 10 Aug 2026 14:33:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1786372432; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=BDoV+SMp3tKCclaxMYvq+RY1yRCHqIwpW0CrAVCRaCI=;
+ b=FIiBpzBGRtFqufZK5RWmMBtQ+g+Bw5CtVEdnJmFog+Qh76mqEg23XRQTFStOKdezM7a1XC
+ x0kKrXaDCshYq/tjUmtZ3WFhGqi4ZlDBG1k7+2pMOuttUfoQgW8sPFdg73fkWogY8qCG2D
+ 3y2q4QDnB7jOFYz1qs9gIYGp6+5gyo0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1786372432;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=BDoV+SMp3tKCclaxMYvq+RY1yRCHqIwpW0CrAVCRaCI=;
+ b=vyXVRKb0agcnDrULSyUHBqry4ChDhN8GOZLniPVLublj7v8AMr70FTbcI3nqU2OjvUxkPx
+ 96N7J122Wc0qS2BA==
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=fYP9QiZ0;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=16uqDyfs
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1786372427; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=BDoV+SMp3tKCclaxMYvq+RY1yRCHqIwpW0CrAVCRaCI=;
+ b=fYP9QiZ0F/tch+PyG5mIaFYpAtGUiLt8aFQOdFjgNmYU8ITWE7trD2Zu6EdjP8x5IeYhIF
+ u0/R8OJkPJ1LLO5HLZ+BiSBCR8p+O449iUB33VQMhAxzyLOM1ZjxHBzmsRVlt92nmDhQQG
+ NAa0axcRbjDla8sajIZs+x+umd++S8c=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1786372427;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=BDoV+SMp3tKCclaxMYvq+RY1yRCHqIwpW0CrAVCRaCI=;
+ b=16uqDyfshy1dIjR2SWJV0Rn9aEEcWNvDCDyj2tAOaWg2jz9Lnz3LV+VqsIdsgQjKULoqz+
+ PFgn5WPbFMysWrDg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C2494779B6;
+ Mon, 10 Aug 2026 14:33:47 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id UimSLUvheWrNVwAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Mon, 10 Aug 2026 14:33:47 +0000
+From: Petr Vorel <pvorel@suse.cz>
+To: ltp@lists.linux.it
+Date: Mon, 10 Aug 2026 16:33:43 +0200
+Message-ID: <20260810143344.1029588-1-pvorel@suse.cz>
+X-Mailer: git-send-email 2.55.0
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: EB8403DFC
+X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_MISSING_CHARSET(0.50)[];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ RCVD_TLS_ALL(0.00)[]; DKIM_TRACE(0.00)[suse.cz:+];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ TO_DN_SOME(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ RCVD_VIA_SMTP_AUTH(0.00)[];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ RCPT_COUNT_THREE(0.00)[4];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:mid, suse.cz:email, suse.cz:dkim,
+ imap1.dmz-prg2.suse.org:helo, imap1.dmz-prg2.suse.org:rdns]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] shell: enable OOM protection by default
+Subject: [LTP] [PATCH v2 1/2] ima_setup.sh: Fix check_policy_writable() for
+ kernel < 4.5
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,58 +110,96 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+Cc: linux-integrity@vger.kernel.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Andrea,
+Writing into policy via echo on kernel < 4.5 effectively makes policy
+not writable (no point to check if the policy is writable). Therefore
+skip this extra check in check_policy_writable() on these old kernels.
 
-On Aug 10, 2026, Andrea Cervesato wrote:
-> shell: enable OOM protection by default
+This change improves IMA testing on kernel < 4.5:
 
-> +	if ! echo "$value" > "$path"; then
-> +		tst_res TWARN "Can't adjust score"
-> +	fi
+1) Allows to run ima_policy.sh which was previously skipped:
 
-Could this avoid reporting TWARN when CAP_SYS_RESOURCE is absent, as
-tst_memutils.c does? Lowering oom_score_adj requires that capability, so
-every unprivileged shell test now gets a warning result. The new self-test
-itself reports TCONF but exits 36 because this TWARN remains counted.
+    ima_policy 1 TINFO: verify that invalid policy isn't loaded
+    ima_policy 1 TCONF: IMA policy already loaded and kernel not configured to enable multiple writes to it (need CONFIG_IMA_WRITE_POLICY=y)
 
-> +	(
-> +		TST_CHILD=1
-> +		_tst_disable_oom_protection
-> +		trap '_tst_cleanup_timer; _tst_write_results' EXIT
-> +
-> +		if [ "$TST_ALL_FILESYSTEMS" = 1 ]; then
-> +			_tst_run_tcases_per_fs
-> +		else
-> +			_tst_run_iterations
-> +		fi
-> +	) &
-> +
-> +	wait $!
-> +	ret=$?
+2) Fixes failing ima_violations.sh, which was failing due policy was not
+   writable:
 
-How can the protected parent perform cleanup if this child is OOM-killed
-or times out? TST_DO_CLEANUP and TST_MOUNT_FLAG are set only in the
-subshell. On an abnormal child exit, the parent therefore reports TBROK
-without calling TST_CLEANUP or unmounting a device mounted by
-_prepare_device(), leaving external test state behind.
+    ima_violations 1 TINFO: Tested kernel: Linux susetest 4.4.140
+    ima_violations 1 TINFO: booted with IMA policy: tcb
+    ima_violations 1 TINFO: using log /var/log/audit/audit.log
+    ima_violations 1 TINFO: verify open writers violation
+    ima_violations 1 TFAIL: open_writers violation not added
+    ima_violations 2 TINFO: verify ToMToU violation
+    ima_violations 2 TFAIL: ToMToU violation not added
+    ima_violations 3 TINFO: verify open_writers using mmapped files
+    tst_kconfig.c:90: TINFO: Parsing kernel config '/proc/config.gz'
+    tst_kconfig.c:90: TINFO: Parsing kernel config '/proc/config.gz'
+    tst_kconfig.c:755: TINFO: CONFIG_FAULT_INJECTION kernel option detected which might slow the execution
+    tst_kconfig.c:755: TINFO: CONFIG_FAULT_INJECTION kernel option detected which might slow the execution
+    tst_kconfig.c:90: TINFO: Parsing kernel config '/proc/config.gz'
+    tst_kconfig.c:755: TINFO: CONFIG_FAULT_INJECTION kernel option detected which might slow the execution
+    ima_mmap.c:33: TPASS: test completed
+    ima_violations 3 TFAIL: open_writers violation not added
 
-Verdict - Needs revision
+3) Fixes failing ima_conditionals.sh -r uid and ima_conditionals.sh -r fowner
 
+    ima_conditionals 1 TINFO: request 'uid'
+    tst_security.c:115: TINFO: SecureBoot sysfs file not available
+    ima_conditionals 1 TINFO: verify measuring user files when requested via uid
+    tst_rod: Failed to open '/sys/kernel/security/ima/policy' for writing: Permission denied
+    ima_conditionals 1 TBROK: echo measure uid=65534 > /sys/kernel/security/ima/policy failed
+
+    ima_conditionals 1 TINFO: request 'fowner'
+    tst_security.c:115: TINFO: SecureBoot sysfs file not available
+    ima_conditionals 1 TINFO: verify measuring user files when requested via fowner
+    tst_rod: Failed to open '/sys/kernel/security/ima/policy' for writing: Permission denied
+    ima_conditionals 1 TBROK: echo measure fowner=65534 > /sys/kernel/security/ima/policy failed
+
+Fixes: cd96265e65 ("ima/ima_policy.sh: Improve check of policy writability")
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
-Note:
+The same in v1.
 
-The agent can sometimes produce false positives although often its
-findings are genuine. If you find issues with the review, please
-comment this email or ignore the suggestions.
+@Mimi I appreciate your RBT or ABT.
 
-Regards,
-LTP AI Reviewer
+Link to v1:
+https://lore.kernel.org/ltp/20260728114224.1055009-1-pvorel@suse.cz/T/#t
+
+ .../kernel/security/integrity/ima/tests/ima_setup.sh  | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
+
+diff --git a/testcases/kernel/security/integrity/ima/tests/ima_setup.sh b/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
+index b69d7c31d9..19f00532b1 100644
+--- a/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
++++ b/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
+@@ -95,10 +95,15 @@ require_policy_readable()
+ check_policy_writable()
+ {
+ 	[ -f $IMA_POLICY ] || return 1
+-	# workaround for kernels < v4.18 without fix
++
++	# Workaround for kernels < v4.18 without fix
+ 	# ffb122de9a60b ("ima: Reflect correct permissions for policy")
+-	echo "" 2> log > $IMA_POLICY
+-	grep -q "Device or resource busy" log && return 1
++	# Require >= 4.5 to write multiple times via CONFIG_IMA_WRITE_POLICY
++	# 38d859f991f3 ("IMA: policy can now be updated multiple times")
++	if tst_kvcmp -ge 4.5; then
++		echo "" 2> log > $IMA_POLICY
++		grep -q "Device or resource busy" log && return 1
++	fi
+ 	return 0
+ }
+ 
+-- 
+2.55.0
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
