@@ -4,109 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0A1E0C5AD7B
-	for <ltp@archiver.kernel.org>; Mon, 10 Aug 2026 12:31:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1786365099; h=mime-version :
- references : in-reply-to : date : message-id : to : subject : list-id
- : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : content-type :
- content-transfer-encoding : sender : from;
- bh=cVKnOCOqrlRMh1m+s2nhV83kz012G/1xm+4ro+5gPdQ=;
- b=mcVFBk/njic9ihxyARP0E/LBeV0m39w3PxuPNge2c1SdmkG6YCW192+JvDkqUjMESsx2l
- dcBqlhcpP8HQfF3kN9n7ZCtLuA1PqlvD+0z1pyxkfRCDZ/AkFqTiEiRrXmQGvRty/SC6Xf/
- 2olu6F3MXmTGPG7l3tiIDBJCVH7TQ7c=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CCE84C5AD55
+	for <ltp@archiver.kernel.org>; Mon, 10 Aug 2026 13:10:35 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 5B6133CEE34
-	for <ltp@archiver.kernel.org>; Mon, 10 Aug 2026 14:31:39 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 08D5E3CF918
+	for <ltp@archiver.kernel.org>; Mon, 10 Aug 2026 15:10:34 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id F02233CE356
- for <ltp@lists.linux.it>; Mon, 10 Aug 2026 14:31:18 +0200 (CEST)
-Received: from mail-yx1-xb12b.google.com (mail-yx1-xb12b.google.com
- [IPv6:2607:f8b0:4864:20::b12b])
+ by picard.linux.it (Postfix) with ESMTPS id C8B6B3CEF0D
+ for <ltp@lists.linux.it>; Mon, 10 Aug 2026 15:10:17 +0200 (CEST)
+Received: from mail-qk2-x08.google.com (mail-qk2-x08.google.com
+ [IPv6:2607:f8b0:4864:34::8])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id A1B3C600681
- for <ltp@lists.linux.it>; Mon, 10 Aug 2026 14:31:17 +0200 (CEST)
-Received: by mail-yx1-xb12b.google.com with SMTP id
- 956f58d0204a3-66899fe9077so2755202d50.1
- for <ltp@lists.linux.it>; Mon, 10 Aug 2026 05:31:17 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1786365076; cv=none;
- d=google.com; s=arc-20260327;
- b=FByLLd7JS9yLsPoZ498LnsLU9Ful/l17gVFt6MwkI755LyrEe6ULB12LMIqvxswklC
- n7zvH5t9JFlugJPTyFgyGfbf3kZ8KUX7371twmuPQswBZEaxB970tzntnXZIpQibK+pr
- 6b2LjYrYtYi7nhwrbJmKHpSfacPmQmkU2wczS/aHf7LkKYyuOahMaEw16otsWjwEfHVW
- 1pCjtGgY5266UgrvXx7mi461b9Yuq46Dy8ZnPcSwt2Kr7TcJmUEzKhutj01AZkvP3qhL
- z1icFnUOzt9D4sd3zzWYAuIjxe5cjT3niri8JVw61W/HvBydE+iUuNcDKR76jReSdUye
- 3Blg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com;
- s=arc-20260327; 
- h=content-transfer-encoding:to:subject:message-id:date:from
- :in-reply-to:references:mime-version:dkim-signature;
- bh=+PELgB/0+F8+3zyjKybn3FHRyqyVXm4AQSOyWPeYm7M=;
- fh=eKpxfEIyDGws53ds/LPOPT8uxSw14gAoFytuBFWJG2s=;
- b=pDBrPLRS75ZB0bHuFuTgHO4nmjgeczeu0hiO7Vd3yKGhnZVDeZlh3n7I88Mx7edNyU
- cHuGCQGgHou6/ALJzxEXTfWMovqQi4JoT8DLy8N5wbh5Ehh8WcqI9c/+IjP2i+4Tn5wp
- dXmPp4TV7qCNyk5+m6N7HSYWootmhfYBl6OcyrgTlts3RDC0L3zC/q8RT3qBTzcL8qF0
- hBKsr/cpffsoxuY9NhQPzIa+b4+De5V+62lijENb34R77m2Cj8AcVUHeSbQ4ka17FQeG
- r0X9nzxgFW5iJ9HUkEHqHzbE1HVsv3Qp2fvNZTA+YC12mgKgerm1cIENsbX6aGnY//Zf
- vWeg==; darn=lists.linux.it
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 879A014004EB
+ for <ltp@lists.linux.it>; Mon, 10 Aug 2026 15:10:17 +0200 (CEST)
+Received: by mail-qk2-x08.google.com with SMTP id
+ af79cd13be357-9349a22b22fso34308385a.1
+ for <ltp@lists.linux.it>; Mon, 10 Aug 2026 06:10:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=google.com; s=20251104; t=1786365076; x=1786969876; darn=lists.linux.it;
- h=content-transfer-encoding:content-type:to:subject:message-id:date
- :from:in-reply-to:references:mime-version:from:to:cc:subject:date
+ d=gmail.com; s=20251104; t=1786367416; x=1786972216; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to:content-type;
- bh=+PELgB/0+F8+3zyjKybn3FHRyqyVXm4AQSOyWPeYm7M=;
- b=rqDS/t8/wKbEeRzE4UufDs/INT9KCwMPEn14L675tdgbJtGG4ucLsfSluQiqVr8+2d
- sPePHDtrBPDmZXxiw18Rt4JrjWbtFPncWNqXymf7IAHNpf9W+ARRQp5y3F0pnREZVkTK
- XgCyjP2XA/6RSlKPudLMT8RMsjogw6AvuEwxqLRggUUYFpAmo2hKn/FHNa5uXEs7Yg+n
- Z0hHOfuTh+kAiM9ylX8CvZ9QdORJ76hWULPBxFfE5xrZDxYruGpVQcDMk5/Il6XGakbw
- y77js6gcP6AuAxZKRf2y2Z5wXJKLHk+0As8OI73YKglwkc77DES8wgdGi7rrPiXVv29Q
- jPaA==
+ bh=QBSkHyoGoIl/dgffvtuXY0oSR1lmn84vsvlU214oCbk=;
+ b=OGM9ShPyiDeXo/TLppyhO6nNKJlHj/U16+kxh6Bbg3R0TEEeDI4AxZY1iH5QvuDS5t
+ 0j+NV7kIK/g/cBpjqY8vONP+hlMELwAnvg3rhbtagcDPxyZmgZxuB/oBOExIGYo2QRqY
+ chQpOnz/rTFKw09vctx8XanpIvgwHzKTetsGIGIZbuv0YM7M8nHhRF6DkjkVXk5gi9d5
+ mvxewSCwT0MzQE3LUpgLug1or4vVudtQBc9FPM52GCObqzM4JGWpAQNtUnGRk6DLpIlA
+ Fa1WLlf+b1YgOvv7QJWh+OUunfRnPP/bgvkyQE+9S1/LNnZSoP0R+IK9pyRyMIkxzpMG
+ UiHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1786365076; x=1786969876;
- h=content-transfer-encoding:content-type:to:subject:message-id:date
- :from:in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state
- :from:to:cc:subject:date:message-id:reply-to:content-type;
- bh=+PELgB/0+F8+3zyjKybn3FHRyqyVXm4AQSOyWPeYm7M=;
- b=P9l2PLrdXNuDG6aYWpzY7JMDLHsHoyifsy5hhe6qQ/rXY8in9HY/gaMJtnBCFTmi68
- XNujnFcHbFdD3th/Bhpm8XfLqXYIcA+1Xpz6hIoEyKqtkX2y2s6qOHrIf74lv0h1FRFY
- YISL2W1QiKr4oqBBjxbUalNJgEUxkhuLIWOS8HxBvjqM8YUc++bDf9EMdbXE/qx4U3CF
- bA/jzTuRugKNtIkNyQLJRlpxETtcgN/YN+hK1oC2oVHdkE9iHk7hGQRGPMlqYOHG9io/
- gRXgq03ccely+rSEiLTuEj3HXKZwNJ750J3QryIGW5hxWcanCk1eaXRCT4uRqLAv25gB
- 9A/w==
-X-Forwarded-Encrypted: i=1;
- AHgh+RonG8iWa9iqpGAwSF1mluVJq8ntD282APGF+bs4/7BPPbBzA6muBfOrOmbByZC2FxV9zAU=@lists.linux.it
-X-Gm-Message-State: AOJu0YyHZiW00zKCbNRgjYwDsgp3svKxYnSJEA44fB2i/FR0H48AoRU6
- zuQcf/zuJAmX36rT1VR9XEx4S+pYtynbFPE2t/1jXgBcsMbV8CDuoYjnmLDiL7/i8HeEq8X2ivo
- w7bAo8+E/LzHOcvajnTpgcjKq9lA41ufNeI+STlnR
-X-Gm-Gg: AR+sD105IRaKk9l/S1tiJVAGrFvC6YFOdUqNlk8bQT0vY7l5/XP+G5+oOc6+KXLJ5/u
- J0Oj+FdkAfd1hX742sPmldSbr/f3qpAYLxL6H0wD4ggBGs+aXyErIwKzhvd6HwdEzejqzF+96hL
- wKi2cCRebh1kerr3Hn0qvPjU0FgheweyRDzNwxIxqmwEJzeVemUCVYfxlnSJ3jR6assSXQYYmti
- YW3wP+SQi8/ybbqZfMc1N+Gf5LPMmvO/t/kdDfO1GVIZ0IcTbsDH78WQn7ZQqvyBhWOgxfy/Qc6
- nYwBD4XJV/h7pL35A0ajtjIdlN3wiSng/YMIC3KWyuj3+VgTSvUyaWGS3myI9YFHC9OyIGxX2zR
- ASvwQOzU=
-X-Received: by 2002:a05:690e:350:b0:664:c81c:d1 with SMTP id
- 956f58d0204a3-66ad7260ab5mr8963987d50.45.1786365075525; Mon, 10 Aug 2026
- 05:31:15 -0700 (PDT)
+ d=1e100.net; s=20251104; t=1786367416; x=1786972216;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to:content-type;
+ bh=QBSkHyoGoIl/dgffvtuXY0oSR1lmn84vsvlU214oCbk=;
+ b=G2FU2IRb3ApGKVst2Y33fm3Z6Wq2U4nr0HVPzwnGxzgwW4IZ8kt4QZB/eVGfuWtuMN
+ TD4G1TKFqAMP/8mo38yefoNKgH0JD8AybJnn8JvC1VODq1MAwQgaFgVkRNxQZk3KrJw+
+ Cwb9ugSYS4+nGSmj100HbJLMSvQsMrTPKHmmnZnKp6UkfdzP5K/ldcYs9w61x3KwUKU5
+ os8FFzIk0xkAVhD0wSvSlGQQzOHhrTNxWb3pDFpXy4cAaKT4ncrueogfwXTufoZAkMsW
+ 3L+4bWSojI8/MeWwXnLTDOgrEP2lMDxtjnZAFOiJCMglSZnMETzZW8i+78GNqVsLn1ZD
+ 9nGg==
+X-Gm-Message-State: AOJu0YzSRyUj+J5BV9n/G9LKLh4IapKNMEMCLmakhnhLfdVODdyFICC7
+ h5BCAMi0byudAmL0nyx9HlDd2krVuC8VQjPFKho0J/ggkCg7T54invXW
+X-Gm-Gg: AR+sD13Zfjiy3PdzWDHLISHosfkoIq18MiNlVcGxe9kGYWGOYZ/IYg9m96AFZY8y7Hb
+ QBSwyirmpVbwIXf8UWRaeoM3Jib/lvBXEDYz1451/GXrLheke4lJslqmCRFQgK3kAUURKHJ05y1
+ 1SMo8X6d9kd0liwt6J8lQSBDy1f5vFLmIHo73XkyoJ1SGpgTz+fpbZac16VxC9Uxkm+oOHRqslh
+ 5qxMchc/YCIqfJQoWB/bYbEh81t5919bTV63L1va33+dJV5n9zUBmze0NOaiSAi7qcJL+I9nHVC
+ uoq8qo+UjpITP9/1F3bYshhfUKXcdZimot0MNql7c+vHdmru2jtmTmzBixDAhNkBSjxOup+omPF
+ 0TCmwr1AB0QLm1vfdA+qwmrmwUTDPLpCldQ7CWdgqEcc77mDYZJtXre5i1XFa9CqPXUWPW33fNp
+ cfF9FGWwGF1Hc9n1hpnyC1r4cc2W0WUuORHwzuuNlDjTqnbpJiPXsQSzbdPUg+9We3ahbn8eyi5
+ lKwnEHryfzSSZyrqVgW8YMaDy4XLbpohJu7wVD/7svvAwREzyN9fTM6Ygr8jTeTEcsnskqk+rBW
+ N64=
+X-Received: by 2002:a05:622a:406:b0:528:38b1:b547 with SMTP id
+ d75a77b69052e-52ce5f63df0mr433070151cf.8.1786367415791; 
+ Mon, 10 Aug 2026 06:10:15 -0700 (PDT)
+Received: from
+ runnervmvrwv9.o5uvs2yvdcze3ixmawegsz4hpa.bx.internal.cloudapp.net
+ ([172.172.205.208]) by smtp.gmail.com with ESMTPSA id
+ af79cd13be357-9366e03230esm782156285a.5.2026.08.10.06.10.15
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 10 Aug 2026 06:10:15 -0700 (PDT)
+From: linuxtestproject.agent@gmail.com
+To: Andrea Cervesato <andrea.cervesato@suse.de>
+Date: Mon, 10 Aug 2026 13:10:14 +0000
+Message-ID: <20260810131014.85243-1-linuxtestproject.agent@gmail.com>
+X-Mailer: git-send-email 2.54.0
+In-Reply-To: <20260810-shell_oom_protection-v4-1-4dac0dbb0414@suse.com>
+References: <20260810-shell_oom_protection-v4-1-4dac0dbb0414@suse.com>
 MIME-Version: 1.0
-References: <20260807110541.8702-1-linuxtestproject.agent@gmail.com>
- <20260807234935.3248935-1-wakel@google.com> <anmjiYgCDToNhlxI@linux.dev>
-In-Reply-To: <anmjiYgCDToNhlxI@linux.dev>
-Date: Mon, 10 Aug 2026 20:30:37 +0800
-X-Gm-Features: AUfX_mwe_lBKRux_hZ2nKDvg5jfUWUn3MbgFu73mn_Gxo-PXrPE29HX5GyGkV3U
-Message-ID: <CAOcRiAEB_j15kaZFoSPqCM_Ht1p6u-NiQR7dBbA_ePGQmXxUEQ@mail.gmail.com>
-To: Wake Liu <wakel@google.com>, Andrea Cervesato <andrea.cervesato@suse.com>,
- ltp@lists.linux.it
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v6] lib: Use backoff polling to wait for loop
- device nodes
+Subject: Re: [LTP] shell: enable OOM protection by default
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -118,15 +91,58 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Wake Liu via ltp <ltp@lists.linux.it>
-Reply-To: Wake Liu <wakel@google.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-R290IGl0LCB0aGFua3MhISEKCgpPbiBNb24sIEF1ZyAxMCwgMjAyNiBhdCA2OjEw4oCvUE0gTGkg
-V2FuZyA8bGkud2FuZ0BsaW51eC5kZXY+IHdyb3RlOgo+Cj4gSGkgV2FrZSwgQWxsLAo+Cj4gSSBo
-YXZlIG1lcmdlZCB2NiB0byBrZWVwIHRoaW5ncyB0aWR5LiBUaGFua3MhCj4KPiAtLQo+IFJlZ2Fy
-ZHMsCj4gTGkgV2FuZwoKCgotLSAKQmVzdCBSZWdhcmRzLApXYWtlIExpdQoKLS0gCk1haWxpbmcg
-bGlzdCBpbmZvOiBodHRwczovL2xpc3RzLmxpbnV4Lml0L2xpc3RpbmZvL2x0cAo=
+Hi Andrea,
+
+On Aug 10, 2026, Andrea Cervesato wrote:
+> shell: enable OOM protection by default
+
+> +	if ! echo "$value" > "$path"; then
+> +		tst_res TWARN "Can't adjust score"
+> +	fi
+
+Could this avoid reporting TWARN when CAP_SYS_RESOURCE is absent, as
+tst_memutils.c does? Lowering oom_score_adj requires that capability, so
+every unprivileged shell test now gets a warning result. The new self-test
+itself reports TCONF but exits 36 because this TWARN remains counted.
+
+> +	(
+> +		TST_CHILD=1
+> +		_tst_disable_oom_protection
+> +		trap '_tst_cleanup_timer; _tst_write_results' EXIT
+> +
+> +		if [ "$TST_ALL_FILESYSTEMS" = 1 ]; then
+> +			_tst_run_tcases_per_fs
+> +		else
+> +			_tst_run_iterations
+> +		fi
+> +	) &
+> +
+> +	wait $!
+> +	ret=$?
+
+How can the protected parent perform cleanup if this child is OOM-killed
+or times out? TST_DO_CLEANUP and TST_MOUNT_FLAG are set only in the
+subshell. On an abnormal child exit, the parent therefore reports TBROK
+without calling TST_CLEANUP or unmounting a device mounted by
+_prepare_device(), leaving external test state behind.
+
+Verdict - Needs revision
+
+---
+Note:
+
+The agent can sometimes produce false positives although often its
+findings are genuine. If you find issues with the review, please
+comment this email or ignore the suggestions.
+
+Regards,
+LTP AI Reviewer
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
