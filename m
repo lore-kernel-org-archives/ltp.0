@@ -4,48 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E9D47C5AD55
-	for <ltp@archiver.kernel.org>; Mon, 10 Aug 2026 03:56:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 985ECC5B568
+	for <ltp@archiver.kernel.org>; Mon, 10 Aug 2026 04:17:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1786335435; h=date :
+ in-reply-to : mime-version : references : message-id : to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-type :
+ content-transfer-encoding : sender : from;
+ bh=+8yZdaF0OOnJTqS8Q++/+gsoAsHv4BjTVxg5sBnRb4Y=;
+ b=ER3XExbU1r0XcVblQU/N4YTH0yFDSwz8qBUJM9nD4/ERkdJoHJCMIutcmKlHbxNTOrDKx
+ PSX8wGdSvtlmEbxgW4sild8a4qiwc+MYPdkOu3oJ68kiIvoqweltzm19DvkywO7ajeHktPR
+ wUuw/PMZ594hsRbFPTts0qDx7NCzU24=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 69B693CB39C
-	for <ltp@archiver.kernel.org>; Mon, 10 Aug 2026 05:56:48 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id C821E3CB3D1
+	for <ltp@archiver.kernel.org>; Mon, 10 Aug 2026 06:17:15 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 4A2C53CB270
- for <ltp@lists.linux.it>; Mon, 10 Aug 2026 05:56:32 +0200 (CEST)
-Received: from out-186.mta0.migadu.com (out-186.mta0.migadu.com
- [IPv6:2001:41d0:1004:224b::ba])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 945D53CB2DE
+ for <ltp@lists.linux.it>; Mon, 10 Aug 2026 06:16:53 +0200 (CEST)
+Received: from mail-pj1-x1045.google.com (mail-pj1-x1045.google.com
+ [IPv6:2607:f8b0:4864:20::1045])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 97A2C2000F3
- for <ltp@lists.linux.it>; Mon, 10 Aug 2026 05:56:30 +0200 (CEST)
-Date: Mon, 10 Aug 2026 11:55:58 +0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
- t=1786334190;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=MEEi7iiQ0KWcj/efSTLbO49Z5MuUGynMPI/PD6ELhI0=;
- b=ZFL7kGaAdn58EF2xPSGH7JrrdstYx5+lkoIPEBVJyDdagkMcViDOgzEDhtNA3XTpzMF+CG
- VS6wAzSdKYV5WWSiC1NERIRW5w2IhNENw4eCPQbRJlwLTZuDZBYO0wFfR0de0sO99SVb8Z
- gcXu/pqaoVG7ieTfoXlZEaOWAWIi1RY=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and
- include these headers.
-From: Li Wang <li.wang@linux.dev>
-To: linuxtestproject.agent@gmail.com
-Message-ID: <anlLyuZW-8dHISLB@linux.dev>
-Mail-Followup-To: linuxtestproject.agent@gmail.com,
- Wake Liu <wakel@google.com>, ltp@lists.linux.it
-References: <20260807234935.3248935-1-wakel@google.com>
- <20260808013246.12398-1-linuxtestproject.agent@gmail.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20260808013246.12398-1-linuxtestproject.agent@gmail.com>
-X-Migadu-Flow: FLOW_OUT
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 3448E1400178
+ for <ltp@lists.linux.it>; Mon, 10 Aug 2026 06:16:53 +0200 (CEST)
+Received: by mail-pj1-x1045.google.com with SMTP id
+ 98e67ed59e1d1-388cfc4848dso2533933a91.3
+ for <ltp@lists.linux.it>; Sun, 09 Aug 2026 21:16:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=google.com; s=20251104; t=1786335411; x=1786940211; darn=lists.linux.it;
+ h=content-transfer-encoding:content-type:cc:to:from:subject
+ :message-id:references:mime-version:in-reply-to:date:from:to:cc
+ :subject:date:message-id:reply-to:content-type;
+ bh=flZsiv2Jxp3/cZlCgOHd7gwTQDDfsXjd63hBw7m3t/w=;
+ b=o3LXpX6Bag0izIt4/H3VNl5IUTnde+E726CQuLImQvAvDly6a0d+OgJ6rW/z3gvKHO
+ VvFKHhECQl953Id642L6Mu2MGldGwrRI5W5Rd5jJldGOpONwenQYkd7VNHurxmVY1Hhz
+ Y2Q8zvZ/VMDwxGTc8C6KRtQyHuRZPp69VcMJg/xrF2pBMkuBzlNN67CsNP9880VwWObS
+ XWIABAPlllta1f4FkKpIJvPQNQ/eJWOF72cetv5vWK7C0RaAhvfMFizhPqrnVpU2/+28
+ ALC71YIbFka+jxvSTNI6Gvb+AqyYGdJPpfYjVZ5PdiyhDPoeGNyzu4Aeu6538DrVbgOS
+ yvfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1786335411; x=1786940211;
+ h=content-transfer-encoding:content-type:cc:to:from:subject
+ :message-id:references:mime-version:in-reply-to:date
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+ :content-type;
+ bh=flZsiv2Jxp3/cZlCgOHd7gwTQDDfsXjd63hBw7m3t/w=;
+ b=P1/5S9kbbqBUVsg/JVQwQqOl4tv3Az3gN4Yc6e+rNLYu2DLgZKYBmyoNGm28jtHCb9
+ GzjL3fa9S/JjTCjZsZzegij2+AvrnvstwpF3Yji0qnjCAQ5Prw6dKqJUR/MP/kaQ/TLG
+ iPAFVLE/TY0X639pntFy9NulZ6vj/R2QHKWzoM/5uuIyGtAkZH547mG8v0g47gfdCSOd
+ xTDpYsbxLir8m2q374cs2JMHLIdMS77AZaKB6ObBmOXm5xaKzmlfNIiguRjir7TO24rv
+ Q7iDz6UAWFRRLp0DY75mmzEsuJ5LLy5hVg1iaxcT+MLq0+WNBFYn/KhkFfQWk2Mw0KBr
+ NmuA==
+X-Forwarded-Encrypted: i=1;
+ AHgh+RrSTtwJxSIsRxgdsvnTNL+eJ00C9XZPO0jbdZTwLzojNoVkv+H9O34J0Y1A5CBOeQEVlLE=@lists.linux.it
+X-Gm-Message-State: AOJu0Yx4yeEeGP8P/DpmCT4mfuYgHDQUkwyHbIs8XYz0OPaiPbaXmJ87
+ 9N9T1XQmqfp8A1Zf/u2hZ8rxWPfy/hfTtDdWWUe61CA8flm47kRgmjw4ZPZgzBMBBso/qRK3Yco
+ jlQ==
+X-Received: from pgng12.prod.google.com ([2002:a63:374c:0:b0:cbe:4e21:813e])
+ (user=wakel job=prod-delivery.src-stubby-dispatcher) by
+ 2002:a05:6a20:4309:b0:3c3:954d:278d
+ with SMTP id adf61e73a8af0-3cb85df09e3mr42605556637.9.1786335411186; Sun, 09
+ Aug 2026 21:16:51 -0700 (PDT)
+Date: Mon, 10 Aug 2026 04:16:49 +0000
+In-Reply-To: <anlLyuZW-8dHISLB@linux.dev>
+Mime-Version: 1.0
+References: <anlLyuZW-8dHISLB@linux.dev>
+X-Mailer: git-send-email 2.55.0.654.g21b8a5bc05-goog
+Message-ID: <20260810041649.1714200-1-wakel@google.com>
+To: Li Wang <li.wang@linux.dev>
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] lib: Use backoff polling to wait for loop device nodes
 X-BeenThere: ltp@lists.linux.it
@@ -59,38 +92,27 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Wake Liu <wakel@google.com>, ltp@lists.linux.it
+From: Wake Liu via ltp <ltp@lists.linux.it>
+Reply-To: Wake Liu <wakel@google.com>
+Cc: Wake Liu <wakel@google.com>, ltp@lists.linux.it,
+ linuxtestproject.agent@gmail.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Wake,
+Hi Li,
 
-On Sat, Aug 08, 2026 at 01:32:46AM +0000, linuxtestproject.agent@gmail.com wrote:
-> Hi Wake,
-> 
-> On Fri, 7 Aug 2026, Wake Liu wrote:
-> > lib: Use backoff polling to wait for loop device nodes
-> 
-> > +				path_set = TST_RETRY_FN_EXP_BACKOFF(
-> > +					set_dev_loop_path(rc, path, path_len),
-> > +					TST_RETVAL_EQ0, 1);
-> 
-> Could the backoff arithmetic be made overflow-safe before these two new
-> uses?
-> 
-> LTP_TIMEOUT_MUL=3000 is accepted by parse_mul(), which makes
+Thanks for the review.
 
-Theoretically, this is correct, but I don't think anyone will
-need a timeout as large as 3000 * 30s for one of LTP test.
-It would take nearly 25 hours to trigger, which is unrealistic.
+I agree that LTP_TIMEOUT_MUL=3000 is an extreme case and unlikely to happen in practice.
 
-IOW, your patch v6 is good enough. Sometimes AI agent is too strict.
+However, since we already sent v7 which fixes this overflow cleanly (using 'unsigned long long' in the macro to prevent the wrap-around), and the AI reviewer has already passed it (Verdict - Reviewed), I think it's worth having the more robust version in v7.
 
--- 
-Regards,
-Li Wang
+Please take a look at v7.
+
+Thanks,
+Wake
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
