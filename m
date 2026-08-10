@@ -4,84 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5E84DC5AD5A
-	for <ltp@archiver.kernel.org>; Sun,  9 Aug 2026 19:37:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2AA52C5AD5A
+	for <ltp@archiver.kernel.org>; Mon, 10 Aug 2026 02:58:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1786330724; h=date :
+ in-reply-to : mime-version : references : message-id : to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-type :
+ content-transfer-encoding : sender : from;
+ bh=Zodk7ny9ghRSwnTAJMIl4f47yBjhSygaWoYmo0rMjVw=;
+ b=ccieVPBYFlpprezulXoIoFmEOkwE5SSWdvi9FxjpDcMumT4iIb285pnP6KNJIRy3MF+nH
+ jW9e7PTPPgLoYshqBrVzL1yPAJroMjPZ1n717iILLMV84JyL+enjMjK+HiqrviPc2LSfp3S
+ 0SQ39eTs9oTLJbqwtRAvD/LEjkCTirw=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 47DA03C93DF
-	for <ltp@archiver.kernel.org>; Sun,  9 Aug 2026 21:37:28 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 17A813CB468
+	for <ltp@archiver.kernel.org>; Mon, 10 Aug 2026 04:58:44 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 974D33C5EC1
- for <ltp@lists.linux.it>; Sun,  9 Aug 2026 21:37:12 +0200 (CEST)
-Received: from mail-yx2-x04.google.com (mail-yx2-x04.google.com
- [IPv6:2607:f8b0:4864:41::4])
+ by picard.linux.it (Postfix) with ESMTPS id 7AA453CAE4B
+ for <ltp@lists.linux.it>; Mon, 10 Aug 2026 04:58:22 +0200 (CEST)
+Received: from mail-pg1-x547.google.com (mail-pg1-x547.google.com
+ [IPv6:2607:f8b0:4864:20::547])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 2E544200148
- for <ltp@lists.linux.it>; Sun,  9 Aug 2026 21:37:12 +0200 (CEST)
-Received: by mail-yx2-x04.google.com with SMTP id
- 956f58d0204a3-66addc3f4eeso1237774d50.0
- for <ltp@lists.linux.it>; Sun, 09 Aug 2026 12:37:12 -0700 (PDT)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id C1B201000485
+ for <ltp@lists.linux.it>; Mon, 10 Aug 2026 04:58:21 +0200 (CEST)
+Received: by mail-pg1-x547.google.com with SMTP id
+ 41be03b00d2f7-cb733fc5024so2271889a12.2
+ for <ltp@lists.linux.it>; Sun, 09 Aug 2026 19:58:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1786304231; x=1786909031; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to:content-type;
- bh=knA+rkwtM74pw5B1hRTz2iEeDbHCvlzTz9BuxkIFi8k=;
- b=oi5G8x4kbCxBKh9O4w5QnL6MTLdHmHrEGfEu7ZhKeYrBvVHnf64O6I5RsOBo9gReBq
- HHyFAG5e/JEmJLzbrC3ZzN7ndQ3AMDdSwIwNv2pvpPhDaf0Rx0qUqXm+sxNGqpZXYXrH
- H71+ycgQX7uGpPTD0YVoy0FnavEj3zAh8oqDlZEmB0nR/MUCgFzHRqakUqh/STuQKzJZ
- UBSIm4SR6YX/ASVbFd+BsQ4c/H7y9ALnwFk5kCaqFnzBfhlG7XWPPNAxIhNlGRh+tUHB
- hE/gF3QiImND0zYM6OVw+I6bMlPqBi8Ua6NaQnuu5C9EoFcgorJmXU6OSXjPuuBm6O9Y
- VU8Q==
+ d=google.com; s=20251104; t=1786330700; x=1786935500; darn=lists.linux.it;
+ h=content-type:cc:to:from:subject:message-id:references:mime-version
+ :in-reply-to:date:from:to:cc:subject:date:message-id:reply-to
+ :content-type; bh=H0zAb1l7g63OYmZ16U5ARsa6nTAuGj83UNgLyZ977tQ=;
+ b=O7jr53RXnO4yPrpEEqXPdY+Uj9yYLJs+l899PlCggoOlOmh/KJPg06NGroCXelcV2w
+ K89nyKG0PP92ReZnJmoXEU21N9i3TikdqSmNYAymf4r3EvMf1MJFWpjvx0wqWPBQiHU/
+ PsubTFqjPAK4oe9IdBp8zYK2bhCIVe0c5SG6CklUK8a/eS+q+9XBZxQ28Pux7o451UM8
+ s9JHdgOXMWHlyRoKx4TJcLY/+ZBnRq0L9XDhCoeI4evjyUosmZfYGaWcwD0G5bC7ZuHN
+ gbNz6uFUWfrJikmzzwxbcu/riA9R2XISZJyKrYW9G448sKsqWzpW327c5st0eO0JRQGp
+ SkNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1786304231; x=1786909031;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to:content-type;
- bh=knA+rkwtM74pw5B1hRTz2iEeDbHCvlzTz9BuxkIFi8k=;
- b=Yx14Sde7Qkz55QQfJMOcRKuyasZ8UiVKTI1LfjfH74QyrCYt2RdWnQ62YXmmzn4XhK
- AWdVLyuPNu1REvgeTJjBu0Epb2BkBsH8vq+9rvEM3SF+Cda5X8ryQtTkwqREQzY1UwCl
- KfpEKQOhQM9gXLhIhqdeioQAI+bcbRA0d/E/8a9/MykwuPu05S6f54DMUAqL1i+Ilyzy
- pcI41wHuMA2Y9Po0UlBT/AWyJRE7foR+kbNRn6Zg3puz992z31DB2YNF9eTCFHbkRS0k
- fhgT/uCPFK/8o8qHU7+WLf7mCMXdvScLF06+o11CIDbGBWotIdXeYBfBYcUqtmY8lpy6
- fbsw==
-X-Gm-Message-State: AOJu0Yy0kRZ6hua6aIMsvHhuphH2CpiKykGxaOMATRJ1njmhqYh/9ZSw
- W8Ut9wRUzQ8XbQX7ZVpuHZV55X9FiyLJ/xVKlxEcyDujkz7wtVo7Sx9T
-X-Gm-Gg: AR+sD11zUoBFDAJiWlUZ5hZyTZvK/1Pcqi/IJrjfau34XmzagLSf19MIdr1/qJ4DPQR
- XqqetrA1wvvnhkFSplpCQNSfy1Q7SOidBHuhd4ieSf7gP2gkn5dPAU071o40CPXtK5dEWdIcMLH
- kQ3IZkAVKYD1ldOCimGjKtHLgAOenXkC3EV2D14fPibUIZk8H/hJUvt5D03GpooDf5lrfZGxNC9
- LswSYyk7OKLaS7l6V+hm7T9UzgymZZUQAg291USxWB0yyg8HIoF772V7d0IjDbyO5wx2JA95QG5
- 7iUYPmhoeFfEdzjcasFmCnCNAgXjeADjb4xXl+US52/hfPVCwgFCj4cankx4NHeJSx4s+L/qdAm
- NvoKZCXpr3Tqt96vwH58wTNYDLUxtDmQhBTSoTWu9vP5kEsbNutfBOfbjoXc2GMzDCu7ZRt9ije
- DzWof/Sk3Y0TFTE9wrXHxCfue0B8G4WdLRyZJ6uajzZHl2vk42haQw7Xald1hIYDGWz4WusRFFn
- L3APISYRnS/sWvBWFKgXSQNW8ClJuiW6LKdl+XB0VHxno1JOhGm71HbhJZZ8AfiFywcQMn+3aKt
- bSM=
-X-Received: by 2002:a05:690e:4396:b0:660:4936:95d5 with SMTP id
- 956f58d0204a3-66ad7355326mr6959044d50.40.1786304230904; 
- Sun, 09 Aug 2026 12:37:10 -0700 (PDT)
-Received: from
- runnervmvrwv9.sbo4f4120sjejcpudlippbucbf.ex.internal.cloudapp.net
- ([135.232.208.138]) by smtp.gmail.com with ESMTPSA id
- 956f58d0204a3-66acad24d53sm5024399d50.6.2026.08.09.12.37.09
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sun, 09 Aug 2026 12:37:10 -0700 (PDT)
-From: linuxtestproject.agent@gmail.com
-To: Pavithra <pavrampu@linux.ibm.com>
-Date: Sun,  9 Aug 2026 19:37:08 +0000
-Message-ID: <20260809193709.9093-1-linuxtestproject.agent@gmail.com>
-X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260809185027.1867585-1-pavrampu@linux.ibm.com>
-References: <20260809185027.1867585-1-pavrampu@linux.ibm.com>
-MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+ d=1e100.net; s=20251104; t=1786330700; x=1786935500;
+ h=content-type:cc:to:from:subject:message-id:references:mime-version
+ :in-reply-to:date:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to:content-type;
+ bh=H0zAb1l7g63OYmZ16U5ARsa6nTAuGj83UNgLyZ977tQ=;
+ b=qB/whhFVPlFL86Qi49VHdEq+EQyH/51Cwd4lkuIGoR1UDc13itGIQcdNM3m0CmcfNP
+ hN9P/g9RDfbmpNJPuznMn9ig7PxRk2y4VF9h7r3fNBbgW7yTSYMVVKwsOb3E6b6MjCG4
+ +RoyqbiSRdNNo3NgSMv7C/hIpx1018Z2ak1tKdsZrK5r9wIWCXQkIKh/94px4Pq2VzDK
+ rQPFoYp+QGPssA7SZAd9GP3aYjAdifPLLdC2NJD6dlUgvofUPiEE1UnvBg2YPI5cn2A/
+ 9Z2b+eKjC8i5rEBZaKTZGp6jX3Lg3AKelXDDbHZ8+KCjuu3defeBTg8qURnxf8jaYKxu
+ xzzA==
+X-Gm-Message-State: AOJu0YxbSZJZCJuFm7PWKs/SMnIJehBpSma4sMVmiQH5EVbqRiZhwJsi
+ 06+g62W5+xHyuq6mjh4FXdp8x3MrB4FdKeGVI3znETman491GG4acfHVen6lOULGlLdO6HbM2MM
+ YvriJRcNuPgDyuquEVZ7V+fbbsLctiYzVFweoJ0mKw0m8JASFS+/O2xkkbB3kr+PByOWWjZ8Nj9
+ OJRZRqGzq8p5enapWeY687Baqd/Q==
+X-Received: from pfux38.prod.google.com ([2002:a05:6a00:be6:b0:847:878f:44f0])
+ (user=wakel job=prod-delivery.src-stubby-dispatcher) by
+ 2002:a05:6a00:2da5:b0:84e:2f2e:8def
+ with SMTP id d2e1a72fcca58-84f2dff6ce2mr39616301b3a.6.1786330699613; Sun, 09
+ Aug 2026 19:58:19 -0700 (PDT)
+Date: Mon, 10 Aug 2026 02:58:15 +0000
+In-Reply-To: <20260807234935.3248935-1-wakel@google.com>
+Mime-Version: 1.0
+References: <20260807234935.3248935-1-wakel@google.com>
+X-Mailer: git-send-email 2.55.0.654.g21b8a5bc05-goog
+Message-ID: <20260810025817.1665141-1-wakel@google.com>
+To: ltp@lists.linux.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] hugemmap/hugemmap41: Migrate ptrace-write-hugepage from
- libhugetlbfs
+Subject: [LTP] [PATCH v7 0/2] Fix overflow and use backoff polling for loop
+ devices
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -93,41 +90,36 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+From: Wake Liu via ltp <ltp@lists.linux.it>
+Reply-To: Wake Liu <wakel@google.com>
+Cc: wakel@google.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Pavithra,
+This is v7 of the patch series to use backoff polling to wait for loop device nodes.
 
-On Mon, 10 Aug 2026, Pavithra wrote:
-> hugemmap/hugemmap41: Migrate ptrace-write-hugepage from libhugetlbfs
+Since v6, we have split the changes into two patches and optimized the overflow fix:
+1. Fix potential overflow in TST_RETRY_FN_EXP_BACKOFF() and tst_multiply_timeout()
+   by using 'unsigned long long' for delay tracking variables.
+2. Use backoff polling for loop device nodes (original patch logic).
 
-> +	SAFE_PTRACE(PTRACE_ATTACH, cpid, NULL, NULL);
+This addresses the feedback from the LTP AI Reviewer regarding overflow
+when LTP_TIMEOUT_MUL is large.
 
-Could PTRACE_ATTACH be handled without SAFE_PTRACE() so that EPERM caused
-by Yama policy can be reported as TCONF? With ptrace_scope=3 Linux denies
-every attach, including requests from root, and the wrapper converts this
-expected policy denial to TBROK before the test reaches PTRACE_POKEDATA.
+Wake Liu (2):
+  lib: Fix overflow in backoff polling and timeout multiplication
+  lib: Use backoff polling to wait for loop device nodes
 
-> +/hugetlb/hugemmap/hugemmap41
+ include/tst_common.h |  4 +++-
+ lib/tst_device.c     | 13 +++++++++----
+ lib/tst_test.c       | 11 +++++++++--
+ 3 files changed, 21 insertions(+), 7 deletions(-)
 
-Could this entry instead be placed in a .gitignore in the hugemmap leaf
-directory? LTP requires new test binaries to be ignored in their own test
-directory rather than from a parent directory.
+-- 
+2.55.0.654.g21b8a5bc05-goog
 
-Verdict - Needs revision
-
----
-Note:
-
-The agent can sometimes produce false positives although often its
-findings are genuine. If you find issues with the review, please
-comment this email or ignore the suggestions.
-
-Regards,
-LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
