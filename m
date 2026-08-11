@@ -4,93 +4,109 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 30E01C5CFCF
-	for <ltp@archiver.kernel.org>; Tue, 11 Aug 2026 08:48:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1786438128; h=message-id :
- date : mime-version : to : references : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-transfer-encoding :
- content-type : sender : from;
- bh=ir6CvjccbpMEF4jTL/gxwmql64yLO04slNnUkNN8s/g=;
- b=dZ0HInq4R1IjFJ6PpPHUsrTlHW8Il29k/O5TDVIl5ONKZ8YSXv9MKFSflk2CeEPZ8CVlr
- zZsynq2eWeM+Ti78NIwTQtmQTfOyzcBo2dpjqTyo2Ewpg/hQ97PUiYtQhKbACsBbw3f+EUY
- OSdUskCQ1uN71HJaBF5vb88a4N03zkU=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EB5CCC5AC67
+	for <ltp@archiver.kernel.org>; Tue, 11 Aug 2026 08:50:17 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 4B8783D06EA
-	for <ltp@archiver.kernel.org>; Tue, 11 Aug 2026 10:48:48 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 073113D07E0
+	for <ltp@archiver.kernel.org>; Tue, 11 Aug 2026 10:50:16 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6CA0B3CB2E9
- for <ltp@lists.linux.it>; Tue, 11 Aug 2026 10:48:28 +0200 (CEST)
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com
- [IPv6:2a00:1450:4864:20::42f])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 0D3B23CB850
+ for <ltp@lists.linux.it>; Tue, 11 Aug 2026 10:49:58 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id EF5666005C9
- for <ltp@lists.linux.it>; Tue, 11 Aug 2026 10:48:26 +0200 (CEST)
-Received: by mail-wr1-x42f.google.com with SMTP id
- ffacd0b85a97d-47f633e6058so2294778f8f.0
- for <ltp@lists.linux.it>; Tue, 11 Aug 2026 01:48:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1786438106; x=1787042906; darn=lists.linux.it;
- h=content-transfer-encoding:content-type:in-reply-to:from
- :content-language:references:cc:to:subject:user-agent:mime-version
- :date:message-id:from:to:cc:subject:date:message-id:reply-to
- :content-type; bh=ECnEsA1bbFwAX2MzfQFWuorupG4+NL2LlRM0Qr1Dl4A=;
- b=NiWVI4qCZ6cBzKhs0VgzkE3f7wfgYqFo6bouBH4wHoTsuJDDY+fHtCLSjantV8wkpY
- oXJzbdsvPt35si+QF8uxWNEnEZup3+QKZu32WniwckpdoFFuT6lypzooMjjkxEUsj50s
- UDH1WTMUTkXXh5MmcvLCkwMMz9hkMQC/IQFiXw3IinfMrIizvvEnmUHzND2MhituMtPO
- kPbe2nczto70jdb2fj36SpCanD66xJjMzYL8MhbhfyRpU/F7whd8EyOD59LnCI70ncNn
- DKDwHWEoMCv9KWKB9Zu5sDR5gFB0qeL2waz4GADHO/iFVstfVvYJaepzamSPoMsGOtqC
- kqDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1786438106; x=1787042906;
- h=content-transfer-encoding:content-type:in-reply-to:from
- :content-language:references:cc:to:subject:user-agent:mime-version
- :date:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
- :message-id:reply-to:content-type;
- bh=ECnEsA1bbFwAX2MzfQFWuorupG4+NL2LlRM0Qr1Dl4A=;
- b=RXxxPjtI4ZJPp0H+pA1hUjj1cslVVlr5ykKcwxial73o8Z4MrVbgQsHDqoa7oI+X76
- NhHsbW3s7420PKPW4pGZc8Ws6+MfetK06jOCWXUD+hYjZD0MUom8UKz4F3H/jBHDvFX8
- /F+8hCmIltmZItJAy+IerOGDmfjTF4OUvBFxUhoiJS6316NuVZFioPFDNVR19tFCeJL1
- Isb+1lFbX5qngCyZwk6MkYbs4cQHXueGyxAnfM5ytCVQqv6IO+O3SNIQTrLwgK+gTLKK
- GSfG8pB4iCU6S+V1zYtGFwdeJ/jPAwtpnQEqQxkGjOVFwvXQmH5/kKK3SEBPYzirCsOJ
- aj6Q==
-X-Gm-Message-State: AOJu0Yy9ObbUF8wCuN1MmogNDXzDXcSqVbjRB/pk4rz72xTW+biLLwmT
- l2NK7amRgGtNjIwV6KqjAKM7v4m/4/e33hTcv7UQkqMPMqauGKweXBjI4GStFi+TioE=
-X-Gm-Gg: AR+sD13t+CkNG3vUK77HeBD/L9F9RXz16u+P3oQ0WRm+X1xDrcbLznqK7vCQjvaFfVj
- iKIIwSOqOz+KsF738Gdvd1HIeIsNlX5FtRobZq3qH442adTI6n1aeZf7KzCL4dtKIu0z8uhbA2E
- JFaIyl4/GWSQ2nxhgWB8qxonLGG3OSlqv4xYrSN0rxYAHjPVkTHwCiVPzxjqPHuVJMj+1LRiO7y
- YLW664ll8btUFNAMBcjVYYA001yoUMwcXLZz/CbSRVvTP6l79duUa2QgfDTKCNC2DPEtPknUcla
- ZvjOsTnXa05MfJitP+J25y0vOmL6/dZfqxTUZ6RrujFXN3+CvU+92jIJKmH4bW6mMz+/fJmjObF
- 16mZKGhSGTG2H3EcdeEMa2d5hXdl1jEnAEFQnfkrRVRDY0oq2pPurBEHvW/LnSyOG/KTGdpVhPq
- dQQ02PHQ2hhNKp1spSBEVv+/wQhtxXFPQMw2Ob++OCwvYN0KslHdNkUZVc+7omeZwGz60aLweT3
- 9PxnrMnOpvrYo3C
-X-Received: by 2002:a05:6000:4603:b0:47f:96e3:5309 with SMTP id
- ffacd0b85a97d-4814ad8a4d5mr2823100f8f.9.1786438106207; 
- Tue, 11 Aug 2026 01:48:26 -0700 (PDT)
-Received: from ?IPV6:2a07:b241:1004:8300::1000? ([2a07:b241:1004:8300::1000])
- by smtp.gmail.com with ESMTPSA id
- ffacd0b85a97d-4814a5ac856sm2752871f8f.8.2026.08.11.01.48.25
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Tue, 11 Aug 2026 01:48:25 -0700 (PDT)
-Message-ID: <aa02bbd8-c908-4f34-82c5-acd7a361ce94@suse.com>
-Date: Tue, 11 Aug 2026 10:48:25 +0200
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 83DE01000530
+ for <ltp@lists.linux.it>; Tue, 11 Aug 2026 10:49:58 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 0B0273E1F;
+ Tue, 11 Aug 2026 08:49:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1786438193;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=aIxFTgDjSPX9bNlnPH1t383oOESrOy/bbgRS1NNnshk=;
+ b=ZFNale6i+ZiOjYGdxk7cN0IfxFZjUqXwuiXbjvUExFRyqC3KVkyI00B6xoXHNG+2EtdMJ2
+ MUgfYtpJ+B38EvDugdFyNJn89XKe0KrlPe45qkKWo16qfjmq7/tVEWEMXABoYiFlEWu4XB
+ 705kKHgy8LUeoeexBTpaSI/YZg7sZyc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1786438193;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=aIxFTgDjSPX9bNlnPH1t383oOESrOy/bbgRS1NNnshk=;
+ b=h+33eeO7Hf9qLDDT679Zs0cs3XhT6z8SzZFnCyMUbA0P5FSV6q5tMuH9Wg8QTgwOUxPVpn
+ 0URa+Q7xd1FUAFDQ==
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=dbAORnFz;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=EI1nyBUP
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1786438189;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=aIxFTgDjSPX9bNlnPH1t383oOESrOy/bbgRS1NNnshk=;
+ b=dbAORnFznb2XFC6UB+hSgu7eF/PmnCHVFBIr19M0V1vTvIJ2Fl2a4z5w+6qsx+F1JFxGJJ
+ 1rh+NbWwKx/PTj79eBQmr4pKIy+IfUtpZ+XvNDe+54WHp6pkeO9Hce6hh3nmHujv7Q5/eV
+ Fagl2ppqkhX3fPeALSgSCvJuhRkX3K8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1786438189;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=aIxFTgDjSPX9bNlnPH1t383oOESrOy/bbgRS1NNnshk=;
+ b=EI1nyBUPVbUeU3KoDyqNc08u0IQX7ac2BbHuyU84iil4bgq9P7YywD45fgovDI5XxDvnLE
+ VRdrF1lEYvdKdoBw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D059E779B2;
+ Tue, 11 Aug 2026 08:49:48 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id rjLqMCziemrDVQAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Tue, 11 Aug 2026 08:49:48 +0000
+Date: Tue, 11 Aug 2026 10:49:43 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Andrea Cervesato <andrea.cervesato@suse.com>
+Message-ID: <20260811084943.GA1676037@pevik>
+References: <20260810160048.1040517-8-pvorel@suse.cz>
+ <6a7acbaf.9099b29d.135d6f.b466@mx.google.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Petr Vorel <pvorel@suse.cz>
-References: <20260806074713.158271-1-avinesh.kumar@suse.com>
- <20260810103134.GA918586@pevik>
-Content-Language: en-US
-In-Reply-To: <20260810103134.GA918586@pevik>
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <6a7acbaf.9099b29d.135d6f.b466@mx.google.com>
+X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[]; MISSING_XM_UA(0.00)[];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ ARC_NA(0.00)[]; TO_DN_SOME(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ MIME_TRACE(0.00)[0:+]; REPLYTO_EQ_FROM(0.00)[];
+ RCPT_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ RCVD_TLS_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.cz:replyto,suse.cz:dkim];
+ RCVD_COUNT_TWO(0.00)[2]; DKIM_TRACE(0.00)[suse.cz:+]
+X-Rspamd-Queue-Id: 0B0273E1F
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] nfs_lib: Skip NFS versions disabled on server
+Subject: Re: [LTP] [PATCH v5 7/7] lib: Add 2 basic tests for .min_kver &&
+ .max_kver
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -102,155 +118,42 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Avinesh Kumar via ltp <ltp@lists.linux.it>
-Reply-To: Avinesh Kumar <avinesh.kumar@suse.com>
+Reply-To: Petr Vorel <pvorel@suse.cz>
 Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Petr,
+Hi Andrea,
 
-Thanks for your review.
+> Hi Petr,
 
-> 
-> Thanks for handling this!
-> 
-> LGTM? few notes below.
-> Reviewed-by: Petr Vorel <pvorel@suse.cz>
-> ...
-> 
->> -get_socket_type()
->> +get_socket_type_raw()
-> very nit: slightly confusing type, because there is a "raw" socket SOCK_RAW.
-> I guess any network programmer seeing this will think of that socket, e.g.:
-> socket(PF_INET, SOCK_RAW, ...);
-> socket(PF_NETLINK, SOCK_RAW, NETLINK_ROUTE);
-> 
-> But of course it can stay.
+...
+> > +static struct tst_test test = {
+> > +	.min_kver = "4.4",
+> > +	.max_kver = "7.2",
+> > +	.test_all = do_test,
+> > +};
 
-How about get_socket_type_bare() ?
+> this test is a bit weird, it's system dependent and it will TPASS or
+> TCONF according to the kernel version. Is there a way to test this
+> in a different way? I know it's hacky, but maybe we can use
+> __attribute__((constructor)) and fetch uname() info before running
+> the maximum kernel version check.
 
-> 
->>   {
->>   	local t
->>   	local k=0
->>   	for t in $SOCKET_TYPE; do
->>   		if [ "$k" -eq "$1" ]; then
->> -			echo "${t}${TST_IPV6}"
->> +			echo "$t"
->>   			return
->>   		fi
->>   		k=$(( k + 1 ))
->>   	done
->>   }
+Although this is an interesting idea, I'm not sure if I find time for it. Feel
+free to further improve it. For me is in the end trying to fix fanotify20 :).
 
+The point of the test is to at least run something (kind of minimal testing but
+better than nothing, because it's naive to expect anybody who touches library
+tests it carefully with the real tests).
 
->> +nfs_server_vers_enabled()
->> +{
->> +	local vers="$1"
->> +	local versions=" $(tst_rhost_run -c 'cat /proc/fs/nfsd/versions 2>/dev/null') "
->> +
->> +	case "$versions" in
->> +	*" -$vers "*) return 1;;
->> +	esac
-> 
-> very nit: I was thinking if having the space in case would be slightly more
-> readable, but probably not. I consider spaces in both versions as unnecessary
-> (i.e. formatting error) but of course they are necessary.
-> 
-> 	local versions="$(tst_rhost_run -c 'cat /proc/fs/nfsd/versions 2>/dev/null')"
-> 
-> 	case " $versions " in
-> 
->> +
->> +	return 0
->> +}
->> +
->> +# Drops NFS versions the server explicitly disabled from $VERSION, keeping
->> +# $SOCKET_TYPE entries aligned by position with what remains.
->> +nfs_filter_versions()
->> +{
->> +	local v type
->> +	local n=0
->> +	local new_version=
->> +	local new_socket_type=
-> nit: it should be safe to use it without '=', right?
-> local v type new_version new_socket_type
-+1
+Anyway, in CI it will be always the same due using container (TPASS on Ubuntu's
+6.17.0-1020-azure).
 
-> 
->> +
->> +	for v in $VERSION; do
->> +		type=$(get_socket_type_raw $n)
->> +
->> +		if nfs_server_vers_enabled "$v"; then
->> +			new_version="$new_version $v"
->> +			new_socket_type="$new_socket_type $type"
->> +		else
->> +			tst_res TINFO "NFSv$v disabled on server, skipping"
-> 
-> Could this be TCONF so that results summary at the end shows some TCONF?
-> That indicates something was skipped.
-+1
-
-> 
-> +			tst_res TINFO "NFSv$v disabled on server, skipping"
-> +			tst_res TCONF "NFSv$v disabled on server, skipping"
-> 
->> +		fi
->> +
->> +		n=$(( n + 1 ))
->> +	done
->> +
->> +	[ -z "$new_version" ] && \
->> +		tst_brk TCONF "none of the requested NFS versions ($VERSION) are enabled on server"
-> nit: I would expect this would quit the test on system with
-> set -o errexit (equivalent of set -e), but magically it works.
-> FYI normally it's better if any test line exit with 0 => use || (or if ...; then
-> ... fi) instead &&  i.e.
-> 
-> [ ... ] || tst_brk TCONF
-> 
-> But because it works it can stay.
-+1. I will switch to below for consistency.
-	[ "$new_version" ] || \
-		tst_brk TCONF ...
-> 
->> +
->> +	VERSION="${new_version# }"
->> +	SOCKET_TYPE="${new_socket_type# }"
-> 
-> Fortunately removing leading space works also on dash, although at least some
-> string operations aren't part of POSIX [1].
-> 
-> If this is ever problematic, we can fix it with:
-> 
-> 	[ "$new_version" ] && new_version="$new_version $v" || new_version="$v"
-> 	[ "$new_socket_type" ] && new_socket_type="$new_socket_type $type" || new_socket_type="$type"
-> 
-> But because removing leading space is not needed, because later code for t in
-> $SOCKET_TYPE; do will handle that, I'd remove this part entirely.
-Actually we need to remove the leading space, otherwise we break
-nfsstat01 where $VERSION is being used as whole scalar value.
-case $VERSION in
-
-I can switch to the solution you suggested here.
-
-> 
-> FYI: (no leading/trailing space in parameters, no $t having just empty space:
-> SOCKET_TYPE=' udp tcp  '; for t in $SOCKET_TYPE; do echo "'$t'"; done
-> 'udp'
-> 'tcp'
-> 
-> [1] https://mywiki.wooledge.org/Bashism#Parameter_Expansions
-> 
-> Kind regards,
-> Petr
-
-Regards,
-Avinesh
+Kind regards,
+Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
