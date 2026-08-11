@@ -4,57 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BE740C5B572
-	for <ltp@archiver.kernel.org>; Tue, 11 Aug 2026 16:29:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4328EC5B56A
+	for <ltp@archiver.kernel.org>; Tue, 11 Aug 2026 17:10:27 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B54F03D07EE
-	for <ltp@archiver.kernel.org>; Tue, 11 Aug 2026 18:29:48 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 4D0AE3D0F4C
+	for <ltp@archiver.kernel.org>; Tue, 11 Aug 2026 19:10:25 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1848F3CB92A
- for <ltp@lists.linux.it>; Tue, 11 Aug 2026 18:29:31 +0200 (CEST)
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 3BE373C06EC
+ for <ltp@lists.linux.it>; Tue, 11 Aug 2026 19:10:09 +0200 (CEST)
+Received: from mail-pj2-x06.google.com (mail-pj2-x06.google.com
+ [IPv6:2607:f8b0:4864:39::6])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id CDC0B60012C
- for <ltp@lists.linux.it>; Tue, 11 Aug 2026 18:29:29 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1786465769; x=1818001769;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=w3zKQBtrbTnxt1GKwTeDPG1TT/otcO/49gBaijYlqRA=;
- b=PAVPZVQ3pFJ/+xvmQEwN1440X3eCcBj6upYsHeeKXI3B0RhpucxHy09i
- hkIzefCqh9dTnS6rRsfFXgoipj6usfryjHuSWrdfLXOxtDB2+0rtWzJHa
- vf1NSAktukOxD/GOi1DPjXBSFx88gleSR7LrPmywJSI6jB7qLMCZn71bK
- hV7Hqixp7KEc4CTTf+2CiA/IksuMElEW75Oq0AKQcm2kTbPLrURMKCIOU
- fY+eB3mBKIR7cdZQ4UCGSKeu/ct61Zb7qbjeXGW6N8FWMznLjTMKohRGS
- E/g77vcr3UW7WnFtboCK4siQXeQQCmpd0497k1gISur4EUdSiWCG9flQr A==;
-X-CSE-ConnectionGUID: uAWrKK+4R1WeXmlcfY5ZaA==
-X-CSE-MsgGUID: tYeKhK3xT3qdgauTXm9ukg==
-X-IronPort-AV: E=McAfee;i="6800,10657,11872"; a="104533924"
-X-IronPort-AV: E=Sophos;i="6.25,218,1779174000"; d="scan'208";a="104533924"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
- by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 11 Aug 2026 09:29:26 -0700
-X-CSE-ConnectionGUID: OQFGNxD4Sju9ZuGgeUm0qQ==
-X-CSE-MsgGUID: ay9WM6ShS1+/9nuAWuskPQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.25,218,1779174000"; d="scan'208";a="261627058"
-Received: from pkubaj-desk.igk.intel.com (HELO intel.com) ([10.237.142.111])
- by orviesa006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 11 Aug 2026 09:29:25 -0700
-From: Piotr Kubaj <piotr.kubaj@intel.com>
-To: ltp@lists.linux.it
-Date: Tue, 11 Aug 2026 18:28:57 +0200
-Message-ID: <20260811162856.67654-2-piotr.kubaj@intel.com>
-X-Mailer: git-send-email 2.47.3
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id C396F1000224
+ for <ltp@lists.linux.it>; Tue, 11 Aug 2026 19:10:08 +0200 (CEST)
+Received: by mail-pj2-x06.google.com with SMTP id
+ 98e67ed59e1d1-38f25802c19so40883a91.1
+ for <ltp@lists.linux.it>; Tue, 11 Aug 2026 10:10:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20251104; t=1786468207; x=1787073007; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to:content-type;
+ bh=aV7Wwf1xYImJooNRVHvIgw44HiFFGcPDlY3XH9GcJxM=;
+ b=ZY4xZI3Uc34lA0oZv3soUeUXOJhUKW9/X1xQrWs3Rnxjj8iMCR9CFy7TUORRcKkQqp
+ 2rG6lpGMWq29aYngq/9lwL8Acwl50MimgrIpnpohe1G52S+xsllCI/K0sTb7x9tkXi4U
+ HSZw6hCIgudS70k9Rt6ODyPRcsAhVDxbgtCnvQC1Gam4fzDghQuQ2RxinOxxuPiC8Xdt
+ dICX6C5/cNslqFMe0yrtKlfO9f8+Lw8uIjFyxPlYMbAGjea6K/s+dOvo2+9lJ58f5Qvk
+ Rqw43yKAAG5Mbm2yVDNPAbDpZBEvA/YQRu0K24vknwrLpvQzPljAnHstMeeqKrjxxeil
+ Ekwg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1786468207; x=1787073007;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to:content-type;
+ bh=aV7Wwf1xYImJooNRVHvIgw44HiFFGcPDlY3XH9GcJxM=;
+ b=nCBKSkL/hZiCLj0BNA2LORom3XFwagq1QzciiFGpv0WQVBWt5fAXMiA/L4GZ75x8x6
+ C3lSnK6SOFzrGOgSRbRecLRLX4dd6weBZz9mqOXJz06DsVHKfAn8XoHsubMasZD/ZQb4
+ OKg9wZYnN0eDKb7v3p7/R2fhI4286ZlBLAOyHfY/Jic5gBRvx4sTS3cV7C4Fp0ADTsyK
+ wnbAg1J3FCGRrLVh8o+BWIFwu0+0sb+jR1Gx7qdwYxeKUJqouPbBhhIobCBPWtTlAre8
+ t4VVTiJSnS/YNDj7Cjvohhmk0Go7bA6kopl7I59FwYsLs/iXXabOCXpnQgsGd+86jezF
+ JwSQ==
+X-Gm-Message-State: AOJu0YyDEYU662sVyTXJlNiPekhNlHcZmK1G7WG1gJL6Upexap7Vk+Q2
+ ZKVrdpenO9knKe77k6ZqEQKSOFeuuYy0o8KRN82st6lukutCBsnWNh72qkFzsheo
+X-Gm-Gg: AR+sD132Dk9vIrGBD6+spl82QruH7B5DInxeYGXR9X49fn4HM0MiNf6hE3pVBKcVOSC
+ jo/5CArJmYzP84VhYCoZUGTG/cWb9xrN2bNrvSGW15OqmPB7iffOxHDV10par2H08Ar7bKdvw5e
+ IJ6DzuFFuMO2ATAcI2/9Qj61W8ExxENonjUKV4QaiRWexQnzbXJTp66TSs5cBXQ/kI2yuw79QCZ
+ 1Ocx1dnxo0k7Vuqz7I22QGPPnC7M/DiENKWD/jum63JgPIWQF0wURwC+tDRql2GAxwhDetBjCMc
+ I7vSkNqcSnNFqqDk2rOi041HBvsvO4eteNcQm/gV0D+flTOdtR7rFZXepSM/wXZ0adOiI8p8nGZ
+ hkdkOee+JOWIrfPfz8NEMnIaJ8vfwxFh4gyvQI7XGzPbBwyzLl0UuTwUA8m9TJ0I4+DtoCiuozv
+ BSCVLc2MgSr9deirSwPY+1SDfPjkvUGRKRkK5c1IJvjVm1fufAnAXOo/cKI2dLT81K6sk3Ftl6P
+ Vrqj+kSaIrcztOZygtn+GwAfRbhjpbKWI2PlC6/t4+bpn63ESZG93LV1iEmHDg2dxLLu8WJlCsR
+ aw==
+X-Received: by 2002:a17:90b:52c3:b0:38e:485c:ebd3 with SMTP id
+ 98e67ed59e1d1-392ec5a71bbmr5703881a91.15.1786468206936; 
+ Tue, 11 Aug 2026 10:10:06 -0700 (PDT)
+Received: from
+ runnervmvrwv9.vgx3we2vmjdefpcn0vneq0jovc.xx.internal.cloudapp.net
+ ([20.115.146.228]) by smtp.gmail.com with ESMTPSA id
+ 98e67ed59e1d1-392f933f5e3sm237074a91.3.2026.08.11.10.10.06
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 11 Aug 2026 10:10:06 -0700 (PDT)
+From: linuxtestproject.agent@gmail.com
+To: Piotr Kubaj <piotr.kubaj@intel.com>
+Date: Tue, 11 Aug 2026 17:10:05 +0000
+Message-ID: <20260811171005.9063-1-linuxtestproject.agent@gmail.com>
+X-Mailer: git-send-email 2.55.0
+In-Reply-To: <20260811162856.67654-2-piotr.kubaj@intel.com>
+References: <20260811162856.67654-2-piotr.kubaj@intel.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] pmc_core: add test for pkgc_blocker_residency_show
+Subject: Re: [LTP] pmc_core: add test for pkgc_blocker_residency_show
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -66,317 +91,67 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: helena.anna.dubel@intel.com, tomasz.ossowski@intel.com,
- rafael.j.wysocki@intel.com, daniel.niestepski@intel.com
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Add a test for the /sys/kernel/debug/pmc_core/pkgc_blocker_residency_show
-interface added in kernel commit d727eb1c3ede ("platform/x86/intel/pmc:
-Enable Pkgc blocking residency counter"), first released in v7.2.
+Hi Piotr,
 
-The debugfs file reports per-source counters tracking which sources kept
-the platform out of package C-states. The driver prints one line per
-counter as "%-30s %-30u", where the name is a PKGC_BLOCK_RESIDENCY_<SOURCE>
-token and the value counts the 10us intervals during which that source
-blocked a package C-state entry.
+On August 11, 2026, Piotr Kubaj wrote:
+> pmc_core: add test for pkgc_blocker_residency_show
 
-The counter set is platform specific, so rather than checking a hardcoded
-list the test samples the file twice and verifies that every line names a
-PKGC_BLOCK_RESIDENCY_ source with a numeric value, that the set of counters
-is stable across the two reads, and that no counter advanced by more than
-the elapsed wall clock time allows.
+> 	/*
+> 	 * Interval between the two samples. The PMT telemetry region behind these
+> 	 * counters refreshes at roughly 1s granularity: measured on Nova Lake, no
+> 	 * counter moved over 200ms or 500ms, while 5 of 28 moved over 1s. Sample well
+> 	 * past that so a static counter means "idle source", not "not refreshed yet".
+> 	 */
+> 	#define SAMPLE_DELAY_US 2000000
+> 	...
+> 	usleep(SAMPLE_DELAY_US);
 
-The last check is what catches real breakage. The values are u32 counting
-10us intervals, so a busy source wraps in well under a day: on Nova Lake,
-PKGC_BLOCK_RESIDENCY_PMC_LTR advances fast enough to wrap roughly every 15
-hours. The delta is therefore computed modulo 2^32, which tolerates a
-genuine wrap while turning a counter reset or backward jump into a large
-advance that the elapsed-time bound rejects. A telemetry region read at the
-wrong offset shows up the same way. At the 2s sample interval the bound
-admits about 0.01% of the u32 value space.
+Could this use bounded exponential-backoff polling instead? The fixed sleep is
+being used to synchronize the second sample with the asynchronous telemetry
+refresh, which violates the no sleep-based synchronization rule.
 
-An unchanged counter is not a failure. Most sources are idle and read 0
-permanently; on the test system 21 of 28 counters never moved. The sample
-interval is 2s because the PMT telemetry region refreshes at roughly 1s
-granularity - no counter moved over a 200ms or 500ms interval, so a shorter
-sample would make every counter look static. The plausibility bound allows
-a factor of two over the theoretical maximum, since a busy source can run
-close to it: PMC_LTR was observed at 76% of the ceiling.
+> 		if (sscanf(line, "%63s %u", name, &value) != 2) {
+> 			tst_res(TFAIL, "malformed counter line: '%s'", line);
+> 			continue;
+> 		}
+>
+> 		if (strncmp(name, PREFIX, sizeof(PREFIX) - 1)) {
 
-The debugfs file is only created for a PMC exposing a package C-state
-telemetry endpoint (pc_guid in the driver's pmc_dev_info), which currently
-means Nova Lake only. Other platforms report TCONF.
+Could this validate the complete line and require a nonempty source suffix?
+The current conversion accepts signed values, trailing tokens, and the bare
+name "PKGC_BLOCK_RESIDENCY_". If both snapshots contain such a line, it is
+recorded as a valid counter and the test can pass despite malformed output.
 
-Requires CONFIG_INTEL_PMC_CORE and CONFIG_DEBUG_FS, needs root, and is
-restricted to x86/x86_64 on GenuineIntel. The vendor check is redundant
-with the kconfig and debugfs checks, but it is evaluated first and so
-reports the actual reason rather than a missing debugfs file.
+> 	.needs_root = 1,
 
-Tested on Nova Lake running 7.2.0-rc7: 28 counters reported, TPASS.
-Fault injection against a stub file confirms the test detects a counter
-reset, an out-of-range jump, a malformed line, an unexpected counter name
-and an empty file, while still accepting a genuine u32 wrap.
+Could the high-level description explain why root is required? Tests setting
+needs_root must document the reason in the exported test description.
 
-Signed-off-by: Piotr Kubaj <piotr.kubaj@intel.com>
+>  high_freq_hwp_cap_cppc
+>  cpufreq_intel
+>  rfim01
+> +pkgc_blocker_residency_show
+
+Could the new entry be inserted alphabetically? Leaf .gitignore entries are
+required to remain sorted.
+
+Verdict - Needs revision
+
 ---
- runtest/power_management_tests                |   1 +
- testcases/kernel/power_management/.gitignore  |   1 +
- .../pkgc_blocker_residency_show.c             | 211 ++++++++++++++++++
- 3 files changed, 213 insertions(+)
- create mode 100644 testcases/kernel/power_management/pkgc_blocker_residency_show.c
+Note:
 
-diff --git a/runtest/power_management_tests b/runtest/power_management_tests
-index 5a22283d6..a3c7cab5e 100644
---- a/runtest/power_management_tests
-+++ b/runtest/power_management_tests
-@@ -2,6 +2,7 @@
- cpufreq_intel cpufreq_intel
- rfim01 rfim01
- high_freq_hwp_cap_cppc high_freq_hwp_cap_cppc
-+pkgc_blocker_residency_show pkgc_blocker_residency_show
- runpwtests03 runpwtests03.sh
- runpwtests04 runpwtests04.sh
- runpwtests06 runpwtests06.sh
-diff --git a/testcases/kernel/power_management/.gitignore b/testcases/kernel/power_management/.gitignore
-index 766f07901..a35ca3567 100644
---- a/testcases/kernel/power_management/.gitignore
-+++ b/testcases/kernel/power_management/.gitignore
-@@ -1,3 +1,4 @@
- high_freq_hwp_cap_cppc
- cpufreq_intel
- rfim01
-+pkgc_blocker_residency_show
-diff --git a/testcases/kernel/power_management/pkgc_blocker_residency_show.c b/testcases/kernel/power_management/pkgc_blocker_residency_show.c
-new file mode 100644
-index 000000000..37c752c9c
---- /dev/null
-+++ b/testcases/kernel/power_management/pkgc_blocker_residency_show.c
-@@ -0,0 +1,211 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+
-+/*
-+ * Copyright (C) 2026 Piotr Kubaj <piotr.kubaj@intel.com>
-+ */
-+
-+/*\
-+ * Verify that pkgc_blocker_residency_show reports well-formed package C-state
-+ * blocker residency counters that advance at a plausible rate.
-+ *
-+ * The intel_pmc_core driver prints one line per counter as "%-30s %-30u",
-+ * where the name is a PKGC_BLOCK_RESIDENCY_<SOURCE> token and the value counts
-+ * the 10us intervals during which <SOURCE> blocked a package C-state entry.
-+ *
-+ * The counter set is platform specific, so instead of checking a hardcoded
-+ * list the test samples the file twice and verifies that
-+ *
-+ * - every line names a PKGC_BLOCK_RESIDENCY_ source and carries a value,
-+ * - the set of counters does not change between the two reads,
-+ * - no counter advances by more than the elapsed wall clock time allows.
-+ *
-+ * The last check is the one that catches real regressions. The values are u32
-+ * counting 10us intervals, so a busy source wraps in well under a day and a
-+ * wrap is indistinguishable from a bogus read unless the delta is evaluated
-+ * modulo 2^32 and bounded by the elapsed time. A telemetry region read at the
-+ * wrong offset then shows up as an implausible jump.
-+ *
-+ * The debugfs file is only created for a PMC that exposes a package C-state
-+ * telemetry endpoint (pc_guid in the driver's pmc_dev_info), so on platforms
-+ * without one the test is not applicable.
-+ */
-+
-+#include <time.h>
-+#include "tst_clocks.h"
-+#include "tst_safe_stdio.h"
-+#include "tst_test.h"
-+#include "tst_timer.h"
-+
-+#define DEBUGFS "/sys/kernel/debug"
-+#define PATH DEBUGFS "/pmc_core/pkgc_blocker_residency_show"
-+#define PREFIX "PKGC_BLOCK_RESIDENCY_"
-+
-+/* Nova Lake reports 28 counters, leave room for future platforms */
-+#define MAX_COUNTERS 128
-+#define NAME_LEN 64
-+
-+/* Each count stands for a 10us interval spent blocking package C-state entry */
-+#define COUNTER_PERIOD_US 10
-+
-+/*
-+ * Interval between the two samples. The PMT telemetry region behind these
-+ * counters refreshes at roughly 1s granularity: measured on Nova Lake, no
-+ * counter moved over 200ms or 500ms, while 5 of 28 moved over 1s. Sample well
-+ * past that so a static counter means "idle source", not "not refreshed yet".
-+ */
-+#define SAMPLE_DELAY_US 2000000
-+
-+/*
-+ * Slack over the theoretical maximum advance. The two reads bracket the
-+ * measured interval, and a busy source can legitimately run close to the
-+ * ceiling: PKGC_BLOCK_RESIDENCY_PMC_LTR was observed at 76% of it on Nova Lake.
-+ * A factor of two keeps that clear of the limit while still rejecting a bogus
-+ * telemetry read, which overshoots by orders of magnitude.
-+ */
-+#define SLACK 2
-+
-+struct snapshot {
-+	char names[MAX_COUNTERS][NAME_LEN];
-+	uint32_t values[MAX_COUNTERS];
-+	int cnt;
-+};
-+
-+static struct snapshot first, second;
-+
-+/*
-+ * Decide whether a counter that read @old and then @new, @elapsed_us
-+ * microseconds apart, advanced plausibly.
-+ *
-+ * The values are u32 and wrap, so the advance has to be computed with modular
-+ * arithmetic rather than by comparing @new against @old. Each count stands for
-+ * COUNTER_PERIOD_US of blocked time, which bounds how far a counter can move
-+ * over a given interval.
-+ *
-+ * An unchanged counter is normal: it means that source did not block a package
-+ * C-state entry during the interval. Most counters on an idle system read 0
-+ * permanently.
-+ */
-+static int delta_plausible(uint32_t old, uint32_t new,
-+			   unsigned long long elapsed_us)
-+{
-+	uint32_t delta = new - old;
-+	unsigned long long max = elapsed_us / COUNTER_PERIOD_US;
-+
-+	return delta <= max * SLACK;
-+}
-+
-+static void read_snapshot(struct snapshot *snap)
-+{
-+	char line[256];
-+	FILE *fp;
-+
-+	snap->cnt = 0;
-+	fp = SAFE_FOPEN(PATH, "r");
-+
-+	while (fgets(line, sizeof(line), fp)) {
-+		char name[NAME_LEN];
-+		unsigned int value;
-+
-+		line[strcspn(line, "\n")] = '\0';
-+
-+		if (sscanf(line, "%63s %u", name, &value) != 2) {
-+			tst_res(TFAIL, "malformed counter line: '%s'", line);
-+			continue;
-+		}
-+
-+		if (strncmp(name, PREFIX, sizeof(PREFIX) - 1)) {
-+			tst_res(TFAIL, "counter '%s' lacks the " PREFIX " prefix", name);
-+			continue;
-+		}
-+
-+		if (snap->cnt == MAX_COUNTERS)
-+			tst_brk(TBROK, "more than %d counters reported", MAX_COUNTERS);
-+
-+		strcpy(snap->names[snap->cnt], name);
-+		snap->values[snap->cnt] = value;
-+		snap->cnt++;
-+	}
-+
-+	SAFE_FCLOSE(fp);
-+}
-+
-+static void setup(void)
-+{
-+	if (access(DEBUGFS, F_OK))
-+		tst_brk(TCONF | TERRNO, "debugfs not mounted at " DEBUGFS);
-+
-+	if (access(PATH, R_OK))
-+		tst_brk(TCONF | TERRNO, "%s not available", PATH);
-+}
-+
-+static void run(void)
-+{
-+	struct timespec start, end;
-+	unsigned long long elapsed_us;
-+	int fails = 0;
-+
-+	tst_clock_gettime(CLOCK_MONOTONIC, &start);
-+	read_snapshot(&first);
-+
-+	if (!first.cnt)
-+		tst_brk(TFAIL, "no residency counters reported");
-+
-+	usleep(SAMPLE_DELAY_US);
-+
-+	read_snapshot(&second);
-+	tst_clock_gettime(CLOCK_MONOTONIC, &end);
-+
-+	elapsed_us = tst_timespec_diff_us(end, start);
-+
-+	if (first.cnt != second.cnt) {
-+		tst_brk(TFAIL, "counter count changed between reads: %d -> %d",
-+			first.cnt, second.cnt);
-+	}
-+
-+	for (int i = 0; i < first.cnt; i++) {
-+		if (strcmp(first.names[i], second.names[i])) {
-+			tst_res(TFAIL, "counter %d renamed between reads: %s -> %s",
-+				i, first.names[i], second.names[i]);
-+			fails++;
-+			continue;
-+		}
-+
-+		tst_res(TDEBUG, "%s: %u -> %u", first.names[i],
-+			first.values[i], second.values[i]);
-+
-+		if (!delta_plausible(first.values[i], second.values[i], elapsed_us)) {
-+			tst_res(TFAIL,
-+				"%s advanced implausibly over %lluus: %u -> %u",
-+				first.names[i], elapsed_us,
-+				first.values[i], second.values[i]);
-+			fails++;
-+		}
-+	}
-+
-+	if (!fails) {
-+		tst_res(TPASS, "%d residency counters well-formed, advancing plausibly",
-+			first.cnt);
-+	}
-+}
-+
-+static struct tst_test test = {
-+	.min_kver = "7.2",
-+	.needs_cpu_vendor = "GenuineIntel",
-+	.needs_root = 1,
-+	.needs_kconfigs = (const char *const []) {
-+		"CONFIG_DEBUG_FS",
-+		"CONFIG_INTEL_PMC_CORE",
-+		NULL
-+	},
-+	.supported_archs = (const char *const []) {
-+		"x86",
-+		"x86_64",
-+		NULL
-+	},
-+	.tags = (const struct tst_tag[]) {
-+		{"linux-git", "d727eb1c3ede7c21f885ded1f1ad65b47434a9b9"},
-+		{}
-+	},
-+	.setup = setup,
-+	.test_all = run
-+};
--- 
-2.47.3
+The agent can sometimes produce false positives although often its
+findings are genuine. If you find issues with the review, please
+comment this email or ignore the suggestions.
 
----------------------------------------------------------------------
-Intel Technology Poland sp. z o.o.
-ul. Slowackiego 173 | 80-298 Gdansk | Sad Rejonowy Gdansk Polnoc | VII Wydzial Gospodarczy Krajowego Rejestru Sadowego - KRS 101882 | NIP 957-07-52-316 | Kapital zakladowy 200.000 PLN.
-Spolka oswiadcza, ze posiada status duzego przedsiebiorcy w rozumieniu ustawy z dnia 8 marca 2013 r. o przeciwdzialaniu nadmiernym opoznieniom w transakcjach handlowych.
-
-Ta wiadomosc wraz z zalacznikami jest przeznaczona dla okreslonego adresata i moze zawierac informacje poufne. W razie przypadkowego otrzymania tej wiadomosci, prosimy o powiadomienie nadawcy oraz trwale jej usuniecie; jakiekolwiek przegladanie lub rozpowszechnianie jest zabronione.
-This e-mail and any attachments may contain confidential material for the sole use of the intended recipient(s). If you are not the intended recipient, please contact the sender and delete all copies; any review or distribution by others is strictly prohibited.
-
+Regards,
+LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
