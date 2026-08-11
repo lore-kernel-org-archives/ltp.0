@@ -4,90 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 22EF4C5AC67
-	for <ltp@archiver.kernel.org>; Tue, 11 Aug 2026 09:21:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1786440072; h=to : date :
- message-id : in-reply-to : references : mime-version : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : content-type :
- content-transfer-encoding : sender : from;
- bh=6t8o1tIcKGQIIqgsqLqjK1iAoq6Ch8/JhGqdI0oXCHM=;
- b=WSu39SdY/8OCtML6Q5HqO2tsK8DrK3Pmj7bdOTC4xXAzKtSyeDpZAN7H0SugIkU4zLPbL
- x8ArXMn79DEJtYi+sWFWfdfAqDFFk2Zw2BHs9pnP5+w17CZbz0HueKn5qkLq7sYNj2TyAtb
- 2qCrAGu/uWR/ICGZIdVA8QKvHZaD5HQ=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9ECCAC5AC67
+	for <ltp@archiver.kernel.org>; Tue, 11 Aug 2026 10:03:01 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7DFF63D0EE9
-	for <ltp@archiver.kernel.org>; Tue, 11 Aug 2026 11:21:12 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id EF10C3C5AE1
+	for <ltp@archiver.kernel.org>; Tue, 11 Aug 2026 12:02:59 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 90AB43D06FC
- for <ltp@lists.linux.it>; Tue, 11 Aug 2026 11:20:53 +0200 (CEST)
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com
- [IPv6:2a00:1450:4864:20::32c])
+ by picard.linux.it (Postfix) with ESMTPS id 6FE2A3C5AE1
+ for <ltp@lists.linux.it>; Tue, 11 Aug 2026 12:02:42 +0200 (CEST)
+Received: from mail-yx2-x04.google.com (mail-yx2-x04.google.com
+ [IPv6:2607:f8b0:4864:41::4])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id BB58B200079
- for <ltp@lists.linux.it>; Tue, 11 Aug 2026 11:20:52 +0200 (CEST)
-Received: by mail-wm1-x32c.google.com with SMTP id
- 5b1f17b1804b1-496b7622a83so26973365e9.2
- for <ltp@lists.linux.it>; Tue, 11 Aug 2026 02:20:52 -0700 (PDT)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 85B18200063
+ for <ltp@lists.linux.it>; Tue, 11 Aug 2026 12:02:42 +0200 (CEST)
+Received: by mail-yx2-x04.google.com with SMTP id
+ 956f58d0204a3-664cb182f0dso888919d50.1
+ for <ltp@lists.linux.it>; Tue, 11 Aug 2026 03:02:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1786440052; x=1787044852; darn=lists.linux.it;
+ d=gmail.com; s=20251104; t=1786442561; x=1787047361; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
- :reply-to:content-type;
- bh=axWTklZFLvmPy/Dwsb8SqUQuKEaHic8aWmnN9Vjf7HY=;
- b=fIqEAl3D40R23vPBjs2ztuXO4ljdjph3ho9MYJiIcNd0QXr7io/ILnXicgoiRLo1pY
- 7v8ZncNThxs/sgbkoBMmCHWOvzaWmcVoCyQcT4Cqd5C2nLDInilFL5Nz9aG1FkK59HK8
- n2JChJawlQHXyi1XrBzs+QYb/X2qUE+sNydzlgHsKv+FSJX5CTgW+aZjQRaMikTcrhr7
- 8XWcnabjnWtqZtFOaFM/+rl7ieqPWiy7YyvT0pRrGorJ/7GH35I6p/0Z4dTB6rPTuflg
- gw5ffu4zsUwTCo7iMFhEh2eXzbGrqf6AYjJ17t0545BnV8b+Mf6u1cuBY1XLPD2pOApr
- iMRA==
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to:content-type;
+ bh=QSUGJuTJ3FTM7pUIwUWlq/5TLGlcEeOHz1pb9ZuTuLg=;
+ b=eXOVOLnOo3/HjSwtia686vgx78o7lElbSWztlgtMkgA4ou660xcg70DxHClo6PgSiB
+ 56SVS34QLUkeLF0QOywSwglbZeaIA9S6A4fJtxr6jBxG8ryk90dGDAo2TbZimxkNzVrH
+ 91QFrS0tLuRHZhs5ZEez/JXg6ql2Fn4bUYdTHSRUdxrKlze8yWHsOM6xrxKa/gKgvGuk
+ Dr/ar6IcGd3AgWQB1VDGy7DztbYb6Ek+JlU/KH5TNAI95LsINKU7tE56sgD9dLkTWswu
+ UcAsQI+wUYEZjVA/c+prwewMskcQku7zXZ2bWTrgW7GNKqE4pUyrJjO64tt3MkPxnRDt
+ VzYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1786440052; x=1787044852;
+ d=1e100.net; s=20251104; t=1786442561; x=1787047361;
  h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:to:from:x-gm-gg:x-gm-message-state:from:to
- :cc:subject:date:message-id:reply-to:content-type;
- bh=axWTklZFLvmPy/Dwsb8SqUQuKEaHic8aWmnN9Vjf7HY=;
- b=n5DBOn80slhMyjReX6sauV9TU0XBiVa8InwO+uoQGTPOi6Z389CaYgaa/Yh1YejK1n
- C0shiE0OtT9XY910WkZZZKOITQEoJqxfxWAvhK/J7378oiE171HpA6yLxx6FboIAEBXk
- 5g6fYFePBD6BINUoyKwM2YD4Pv6BjAx4E5pYUhaVKubBL5eO7W0NfYr4vS++hdQPfsPa
- yCsgROEbvz4WZd7eCc5OQhevyizlFY1gStHh+VnNqasIoxih/TeRGMwcIQe0xoqM91wb
- dJqKV8P0U1usyFFVI1z1zQaDOrp+nAj4EaFKRX/F29FIhMceZaThfE8QrC6YBFFUDwfz
- oJmw==
-X-Gm-Message-State: AOJu0YxnF5ZbjHwll5rA7/mszhIhlnBD8S/wb4ZA/3f7P99KcSvgg5Nf
- Ui87pYA4DuZRgN2Sk3iGGQ/C/4LEABCSOJfdEyh3MCpYB/djkeBvmbVSPfOTTzH5HPIMqLVp/1Q
- z30ITTSs=
-X-Gm-Gg: AR+sD12Lr3+rCrB5kiy6w+69z1k7OQ7hrDkNACY4/aO7+bNRyCNzSFFulGPN+cbJIXL
- cQGopBwS+UZCE7QsKvoywwnfojq3K7ut7azJ8I0La+un8vYl/Vr5nJQjjAHeOUOebVJyORxWJv7
- vupEadejsXLgcuCulL+Xgllo8IYlgw4n504nrqXAiRA62ue6w274mNEYMM9fUcn5OsumltEEEqp
- L9BY5k7v9uXH+0UIsErNus09ulE3UtIc3CVlIRXRQS7L2DxBLVrvE4/LRWhBEJGWmfbeFE8uVq0
- 8IsUGDkNyJJ8SFGgKfpKyh07Xc2XJj/Ngs7vNgDIXOuUFXdv76n19mEQQD4CbaPCkjQlc+pxg2U
- wqeoi4KSwW0gF0tl1IXggEOhS1N9yxfjkWRfuPXnGSoACJG/QofvOtygiErgdD05NR/z4jUkcc0
- hQn95H9pBBYeUDV8SLN4DP3PbkQhX0YQvOnneP3ocBUvYmu6xCV00wg+taUA==
-X-Received: by 2002:a05:600c:3b05:b0:499:520c:62a7 with SMTP id
- 5b1f17b1804b1-49978436f3cmr31178625e9.5.1786440052035; 
- Tue, 11 Aug 2026 02:20:52 -0700 (PDT)
-Received: from localhost ([2a07:b241:1004:8300::1000])
- by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-499788fd908sm30091565e9.13.2026.08.11.02.20.51
- for <ltp@lists.linux.it>
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to:content-type;
+ bh=QSUGJuTJ3FTM7pUIwUWlq/5TLGlcEeOHz1pb9ZuTuLg=;
+ b=qooW1F2+RibKJEg0dCeOKmAFt1khq+TOyFJkwePgoG/kQSFJYD2baveanDoivwbWD+
+ mI1UUrC3rzpPK4Ye94Z4eCJAxa+TA4QcPlL3or2IocJLK0EqnYV6Tgd6U1LHKKb9mDSG
+ BA/qBAVQW1O8k88w51criOYiVkHt3mCY6qxEIcv/S1yWd8Dc5q8KpQycEX1qXq1spjjM
+ Pux+HTabVBDZLACR//kJykG3YyZw9KtLet7o7e9UmCPzk3oW3Ua6L1Q2d4h+OT98KtGJ
+ LBwiS69IFApMVjez6X3uQXsNFjSgbGF0k3Lgjy9/fPDqlu/aivPhvoL0gpj5u8lo3o7E
+ 5XTQ==
+X-Gm-Message-State: AOJu0YxvV8ubq0mZxmRMXII5eOHPCD+UHekR5IQzIrvfbq0s3VT0qx8O
+ REg0gkRvcVtITGcNlE4UtlyAiSZJevaUhrKheEbkeQvkN5Z502t8uSmN
+X-Gm-Gg: AR+sD114W1BfWw9eGYpS5KUh9u0BwCxtWsKNzIrtr/MuBT10ofn/3weXMBUr4XToFXx
+ awPp0R6ZcdnxPBQKXMTPMFpRtiXSNc3W8nsBv8GD+8+qFv2HF39zIY3tsM8uQLH0V4SIpwRd9f2
+ Jdjk26nAXuuTEp/4GEY3GuvXmiSj2DlmhrnckEa93gsDbkZMszDioCb28tTHPvKphwSCHWgoDlU
+ Mg+DCJwKWTYYufwsrrJuITB/UjygIHkqB/vXor0j7jXF/sumSdW1gmGIEshGnrfBLEvOAlOGGbw
+ 4vBgJyMhmJsr/VwHywpRFw18IzY8JCX8UDhcTVVMjOMc+oulIXYzyiOHah1SvAeaa45VxymjswA
+ IKQhqyuBJvDlrZeqg20FmYs7ZVG4WIU9j08tfu+lWRvTu/4Cg2z7aIuhFZLtOne07kugrx6Wwsy
+ 4R6f0aoR/L77hym1cy12FOBX3Z3sCLyc9M4wcgTBRmhZZKc19+gOlFduXyno6OgWq9qtnffDfO+
+ uzjrgFvq29yunFQ5zTwh7k4yQdp4s7vFAYL2BtUl5x4lZ7xkR4h5oQOs1vAmLeSLqcAhAePaTAc
+ vL8=
+X-Received: by 2002:a05:690c:b85:b0:826:dc54:403 with SMTP id
+ 00721157ae682-82f2f6e154amr13029307b3.3.1786442561112; 
+ Tue, 11 Aug 2026 03:02:41 -0700 (PDT)
+Received: from
+ runnervmvrwv9.0z4bovtnfq5urlwfnpsoqlh1ea.ex.internal.cloudapp.net
+ ([135.232.177.162]) by smtp.gmail.com with ESMTPSA id
+ 00721157ae682-82ebeb0d1d7sm6477347b3.21.2026.08.11.03.02.39
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 11 Aug 2026 02:20:51 -0700 (PDT)
-To: ltp@lists.linux.it
-Date: Tue, 11 Aug 2026 11:20:48 +0200
-Message-ID: <20260811092050.29784-1-avinesh.kumar@suse.com>
+ Tue, 11 Aug 2026 03:02:40 -0700 (PDT)
+From: linuxtestproject.agent@gmail.com
+To: Avinesh Kumar <avinesh.kumar@suse.com>
+Date: Tue, 11 Aug 2026 10:02:38 +0000
+Message-ID: <20260811100238.4192-1-linuxtestproject.agent@gmail.com>
 X-Mailer: git-send-email 2.55.0
-In-Reply-To: <20260810103134.GA918586@pevik>
-References: <20260810103134.GA918586@pevik>
+In-Reply-To: <20260811092050.29784-1-avinesh.kumar@suse.com>
+References: <20260811092050.29784-1-avinesh.kumar@suse.com>
 MIME-Version: 1.0
 X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2] nfs_lib: Skip NFS versions disabled on server
+Subject: Re: [LTP] nfs_lib: Skip NFS versions disabled on server
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -99,133 +92,28 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Avinesh Kumar via ltp <ltp@lists.linux.it>
-Reply-To: Avinesh Kumar <avinesh.kumar@suse.com>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Avinesh Kumar <avinesh.kumar@suse.com>
+Hi Avinesh,
 
-nfs06.sh mount several NFS versions in a single run
-(e.g. "3,4.0,4.1,4.2"). If the server has disabled one of
-the requested versions (reported via /proc/fs/nfsd/versions),
-the whole test currently aborts with TBROK on the failed mount
-instead of continuing with the versions that are supported.
+On 11 Aug 2026, Avinesh Kumar wrote:
+> nfs_lib: Skip NFS versions disabled on server
 
-nfs06 1 TINFO: setup NFSv4.0, socket type tcp
-nfs06 1 TINFO: Mounting /var/tmp/LTP_nfs06.GHDqCwPYES/4.0/1
-nfs06 1 TINFO: Mounting NFS: mount -v -t nfs -o proto=tcp,vers=4.0 10.0.0.2:/var/tmp/LTP_nfs06.GHDqCwPYES/mntpoint/4.0/tcp /var/tmp/LTP_nfs06.GHDqCwPYES/4.0/1
-mount.nfs: mount(2): Invalid argument
-mount.nfs: an incorrect mount option was specified for /var/tmp/LTP_nfs06.GHDqCwPYES/4.0/1
-mount.nfs: timeout set for Wed Aug  5 08:06:38 2026
-mount.nfs: trying text-based options 'proto=tcp,vers=4.0,addr=10.0.0.2,clientaddr=10.0.0.1'
-nfs06 1 TBROK: mount command failed
+Verdict - Reviewed
 
-Add nfs_server_vers_enabled() to check /proc/fs/nfsd/versions on the
-server, and nfs_filter_versions() to drop disabled versions from
-$VERSION (keeping $SOCKET_TYPE aligned by position) before mounting.
-If none of the requested versions are enabled, TCONF as before.
-
-Signed-off-by: Avinesh Kumar <avinesh.kumar@suse.com>
 ---
- testcases/network/nfs/nfs_stress/nfs_lib.sh | 54 ++++++++++++++++++++-
- 1 file changed, 52 insertions(+), 2 deletions(-)
+Note:
 
-diff --git a/testcases/network/nfs/nfs_stress/nfs_lib.sh b/testcases/network/nfs/nfs_stress/nfs_lib.sh
-index 8bff3f23ae12..e86847151ee9 100644
---- a/testcases/network/nfs/nfs_stress/nfs_lib.sh
-+++ b/testcases/network/nfs/nfs_stress/nfs_lib.sh
-@@ -55,19 +55,24 @@ TST_NEEDS_DRIVERS="nfsd"
- # debugging whether test failures are related to veth/netns).
- LTP_NFS_NETNS_USE_LO=${LTP_NFS_NETNS_USE_LO:-}
- 
--get_socket_type()
-+get_socket_type_bare()
- {
- 	local t
- 	local k=0
- 	for t in $SOCKET_TYPE; do
- 		if [ "$k" -eq "$1" ]; then
--			echo "${t}${TST_IPV6}"
-+			echo "$t"
- 			return
- 		fi
- 		k=$(( k + 1 ))
- 	done
- }
- 
-+get_socket_type()
-+{
-+	echo "$(get_socket_type_bare "$1")${TST_IPV6}"
-+}
-+
- # directory mounted by NFS client
- get_local_dir()
- {
-@@ -109,6 +114,49 @@ nfs_server_udp_enabled()
- 	tst_rhost_run -c "grep -q \"^[# ]*udp *= *y\" /etc/nfs.conf $config"
- }
- 
-+# nfs_server_vers_enabled VERS
-+# Only returns false (1) when the server explicitly lists "-VERS" in
-+# /proc/fs/nfsd/versions. If that file is unavailable or doesn't mention
-+# VERS at all, defaults to true so the mount is still attempted.
-+nfs_server_vers_enabled()
-+{
-+	local vers="$1"
-+	local versions=" $(tst_rhost_run -c 'cat /proc/fs/nfsd/versions 2>/dev/null') "
-+
-+	case "$versions" in
-+	*" -$vers "*) return 1;;
-+	esac
-+
-+	return 0
-+}
-+
-+# Drops NFS versions the server explicitly disabled from $VERSION, keeping
-+# $SOCKET_TYPE entries aligned by position with what remains.
-+nfs_filter_versions()
-+{
-+	local v type new_version new_socket_type
-+	local n=0
-+
-+	for v in $VERSION; do
-+		type=$(get_socket_type_bare $n)
-+
-+		if nfs_server_vers_enabled "$v"; then
-+			[ "$new_version" ] && new_version="$new_version $v" || new_version="$v"
-+			[ "$new_socket_type" ] && new_socket_type="$new_socket_type $type" || new_socket_type="$type"
-+		else
-+			tst_res TCONF "NFSv$v disabled on server, skipping"
-+		fi
-+
-+		n=$(( n + 1 ))
-+	done
-+
-+	[ "$new_version" ] || \
-+		tst_brk TCONF "none of the requested NFS versions ($VERSION) are enabled on server"
-+
-+	VERSION="$new_version"
-+	SOCKET_TYPE="$new_socket_type"
-+}
-+
- nfs_setup_server()
- {
- 	local remote_dir="$1"
-@@ -198,6 +246,8 @@ nfs_setup()
- 
- 	tst_res TINFO "$(mount.nfs -V)"
- 
-+	nfs_filter_versions
-+
- 	for i in $VERSION; do
- 		type=$(get_socket_type $n)
- 		tst_res TINFO "setup NFSv$i, socket type $type"
--- 
-2.55.0
+The agent can sometimes produce false positives although often its
+findings are genuine. If you find issues with the review, please
+comment this email or ignore the suggestions.
 
+Regards,
+LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
