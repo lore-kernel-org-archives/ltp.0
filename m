@@ -4,100 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C5797C5B56A
-	for <ltp@archiver.kernel.org>; Tue, 11 Aug 2026 15:53:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 89AB2C5B56A
+	for <ltp@archiver.kernel.org>; Tue, 11 Aug 2026 16:06:16 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 534303D0E8E
-	for <ltp@archiver.kernel.org>; Tue, 11 Aug 2026 17:53:37 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id B31F23CF77A
+	for <ltp@archiver.kernel.org>; Tue, 11 Aug 2026 18:06:14 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6F74F3D0835
- for <ltp@lists.linux.it>; Tue, 11 Aug 2026 17:52:27 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 18E083CA9F0
+ for <ltp@lists.linux.it>; Tue, 11 Aug 2026 18:05:59 +0200 (CEST)
+Received: from mail-qk2-x02.google.com (mail-qk2-x02.google.com
+ [IPv6:2607:f8b0:4864:34::2])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id A3AB76001E0
- for <ltp@lists.linux.it>; Tue, 11 Aug 2026 17:52:26 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 243B981DBB;
- Tue, 11 Aug 2026 15:52:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1786463541; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=pRgJyn0UGv0TS2IWbd+Om3iiSHRn/8iPdNjWXL2UXc4=;
- b=lYJk7TWhagDPQ0DH8NTE4V9TW+xlnL9cW0q7hk7vg4Py6uAME+weeCb89XWpyOhUIyDLUI
- p+sFecymxutAcfpk3RoOyl3RTO/2Xasa2pIPoeMOn4tuWxXZiLSHSKg+zmNqW7nLpIgHoP
- dkGEW4E8SA2zMGa1hfG9BO187/fCh+A=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1786463541;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=pRgJyn0UGv0TS2IWbd+Om3iiSHRn/8iPdNjWXL2UXc4=;
- b=B5CMr24SbcLKHOGn+/0IOeUb0fMW/bzKpGw2cnGIKQPjnvqhNxCz0AFld2bKNODlBtdSFH
- JVrZtjzFmUuBXmCw==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1786463537; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=pRgJyn0UGv0TS2IWbd+Om3iiSHRn/8iPdNjWXL2UXc4=;
- b=rvcue2KMNNWqfc/YwrgJOtpw/0FA2y8fcSxWR6NCsxKhSGCczmduEzhIkGCFrb2mKa7BMD
- t4MYtucjezpM8mMzplG1ONCVN8wPI4r7Jvphl0eHjSsGj/Fq/uQZBKiGHp1fL/zLFnfGNq
- vvZe98xn0ZF0HyLN7lE3bHqpDqbzT9A=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1786463537;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=pRgJyn0UGv0TS2IWbd+Om3iiSHRn/8iPdNjWXL2UXc4=;
- b=R8hRh+pROsYMfQ7R1YhkwBsvHT+ydQgb5Vpc4Jlv5D7D7kKjetsHzrHQ1QvmXZ5TAY4I9o
- EXNgoHmQQKrQZvBQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B9AD8779BF;
- Tue, 11 Aug 2026 15:52:13 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id wNFEKS1Fe2rldAAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Tue, 11 Aug 2026 15:52:13 +0000
-From: Petr Vorel <pvorel@suse.cz>
-To: ltp@lists.linux.it
-Date: Tue, 11 Aug 2026 17:52:01 +0200
-Message-ID: <20260811155202.1744316-4-pvorel@suse.cz>
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id B4B7B20020D
+ for <ltp@lists.linux.it>; Tue, 11 Aug 2026 18:05:58 +0200 (CEST)
+Received: by mail-qk2-x02.google.com with SMTP id
+ af79cd13be357-92e51e6879fso3292885a.1
+ for <ltp@lists.linux.it>; Tue, 11 Aug 2026 09:05:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20251104; t=1786464357; x=1787069157; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to:content-type;
+ bh=bizKQTf152w1StUAb92aVjZemlh1QDpbtf2pIgUmwq4=;
+ b=T0HTOuP2LVn7rf43qPUDWAg3RQFCGhXtERVbGS1wRWEKOv+FSk15mx0QrUSRbUTM93
+ ow3eEuiymSGsOsZ5SZ5gVeJ1t/IIJZM+HoCx7PoIwE0L/C8ZiAgLDYqMGHhPiMO9thQ9
+ 3MVJk/py6hOfyAXSitUAr5eVfB6OeWvgYLBLF6/s4jPuVDwY0YRXPfe+8D0cbX9NvE6V
+ uCm1Mea7nYhTp6yoEs7Dc34vFJLF8+raO3JiCQRKMz0JM9pgPKU29tJ0m4FaHmFBJa7D
+ wLMU14prtpI3oe09Y70UiQ9GgNItCDtHKC3EJa9+E/Sl+webTUgtYgk5zAZpy9t35ae3
+ hohQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1786464357; x=1787069157;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to:content-type;
+ bh=bizKQTf152w1StUAb92aVjZemlh1QDpbtf2pIgUmwq4=;
+ b=KPhpLUXa6iYRaW+5xplFX9yJcI3P6wqU8Tmz5JPAy/MMFm6YO/ubEYWesvRxIf6euI
+ 5hxFyYkCJ6Yeg3j79t7qYs7ngdzIcUJzJ0oHQ2CXIJm6Nl2BjIrj2cw+al6XYCQ6G52w
+ ezAsLgbCokXOe63uFxzwwLJLwUXMaC7qBVTOBlg1criCVE4q6g4huj7/zg2dWFDEz3b+
+ C0Z3H8WMmRz4w5qPiimelwfABwrcrfmP8m4yF58KXukzD9ndnpVS6qZX3tYlUdO4JJRY
+ gvln0bwIMOSialg/7HOc9+Mm5aCJwVgqVE/97bgPyLoJ7N/xpEpu2c+gkf4qC+xP392y
+ ymLQ==
+X-Gm-Message-State: AOJu0Yy4Pn6pW6h2A9yXF90JfNwe15zxnTfdZHAnjMkab74IxhvviJJ7
+ CLgshsVSusfUz5mcXMR6KR9N1f9r+6kLrrSkNzwrXJeCjmepkHAI+vZs
+X-Gm-Gg: AR+sD138sbNETCRu+VYHVqXYYs+S5xvPIkLWMz7V9W3VdfGeemSSE4LDulnStGd1K7r
+ xndn/UcazMohhqwMf/pyc+rTZeDoeLFUSgeu9Lb/9ikY5EqVADK9akpnLKp0Yj2y2MJQoNsn4r3
+ 3mm0IQarxFf+GuvkAZkpLeJjh2m7vQsr4CoDnJgpX1SSL785EERXs/BJX1e4/wLeodYn01Kkskq
+ 1u0kJiMnVTZUAqJZG2xKTR+sdih7C2WSaWgMlUHcILsBPBjx/BhfYAED2i02gpiFypDkzS9kDk1
+ 7axNMvH0EryFq8qa8MXdwLcjTKzkAPacdBsfW/eTB5o+Wo6r/YQWccMlFW0BUVTqF5NxcenM4n2
+ 0wqPM3EJnLUSmR/mz1f+dWShxE1vnANk5/QbPISsaHcbgfOu89M8l+EzAX2Jsj/x48pzcV1EbF9
+ CsMZqow7g+81o+WoKAq4TUWE3XYh4PtA7bbmRFWLWa81cIKuNYGKvUhV/CXoQGpOMaxyS2ricyb
+ OnQ5szE4PJY+DMmbFaG4Mu6zWlE3iYJU5h2tJ82nW/4S/ukR/3dyQBFihROYIqz3UYB0BAhIyEk
+ 6A==
+X-Received: by 2002:a05:620a:a409:20b0:934:9fe8:6b54 with SMTP id
+ af79cd13be357-936a8f75f4emr296356485a.31.1786464357104; 
+ Tue, 11 Aug 2026 09:05:57 -0700 (PDT)
+Received: from
+ runnervmvrwv9.iamlbuy3v1luthk2jn4vllyqrc.bx.internal.cloudapp.net
+ ([20.119.103.10]) by smtp.gmail.com with ESMTPSA id
+ af79cd13be357-936a85fab4bsm138022685a.41.2026.08.11.09.05.56
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 11 Aug 2026 09:05:56 -0700 (PDT)
+From: linuxtestproject.agent@gmail.com
+To: Petr Vorel <pvorel@suse.cz>
+Date: Tue, 11 Aug 2026 16:05:55 +0000
+Message-ID: <20260811160555.9333-1-linuxtestproject.agent@gmail.com>
 X-Mailer: git-send-email 2.55.0
-In-Reply-To: <20260811155202.1744316-1-pvorel@suse.cz>
-References: <20260811155202.1744316-1-pvorel@suse.cz>
+In-Reply-To: <20260811155202.1744316-2-pvorel@suse.cz>
+References: <20260811155202.1744316-2-pvorel@suse.cz>
 MIME-Version: 1.0
-X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
- R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-1.000];
- MIME_GOOD(-0.10)[text/plain]; MIME_TRACE(0.00)[0:+];
- TO_DN_SOME(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; FROM_HAS_DN(0.00)[];
- RCPT_COUNT_THREE(0.00)[4]; FROM_EQ_ENVFROM(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:mid,suse.cz:email,imap1.dmz-prg2.suse.org:helo];
- RCVD_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3 3/4] tree: Use TST_EXP_PASS_OR_FAIL() and
- TST_EXP_FD_OR_FAIL()
+Subject: Re: [LTP] test macros: Fix TST_EXP_FD_OR_FAIL()
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -109,481 +92,61 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Shorten code with test macros.
+Hi Petr,
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
+On Tue, 11 Aug 2026, Petr Vorel wrote:
+> test macros: Fix TST_EXP_FD_OR_FAIL()
+
+--- [PATCH 3/4] ---
+
+> +	TST_EXP_PASS_OR_FAIL(finit_module(fd, "status=valid", 0), err);
+>  	if (!TST_PASS)
+>  		return;
+
+Could this return when err is nonzero as well?  An expected EKEYREJECTED
+sets TST_PASS, so the signature-enforcement path continues to
+tst_module_unload() even though the module was never loaded.  The rmmod
+retries then end the test with TBROK.  The same issue is present in
+init_module01.c.
+
+> +	TST_EXP_FD_OR_FAIL(fd = open(FILE_TRUNCATE, O_WRONLY | O_TRUNC, PERM_MODE), exp_err);
+> +	if (fd != -1) {
+> +		TST_EXP_PASS_OR_FAIL(ftruncate(fd, 10), exp_err);
+> +		SAFE_CLOSE(fd);
+>  	}
+> +
+> +	TST_EXP_FD_OR_FAIL(fd = open(FILE_TRUNCATE, O_WRONLY | O_TRUNC, PERM_MODE), exp_err);
+
+Could the first open keep O_WRONLY without O_TRUNC?  In the
+LANDLOCK_ACCESS_FS_WRITE_FILE-only variant, O_TRUNC is denied, fd remains
+-1, and the ftruncate() check is skipped.  The next identical open then
+tests O_TRUNC twice.
+
+--- [PATCH 4/4] ---
+
+> diff --git a/lib/newlib_tests/test_macros04.c b/lib/newlib_tests/test_macros04.c
+> deleted file mode 100644
+
+Could the test_macros04 entry be removed from lib/newlib_tests/.gitignore
+along with the deleted test?
+
+Verdict - Needs revision
+
 ---
- testcases/kernel/syscalls/access/access01.c   |   9 +-
- .../kernel/syscalls/arch_prctl/arch_prctl01.c |   9 +-
- testcases/kernel/syscalls/bind/bind01.c       |   9 +-
- .../kernel/syscalls/epoll_ctl/epoll_ctl06.c   |  12 +-
- .../syscalls/finit_module/finit_module01.c    |   7 +-
- .../syscalls/init_module/init_module01.c      |   7 +-
- .../kernel/syscalls/landlock/landlock08.c     |  18 +--
- .../kernel/syscalls/landlock/landlock09.c     |  10 +-
- .../kernel/syscalls/landlock/landlock10.c     |   8 +-
- .../syscalls/landlock/landlock_tester.h       | 129 ++++++------------
- 10 files changed, 66 insertions(+), 152 deletions(-)
+Note:
 
-diff --git a/testcases/kernel/syscalls/access/access01.c b/testcases/kernel/syscalls/access/access01.c
-index 66907d1279..e8d81b392f 100644
---- a/testcases/kernel/syscalls/access/access01.c
-+++ b/testcases/kernel/syscalls/access/access01.c
-@@ -236,13 +236,8 @@ static struct tcase {
- 
- static void access_test(struct tcase *tc, const char *user)
- {
--	if (tc->exp_errno) {
--		TST_EXP_FAIL(access(tc->fname, tc->mode), tc->exp_errno,
--		             "access(%s, %s) as %s", tc->fname, tc->name, user);
--	} else {
--		TST_EXP_PASS(access(tc->fname, tc->mode),
--		             "access(%s, %s) as %s", tc->fname, tc->name, user);
--	}
-+	TST_EXP_PASS_OR_FAIL(access(tc->fname, tc->mode), tc->exp_errno,
-+				 "access(%s, %s) as %s", tc->fname, tc->name, user);
- }
- 
- static void verify_access(unsigned int n)
-diff --git a/testcases/kernel/syscalls/arch_prctl/arch_prctl01.c b/testcases/kernel/syscalls/arch_prctl/arch_prctl01.c
-index 8ce905c6ce..851a5cf50a 100644
---- a/testcases/kernel/syscalls/arch_prctl/arch_prctl01.c
-+++ b/testcases/kernel/syscalls/arch_prctl/arch_prctl01.c
-@@ -50,10 +50,9 @@ static void setup(void)
- 
- static void run(unsigned int index)
- {
--	if (tag)
--		TST_EXP_PASS(arch_prctl_set(ARCH_SET_CPUID, index));
--	else
--		TST_EXP_FAIL(arch_prctl_set(ARCH_SET_CPUID, index), ENODEV);
-+	int err = tag ? 0 : ENODEV;
-+
-+	TST_EXP_PASS_OR_FAIL(arch_prctl_set(ARCH_SET_CPUID, index), err);
- 
- 	// if cpu has cpuid_fault flag, ARCH_GET_CPUID returns what has been
- 	// set: index, otherwise, returns default status: 1
-@@ -61,7 +60,7 @@ static void run(unsigned int index)
- 
- 	TEST(arch_prctl_get(ARCH_GET_CPUID));
- 	if (TST_RET == exp)
--		tst_res(TPASS, "get cpuid succeed.");
-+		tst_res(TPASS, "get cpuid succeed");
- 	else
- 		tst_res(TFAIL, "get wrong cpuid status");
- }
-diff --git a/testcases/kernel/syscalls/bind/bind01.c b/testcases/kernel/syscalls/bind/bind01.c
-index 1bf55e898d..7f27bf3b7c 100644
---- a/testcases/kernel/syscalls/bind/bind01.c
-+++ b/testcases/kernel/syscalls/bind/bind01.c
-@@ -69,12 +69,9 @@ static void verify_bind(unsigned int nr)
- {
- 	struct test_case *tcase = &tcases[nr];
- 
--	if (tcase->experrno) {
--		TST_EXP_FAIL(bind(*tcase->socket_fd, tcase->sockaddr, tcase->salen),
--				tcase->experrno, "%s", tcase->desc);
--	} else {
--		TST_EXP_PASS(bind(*tcase->socket_fd, tcase->sockaddr, tcase->salen),
--				"%s", tcase->desc);
-+	TST_EXP_PASS_OR_FAIL(bind(*tcase->socket_fd, tcase->sockaddr, tcase->salen),
-+			tcase->experrno, "%s", tcase->desc);
-+	if (TST_PASS) {
- 		SAFE_CLOSE(inet_socket);
- 		inet_socket = SAFE_SOCKET(PF_INET, SOCK_STREAM, 0);
- 	}
-diff --git a/testcases/kernel/syscalls/epoll_ctl/epoll_ctl06.c b/testcases/kernel/syscalls/epoll_ctl/epoll_ctl06.c
-index a06d996e02..69321582f1 100644
---- a/testcases/kernel/syscalls/epoll_ctl/epoll_ctl06.c
-+++ b/testcases/kernel/syscalls/epoll_ctl/epoll_ctl06.c
-@@ -52,15 +52,9 @@ static void run(void)
- 		ev.data.fd = fd.fd;
- 		err = exp_errno(fd.type);
- 
--		if (err) {
--			TST_EXP_FAIL(epoll_ctl(efd, EPOLL_CTL_ADD,
--				     fd.fd, &ev), err,
--				     "epoll_ctl() on %s", tst_fd_desc(&fd));
--		} else {
--			TST_EXP_PASS(epoll_ctl(efd, EPOLL_CTL_ADD,
--				     fd.fd, &ev),
--				     "epoll_ctl() on %s", tst_fd_desc(&fd));
--		}
-+		TST_EXP_PASS_OR_FAIL(epoll_ctl(efd, EPOLL_CTL_ADD,
-+				 fd.fd, &ev), err,
-+				 "epoll_ctl() on %s", tst_fd_desc(&fd));
- 
- 		SAFE_CLOSE(efd);
- 	}
-diff --git a/testcases/kernel/syscalls/finit_module/finit_module01.c b/testcases/kernel/syscalls/finit_module/finit_module01.c
-index 397d5a1ae4..ec14a42588 100644
---- a/testcases/kernel/syscalls/finit_module/finit_module01.c
-+++ b/testcases/kernel/syscalls/finit_module/finit_module01.c
-@@ -34,12 +34,9 @@ static void setup(void)
- 
- static void run(void)
- {
--	if (sig_enforce == 1) {
--		TST_EXP_FAIL(finit_module(fd, "status=valid", 0), EKEYREJECTED);
--		return;
--	}
-+	int err = sig_enforce == 1 ? EKEYREJECTED : 0;
- 
--	TST_EXP_PASS(finit_module(fd, "status=valid", 0));
-+	TST_EXP_PASS_OR_FAIL(finit_module(fd, "status=valid", 0), err);
- 	if (!TST_PASS)
- 		return;
- 
-diff --git a/testcases/kernel/syscalls/init_module/init_module01.c b/testcases/kernel/syscalls/init_module/init_module01.c
-index a0d4792c95..171e360f89 100644
---- a/testcases/kernel/syscalls/init_module/init_module01.c
-+++ b/testcases/kernel/syscalls/init_module/init_module01.c
-@@ -39,12 +39,9 @@ static void setup(void)
- 
- static void run(void)
- {
--	if (sig_enforce == 1) {
--		TST_EXP_FAIL(init_module(buf, sb.st_size, "status=valid"), EKEYREJECTED);
--		return;
--	}
-+	int err = sig_enforce == 1 ? EKEYREJECTED : 0;
- 
--	TST_EXP_PASS(init_module(buf, sb.st_size, "status=valid"));
-+	TST_EXP_PASS_OR_FAIL(init_module(buf, sb.st_size, "status=valid"), err);
- 	if (!TST_PASS)
- 		return;
- 
-diff --git a/testcases/kernel/syscalls/landlock/landlock08.c b/testcases/kernel/syscalls/landlock/landlock08.c
-index 770061ba0b..052b016be6 100644
---- a/testcases/kernel/syscalls/landlock/landlock08.c
-+++ b/testcases/kernel/syscalls/landlock/landlock08.c
-@@ -102,13 +102,8 @@ static void test_bind(const struct tcase *tc, const in_port_t port, const int ex
- 	create_socket(&socket, tc->family, port, tc->type);
- 	getsocket_addr(&socket, tc->family, &addr);
- 
--	if (exp_err) {
--		TST_EXP_FAIL(bind(socket.fd, addr, socket.address_size),
--			     exp_err, "bind() access on port %u", port);
--	} else {
--		TST_EXP_PASS(bind(socket.fd, addr, socket.address_size),
--			     "bind() access on port %u", port);
--	}
-+	TST_EXP_PASS_OR_FAIL(bind(socket.fd, addr, socket.address_size),
-+		exp_err, "bind() access on port %u", port);
- 
- 	SAFE_CLOSE(socket.fd);
- }
-@@ -121,13 +116,8 @@ static void test_connect(const struct tcase *tc, const in_port_t port, const int
- 	create_socket(&socket, tc->family, port, tc->type);
- 	getsocket_addr(&socket, tc->family, &addr);
- 
--	if (exp_err) {
--		TST_EXP_FAIL(connect(socket.fd, addr, socket.address_size),
--			     exp_err, "connect() on port %u", port);
--	} else {
--		TST_EXP_PASS(connect(socket.fd, addr, socket.address_size),
--			     "connect() on port %u", port);
--	}
-+	TST_EXP_PASS_OR_FAIL(connect(socket.fd, addr, socket.address_size),
-+		exp_err, "connect() on port %u", port);
- 
- 	SAFE_CLOSE(socket.fd);
- }
-diff --git a/testcases/kernel/syscalls/landlock/landlock09.c b/testcases/kernel/syscalls/landlock/landlock09.c
-index 09a762bb1b..c2d73a7085 100644
---- a/testcases/kernel/syscalls/landlock/landlock09.c
-+++ b/testcases/kernel/syscalls/landlock/landlock09.c
-@@ -35,6 +35,8 @@ static void scoped_sandbox(const char *from)
- 
- static void run_client(void)
- {
-+	int err = tst_variant == DOMAIN_CLIENT ? EPERM : 0;
-+
- 	if (tst_variant == DOMAIN_CLIENT)
- 		scoped_sandbox("client");
- 
-@@ -47,14 +49,8 @@ static void run_client(void)
- 	TST_CHECKPOINT_WAIT(0);
- 
- 	tst_res(TINFO, "Connecting to UNIX socket");
--
- 	sendsock = SAFE_SOCKET(AF_UNIX, SOCK_STREAM, 0);
--
--	if (tst_variant != DOMAIN_CLIENT)
--		TST_EXP_PASS(connect(sendsock, (struct sockaddr *)&addr, SOCKET_LENGTH));
--	else
--		TST_EXP_FAIL(connect(sendsock, (struct sockaddr *)&addr, SOCKET_LENGTH), EPERM);
--
-+	TST_EXP_PASS_OR_FAIL(connect(sendsock, (struct sockaddr *)&addr, SOCKET_LENGTH), err);
- 	SAFE_CLOSE(sendsock);
- 
- 	TST_CHECKPOINT_WAKE(0);
-diff --git a/testcases/kernel/syscalls/landlock/landlock10.c b/testcases/kernel/syscalls/landlock/landlock10.c
-index a29e3bca82..96ee40bc79 100644
---- a/testcases/kernel/syscalls/landlock/landlock10.c
-+++ b/testcases/kernel/syscalls/landlock/landlock10.c
-@@ -30,6 +30,8 @@ static void scoped_sandbox(const char *from)
- 
- static void run(void)
- {
-+	int err = tst_variant == DOMAIN_KILLER ? EPERM : 0;
-+
- 	/* isolate test inside a process so we won't stack too many
- 	 * layers (-E2BIG) when there are multiple test's iterations
- 	 */
-@@ -62,11 +64,7 @@ static void run(void)
- 
- 		TST_CHECKPOINT_WAKE(0);
- 
--		if (tst_variant == DOMAIN_KILLER)
--			TST_EXP_FAIL(kill(paused_pid, SIGKILL), EPERM);
--		else
--			TST_EXP_PASS(kill(paused_pid, SIGKILL));
--
-+		TST_EXP_PASS_OR_FAIL(kill(paused_pid, SIGKILL), err);
- 		exit(0);
- 	}
- 
-diff --git a/testcases/kernel/syscalls/landlock/landlock_tester.h b/testcases/kernel/syscalls/landlock/landlock_tester.h
-index 4e77e8a61f..3e2abd2e78 100644
---- a/testcases/kernel/syscalls/landlock/landlock_tester.h
-+++ b/testcases/kernel/syscalls/landlock/landlock_tester.h
-@@ -145,7 +145,7 @@ static void tester_cleanup_files(void)
- 	_remove_file(FILE_REGULAR);
- }
- 
--static void _test_exec(const int result)
-+static void _test_exec(const int exp_err)
- {
- 	int status;
- 	pid_t pid;
-@@ -155,16 +155,7 @@ static void _test_exec(const int result)
- 
- 	pid = SAFE_FORK();
- 	if (!pid) {
--		int rval;
--
--		if (result == TPASS) {
--			rval = execve(FILE_EXEC, args, NULL);
--			if (rval == -1)
--				tst_res(TFAIL | TERRNO, "Failed to execute test binary");
--		} else {
--			TST_EXP_FAIL(execve(FILE_EXEC, args, NULL), EACCES);
--		}
--
-+		TST_EXP_PASS_OR_FAIL(execve(FILE_EXEC, args, NULL), exp_err);
- 		_exit(1);
- 	}
- 
-@@ -172,31 +163,23 @@ static void _test_exec(const int result)
- 	if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
- 		return;
- 
--	tst_res(result, "Test binary has been executed");
-+	tst_res(exp_err ? TFAIL : TPASS, "Test binary has been executed");
- }
- 
--static void _test_write(const int result)
-+static void _test_write(const int exp_err)
- {
- 	tst_res(TINFO, "Test writing file");
- 
--	if (result == TPASS)
--		TST_EXP_FD(open(FILE_WRITE, O_WRONLY, PERM_MODE));
--	else
--		TST_EXP_FAIL(open(FILE_WRITE, O_WRONLY, PERM_MODE), EACCES);
--
-+	TST_EXP_FD_OR_FAIL(open(FILE_WRITE, O_WRONLY, PERM_MODE), exp_err);
- 	if (TST_RET != -1)
- 		SAFE_CLOSE(TST_RET);
- }
- 
--static void _test_read(const int result)
-+static void _test_read(const int exp_err)
- {
- 	tst_res(TINFO, "Test reading file");
- 
--	if (result == TPASS)
--		TST_EXP_FD(open(FILE_READ, O_RDONLY, PERM_MODE));
--	else
--		TST_EXP_FAIL(open(FILE_READ, O_RDONLY, PERM_MODE), EACCES);
--
-+	TST_EXP_FD_OR_FAIL(open(FILE_READ, O_RDONLY, PERM_MODE), exp_err);
- 	if (TST_RET != -1)
- 		SAFE_CLOSE(TST_RET);
- }
-@@ -239,122 +222,90 @@ static void _test_readdir(const int result)
- 	TST_EXP_EQ_LI(files_counted, ARRAY_SIZE(readdir_files));
- }
- 
--static void _test_rmdir(const int result)
-+static void _test_rmdir(const int exp_err)
- {
- 	tst_res(TINFO, "Test removing directory");
--
--	if (result == TPASS)
--		TST_EXP_PASS(rmdir(DIR_RMDIR));
--	else
--		TST_EXP_FAIL(rmdir(DIR_RMDIR), EACCES);
-+	TST_EXP_PASS_OR_FAIL(rmdir(DIR_RMDIR), exp_err);
- }
- 
--static void _test_rmfile(const int result)
-+static void _test_rmfile(const int exp_err)
- {
- 	tst_res(TINFO, "Test removing file");
--
--	if (result == TPASS) {
--		TST_EXP_PASS(unlink(FILE_UNLINK));
--		TST_EXP_PASS(remove(FILE_REMOVE));
--	} else {
--		TST_EXP_FAIL(unlink(FILE_UNLINK), EACCES);
--		TST_EXP_FAIL(remove(FILE_REMOVE), EACCES);
--	}
-+	TST_EXP_PASS_OR_FAIL(unlink(FILE_UNLINK), exp_err);
-+	TST_EXP_PASS_OR_FAIL(remove(FILE_REMOVE), exp_err);
- }
- 
--static void _test_make(const char *path, const int type, const int dev, const int result)
-+static void _test_make(const char *path, const int type, const int dev, const int exp_err)
- {
- 	tst_res(TINFO, "Test normal or special files creation");
--
--	if (result == TPASS)
--		TST_EXP_PASS(mknod(path, type | 0400, dev));
--	else
--		TST_EXP_FAIL(mknod(path, type | 0400, dev), EACCES);
-+	TST_EXP_PASS_OR_FAIL(mknod(path, type | 0400, dev), exp_err);
- }
- 
--static void _test_symbolic(const int result)
-+static void _test_symbolic(const int exp_err)
- {
- 	tst_res(TINFO, "Test symbolic links");
--
--	if (result == TPASS)
--		TST_EXP_PASS(symlink(FILE_SYM0, FILE_SYM1));
--	else
--		TST_EXP_FAIL(symlink(FILE_SYM0, FILE_SYM1), EACCES);
-+	TST_EXP_PASS_OR_FAIL(symlink(FILE_SYM0, FILE_SYM1), exp_err);
- }
- 
--static void _test_truncate(const int result)
-+static void _test_truncate(const int exp_err)
- {
- 	int fd;
- 
- 	tst_res(TINFO, "Test truncating file");
- 
--	if (result == TPASS) {
--		TST_EXP_PASS(truncate(FILE_TRUNCATE, 10));
--
--		fd = SAFE_OPEN(FILE_TRUNCATE, O_WRONLY, PERM_MODE);
--		if (fd != -1) {
--			TST_EXP_PASS(ftruncate(fd, 10));
--			SAFE_CLOSE(fd);
--		}
--
--		fd = TST_EXP_FD(open(FILE_TRUNCATE, O_WRONLY | O_TRUNC, PERM_MODE));
--		if (fd != -1)
--			SAFE_CLOSE(fd);
--	} else {
--		TST_EXP_FAIL(truncate(FILE_TRUNCATE, 10), EACCES);
--
--		fd = open(FILE_TRUNCATE, O_WRONLY, PERM_MODE);
--		if (fd != -1) {
--			TST_EXP_FAIL(ftruncate(fd, 10), EACCES);
--			SAFE_CLOSE(fd);
--		}
--
--		TST_EXP_FAIL(open(FILE_TRUNCATE, O_WRONLY | O_TRUNC, PERM_MODE), EACCES);
--
--		if (TST_RET != -1)
--			SAFE_CLOSE(TST_RET);
-+	TST_EXP_PASS_OR_FAIL(truncate(FILE_TRUNCATE, 10), exp_err);
-+	TST_EXP_FD_OR_FAIL(fd = open(FILE_TRUNCATE, O_WRONLY | O_TRUNC, PERM_MODE), exp_err);
-+	if (fd != -1) {
-+		TST_EXP_PASS_OR_FAIL(ftruncate(fd, 10), exp_err);
-+		SAFE_CLOSE(fd);
- 	}
-+
-+	TST_EXP_FD_OR_FAIL(fd = open(FILE_TRUNCATE, O_WRONLY | O_TRUNC, PERM_MODE), exp_err);
-+	if (fd != -1)
-+		SAFE_CLOSE(TST_RET);
- }
- 
- static void tester_run_fs_rules(const int rules, const int result)
- {
-+	int exp_err = result == TPASS ? 0 : EACCES;
-+
- 	if (rules & LANDLOCK_ACCESS_FS_EXECUTE)
--		_test_exec(result);
-+		_test_exec(exp_err);
- 
- 	if (rules & LANDLOCK_ACCESS_FS_WRITE_FILE)
--		_test_write(result);
-+		_test_write(exp_err);
- 
- 	if (rules & LANDLOCK_ACCESS_FS_READ_FILE)
--		_test_read(result);
-+		_test_read(exp_err);
- 
- 	if (rules & LANDLOCK_ACCESS_FS_READ_DIR)
- 		_test_readdir(result);
- 
- 	if (rules & LANDLOCK_ACCESS_FS_REMOVE_DIR)
--		_test_rmdir(result);
-+		_test_rmdir(exp_err);
- 
- 	if (rules & LANDLOCK_ACCESS_FS_REMOVE_FILE)
--		_test_rmfile(result);
-+		_test_rmfile(exp_err);
- 
- 	if (rules & LANDLOCK_ACCESS_FS_MAKE_REG)
--		_test_make(FILE_REGULAR, S_IFREG, 0, result);
-+		_test_make(FILE_REGULAR, S_IFREG, 0, exp_err);
- 
- 	if (strcmp(tst_device->fs_type, "vfat") &&
- 	    strcmp(tst_device->fs_type, "exfat")) {
- 		if (rules & LANDLOCK_ACCESS_FS_MAKE_CHAR)
--			_test_make(DEV_CHAR0, S_IFCHR, dev_chr, result);
-+			_test_make(DEV_CHAR0, S_IFCHR, dev_chr, exp_err);
- 
- 		if (rules & LANDLOCK_ACCESS_FS_MAKE_BLOCK)
--			_test_make(DEV_BLK0, S_IFBLK, dev_blk, result);
-+			_test_make(DEV_BLK0, S_IFBLK, dev_blk, exp_err);
- 
- 		if (rules & LANDLOCK_ACCESS_FS_MAKE_SOCK)
--			_test_make(FILE_SOCKET, S_IFSOCK, 0, result);
-+			_test_make(FILE_SOCKET, S_IFSOCK, 0, exp_err);
- 
- 		if (rules & LANDLOCK_ACCESS_FS_MAKE_FIFO)
--			_test_make(FILE_FIFO, S_IFIFO, 0, result);
-+			_test_make(FILE_FIFO, S_IFIFO, 0, exp_err);
- 
- 		if (rules & LANDLOCK_ACCESS_FS_MAKE_SYM)
--			_test_symbolic(result);
-+			_test_symbolic(exp_err);
- 	}
- 
- 	if (rules & LANDLOCK_ACCESS_FS_TRUNCATE) {
-@@ -366,7 +317,7 @@ static void tester_run_fs_rules(const int rules, const int result)
- 			return;
- 		}
- 
--		_test_truncate(result);
-+		_test_truncate(exp_err);
- 	}
- }
- 
--- 
-2.55.0
+The agent can sometimes produce false positives although often its
+findings are genuine. If you find issues with the review, please
+comment this email or ignore the suggestions.
 
+Regards,
+LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
