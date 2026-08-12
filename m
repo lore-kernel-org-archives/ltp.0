@@ -4,63 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6BD09C5B572
-	for <ltp@archiver.kernel.org>; Wed, 12 Aug 2026 12:26:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4A355C5B56A
+	for <ltp@archiver.kernel.org>; Wed, 12 Aug 2026 12:30:35 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 69D853E6CA7
-	for <ltp@archiver.kernel.org>; Wed, 12 Aug 2026 14:26:23 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 9DACE3E6CBD
+	for <ltp@archiver.kernel.org>; Wed, 12 Aug 2026 14:30:33 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1C2623E2104
- for <ltp@lists.linux.it>; Wed, 12 Aug 2026 13:27:47 +0200 (CEST)
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 8E70D3E27F7
+ for <ltp@lists.linux.it>; Wed, 12 Aug 2026 14:30:18 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id DA382600728
- for <ltp@lists.linux.it>; Wed, 12 Aug 2026 13:27:46 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1786534067; x=1818070067;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=622vYd2yiiH3mvgv5FZwmRtuAXq9cCs7RbhzuhqT55M=;
- b=IapIFs+lgORg8dnpOcZLyzYxsv8W9DZzzTFImsWPuoyf/T2CZwDyThaC
- xR+AjkItH+9ECNB8ooCHTvfoq5NMfeJaDHL+FA79uX2+mbB7ajTyQS2+U
- 8yOgQdEiQq6uS1ghBIouYPAdzuIH0kyUFHO18QS+r0P6cH+lE6y2Smu9X
- v6QqHe+TZi76qjax/C5o8/8I5DqGGmRiih+GKzupwn5FR69YtDt6k4+Qy
- zApr2lp518tusKsYSQWjDVnPodxOtXoH8jAc0szhUIdBuW02gozR4VOtL
- C2UKbP4e7YwIv+c7mn0wiO99NQSiGQTZfuoOb4rlT79mW6D+2rsrLyfyf Q==;
-X-CSE-ConnectionGUID: /Ue6uEgETjqD1qSicxagCw==
-X-CSE-MsgGUID: yRloNaGZQPm49IuaqeHw+A==
-X-IronPort-AV: E=McAfee;i="6800,10657,11872"; a="90762449"
-X-IronPort-AV: E=Sophos;i="6.25,219,1779174000"; d="scan'208";a="90762449"
-Received: from fmviesa003.fm.intel.com ([10.60.135.143])
- by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Aug 2026 04:27:45 -0700
-X-CSE-ConnectionGUID: rQxHBLuaStW7/pMEh0fgVg==
-X-CSE-MsgGUID: fQz5qxAYQL2ay7Qf4JJpTg==
-X-ExtLoop1: 1
-Received: from igk-lkp-server01.igk.intel.com (HELO igk-lkp-server01)
- ([10.211.93.152])
- by fmviesa003.fm.intel.com with ESMTP; 12 Aug 2026 04:27:43 -0700
-Received: from [10.245.245.190] (helo=frankran-MOBL)
- by igk-lkp-server01 with esmtp (Exim 4.96)
- (envelope-from <frank.ranner@intel.com>) id 1wu77V-007wLL-1d;
- Wed, 12 Aug 2026 13:27:41 +0200
-From: Frank Ranner <frank.ranner@intel.com>
-To: ltp@lists.linux.it
-Date: Wed, 12 Aug 2026 13:27:37 +0200
-Message-ID: <20260812112737.2222475-1-frank.ranner@intel.com>
-X-Mailer: git-send-email 2.53.0
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 0E46F600746
+ for <ltp@lists.linux.it>; Wed, 12 Aug 2026 14:30:17 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 7F652822E7;
+ Wed, 12 Aug 2026 12:30:17 +0000 (UTC)
+Authentication-Results: smtp-out1.suse.de;
+	none
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 632AA779B1;
+ Wed, 12 Aug 2026 12:30:17 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id m3oPFllnfGpCKwAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Wed, 12 Aug 2026 12:30:17 +0000
+Date: Wed, 12 Aug 2026 14:30:07 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20260812123007.GA1758016@pevik>
+References: <20260810160048.1040517-1-pvorel@suse.cz>
+ <20260810160048.1040517-4-pvorel@suse.cz>
+ <anxTci_fnDEztVVT@yuki.lan>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <anxTci_fnDEztVVT@yuki.lan>
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	REPLY(-4.00)[]
+X-Rspamd-Queue-Id: 7F652822E7
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
 X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Mailman-Approved-At: Wed, 12 Aug 2026 14:25:49 +0200
-Subject: [LTP] [PATCH ltp] testcases/kernel/crypto/crypto_user02.c: try
- non-generic hmac names first
+Subject: Re: [LTP] [PATCH v5 3/7] lib: Add support for max_kver to struct
+ tst_test and tst_fs
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -72,64 +73,92 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Frank Ranner <frank.ranner@intel.com>, Eric Biggers <ebiggers@google.com>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Probe plain hmac(<hash>) driver names before the legacy *-generic
-variants when selecting a viable algorithm for crypto_user02.
+Hi Cyril,
 
-Newer kernels commonly expose non-generic algorithm names while
-no longer registering the *-generic aliases, which made the current
-candidate list fall through to TCONF even when usable algorithms
-were present.
+> Hi!
+> > +/*
+> > + * Check for the maximal required kernel version.
+> > + *
+> > + * return: true if the kernel version is low enough, false otherwise.
+> > + */
+> > +static bool check_max_kver(const char *max_kver, const int brk_nosupp)
+> > +{
+> > +	char *msg;
+> > +	int dots, i, v1, v2, v3;
+> > +
+> > +	tst_parse_kver(max_kver, &v1, &v2, &v3);
+> > +
+> > +	for (i = 0, dots = 0; max_kver[i]; i++)
+> > +		dots += (max_kver[i] == '.');
+> > +
+> > +	/*
+> > +	 * For mainline kernel release without patch level (single dot e.g. "7.1")
+> > +	 * ignore v3 (the sublevel): 7.1.x is always ok.
+> > +	 * Do *not* ignore v3 on stable kernel release (2 dots, e.g. 7.1.5).
+> > +	 */
+> > +	if (tst_kvercmp(v1, v2, v3) > (dots == 1 ? 1023 : 0)) {
 
-Keeping both forms preserves compatibility with older kernels while
-avoiding kernel-version checks in the testcase logic.
+> Uff, this is quite ugly. What exactly are we trying to do?
 
-Signed-off-by: Frank Ranner <frank.ranner@intel.com>
----
- testcases/kernel/crypto/crypto_user02.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+I hoped that was explained in the comment above the code:
+ .max_kver = "7.0" should run the test not only kernel <= 7.0,
+but also all stable kernels: 7.0.x.
+OTOH if there is something backported to stable kernel and one specifies:
+.max_kver = "7.0.5" it will be compared just to <= 7.0.5.
 
-diff --git a/testcases/kernel/crypto/crypto_user02.c b/testcases/kernel/crypto/crypto_user02.c
-index 88ae800aa..c08d35c84 100644
---- a/testcases/kernel/crypto/crypto_user02.c
-+++ b/testcases/kernel/crypto/crypto_user02.c
-@@ -35,6 +35,20 @@
-  * The first algorithm, that fullfils the criteria is used for the test.
-  */
- static const char * const ALGORITHM_CANDIDATES[] = {
-+	"hmac(sha1)",
-+	"hmac(sha224)",
-+	"hmac(sha256)",
-+	"hmac(sha384)",
-+	"hmac(md5)",
-+	"hmac(sm3)",
-+	"hmac(sha512)",
-+	"hmac(rmd160)",
-+	"hmac(sha3-224)",
-+	"hmac(sha3-256)",
-+	"hmac(sha3-384)",
-+	"hmac(sha3-512)",
-+	"hmac(streebog256)",
-+	"hmac(streebog512)",
- 	"hmac(sha1-generic)",
- 	"hmac(sha224-generic)",
- 	"hmac(sha256-generic)",
--- 
-2.53.0
+Sure, this can be avoided if .max_kver = "7.0" is not inclusive,
+i.e. < 7.0 (one would have to use .max_kver = "7.1"), which is less
+intuitive, because .min_kver is inclusive).
 
----------------------------------------------------------------------
-Intel Technology Poland sp. z o.o.
-ul. Slowackiego 173 | 80-298 Gdansk | Sad Rejonowy Gdansk Polnoc | VII Wydzial Gospodarczy Krajowego Rejestru Sadowego - KRS 101882 | NIP 957-07-52-316 | Kapital zakladowy 200.000 PLN.
-Spolka oswiadcza, ze posiada status duzego przedsiebiorcy w rozumieniu ustawy z dnia 8 marca 2013 r. o przeciwdzialaniu nadmiernym opoznieniom w transakcjach handlowych.
+> Also we are missing wiring for the shell test executor:
 
-Ta wiadomosc wraz z zalacznikami jest przeznaczona dla okreslonego adresata i moze zawierac informacje poufne. W razie przypadkowego otrzymania tej wiadomosci, prosimy o powiadomienie nadawcy oraz trwale jej usuniecie; jakiekolwiek przegladanie lub rozpowszechnianie jest zabronione.
-This e-mail and any attachments may contain confidential material for the sole use of the intended recipient(s). If you are not the intended recipient, please contact the sender and delete all copies; any review or distribution by others is strictly prohibited.
+I deliberately did not add it and documented my intention in
+doc/developers/writing_tests.rst LTP C And Shell Test API Comparison table
++    * - .max_kver
++      - not implemented
 
+The reason is that it's not needed now for shell tests. But sure I can add it.
+
+Kind regards,
+Petr
+
+> iff --git a/testcases/lib/tst_run_shell.c b/testcases/lib/tst_run_shell.c
+> index 2778fb6d5..263a319bc 100644
+> --- a/testcases/lib/tst_run_shell.c
+> +++ b/testcases/lib/tst_run_shell.c
+> @@ -57,6 +57,7 @@ enum test_attr_ids {
+>         DEV_MIN_SIZE,
+>         FILESYSTEMS,
+>         FORMAT_DEVICE,
+> +       MAX_KVER,
+>         MIN_CPUS,
+>         MIN_MEM_AVAIL,
+>         MIN_KVER,
+> @@ -91,6 +92,7 @@ static ujson_obj_attr test_attrs[] = {
+>         UJSON_OBJ_ATTR_IDX(DEV_MIN_SIZE, "dev_min_size", UJSON_INT),
+>         UJSON_OBJ_ATTR_IDX(FILESYSTEMS, "filesystems", UJSON_ARR),
+>         UJSON_OBJ_ATTR_IDX(FORMAT_DEVICE, "format_device", UJSON_BOOL),
+> +       UJSON_OBJ_ATTR_IDX(MAX_KVER, "max_kver", UJSON_STR),
+>         UJSON_OBJ_ATTR_IDX(MIN_CPUS, "min_cpus", UJSON_INT),
+>         UJSON_OBJ_ATTR_IDX(MIN_MEM_AVAIL, "min_mem_avail", UJSON_INT),
+>         UJSON_OBJ_ATTR_IDX(MIN_KVER, "min_kver", UJSON_STR),
+> @@ -462,6 +464,9 @@ static void parse_metadata(void)
+>                 case FORMAT_DEVICE:
+>                         test.format_device = val.val_bool;
+>                 break;
+> +               case MAX_KVER:
+> +                       test.max_kver = strdup(val.val_str);
+> +               break;
+>                 case MIN_CPUS:
+>                         if (val.val_int <= 0)
+>                                 ujson_err(&reader, "Minimal number of cpus must be > 0");
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
