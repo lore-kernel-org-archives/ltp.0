@@ -4,101 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2C09FC5B572
-	for <ltp@archiver.kernel.org>; Wed, 12 Aug 2026 13:01:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 30866C5B572
+	for <ltp@archiver.kernel.org>; Wed, 12 Aug 2026 13:09:51 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id F2FB33E6CE4
-	for <ltp@archiver.kernel.org>; Wed, 12 Aug 2026 15:00:57 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 9483C3C9EF8
+	for <ltp@archiver.kernel.org>; Wed, 12 Aug 2026 15:09:49 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 590403CFEB3
- for <ltp@lists.linux.it>; Wed, 12 Aug 2026 15:00:42 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 41FBA3DD436
+ for <ltp@lists.linux.it>; Wed, 12 Aug 2026 15:09:34 +0200 (CEST)
+Received: from mail-pj2-x09.google.com (mail-pj2-x09.google.com
+ [IPv6:2607:f8b0:4864:39::9])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 8B4041A006EA
- for <ltp@lists.linux.it>; Wed, 12 Aug 2026 15:00:41 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id ABE4F82309;
- Wed, 12 Aug 2026 13:00:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1786539630;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=RaGsh89O5BLL054ILPwmuAiNk05IL6Yalv176hLEHhI=;
- b=WdmNODO2ziylaNuUWfVI60uBV3B8hlWE4D2zI6L1oI+3GE0sGeaPUOYo3d7ghYSkxUFXOU
- +xDsXKOqQhKUY+gTJtJYHtGBRlI+Q4L2xUp7hxKDY22wfjyTR4DtU+IrkzB8Li+GvcEEtA
- DFlemFnc4H8VszOJfaGGbFEyU6K5l4M=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1786539630;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=RaGsh89O5BLL054ILPwmuAiNk05IL6Yalv176hLEHhI=;
- b=1la7tUd+IN48zwW9TUXC9k5mxYmMnfdxomau5e42RY8XfEDK2/EwQ0c1NG6TPvR2T6JjZ3
- gp+SNbuQN9+7a8AA==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1786539626;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=RaGsh89O5BLL054ILPwmuAiNk05IL6Yalv176hLEHhI=;
- b=Jg1qMebPZ57+kHTZbKUTQTEXLSf4QZeIBztJfw4YN4z0oaWo8S4LA5prmc8D5iAjWqSHsP
- vCr4zIEw0xN7AeNpfFrA7dZjSx/arr9QMl2L7mTUIe/m1Y4lFesJeYSULLgqizg4xbNFTH
- Wbc5XikpS/43OwI5aHu6+CTKlDVE6pg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1786539626;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=RaGsh89O5BLL054ILPwmuAiNk05IL6Yalv176hLEHhI=;
- b=aU/9LTTDWbvX08ldfW/qfvuJ3K8y670K7EPT7fVWI6uQ3wi3NGcvdTDCYVKaLvq2VLRDRb
- En02zuRoNneG39CQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 87997779B1;
- Wed, 12 Aug 2026 13:00:26 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id jXlZIGpufGpnSAAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Wed, 12 Aug 2026 13:00:26 +0000
-Date: Wed, 12 Aug 2026 15:00:25 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20260812130025.GB1758016@pevik>
-References: <20260810160048.1040517-1-pvorel@suse.cz>
- <20260810160048.1040517-4-pvorel@suse.cz>
- <anxTyVyeeMo6EQfG@yuki.lan>
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id DC0A110006B6
+ for <ltp@lists.linux.it>; Wed, 12 Aug 2026 15:09:33 +0200 (CEST)
+Received: by mail-pj2-x09.google.com with SMTP id
+ 98e67ed59e1d1-38f0f8ab050so919768a91.0
+ for <ltp@lists.linux.it>; Wed, 12 Aug 2026 06:09:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20251104; t=1786540172; x=1787144972; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to:content-type;
+ bh=MV0sF7EBZ1+9uBg17UkHv6mv0yFyPsWJlScUXiAS+5Y=;
+ b=m+yLqxH00ug0hqYilpa1X/rIgJGljhRDTZYiWwdNo7dqHWxEOzq/1onq8AMrQjE1BI
+ ptHjYVoURu9oGKRtoeGn4ZnXaL82fKEForINuFmfVjAVZU0rsZdhhaTjA/1tJQwHgyEx
+ 9EmUZtzPdE1zW5CDskHT47XVxEzp8mozEXmzAzQQ/hthL+0KulTAz+ua5oQkDyiZWSD8
+ JU+b6A6UuHHrerOEqLxV3e9JMZ7h2+yM3syfn4Cxu5aR/Awlf6kp5JoL3nnubRS2MN7T
+ xN1hQ2hdZ0D0GnRFVKGilX1v8lsFSIXaLheTYowAOIq4ip7Hq1RnmiNC4T8cHZen+uO6
+ YGgg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1786540172; x=1787144972;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to:content-type;
+ bh=MV0sF7EBZ1+9uBg17UkHv6mv0yFyPsWJlScUXiAS+5Y=;
+ b=SIky68k3XdNkg+FGZGTBFwNFYCpSSgJ7yrgTtvScdbdftsfx8lavDTcf9595zxXSVG
+ RC62IO63bP28pt7Yrw4L1pyUr1Duc569r164pqwGIHZ1dU653OADNOjwahNa4Ox7F/He
+ YNAbjHS3XjzkKgaVfmkqngQFWUNHTn3LhxtEg2KXWgIyRESLg0fYgd9Lar20dyrbWbJJ
+ e6xIjVWrKstZuWwoAfwiI5soARm71+bOF+B9Kkv453wNJU31EY8RE5ZGrJareCKqfiAF
+ nFBuwQXdassnEjdhpfy7IgLef94DTUpNZSipTqSH9gMCZurzvoH5kaOXVGN9zY0BMwcj
+ pHvg==
+X-Gm-Message-State: AOJu0Ywgs+sG+xdPENNo9ucKVTIb2P43IMRnaLa8+1kg67yJD4OoaYc8
+ pTInpjQssIzb0/Bw119/y42JBrkNBohHGqS2pSdoJTh3hMNhoBLxNgsw
+X-Gm-Gg: AR+sD12U7HyRFczWWcuFKtPdHpmlsw0RqeaLpBanOA2noS0K1AU2UkxzY0mojcTsQ+K
+ foekLIyeMNcL6uflq+d8i2UJK3cF/ZSrFMhx0sasQ8h3m03urf50r5DBFmOk9EpRqL38l3oTo8o
+ Q1Ax6vAAISmmHzTlp2k956ChvZdb97WzNkfr0MCDEH4pkDd+oy8lTKpeOKyFhWvvbBDNb6J563E
+ ks4oHmJHxKLO+lsbQ8IVKF6givLs3QnrRoJi1G0zwchgkt/2JZ6h5X4Ipi1VnM+z1OK20dxB765
+ IYtQBg6h2KOUb/KP2dxwGFqlY4y/O3gRpQcBYlEoeTXLzIJOHvtfyftEZjNzUYW2o8hkuG1TeZn
+ u3pJpYe0L5xNb3//6mW1+4CSo01Vv4Yh4p3KvBhxVRaFgNxMT3X1TTp9sc1o7MPZPXjScHWTWxp
+ +vbKJsJy2pxrnwOr3y9LaOvBKWQMhsookhqBhTS4SQN03tjarMkrgG6ip0N9VTK5lL8WS2EiRoA
+ jU4y/MDpCtRO5afvZepRnTtDabhKzMzxwJWtJNj1ygZbLb0CyeomicWF8YmgbYbQ7oX8o+iXWeu
+ bw==
+X-Received: by 2002:a17:90b:2783:b0:38e:64b0:8bce with SMTP id
+ 98e67ed59e1d1-393014b0169mr6034791a91.20.1786540171846; 
+ Wed, 12 Aug 2026 06:09:31 -0700 (PDT)
+Received: from
+ runnervmvrwv9.h0til1qxdkvunc1k3rnb33aecf.yx.internal.cloudapp.net
+ ([57.151.137.215]) by smtp.gmail.com with ESMTPSA id
+ 5a478bee46e88-31cf628e42asm13958799eec.15.2026.08.12.06.09.30
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 12 Aug 2026 06:09:31 -0700 (PDT)
+From: linuxtestproject.agent@gmail.com
+To: Frank Ranner <frank.ranner@intel.com>
+Date: Wed, 12 Aug 2026 13:09:30 +0000
+Message-ID: <20260812130930.9202-1-linuxtestproject.agent@gmail.com>
+X-Mailer: git-send-email 2.55.0
+In-Reply-To: <20260812112737.2222475-1-frank.ranner@intel.com>
+References: <20260812112737.2222475-1-frank.ranner@intel.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <anxTyVyeeMo6EQfG@yuki.lan>
-X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- RCVD_VIA_SMTP_AUTH(0.00)[]; MISSING_XM_UA(0.00)[];
- MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
- RCVD_TLS_ALL(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; FROM_HAS_DN(0.00)[];
- RCPT_COUNT_FIVE(0.00)[5]; FROM_EQ_ENVFROM(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:replyto]; 
- RCVD_COUNT_TWO(0.00)[2]; REPLYTO_EQ_FROM(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v5 3/7] lib: Add support for max_kver to struct
- tst_test and tst_fs
+Subject: Re: [LTP] testcases/kernel/crypto/crypto_user02.c: try non-generic
+ hmac names first
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -110,66 +92,57 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
 Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Cyril,
+Hi Frank,
 
-> Hi!
-> > diff --git a/include/tst_test.h b/include/tst_test.h
-> > index c69362485e..30c32b844e 100644
-> > --- a/include/tst_test.h
-> > +++ b/include/tst_test.h
-> > @@ -280,6 +280,9 @@ struct tst_ulimit_val {
-> >   *
-> >   * @min_kver: A minimum kernel version supporting the filesystem which has been
-> >   *            created with mkfs.
-> > + *
-> > + * @max_kver: A maximum kernel version supporting the filesystem which has been
-> > + *            created with mkfs.
-> >   */
-> >  struct tst_fs {
-> >  	const char *type;
-> > @@ -292,6 +295,7 @@ struct tst_fs {
-> >  	const void *mnt_data;
+On Wed, 12 Aug 2026, Frank Ranner wrote:
+> testcases/kernel/crypto/crypto_user02.c: try non-generic hmac names first
 
-> >  	const char *min_kver;
-> > +	const char *max_kver;
+> +	"hmac(sha1)",
+> +	"hmac(sha224)",
+> +	"hmac(sha256)",
+> +	"hmac(sha384)",
+> +	"hmac(md5)",
+> +	"hmac(sm3)",
+> +	"hmac(sha512)",
+> +	"hmac(rmd160)",
+> +	"hmac(sha3-224)",
+> +	"hmac(sha3-256)",
+> +	"hmac(sha3-384)",
+> +	"hmac(sha3-512)",
+> +	"hmac(streebog256)",
+> +	"hmac(streebog512)",
 
-> Also I would consider not adding this, it may feel like we are
-> completing something, but in reality we are adding interface that is
-> very unlikely to be ever used.
+[Major] Could these be replaced with actual deletable instance driver names?
+The strings are copied into cru_driver_name, but these new values are
+algorithm names.
 
-You're probably right. When I started this there were 3 tests and I thought there
-would be more. I also thought this would be useful info in the metadata.  But
-in later versions it turn out 2 of them are to be removed. Now I double checked
-"tst_kvercmp >" code and it looks like none of them applies to .max_kver usage.
-I agree that a single test is not enough as a reason to have it in the metadata.
-Maybe there will be more in the future, but really just a few.
+On Linux 7.2, CRYPTO_MSG_NEWALG first misses the exact driver-name lookup
+for "hmac(sha256)", then finds the non-instance "hmac-sha256-lib" driver by
+its cra_name and returns success. CRYPTO_MSG_DELALG subsequently requires an
+exact driver-name match, cannot find "hmac(sha256)", and returns ENOENT.
 
-=> I should probably send yet another version where I implement the skip in the
-setup. Could you please comment these 2 commits (I would not resend them)?
+Consequently, the setup loop rejects every newly added candidate and still
+reaches TCONF when the legacy *-generic instances are absent. The 7.2 HMAC
+shash template instead produces deletable hmac-shash(<driver>) instance
+names.
 
-* [v5,4/7] creat07: Avoid timeout on the test failure
-https://patchwork.kernel.org/project/ltp/patch/20260810160048.1040517-5-pvorel@suse.cz/
+Verdict - Needs revision
 
-* [v5,5/7] creat07: execve04: Remove version check, add linux-git
-https://patchwork.kernel.org/project/ltp/patch/20260810160048.1040517-6-pvorel@suse.cz/
+---
+Note:
 
-I also find things related to min_kver (will be a separate effort unrelated to
-this):
-* ioctl10.c: tst_kvercmp detection for old kernels might be solved by
-replacing to kconfig check => need to check.
-* statx04.c is skipping on btrfs based on tst_kvercmp(). This could define
-.filesystems instead of .skip_filesystems (btrfs with .min_kver).
-* unlink09.c as well (tmpfs with .min_kver)
+The agent can sometimes produce false positives although often its
+findings are genuine. If you find issues with the review, please
+comment this email or ignore the suggestions.
 
-Kind regards,
-Petr
+Regards,
+LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
