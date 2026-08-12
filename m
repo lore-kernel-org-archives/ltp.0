@@ -4,78 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C4863C5CFDB
-	for <ltp@archiver.kernel.org>; Wed, 12 Aug 2026 11:05:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AE9DCC5AD5A
+	for <ltp@archiver.kernel.org>; Wed, 12 Aug 2026 11:07:17 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id DABBD3E6C98
-	for <ltp@archiver.kernel.org>; Wed, 12 Aug 2026 13:05:45 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 087453E6C9E
+	for <ltp@archiver.kernel.org>; Wed, 12 Aug 2026 13:07:16 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 4E7F13DC3E9
- for <ltp@lists.linux.it>; Wed, 12 Aug 2026 13:05:29 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ by picard.linux.it (Postfix) with ESMTPS id 749E23DC3E9
+ for <ltp@lists.linux.it>; Wed, 12 Aug 2026 13:07:01 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id BE2BD1000741
- for <ltp@lists.linux.it>; Wed, 12 Aug 2026 13:05:28 +0200 (CEST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id C3F29140017D
+ for <ltp@lists.linux.it>; Wed, 12 Aug 2026 13:06:59 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id C37593E4A;
- Wed, 12 Aug 2026 11:05:19 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id A43E23E54;
+ Wed, 12 Aug 2026 11:06:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1786532723; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1786532814; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=74TXcgTNGJM/OgxSZwivQlMRWI9fisOOG5q/3xmtFC0=;
- b=OV9qwTaFDYcP2VOCHxEyZShcccLNxryepbRCDF4a2vJJWMPXkjfHaBSLFbdqYBubPuXfOV
- /2etEGl0FoKimq/s09J1JIrf7CHG4voGiPhLbiRc5OqxqhLbtNT0tmZRmZhtkmkE0xeKGJ
- f3EQpTDF9GoZXBnWe7Xkrok4uRG8ImQ=
+ bh=SZh6qyHSm+gO1dVAZ7fnVFS7EBGpCi3MoDxE6SM2OEw=;
+ b=aCz8uGJk+88eT06qO4ZNJSBtOgkIgodlMh9LlNAnLl1+bxCJBosXHjPNj8B+4jeM0U+lWn
+ MfMiPCQUcTvV4pIybiIKYvZk9m/JrtKW403G6Z/R1L4El31yELVjNAHkiZqhLZmVft3lDR
+ RNrf7d56sa6fkicA1dFcPxVBf4CTk1U=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1786532723;
+ s=susede2_ed25519; t=1786532814;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=74TXcgTNGJM/OgxSZwivQlMRWI9fisOOG5q/3xmtFC0=;
- b=/T+ZizE4S5o/cltLY6HUTq8X0rZ+x5pjGSP/0+MsvPU4zf+PIU9g76d2H6DEWacVKtJlD5
- rQYwkx044pm+0MCw==
+ bh=SZh6qyHSm+gO1dVAZ7fnVFS7EBGpCi3MoDxE6SM2OEw=;
+ b=kwjpUamzCOtHu7at4jl6hcXUDma3GfSLCzP1yWSByoUUeplY9W3hlzDv4EKsTCw7uy9AYd
+ krtKtRm5mtQEoDDQ==
 Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=OT2USl7r;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="4/W44Gma"
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=kPPWQ5PN;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=SSUhypOJ
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1786532719; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1786532810; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=74TXcgTNGJM/OgxSZwivQlMRWI9fisOOG5q/3xmtFC0=;
- b=OT2USl7rEH2x0nRB2b6ctUSNyxEziJED2B3Oy06H3KVFosIIfKvRw4bcjaFhNyG2iKG7bm
- gDj3ThYFokhU0nxefEHPtFnEf43kblqvS7KoFOpuU5alLps2tF6Yx28sdjs3MB3OWLAmCH
- O1fiqMT3JQ+TJWMn3J2NoYRws+h3poQ=
+ bh=SZh6qyHSm+gO1dVAZ7fnVFS7EBGpCi3MoDxE6SM2OEw=;
+ b=kPPWQ5PN658GM6SFbLIHo9yoOJ74IgYfvkA/nyKXY8f6zZaaZJyRKsofLJ5sW6i0XnF/fg
+ kEcXthdS5zy8PSXI/XgP33YGd8UGLb0mL5e9IjIwY3O7dHPmbDOeNCIf5DSaW/T3JHxW/6
+ Uf39d5ysGi8ZOwVf5+ro13nDVSFb0TI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1786532719;
+ s=susede2_ed25519; t=1786532810;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=74TXcgTNGJM/OgxSZwivQlMRWI9fisOOG5q/3xmtFC0=;
- b=4/W44GmauFPUT5op9DBNBL5iygNm9Ir7TbaLrM8Bgrl9W9lSk37Soq4rIaVKKNGj8XRKn1
- L4xIIwEkY9ZfLzBg==
+ bh=SZh6qyHSm+gO1dVAZ7fnVFS7EBGpCi3MoDxE6SM2OEw=;
+ b=SSUhypOJuVJ9NFhKkA64+dZxkzHES5hoh+WQUyTCmvNTYp6WCXpXZdK2rDGHAcDeKWDIyR
+ AICjZzPad0R9YLDw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B2019779B1;
- Wed, 12 Aug 2026 11:05:19 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 93EB5779B1;
+ Wed, 12 Aug 2026 11:06:50 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id F+eaKm9TfGo/WAAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Wed, 12 Aug 2026 11:05:19 +0000
-Date: Wed, 12 Aug 2026 13:05:22 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 3QLEIspTfGoTWgAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Wed, 12 Aug 2026 11:06:50 +0000
+Date: Wed, 12 Aug 2026 13:06:49 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
 To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <anxTci_fnDEztVVT@yuki.lan>
+Message-ID: <anxTyVyeeMo6EQfG@yuki.lan>
 References: <20260810160048.1040517-1-pvorel@suse.cz>
  <20260810160048.1040517-4-pvorel@suse.cz>
 MIME-Version: 1.0
@@ -94,12 +95,12 @@ X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
  RCPT_COUNT_THREE(0.00)[3]; RCVD_COUNT_TWO(0.00)[2];
  TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[yuki.lan:mid,suse.cz:email,suse.cz:dkim,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:dkim,yuki.lan:mid,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
  DKIM_TRACE(0.00)[suse.cz:+]
-X-Rspamd-Queue-Id: C37593E4A
+X-Rspamd-Queue-Id: A43E23E54
 X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
 X-Rspamd-Action: no action
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH v5 3/7] lib: Add support for max_kver to struct
  tst_test and tst_fs
@@ -121,65 +122,29 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> +/*
-> + * Check for the maximal required kernel version.
+> diff --git a/include/tst_test.h b/include/tst_test.h
+> index c69362485e..30c32b844e 100644
+> --- a/include/tst_test.h
+> +++ b/include/tst_test.h
+> @@ -280,6 +280,9 @@ struct tst_ulimit_val {
+>   *
+>   * @min_kver: A minimum kernel version supporting the filesystem which has been
+>   *            created with mkfs.
 > + *
-> + * return: true if the kernel version is low enough, false otherwise.
-> + */
-> +static bool check_max_kver(const char *max_kver, const int brk_nosupp)
-> +{
-> +	char *msg;
-> +	int dots, i, v1, v2, v3;
-> +
-> +	tst_parse_kver(max_kver, &v1, &v2, &v3);
-> +
-> +	for (i = 0, dots = 0; max_kver[i]; i++)
-> +		dots += (max_kver[i] == '.');
-> +
-> +	/*
-> +	 * For mainline kernel release without patch level (single dot e.g. "7.1")
-> +	 * ignore v3 (the sublevel): 7.1.x is always ok.
-> +	 * Do *not* ignore v3 on stable kernel release (2 dots, e.g. 7.1.5).
-> +	 */
-> +	if (tst_kvercmp(v1, v2, v3) > (dots == 1 ? 1023 : 0)) {
+> + * @max_kver: A maximum kernel version supporting the filesystem which has been
+> + *            created with mkfs.
+>   */
+>  struct tst_fs {
+>  	const char *type;
+> @@ -292,6 +295,7 @@ struct tst_fs {
+>  	const void *mnt_data;
+>  
+>  	const char *min_kver;
+> +	const char *max_kver;
 
-Uff, this is quite ugly. What exactly are we trying to do?
-
-
-Also we are missing wiring for the shell test executor:
-
-iff --git a/testcases/lib/tst_run_shell.c b/testcases/lib/tst_run_shell.c
-index 2778fb6d5..263a319bc 100644
---- a/testcases/lib/tst_run_shell.c
-+++ b/testcases/lib/tst_run_shell.c
-@@ -57,6 +57,7 @@ enum test_attr_ids {
-        DEV_MIN_SIZE,
-        FILESYSTEMS,
-        FORMAT_DEVICE,
-+       MAX_KVER,
-        MIN_CPUS,
-        MIN_MEM_AVAIL,
-        MIN_KVER,
-@@ -91,6 +92,7 @@ static ujson_obj_attr test_attrs[] = {
-        UJSON_OBJ_ATTR_IDX(DEV_MIN_SIZE, "dev_min_size", UJSON_INT),
-        UJSON_OBJ_ATTR_IDX(FILESYSTEMS, "filesystems", UJSON_ARR),
-        UJSON_OBJ_ATTR_IDX(FORMAT_DEVICE, "format_device", UJSON_BOOL),
-+       UJSON_OBJ_ATTR_IDX(MAX_KVER, "max_kver", UJSON_STR),
-        UJSON_OBJ_ATTR_IDX(MIN_CPUS, "min_cpus", UJSON_INT),
-        UJSON_OBJ_ATTR_IDX(MIN_MEM_AVAIL, "min_mem_avail", UJSON_INT),
-        UJSON_OBJ_ATTR_IDX(MIN_KVER, "min_kver", UJSON_STR),
-@@ -462,6 +464,9 @@ static void parse_metadata(void)
-                case FORMAT_DEVICE:
-                        test.format_device = val.val_bool;
-                break;
-+               case MAX_KVER:
-+                       test.max_kver = strdup(val.val_str);
-+               break;
-                case MIN_CPUS:
-                        if (val.val_int <= 0)
-                                ujson_err(&reader, "Minimal number of cpus must be > 0");
-
-
+Also I would consider not adding this, it may feel like we are
+completing something, but in reality we are adding interface that is
+very unlikely to be ever used.
 
 -- 
 Cyril Hrubis
