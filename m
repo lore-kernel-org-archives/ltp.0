@@ -4,63 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EAA18C5B572
-	for <ltp@archiver.kernel.org>; Thu, 13 Aug 2026 15:25:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C7DDDC5CFCF
+	for <ltp@archiver.kernel.org>; Thu, 13 Aug 2026 16:04:22 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 3AA043C6149
-	for <ltp@archiver.kernel.org>; Thu, 13 Aug 2026 17:25:01 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id F2D823C6F71
+	for <ltp@archiver.kernel.org>; Thu, 13 Aug 2026 18:04:20 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 3A9953C27E6
- for <ltp@lists.linux.it>; Thu, 13 Aug 2026 17:24:44 +0200 (CEST)
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 23C453C2150
+ for <ltp@lists.linux.it>; Thu, 13 Aug 2026 18:04:06 +0200 (CEST)
+Received: from mail-oo2-x08.google.com (mail-oo2-x08.google.com
+ [IPv6:2607:f8b0:4864:31::8])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 005D8200905
- for <ltp@lists.linux.it>; Thu, 13 Aug 2026 17:24:42 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1786634683; x=1818170683;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=mvESTVqXOs7flZ0tvG67yiDPOIXZHenbb7GJusTK1BU=;
- b=NWAJRe1s/KxeH3l0uNzTZwg1tNhQry12TsYBMpsXQzrurdXOMioV0m58
- Wt2X0cRknH/zTOS99dUUYKsXuAqRR4g5Ox+uD6fmkRfiFAe7Ft4kVXIgh
- ew4iHYjyTKnxEeZ0Isxi4rakADPExzRuZLe5vCi4J9PyusgrFnJ+1jfkc
- P+s7ecgnqynU9gu56s5UAHAOW1Yv7vGgl3dNJMP2ZiWa77Gx/OAjr8ezJ
- TQZuQfekazSXQF/JakAzeMbMbFM6WHKIIwGXmaxcZIiXcVIRJpO1jnmId
- KDXe74NtXVP1Y88pnfLYCzfOQRrZbC9eoKbuomat95CHU1AMyCeW22RtC A==;
-X-CSE-ConnectionGUID: vEUfTj+7RlSPq9QkPuUH+Q==
-X-CSE-MsgGUID: Dt7dBvxdSG2p+/7iKm+1KA==
-X-IronPort-AV: E=McAfee;i="6800,10657,11874"; a="89731164"
-X-IronPort-AV: E=Sophos;i="6.25,221,1779174000"; d="scan'208";a="89731164"
-Received: from fmviesa005.fm.intel.com ([10.60.135.145])
- by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 13 Aug 2026 08:24:40 -0700
-X-CSE-ConnectionGUID: 6lLHX7cQSXWXUOSRiPlvUg==
-X-CSE-MsgGUID: 39RzyejvRbWb5W6ZWtwrcg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.25,221,1779174000"; d="scan'208";a="269159199"
-Received: from igk-lkp-server01.igk.intel.com (HELO igk-lkp-server01)
- ([10.211.93.152])
- by fmviesa005.fm.intel.com with ESMTP; 13 Aug 2026 08:24:38 -0700
-Received: from [10.245.244.58] (helo=frankran-MOBL)
- by igk-lkp-server01 with esmtp (Exim 4.96)
- (envelope-from <frank.ranner@intel.com>) id 1wuXIK-00GzfF-0Z;
- Thu, 13 Aug 2026 17:24:36 +0200
-From: Frank Ranner <frank.ranner@intel.com>
-To: ltp@lists.linux.it
-Date: Thu, 13 Aug 2026 17:24:33 +0200
-Message-ID: <20260813152433.73259-1-frank.ranner@intel.com>
-X-Mailer: git-send-email 2.53.0
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 9E1671A00646
+ for <ltp@lists.linux.it>; Thu, 13 Aug 2026 18:04:05 +0200 (CEST)
+Received: by mail-oo2-x08.google.com with SMTP id
+ 46e09a7af769-7e9fdad388fso13700a34.0
+ for <ltp@lists.linux.it>; Thu, 13 Aug 2026 09:04:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20251104; t=1786637044; x=1787241844; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to:content-type;
+ bh=X+PilSvWCnmVH0xI+le+9Jg8AZQWNxHhDNthtpQOGh4=;
+ b=BPGcB8I8U340bFOIwTGDAHzNXKf/DdgiCTadREiJ4PQH8iUcT7HaQdkBDtG4wTgwo4
+ qKc5SlU4V+5hGVvQ2BEDzUMSt6TgzLYQN69PfrN2GlLBp++rpo4jYtWVgtP+Mnu0jEYU
+ WkgnbJulfHaTndj3Fse5UyW7MjpY8LSx1ig0hgwW1LYvtV7VCL1w/w7pZgpt/DW3PbvO
+ qz+wji+hyyynLGEnj+Bc+NcAcRkbfy4yUBnbBgQQ+n65/nMtXlD+MyCCoSsO1DHNiYXf
+ WCPAqidATmDvzqH0MgGNlqBtSZBYd0xTcK5C+kyrnUJ0modvqsNIz9BScKcYoRUU5m8u
+ TR0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1786637044; x=1787241844;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to:content-type;
+ bh=X+PilSvWCnmVH0xI+le+9Jg8AZQWNxHhDNthtpQOGh4=;
+ b=G6hsc0Rqv8Xs3yZYXA1tvk7vzYU4clWh72XYXFlcP4OpQVU6t8kCLSEN8Oeh7QCiBC
+ hcsrPR4pF6hjUNO4+RI4SIWpfkpeqUK2vwoBP6h3bqVoA+iZ4teQthvDVYp7i34AWrWf
+ Wem+Pux3dWqLWUeHs/0chwiI8bff7RPORMjrWqM+ffIPo1CAtVEltjaTv4EyjebWlBQt
+ 6wbUzgPlD6EQb3d1hJWU+I6pW47Stdo+W8864RQDyJoUgEJKrGsV5W4CkiTUShE/0YRO
+ GuJivGeLMaNn2v344oPbKy3wnb/Ldfk11cYnh1R2HstuzUIXxosqN1tkhkiql9Ic95rr
+ PAiw==
+X-Gm-Message-State: AOJu0YzsXdRzUmTzrtUiFdjB8EB+VwTr14zX3Jljda8IZhxPeZZQuCMe
+ ZZuTMaj0IAFLNnXuiEpoRArBpTEJKsCyMhXn5jbudeGa6sfyPHC1hgHY
+X-Gm-Gg: AR+sD10fcctgYuFZEPtXk50QsJQ6GWYHyGjsqJQSVfgK6hhyvQxkn88+OM0KaWzQzoR
+ zCyLFXndSEfP1w0E1cDti0tUEGUcSlmqzxYTx7tZngAlfxwC8GZunPke7jhmEybPTJEsytT+zF3
+ Eb8NL3R0Tk0mIot6aV+ZXB6rbGGpHrW3UKYnBbdv84hZ9RvltmOLGhtvd845z3YM5cMH+F4kUpG
+ gYHrLVm3cCG015hOeDb0Pd9EHi47kFBL11pzCiTR0lDfVxBVGVeaESskcokcfA8xeJr7TLqFs+L
+ 0sD48IK3uC23V2tk1ca/9Shvy559U2DLUGL7cNHdpNKOkLyjnYtpjOf+wAHdjHS7NmBH9F15M4N
+ 4q6gOI+JLSyoiYk7cyJ3p5HIHJpo0spYlu7TNbLJ4b7X/RG0lEQwVdMauT8KdXyoGq1h+foOzse
+ SbMeXlZri9eNedQaVPLHazUrgjU1MPcVfUb9W3mYxPeZdd8mvnft/PXLW7w5/+Xf4xgnKz8m8tm
+ GXszBz3pegSPghNkKmGgVp35BdQwhDxtx6lapUyHyU6RIXLUXA8ie4UIQBo9HeaDxVgoQ9kSPYn
+ 9A==
+X-Received: by 2002:a05:6830:67d9:b0:7dc:c7aa:22c7 with SMTP id
+ 46e09a7af769-7f3ca310348mr6189885a34.0.1786637044024; 
+ Thu, 13 Aug 2026 09:04:04 -0700 (PDT)
+Received: from
+ runnervmvrwv9.oibkqik1sgtutjdscjavv13dxh.gx.internal.cloudapp.net
+ ([52.242.242.185]) by smtp.gmail.com with ESMTPSA id
+ 46e09a7af769-7f3c974c65esm2457150a34.0.2026.08.13.09.04.03
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Thu, 13 Aug 2026 09:04:03 -0700 (PDT)
+From: linuxtestproject.agent@gmail.com
+To: Frank Ranner <frank.ranner@intel.com>
+Date: Thu, 13 Aug 2026 16:04:02 +0000
+Message-ID: <20260813160402.9147-1-linuxtestproject.agent@gmail.com>
+X-Mailer: git-send-email 2.55.0
+In-Reply-To: <20260813152433.73259-1-frank.ranner@intel.com>
+References: <20260813152433.73259-1-frank.ranner@intel.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 ltp] testcases/kernel/crypto/crypto_user02.c: fix
- hmac candidate probing
+Subject: Re: [LTP] testcases/kernel/crypto/crypto_user02.c: fix hmac
+ candidate probing
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -72,285 +92,56 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Frank Ranner <frank.ranner@intel.com>, Eric Biggers <ebiggers@google.com>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Commit a4be708b4 ("try non-generic hmac names first") added a list of
-plain algorithm names (e.g. "hmac(sha256)") that was probed by copying
-each string directly into cru_driver_name, the same way the pre-existing
-"-generic" fallback names were already being probed.
+Hi Frank,
 
-That approach relies on the newly (or already) registered algorithm's
-actual cra_driver_name being identical to the probed string, which is
-not guaranteed. On current kernels, "hmac(sha256)" is satisfied by a
-non-instance "hmac-sha256-lib" driver matched via the loose cra_name
-fallback in crypto_alg_match(), while template instantiation of "hmac"
-produces driver names such as "hmac-shash(sha256-generic)". Since
-CRYPTO_MSG_DELALG always requires an exact cru_driver_name match, every
-one of the new candidates fails to delete, and setup() silently falls
-through to the legacy "-generic" names, which are themselves absent on
-kernels that dropped the generic hash implementations. The net effect
-is that the test still reports "No viable algorithm found" on affected
-kernels, unchanged from before the commit.
+On August 13, 2026, Frank Ranner wrote:
+> testcases/kernel/crypto/crypto_user02.c: fix hmac candidate probing
 
-Fix this by not guessing the driver name at all. Probe each candidate
-by algorithm name (cru_name) instead of driver name, which lets the
-kernel resolve it however it currently does, then use a new
-CRYPTO_MSG_GETALG request to ask the kernel what driver name actually
-satisfies that algorithm. Only that authoritative, kernel-reported
-driver name is used for the deletability check and for the later
-CRYPTO_MSG_DELALG calls in the actual race loop. The race loop's own
-CRYPTO_MSG_NEWALG calls also switch to adding by algorithm name, since
-re-instantiating the same driver on each iteration requires the
-template-parseable "hmac(...)" form rather than its resulting driver
-name.
+> +		rc = tst_crypto_add_alg(ctx, &alg);
+> +		if (rc != 0 && rc != -EEXIST)
+> +			continue;
+> +
+> +		memset(&report, 0, sizeof(report));
+> +		strcpy(report.cru_name, ALGORITHM_CANDIDATES[i]);
+> +		if (tst_crypto_get_alg(ctx, &report) != 0)
+>  			continue;
+>  
+>  		/* it also has to be deletable */
+> +		rc = tst_crypto_del_alg(ctx, &report, 1000);
 
-This adds tst_crypto_get_alg() to the shared crypto netlink helpers,
-built directly on the existing low-level tst_netlink send/recv
-primitives, so any future crypto test needing to resolve a driver name
-can reuse it instead of re-deriving this logic.
+Could -EEXIST candidates be skipped here? If this result refers to an
+already-registered, unused template instance, GETALG selects it and DELALG
+removes global crypto state that the test did not create. Such instances
+remain registered after their users release them and are deletable once the
+reference count permits it, so cleanup does not restore the original state.
 
-Verified locally: on a live 7.0 kernel, all of the plain hmac(<hash>)
-candidates for sha1/sha224/sha256/sha384/md5 resolve to permanent
-"-lib"-style drivers and are correctly rejected as non-deletable, while
-hmac(sm3) resolves to a genuine "hmac(sm3-avx)" template instance and
-is correctly selected; the race loop then runs to completion cleanly.
-Rebuilding the pre-fix version of this file on the same kernel confirms
-it falls through every new candidate and only succeeds via the legacy
-"hmac(sm3-generic)" fallback, reproducing the reported failure mode.
+This can also leave another implementation with the same cru_name. The race
+loop then gets -EEXIST from every NEWALG request, creates no larval, accepts
+-ENOENT from the fixed-driver DELALG request, and falsely passes. Could setup
+require successful creation rather than accepting an existing registration?
 
-Fixes: c05a44cf ("testcases/kernel/crypto/crypto_user02.c: try non-generic hmac names first")
-Signed-off-by: Frank Ranner <frank.ranner@intel.com>
+> Commit a4be708b4 ("try non-generic hmac names first") added a list of
+
+Could this use c05a44cf instead? a4be708b4 does not resolve in the local LTP
+history, while the Fixes tag identifies the same subject as c05a44cf.
+
+Verdict - Needs revision
+
 ---
- include/tst_crypto.h                    | 22 +++++++++
- lib/tst_crypto.c                        | 42 ++++++++++++++++
- testcases/kernel/crypto/crypto_user02.c | 64 ++++++++++++++++++-------
- 3 files changed, 110 insertions(+), 18 deletions(-)
+Note:
 
-diff --git a/include/tst_crypto.h b/include/tst_crypto.h
-index 4511adf22..db71a5f3b 100644
---- a/include/tst_crypto.h
-+++ b/include/tst_crypto.h
-@@ -54,4 +54,26 @@ int tst_crypto_add_alg(struct tst_netlink_context *ctx,
- int tst_crypto_del_alg(struct tst_netlink_context *ctx,
- 	const struct crypto_user_alg *alg, unsigned int retries);
- 
-+/**
-+ * tst_crypto_get_alg() - Look up the kernel's registration info for an alg.
-+ *
-+ * @ctx: Initialized netlink context
-+ * @alg: On input, the algorithm to query, normally identified by cru_name.
-+ *       On success it is overwritten with the kernel's authoritative view of
-+ *       the matched algorithm, including its actual cru_driver_name.
-+ *
-+ * Sends a CRYPTO_MSG_GETALG request and parses the response. This is useful
-+ * because the driver name that ends up registered for a given algorithm name
-+ * is a kernel implementation detail: it can be satisfied by a permanent,
-+ * non-instance driver (e.g. a "-lib" fast path) or by a freshly instantiated
-+ * template, and the exact driver name string used for either has changed
-+ * across kernel versions. Looking it up dynamically avoids depending on any
-+ * particular naming convention.
-+ *
-+ * Return: On success it will return 0 otherwise it will return an inverted
-+ * error code from the crypto layer.
-+ */
-+int tst_crypto_get_alg(struct tst_netlink_context *ctx,
-+	struct crypto_user_alg *alg);
-+
- #endif	/* TST_CRYPTO_H */
-diff --git a/lib/tst_crypto.c b/lib/tst_crypto.c
-index 4495d0baa..c64dbbe44 100644
---- a/lib/tst_crypto.c
-+++ b/lib/tst_crypto.c
-@@ -50,3 +50,45 @@ int tst_crypto_del_alg(struct tst_netlink_context *ctx,
- 
- 	return ret;
- }
-+
-+int tst_crypto_get_alg(struct tst_netlink_context *ctx,
-+	struct crypto_user_alg *alg)
-+{
-+	struct nlmsghdr nh = {
-+		.nlmsg_type = CRYPTO_MSG_GETALG,
-+		.nlmsg_flags = NLM_F_REQUEST | NLM_F_ACK,
-+	};
-+	struct tst_netlink_message *response;
-+	int ret = -ENOENT;
-+	int i;
-+
-+	NETLINK_ADD_MESSAGE(ctx, &nh, alg, sizeof(struct crypto_user_alg));
-+
-+	if (tst_netlink_send(__FILE__, __LINE__, ctx) <= 0)
-+		return -tst_netlink_errno;
-+
-+	tst_netlink_wait(ctx);
-+	response = tst_netlink_recv(__FILE__, __LINE__, ctx);
-+
-+	if (!response)
-+		return -ENOENT;
-+
-+	for (i = 0; response[i].header; i++) {
-+		if (response[i].err) {
-+			if (response[i].err->error)
-+				ret = response[i].err->error;
-+			continue;
-+		}
-+
-+		if (response[i].header->nlmsg_type == CRYPTO_MSG_GETALG &&
-+		    response[i].payload_size >= sizeof(struct crypto_user_alg)) {
-+			memcpy(alg, response[i].payload,
-+				sizeof(struct crypto_user_alg));
-+			ret = 0;
-+		}
-+	}
-+
-+	tst_netlink_free_message(response);
-+
-+	return ret;
-+}
-diff --git a/testcases/kernel/crypto/crypto_user02.c b/testcases/kernel/crypto/crypto_user02.c
-index c08d35c84..a10bf0464 100644
---- a/testcases/kernel/crypto/crypto_user02.c
-+++ b/testcases/kernel/crypto/crypto_user02.c
-@@ -28,11 +28,19 @@
- #include "tst_timer.h"
- 
- /*
-- * List of possible algorithms to use try (not exhaustive).
-- * The algorithm has to be valid (i.e. the drivers must exists
-- * and be a valid combination) and it has to be deleteable.
-- * To be deletable it cannot be used by someone else.
-- * The first algorithm, that fullfils the criteria is used for the test.
-+ * List of possible algorithms to try (not exhaustive). Each entry is an
-+ * algorithm *name*, not a driver name: the driver name that ends up
-+ * registered for a given name is a kernel implementation detail that has
-+ * changed across kernel versions (e.g. "hmac(sha256)" may be satisfied by a
-+ * permanent, non-instance "hmac-sha256-lib" driver, while genuinely
-+ * instantiating the "hmac" template produces a driver such as
-+ * "hmac-shash(sha256-generic)"). setup() therefore resolves the real driver
-+ * name dynamically via CRYPTO_MSG_GETALG instead of assuming any naming
-+ * convention.
-+ *
-+ * The algorithm also has to be deletable, i.e. it must be a template
-+ * instance and not a permanent built-in driver, and it cannot be in use by
-+ * someone else. The first candidate that fulfils both criteria is used.
-  */
- static const char * const ALGORITHM_CANDIDATES[] = {
- 	"hmac(sha1)",
-@@ -65,7 +73,8 @@ static const char * const ALGORITHM_CANDIDATES[] = {
- 	"hmac(streebog512-generic)"
- };
- 
--static const char* algorithm = NULL;
-+static const char *algorithm_name;
-+static char driver_name[CRYPTO_MAX_NAME];
- static struct tst_netlink_context *ctx;
- 
- 
-@@ -74,42 +83,61 @@ static void setup(void)
- 	int rc;
- 	unsigned i;
- 	struct crypto_user_alg alg;
-+	struct crypto_user_alg report;
- 
- 	ctx = NETLINK_CREATE_CONTEXT(NETLINK_CRYPTO);
- 
- 	/* find an algorithm, that is not in use */
- 	for (i = 0; i < ARRAY_SIZE(ALGORITHM_CANDIDATES); ++i) {
- 		memset(&alg, 0, sizeof(alg));
--		strcpy(alg.cru_driver_name, ALGORITHM_CANDIDATES[i]);
-+		strcpy(alg.cru_name, ALGORITHM_CANDIDATES[i]);
- 
--		/* try to add it, to see if it is valid */
-+		/*
-+		 * Try to add it by name, to see if it is valid. -EEXIST just
-+		 * means some driver (which may or may not be deletable)
-+		 * already satisfies this name.
-+		 */
- 		rc = tst_crypto_add_alg(ctx, &alg);
--		if (rc != 0)
-+		if (rc != 0 && rc != -EEXIST)
-+			continue;
-+
-+		memset(&report, 0, sizeof(report));
-+		strcpy(report.cru_name, ALGORITHM_CANDIDATES[i]);
-+		if (tst_crypto_get_alg(ctx, &report) != 0)
- 			continue;
- 
- 		/* it also has to be deletable */
--		rc = tst_crypto_del_alg(ctx, &alg, 1000);
-+		rc = tst_crypto_del_alg(ctx, &report, 1000);
- 		if (rc == 0) {
--			algorithm = ALGORITHM_CANDIDATES[i];
-+			algorithm_name = ALGORITHM_CANDIDATES[i];
-+			strcpy(driver_name, report.cru_driver_name);
- 			break;
- 		}
- 	}
- 
--	if (!algorithm)
-+	if (!algorithm_name)
- 		tst_brk(TCONF, "No viable algorithm found");
- }
- 
- static void run(void)
- {
--	struct crypto_user_alg alg = {};
-+	struct crypto_user_alg add_alg = {};
-+	struct crypto_user_alg del_alg = {};
- 	pid_t pid;
- 	int status;
- 
--	strcpy(alg.cru_driver_name, algorithm);
-+	/*
-+	 * The add request must reference the algorithm by name so the
-+	 * kernel can parse it as "template(args)" and re-instantiate it on
-+	 * every iteration. The delete request requires an exact driver name
-+	 * match, so it uses the driver name resolved once in setup().
-+	 */
-+	strcpy(add_alg.cru_name, algorithm_name);
-+	strcpy(del_alg.cru_driver_name, driver_name);
- 
- 	tst_res(TINFO,
--		"Starting crypto_user larval deletion test using algorithm %s. May crash buggy kernels.",
--		algorithm);
-+		"Starting crypto_user larval deletion test using algorithm %s (driver %s). May crash buggy kernels.",
-+		algorithm_name, driver_name);
- 
- 	tst_timer_start(CLOCK_MONOTONIC);
- 
-@@ -120,7 +148,7 @@ static void run(void)
- 			/* Child process: execute CRYPTO_MSG_NEWALG. */
- 			ctx = NETLINK_CREATE_CONTEXT(NETLINK_CRYPTO);
- 			for (;;) {
--				TEST(tst_crypto_add_alg(ctx, &alg));
-+				TEST(tst_crypto_add_alg(ctx, &add_alg));
- 				if (TST_RET && TST_RET != -EEXIST)
- 					tst_brk(TBROK | TRERRNO,
- 						"unexpected error from tst_crypto_add_alg()");
-@@ -138,7 +166,7 @@ static void run(void)
- 		SAFE_WAIT(&status);
- 		if (!WIFSIGNALED(status) || WTERMSIG(status) != SIGKILL)
- 			tst_brk(TBROK, "child %s", tst_strstatus(status));
--		TEST(tst_crypto_del_alg(ctx, &alg, 1000));
-+		TEST(tst_crypto_del_alg(ctx, &del_alg, 1000));
- 		if (TST_RET && TST_RET != -ENOENT)
- 			tst_brk(TBROK | TRERRNO,
- 				"unexpected error from tst_crypto_del_alg()");
--- 
-2.53.0
+The agent can sometimes produce false positives although often its
+findings are genuine. If you find issues with the review, please
+comment this email or ignore the suggestions.
 
----------------------------------------------------------------------
-Intel Technology Poland sp. z o.o.
-ul. Slowackiego 173 | 80-298 Gdansk | Sad Rejonowy Gdansk Polnoc | VII Wydzial Gospodarczy Krajowego Rejestru Sadowego - KRS 101882 | NIP 957-07-52-316 | Kapital zakladowy 200.000 PLN.
-Spolka oswiadcza, ze posiada status duzego przedsiebiorcy w rozumieniu ustawy z dnia 8 marca 2013 r. o przeciwdzialaniu nadmiernym opoznieniom w transakcjach handlowych.
-
-Ta wiadomosc wraz z zalacznikami jest przeznaczona dla okreslonego adresata i moze zawierac informacje poufne. W razie przypadkowego otrzymania tej wiadomosci, prosimy o powiadomienie nadawcy oraz trwale jej usuniecie; jakiekolwiek przegladanie lub rozpowszechnianie jest zabronione.
-This e-mail and any attachments may contain confidential material for the sole use of the intended recipient(s). If you are not the intended recipient, please contact the sender and delete all copies; any review or distribution by others is strictly prohibited.
-
+Regards,
+LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
