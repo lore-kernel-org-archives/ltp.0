@@ -4,89 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2C756C5B572
-	for <ltp@archiver.kernel.org>; Thu, 13 Aug 2026 05:29:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 67556C5B572
+	for <ltp@archiver.kernel.org>; Thu, 13 Aug 2026 06:14:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1786598957; h=to : date :
- message-id : in-reply-to : references : mime-version : subject :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1786601664; h=message-id :
+ date : mime-version : to : references : in-reply-to : subject :
  list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : content-type :
- content-transfer-encoding : sender : from;
- bh=4zMiuKEvwGntPEgsZ6FhjaAQFSTeQsjqIL1Bf/mt7/g=;
- b=BCx6E8HxHMcCLv+WhN/oTpp16pl8ZYCQDNDPXnUcwJ022ZAOdRFWfJSo93jtxdOpPcCRj
- 74Ol6imI9uLTyGhQvRtlSQMORt9zt5RgvI4Dmg9Vp2EokJzQ1iTWOTg7nbd5/tEI6rHgD91
- 1EVQgBR5rwoOj3VcvxMBbbdBmrKBZ6U=
+ list-subscribe : from : reply-to : cc : content-transfer-encoding :
+ content-type : sender : from;
+ bh=ghWlo5JC6NGdxf08Zn6AtIM8+tmOPj2mi9YazzqFTjQ=;
+ b=k9lWMszkjHW+BBXd+izANAA8DU26zbsuwEzkZR6MoQgRdmW3T0Uy/MTjNXlUFBoQEg5NE
+ JhWvmSLG2q5X22YmoxYO8VrNzseDQG9PoRJLNDvWmk9KI4MNVeXG+KVQfGNoNK/7wOP7jWl
+ R9ltkYjzvIJ9YMedoEcqYJ7iH4WWShQ=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 624C43E5295
-	for <ltp@archiver.kernel.org>; Thu, 13 Aug 2026 07:29:17 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 2C0F93E6BEC
+	for <ltp@archiver.kernel.org>; Thu, 13 Aug 2026 08:14:24 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A34B83DC3E9
- for <ltp@lists.linux.it>; Thu, 13 Aug 2026 07:28:57 +0200 (CEST)
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com
- [IPv6:2a00:1450:4864:20::336])
+ by picard.linux.it (Postfix) with ESMTPS id E039D3E2832
+ for <ltp@lists.linux.it>; Thu, 13 Aug 2026 08:14:03 +0200 (CEST)
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com
+ [IPv6:2a00:1450:4864:20::429])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id B5E1E1A00649
- for <ltp@lists.linux.it>; Thu, 13 Aug 2026 07:28:56 +0200 (CEST)
-Received: by mail-wm1-x336.google.com with SMTP id
- 5b1f17b1804b1-4956869750eso1720055e9.2
- for <ltp@lists.linux.it>; Wed, 12 Aug 2026 22:28:56 -0700 (PDT)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 6828E140052C
+ for <ltp@lists.linux.it>; Thu, 13 Aug 2026 08:14:03 +0200 (CEST)
+Received: by mail-wr1-x429.google.com with SMTP id
+ ffacd0b85a97d-47fde295992so407440f8f.0
+ for <ltp@lists.linux.it>; Wed, 12 Aug 2026 23:14:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1786598936; x=1787203736; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to:content-type;
- bh=muFxrpzc7sOasDSRn0TF6U9+LPg/oxfgz0UyBLlQ0vo=;
- b=Nfbdeh/hHi5MMpg9pMRWLXqCh0lqF3ih9qnLShCPdWWoXTBtq6ZCiLc+w7u7vWgGov
- PJT2pIFmz42pdQOO9T+watrSNQB2ZAB4Zj1vPffX2jJVfi+n+LqSNPR9ml6Pr3CpzGMb
- z0Twj6maKCaL9BwEM8SOfB9/OEYxstbekz89TlaVOTN504bxck8pKxiHwnZS9Ag7VzWp
- 3RTdkr98rZUEp98ltK7wlObDGiE3zxeIP5qOePNIpbQ8v0TS8+qGa4pnuygk1J3BpGMS
- vtlUvK5+UqmC7eKbgTK/whordwFpRFtUsiNyZp+HgIELBtvBQjFv1jQo8wCKzh9nAUcc
- hPeQ==
+ d=suse.com; s=google; t=1786601643; x=1787206443; darn=lists.linux.it;
+ h=content-transfer-encoding:content-type:in-reply-to:from
+ :content-language:references:cc:to:subject:user-agent:mime-version
+ :date:message-id:from:to:cc:subject:date:message-id:reply-to
+ :content-type; bh=bQhufQxbFQhoglfmudA3mGpmVIh97kJQW/jXIsKFiPM=;
+ b=BPS0aDVOR2mYtqdnQ5iUBWHpBWSi9e7brt0Wagigau0tU/V9RNhasfps7gX/EGzO/1
+ Bz8gDNnUGZcLmNevad0jEiH1FGbAiQcwQ9yOVYcInhkI5psqCFw8mNI1hxLmyamhYEAr
+ Q/pdyLOSGCwEa86eWmSpJgCY3Jh3u/On8qGCc/SgIphLc/9A6Wl+gjOtfASjc//HU64Q
+ c4fa+wVQ1aS4OkNERICnYyzUj2YAtHA+0bnpy3Buhjgf8edYZsuqvRfXQaEQEUjAlSCc
+ C9IQslbg2XciqWfXARh9xNRtULM33kLc5s0yG0cXt46wFOmoRcSpCOgD45H1dAFmuyvA
+ Hy1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1786598936; x=1787203736;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to:content-type;
- bh=muFxrpzc7sOasDSRn0TF6U9+LPg/oxfgz0UyBLlQ0vo=;
- b=CkSchQNstrdKXVf91DMa/FxsCsfP+GPG1ioPkgy1RNZbHpuMrMmmcG0ad3xYTlIk5E
- Y8SnCB5Qv2DgMDbnlA4zMbOq9YZLONxNngrtFrl5kuytNsRh9jEIKnwbRWOPjilPlMuu
- Mr55zP6T3bBcL88jN8wBQSPtgPCay11WbYka3QwMba5pkibDhFIxmN3jj7wIt5oi4K3E
- ZTiRfDZsVOma+nliv4yqKgv48hmtqPjx2xrpV237dmo7b/h0IJ2yvI8HYEzeXucVqugz
- YNDKXXoQ8zxGwHeXMoKI1dPILFZ4K3CkqrIGSuc7eVXWJXg7ofJDOk9NnBzoEIVtxqPK
- D9Kw==
-X-Gm-Message-State: AOJu0Ywpl1Jv2djCn49Mkw0Jq4Z28HwQrV1Q4DNOoKC2VYHHYCKNNXdJ
- 2on6ORLaH/D2vz6wBWusK9z1mfcgDsVgBAlCDhaBQ0klWVvZ7vYWU7iuBzGwk60ruyKf/Z8dTlP
- 2ELs=
-X-Gm-Gg: AR+sD12DbUMq7oYLmZXpNa+L4ZD5V1HPE3Fa5md+iETe4yk+Ot4/fTt086bT8yBm7uS
- fYUdxvwcAvthKbgy0038MSDIfkedhp7j0I8uqN9OgpqYTPT86D3Ft3l/ArO/XwKaOa0tGKUH7T1
- MR+9akIYoEye29aaixHaoaiwOmFcSwI0cPYifCHDr3pOuwgRrH0Zk5RATgtTn3/13n7mFzMioEu
- gfDM2u0r5iUdt1qkkSOoLKPPtGDRisljGZ/bjJhrAUjMAiWn80bcrl4Vb+Fe0/4I/iL7cdS4QOp
- HHaeZRioxHgKPH/W+8HfzyhwLvgKnbyRcb2k0Ds4iWDkZ84h6gzZsmLMBcBTTwZF772ECRwPqng
- ymGN2XOZBEaaw2O8ETfJ4OyXm2b2bT2ztOTYNcno7u9Vtkrlqr69bhNUpfuumps+D5Dt8OLUkRp
- Yz2hVAyeULOr+T5zxYmAkvQEPDeDv64KxE25oaY2g0+iZBWrt6
-X-Received: by 2002:a05:600c:8519:b0:493:a623:d090 with SMTP id
- 5b1f17b1804b1-499821f20efmr30208295e9.10.1786598935984; 
- Wed, 12 Aug 2026 22:28:55 -0700 (PDT)
-Received: from localhost ([2a07:de40:b240:0:2ad6:ed42:2ad6:ed42])
- by smtp.gmail.com with UTF8SMTPSA id
- 5b1f17b1804b1-4998216cf97sm30791165e9.14.2026.08.12.22.28.55
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 12 Aug 2026 22:28:55 -0700 (PDT)
-To: ltp@lists.linux.it
-Date: Thu, 13 Aug 2026 05:28:40 +0000
-Message-ID: <20260813052853.22152-1-wegao@suse.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20260804010439.15195-1-wegao@suse.com>
-References: <20260804010439.15195-1-wegao@suse.com>
+ d=1e100.net; s=20251104; t=1786601643; x=1787206443;
+ h=content-transfer-encoding:content-type:in-reply-to:from
+ :content-language:references:cc:to:subject:user-agent:mime-version
+ :date:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to:content-type;
+ bh=bQhufQxbFQhoglfmudA3mGpmVIh97kJQW/jXIsKFiPM=;
+ b=kHwlY4LQOvomBEnRavXthf/W/+tYNihwW1Fo9kX+i3dn/t6jHOJmGyOyIBJWFT7kvY
+ bzReW8/d8ehqKw6NvfgpSXg9xIzb47CfxBy7CldggyuoClwdi3RZS7T3CvzpygvthaLI
+ qmVJZNxpgMtZp9K/t2sqw+eFDctzBMf8mu/Uoiem7uoJfLr0QY2V+RA8kJli3nvRQcMe
+ aF0ApZbKp663Fjr5AMywthAgi7Qd2s9gwzhSljuPUx9edmDgULDocO6dArB/WN0uExtA
+ PNUTK80OSTOs6balhqdkjLjobTEQD/DXS6Z1qjeFAzrnkTuICrZMA1Yxab6IoBmtqNBe
+ tb9A==
+X-Forwarded-Encrypted: i=1;
+ AHgh+RpTfFPDfr97AGGCm541qVnCHVYY/j0j43GPrEVewXzCJv8tF+tEPN4/Q5qZbtEzpaHwGG0=@lists.linux.it
+X-Gm-Message-State: AOJu0YytC3EtOilfhXR4zhxdzFjp36GV5f2tTHizKl9l+boL7Ey0eZJE
+ 6rGwQXxAr+cQRCt5VrzBJ6cb7FmaQQhKNOcQ/J9coNOFfotVeVlCcGAmCaZws6aCUDI=
+X-Gm-Gg: AR+sD10uM7eX8FRJgSbIEwTJNVfAdvDS4oqQnDAfPUzGY2Xve7UF4SYli+varxJCl6E
+ cfZNrwfqWSdDWejFMVvevL1WiehNrkqjFkVcGllJgiynqRj+KURQMxv5XwDUJl6Sph0/Vsa/RkN
+ SGcdKVZ2e5jHwPmCohiatiYselTdTutdAMM+lGgpeEUHuq+MWfEjbgTiT2byq+zuCByzjTByf/X
+ KrIn9tXm0986iZPOQtXchgIxfal3OkFH49HfMjzAkW4sBd19GhXhJsnG9SVqWK68mCV+EZHdfy6
+ /HRVAmW6Kxrkbm+Ks9GXBfBWA4us7cC9fWz28Xbytlw4gtptD90ruPNtgIgB9sTkOD4R2N4fR52
+ A+W5yVmHAybwqhOe3p5sIidGRuNQ3zJ/wcRFYH379C0J0tQ4G3t5TFbeoc0ZNcgDkitqIaEFKve
+ ZqN5irISuUyNVN9bW3orMp3TgtKMLqCGr78QpXp8+7BTMiU5JcvwlcDAWp0DxYTOPr2I7/nrx5r
+ JEGWA==
+X-Received: by 2002:a05:6000:2607:b0:47f:8abb:1fd2 with SMTP id
+ ffacd0b85a97d-4815a4ddacdmr4010623f8f.3.1786601642723; 
+ Wed, 12 Aug 2026 23:14:02 -0700 (PDT)
+Received: from ?IPV6:2a07:b241:1004:8300::1000? ([2a07:b241:1004:8300::1000])
+ by smtp.gmail.com with ESMTPSA id
+ ffacd0b85a97d-4815a5612d0sm3527159f8f.2.2026.08.12.23.14.01
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Wed, 12 Aug 2026 23:14:01 -0700 (PDT)
+Message-ID: <95979fc4-682a-4fa5-8833-28f9b9573be8@suse.com>
+Date: Thu, 13 Aug 2026 08:14:00 +0200
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+User-Agent: Mozilla Thunderbird
+To: Li Wang <li.wang@linux.dev>
+References: <20260813023216.79848-1-li.wang@linux.dev>
+Content-Language: en-US
+In-Reply-To: <20260813023216.79848-1-li.wang@linux.dev>
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v13] fsconfig04: Check FSCONFIG_SET_PATH
+Subject: Re: [LTP] [PATCH] syscall: set FORK in tst_sig for some old tests
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -98,240 +103,25 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Wei Gao via ltp <ltp@lists.linux.it>
-Reply-To: Wei Gao <wegao@suse.com>
-Content-Type: text/plain; charset="us-ascii"
+From: Avinesh Kumar via ltp <ltp@lists.linux.it>
+Reply-To: Avinesh Kumar <avinesh.kumar@suse.com>
+Cc: ltp@lists.linux.it, Li Wang <liwang@hygon.cn>
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-The fsconfig01.c does not test if FSCONFIG_SET_PATH has any effect;
-most of the calls there just set a dummy "sync" parameter. This test
-case aims to verify if the FSCONFIG_SET_PATH operation can be used
-to dynamically change the external journal device of an ext3 or ext4
-filesystem.
+Hi Li,
 
-Closes: https://github.com/linux-test-project/ltp/issues/1169
-Signed-off-by: Wei Gao <wegao@suse.com>
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
----
-v12-v13:
-   - Uses bool found with standard false/true logic.
-   - Resolves device node numbers portably using standard SAFE_STAT and major/minor macros on st_rdev.
-   - Fixes dangling stack pointer bugs across loop runs.
-   - Moves formatting of all loop devices into run() to guarantee full test idempotency.
-   - Removes redundant .needs_tmpdir = 1.
+Thank you for addressing this.
+Reviewed-by: Avinesh Kumar <avinesh.kumar@suse.com>
 
- runtest/syscalls                              |   1 +
- testcases/kernel/syscalls/fsconfig/.gitignore |   1 +
- .../kernel/syscalls/fsconfig/fsconfig04.c     | 174 ++++++++++++++++++
- 3 files changed, 176 insertions(+)
- create mode 100644 testcases/kernel/syscalls/fsconfig/fsconfig04.c
+Petr,
+I think we should use this solution instead of reverting the patch.
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 65fb4d1ce..13bb59cde 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -437,6 +437,7 @@ fremovexattr02 fremovexattr02
- fsconfig01 fsconfig01
- fsconfig02 fsconfig02
- fsconfig03 fsconfig03
-+fsconfig04 fsconfig04
- 
- fsmount01 fsmount01
- fsmount02 fsmount02
-diff --git a/testcases/kernel/syscalls/fsconfig/.gitignore b/testcases/kernel/syscalls/fsconfig/.gitignore
-index cfedae5f7..bd3754c34 100644
---- a/testcases/kernel/syscalls/fsconfig/.gitignore
-+++ b/testcases/kernel/syscalls/fsconfig/.gitignore
-@@ -1,3 +1,4 @@
- /fsconfig01
- /fsconfig02
- /fsconfig03
-+/fsconfig04
-diff --git a/testcases/kernel/syscalls/fsconfig/fsconfig04.c b/testcases/kernel/syscalls/fsconfig/fsconfig04.c
-new file mode 100644
-index 000000000..00468ac65
---- /dev/null
-+++ b/testcases/kernel/syscalls/fsconfig/fsconfig04.c
-@@ -0,0 +1,174 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2026 Wei Gao <wegao@suse.com>
-+ */
-+
-+/*\
-+ * This test aims to validate :manpage:`fsconfig(2)` with the
-+ * ``FSCONFIG_SET_PATH`` operation in dynamically altering the external
-+ * journal device of an ext3 or ext4 filesystem.
-+ *
-+ * Root privileges are required because the test creates and formats loop
-+ * devices, and configures filesystems.
-+ *
-+ * [Algorithm]
-+ *
-+ * - Acquire three loop devices (``dev0`` from framework, ``dev1``, ``dev2``).
-+ * - Format ``dev1`` and ``dev2`` as external journal devices with the same UUID
-+ *   (``-O journal_dev -U <uuid>``).
-+ * - Format ``dev0`` three times to cycle journal associations:
-+ *   ``dev1`` -> ``dev2`` -> ``dev1``, so both journal superblocks are consistent.
-+ * - Open ``dev0`` via :manpage:`fsopen(2)` and set the source and journal_path using
-+ *   :manpage:`fsconfig(2)` (``FSCONFIG_SET_STRING``) and
-+ *   :manpage:`fsconfig(2)` (``FSCONFIG_SET_PATH``).
-+ * - Apply ``FSCONFIG_CMD_CREATE`` and verify with ``tune2fs`` that ``dev0``'s
-+ *   journal device is now ``dev2``.
-+ *
-+ * Implementation notes:
-+ *
-+ * - To avoid ``journal UUID does not match`` error when switching external
-+ *   journal device, we have to assign the same UUID to ``dev1``/``dev2``.
-+ * - Before the :manpage:`fsconfig(2)` test, we have to format ``dev0`` associating to
-+ *   ``dev1`` -> ``dev2`` -> ``dev1``. This ensures that both ``dev1``/``dev2`` superblocks contain
-+ *   correct content. Otherwise, you will encounter errors such as
-+ *   ``EXT4-fs (loop0): External journal has more than one user (unsupported)``
-+ *   when switching the external journal device using :manpage:`fsconfig(2)`.
-+ */
-+
-+#include <stdbool.h>
-+#include <sys/stat.h>
-+#include <sys/sysmacros.h>
-+#include "tst_test.h"
-+#include "tst_safe_stdio.h"
-+#include "lapi/fsmount.h"
-+
-+#define MNTPOINT	"mntpoint"
-+#define LOOP_DEV_SIZE 10
-+#define UUID "d73c9e5e-97e4-4a9c-b17e-75a931b02660"
-+
-+static int fd = -1;
-+static char dev0[PATH_MAX];
-+static char dev1[PATH_MAX];
-+static char dev2[PATH_MAX];
-+
-+static char device_option_dev1[PATH_MAX + 16];
-+static char device_option_dev2[PATH_MAX + 16];
-+static const char *const mkfs_opts_journal_dev1[] = {"-F", "-J", device_option_dev1, NULL};
-+static const char *const mkfs_opts_journal_dev2[] = {"-F", "-J", device_option_dev2, NULL};
-+static const char *const mkfs_opts_set_UUID[] = {"-F", "-U", UUID, "-O", "journal_dev", NULL};
-+
-+static void cleanup(void)
-+{
-+	if (fd != -1)
-+		SAFE_CLOSE(fd);
-+
-+	if (dev1[0])
-+		tst_detach_device(dev1);
-+
-+	if (dev2[0])
-+		tst_detach_device(dev2);
-+}
-+
-+static void create_and_attach_loopdev(const char *filename, char *dev_path, size_t dev_path_len)
-+{
-+	if (tst_prealloc_file(filename, 1024 * 1024, LOOP_DEV_SIZE))
-+		tst_brk(TBROK, "Failed to create %s", filename);
-+
-+	if (tst_find_free_loopdev(dev_path, dev_path_len) == -1)
-+		tst_brk(TBROK, "No free loop device found for %s", filename);
-+
-+	if (tst_attach_device(dev_path, filename))
-+		tst_brk(TBROK, "Failed to attach %s to %s", filename, dev_path);
-+}
-+
-+static void setup(void)
-+{
-+	fsopen_supported_by_kernel();
-+
-+	strcpy(dev0, tst_device->dev);
-+
-+	create_and_attach_loopdev("dev1_file", dev1, sizeof(dev1));
-+	create_and_attach_loopdev("dev2_file", dev2, sizeof(dev2));
-+
-+	snprintf(device_option_dev1, sizeof(device_option_dev1), "device=%s", dev1);
-+	snprintf(device_option_dev2, sizeof(device_option_dev2), "device=%s", dev2);
-+}
-+
-+static void run(void)
-+{
-+	/* Reset dev1, dev2 and dev0 superblocks before each test run iteration */
-+	SAFE_MKFS(dev1, tst_device->fs_type, mkfs_opts_set_UUID, NULL);
-+	SAFE_MKFS(dev2, tst_device->fs_type, mkfs_opts_set_UUID, NULL);
-+	SAFE_MKFS(dev0, tst_device->fs_type, mkfs_opts_journal_dev1, NULL);
-+	SAFE_MKFS(dev0, tst_device->fs_type, mkfs_opts_journal_dev2, NULL);
-+	SAFE_MKFS(dev0, tst_device->fs_type, mkfs_opts_journal_dev1, NULL);
-+
-+	TEST(fd = fsopen(tst_device->fs_type, 0));
-+	if (fd == -1)
-+		tst_brk(TBROK | TTERRNO, "fsopen() failed");
-+
-+	TEST(fsconfig(fd, FSCONFIG_SET_STRING, "source", dev0, 0));
-+	if (TST_RET == -1)
-+		tst_brk(TBROK | TTERRNO, "fsconfig(FSCONFIG_SET_STRING) failed");
-+
-+	TEST(fsconfig(fd, FSCONFIG_SET_PATH, "journal_path", dev2, 0));
-+	if (TST_RET == -1) {
-+		if (TST_ERR == EOPNOTSUPP)
-+			tst_brk(TCONF, "fsconfig(FSCONFIG_SET_PATH) not supported");
-+		else
-+			tst_brk(TFAIL | TTERRNO, "fsconfig(FSCONFIG_SET_PATH) failed");
-+	}
-+
-+	TEST(fsconfig(fd, FSCONFIG_CMD_CREATE, NULL, NULL, 0));
-+	if (TST_RET == -1)
-+		tst_brk(TFAIL | TTERRNO, "fsconfig(FSCONFIG_CMD_CREATE) failed");
-+
-+	char path[PATH_MAX + 32];
-+	char device_str[NAME_MAX];
-+	bool found = false;
-+	struct stat st;
-+
-+	SAFE_STAT(dev2, &st);
-+	unsigned int device_num = (minor(st.st_rdev) & 0xff) | (major(st.st_rdev) << 8) |
-+				  ((minor(st.st_rdev) & ~0xff) << 12);
-+	snprintf(device_str, sizeof(device_str), "0x%04x", device_num);
-+
-+	char line[PATH_MAX];
-+	FILE *tune2fs;
-+
-+	snprintf(path, sizeof(path), "tune2fs -l %s 2>&1", dev0);
-+	tune2fs = SAFE_POPEN(path, "r");
-+
-+	while (fgets(line, PATH_MAX, tune2fs)) {
-+		if (*line && strstr(line, "Journal device:") && strstr(line, device_str)) {
-+			found = true;
-+			break;
-+		}
-+	}
-+
-+	if (found)
-+		tst_res(TPASS, "Device found in journal");
-+	else
-+		tst_res(TFAIL, "Device not found in journal");
-+
-+	pclose(tune2fs);
-+	SAFE_CLOSE(fd);
-+}
-+
-+static struct tst_test test = {
-+	.test_all = run,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.needs_root = 1,
-+	.needs_device = 1,
-+	.mntpoint = MNTPOINT,
-+	.needs_cmds = (struct tst_cmd []) {
-+		{.cmd = "tune2fs"},
-+		{}
-+	},
-+	.filesystems = (struct tst_fs []) {
-+		{.type = "ext3"},
-+		{.type = "ext4"},
-+		{}
-+	},
-+};
--- 
-2.54.0
 
+Regards,
+Avinesh
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
