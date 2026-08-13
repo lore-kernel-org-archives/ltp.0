@@ -4,47 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0CF60C5CFCF
-	for <ltp@archiver.kernel.org>; Thu, 13 Aug 2026 02:32:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D0876C5B572
+	for <ltp@archiver.kernel.org>; Thu, 13 Aug 2026 04:13:58 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id DFC7A3E7435
-	for <ltp@archiver.kernel.org>; Thu, 13 Aug 2026 04:32:47 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 9CD6E3E754C
+	for <ltp@archiver.kernel.org>; Thu, 13 Aug 2026 06:13:56 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id ECDC03E18A9
- for <ltp@lists.linux.it>; Thu, 13 Aug 2026 04:32:31 +0200 (CEST)
-Received: from mta0.migadu.com (out-128.mta0.migadu.com
- [IPv6:2001:41d0:1004:224b::80])
+ by picard.linux.it (Postfix) with ESMTPS id 3954D3DC3E9
+ for <ltp@lists.linux.it>; Thu, 13 Aug 2026 06:13:40 +0200 (CEST)
+Received: from mail-pj2-x06.google.com (mail-pj2-x06.google.com
+ [IPv6:2607:f8b0:4864:39::6])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 219AA100078B
- for <ltp@lists.linux.it>; Thu, 13 Aug 2026 04:32:30 +0200 (CEST)
-X-Envelope-To: ltp@lists.linux.it
-DKIM-Signature: a=rsa-sha256; bh=wQr+EryffIZYuJbLch0g3ZRQJjkXgmEqxD4xkWw2ZOM=; 
- c=simple/simple; d=linux.dev;
- h=from:to:subject:date:message-id:mime-version:content-type; s=key1;
- t=1786588350; v=1; x=1787193150;
- b=MYUtxfcEMz/eVOLh9is9U3BCpil9olwekLNMLRGVW5Sws3JOKmLxmmfTDW4PdfccL3T6NWSx
- LmlReSd7NDkLmSGL2oGiBdphVEJbG7tGo5Dt6hjbtTGytGbHYG5VsrB4alEmd/1OmQTys5wwyUF
- SiCMLJRV4F0uB2OOmWvc7Sx4=
-X-Envelope-To: ltp@lists.linux.it
-Received: from thoundrobot (2408:8409:18c0:1f4d:457:b937:2f7c:bd8c)
- by mta12.migadu.com with ESMTPS id 7a78d58f1c75341b;
- Thu, 13 Aug 2026 02:32:29 +0000
-X-Migadu-Flow: FLOW_OUT
-From: Li Wang <li.wang@linux.dev>
-To: ltp@lists.linux.it
-Date: Thu, 13 Aug 2026 10:32:16 +0800
-Message-ID: <20260813023216.79848-1-li.wang@linux.dev>
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id A99D960066F
+ for <ltp@lists.linux.it>; Thu, 13 Aug 2026 06:13:39 +0200 (CEST)
+Received: by mail-pj2-x06.google.com with SMTP id
+ 98e67ed59e1d1-38f25802c19so664756a91.1
+ for <ltp@lists.linux.it>; Wed, 12 Aug 2026 21:13:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20251104; t=1786594418; x=1787199218; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to:content-type;
+ bh=kKybxL8+Xj4bCqkHWuCr600okdkmfnU1D64fGz8bqNE=;
+ b=Jt4ae95B4hTXmhQ7sbyDm/jqv/jOYGXOVv1Cb4Fj4dXB8sYYPHfFIzCujOnAcysQJk
+ Y35KoRMr1C48sA9mMtvFT+aQ/XMUP0R919e8/rTlmmZEyNiR1RzbGcx4WNsYi2hf3lGI
+ mmD6sBiM6RPjgVZkT4vF+kEO2cDgXvYYBpUc/1gYONyIwwqvi4ntfyERmubiblJl9fQT
+ L9qi0241YsFEN/1ajaBzbN7ZWX8TF60tK5FKjdYQYXlbrndAr5D6LBhAUPO1emrDvrnS
+ clf0z8izaNSnW3BZWQJjm2AmHZRvAb10C5xdHANcVYCqPn+ryn4cxFYpgdcaPQUPNCTP
+ Bk9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1786594418; x=1787199218;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to:content-type;
+ bh=kKybxL8+Xj4bCqkHWuCr600okdkmfnU1D64fGz8bqNE=;
+ b=ou6bGEmPkpF+AQHscIcvdEsrxxgZT5VRh3yQjcZVEnS9hl0W2kJnFMNq0bYkI8jt++
+ y6jcxJYCXbTfm0Pt20xUv/wmme7VvRQVwfgNUfmuMM0cW/nHoR5tZuGTgrS33tkUkA38
+ dhT3n5q4Ouk6EjzZiDm/8v81KtfMMEG/Qkj0TC+k1sA3+0crASAJwIxhMKGvYZOauldS
+ 0prC2v8mPQDOaadWdWc21Y06LEolIObSVJoObw1V2J7z5ry0VKgtdBpVGJjC0h9KE/N6
+ goAVT2bZ56Xt3tRCkx8h0/vSOUDVXs0d87ahdQ3mv7BJ0BQfN96NEigQYRKsa8A3eO25
+ BH5A==
+X-Gm-Message-State: AOJu0Yx5Q2yS6bYcSV/+ftuI21tfiNJ8EUQCdITnBpz7gF2ac7z2wJFg
+ T2+Qc/9/pK7i4gCDjpWbeI11pj6hQWvW2K2fhEFQqjlBdLMBI1+KCsdw
+X-Gm-Gg: AR+sD121/Mmju8cNobxytVThtwWt1Yint6a2g4jApseWW/+rzz47nQVTDRP2l4LYwie
+ ucCydu5KmEPMOOBhdDUGan8gjXnOcVqJ/+npKkv3jCz6QTpzjKpIs5/AF8KB9PYrH1oyo/b+FLC
+ bhCm88STiCJT199xcV+8XnwlYYJrCKj2rbJJ7/Iknwdz1YWSIqUDRukUySVzRJcufVU/gYeMy03
+ yQP52sFrBVtWG/fZ9Xvf2zfnraK2DvivPx+gKIBtwelnsM51pXekGfzubbmfpLVWeKCvd8rv/ME
+ Mq7MySmgoxTQPuLkxfdjpgIWLnW5zY+GzwBxioCSTC5W1vF8Qq5f3H3J3KRVeVjYBRW9rLcEAoW
+ y8KN5prkIZ4kpzgq6/H0hESm8FzPxQ+ui6z678D1s2dsP2HmVA17zEomIAxHkLfakpnaTXlcmiB
+ OPo4uhIoGaKnzqJQ6/vkQNHKAQsypCaYpzWPj6BlcUVZDhwRzYR9ZL7GRco1RTTKoE3uBml5MOa
+ cAjnB3J3n6s+5KHe8vKLGzYuN3AlM2LXjCck8WSy8vc/tEzzevSqBuFbFfLqAullryceod/yhIB
+ IRyU
+X-Received: by 2002:a17:90b:5910:b0:375:2a38:1d40 with SMTP id
+ 98e67ed59e1d1-3931e31d0c1mr3695484a91.20.1786594417897; 
+ Wed, 12 Aug 2026 21:13:37 -0700 (PDT)
+Received: from
+ runnervmvrwv9.jrxjczydboau5pwkoq3th3lkvc.phxx.internal.cloudapp.net
+ ([172.182.192.146]) by smtp.gmail.com with ESMTPSA id
+ a92af1059eb24-1412d8bcfbasm3852771c88.4.2026.08.12.21.13.37
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 12 Aug 2026 21:13:37 -0700 (PDT)
+From: linuxtestproject.agent@gmail.com
+To: Li Wang <li.wang@linux.dev>
+Date: Thu, 13 Aug 2026 04:13:36 +0000
+Message-ID: <20260813041336.4258-1-linuxtestproject.agent@gmail.com>
 X-Mailer: git-send-email 2.55.0
+In-Reply-To: <20260813023216.79848-1-li.wang@linux.dev>
+References: <20260813023216.79848-1-li.wang@linux.dev>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] syscall: set FORK in tst_sig for some old tests
+Subject: Re: [LTP] syscall: set FORK in tst_sig for some old tests
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -56,115 +92,28 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Li Wang <liwang@hygon.cn>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Li Wang <liwang@hygon.cn>
+Hi Li,
 
-Since commit d90d2004657b ("lib: Use backoff polling to wait for loop
-device nodes") use TST_RETRY_FN_EXP_BACKOFF(), which calls tst_multiply_timeout().
-That in turn reaches tst_has_slow_kconfig() -> tst_kconfig_read() ->
-popen("zcat /proc/config.gz") to read the kernel config.
+On Aug 13, 2026, Li Wang wrote:
+> syscall: set FORK in tst_sig for some old tests
 
-popen() forks a child, and that child exits the SIGCHLD is reported
-as an unexpected signal by the tst_sig(NOFORK) handler:
+Verdict - Reviewed
 
-  umount2_01    1  TBROK  :  tst_sig.c:232: unexpected signal SIGCHLD(17) received
-
-Since these tests now genuinely fork (indirectly via popen), declaring
-FORK matches their actual behavior and lets the handler tolerate the
-child's SIGCHLD. This is a minimal fix that preserves the retry logic.
-
-These are old-API tests that will eventually be converted to the new
-tst_test API and this issue disappears entirely. The one-line FORK
-change is a low-cost bridge until then.
-
-Fixes: d90d2004657b ("lib: Use backoff polling to wait for loop device nodes")
-Signed-off-by: Li Wang <liwang@hygon.cn>
 ---
+Note:
 
-Notes:
-    This is a temporary solution for the regression, I will convert
-    these old tests to the new API next few days.
+The agent can sometimes produce false positives although often its
+findings are genuine. If you find issues with the review, please
+comment this email or ignore the suggestions.
 
- testcases/kernel/syscalls/linkat/linkat02.c     | 2 +-
- testcases/kernel/syscalls/mknodat/mknodat02.c   | 2 +-
- testcases/kernel/syscalls/rename/rename11.c     | 2 +-
- testcases/kernel/syscalls/renameat/renameat01.c | 2 +-
- testcases/kernel/syscalls/umount2/umount2_01.c  | 2 +-
- 5 files changed, 5 insertions(+), 5 deletions(-)
-
-diff --git a/testcases/kernel/syscalls/linkat/linkat02.c b/testcases/kernel/syscalls/linkat/linkat02.c
-index 273587271..6dfa7cfb5 100644
---- a/testcases/kernel/syscalls/linkat/linkat02.c
-+++ b/testcases/kernel/syscalls/linkat/linkat02.c
-@@ -140,7 +140,7 @@ static void setup(void)
- {
- 	tst_require_root();
- 
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-+	tst_sig(FORK, DEF_HANDLER, cleanup);
- 
- 	tst_tmpdir();
- 
-diff --git a/testcases/kernel/syscalls/mknodat/mknodat02.c b/testcases/kernel/syscalls/mknodat/mknodat02.c
-index 2f7c56f00..89cfc5978 100644
---- a/testcases/kernel/syscalls/mknodat/mknodat02.c
-+++ b/testcases/kernel/syscalls/mknodat/mknodat02.c
-@@ -107,7 +107,7 @@ static void setup(void)
- 
- 	tst_require_root();
- 
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-+	tst_sig(FORK, DEF_HANDLER, cleanup);
- 
- 	tst_tmpdir();
- 
-diff --git a/testcases/kernel/syscalls/rename/rename11.c b/testcases/kernel/syscalls/rename/rename11.c
-index 8ff9f7d38..26e324d64 100644
---- a/testcases/kernel/syscalls/rename/rename11.c
-+++ b/testcases/kernel/syscalls/rename/rename11.c
-@@ -90,7 +90,7 @@ static void setup(void)
- {
- 	int i;
- 
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-+	tst_sig(FORK, DEF_HANDLER, cleanup);
- 
- 	tst_require_root();
- 
-diff --git a/testcases/kernel/syscalls/renameat/renameat01.c b/testcases/kernel/syscalls/renameat/renameat01.c
-index 72e72b481..f9ed3a9a7 100644
---- a/testcases/kernel/syscalls/renameat/renameat01.c
-+++ b/testcases/kernel/syscalls/renameat/renameat01.c
-@@ -134,7 +134,7 @@ static void setup(void)
- 
- 	tst_require_root();
- 
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-+	tst_sig(FORK, DEF_HANDLER, cleanup);
- 
- 	tst_tmpdir();
- 
-diff --git a/testcases/kernel/syscalls/umount2/umount2_01.c b/testcases/kernel/syscalls/umount2/umount2_01.c
-index 274409ef3..c6496e306 100644
---- a/testcases/kernel/syscalls/umount2/umount2_01.c
-+++ b/testcases/kernel/syscalls/umount2/umount2_01.c
-@@ -67,7 +67,7 @@ static void setup(void)
- {
- 	tst_require_root();
- 
--	tst_sig(NOFORK, DEF_HANDLER, NULL);
-+	tst_sig(FORK, DEF_HANDLER, NULL);
- 
- 	tst_tmpdir();
- 
--- 
-2.55.0
-
+Regards,
+LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
