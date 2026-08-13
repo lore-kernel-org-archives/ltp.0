@@ -4,64 +4,107 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7015BC5CFEB
-	for <ltp@archiver.kernel.org>; Thu, 13 Aug 2026 14:16:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A37A3C5CFEB
+	for <ltp@archiver.kernel.org>; Thu, 13 Aug 2026 14:47:10 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8A35F3C287C
-	for <ltp@archiver.kernel.org>; Thu, 13 Aug 2026 16:16:09 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id BCFA33C6EE3
+	for <ltp@archiver.kernel.org>; Thu, 13 Aug 2026 16:47:08 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id DA7F63C2804
- for <ltp@lists.linux.it>; Thu, 13 Aug 2026 16:15:52 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ by picard.linux.it (Postfix) with ESMTPS id C4D543C5E2C
+ for <ltp@lists.linux.it>; Thu, 13 Aug 2026 16:46:50 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 815F7600715
- for <ltp@lists.linux.it>; Thu, 13 Aug 2026 16:15:52 +0200 (CEST)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 8AD8410008F4
+ for <ltp@lists.linux.it>; Thu, 13 Aug 2026 16:46:50 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id DABA63EA7;
- Thu, 13 Aug 2026 14:15:51 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 23C6B3EAC;
+ Thu, 13 Aug 2026 14:46:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1786632405; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=FYTBic4EkvLk3ZmUY5hwmyRljthjmq2cZjJuGMFlUJI=;
+ b=RunxPShvWgYUwNfbdSdzDoyzLCdh2BSwIKgsGwXWetDh1pMPZsxxLYuIyN6eKYcYps41Rr
+ q1+b2aR2uDUMjsxSruMl14NWhQKTcMhJiNcLOBnreU6m5RebQg+h1DNJEA5c5saoKUPSzc
+ A4sVwosBnmCb9L2vFnvX8GWFat7oE/Y=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1786632405;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=FYTBic4EkvLk3ZmUY5hwmyRljthjmq2cZjJuGMFlUJI=;
+ b=6nEwkEld2kXbxLMQrRi7zLiyTiHFCct9a6wcEAOGEPn6yDhu5/2BWpKWiHIJfSdiBGxSOh
+ ZumpNMH/VfGc1pDQ==
 Authentication-Results: smtp-out2.suse.de;
-	none
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=MUdKOV4X;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=7m5tWEAt
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1786632401; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=FYTBic4EkvLk3ZmUY5hwmyRljthjmq2cZjJuGMFlUJI=;
+ b=MUdKOV4XJsJiBbDOBJHJv6LrAe0l8ZRqioK8ook+axZitZrwqoelmGOpAFyC8zasmbbjFR
+ WdZqxELjWY4rCQITB6BGJOyjCtGarGEqFbDoJ80B9pRtoIpEc9dkwAjyOz4DblsDZ+rPt2
+ kFHqOM2TghXFGBHpVxSFCGQ1HlNJNsk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1786632401;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=FYTBic4EkvLk3ZmUY5hwmyRljthjmq2cZjJuGMFlUJI=;
+ b=7m5tWEAtpc/S1Gq7jH+bHUKos7ixcgyD3mtX7zK9JXpjP0q7oDmnac4gm52IL1+EKi6Zg2
+ 2vuEyqiQgibCB4Bw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id CBB3377E68;
- Thu, 13 Aug 2026 14:15:51 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0AE0177E86;
+ Thu, 13 Aug 2026 14:46:41 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id IKjRMJfRfWpYNwAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Thu, 13 Aug 2026 14:15:51 +0000
-Date: Thu, 13 Aug 2026 16:15:46 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id Yb0RAdHYfWpMVQAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Thu, 13 Aug 2026 14:46:41 +0000
+Date: Thu, 13 Aug 2026 16:46:43 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-To: Martin Doucha <mdoucha@suse.cz>
-Message-ID: <an3RkmTWSfZQjb6K@yuki.lan>
-References: <6a7da094.a02854e2.9191a.a277@mx.google.com>
- <6349138c-6d02-4df9-90c9-c766fa480c3d@suse.cz>
+To: Avinesh Kumar <avinesh.kumar@suse.com>
+Message-ID: <an3Y03mKBzue5w2s@yuki.lan>
+References: <20260811144854.97821-1-avinesh.kumar@suse.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <6349138c-6d02-4df9-90c9-c766fa480c3d@suse.cz>
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	REPLY(-4.00)[]
-X-Rspamd-Queue-Id: DABA63EA7
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+In-Reply-To: <20260811144854.97821-1-avinesh.kumar@suse.com>
 X-Rspamd-Action: no action
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+X-Rspamd-Queue-Id: 23C6B3EAC
+X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ NEURAL_HAM_SHORT(-0.20)[-1.000];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ MIME_GOOD(-0.10)[text/plain]; MX_GOOD(-0.01)[];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ MIME_TRACE(0.00)[0:+]; MISSING_XM_UA(0.00)[];
+ RCVD_TLS_ALL(0.00)[]; RCPT_COUNT_TWO(0.00)[2];
+ TO_DN_SOME(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
+ FROM_HAS_DN(0.00)[]; DWL_DNSWL_BLOCKED(0.00)[suse.cz:dkim];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:email,suse.cz:dkim,yuki.lan:mid];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ DKIM_TRACE(0.00)[suse.cz:+]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] refluxfs: Check kernel reflink support before
- mount
+Subject: Re: [LTP] [PATCH] openposix: Remove timer_*/speculative tests for
+ invalid timerid
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -80,37 +123,10 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> > @@ -993,9 +993,15 @@ int safe_mount(const char *file, const int lineno, void (*cleanup_fn)(void),
-> >   			"mount.%s failed with %i", filesystemtype, rval);
-> >   		return -1;
-> >   	} else if (rval == -1) {
-> > -		tst_brkm_(file, lineno, TBROK | TERRNO, cleanup_fn,
-> > -			"mount(%s, %s, %s, %lu, %p) failed", source, target,
-> > -			filesystemtype, mountflags, data);
-> > +		if (errno == EOPNOTSUPP) {
-> > +			tst_brkm_(file, lineno, TCONF | TERRNO, cleanup_fn,
-> > +				"mount(%s, %s, %s, %lu, %p) failed with EOPNOTSUPP", source, target,
-> > +				filesystemtype, mountflags, data);
-> > +		} else {
-> > +			tst_brkm_(file, lineno, TBROK | TERRNO, cleanup_fn,
-> > +				"mount(%s, %s, %s, %lu, %p) failed", source, target,
-> > +				filesystemtype, mountflags, data);
-> > +		}
-> >   	} else {
-> >   		tst_brkm_(file, lineno, TBROK | TERRNO, cleanup_fn,
-> >   			"Invalid mount(%s, %s, %s, %lu, %p) return value %d",
-> 
-> Hi,
-> yes, but I think it'd be better to add a setting to struct tst_test to 
-> enable this TCONF check only for specific tests. By default, EOPNOTSUPP 
-> should still trigger TBROK.
-> 
-> Something like:
-> .mount_check_support = 1
-
-Shoudn't that be per filesystem and live in tst_fs structure?
-
-Either way we will need a flag to the safe_mount() added first...
+The only concern I have here is that there are UNIX-like OSes that
+actually implement all the optional behavior and in that case these are
+valid tests. AFAIK OpenBSD implements are these "may" clauses that Linux
+implementation ignores completely.
 
 -- 
 Cyril Hrubis
