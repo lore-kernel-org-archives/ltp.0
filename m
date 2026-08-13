@@ -4,107 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A37A3C5CFEB
-	for <ltp@archiver.kernel.org>; Thu, 13 Aug 2026 14:47:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 72269C5DF64
+	for <ltp@archiver.kernel.org>; Thu, 13 Aug 2026 15:01:13 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id BCFA33C6EE3
-	for <ltp@archiver.kernel.org>; Thu, 13 Aug 2026 16:47:08 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 146023C6603
+	for <ltp@archiver.kernel.org>; Thu, 13 Aug 2026 17:01:11 +0200 (CEST)
 Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C4D543C5E2C
- for <ltp@lists.linux.it>; Thu, 13 Aug 2026 16:46:50 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 7398F3C5E2C
+ for <ltp@lists.linux.it>; Thu, 13 Aug 2026 17:00:56 +0200 (CEST)
+Received: from mail-oo2-x05.google.com (mail-oo2-x05.google.com
+ [IPv6:2607:f8b0:4864:31::5])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 8AD8410008F4
- for <ltp@lists.linux.it>; Thu, 13 Aug 2026 16:46:50 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 23C6B3EAC;
- Thu, 13 Aug 2026 14:46:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1786632405; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=FYTBic4EkvLk3ZmUY5hwmyRljthjmq2cZjJuGMFlUJI=;
- b=RunxPShvWgYUwNfbdSdzDoyzLCdh2BSwIKgsGwXWetDh1pMPZsxxLYuIyN6eKYcYps41Rr
- q1+b2aR2uDUMjsxSruMl14NWhQKTcMhJiNcLOBnreU6m5RebQg+h1DNJEA5c5saoKUPSzc
- A4sVwosBnmCb9L2vFnvX8GWFat7oE/Y=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1786632405;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=FYTBic4EkvLk3ZmUY5hwmyRljthjmq2cZjJuGMFlUJI=;
- b=6nEwkEld2kXbxLMQrRi7zLiyTiHFCct9a6wcEAOGEPn6yDhu5/2BWpKWiHIJfSdiBGxSOh
- ZumpNMH/VfGc1pDQ==
-Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=MUdKOV4X;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=7m5tWEAt
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1786632401; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=FYTBic4EkvLk3ZmUY5hwmyRljthjmq2cZjJuGMFlUJI=;
- b=MUdKOV4XJsJiBbDOBJHJv6LrAe0l8ZRqioK8ook+axZitZrwqoelmGOpAFyC8zasmbbjFR
- WdZqxELjWY4rCQITB6BGJOyjCtGarGEqFbDoJ80B9pRtoIpEc9dkwAjyOz4DblsDZ+rPt2
- kFHqOM2TghXFGBHpVxSFCGQ1HlNJNsk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1786632401;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=FYTBic4EkvLk3ZmUY5hwmyRljthjmq2cZjJuGMFlUJI=;
- b=7m5tWEAtpc/S1Gq7jH+bHUKos7ixcgyD3mtX7zK9JXpjP0q7oDmnac4gm52IL1+EKi6Zg2
- 2vuEyqiQgibCB4Bw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0AE0177E86;
- Thu, 13 Aug 2026 14:46:41 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id Yb0RAdHYfWpMVQAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Thu, 13 Aug 2026 14:46:41 +0000
-Date: Thu, 13 Aug 2026 16:46:43 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Avinesh Kumar <avinesh.kumar@suse.com>
-Message-ID: <an3Y03mKBzue5w2s@yuki.lan>
-References: <20260811144854.97821-1-avinesh.kumar@suse.com>
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 118BE10008F8
+ for <ltp@lists.linux.it>; Thu, 13 Aug 2026 17:00:56 +0200 (CEST)
+Received: by mail-oo2-x05.google.com with SMTP id
+ 46e09a7af769-7f3aa35af14so2759a34.1
+ for <ltp@lists.linux.it>; Thu, 13 Aug 2026 08:00:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20251104; t=1786633254; x=1787238054; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to:content-type;
+ bh=RCYd226DqvO74oOeRL+fM1gocbARZpFmreahfCgs9IQ=;
+ b=Its2dga9QT77HsRII9DInur9005jwxu1YskaNt+H8IRA2F2KSVM5XrejciE7AOIw4n
+ zIUdpxGVnQc4dZl0rprwFtk0jtlyjis7SE2BeZ8Den3hAQTu6PT7Cg2W5XfFe00zb6dZ
+ a+48XwPx4etGoov6eLerQzJc+/LWOaxfv8/BObZF5Uca0aMY5N2qGEYhtaSkNGrH3vm8
+ Lgyfun1PbLD+wmrtitfvO4w8Ea0+kqCQciHtK/EtF0go758v/64AlWVWpcAVu1karlhi
+ MXskTEVlgWO5uC5bHzEvuMX9k8UPOid3Zv2393V/gGrY+SXz+ufu1wRqVpUISUGY5roh
+ I2KQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1786633254; x=1787238054;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to:content-type;
+ bh=RCYd226DqvO74oOeRL+fM1gocbARZpFmreahfCgs9IQ=;
+ b=omzuGy8icLa9Rrurd9YoaHG83kkVBAsBqUHSshgpedeqZrbzuPou32OLgjeeugxiPT
+ oJ1jOtUgg9X4F9nr8wLIVHdfqzbKRA1zwofKBPKGDrbFMbH4J2Ca93SjwPTzgl6Do7jG
+ 5RpEXpt3rplHT4wHt5eF4hf/n4lGLGfSEG+Fp9eKiDXfZ9pS0d1v6XqZknMlM/HYEz/n
+ FAtI/GB3iVpEbQWU4zlwOMHcICPG2MkpFFKU94dakWmY6AMyMJbyIvLp5hujvVJsKIfK
+ naJR0AkoZOliZC5hHsnT7AZI57Ry0aicsrbUs1lKnPNB4RM2EXIlKOVtdETIHTGb1GSq
+ 8Xzg==
+X-Gm-Message-State: AOJu0YxqCMFjC0uCp1hPL+Yh1j8S69pPeB2ERDkECODQ/zp5lyZGryva
+ 7u3FxjJC+8QxolBdkvcPv0oOh+5jGXW0Z59/IjUiwPERXf4CEN4NRCZs
+X-Gm-Gg: AR+sD12+sf0/puTyMfxa29LCrtMJLPPsoJ6lbIXt7FkyfS+hiaZ+SIqB+HBgLfowlpS
+ hRut6xO+S04Cp9oZTm5jhyqqOXGbq1mb0bTOjckyXkzPCAe5DsAKi0Yrj4IY1OuW4RZI+k4oxTC
+ jwrfgbeBxA6pVngX8UT1X/atS19VA34VRLvs/HMzyqxHeR46U+28FdWIydwISYfcZbRwPPKrkqX
+ BIWtRP9y6Idlr+pmdMQNXPKSLvpEFXQHNQfKtleRpZ+OaCd/qsXVpgSLTJkFy2yqk/LHzOTi3kq
+ Kuzg5CYexNTbdRxJ3t4Mf6k/RWjAaC65xglDNQYo77EpeYn/6Nae/5dBD5fI+vAS4EOFF26ljvW
+ Qlc73G19zZ+DOXJJAc9v239B2hlVWM0p7UpaqVuHUFa6NKHnvUmNLppwCZOeLkHMcWZ5sbs1Dam
+ sJ4VqpTmXwB3SwAPlJ9M7Sk5XB0UCPd01XCpG8pH32NhaJtFsEAr5yIFhiU38x9vgl8NeUGJDT/
+ MxvKowfTUG74zZgVemXw84TFmsQDgj6+0UdhS2NzRzxCVZhBCAZ0YFr5GSOZx645mx9IEjsuVoW
+X-Received: by 2002:a05:6820:1c99:b0:6ae:9d2a:c29b with SMTP id
+ 006d021491bc7-6b0c422b8afmr5161992eaf.13.1786633254151; 
+ Thu, 13 Aug 2026 08:00:54 -0700 (PDT)
+Received: from
+ runnervmvrwv9.zdxfk0epy0qenhu4rggsnrmaug.gx.internal.cloudapp.net
+ ([52.242.217.82]) by smtp.gmail.com with ESMTPSA id
+ 46e09a7af769-7f3c9ca7b0bsm2263714a34.15.2026.08.13.08.00.52
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Thu, 13 Aug 2026 08:00:53 -0700 (PDT)
+From: linuxtestproject.agent@gmail.com
+To: Frank Ranner <frank.ranner@intel.com>
+Date: Thu, 13 Aug 2026 15:00:51 +0000
+Message-ID: <20260813150051.8847-1-linuxtestproject.agent@gmail.com>
+X-Mailer: git-send-email 2.55.0
+In-Reply-To: <20260813140609.57520-1-frank.ranner@intel.com>
+References: <20260813140609.57520-1-frank.ranner@intel.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20260811144854.97821-1-avinesh.kumar@suse.com>
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: 23C6B3EAC
-X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[99.99%];
- NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-1.000];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- MIME_GOOD(-0.10)[text/plain]; MX_GOOD(-0.01)[];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- MIME_TRACE(0.00)[0:+]; MISSING_XM_UA(0.00)[];
- RCVD_TLS_ALL(0.00)[]; RCPT_COUNT_TWO(0.00)[2];
- TO_DN_SOME(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[]; DWL_DNSWL_BLOCKED(0.00)[suse.cz:dkim];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:email,suse.cz:dkim,yuki.lan:mid];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- DKIM_TRACE(0.00)[suse.cz:+]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] openposix: Remove timer_*/speculative tests for
- invalid timerid
+Subject: Re: [LTP] testcases/kernel/crypto/crypto_user02.c: fix hmac
+ candidate probing
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -122,15 +98,37 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-The only concern I have here is that there are UNIX-like OSes that
-actually implement all the optional behavior and in that case these are
-valid tests. AFAIK OpenBSD implements are these "may" clauses that Linux
-implementation ignores completely.
+Hi Frank,
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+On Aug 13, 2026, Frank Ranner wrote:
+> testcases/kernel/crypto/crypto_user02.c: fix hmac candidate probing
+
+> Fixes: a4be708b4 ("testcases/kernel/crypto/crypto_user02.c: try non-generic hmac names first")
+
+Medium: Could this use c05a44cf1 instead? The referenced a4be708b4 does not
+resolve to a commit in the local LTP history, while c05a44cf1 has the quoted
+subject.
+
+> +		/* find out which driver actually satisfies this name */
+> +		memset(&report, 0, sizeof(report));
+> +		strcpy(report.cru_name, ALGORITHM_CANDIDATES[i]);
+> +		if (tst_crypto_get_alg(ctx, &report) != 0)
+
+Low: Could this comment be removed? It only restates the
+tst_crypto_get_alg() call, while LTP comments should explain why rather than
+narrate the code.
+
+Verdict - Needs revision
+
+---
+Note:
+
+The agent can sometimes produce false positives although often its
+findings are genuine. If you find issues with the review, please
+comment this email or ignore the suggestions.
+
+Regards,
+LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
