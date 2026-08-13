@@ -4,52 +4,99 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B6F32C5CFEB
-	for <ltp@archiver.kernel.org>; Thu, 13 Aug 2026 06:46:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 29DD7C5CFEB
+	for <ltp@archiver.kernel.org>; Thu, 13 Aug 2026 06:51:07 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id BC7FB3E5A12
-	for <ltp@archiver.kernel.org>; Thu, 13 Aug 2026 08:46:02 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 843E63D8567
+	for <ltp@archiver.kernel.org>; Thu, 13 Aug 2026 08:51:05 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 218F83CFEB3
- for <ltp@lists.linux.it>; Thu, 13 Aug 2026 08:45:46 +0200 (CEST)
-Received: from mta0.migadu.com (out-171.mta0.migadu.com
- [IPv6:2001:41d0:1004:224b::ab])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id C06553D8567
+ for <ltp@lists.linux.it>; Thu, 13 Aug 2026 08:50:49 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 8D6AB1A0079B
- for <ltp@lists.linux.it>; Thu, 13 Aug 2026 08:45:44 +0200 (CEST)
-X-Envelope-To: ltp@lists.linux.it
-DKIM-Signature: a=rsa-sha256; bh=K/NPAcLpmUcFQN2js6aHLFB9KypNGGUJL694Kz/M/HU=; 
- c=simple/simple; d=linux.dev;
- h=from:to:subject:date:message-id:mime-version:content-type; s=key1;
- t=1786603542; v=1; x=1787208342;
- b=ZbS18UchgNuh10+sMTrjvGSLIa0QhGpx9mvBmoZlSxzdQ4lHE5oDm8cxB11LA2SN+aM7yuaj
- Tgn9Mh8bKYgGzuvfluMlaMoCC/hZHijIrlC6pxmYJh053jBXp53gjQ/U8KWePnlmyejvRjn5NJw
- 3cwKsIJk1oIxMOGbMFbxiBEo=
-X-Envelope-To: ltp@lists.linux.it
-Received: from localhost (2408:8409:18c0:1f4d:457:b937:2f7c:bd8c)
- by smtp.migadu.com with ESMTPS id 5690b794fbbf9155;
- Thu, 13 Aug 2026 06:45:42 +0000
-X-Migadu-Flow: FLOW_OUT
-Date: Thu, 13 Aug 2026 14:45:35 +0800
-From: Li Wang <li.wang@linux.dev>
-To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <an1oDw9Q8yp_66Zh@linux.dev>
-Mail-Followup-To: Petr Vorel <pvorel@suse.cz>,
- Avinesh Kumar <avinesh.kumar@suse.com>, Li Wang <liwang@hygon.cn>,
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 678F76002ED
+ for <ltp@lists.linux.it>; Thu, 13 Aug 2026 08:50:48 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id DDCAF3E69;
+ Thu, 13 Aug 2026 06:50:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1786603843;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=9FdZgKFfueMMqyutc1vfzAjdmXrltImPKO1j/I259Sg=;
+ b=v5KtXSI3DyWmA43eebcvESmL/gQwhni5F1WV+z4T9iRelJ3uthoMhPY2Z3zW++pF71Km5n
+ 0Wf3fb89pmwuCu5E72T5NHolUG62dOXkE+fVUw/+r8T3X9QDDIE+q5N9o3YfJw3ttI2XxP
+ /g+r5VE/fdc8s/jysJ6VrCWqbVTf0hw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1786603843;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=9FdZgKFfueMMqyutc1vfzAjdmXrltImPKO1j/I259Sg=;
+ b=myVZ7qHAZYH9IEzB55mZA6ZA69T1ewbXpfjUeZmhYr8KQcpmEVLO2RHTcuE0W5ppf1/6uE
+ 5Mm4bV2Cy4rVHiAA==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1786603838;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=9FdZgKFfueMMqyutc1vfzAjdmXrltImPKO1j/I259Sg=;
+ b=aO3bQNGtAfiSSsYc7mWowMUCShNldvSrVr5W3rdouI1QZ1/lGtDttQDqfrk/aL9nl4+EPY
+ jTfWp3+A6bc8miYu406ZjPy69iMBEME8oP8yEnI7DH0Ajl7wCQiAUTHAmSggTKqr4ktbbj
+ KvbZXqmeXbo8xQUgZVTI1znE3uOrSNE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1786603838;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=9FdZgKFfueMMqyutc1vfzAjdmXrltImPKO1j/I259Sg=;
+ b=K6JKc3fb/nY18DyI04CrKa+IjBzKyvHdK/Hj7wfQVSpDQGmuJCvBSXnPIF7ytfJGumAvYq
+ vwxN7XHZFW5mNnBA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A70CC77CAD;
+ Thu, 13 Aug 2026 06:50:38 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 1f1QIz5pfWrOJgAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Thu, 13 Aug 2026 06:50:38 +0000
+Date: Thu, 13 Aug 2026 08:50:36 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Avinesh Kumar <avinesh.kumar@suse.com>, Li Wang <liwang@hygon.cn>,
  ltp@lists.linux.it, Andrea Cervesato <andrea.cervesato@suse.com>
+Message-ID: <20260813065036.GA1812963@pevik>
 References: <20260813023216.79848-1-li.wang@linux.dev>
  <95979fc4-682a-4fa5-8833-28f9b9573be8@suse.com>
- <20260813062654.GA1801742@pevik>
+ <20260813062654.GA1801742@pevik> <an1oDw9Q8yp_66Zh@linux.dev>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20260813062654.GA1801742@pevik>
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+In-Reply-To: <an1oDw9Q8yp_66Zh@linux.dev>
+X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ ARC_NA(0.00)[]; RCVD_TLS_ALL(0.00)[]; MIME_TRACE(0.00)[0:+];
+ MISSING_XM_UA(0.00)[]; TO_DN_SOME(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; FROM_HAS_DN(0.00)[];
+ RCPT_COUNT_THREE(0.00)[4]; FROM_EQ_ENVFROM(0.00)[];
+ RCVD_COUNT_TWO(0.00)[2]; REPLYTO_EQ_FROM(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH] syscall: set FORK in tst_sig for some old tests
 X-BeenThere: ltp@lists.linux.it
@@ -63,22 +110,28 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it, Li Wang <liwang@hygon.cn>
+Reply-To: Petr Vorel <pvorel@suse.cz>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Petr, All,
+Hi Li,
 
-> Reviewed-by: Petr Vorel <pvorel@suse.cz>
-> Tested-by: Petr Vorel <pvorel@suse.cz>
+> Hi Petr, All,
 
-Patch merged! Thanks~
+> > Reviewed-by: Petr Vorel <pvorel@suse.cz>
+> > Tested-by: Petr Vorel <pvorel@suse.cz>
 
--- 
-Regards,
-Li Wang
+> Patch merged! Thanks~
+
+Thanks for fixing it!
+
+very nit: there could have been
+Reported-by: Avinesh Kumar <avinesh.kumar@suse.com>
+
+Kind regards,
+Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
