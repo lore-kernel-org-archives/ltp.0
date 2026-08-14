@@ -4,84 +4,103 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 99E72C5B572
-	for <ltp@archiver.kernel.org>; Thu, 13 Aug 2026 20:45:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 91D61C5CFCF
+	for <ltp@archiver.kernel.org>; Fri, 14 Aug 2026 01:18:50 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 25EA53C06B9
-	for <ltp@archiver.kernel.org>; Thu, 13 Aug 2026 22:45:02 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 52DB83C5E1D
+	for <ltp@archiver.kernel.org>; Fri, 14 Aug 2026 03:18:48 +0200 (CEST)
 Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0C1E43C70A4
- for <ltp@lists.linux.it>; Thu, 13 Aug 2026 22:44:44 +0200 (CEST)
-Received: from mail-pj2-x0b.google.com (mail-pj2-x0b.google.com
- [IPv6:2607:f8b0:4864:39::b])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 724B63C5E1D
+ for <ltp@lists.linux.it>; Fri, 14 Aug 2026 03:18:29 +0200 (CEST)
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
+ [148.163.156.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 7230D10007F6
- for <ltp@lists.linux.it>; Thu, 13 Aug 2026 22:44:44 +0200 (CEST)
-Received: by mail-pj2-x0b.google.com with SMTP id
- 98e67ed59e1d1-38dbe53179bso93016a91.0
- for <ltp@lists.linux.it>; Thu, 13 Aug 2026 13:44:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1786653883; x=1787258683; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to:content-type;
- bh=5EtFWYPywf+TsJfomHzDoC8elMjl5fCbHsau9NnEXMQ=;
- b=LKmgojoD1L7WkumOS0uPrj6TNcSjdgfBsdCDjtFzQ2MruLEBezQRAwMLK0YOqOxMvb
- FFAhMYDH/GJGb3uXXw3xKYZe9eUdaDqVffn0MCGB/TJY2pEhiR5cMbuOrSz/vGhc6hr1
- YHpmc5kmZpBp7PNsGhmzNDhJG/Pn0i2iYIGTbZ+tLxXFugkiaaW+YNJrMOhLJo1+0zC6
- /9WTg7J6Qxd92Npb6X1dAG+E6061N9Lg6m2/poFxX344fsENmRDWTJYYAbeLOXC0Vpl5
- ToEpLEJyfUuVIEN1oCjUMMSJScxpXR29jthfNLxEAvR1alPfyFTYtwQfK5HTgOJhbX8c
- VVrQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1786653883; x=1787258683;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to:content-type;
- bh=5EtFWYPywf+TsJfomHzDoC8elMjl5fCbHsau9NnEXMQ=;
- b=EjYRJg5+EezR6IWaEPKGy+S/SigWuQPoIDs2Z1Rhb2wo7L+6Ec5IYEpSosy0XLppDP
- RTc2rev1ZbGGxCgDIYULoSAfhcu3uNe6wxburqF2WuXuKVhsA5KYtRsgy75s57GKrja7
- ODQmNCDDS5ZqCqjnmLu8zTdS3PzY+dWRrrdoI4nbPyikIQxu4AlV2URR7x9gpX5W9ebS
- EGcaw6tw3bbwTEDrDkGUnnkiSOiUZA42giUSswj7Eb8qNb3Z5XFsImhBmx0GEjLongS2
- H823oOA21ILzHwyMe8DXvrQKRNo38MHmCF31YNP2T5LcUczgVmAOvB1vxkD4/pgzQewp
- tSKA==
-X-Gm-Message-State: AOJu0YyhW3yRzOrKL2ldDVtB6sHUyowJTW3DyVDW/Ah7xRGrQA0rSxXD
- noADAg/arAWDe8b6sGNOKJub+YrgNROvi47+VYqHTcKPX01bFSqX2UUz
-X-Gm-Gg: AR+sD11tphCFHLbHPH/d5EVxJxR2JPdXvNAMJ01+0JLtjgtX/xUcLprwwpaSQnM7e63
- b7hrLXnX7DZ9Tn07JavuLLOc3+a6XPKCmQiu03MIfQhIA0caWUt25AjqFPWPIhmblvs7oAEuOLe
- kiviUve3qiOVdsE7UfSl/ciiYRwEfDvZl39RWZnTE+Lo388gaEOUm8FFHSDsE48Us07gRAyxTBM
- FF74FkW9Z/XaYw/F/ZYG1grM3BQlKLObD2q+JG1Wf+fTP6kR3xKAciP66MxejeR61kxnp27F5nh
- DiZovdhOXmioj6Sk+0LlXvz9qiRlqwWW9RdLXylzTOMWkTSFkYrXNMBJXSi1ShIyC87CtwTIarm
- LKE4Wep4wpMaHZk0k8JQsxLCvMDaWK2DO9WFGM7qUvrZD0AdjbfUyZ1du3uUsMnIciKM7AZ/nLo
- X4KQFtgoz8gbdVbrR9Z9FxUfSwM8QfkdWgIuLubEQok4PvYCPWbx6fVUsWpETFT0kxOoBxZ3LkQ
- YklSHSYI+bBzV2UTt8alyQ2oJATaUSB6TEZoCZ7o0s4MdMH6LEHeVZN9V66vFCYr/dvb+aFVT+q
- BDHxW8dfZKrh
-X-Received: by 2002:a05:6a21:7a9b:b0:3c3:9fc4:3ff5 with SMTP id
- adf61e73a8af0-3cc71d4508cmr553422637.29.1786653882794; 
- Thu, 13 Aug 2026 13:44:42 -0700 (PDT)
-Received: from
- runnervmvrwv9.5yvi33z0yeoehpnbutyr4hiofa.dx.internal.cloudapp.net
- ([52.159.139.244]) by smtp.gmail.com with ESMTPSA id
- 5a478bee46e88-31ebfc37202sm10200562eec.20.2026.08.13.13.44.42
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 13 Aug 2026 13:44:42 -0700 (PDT)
-From: linuxtestproject.agent@gmail.com
-To: Pavithra <pavrampu@linux.ibm.com>
-Date: Thu, 13 Aug 2026 20:44:41 +0000
-Message-ID: <20260813204441.8919-1-linuxtestproject.agent@gmail.com>
-X-Mailer: git-send-email 2.55.0
-In-Reply-To: <20260813195418.3083880-1-pavrampu@linux.ibm.com>
-References: <20260813195418.3083880-1-pavrampu@linux.ibm.com>
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id BAF20100092E
+ for <ltp@lists.linux.it>; Fri, 14 Aug 2026 03:18:28 +0200 (CEST)
+Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id
+ 67DLWNRq3513180; Fri, 14 Aug 2026 01:18:26 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+ :content-transfer-encoding:content-type:date:from:in-reply-to
+ :message-id:mime-version:references:subject:to; s=pp1; bh=msMSWS
+ 80t5bCMGLe66VYVo9N5HxWyHOKHuj0uosWnxE=; b=tdTWnA93h2Hsd6EvDn5Umg
+ 24es/WlZEpONzW7apMLJidE5bKUv5x0L0rbowCyrCK1RhnUsr9eL6m2dADsyQ8uu
+ cHc99kK2Jvw41S6oCrPMAEc//3MDkfcGR4B1rEEengM7yTtnHT2eyfxWHbp5Gila
+ M5sN7d1qh5mxsPUTr/A6NMmTlOs94wSeL1Oi99ZXNFVapvvRArmjIYJlDvaxEdin
+ 9DPKwiuivDhQlenqC9camG2kOQPyxh8iRumrEZSn7WEHjWp7BB3OmiJAF2xCIyTz
+ GrZbZb9dz89UfsqpXYPV+3NyTPUxXsNUsV8DO7asHGPlSkLGTydr/jKg9HsUsSuQ
+ ==
+Received: from ppma23.wdc07v.mail.ibm.com
+ (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4fwvma2q19-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Fri, 14 Aug 2026 01:18:26 +0000 (GMT)
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+ by ppma23.wdc07v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 67E1Bp4i025717;
+ Fri, 14 Aug 2026 01:18:25 GMT
+Received: from smtprelay06.wdc07v.mail.ibm.com ([172.16.1.73])
+ by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4fxg9hd97r-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Fri, 14 Aug 2026 01:18:25 +0000 (GMT)
+Received: from smtpav06.wdc07v.mail.ibm.com (smtpav06.wdc07v.mail.ibm.com
+ [10.39.53.233])
+ by smtprelay06.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 67E1IO6g51839450
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Fri, 14 Aug 2026 01:18:24 GMT
+Received: from smtpav06.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id AFBAD5803F;
+ Fri, 14 Aug 2026 01:18:24 +0000 (GMT)
+Received: from smtpav06.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 2E01A5804E;
+ Fri, 14 Aug 2026 01:18:24 +0000 (GMT)
+Received: from li-43857255-d5e6-4659-90f1-fc5cee4750ad.ibm.com (unknown
+ [9.61.7.32]) by smtpav06.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+ Fri, 14 Aug 2026 01:18:24 +0000 (GMT)
+Message-ID: <b901f8d94a9d6e3faf26a5e359ad8ec7e306c931.camel@linux.ibm.com>
+From: Mimi Zohar <zohar@linux.ibm.com>
+To: Petr Vorel <pvorel@suse.cz>, ltp@lists.linux.it
+In-Reply-To: <20260813112524.1849695-1-pvorel@suse.cz>
+References: <20260813112524.1849695-1-pvorel@suse.cz>
+Date: Thu, 13 Aug 2026 21:18:23 -0400
 MIME-Version: 1.0
+User-Agent: Evolution 3.58.3 (3.58.3-1.fc43) 
+X-TM-AS-GCONF: 00
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwODE0MDAwNiBTYWx0ZWRfXzMNJEb6T9r4V
+ WoQKghGWxYMP1wPqsS/IDWjyWWgAAnlZ+LZ0XKreTpa3DyylvaMPYki2N5nLtqVfki9zqYp3E5Q
+ i2/sNZroE9J28kBynSUX2ISAbj/UXmbR0EF5emy7GgHsB2EjfTjN8Xl/bkKuwDraQYt6SV/KRhe
+ Jlx4fMjV+5tO3rebatdPp/Nddj5DXzitfYZT9ByLe72W7w9URHTjFU7DroW+IEZpryBr3e5dPK7
+ FCDM6a0pyReb9yltCaERgtj1BlD1SAJ56UVl32dG63tgmuekvUXbhOEN1RgPb8qkmMSWxYxuQsf
+ knttxGnuKiEXfhD/ye5IywVwC5J9mY/UiDLzwLdl70/dXBd1vMnxqG3LZVeCHbh6STA00MPFp4G
+ pNE2VeOJ1HQrazjqB46AD7EwJDirv+dXt+uif7XqzlDYg2Bcz6DPlUsonYF9DQ0/8A39vwCYlN1
+ NunXEIlI1YTcwVm5XGg==
+X-Proofpoint-ORIG-GUID: 62GcnGBGorW-Cfw8cFhyK8oR-WQJ3dLC
+X-Proofpoint-Spam-Info: AW1haW4tMjYwODE0MDAwNiBTYWx0ZWRfX1bcvoPBmQER6
+ AbHiaAEA9V9g30/IWkf2BOJJy7OtDXThToix0x4Do6BtlXvp8RNgg+GedrRLYdLjPrvKQH3XdlC
+ GuCTBxkBSY+zLuyrgqaQt9s78049gC8=
+X-Authority-Analysis: v=2.4 cv=IfK3n2qa c=1 sm=1 tr=0 ts=6a7e6ce2 cx=c_pps
+ a=3Bg1Hr4SwmMryq2xdFQyZA==:117 a=3Bg1Hr4SwmMryq2xdFQyZA==:17
+ a=IkcTkHD0fZMA:10 a=Sv0fKeRqtYgA:10 a=VkNPw1HP01LnGYTKEx00:22
+ a=RnoormkPH1_aCDwRdu11:22 a=U7nrCbtTmkRpXpFmAIza:22 a=VnNF1IyMAAAA:8
+ a=yF6fm7Vi_KPl3uAzEtQA:9 a=QEXdDO2ut3YA:10
+X-Proofpoint-GUID: 62GcnGBGorW-Cfw8cFhyK8oR-WQJ3dLC
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1176,Hydra:6.1.134,FMLib:17.12.100.49
+ definitions=2026-08-13_07,2026-08-12_01,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ phishscore=0 priorityscore=1501 impostorscore=0 bulkscore=0 clxscore=1015
+ lowpriorityscore=0 adultscore=0 malwarescore=0 spamscore=0 suspectscore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.22.0-2606150000 definitions=main-2608140006
 X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] memcg/memcontrol05: add cgroup v2 task migration charge
- accounting test
+Subject: Re: [LTP] [PATCH 1/1] ima_setup.sh: Use tst_umount()
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -93,46 +112,67 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+Cc: linux-integrity@vger.kernel.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Pavithra,
+Hi Petr,
 
-On Fri, Aug 14, 2026, Pavithra wrote:
-> memcg/memcontrol05: add cgroup v2 task migration charge accounting test
+On Thu, 2026-08-13 at 13:25 +0200, Petr Vorel wrote:
+> Use standard test mechanism to detect problems during umount() caused by
+> GNOME's gvfsd-trash daemon. Although it will not solve the problem it at
+> least warn tester.
+> 
+> Reported-by: Mimi Zohar <zohar@linux.ibm.com>
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
 
-> static void cleanup(void)
-> {
-> 	if (group_a)
-> 		group_a = tst_cg_group_rm(group_a);
-> 	if (group_b)
-> 		group_b = tst_cg_group_rm(group_b);
-> }
+With this patch applied and after removing everything other than ima_violations
+from /opt/ltp/runtest/ima, I'm still seeing:
 
-Could cleanup first release and reap a worker that may still be blocked on
-WORKER_RESUME or WORKER_EXIT?
+ima_violations 1 TINFO: $TMPDIR is on tmpfs => run on loop device
+ima_violations 1 TINFO: booted with IMA policy: tcb
+ima_violations 1 TINFO: using log /var/log/audit/audit.log
+ima_violations 1 TINFO: verify open writers violation
+ima_violations 1 TPASS: 1 open_writers violation(s) added
+ima_violations 2 TINFO: verify ToMToU violation
+ima_violations 2 TPASS: 1 ToMToU violation(s) added
+ima_violations 3 TINFO: verify open_writers using mmapped files
+tst_kconfig.c:90: TINFO: Parsing kernel config '/lib/modules/7.1.5-
+101.fc43.x86_64/build/.config'
+ima_violations 3 TBROK: tst_checkpoint wait 10000 0 failed
+umount: /tmp/LTP_ima_violations.1OEcI81NHB/mntpoint: target is busy.
+ima_violations 3 TINFO: umount(/tmp/LTP_ima_violations.1OEcI81NHB/mntpoint)
+failed, try 1 ...
+ima_violations 3 TINFO: Likely gvfsd-trash is probing newly mounted  fs, kill it
+to speed up tests.
+umount: /tmp/LTP_ima_violations.1OEcI81NHB/mntpoint: target is busy.
+ima_violations 3 TINFO: umount(/tmp/LTP_ima_violations.1OEcI81NHB/mntpoint)
+failed, try 2 ...
 
-Any SAFE_* failure after SAFE_FORK() enters cleanup while the worker is still
-in one of these cgroups. tst_cg_group_rm() then fails to remove the populated
-cgroup. After the framework kills the worker, tst_cg_cleanup() still cannot
-remove the test cgroup because the child cgroup directories remain. Tracking
-whether the worker was started and waking or terminating and reaping it here,
-as memcontrol03/04 do, would allow the cgroups to be removed on fatal paths.
+The message keeps repeating ...
 
-Verdict - Needs revision
+Mimi
 
----
-Note:
 
-The agent can sometimes produce false positives although often its
-findings are genuine. If you find issues with the review, please
-comment this email or ignore the suggestions.
-
-Regards,
-LTP AI Reviewer
+> ---
+>  testcases/kernel/security/integrity/ima/tests/ima_setup.sh | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/testcases/kernel/security/integrity/ima/tests/ima_setup.sh b/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
+> index 19f00532b1..054ab28611 100644
+> --- a/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
+> +++ b/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
+> @@ -313,7 +313,7 @@ ima_cleanup()
+>  	[ -n "$TST_CLEANUP_CALLER" ] && $TST_CLEANUP_CALLER
+>  
+>  	for dir in $UMOUNT; do
+> -		umount $dir
+> +		tst_umount $dir
+>  	done
+>  
+>  	if [ "$IMA_POLICY_LOADED" = 1 ]; then
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
