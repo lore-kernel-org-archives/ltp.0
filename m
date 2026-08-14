@@ -4,102 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E6D88C5CFDB
-	for <ltp@archiver.kernel.org>; Fri, 14 Aug 2026 12:50:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8B759C5CFDB
+	for <ltp@archiver.kernel.org>; Fri, 14 Aug 2026 13:05:50 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 70DB93C72EC
-	for <ltp@archiver.kernel.org>; Fri, 14 Aug 2026 14:50:51 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id B4B7F3C71CE
+	for <ltp@archiver.kernel.org>; Fri, 14 Aug 2026 15:05:48 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id BA0C83C71CE
- for <ltp@lists.linux.it>; Fri, 14 Aug 2026 14:49:55 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id F0BA53C6CD7
+ for <ltp@lists.linux.it>; Fri, 14 Aug 2026 15:05:32 +0200 (CEST)
+Received: from mail-pj2-x0a.google.com (mail-pj2-x0a.google.com
+ [IPv6:2607:f8b0:4864:39::a])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 4A9AB600459
- for <ltp@lists.linux.it>; Fri, 14 Aug 2026 14:49:55 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id E5A5982F71
- for <ltp@lists.linux.it>; Fri, 14 Aug 2026 12:49:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1786711790; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=uWXSIwtzpLSD5lxGznCm8h9FMKqP8pmV9HZCL9Vl2n4=;
- b=Rfg26Wy2UXH++B2jVdjSFVT242f8xmhhuCJOvsLKlpicesl3F3O/c4EI2ti33cl6XxXiZC
- XhBuHeA9aL2W3FiG8ejbxj2EEdnGkO445iox8aVou6PV/kYreWQ4eNO0sJ0pQERH9TgdnL
- m4rJBbBOJmIX1M5+/HJYuGxvRzTUHk4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1786711790;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=uWXSIwtzpLSD5lxGznCm8h9FMKqP8pmV9HZCL9Vl2n4=;
- b=bVQz/cldEmErmX8Az9cBTkVldQIHI6WIMrf7P7PTUZoY87hTsIf7l0GSO0bsMl0MXFzO4m
- 5B1c5op1cxjb/9AQ==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1786711785; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=uWXSIwtzpLSD5lxGznCm8h9FMKqP8pmV9HZCL9Vl2n4=;
- b=xa1zuPkBn96jLUi0K+TF8iTAZgbO0ckCiM6gpl41pvH1/liKa6Rl10MIhYmqPLlt8UyuT7
- yfBVcYrP+63ttrVJpiKatjw0Ptf3UEZq3cQgx9l/Xif/v519Rmc06Ss6mNVs7P22VZWanD
- GCNKBmqbz9reQE2TUTKQJaA6eyXZ4OY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1786711785;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=uWXSIwtzpLSD5lxGznCm8h9FMKqP8pmV9HZCL9Vl2n4=;
- b=OSvzIkW0ozdLsFYi+nDvWHDWketF09IP5tXZfKKM8nBYpZii/QYLGqAsnruUyuf2LX5sXe
- OxxBLiqb2oAxw3CQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C2847783B0
- for <ltp@lists.linux.it>; Fri, 14 Aug 2026 12:49:45 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id YIe4LekOf2rlKgAAD6G6ig
- (envelope-from <mdoucha@suse.cz>)
- for <ltp@lists.linux.it>; Fri, 14 Aug 2026 12:49:45 +0000
-From: Martin Doucha <mdoucha@suse.cz>
-To: ltp@lists.linux.it
-Date: Fri, 14 Aug 2026 14:49:37 +0200
-Message-ID: <20260814124943.36853-3-mdoucha@suse.cz>
-X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260814124943.36853-1-mdoucha@suse.cz>
-References: <20260814124943.36853-1-mdoucha@suse.cz>
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id BDA0C1A0090E
+ for <ltp@lists.linux.it>; Fri, 14 Aug 2026 15:05:31 +0200 (CEST)
+Received: by mail-pj2-x0a.google.com with SMTP id
+ d9443c01a7336-2d3a0a81329so11746845ad.1
+ for <ltp@lists.linux.it>; Fri, 14 Aug 2026 06:05:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20251104; t=1786712730; x=1787317530; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to:content-type;
+ bh=5e8GBtsmZG6NdpDlK+wWMreAOq2DEAcB6ao0h/IdT+I=;
+ b=bdTfmEX+/gR22VIeWr1Us3VNRVc22CmVzvtQ9p80sVpKmh2LCRusn6p+MpfaTuu2yc
+ VjItNOtx7Uip9hqivUbNDifKdZ0C/q6bk39lcBWAH0H7OiEJOPw3VarVRxhWu34M+mO3
+ pV56IAa6G1513nULfoI8KWnhla340UHhBYHH+baPkahANmr5mTLo+EW1X2JGAGm/MPkF
+ 5p+pZ3mSffM6qYAOtKq4NsyrLEuMItYw08mm5ukUhKnMu/GFa090NhWhE3gQO6BjRRyC
+ LeOWwAqiNic9F2rWap0G9W83D61YsWLpP99CvvztC+kvyBKIn6kurCMoS6ZYliQ/xC9X
+ uoqw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1786712730; x=1787317530;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to:content-type;
+ bh=5e8GBtsmZG6NdpDlK+wWMreAOq2DEAcB6ao0h/IdT+I=;
+ b=RXtUBcgIWl4ERq/t0nKVFeSH12MPILw7Uz42qay/gxkN9jiRiQTS00edf6e+MBnXCw
+ mj7wKo8c21GjVeLE/jwB7ZgXhzagraL6Krgn3C6YzvsR6kBgjEZolJ0xBpakzkngwvdI
+ B0sXZvT/FRAo4+/UzYIPhTPniqz9olzCX99MamSkEbHQVWIyC0a3OhcKdAHyCFP1qZ1t
+ FNbqtQAveshYVqQgZOj+AD2Kq4iDmCZaNUnafoR7d0D0or/2xMSFBxOX6yELShNTjTW2
+ 71x06FqjhcAMH6ma1UQ3mlEDLVxxXw8+j0IA7Sfsg4+rNhJ4z2PrC0OjLupIPTaqldQR
+ tlWg==
+X-Gm-Message-State: AOJu0YywnlncamiAVZPYos2hf7buODSCGyae36MAB0UeF3aSu17L6DEk
+ YTWcnTV71K5d8FjE3MWuIOZ8wOErWHpAccan3egvRqK4LQ2wpoAX8pT+SU2twpxw
+X-Gm-Gg: AR+sD12lvEr4hVRMG5vyVGFuzC1ec2tAWf3blRHYfT+1IKV5m0qVbge3q1DMLTefX3B
+ O75Gmfy2vDx0c12x9dQbIwsgbxSeQElk1ohs6F15A1olwORhmJCke502IB9sSV5kokT0RZckD4R
+ U4zN43JUT3cxi7Y+LGZ+Db504d3fNRdUEFwRY19hESTnlehyf65uK/BBmueK8FGnC2GOPfc0JlL
+ ltNPwFas3hFdfB7ohCEIyEn6UJyXkYn7mpugON1v+OhLUWxFiAixJMRe16pLnGY5+xEbpcimD+G
+ raD2AMF4Mo0lKlTQu40X3JjTc+dAskqXcA6lwPsd6kHi9mizw1xKRt1K0IpdKRlHFdFurfcQu/K
+ ItYE73k1pmcbkvyBWFv9QOmdqb6seTAjXYvs++4x2y2aocWwOW9F/Wy886lECLOZ6hXjB780j0L
+ ujX3KUGB8KEb2f0Xf77rlmpspDMGVCpBDe+Peuw00R8i0WNzX5TlCF2y/lth7frcKMf8w/aCqCO
+ vHuV50x3tM8+E8wV4TptS6MOQk12l12y92ExUiyX1u5plJu7bHQEjEnErquRekYvepjR9vdE1Wa
+ lA==
+X-Received: by 2002:a17:902:c410:b0:2cf:ca89:4990 with SMTP id
+ d9443c01a7336-2d3b0c9f12cmr66640305ad.17.1786712729987; 
+ Fri, 14 Aug 2026 06:05:29 -0700 (PDT)
+Received: from
+ runnervmzvulz.sk4ncxdfcthutb4cvhnb1pmwjc.yx.internal.cloudapp.net
+ ([172.215.216.211]) by smtp.gmail.com with ESMTPSA id
+ 5a478bee46e88-320ea8f9d19sm4810923eec.27.2026.08.14.06.05.29
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 14 Aug 2026 06:05:29 -0700 (PDT)
+From: linuxtestproject.agent@gmail.com
+To: Martin Doucha <mdoucha@suse.cz>
+Date: Fri, 14 Aug 2026 13:05:28 +0000
+Message-ID: <20260814130528.8519-1-linuxtestproject.agent@gmail.com>
+X-Mailer: git-send-email 2.55.0
+In-Reply-To: <20260814124943.36853-2-mdoucha@suse.cz>
+References: <20260814124943.36853-2-mdoucha@suse.cz>
 MIME-Version: 1.0
-X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[99.99%];
- MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
- R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-1.000];
- MIME_GOOD(-0.10)[text/plain]; ARC_NA(0.00)[];
- RCPT_COUNT_ONE(0.00)[1]; RCVD_VIA_SMTP_AUTH(0.00)[];
- MIME_TRACE(0.00)[0:+];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:mid,suse.cz:email,imap1.dmz-prg2.suse.org:helo];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- TO_DN_NONE(0.00)[]; RCVD_TLS_ALL(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 2/3] refluxfs: Check kernel reflink support before
- mount
+Subject: Re: [LTP] struct tst_fs: Add flag for checking filesystem mount
+ support in kernel
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -111,38 +92,37 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On some systems, mkfs.xfs can format XFS partition with reflink support
-but the kernel then cannot mount it. Check for kernel reflink support
-before mount.
+Hi Martin,
 
-Signed-off-by: Martin Doucha <mdoucha@suse.cz>
+On Fri, 14 Aug 2026, Martin Doucha wrote:
+> struct tst_fs: Add flag for checking filesystem mount support in kernel
+
+--- [PATCH 1/3] ---
+
+> -	       const void *data, int *is_fuse);
+> +	       const void *data, int *is_fuse, unsigned int check_support);
+
+Could safe_mount() and SAFE_MOUNT2() gain kernel-doc comments that describe
+the new check_support argument and the resulting TCONF behavior? These are
+modified public APIs in include/ and lib/.
+
+Verdict - Needs revision
+
 ---
+Note:
 
-Tested on kernel v4.12 without reflink support and v6.4 with reflink support.
+The agent can sometimes produce false positives although often its
+findings are genuine. If you find issues with the review, please
+comment this email or ignore the suggestions.
 
- testcases/cve/refluxfs.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/testcases/cve/refluxfs.c b/testcases/cve/refluxfs.c
-index e41f35c53..bdf5d32c9 100644
---- a/testcases/cve/refluxfs.c
-+++ b/testcases/cve/refluxfs.c
-@@ -210,6 +210,7 @@ static struct tst_test test = {
- 	.filesystems = (struct tst_fs []) {
- 		{
- 			.type = "xfs",
-+			.mount_check_support = 1,
- 			.min_kver = "4.11",
- 			.mkfs_ver = "mkfs.xfs >= 1.5.0",
- 			.mkfs_opts = (const char *const []) {
--- 
-2.54.0
-
+Regards,
+LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
