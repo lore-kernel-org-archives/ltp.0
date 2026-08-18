@@ -4,100 +4,110 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2BD9FC5DF74
-	for <ltp@archiver.kernel.org>; Tue, 18 Aug 2026 14:19:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 60C9BC5DF7D
+	for <ltp@archiver.kernel.org>; Tue, 18 Aug 2026 14:20:00 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 84C543CD0B3
-	for <ltp@archiver.kernel.org>; Tue, 18 Aug 2026 16:19:44 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id B3F093CC8C1
+	for <ltp@archiver.kernel.org>; Tue, 18 Aug 2026 16:19:58 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2E6773CD2C7
+ by picard.linux.it (Postfix) with ESMTPS id 51FA13CD563
  for <ltp@lists.linux.it>; Tue, 18 Aug 2026 16:13:54 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 456F76008A8
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id A8D1F2001D8
  for <ltp@lists.linux.it>; Tue, 18 Aug 2026 16:13:53 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 991A23E67
- for <ltp@lists.linux.it>; Tue, 18 Aug 2026 14:13:44 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 121033E73
+ for <ltp@lists.linux.it>; Tue, 18 Aug 2026 14:13:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1787062428; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1787062429; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=2TgFNDqTbxwWnOoFBV+1hn5jnLPAvORwQUWs8Cnjqg8=;
- b=pEQkioeHbVojQbHI0qtnEzDkypydAyBzcSLcqgym98U2jlhGP/KEtIcdmPbCWpYM/lX7Up
- bakQr9DY1VCkePNTe6B/Nz+XShRTokoQ2SuWF3togCceGs4KDk9a3VZRBSR0EcOhgwo+7W
- VJElU35qQpa5zC1WO95X6Df/jCzBdtQ=
+ bh=OaEAjEW9roemzxvo0ffE5Z/kSAT43v30/x+3AH4Pe+Y=;
+ b=p24WUToKzdxJg/bNxNSLghQOrfzeJBEsk425gxbMo1jQqtgL1/U8W0YWlb1aLbbPKVZo4V
+ f//YlHbqdAFSFCbppTX5TA+nc89tOFF6//2lf84U5y2pW14W8MPTMqpGE0hrg+F9Dp7iW7
+ +0ut9yCefxrhTtXrPebQFWLrwx7s41o=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1787062428;
+ s=susede2_ed25519; t=1787062429;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=2TgFNDqTbxwWnOoFBV+1hn5jnLPAvORwQUWs8Cnjqg8=;
- b=dKxcecmuod/ulB/vSXbiywNm9z41ZR6cT27vnFwPqCrtNt2xHiBe5W/DWZKHZ25Um2gb6b
- Lcbfex7lwk7sTnBw==
+ bh=OaEAjEW9roemzxvo0ffE5Z/kSAT43v30/x+3AH4Pe+Y=;
+ b=Hu6qtdoWyuOQy8bjNyitF8sXIM6yFDQtiFJoDB8xVjg0noazZjAy3YECMj5qTdJzSGsa9B
+ qqsZHlZx4O8g00BQ==
 Authentication-Results: smtp-out2.suse.de;
-	none
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=GNjbdZTx;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=Jx5GGQ4e
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1787062424; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1787062425; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=2TgFNDqTbxwWnOoFBV+1hn5jnLPAvORwQUWs8Cnjqg8=;
- b=y9Eh/1fbnvUjhxQ0i175c12l5GOxCveay58Uyd9+rIPX/1HdrUSuQPrSH+26DKNZuGGBX4
- ffczUEnmxHnoRXylDzNSsTDLhiaKImvrlbsBEizUkQamDDWvx+gEDZBXcuGlVdbtqKRY+l
- yErzCVtxHR3cq8d89QB2Hpqe2J4qdMw=
+ bh=OaEAjEW9roemzxvo0ffE5Z/kSAT43v30/x+3AH4Pe+Y=;
+ b=GNjbdZTxQqY0WCF3rjiu3wNurJGb32VzTYUZZPTXveU1sD3ZZb2E9wbMKjrlc+0qG9YdOi
+ 5bsvRf/h6uHmcRx6gVTr+icdN63Lb87i7r5it97pXDEIO9O7iAqiGiza4a3/HE+wCpZyKR
+ fDnyIaY5Av6CuxeyO76OehICHa2S9Ds=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1787062424;
+ s=susede2_ed25519; t=1787062425;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=2TgFNDqTbxwWnOoFBV+1hn5jnLPAvORwQUWs8Cnjqg8=;
- b=crtxiGrTm6yKoCx3c6L1ir0KmhCnckX9SNDD/H/mVdT7vlodSUiU5U8R7grUIuKNdVPAoo
- waMsPHhHxGzut+AQ==
+ bh=OaEAjEW9roemzxvo0ffE5Z/kSAT43v30/x+3AH4Pe+Y=;
+ b=Jx5GGQ4e7qb+iR7iqjahST7jZ2+ascNY+lPAvZC5mZoP/OhAWoaWapUTp1M539RwU7+QuE
+ cG0mGmqU2quQv0CA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8B272362E
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id F0F6A364F
  for <ltp@lists.linux.it>; Tue, 18 Aug 2026 14:13:44 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id +XorIZhohGq0cQAAD6G6ig
+ by imap1.dmz-prg2.suse.org with ESMTPSA id MaRGOZhohGq2cQAAD6G6ig
  (envelope-from <chrubis@suse.cz>)
  for <ltp@lists.linux.it>; Tue, 18 Aug 2026 14:13:44 +0000
 From: Cyril Hrubis <chrubis@suse.cz>
 To: ltp@lists.linux.it
-Date: Tue, 18 Aug 2026 16:13:03 +0200
-Message-ID: <20260818141311.1265557-24-chrubis@suse.cz>
+Date: Tue, 18 Aug 2026 16:13:04 +0200
+Message-ID: <20260818141311.1265557-25-chrubis@suse.cz>
 X-Mailer: git-send-email 2.54.0
 In-Reply-To: <20260818141311.1265557-1-chrubis@suse.cz>
 References: <20260818141311.1265557-1-chrubis@suse.cz>
 MIME-Version: 1.0
-X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
- R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-1.000];
- MIME_GOOD(-0.10)[text/plain]; ARC_NA(0.00)[];
- RCPT_COUNT_ONE(0.00)[1]; RCVD_VIA_SMTP_AUTH(0.00)[];
- MIME_TRACE(0.00)[0:+];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: 121033E73
+X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_CONTAINS_FROM(1.00)[];
+ R_MISSING_CHARSET(0.50)[];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ FROM_EQ_ENVFROM(0.00)[]; ARC_NA(0.00)[]; FROM_HAS_DN(0.00)[];
+ RCPT_COUNT_ONE(0.00)[1];
  PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:email,suse.cz:mid];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- TO_DN_NONE(0.00)[]; RCVD_TLS_ALL(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+ RCVD_TLS_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:mid,suse.cz:email,suse.cz:dkim];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ TO_DN_NONE(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ MIME_TRACE(0.00)[0:+]; DKIM_TRACE(0.00)[suse.cz:+]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v1 23/31] testcases: sysfs: Add sys_net04
+Subject: [LTP] [PATCH v1 24/31] testcases: sysfs: Add sys_block_loop01
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -114,241 +124,364 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-A test for /sys/class/net/*/* files.
+A test for /sys/block/loop*/* files.
 
-Similar to sys_net02 but this time for TUN/TAP devices.
+The test attaches loop device with different attributes and checks that
+the sysfs files are correctly populated.
 
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- runtest/sysfs                                |   1 +
- testcases/kernel/sysfs/class/net/.gitignore  |   1 +
- testcases/kernel/sysfs/class/net/sys_net04.c | 211 +++++++++++++++++++
- 3 files changed, 213 insertions(+)
- create mode 100644 testcases/kernel/sysfs/class/net/sys_net04.c
+ runtest/sysfs                                 |   1 +
+ testcases/kernel/sysfs/block/.gitignore       |   1 +
+ testcases/kernel/sysfs/block/Makefile         |   7 +
+ .../kernel/sysfs/block/sys_block_loop01.c     | 320 ++++++++++++++++++
+ 4 files changed, 329 insertions(+)
+ create mode 100644 testcases/kernel/sysfs/block/.gitignore
+ create mode 100644 testcases/kernel/sysfs/block/Makefile
+ create mode 100644 testcases/kernel/sysfs/block/sys_block_loop01.c
 
 diff --git a/runtest/sysfs b/runtest/sysfs
-index b2cc0005c..290866349 100644
+index 290866349..26a229f03 100644
 --- a/runtest/sysfs
 +++ b/runtest/sysfs
-@@ -18,3 +18,4 @@ sys_thermal01 sys_thermal01
- sys_net01 sys_net01
+@@ -19,3 +19,4 @@ sys_net01 sys_net01
  sys_net02 sys_net02
  sys_net03 sys_net03
-+sys_net04 sys_net04
-diff --git a/testcases/kernel/sysfs/class/net/.gitignore b/testcases/kernel/sysfs/class/net/.gitignore
-index 8c3782a3b..6e934b7c1 100644
---- a/testcases/kernel/sysfs/class/net/.gitignore
-+++ b/testcases/kernel/sysfs/class/net/.gitignore
-@@ -1,3 +1,4 @@
- /sys_net01
- /sys_net02
- /sys_net03
-+/sys_net04
-diff --git a/testcases/kernel/sysfs/class/net/sys_net04.c b/testcases/kernel/sysfs/class/net/sys_net04.c
+ sys_net04 sys_net04
++sys_block_loop01 sys_block_loop01
+diff --git a/testcases/kernel/sysfs/block/.gitignore b/testcases/kernel/sysfs/block/.gitignore
 new file mode 100644
-index 000000000..a47cf44fa
+index 000000000..c64e99087
 --- /dev/null
-+++ b/testcases/kernel/sysfs/class/net/sys_net04.c
-@@ -0,0 +1,211 @@
++++ b/testcases/kernel/sysfs/block/.gitignore
+@@ -0,0 +1 @@
++/sys_block_loop01
+diff --git a/testcases/kernel/sysfs/block/Makefile b/testcases/kernel/sysfs/block/Makefile
+new file mode 100644
+index 000000000..66e633f40
+--- /dev/null
++++ b/testcases/kernel/sysfs/block/Makefile
+@@ -0,0 +1,7 @@
++# SPDX-License-Identifier: GPL-2.0-or-later
++# Copyright (c) 2026 Cyril Hrubis <chrubis@suse.cz>
++
++top_srcdir		?= ../../../..
++
++include $(top_srcdir)/include/mk/testcases.mk
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/sysfs/block/sys_block_loop01.c b/testcases/kernel/sysfs/block/sys_block_loop01.c
+new file mode 100644
+index 000000000..a99083a99
+--- /dev/null
++++ b/testcases/kernel/sysfs/block/sys_block_loop01.c
+@@ -0,0 +1,320 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
 + * Copyright (c) 2026 Cyril Hrubis <chrubis@suse.cz>
 + */
 +
 +/*\
-+ * Verifies that the link state attributes exported under
-+ * /sys/class/net/<iface>/ correctly mirror the attach/detach state of a TUN
-+ * device's file descriptor, and that TUN/TAP-specific sysfs attributes hold
-+ * sane values.
++ * Verifies that the loop device sysfs attributes exported under
++ * /sys/block/loopN/loop/ correctly reflect the state of an attached backing
++ * file, and reset once the device is detached again.
 + *
-+ * Unlike veth, a TUN device has no peer network device: instead, its carrier
-+ * is controlled by whether a userspace process currently has the device's
-+ * /dev/net/tun file descriptor attached to it (tun_attach()/tun_detach() in
-+ * the kernel call netif_carrier_on()/netif_carrier_off() respectively). The
-+ * device is created persistent (TUNSETPERSIST) so that it survives the file
-+ * descriptor being closed, which is what allows the attach/detach cycle to
-+ * be exercised here without the interface disappearing. The test checks
-+ * that closing and reopening the attachment is reflected in:
++ * The test creates a plain file, attaches it to a free loop device and
++ * verifies that:
 + *
-+ * - carrier - 1 while a file descriptor is attached, 0 while detached
-+ * - operstate - "up" while attached, "down" while detached. Unlike veth,
-+ *   this is plain "down" rather than "lowerlayerdown": the latter is only
-+ *   reported when the carrier-down state is attributable to a registered
-+ *   upper/lower netdevice relationship (a veth peer, a bond slave, a VLAN's
-+ *   parent, ...), whereas a TUN device's carrier is driven by a userspace
-+ *   file descriptor attachment, which is not a netdevice dependency at all.
-+ * - carrier_up_count / carrier_down_count - incremented by exactly one on
-+ *   each corresponding transition
-+ * - carrier_changes - always equal to carrier_up_count + carrier_down_count
++ * - loop/backing_file matches the absolute path of the attached file
++ * - loop/offset and loop/sizelimit are 0 (defaults for a plain attach)
++ * - loop/autoclear, loop/partscan and loop/dio (when present) are booleans
++ *   and default to 0
++ * - the device's own size (in 512 byte sectors) matches the backing file
++ *   size
++ * - ro is 0 (attached read-write by default)
 + *
-+ * These four attributes are generic net_device core statistics updated by
-+ * netif_carrier_on()/off() regardless of the underlying driver, so the
-+ * expected behavior mirrors the veth peer test in sys_net02.c, aside from
-+ * the "down" vs "lowerlayerdown" difference above.
++ * After detaching the device it verifies that:
 + *
-+ * The very first attach happens as part of the same TUNSETIFF call that
-+ * registers the netdevice, before which netif_carrier_on() skips updating
-+ * carrier_up_count/operstate for it. setup() therefore performs a throwaway
-+ * detach/reattach cycle so that run() starts from a state where carrier
-+ * tracking already behaves normally.
++ * - the device's size is back to 0
++ * - loop/backing_file no longer exists or reads back empty
 + *
-+ * The test also checks attributes that are not tied to the attach state:
++ * The device is then reconfigured via the LOOP_SET_STATUS64 ioctl (offset,
++ * sizelimit and the partscan flag) and it is verified that:
 + *
-+ * - mtu - directly writable via sysfs; a few valid values are written and
-+ *   read back, and one syntactically invalid value is rejected (with the mtu
-+ *   left unchanged)
-+ * - tun_flags - reflects (at least) the IFF_TUN, IFF_NO_PI and IFF_PERSIST
-+ *   bits the device was created/configured with, and never has IFF_TAP set
-+ * - owner / group - default to -1 (no restriction) since neither
-+ *   TUNSETOWNER nor TUNSETGROUP was used
-+ * - a second, TAP-mode device is created solely to cross-check that type and
-+ *   addr_len correctly differ between the two: a TUN device has no
-+ *   link-layer header (type == ARPHRD_NONE, addr_len == 0), while a TAP
-+ *   device behaves like Ethernet (type == ARPHRD_ETHER, addr_len == 6)
++ * - loop/offset and loop/sizelimit match the values that were set
++ * - loop/partscan reflects the requested flag
++ * - the device's size matches sizelimit/512, i.e. it is capped by sizelimit
++ *   rather than reflecting the whole backing file
 + *
-+ * This needs root to create the TUN/TAP devices.
++ * Note that LO_FLAGS_READ_ONLY is not exercised this way: on an already
++ * attached (read-write) device, LOOP_SET_STATUS64 does not actually flip the
++ * device to read-only, ro stays 0 regardless of the flag passed in. Read-only
++ * mode has to be requested at LOOP_SET_FD time instead, by opening the loop
++ * device (or the backing file) O_RDONLY before issuing the ioctl, which is
++ * exercised separately: the device is attached this way and it is verified
++ * that:
++ *
++ * - ro reads back as 1
++ * - the device genuinely rejects being opened or written to O_RDWR, not just
++ *   that the attribute says so
++ *
++ * ro turns out not to reset to 0 merely from detaching: it is a property of
++ * the whole gendisk, recalculated only on the next LOOP_SET_FD, so after
++ * detaching the device is reattached read-write and ro is checked to be 0
++ * then instead.
++ *
++ * Finally, autoclear is exercised for real rather than just checking that
++ * the attribute round-trips: the device is attached again, LO_FLAGS_AUTOCLEAR
++ * is set and the last open file descriptor on the device is closed without
++ * calling LOOP_CLR_FD explicitly. The kernel is expected to detach the
++ * device on its own (asynchronously, hence the test polls for it).
++ *
++ * This needs root to attach a loop device.
 + */
 +
++#include <errno.h>
++#include <limits.h>
 +#include <stdio.h>
 +#include <string.h>
 +#include <unistd.h>
-+#include <fcntl.h>
-+#include <linux/if.h>
-+#include <linux/if_tun.h>
 +
 +#include "tst_test.h"
-+#include "tst_netdevice.h"
-+#include "tst_safe_file_ops.h"
++#include "tst_device.h"
 +#include "tst_sysfs_assert.h"
++#include "lapi/loop.h"
 +
-+#define TUN_PATH "/dev/net/tun"
++#define BACKING_FILE "sys_block_loop01.img"
++#define FILE_SIZE_MB 4
++#define RECONF_OFFSET 4096
++#define RECONF_SIZELIMIT (1024 * 1024)
 +
-+#define IFNAME_TUN "ltp_tun0"
-+#define IFNAME_TAP "ltp_tap0"
-+#define IFACE_PATH "/sys/class/net/" IFNAME_TUN
-+
-+/* include/uapi/linux/if_arp.h, avoided pulling in the whole header. */
-+#define ARPHRD_ETHER 1
-+#define ARPHRD_NONE 0xFFFE
-+
-+static int tun_fd = -1;
-+static int tap_fd = -1;
-+static int tun_created;
-+static int tap_created;
-+
-+static long read_mtu(void)
-+{
-+	return TST_SYSFS_READ_LI(IFACE_PATH "/mtu");
-+}
-+
-+#include "sys_net_common.h"
-+
-+static int open_tun(const char *ifname, short flags)
-+{
-+	struct ifreq ifr = { .ifr_flags = flags };
-+	int fd = SAFE_OPEN(TUN_PATH, O_RDWR);
-+
-+	strncpy(ifr.ifr_name, ifname, IFNAMSIZ - 1);
-+	SAFE_IOCTL(fd, TUNSETIFF, (void *)&ifr);
-+
-+	return fd;
-+}
++static char dev_path[64];
++static char loop_dir[64];
++static char abs_backing_file[PATH_MAX + sizeof(BACKING_FILE)];
++static int dev_num;
++static int attached;
 +
 +static void setup(void)
 +{
-+	tun_fd = open_tun(IFNAME_TUN, IFF_TUN | IFF_NO_PI);
-+	SAFE_IOCTL(tun_fd, TUNSETPERSIST, 1);
-+	tun_created = 1;
++	char cwd[PATH_MAX];
++
++	dev_num = tst_find_free_loopdev(dev_path, sizeof(dev_path));
++	if (dev_num < 0)
++		tst_brk(TBROK, "Failed to find free loop device");
++
++	snprintf(loop_dir, sizeof(loop_dir), "/sys/block/loop%d", dev_num);
++
++	tst_prealloc_file(BACKING_FILE, 1024 * 1024, FILE_SIZE_MB);
++
++	SAFE_GETCWD(cwd, sizeof(cwd));
++	snprintf(abs_backing_file, sizeof(abs_backing_file), "%s/%s", cwd,
++		 BACKING_FILE);
++}
++
++static void check_backing_file(void)
++{
++	char actual[PATH_MAX] = "";
++
++	TST_SYSFS_READ_STR(actual, sizeof(actual), "%s/loop/backing_file",
++			   loop_dir);
++
++	TST_EXP_EQ_STR(actual, abs_backing_file);
++}
++
++static void check_attached(void)
++{
++	check_backing_file();
++
++	TST_SYSFS_EXP_EQ_LI(0, "%s/loop/offset", loop_dir);
++	TST_SYSFS_EXP_EQ_LI(0, "%s/loop/sizelimit", loop_dir);
++
++	TST_SYSFS_ASSERT_BOOL("%s/loop/autoclear", loop_dir);
++	TST_SYSFS_EXP_EQ_LI(0, "%s/loop/autoclear", loop_dir);
++
++	TST_SYSFS_ASSERT_BOOL("%s/loop/partscan", loop_dir);
++	TST_SYSFS_EXP_EQ_LI(0, "%s/loop/partscan", loop_dir);
++
++	if (tst_sysfs_exists("%s/loop/dio", loop_dir)) {
++		TST_SYSFS_ASSERT_BOOL("%s/loop/dio", loop_dir);
++		TST_SYSFS_EXP_EQ_LI(0, "%s/loop/dio", loop_dir);
++	} else {
++		tst_res(TCONF, "%s/loop/dio does not exist", loop_dir);
++	}
++
++	TST_SYSFS_ASSERT_BOOL("/sys/block/loop%d/ro", dev_num);
++	TST_SYSFS_EXP_EQ_LI(0, "/sys/block/loop%d/ro", dev_num);
++
++	TST_SYSFS_EXP_EQ_LI((long)FILE_SIZE_MB * 1024 * 1024 / 512,
++			 "/sys/block/loop%d/size", dev_num);
++}
++
++static void check_detached(void)
++{
++	TST_SYSFS_EXP_EQ_LI(0, "/sys/block/loop%d/size", dev_num);
++
++	if (!tst_sysfs_exists("%s/loop/backing_file", loop_dir)) {
++		tst_res(TPASS, "backing_file no longer exists after detach");
++		return;
++	}
++
++	char actual[PATH_MAX] = "";
++
++	TST_SYSFS_READ_STR(actual, sizeof(actual), "%s/loop/backing_file",
++			   loop_dir);
++
++	if (actual[0] == '\0')
++		tst_res(TPASS, "backing_file is empty after detach");
++	else
++		tst_res(TFAIL, "backing_file = '%s' after detach, expected empty",
++			actual);
++}
++
++static void check_reconfigured(void)
++{
++	struct loop_info64 info = { 0 };
++	int fd;
++
++	fd = SAFE_OPEN(dev_path, O_RDWR);
++
++	info.lo_offset = RECONF_OFFSET;
++	info.lo_sizelimit = RECONF_SIZELIMIT;
++	info.lo_flags = LO_FLAGS_PARTSCAN;
++
++	SAFE_IOCTL(fd, LOOP_SET_STATUS64, &info);
++	SAFE_CLOSE(fd);
++
++	tst_res(TINFO,
++		"Reconfigured via LOOP_SET_STATUS64: offset=%d sizelimit=%d partscan",
++		RECONF_OFFSET, RECONF_SIZELIMIT);
++
++	TST_SYSFS_EXP_EQ_LI(RECONF_OFFSET, "%s/loop/offset", loop_dir);
++	TST_SYSFS_EXP_EQ_LI(RECONF_SIZELIMIT, "%s/loop/sizelimit", loop_dir);
++	TST_SYSFS_EXP_EQ_LI(1, "%s/loop/partscan", loop_dir);
++	TST_SYSFS_EXP_EQ_LI(RECONF_SIZELIMIT / 512, "/sys/block/loop%d/size",
++			 dev_num);
++}
++
++static void check_readonly_attach(void)
++{
++	int dev_fd, file_fd;
++
++	tst_res(TINFO,
++		"Checking a read-only attach (LOOP_SET_FD with an O_RDONLY device fd)");
++
++	dev_fd = SAFE_OPEN(dev_path, O_RDWR);
++	file_fd = SAFE_OPEN(BACKING_FILE, O_RDONLY);
++
++	SAFE_IOCTL(dev_fd, LOOP_SET_FD, file_fd);
++	SAFE_CLOSE(file_fd);
++	SAFE_CLOSE(dev_fd);
++	attached = 1;
++
++	TST_SYSFS_EXP_EQ_LI(1, "/sys/block/loop%d/ro", dev_num);
++
++	dev_fd = open(dev_path, O_RDWR);
++
++	if (dev_fd < 0) {
++		tst_res(TPASS,
++			"open(%s, O_RDWR) failed as expected on a read-only device: %s",
++			dev_path, tst_strerrno(errno));
++	} else {
++		char buf[512] = { 0 };
++		ssize_t written = write(dev_fd, buf, sizeof(buf));
++
++		if (written < 0) {
++			tst_res(TPASS,
++				"write() to a read-only loop device failed as expected: %s",
++				tst_strerrno(errno));
++		} else {
++			tst_res(TFAIL,
++				"write() to a read-only loop device unexpectedly succeeded (%zd bytes)",
++				written);
++		}
++
++		SAFE_CLOSE(dev_fd);
++	}
++
++	if (tst_detach_device(dev_path))
++		tst_brk(TBROK, "Failed to detach %s", dev_path);
++	attached = 0;
 +
 +	/*
-+	 * The initial attach above happens as part of the same TUNSETIFF call
-+	 * that registers the netdevice, before which netif_carrier_on() skips
-+	 * updating carrier_up_count/operstate for it. Detach and reattach
-+	 * once here so run() starts from a state where carrier tracking
-+	 * already behaves normally, see the top comment.
++	 * ro does not reset to 0 merely from detaching, it is a property of
++	 * the whole gendisk that is only recalculated on the next LOOP_SET_FD,
++	 * so the device is reattached read-write here to verify that.
 +	 */
-+	SAFE_CLOSE(tun_fd);
-+	NETDEV_SET_STATE(IFNAME_TUN, 1);
-+	tun_fd = open_tun(IFNAME_TUN, IFF_TUN | IFF_NO_PI);
++	if (tst_attach_device(dev_path, BACKING_FILE))
++		tst_brk(TBROK, "Failed to attach %s to %s", BACKING_FILE,
++			dev_path);
++	attached = 1;
 +
-+	tap_fd = open_tun(IFNAME_TAP, IFF_TAP | IFF_NO_PI);
-+	SAFE_IOCTL(tap_fd, TUNSETPERSIST, 1);
-+	tap_created = 1;
++	TST_SYSFS_EXP_EQ_LI(0, "/sys/block/loop%d/ro", dev_num);
++
++	if (tst_detach_device(dev_path))
++		tst_brk(TBROK, "Failed to detach %s", dev_path);
++	attached = 0;
 +}
 +
-+static void check_tun_flags(void)
++/* Reads back /sys/block/loopN/size, used to poll for autoclear below. */
++static long read_loop_size(void)
 +{
-+	unsigned long flags;
-+
-+	flags = TST_SYSFS_READ_LX(IFACE_PATH "/tun_flags");
-+
-+	tst_res(TINFO, "%s/tun_flags = 0x%lx", IFACE_PATH, flags);
-+
-+	TST_EXP_EQ_LI(flags & IFF_TUN, IFF_TUN);
-+	TST_EXP_EQ_LI(flags & IFF_TAP, 0);
-+	TST_EXP_EQ_LI(flags & IFF_NO_PI, IFF_NO_PI);
-+	TST_EXP_EQ_LI(flags & IFF_PERSIST, IFF_PERSIST);
++	return TST_SYSFS_READ_LI("/sys/block/loop%d/size", dev_num);
 +}
 +
-+static void check_owner_group(void)
++static void check_autoclear_behavior(void)
 +{
-+	TST_SYSFS_EXP_EQ_LI(-1, IFACE_PATH "/owner");
-+	TST_SYSFS_EXP_EQ_LI(-1, IFACE_PATH "/group");
-+}
++	struct loop_info64 info = { 0 };
++	long size;
++	int fd;
 +
-+static void check_tun_vs_tap_type(void)
-+{
-+	TST_SYSFS_EXP_EQ_LI(ARPHRD_NONE, "/sys/class/net/" IFNAME_TUN "/type");
-+	TST_SYSFS_EXP_EQ_LI(0, "/sys/class/net/" IFNAME_TUN "/addr_len");
++	tst_res(TINFO,
++		"Checking that autoclear detaches the device on last close");
 +
-+	TST_SYSFS_EXP_EQ_LI(ARPHRD_ETHER, "/sys/class/net/" IFNAME_TAP "/type");
-+	TST_SYSFS_EXP_EQ_LI(6, "/sys/class/net/" IFNAME_TAP "/addr_len");
++	if (tst_attach_device(dev_path, BACKING_FILE)) {
++		tst_res(TFAIL, "Failed to attach %s to %s for autoclear check",
++			BACKING_FILE, dev_path);
++		return;
++	}
++	attached = 1;
++
++	fd = SAFE_OPEN(dev_path, O_RDWR);
++	info.lo_flags = LO_FLAGS_AUTOCLEAR;
++	SAFE_IOCTL(fd, LOOP_SET_STATUS64, &info);
++	SAFE_CLOSE(fd);
++
++	/* autoclear runs asynchronously off a kernel workqueue, poll for it */
++	size = TST_RETRY_FN_EXP_BACKOFF(read_loop_size(), TST_RETVAL_EQ0, 5);
++
++	if (size == 0) {
++		tst_res(TPASS, "Device auto-detached");
++		attached = 0;
++	} else {
++		tst_res(TFAIL, "Device did not auto-detach in time");
++		tst_detach_device(dev_path);
++		attached = 0;
++	}
 +}
 +
 +static void run(void)
 +{
-+	struct netdev_state s0, s1, s2;
++	if (tst_attach_device(dev_path, BACKING_FILE))
++		tst_brk(TBROK, "Failed to attach %s to %s", BACKING_FILE,
++			dev_path);
++	attached = 1;
 +
-+	read_state(&s0);
-+	check_state(&s0, 1, "up", "tun attached and up");
++	check_attached();
++	check_reconfigured();
 +
-+	SAFE_CLOSE(tun_fd);
-+	read_state(&s1);
-+	check_state(&s1, 0, "down", "tun detached");
-+	check_state_delta(&s0, &s1, 0, 1, "detach transition");
++	if (tst_detach_device(dev_path))
++		tst_brk(TBROK, "Failed to detach %s", dev_path);
++	attached = 0;
 +
-+	tun_fd = open_tun(IFNAME_TUN, IFF_TUN | IFF_NO_PI);
-+	read_state(&s2);
-+	check_state(&s2, 1, "up", "tun reattached");
-+	check_state_delta(&s1, &s2, 1, 0, "reattach transition");
++	check_detached();
 +
-+	check_mtu_valid(68);
-+	check_mtu_valid(1500);
-+	check_mtu_valid(9000);
-+	check_mtu_valid(65535);
-+	check_mtu_invalid("-1");
-+	check_mtu_invalid("0");
-+	check_mtu_invalid("67");
-+	check_mtu_invalid("70000");
-+
-+	check_tun_flags();
-+	check_owner_group();
-+	check_tun_vs_tap_type();
++	check_readonly_attach();
++	check_autoclear_behavior();
 +}
 +
 +static void cleanup(void)
 +{
-+	if (tun_fd >= 0)
-+		SAFE_CLOSE(tun_fd);
-+
-+	if (tap_fd >= 0)
-+		SAFE_CLOSE(tap_fd);
-+
-+	if (tun_created)
-+		NETDEV_REMOVE_DEVICE(IFNAME_TUN);
-+
-+	if (tap_created)
-+		NETDEV_REMOVE_DEVICE(IFNAME_TAP);
++	if (attached)
++		tst_detach_device(dev_path);
 +}
 +
 +static struct tst_test test = {
@@ -356,8 +489,9 @@ index 000000000..a47cf44fa
 +	.setup = setup,
 +	.cleanup = cleanup,
 +	.needs_root = 1,
++	.needs_tmpdir = 1,
 +	.needs_kconfigs = (const char *const[]){
-+		"CONFIG_TUN",
++		"CONFIG_BLK_DEV_LOOP",
 +		NULL
 +	},
 +};
