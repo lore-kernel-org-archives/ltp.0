@@ -4,86 +4,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BCA76C5DF7D
-	for <ltp@archiver.kernel.org>; Tue, 18 Aug 2026 11:05:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1787051153; h=message-id :
- to : cc : in-reply-to : date : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : mime-version : content-type : content-transfer-encoding :
- sender : from; bh=kThOOvlC9bsL2l6c9aE4/9wRGIOSxN6GZK93aG0VLDo=;
- b=k8WQu+DSfhg8TxlqM26K+Y4MHucuuZIDMnZpzY9XkUyAsvKmGSc92AAdFgddcSDYPGJcq
- 9BC3NTqkTGEYba9jZpB3KKLBPw6VTnFB6b9pJBu2O3aRhxTF1hmzkyoU3MpOm9geDTqaMSt
- VzbHls5q1mZsdt8W3dZtAAxv8wm/pXA=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 826F9C5DF7D
+	for <ltp@archiver.kernel.org>; Tue, 18 Aug 2026 12:15:17 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E830B3C4B6D
-	for <ltp@archiver.kernel.org>; Tue, 18 Aug 2026 13:05:53 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 792D83CCA83
+	for <ltp@archiver.kernel.org>; Tue, 18 Aug 2026 14:15:15 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id AF42A3C2804
- for <ltp@lists.linux.it>; Tue, 18 Aug 2026 13:05:33 +0200 (CEST)
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com
- [IPv6:2a00:1450:4864:20::32f])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id B35633C036C
+ for <ltp@lists.linux.it>; Tue, 18 Aug 2026 14:14:56 +0200 (CEST)
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
+ [148.163.158.5])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 398E310000E7
- for <ltp@lists.linux.it>; Tue, 18 Aug 2026 13:05:33 +0200 (CEST)
-Received: by mail-wm1-x32f.google.com with SMTP id
- 5b1f17b1804b1-4998e0916faso25318355e9.2
- for <ltp@lists.linux.it>; Tue, 18 Aug 2026 04:05:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1787051132; x=1787655932; darn=lists.linux.it;
- h=date:content-transfer-encoding:content-type:subject:in-reply-to:cc
- :to:from:message-id:from:to:cc:subject:date:message-id:reply-to
- :content-type; bh=WnU8DsoGhzuA7DtQiSh4wgpgTvvq1MFAVF6V3zAKgyI=;
- b=OeumXJIagpwaMI9elzF05egeIk10WUlouNgKFFdTgqnzpM3gergX8IGYhdjggJeWi9
- aOIETlxi3xTDjDWwkhtKdH5NvPJKHlH3Wh3KoilnJsiIotgvMHNmGWFED7nRE4QV7koa
- 2PcF8LawBQC1TUaLbxWPIMlWgIGwSAvHXu5ioMwEl7/KfyzWk0ZObJ+U8LCN9HL8q1RP
- 5t9UgwkqEGDVTurKma6dGLvu223W5RwcH+8E9fxykHopkE8+o8Ry7F0h4alGmGonqJ+S
- kZPFsuOYX7wVs07otX50as8Ry34afPtKzmWH6h6jrAS6cVCl2Qo26024xqvd19WnkB/a
- i+Ew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1787051132; x=1787655932;
- h=date:content-transfer-encoding:content-type:subject:in-reply-to:cc
- :to:from:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject
- :date:message-id:reply-to:content-type;
- bh=WnU8DsoGhzuA7DtQiSh4wgpgTvvq1MFAVF6V3zAKgyI=;
- b=nsS/8qq5lxyBbhTvch53CVX1fi//NPkLgytPcQ0mpYMqXy/jbmD2DxpwupB34NdkdZ
- YhnEnbV0GdF5RTAUqRPhB5BUXMGVv2s/q6jepug+kN1YXxN7TKOrHuo8slA5aj4nfdrG
- j9XDzmlbehi9HUxN2lpS1W39oCm6bSMGnhIL3SAENjlUJSA/BYm7Y9MFADbtWj2r78tT
- nMY0W1XGMklhZILy8XRtCAsjPPRVdZuvR58PxYnJs5e+G1GIM70x18Q6S19GEPhV3ox4
- fh+1gHkv8/IwoDoCu/yRWdSsy+mu4tWzYml/5xgJoO7VsT7JDHuOdhuuckuPWawZbyvJ
- qC6w==
-X-Gm-Message-State: AOJu0Yw9Hlhb7L05BDeKS6SF/a50RCjvhSZ7m1hZOrMB+BpUAhYs1ir4
- nM4nUYfusrKGzkoGCv6Ra8Kh+335H5F9CFu2KXUUX8zR9EO7kEvom4fscZxMhkxiMA8hEWQYB5K
- fPBeJPZ4=
-X-Gm-Gg: AR+sD12LB6ILDXmMs4oQntielK8UXPW+5IpNpKKyjqdi6jF7bAI98N8PoHkkchCzeLC
- QEPh/F8fOehERpOW+VX/9sRXEexPMW2sib2CiYGj1eLJ+Y8SZbKslpYRSP50DS0eAyItBoVeUax
- GD5BiKTvQ/cggkp653ISxF/jPXQL5MWzRvjZq0+cjWtINnUz02hYkl9U88TWBMhxNkZfJYrChSy
- AiUHrSzlBWGlTIaiXrlg0lb7IxLuPovRv6wcdzThznuChhHP6n6+WfudLMdWUKxil1VjAo0ezko
- +NuSzqnN6sjskV/3W1OOLPNT/vF0WE4TDlFG2u8vERXEImEek430Fvo/LYNLCBKdoSxwSvo70OV
- ZzvODGLhVgtQDHuPiz55+gg/o9T99GSJo7cna6fV+91qSLCXK0U/ghcWXdZzRLO85ILg3qQenvf
- jGkZ5ZdzXweyeDrgcCU3WFBPbV5mlP6LRv6A2skO6+As2C6pttW/wxMc10E9Zi9wvdteww5DM=
-X-Received: by 2002:a05:600c:c109:b0:499:a5fc:2087 with SMTP id
- 5b1f17b1804b1-499a5fc219fmr33520145e9.6.1787051132433; 
- Tue, 18 Aug 2026 04:05:32 -0700 (PDT)
-Received: from 192.168.1.121 ([176.206.179.213])
- by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-4999610ed6dsm299768215e9.8.2026.08.18.04.05.31
- for <ltp@lists.linux.it>
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 18 Aug 2026 04:05:31 -0700 (PDT)
-Message-ID: <6a843c7b.e11288f4.14d360.f5e7@mx.google.com>
-To: "Avinesh Kumar via ltp" <ltp@lists.linux.it>
-Cc: ltp@lists.linux.it
-In-Reply-To: <20260813192649.192136-1-avinesh.kumar@suse.com>
-Date: Tue, 18 Aug 2026 11:05:30 +0000
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 3DCE020074E
+ for <ltp@lists.linux.it>; Tue, 18 Aug 2026 14:14:55 +0200 (CEST)
+Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id
+ 67IAVmjH4121449; Tue, 18 Aug 2026 12:14:54 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+ :content-transfer-encoding:date:from:message-id:mime-version
+ :subject:to; s=pp1; bh=0h43kD364YCulMOAIUaNQlgBOE1nHM2nm6tYg9adl
+ wM=; b=W5tsr3w7vYIr6Wi09NDFZBKlwpDRCg33z27ymaTB6szk5vvgHlckzXUmy
+ bFzcm7vB/wCKQoGftSwtqgs+hZoI1aMIj8d+gJ9pfuRsnVydkO6gRgaZ9tVEzK3s
+ /Eb2cnTTCtue0v4JStI3jKyVyP81LPjAEKbGC4YmrwuAKv+dTiELIarpkIs9dl1y
+ wGihK3fPLPSEpuR1lZosz1/4fimXZzsTnGgH6yeORtOf+cRvBpZibiviPTdUzOAw
+ 2UxZa6ZDtXtfYvzqWH0KLV4FRSHWMi7Liyv4dmIjg5Vojf30is157zqVDQlJJTdu
+ yx0UeikiJsx44llqC66iS0Knhmvsg==
+Received: from ppma12.dal12v.mail.ibm.com
+ (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4g2dhkyw0m-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Tue, 18 Aug 2026 12:14:54 +0000 (GMT)
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+ by ppma12.dal12v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 67ICBPoc010559;
+ Tue, 18 Aug 2026 12:14:53 GMT
+Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
+ by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 4g32eq38r1-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Tue, 18 Aug 2026 12:14:53 +0000 (GMT)
+Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com
+ [10.20.54.105])
+ by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 67ICEoBU38470098
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Tue, 18 Aug 2026 12:14:50 GMT
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 229DB2004B;
+ Tue, 18 Aug 2026 12:14:50 +0000 (GMT)
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 3E57E20040;
+ Tue, 18 Aug 2026 12:14:49 +0000 (GMT)
+Received: from dhcp-9-123-14-0.bl1-in.ibm.com (unknown [9.123.14.0])
+ by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
+ Tue, 18 Aug 2026 12:14:49 +0000 (GMT)
+From: Disha Goel <disgoel@linux.ibm.com>
+To: ltp@lists.linux.it
+Date: Tue, 18 Aug 2026 17:44:34 +0530
+Message-ID: <20260818121436.1397-1-disgoel@linux.ibm.com>
+X-Mailer: git-send-email 2.45.1
+MIME-Version: 1.0
+X-TM-AS-GCONF: 00
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwODE4MDA4OCBTYWx0ZWRfX4YZNkKmkW1ob
+ mXfg+UuzbkhGeUrWDmEVuiPab9kdTABDyz8JkD/cFadDN2AruwkeVq5M5aLelzDTg9ZhggayicY
+ mtoknR/FYKCwtkRVACQo+M4mLWHBVO9vY70w6iMpivki4LEcF9veG2ep3q4r20mOY090J16RzdS
+ i1fyY/cfrafnNi30t6gbvcgA2N++Cths+zhdhii6EMYhj4CuQ6s1T6yir17C6Etmzgi/28D3/TJ
+ ECBR6WGX2UICa2TTLdB1YkSAUhDuI/MqHeDcsL9463WypAnjUeN4LVQ8QfKptweHDL6e70mzsld
+ iPf3XzBTlQ3kxQV0GRuueY4m23J7jhOOpvcO2TDZeBcpNlaioRIgWXhQWjP+4ZyuPofd6/2Z1Ba
+ NSXyQ08r30OPCMqbDfjL78xAoyblG1teGBXJx2rYPYm+l2NKn6uvWc55KL57UYhPY9YWXdoipeo
+ jmIQoLLPNufbM9FW3Vw==
+X-Proofpoint-Spam-Info: AW1haW4tMjYwODE4MDA4OCBTYWx0ZWRfX2rRlm178NLJu
+ yJimPyNNWDX3DZkUlBPA12OdrBahh47jVAu0qg5UyWIG58zN3pqXT5GHzaZnBrKbefrbTAMGZl9
+ CVnVKRcWy3WQCsvGHNzuoi6mDIFTpdw=
+X-Authority-Analysis: v=2.4 cv=JKkLdcKb c=1 sm=1 tr=0 ts=6a844cbe cx=c_pps
+ a=bLidbwmWQ0KltjZqbj+ezA==:117 a=bLidbwmWQ0KltjZqbj+ezA==:17
+ a=Sv0fKeRqtYgA:10 a=VkNPw1HP01LnGYTKEx00:22 a=RnoormkPH1_aCDwRdu11:22
+ a=Y2IxJ9c9Rs8Kov3niI8_:22 a=VnNF1IyMAAAA:8 a=2YKCPis6ka1cvOCjqGgA:9
+X-Proofpoint-ORIG-GUID: uVZLdTA53xM53VooGEb0NGV87rYzYFvQ
+X-Proofpoint-GUID: uVZLdTA53xM53VooGEb0NGV87rYzYFvQ
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1176,Hydra:6.1.134,FMLib:17.12.100.49
+ definitions=2026-08-18_01,2026-08-12_01,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ suspectscore=0 bulkscore=0 malwarescore=0 priorityscore=1501
+ lowpriorityscore=0 clxscore=1011 adultscore=0 impostorscore=0 spamscore=0
+ phishscore=0 classifier=typeunknown authscore=0 authtc= authcc=
+ route=outbound adjust=0 reason=mlx scancount=1 engine=8.22.0-2606150000
+ definitions=main-2608180088
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] syscalls: rename11: Convert test to new API
+Subject: [LTP] [PATCH v2 1/3] memcg/memcontrol02: fix fd leak in cleanup path
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -95,39 +109,52 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
-MIME-Version: 1.0
+Cc: Disha Goel <disgoel@linux.ibm.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Avinesh,
+Initialize fd to -1 to distinguish an unopened descriptor, and add
+a cleanup guard so SAFE_CLOSE is only called when fd was actually
+opened. Without this, cleanup would call close(-1) causing TBROK
+when the anon test variant (n=0) runs and never opens fd.
 
-> +static char elooppathname[sizeof(ELOOPFILE) * 43] = ".";
+Signed-off-by: Disha Goel <disgoel@linux.ibm.com>
+---
+v1 -> v2:
+- Fix commit message: clarify that fd=0 would close stdin (not silently
+  skip), and that the guard is added by this patch not pre-existing
+- Use 'fd != -1' instead of 'fd > -1' per LTP convention
 
-Magic numbers are a bit unfortunate. It's better to define a single buffer,
-which is "big enough", usually PATH_MAX, then append in there the strings we
-need.
+ testcases/kernel/controllers/memcg/memcontrol02.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-> +static struct tcase {
-> +	void (*run)(void);
-> +	const char *tname;
-> +} tcases[] = {
-> +	{test_eloop, "eloop"},
-> +	{test_erofs, "erofs"},
-> +	{test_emlink, "emlink"},
-> +};
+diff --git a/testcases/kernel/controllers/memcg/memcontrol02.c b/testcases/kernel/controllers/memcg/memcontrol02.c
+index 0b79403c9..52096f697 100644
+--- a/testcases/kernel/controllers/memcg/memcontrol02.c
++++ b/testcases/kernel/controllers/memcg/memcontrol02.c
+@@ -29,7 +29,7 @@
+ 
+ static size_t page_size;
+ static struct tst_cg_group *cg_child;
+-static int fd;
++static int fd = -1;
+ static int file_to_all_error = 10;
+ 
+ static void alloc_anon_50M_check(void)
+@@ -128,6 +128,8 @@ static void cleanup(void)
+ {
+ 	if (cg_child)
+ 		cg_child = tst_cg_group_rm(cg_child);
++	if (fd != -1)
++		SAFE_CLOSE(fd);
+ }
+ 
+ static struct tst_test test = {
+-- 
+2.45.1
 
-It's better if we split the test in three, since their are three different
-errors reproducers with different input values.
-
-Regards,
---
-Andrea Cervesato
-SUSE QE Automation Engineer Linux
-andrea.cervesato@suse.com
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
