@@ -4,110 +4,101 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 60C9BC5DF7D
-	for <ltp@archiver.kernel.org>; Tue, 18 Aug 2026 14:20:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 18161C5DF7D
+	for <ltp@archiver.kernel.org>; Tue, 18 Aug 2026 14:20:26 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B3F093CC8C1
-	for <ltp@archiver.kernel.org>; Tue, 18 Aug 2026 16:19:58 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id ACE303CD679
+	for <ltp@archiver.kernel.org>; Tue, 18 Aug 2026 16:20:24 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 51FA13CD563
- for <ltp@lists.linux.it>; Tue, 18 Aug 2026 16:13:54 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ by picard.linux.it (Postfix) with ESMTPS id DFDC63CD587
+ for <ltp@lists.linux.it>; Tue, 18 Aug 2026 16:13:59 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id A8D1F2001D8
- for <ltp@lists.linux.it>; Tue, 18 Aug 2026 16:13:53 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 0B1DC10006B7
+ for <ltp@lists.linux.it>; Tue, 18 Aug 2026 16:13:58 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 121033E73
- for <ltp@lists.linux.it>; Tue, 18 Aug 2026 14:13:45 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 92323845C6
+ for <ltp@lists.linux.it>; Tue, 18 Aug 2026 14:13:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1787062433; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=8IGQtIAJ1iN2sKcfaeC6Wgga9ciyixu292lertyr0u8=;
+ b=TtiaeX3+lSFwRwdazB8ngpKzhCSk5N9tIV8DQ48gJC3/3X9fQ9vUZQCG2FJA4BYbdrQ2Gb
+ zDAdW2OHyNicF5VatxzS88gd0ngHaMRVh89XCpax94cfrBQUzl1Xqx6yIDbv9s9Q1aniAV
+ 2Fj2HveVlpobxviy3L8kkXk1fhHzTqg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1787062433;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=8IGQtIAJ1iN2sKcfaeC6Wgga9ciyixu292lertyr0u8=;
+ b=cIy37xmlYpVMPEVbYJemjJNVMmxezAYR9HhRx2A4eCBP9YvuLAZKoJNEw4SMcSfurhUwfc
+ m+KTYUqm1WIHdxBA==
+Authentication-Results: smtp-out1.suse.de;
+	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
  t=1787062429; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=OaEAjEW9roemzxvo0ffE5Z/kSAT43v30/x+3AH4Pe+Y=;
- b=p24WUToKzdxJg/bNxNSLghQOrfzeJBEsk425gxbMo1jQqtgL1/U8W0YWlb1aLbbPKVZo4V
- f//YlHbqdAFSFCbppTX5TA+nc89tOFF6//2lf84U5y2pW14W8MPTMqpGE0hrg+F9Dp7iW7
- +0ut9yCefxrhTtXrPebQFWLrwx7s41o=
+ bh=8IGQtIAJ1iN2sKcfaeC6Wgga9ciyixu292lertyr0u8=;
+ b=O3NaZ1HHhiRw0xNow9mFB4jxeY+8xAMGd0G8qQXi8O4iyYbsWQlugFj2NhxxuRWrGKpINn
+ 0gzv3OEjQRhW4dcrPqjH6LZW12BV0HgPcHCX80NIOo4Rt3rTL+q/eiZrQWMB4m5LEhIvNT
+ dK/wEO8OUbMmC2DT2GJy9Im3t2fDMIU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
  s=susede2_ed25519; t=1787062429;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=OaEAjEW9roemzxvo0ffE5Z/kSAT43v30/x+3AH4Pe+Y=;
- b=Hu6qtdoWyuOQy8bjNyitF8sXIM6yFDQtiFJoDB8xVjg0noazZjAy3YECMj5qTdJzSGsa9B
- qqsZHlZx4O8g00BQ==
-Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=GNjbdZTx;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=Jx5GGQ4e
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1787062425; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=OaEAjEW9roemzxvo0ffE5Z/kSAT43v30/x+3AH4Pe+Y=;
- b=GNjbdZTxQqY0WCF3rjiu3wNurJGb32VzTYUZZPTXveU1sD3ZZb2E9wbMKjrlc+0qG9YdOi
- 5bsvRf/h6uHmcRx6gVTr+icdN63Lb87i7r5it97pXDEIO9O7iAqiGiza4a3/HE+wCpZyKR
- fDnyIaY5Av6CuxeyO76OehICHa2S9Ds=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1787062425;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=OaEAjEW9roemzxvo0ffE5Z/kSAT43v30/x+3AH4Pe+Y=;
- b=Jx5GGQ4e7qb+iR7iqjahST7jZ2+ascNY+lPAvZC5mZoP/OhAWoaWapUTp1M539RwU7+QuE
- cG0mGmqU2quQv0CA==
+ bh=8IGQtIAJ1iN2sKcfaeC6Wgga9ciyixu292lertyr0u8=;
+ b=RvfmVcCsBAMrniCu8PvrEigeR9pXdHGLafHjuRVTN9epO2S1s7f6xkhxyCK0jiHNP/T2/S
+ pL/eagg7s/n7jBBQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id F0F6A364F
- for <ltp@lists.linux.it>; Tue, 18 Aug 2026 14:13:44 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 79BBB367A
+ for <ltp@lists.linux.it>; Tue, 18 Aug 2026 14:13:49 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id MaRGOZhohGq2cQAAD6G6ig
+ by imap1.dmz-prg2.suse.org with ESMTPSA id QSDHGZ1ohGq9cQAAD6G6ig
  (envelope-from <chrubis@suse.cz>)
- for <ltp@lists.linux.it>; Tue, 18 Aug 2026 14:13:44 +0000
+ for <ltp@lists.linux.it>; Tue, 18 Aug 2026 14:13:49 +0000
 From: Cyril Hrubis <chrubis@suse.cz>
 To: ltp@lists.linux.it
-Date: Tue, 18 Aug 2026 16:13:04 +0200
-Message-ID: <20260818141311.1265557-25-chrubis@suse.cz>
+Date: Tue, 18 Aug 2026 16:13:05 +0200
+Message-ID: <20260818141311.1265557-26-chrubis@suse.cz>
 X-Mailer: git-send-email 2.54.0
 In-Reply-To: <20260818141311.1265557-1-chrubis@suse.cz>
 References: <20260818141311.1265557-1-chrubis@suse.cz>
 MIME-Version: 1.0
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: 121033E73
-X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_CONTAINS_FROM(1.00)[];
- R_MISSING_CHARSET(0.50)[];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- FROM_EQ_ENVFROM(0.00)[]; ARC_NA(0.00)[]; FROM_HAS_DN(0.00)[];
- RCPT_COUNT_ONE(0.00)[1];
- PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
- RCVD_TLS_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:mid,suse.cz:email,suse.cz:dkim];
+X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-1.000];
+ MIME_GOOD(-0.10)[text/plain]; ARC_NA(0.00)[];
+ RCPT_COUNT_ONE(0.00)[1]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ MIME_TRACE(0.00)[0:+];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- TO_DN_NONE(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- MIME_TRACE(0.00)[0:+]; DKIM_TRACE(0.00)[suse.cz:+]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+ PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:mid,imap1.dmz-prg2.suse.org:helo];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ TO_DN_NONE(0.00)[]; RCVD_TLS_ALL(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v1 24/31] testcases: sysfs: Add sys_block_loop01
+Subject: [LTP] [PATCH v1 25/31] testcases: sysfs: Add sys_block_queue01
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -124,376 +115,143 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-A test for /sys/block/loop*/* files.
-
-The test attaches loop device with different attributes and checks that
-the sysfs files are correctly populated.
+A test for /sys/block/*/queue/* files.
 
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
  runtest/sysfs                                 |   1 +
  testcases/kernel/sysfs/block/.gitignore       |   1 +
- testcases/kernel/sysfs/block/Makefile         |   7 +
- .../kernel/sysfs/block/sys_block_loop01.c     | 320 ++++++++++++++++++
- 4 files changed, 329 insertions(+)
- create mode 100644 testcases/kernel/sysfs/block/.gitignore
- create mode 100644 testcases/kernel/sysfs/block/Makefile
- create mode 100644 testcases/kernel/sysfs/block/sys_block_loop01.c
+ .../kernel/sysfs/block/sys_block_queue01.c    | 106 ++++++++++++++++++
+ 3 files changed, 108 insertions(+)
+ create mode 100644 testcases/kernel/sysfs/block/sys_block_queue01.c
 
 diff --git a/runtest/sysfs b/runtest/sysfs
-index 290866349..26a229f03 100644
+index 26a229f03..f7d35e0c2 100644
 --- a/runtest/sysfs
 +++ b/runtest/sysfs
-@@ -19,3 +19,4 @@ sys_net01 sys_net01
- sys_net02 sys_net02
+@@ -20,3 +20,4 @@ sys_net02 sys_net02
  sys_net03 sys_net03
  sys_net04 sys_net04
-+sys_block_loop01 sys_block_loop01
+ sys_block_loop01 sys_block_loop01
++sys_block_queue01 sys_block_queue01
 diff --git a/testcases/kernel/sysfs/block/.gitignore b/testcases/kernel/sysfs/block/.gitignore
-new file mode 100644
-index 000000000..c64e99087
---- /dev/null
+index c64e99087..c7011b79f 100644
+--- a/testcases/kernel/sysfs/block/.gitignore
 +++ b/testcases/kernel/sysfs/block/.gitignore
-@@ -0,0 +1 @@
-+/sys_block_loop01
-diff --git a/testcases/kernel/sysfs/block/Makefile b/testcases/kernel/sysfs/block/Makefile
+@@ -1 +1,2 @@
+ /sys_block_loop01
++/sys_block_queue01
+diff --git a/testcases/kernel/sysfs/block/sys_block_queue01.c b/testcases/kernel/sysfs/block/sys_block_queue01.c
 new file mode 100644
-index 000000000..66e633f40
+index 000000000..af31f6f64
 --- /dev/null
-+++ b/testcases/kernel/sysfs/block/Makefile
-@@ -0,0 +1,7 @@
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (c) 2026 Cyril Hrubis <chrubis@suse.cz>
-+
-+top_srcdir		?= ../../../..
-+
-+include $(top_srcdir)/include/mk/testcases.mk
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/sysfs/block/sys_block_loop01.c b/testcases/kernel/sysfs/block/sys_block_loop01.c
-new file mode 100644
-index 000000000..a99083a99
---- /dev/null
-+++ b/testcases/kernel/sysfs/block/sys_block_loop01.c
-@@ -0,0 +1,320 @@
++++ b/testcases/kernel/sysfs/block/sys_block_queue01.c
+@@ -0,0 +1,106 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
 + * Copyright (c) 2026 Cyril Hrubis <chrubis@suse.cz>
 + */
 +
 +/*\
-+ * Verifies that the loop device sysfs attributes exported under
-+ * /sys/block/loopN/loop/ correctly reflect the state of an attached backing
-+ * file, and reset once the device is detached again.
++ * Sanity checks for the per block device request queue attributes exported
++ * under /sys/block/<dev>/queue/.
 + *
-+ * The test creates a plain file, attaches it to a free loop device and
-+ * verifies that:
++ * For every block device that exports a request queue the test verifies that:
 + *
-+ * - loop/backing_file matches the absolute path of the attached file
-+ * - loop/offset and loop/sizelimit are 0 (defaults for a plain attach)
-+ * - loop/autoclear, loop/partscan and loop/dio (when present) are booleans
-+ *   and default to 0
-+ * - the device's own size (in 512 byte sectors) matches the backing file
-+ *   size
-+ * - ro is 0 (attached read-write by default)
++ * - logical_block_size and physical_block_size are powers of two
++ * - logical_block_size <= physical_block_size
++ * - hw_sector_size equals logical_block_size
++ * - max_sectors_kb <= max_hw_sectors_kb
++ * - read_ahead_kb, nr_requests and discard_max_bytes are non-negative
++ * - nr_requests is greater than zero
++ * - rotational, add_random, iostats are boolean (0 or 1)
++ * - scheduler is a valid bracketed-choice file with exactly one active scheduler
 + *
-+ * After detaching the device it verifies that:
-+ *
-+ * - the device's size is back to 0
-+ * - loop/backing_file no longer exists or reads back empty
-+ *
-+ * The device is then reconfigured via the LOOP_SET_STATUS64 ioctl (offset,
-+ * sizelimit and the partscan flag) and it is verified that:
-+ *
-+ * - loop/offset and loop/sizelimit match the values that were set
-+ * - loop/partscan reflects the requested flag
-+ * - the device's size matches sizelimit/512, i.e. it is capped by sizelimit
-+ *   rather than reflecting the whole backing file
-+ *
-+ * Note that LO_FLAGS_READ_ONLY is not exercised this way: on an already
-+ * attached (read-write) device, LOOP_SET_STATUS64 does not actually flip the
-+ * device to read-only, ro stays 0 regardless of the flag passed in. Read-only
-+ * mode has to be requested at LOOP_SET_FD time instead, by opening the loop
-+ * device (or the backing file) O_RDONLY before issuing the ioctl, which is
-+ * exercised separately: the device is attached this way and it is verified
-+ * that:
-+ *
-+ * - ro reads back as 1
-+ * - the device genuinely rejects being opened or written to O_RDWR, not just
-+ *   that the attribute says so
-+ *
-+ * ro turns out not to reset to 0 merely from detaching: it is a property of
-+ * the whole gendisk, recalculated only on the next LOOP_SET_FD, so after
-+ * detaching the device is reattached read-write and ro is checked to be 0
-+ * then instead.
-+ *
-+ * Finally, autoclear is exercised for real rather than just checking that
-+ * the attribute round-trips: the device is attached again, LO_FLAGS_AUTOCLEAR
-+ * is set and the last open file descriptor on the device is closed without
-+ * calling LOOP_CLR_FD explicitly. The kernel is expected to detach the
-+ * device on its own (asynchronously, hence the test polls for it).
-+ *
-+ * This needs root to attach a loop device.
++ * All checks skip gracefully with TCONF when a particular attribute is not
++ * present, since the set of exported queue attributes differs between kernel
++ * versions and device types.
 + */
 +
-+#include <errno.h>
-+#include <limits.h>
-+#include <stdio.h>
 +#include <string.h>
-+#include <unistd.h>
-+
++#include <dirent.h>
++#include <limits.h>
 +#include "tst_test.h"
-+#include "tst_device.h"
 +#include "tst_sysfs_assert.h"
-+#include "lapi/loop.h"
 +
-+#define BACKING_FILE "sys_block_loop01.img"
-+#define FILE_SIZE_MB 4
-+#define RECONF_OFFSET 4096
-+#define RECONF_SIZELIMIT (1024 * 1024)
++#define SYS_BLOCK "/sys/block"
 +
-+static char dev_path[64];
-+static char loop_dir[64];
-+static char abs_backing_file[PATH_MAX + sizeof(BACKING_FILE)];
-+static int dev_num;
-+static int attached;
++/* schedulers that have existed in mainline over time */
++static const char *const sched_allowed[] = {
++	"none", "noop", "deadline", "mq-deadline", "cfq",
++	"kyber", "bfq", "anticipatory", NULL
++};
 +
-+static void setup(void)
++static void check_cross(const char *dev)
 +{
-+	char cwd[PATH_MAX];
++	TST_SYSFS_ASSERT_LE_SUFFIX("logical_block_size", "physical_block_size",
++				   SYS_BLOCK "/%s/queue/", dev);
 +
-+	dev_num = tst_find_free_loopdev(dev_path, sizeof(dev_path));
-+	if (dev_num < 0)
-+		tst_brk(TBROK, "Failed to find free loop device");
++	TST_SYSFS_ASSERT_EQ_SUFFIX("logical_block_size", "hw_sector_size",
++				   SYS_BLOCK "/%s/queue/", dev);
 +
-+	snprintf(loop_dir, sizeof(loop_dir), "/sys/block/loop%d", dev_num);
-+
-+	tst_prealloc_file(BACKING_FILE, 1024 * 1024, FILE_SIZE_MB);
-+
-+	SAFE_GETCWD(cwd, sizeof(cwd));
-+	snprintf(abs_backing_file, sizeof(abs_backing_file), "%s/%s", cwd,
-+		 BACKING_FILE);
++	TST_SYSFS_ASSERT_LE_SUFFIX("max_sectors_kb", "max_hw_sectors_kb",
++				   SYS_BLOCK "/%s/queue/", dev);
 +}
 +
-+static void check_backing_file(void)
++static void check_device(const char *dev)
 +{
-+	char actual[PATH_MAX] = "";
++	char sched[64];
 +
-+	TST_SYSFS_READ_STR(actual, sizeof(actual), "%s/loop/backing_file",
-+			   loop_dir);
++	tst_res(TINFO, "Checking block device '%s'", dev);
 +
-+	TST_EXP_EQ_STR(actual, abs_backing_file);
-+}
++	TST_SYSFS_ASSERT_POW2(SYS_BLOCK "/%s/queue/logical_block_size", dev);
++	TST_SYSFS_ASSERT_POW2(SYS_BLOCK "/%s/queue/physical_block_size", dev);
 +
-+static void check_attached(void)
-+{
-+	check_backing_file();
++	TST_SYSFS_ASSERT_RANGELL(0, LONG_MAX,
++			       SYS_BLOCK "/%s/queue/read_ahead_kb", dev);
++	TST_SYSFS_ASSERT_RANGELL(1, LONG_MAX,
++			       SYS_BLOCK "/%s/queue/nr_requests", dev);
++	TST_SYSFS_ASSERT_RANGELL(0, LONG_MAX,
++			       SYS_BLOCK "/%s/queue/discard_max_bytes", dev);
 +
-+	TST_SYSFS_EXP_EQ_LI(0, "%s/loop/offset", loop_dir);
-+	TST_SYSFS_EXP_EQ_LI(0, "%s/loop/sizelimit", loop_dir);
++	TST_SYSFS_ASSERT_BOOL(SYS_BLOCK "/%s/queue/rotational", dev);
++	TST_SYSFS_ASSERT_BOOL(SYS_BLOCK "/%s/queue/add_random", dev);
++	TST_SYSFS_ASSERT_BOOL(SYS_BLOCK "/%s/queue/iostats", dev);
 +
-+	TST_SYSFS_ASSERT_BOOL("%s/loop/autoclear", loop_dir);
-+	TST_SYSFS_EXP_EQ_LI(0, "%s/loop/autoclear", loop_dir);
++	TST_SYSFS_ASSERT_CHOICE(sched_allowed, sched, sizeof(sched),
++				SYS_BLOCK "/%s/queue/scheduler", dev);
 +
-+	TST_SYSFS_ASSERT_BOOL("%s/loop/partscan", loop_dir);
-+	TST_SYSFS_EXP_EQ_LI(0, "%s/loop/partscan", loop_dir);
-+
-+	if (tst_sysfs_exists("%s/loop/dio", loop_dir)) {
-+		TST_SYSFS_ASSERT_BOOL("%s/loop/dio", loop_dir);
-+		TST_SYSFS_EXP_EQ_LI(0, "%s/loop/dio", loop_dir);
-+	} else {
-+		tst_res(TCONF, "%s/loop/dio does not exist", loop_dir);
-+	}
-+
-+	TST_SYSFS_ASSERT_BOOL("/sys/block/loop%d/ro", dev_num);
-+	TST_SYSFS_EXP_EQ_LI(0, "/sys/block/loop%d/ro", dev_num);
-+
-+	TST_SYSFS_EXP_EQ_LI((long)FILE_SIZE_MB * 1024 * 1024 / 512,
-+			 "/sys/block/loop%d/size", dev_num);
-+}
-+
-+static void check_detached(void)
-+{
-+	TST_SYSFS_EXP_EQ_LI(0, "/sys/block/loop%d/size", dev_num);
-+
-+	if (!tst_sysfs_exists("%s/loop/backing_file", loop_dir)) {
-+		tst_res(TPASS, "backing_file no longer exists after detach");
-+		return;
-+	}
-+
-+	char actual[PATH_MAX] = "";
-+
-+	TST_SYSFS_READ_STR(actual, sizeof(actual), "%s/loop/backing_file",
-+			   loop_dir);
-+
-+	if (actual[0] == '\0')
-+		tst_res(TPASS, "backing_file is empty after detach");
-+	else
-+		tst_res(TFAIL, "backing_file = '%s' after detach, expected empty",
-+			actual);
-+}
-+
-+static void check_reconfigured(void)
-+{
-+	struct loop_info64 info = { 0 };
-+	int fd;
-+
-+	fd = SAFE_OPEN(dev_path, O_RDWR);
-+
-+	info.lo_offset = RECONF_OFFSET;
-+	info.lo_sizelimit = RECONF_SIZELIMIT;
-+	info.lo_flags = LO_FLAGS_PARTSCAN;
-+
-+	SAFE_IOCTL(fd, LOOP_SET_STATUS64, &info);
-+	SAFE_CLOSE(fd);
-+
-+	tst_res(TINFO,
-+		"Reconfigured via LOOP_SET_STATUS64: offset=%d sizelimit=%d partscan",
-+		RECONF_OFFSET, RECONF_SIZELIMIT);
-+
-+	TST_SYSFS_EXP_EQ_LI(RECONF_OFFSET, "%s/loop/offset", loop_dir);
-+	TST_SYSFS_EXP_EQ_LI(RECONF_SIZELIMIT, "%s/loop/sizelimit", loop_dir);
-+	TST_SYSFS_EXP_EQ_LI(1, "%s/loop/partscan", loop_dir);
-+	TST_SYSFS_EXP_EQ_LI(RECONF_SIZELIMIT / 512, "/sys/block/loop%d/size",
-+			 dev_num);
-+}
-+
-+static void check_readonly_attach(void)
-+{
-+	int dev_fd, file_fd;
-+
-+	tst_res(TINFO,
-+		"Checking a read-only attach (LOOP_SET_FD with an O_RDONLY device fd)");
-+
-+	dev_fd = SAFE_OPEN(dev_path, O_RDWR);
-+	file_fd = SAFE_OPEN(BACKING_FILE, O_RDONLY);
-+
-+	SAFE_IOCTL(dev_fd, LOOP_SET_FD, file_fd);
-+	SAFE_CLOSE(file_fd);
-+	SAFE_CLOSE(dev_fd);
-+	attached = 1;
-+
-+	TST_SYSFS_EXP_EQ_LI(1, "/sys/block/loop%d/ro", dev_num);
-+
-+	dev_fd = open(dev_path, O_RDWR);
-+
-+	if (dev_fd < 0) {
-+		tst_res(TPASS,
-+			"open(%s, O_RDWR) failed as expected on a read-only device: %s",
-+			dev_path, tst_strerrno(errno));
-+	} else {
-+		char buf[512] = { 0 };
-+		ssize_t written = write(dev_fd, buf, sizeof(buf));
-+
-+		if (written < 0) {
-+			tst_res(TPASS,
-+				"write() to a read-only loop device failed as expected: %s",
-+				tst_strerrno(errno));
-+		} else {
-+			tst_res(TFAIL,
-+				"write() to a read-only loop device unexpectedly succeeded (%zd bytes)",
-+				written);
-+		}
-+
-+		SAFE_CLOSE(dev_fd);
-+	}
-+
-+	if (tst_detach_device(dev_path))
-+		tst_brk(TBROK, "Failed to detach %s", dev_path);
-+	attached = 0;
-+
-+	/*
-+	 * ro does not reset to 0 merely from detaching, it is a property of
-+	 * the whole gendisk that is only recalculated on the next LOOP_SET_FD,
-+	 * so the device is reattached read-write here to verify that.
-+	 */
-+	if (tst_attach_device(dev_path, BACKING_FILE))
-+		tst_brk(TBROK, "Failed to attach %s to %s", BACKING_FILE,
-+			dev_path);
-+	attached = 1;
-+
-+	TST_SYSFS_EXP_EQ_LI(0, "/sys/block/loop%d/ro", dev_num);
-+
-+	if (tst_detach_device(dev_path))
-+		tst_brk(TBROK, "Failed to detach %s", dev_path);
-+	attached = 0;
-+}
-+
-+/* Reads back /sys/block/loopN/size, used to poll for autoclear below. */
-+static long read_loop_size(void)
-+{
-+	return TST_SYSFS_READ_LI("/sys/block/loop%d/size", dev_num);
-+}
-+
-+static void check_autoclear_behavior(void)
-+{
-+	struct loop_info64 info = { 0 };
-+	long size;
-+	int fd;
-+
-+	tst_res(TINFO,
-+		"Checking that autoclear detaches the device on last close");
-+
-+	if (tst_attach_device(dev_path, BACKING_FILE)) {
-+		tst_res(TFAIL, "Failed to attach %s to %s for autoclear check",
-+			BACKING_FILE, dev_path);
-+		return;
-+	}
-+	attached = 1;
-+
-+	fd = SAFE_OPEN(dev_path, O_RDWR);
-+	info.lo_flags = LO_FLAGS_AUTOCLEAR;
-+	SAFE_IOCTL(fd, LOOP_SET_STATUS64, &info);
-+	SAFE_CLOSE(fd);
-+
-+	/* autoclear runs asynchronously off a kernel workqueue, poll for it */
-+	size = TST_RETRY_FN_EXP_BACKOFF(read_loop_size(), TST_RETVAL_EQ0, 5);
-+
-+	if (size == 0) {
-+		tst_res(TPASS, "Device auto-detached");
-+		attached = 0;
-+	} else {
-+		tst_res(TFAIL, "Device did not auto-detach in time");
-+		tst_detach_device(dev_path);
-+		attached = 0;
-+	}
++	check_cross(dev);
 +}
 +
 +static void run(void)
 +{
-+	if (tst_attach_device(dev_path, BACKING_FILE))
-+		tst_brk(TBROK, "Failed to attach %s to %s", BACKING_FILE,
-+			dev_path);
-+	attached = 1;
++	DIR *dir;
++	struct dirent *ent;
++	int found = 0;
 +
-+	check_attached();
-+	check_reconfigured();
++	dir = SAFE_OPENDIR(SYS_BLOCK);
 +
-+	if (tst_detach_device(dev_path))
-+		tst_brk(TBROK, "Failed to detach %s", dev_path);
-+	attached = 0;
++	while ((ent = SAFE_READDIR(dir))) {
++		if (ent->d_name[0] == '.')
++			continue;
 +
-+	check_detached();
++		/* Only devices that export a request queue are of interest. */
++		if (!tst_sysfs_exists(SYS_BLOCK "/%s/queue", ent->d_name))
++			continue;
 +
-+	check_readonly_attach();
-+	check_autoclear_behavior();
-+}
++		found = 1;
++		check_device(ent->d_name);
++	}
 +
-+static void cleanup(void)
-+{
-+	if (attached)
-+		tst_detach_device(dev_path);
++	SAFE_CLOSEDIR(dir);
++
++	if (!found)
++		tst_res(TCONF, "No block device with a request queue found");
 +}
 +
 +static struct tst_test test = {
 +	.test_all = run,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.needs_root = 1,
-+	.needs_tmpdir = 1,
-+	.needs_kconfigs = (const char *const[]){
-+		"CONFIG_BLK_DEV_LOOP",
-+		NULL
-+	},
 +};
 -- 
 2.54.0
