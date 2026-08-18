@@ -4,103 +4,102 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B680CC5DF7D
-	for <ltp@archiver.kernel.org>; Tue, 18 Aug 2026 18:48:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1787078918; h=mime-version :
- date : message-id : to : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : content-type : content-transfer-encoding : sender : from;
- bh=53Z1Ouctc3y5EXkCyPjegLGf93QMhRycIhxmfz+ObBA=;
- b=Qn6R+FumBOiPdr9gthRX7uKSfoqp1O0DbBc/Sw+7Cf0UuXnhZkqXYPEMKdYPqV77dnYA9
- c1HrXiaHHfVCeFY7ovHFX1ZZwJEyWvwsq1OId7RGLtGQUP9cTCuHa4S1T4xnbOVrql2NiNt
- 5h2oe5T2cePqqYPTPWupf3Ta9qzFnn0=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5F54DC5DF81
+	for <ltp@archiver.kernel.org>; Tue, 18 Aug 2026 18:49:55 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 09DE23CCDD4
-	for <ltp@archiver.kernel.org>; Tue, 18 Aug 2026 20:48:38 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id B2C5C3CD32D
+	for <ltp@archiver.kernel.org>; Tue, 18 Aug 2026 20:49:53 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 24E863CC708
- for <ltp@lists.linux.it>; Tue, 18 Aug 2026 18:54:15 +0200 (CEST)
-Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com
- [IPv6:2607:f8b0:4864:20::834])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 7E3BD3CC708
+ for <ltp@lists.linux.it>; Tue, 18 Aug 2026 20:49:37 +0200 (CEST)
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
+ [148.163.156.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 6EBDB600810
- for <ltp@lists.linux.it>; Tue, 18 Aug 2026 18:54:14 +0200 (CEST)
-Received: by mail-qt1-x834.google.com with SMTP id
- d75a77b69052e-51c10ed63c0so272821cf.1
- for <ltp@lists.linux.it>; Tue, 18 Aug 2026 09:54:14 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1787072053; cv=none;
- d=google.com; s=arc-20260327;
- b=oJkqYiqPfxl/G78oIto5/Y1T6CebYBP5accwhXOmNM276upy3RnM0NrWNTZ0EoVf3Q
- 8gDBkrM6MUCKsE84lD/SyserkgwtMRM7t+/arFlmu14MvnIPrRGPyf0ei5ux9pj2GHpN
- A9mKO8jfaEO2DJ0GOFCXRBNe2x8vZXZZPG8GB2JqYtFE3ecoSbm5zC+v24Rd7KN2f+se
- q9N7AAjc9Uu9xs3ux2ibGSJeTt3541XPSl3Wmn2yhq6QQflHni4k8Az2dpOKe9rHjE79
- /9AxA9fy3QEuqvaEwZkl1Mc9akEfvjq/x5wzJYcaS4GoecB0UkAD2LHpxyAc9TI5e4te
- hLNg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com;
- s=arc-20260327; 
- h=to:subject:message-id:date:from:reply-to:mime-version
- :dkim-signature;
- bh=HFxi/DJ41WbCDHsUhyYL8fpRk12IUpfB9o+b6DYwsrk=;
- fh=MKsfrWBG6YfiFYjqRhfDZ8kd+0tmvrKUc5gXcb9qw9k=;
- b=AWfUFHifjvxnTl/MlcNH1Z60BJbFWOZucBaDZZFaOwO3KyXvCMsAb0HOqPWswLLYkq
- zj1q/e2jVtA7mcLzpNC9g9gYughBzzVYteoh2LnBYlIiPlZ26n+CLlJ96rRf6AKj2XyZ
- Xy+6htW/0XIv0OPML/1rycYC0azxrTLeCO0JIimqOPwed2CgWVVzpND8uVNbtdfUXE/8
- sxQZCgGN20QRxOtbCs2eiw1mUwtHgKL8dF1AfnE0P9Id/WphnRTF8GCymx6MY4u2ryrQ
- 3uuqC9a6ilcV3x0VlYpGlpeQYzj27K0ZTIkrmiJc4sV8k1KBlD3iQq3qyndERqxaquvp
- WGEg==; darn=lists.linux.it
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=google.com; s=20251104; t=1787072053; x=1787676853; darn=lists.linux.it;
- h=content-type:to:subject:message-id:date:from:reply-to:mime-version
- :from:to:cc:subject:date:message-id:reply-to:content-type;
- bh=HFxi/DJ41WbCDHsUhyYL8fpRk12IUpfB9o+b6DYwsrk=;
- b=bBf/jCJMS6Iz3CCr9IF16HRsIlZUAt0muq9d5G+NSAkgmgmWPuye9KeFnYHu3eRuz8
- /wIr5S1u/6XvIqjx8vb2ExJw78FsB84cLv6ZRKZl3v96RmUES3ZqvpHwep/30X3J6vAn
- ESSRbElQyLcjcy6IW7I5G3xsCp897Br569P6h1sYG2JlnwOTijNohQNHsA/gPZGWzzmP
- oNXsikSBVCkp6CeH2cboTr0Ag2idmvSHHD6CO0ik6cduG1BYTreA8dKSN5iHZlbatrie
- TNz9TZintjVguCP+3aEmlar5NYgxp1vUYFB6YkZNpTbGD2ht62Pi8BTu6xmZ2uEtjA4k
- fS6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1787072053; x=1787676853;
- h=content-type:to:subject:message-id:date:from:reply-to:mime-version
- :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to:content-type;
- bh=HFxi/DJ41WbCDHsUhyYL8fpRk12IUpfB9o+b6DYwsrk=;
- b=hJpTX7SGo9j5i388yuXn/9OSZe37G6iXI9Mtf2Z8jXN6kqwdYFBg5sE1+rODwJzjWM
- YfLXFzJdHbs1aYxuDGDASP63qDsnou4CD2clBwDBzZO3Zx28I9r0cx8WEpdRJ6lSBhSp
- tLADeZgBNofn0jYJEfZEIvJI0E+0rw39ndR9K5N9FK6SCDW9iVwaEZ/bO93cXqb/vb5I
- OWWywLQgX6Vk4tZKPdN8qS9BnQ11jpNW7wDiHFOIJf3PlMB/nAGyZulN8vQGGgvXdANj
- iOIFtnITJymp95E5mYrxAY0x97CpFfbuedeBK+3M9H2pADPns3NxamJ8X+we6ZGoG6JO
- leRw==
-X-Gm-Message-State: AOJu0YzcgEsmHvyZEdoLgmMzFYhwG4YsqMib7nriLtvqPmQ8pAi3Aw5G
- gx6A25Pkp8/6VZ01zO8MOpKhvv2cg9KyXTeIYXGW4zJPjSxkGW0Yd9iXMPRXoFAiRIzZ1bfBZoJ
- vKPgh6jCMR2OLHk58fNIj8FGLZd45U33ZBnWjC0d15m2KYTEMlO76AFFn+lc=
-X-Gm-Gg: AR+sD13IG6suZ4OjxxB3mXLjgBea9zzZAa2YYmPzK0sxQ2msKUQzLLR5nZWVT0EMFpf
- eheaUfm3VpK6VppQAXpJL7VOeEVLfJFriJWc4BXuGuE4leAQpGdQt3n3eJaNOF+kg5KiAQkgm7y
- AbNMhjd45a8fhefHh5aY/itoouvFxp/4yPi42zjf6OPwr0Xnvf1UCs3MPUl19LVFK5sHnU5c4CX
- hgaxwht8ix9Nfo2EH0zgRsCeipvxknV2v8q4ieENqCyK5glwSnSunaQwBJpkDZBGhw79C6d6Pqz
- xX9+0CimmHhcGu9dyMj/8c7/8wAkBNmovZTmP0B52Fn+7+FFENzOJeFlePR/iw==
-X-Received: by 2002:a05:622a:5585:b0:51c:6b7:d3de with SMTP id
- d75a77b69052e-52dc47e6548mr17606831cf.5.1787072052317; Tue, 18 Aug 2026
- 09:54:12 -0700 (PDT)
-MIME-Version: 1.0
-Date: Tue, 18 Aug 2026 22:24:01 +0530
-X-Gm-Features: AcwNN1Wc5uJeOs86oSYVfJ1OtONdQjRjWP45RC0shxWgNAHVL19AcpWkpeHc5_E
-Message-ID: <CAGJyJpsBXuD0p7Cb9W3oE-cOi8Vzew9y2RhvmDE0y79YH_oWkA@mail.gmail.com>
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 355931400965
+ for <ltp@lists.linux.it>; Tue, 18 Aug 2026 20:49:35 +0200 (CEST)
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id
+ 67IHVcV43306867; Tue, 18 Aug 2026 18:49:33 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+ :content-transfer-encoding:date:from:message-id:mime-version
+ :subject:to; s=pp1; bh=gIQqtc7c9cZdT5Sd0fcf8wPrIJSd6CERA2/ghUzQV
+ sI=; b=PRW9E6hkFV2gNA8uysYOd2iHvbHh+yj73T0HMjSfpJpPNa8xN3vt5Tc7f
+ +RZC8QMuBeJ33clcBMKvixf2Qk7MgDshMIZliAMKwXSgY7s/ZSdpaaSAuewCr0ny
+ qbthP9W42rleTdSQX6xU5Y1ZfRZSFzSPeJvbl5+PJgRACZ1jwxGBiMylRFSKMrjJ
+ VLFYH5URuPz11kNejYCk278Kzw8uhaaRSEA6ns+Fdt15RQRaxF0Puhdr8QJWbESi
+ kingAgZBFTu0ayiQKAdvLRNqjMWm0H5mgQHc0xXifWzxyLgPOtI4qtkQS2YQ9tCj
+ 4HAx7vYRv6nuSEWVPRKQEIz5f1rQQ==
+Received: from ppma21.wdc07v.mail.ibm.com
+ (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4g2fsqt7nq-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Tue, 18 Aug 2026 18:49:32 +0000 (GMT)
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+ by ppma21.wdc07v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 67IIfPmc008944;
+ Tue, 18 Aug 2026 18:49:31 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+ by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4g33ek4w6h-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Tue, 18 Aug 2026 18:49:31 +0000 (GMT)
+Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com
+ [10.20.54.104])
+ by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 67IInTZD27459986
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Tue, 18 Aug 2026 18:49:29 GMT
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 558DA20043;
+ Tue, 18 Aug 2026 18:49:29 +0000 (GMT)
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 50FDD20040;
+ Tue, 18 Aug 2026 18:49:28 +0000 (GMT)
+Received: from ltcden9-lp2.ltc.tadn.ibm.com (unknown [9.5.7.39])
+ by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTP;
+ Tue, 18 Aug 2026 18:49:28 +0000 (GMT)
+From: Samir Mulani <samir@linux.ibm.com>
 To: ltp@lists.linux.it
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+Date: Tue, 18 Aug 2026 18:48:00 +0530
+Message-ID: <20260818131800.42931-1-samir@linux.ibm.com>
+X-Mailer: git-send-email 2.52.0
+MIME-Version: 1.0
+X-TM-AS-GCONF: 00
+X-Proofpoint-Reinject: loops=2 maxloops=12
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwODE4MDEzNiBTYWx0ZWRfXzMPLkELSk979
+ HiEBvITBZq3xXbTCo5TBEZ+Gf/e7eYGpvZUx/SY+gMV+a9IDdpsxEIAShyqO9YvaNOJCWgWKPuW
+ pEp0C+/Rayae7cY8noTvbiAxzZ9x9LFNbn9fyvYhpMsN5tEZgwGk2aJ6im+9SWY3fXhQmxJWacy
+ 1bjOq7GRfM9nY8tn8OnhJl656l6gxk98MGmrHnqZONc0t1VGXkBloSfoaf3aMGjAGmMtXSjWjFv
+ NdzxTG0UeNpyQRmXoaypAHTHMZfMibDbVNuN7Dl8Z3LXOjIDslHou3pjhkS9x073fYcrffYssGu
+ yGDIDw5l2DpTe3IwuGMm3yO+fvtQL6n5Z5I52Bk9CN+pkzUR5Y59EUb0zVdZOHdUScWlBPyF3tn
+ msC1R4Bid33qOQCaoZTdzrz9LbQbi3u3rfRTiQ/5DXK0/y5BOve2yue43F6ju5jB7hsgTH8ZkFk
+ +bP8LOfVZy/YSrI0NHA==
+X-Proofpoint-ORIG-GUID: q3fchAnKnkhY9kF_ML9Jm6NyJFieXKfJ
+X-Proofpoint-Spam-Info: AW1haW4tMjYwODE4MDEzNiBTYWx0ZWRfX+LpGhlpjnnWq
+ u9s4whZyioGoGHIIdoZ3F0a7iC09KXp+1FKvy6OoNtvYsHwb1BjrFmjIguNjSzeSWcYj9/QDUFJ
+ b5utDjmMFRwpeJxuC4+O7doig1EheHU=
+X-Authority-Analysis: v=2.4 cv=DJe/JSNb c=1 sm=1 tr=0 ts=6a84a93d cx=c_pps
+ a=GFwsV6G8L6GxiO2Y/PsHdQ==:117 a=GFwsV6G8L6GxiO2Y/PsHdQ==:17
+ a=Sv0fKeRqtYgA:10 a=VkNPw1HP01LnGYTKEx00:22 a=RnoormkPH1_aCDwRdu11:22
+ a=uAbxVGIbfxUO_5tXvNgY:22 a=VwQbUJbxAAAA:8 a=VnNF1IyMAAAA:8 a=pGLkceISAAAA:8
+ a=9Wtqm9-jjMRE5o7Xd_sA:9
+X-Proofpoint-GUID: ONHoeOwn6ZTzZ_mSjG4uszl7lEfgfjYJ
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1176,Hydra:6.1.134,FMLib:17.12.100.49
+ definitions=2026-08-18_03,2026-08-18_01,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ priorityscore=1501 impostorscore=0 spamscore=0 clxscore=1015 bulkscore=0
+ suspectscore=0 malwarescore=0 phishscore=0 adultscore=0 lowpriorityscore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.22.0-2606150000 definitions=main-2608180136
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Mailman-Approved-At: Tue, 18 Aug 2026 20:48:18 +0200
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: [LTP] [PATCH] inode01: Configure 4KB cluster size on exfat to
- prevent ENOSPC
+Subject: [LTP] [PATCH v3] mem/hugetlb: use SAFE_SHMGET() and fix checkpatch
+ warnings in hugeshmget
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -112,45 +111,166 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: "Kinshu Agrawal \(xWF\) via ltp" <ltp@lists.linux.it>
-Reply-To: kinshu@xwf.google.com
+Cc: Samir Mulani <samir@linux.ibm.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-In the multi-process scenario, inode01 creates 10,920 objects (files
-and directories) across 5 parallel workers.
+Replace the manual shmget()/error-check/tst_brk() pattern in the
+setup() functions of hugeshmget02 and hugeshmget05 with SAFE_SHMGET()
+to align with LTP conventions and reduce boilerplate error handling.
+Include "tst_safe_sysv_ipc.h" explicitly in both files to make the
+SAFE_SHMGET() declaration directly visible.
 
-On Android, mkfs.exfat (exfatprogs) defaults to a 128KB cluster size
-on volumes <= 32GB. On a 512MB test volume, this provides only 4,080
-clusters, causing the test to run out of clusters and fail with ENOSPC.
+In hugeshmget03, simplify the tst_brk() error message by removing
+the "shmget #setup" string and replacing it with "shmget()" to avoid
+embedding the function name as a plain string literal.
 
-Fix this by configuring exfat to format with a 4KB cluster size (-c 4K)
-via the struct tst_fs mkfs_opts field.
+Also fix the following pre-existing checkpatch warnings across all
+three files:
+- hugeshmget02: remove unnecessary parentheses around pointer
+  dereferences of tcases[i].skey
+- hugeshmget02: fix continuation line alignment in TEST() call
+- hugeshmget03: merge split string literals in tst_res() and
+  tst_brk() calls into single strings
+- hugeshmget05: merge split string literal in tst_res() call into
+  a single string
 
-Signed-off-by: Kinshu Agrawal <kinshu@google.com>
+
+Signed-off-by: Samir Mulani <samir@linux.ibm.com>
+Reviewed-by: Li Wang <wangli.ahau@gmail.com>
 ---
- testcases/kernel/fs/inode/inode01.c | 4 ++++
- 1 file changed, 4 insertions(+)
+Patch v2: https://lore.kernel.org/ltp/20260412141039.1075095-1-samir@linux.ibm.com/
+Patch v1: https://lore.kernel.org/ltp/20260407054943.125260-1-samir@linux.ibm.com/
 
-diff --git a/testcases/kernel/fs/inode/inode01.c
-b/testcases/kernel/fs/inode/inode01.c
-index d41ff2c62..7fccaaf95 100644
---- a/testcases/kernel/fs/inode/inode01.c
-+++ b/testcases/kernel/fs/inode/inode01.c
-@@ -255,6 +255,10 @@ static struct tst_test test = {
-  .mntpoint = MNTPOINT,
-  .mount_device = 1,
-  .all_filesystems = 1,
-+ .filesystems = (struct tst_fs[]) {
-+ {.type = "exfat", .mkfs_opts = (const char *const[]) {"-c", "4K", NULL}},
-+ {}
-+ },
-  .needs_root = 1,
-  .dev_min_size = 512,
-  .forks_child = 1,
---
+ .../kernel/mem/hugetlb/hugeshmget/hugeshmget02.c  | 15 +++++++--------
+ .../kernel/mem/hugetlb/hugeshmget/hugeshmget03.c  | 12 +++++-------
+ .../kernel/mem/hugetlb/hugeshmget/hugeshmget05.c  | 11 +++++------
+ 3 files changed, 17 insertions(+), 21 deletions(-)
+
+diff --git a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget02.c b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget02.c
+index bbd968c06..c1fd41509 100644
+--- a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget02.c
++++ b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget02.c
+@@ -12,6 +12,7 @@
+  *	04/2004 - Updated by Robbie Williamson
+  */
+ #include <limits.h>
++#include "tst_safe_sysv_ipc.h"
+ #include "hugetlb.h"
+ 
+ static size_t shm_size;
+@@ -41,19 +42,19 @@ static void test_hugeshmget(unsigned int i)
+ 	int shm_id_2 = -1;
+ 
+ 	if (*tcases[i].skey == -1) {
+-		shm_id_2 = shmget(*(tcases[i].skey), 0, 0);
++		shm_id_2 = shmget(*tcases[i].skey, 0, 0);
+ 		if (shm_id_2 != -1)
+ 			shmctl(shm_id_2, IPC_RMID, NULL);
+ 	}
+ 
+-	TEST(shmget(*(tcases[i].skey), tcases[i].size_coe * shm_size,
+-					tcases[i].flags));
++	TEST(shmget(*tcases[i].skey, tcases[i].size_coe * shm_size,
++		    tcases[i].flags));
+ 	if (TST_RET != -1) {
+ 		tst_res(TFAIL, "shmget succeeded unexpectedly");
+ 		return;
+ 	}
+ 
+-	if (TST_ERR != tcases[i].error) {
++	if (tcases[i].error != TST_ERR) {
+ 		tst_res(TFAIL | TTERRNO,
+ 			"shmget failed unexpectedly, expected %s",
+ 			tst_strerrno(tcases[i].error));
+@@ -77,10 +78,8 @@ void setup(void)
+ 
+ 	shmkey = getipckey();
+ 	shmkey2 = shmkey + 1;
+-	shm_id_1 = shmget(shmkey, shm_size,
+-			  SHM_HUGETLB | IPC_CREAT | IPC_EXCL | SHM_RW);
+-	if (shm_id_1 == -1)
+-		tst_brk(TBROK | TERRNO, "shmget #setup");
++	shm_id_1 = SAFE_SHMGET(shmkey, shm_size,
++			      SHM_HUGETLB | IPC_CREAT | IPC_EXCL | SHM_RW);
+ }
+ 
+ void cleanup(void)
+diff --git a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget03.c b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget03.c
+index 0e9c7d5f0..8a5e2708d 100644
+--- a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget03.c
++++ b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget03.c
+@@ -37,8 +37,8 @@ static void test_hugeshmget(void)
+ 	if (TST_ERR == ENOSPC)
+ 		tst_res(TPASS | TTERRNO, "shmget failed as expected");
+ 	else
+-		tst_res(TFAIL | TTERRNO, "shmget failed unexpectedly "
+-				"- expect errno=ENOSPC, got");
++		tst_res(TFAIL | TTERRNO,
++			"shmget failed unexpectedly - expect errno=ENOSPC, got");
+ }
+ 
+ static void setup(void)
+@@ -64,15 +64,13 @@ static void setup(void)
+ 	while (shm_id_1 != -1) {
+ 		shm_id_arr[num_shms++] = shm_id_1;
+ 		if (num_shms == MAXIDS)
+-			tst_brk(TBROK, "The maximum number of "
+-				 "shared memory ID's has been reached. "
+-				 "Please increase the MAXIDS value in "
+-				 "the test.");
++			tst_brk(TBROK,
++				"The maximum number of shared memory ID's has been reached. Please increase the MAXIDS value in the test.");
+ 		shm_id_1 = shmget(IPC_PRIVATE, shm_size,
+ 				  SHM_HUGETLB | IPC_CREAT | IPC_EXCL | SHM_RW);
+ 	}
+ 	if (errno != ENOSPC)
+-		tst_brk(TBROK | TERRNO, "shmget #setup");
++		tst_brk(TBROK | TERRNO, "shmget()");
+ }
+ 
+ static void cleanup(void)
+diff --git a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget05.c b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget05.c
+index 336319603..de96d9824 100644
+--- a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget05.c
++++ b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget05.c
+@@ -14,6 +14,7 @@
+ #include <sys/types.h>
+ #include <sys/wait.h>
+ #include <limits.h>
++#include "tst_safe_sysv_ipc.h"
+ #include "hugetlb.h"
+ 
+ static size_t shm_size;
+@@ -53,8 +54,8 @@ static void do_child(void)
+ 	if (TST_ERR == EACCES)
+ 		tst_res(TPASS | TTERRNO, "shmget failed as expected");
+ 	else
+-		tst_res(TFAIL | TTERRNO, "shmget failed unexpectedly "
+-				"- expect errno=EACCES, got");
++		tst_res(TFAIL | TTERRNO,
++			"shmget failed unexpectedly - expect errno=EACCES, got");
+ }
+ 
+ void setup(void)
+@@ -69,10 +70,8 @@ void setup(void)
+ 	shm_size = hpage_size * tst_hugepages / 2;
+ 	update_shm_size(&shm_size);
+ 	shmkey = getipckey();
+-	shm_id_1 = shmget(shmkey, shm_size,
+-			  SHM_HUGETLB | SHM_RW | IPC_CREAT | IPC_EXCL);
+-	if (shm_id_1 == -1)
+-		tst_brk(TBROK | TERRNO, "shmget #setup");
++	shm_id_1 = SAFE_SHMGET(shmkey, shm_size,
++			      SHM_HUGETLB | SHM_RW | IPC_CREAT | IPC_EXCL);
+ 
+ 	/* get the userid for a non-root user */
+ 	ltp_uid = getuserid(ltp_user);
+-- 
+2.52.0
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
