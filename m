@@ -4,82 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B7867C5DF7D
-	for <ltp@archiver.kernel.org>; Tue, 18 Aug 2026 17:34:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 26CD1C5DF81
+	for <ltp@archiver.kernel.org>; Tue, 18 Aug 2026 17:44:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1787075086; h=message-id :
+ date : mime-version : to : references : in-reply-to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-transfer-encoding :
+ content-type : sender : from;
+ bh=OA7uKUlYnE9DqesbU4YCOwLlWQ1I5/B70UZdgbNK5Cc=;
+ b=Z78s/r9Td6tT5X0BdKeSf2MlfSRzpHnPy1ogtb0l7TshLPwnrUpissQui7bvYSjTQTqk6
+ wuYABkTe5rYr70mOS1UN0mIkuTiIEofcjg+lkYbB3XOD8IBbdIyu8cNvMzeaxEWPbE+nvkX
+ 7fMrZRMBELaZWgqAznxnOnG3Tagi7+g=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id AF4573CD519
-	for <ltp@archiver.kernel.org>; Tue, 18 Aug 2026 19:34:42 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 6FDAC3CD046
+	for <ltp@archiver.kernel.org>; Tue, 18 Aug 2026 19:44:46 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 37A213CB035
- for <ltp@lists.linux.it>; Tue, 18 Aug 2026 19:34:28 +0200 (CEST)
-Received: from mail-oo2-x01.google.com (mail-oo2-x01.google.com
- [IPv6:2607:f8b0:4864:31::1])
+ by picard.linux.it (Postfix) with ESMTPS id A4BA73CB035
+ for <ltp@lists.linux.it>; Tue, 18 Aug 2026 19:44:25 +0200 (CEST)
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com
+ [IPv6:2a00:1450:4864:20::32a])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 9915C1400205
- for <ltp@lists.linux.it>; Tue, 18 Aug 2026 19:34:27 +0200 (CEST)
-Received: by mail-oo2-x01.google.com with SMTP id
- 46e09a7af769-7f193d62888so18765a34.1
- for <ltp@lists.linux.it>; Tue, 18 Aug 2026 10:34:27 -0700 (PDT)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id BA16F2001D2
+ for <ltp@lists.linux.it>; Tue, 18 Aug 2026 19:44:24 +0200 (CEST)
+Received: by mail-wm1-x32a.google.com with SMTP id
+ 5b1f17b1804b1-49557167508so1269695e9.1
+ for <ltp@lists.linux.it>; Tue, 18 Aug 2026 10:44:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1787074466; x=1787679266; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to:content-type;
- bh=WKTyMJhd7wXk5+8LYwzcSEg/gvVuptz3ShBS2s0r6Fs=;
- b=JyztYnqAaScLhX9qKTIojs0qjkN6XiwMSDsAPMFD30AUspWZvIpP3QeFi9HOiLz6Ls
- guCJ6DOFO9rDUMRoiyjCjR1FdEntafAlMoqW3HFn5XOczYjw+IPkoOKejZbl8apUXhPU
- D/Qy2TOFQ85y3JuaxdmfVRTVT5/JLXapQER+qmbtCdJ62n9f0yK5xNcAe5VScaNb7GwT
- l047ceA9i17iZsObTGA5RIA4Bw4+OLw1HNgjD3bnppWC75gOsmG8TD1+ehqBn3rU7H2b
- Ui/2SyZ63dQz6kk12TpevIVmHJVnunmaKJC0qnXuL13W73HemyWossU4F5hup3ZxSgXq
- IRnA==
+ d=suse.com; s=google; t=1787075064; x=1787679864; darn=lists.linux.it;
+ h=content-transfer-encoding:content-type:in-reply-to:from
+ :content-language:references:cc:to:subject:user-agent:mime-version
+ :date:message-id:from:to:cc:subject:date:message-id:reply-to
+ :content-type; bh=IEz9MQbwfvmBZ/vn9rJIPnBQrn1qEhdnAGZmRz+VyIM=;
+ b=JRVGiAnly4+NYAFvLl9dxuC95G4KFtIvTEtqleFmvZXuNjoeeYbjYr7uOmIlcPWkF9
+ IYebYh/+UIvCWJo0mSl4BHTQAsROA/Rpff/G4nQ/ADbuUmadJOVJ/4DjwuuHqzTzKFSG
+ cCrtIStufhbtik2L1IBJwdGuJenwBnr2TViS4fukYpYCwuEbFIAN5SGQVt5nE+NSp0D5
+ ReL25jkyvXwt7jP3pSx8ClYCxA09GSRWRhavEOMJyXQ7viI/5oyvU2Z3XHV39kfyx0Tw
+ 6Z/qIxXteXGXltL0G4PrZpoYK/LWf5yRMLQk+y48jIbxwgB3HnrZ2Z9j7G4eQonH9IoQ
+ lXTA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1787074466; x=1787679266;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to:content-type;
- bh=WKTyMJhd7wXk5+8LYwzcSEg/gvVuptz3ShBS2s0r6Fs=;
- b=P8yEVilF5g+KiAGL2T/jib5knRLmHNs7vauozhU/9Db7tuPEMVc1g9CLar1YAIYoPG
- 61fdF46yrqK7ouKsEOFOZas6QO7NSvBpH2HKo6USvLSxCl0WEWv1nxNhY8GJl762+olD
- cv1hNzj8MoYwkatP+JnSfdtJgbVO+qzHNkY79PkkwgB5oYKT0EYn3ff+sqbt8kAxwiGY
- ugsU//WToAD8GZa+E+OxZ1H2LUSSCFx5JSu9fmy6d0MmHKv8DGKhBITJlEsH9FsUuY92
- ks0h2m5vj1lXX1vqQkgu3kcazDEYdU7LLI0ryoc66KhTckdk5Tv6wPofHxt4GVoECIlu
- q9pw==
-X-Gm-Message-State: AOJu0YwpOoLtfZ5K8EKsyvUylejrYmVPPeTlUSQb1ujNsYZzBC65Yv1v
- ggNmDq0aO5JfCjr0w3z6XyUwv13/w0rfE0uAszbNBWVKpBiaz/x1Y+2/
-X-Gm-Gg: AR+sD10OpgN5rBxxqKHkC9uBtDcBBLffGyr19UCOKmBVbxOGtdjzHsFfOx5z61bjdQx
- kpZCXOxPe6C+TAwjZyezAXH0FCYBZyi/WRnLTBunsh6qXv8XtN0OsfyohmvZU3YYo+hthBIJyub
- f/Q8GldNTi6RD/uEuQcyDiT+xnGFreXcHZlDynSmUIZdEbKpKdqxV+c+ZDIGS6MJ+w8UWl9W6gd
- ohYgiGdQnaUQ1sY41OWI6S3QWU0VzIfI1vpNUuqOG4M7K2/3jLXkLkXAnGntz2jdBbgZTq+NgZ4
- dlNgFm5IU3J7YGGhQnmPpMIZX3XwjvURobzxefFseG0TospMu3PqdY+hwMq5CA2SyN4jxSBcmGE
- WYEynaowSWujx7/01Nb9Xh9WBQmld88C0NDI2e5yls4Gtn7m+gEc1UyCqqWt6au5z7NlpGF9nRU
- KYzwJV8IEvnSvWTpE4Dhhp4CF4G94DPhTWNQAasaJ5xTNzexHP1V3w/e2x6fXKF/cGnLvH2OgjB
- 0r1OdFqVbWtRkZZHopE+OMdQwstPIWF73ysIX+YqFqx8UcZnU2tcMV/WamSPaVHeLhbci25gV71
-X-Received: by 2002:a05:6830:43a1:b0:7e9:eb13:d042 with SMTP id
- 46e09a7af769-7f3de6eb9b7mr33719042a34.8.1787074465990; 
- Tue, 18 Aug 2026 10:34:25 -0700 (PDT)
-Received: from
- runnervmzvulz.zfkur4ax2nlu5onhaw0pux0jqe.ex.internal.cloudapp.net
- ([64.236.145.67]) by smtp.gmail.com with ESMTPSA id
- 46e09a7af769-7f41bcffb48sm4916375a34.0.2026.08.18.10.34.25
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 18 Aug 2026 10:34:25 -0700 (PDT)
-From: linuxtestproject.agent@gmail.com
-To: Samir Mulani <samir@linux.ibm.com>
-Date: Tue, 18 Aug 2026 17:34:24 +0000
-Message-ID: <20260818173424.8975-1-linuxtestproject.agent@gmail.com>
-X-Mailer: git-send-email 2.55.0
-In-Reply-To: <20260818113032.41963-1-samir@linux.ibm.com>
-References: <20260818113032.41963-1-samir@linux.ibm.com>
+ d=1e100.net; s=20251104; t=1787075064; x=1787679864;
+ h=content-transfer-encoding:content-type:in-reply-to:from
+ :content-language:references:cc:to:subject:user-agent:mime-version
+ :date:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to:content-type;
+ bh=IEz9MQbwfvmBZ/vn9rJIPnBQrn1qEhdnAGZmRz+VyIM=;
+ b=BYeF1rrGkt7yNnn4RXFeeUDU5/AZ5o6fQnQA6SvA/mmVC6sj1q+hMjHDt/U/jB3fxL
+ SnzsZ4Jeyqz09Hd5FV+96Z3UHPMjbcUkQN9lvMNcaJ5mljwuRWCPmCcIkcwKyS0+9DdB
+ 4pLaR/vzCufr6cpSHhYDQ/dP4zA7NQb+wRFf3wYSYnHclnI74S/ePxvlmVrEcUOOYIgr
+ DOm6L68Qz9P3SjwA+RKAL2WcP6xiMkd42iuxk/l+N3vSQVG9fYxxB0HQIEYy+FFhYM0d
+ YrNtGKVzAuH7iCclBtOcHyp8DgIFJhzAnjdNpp/3cTR29REp8L94JaegGsDDREBMa59x
+ X28g==
+X-Gm-Message-State: AOJu0YxX6MFUJQVsyIUQQNLIMypXx7w2VCQh192ejIfPk8W9gstJ3pb9
+ Bf/IMTKC711gn9pxxV6xGtEVsbnU3kiqxtbxDyQkPddth4Dl6dXvFnEdVf6018iArZs=
+X-Gm-Gg: AR+sD11wWb/tXo4oi/8vymrj60CH/rfYZ9sdyaKIjxmLxSu2cv/zlUgwu1Eq58gd7uX
+ rmeJvAWuNzdqyLFoHIW5OULfa4TayPdyaP1XCpBYmtm8+mK5Ff9bft0u2Puoa/DzbikuFLVDiv3
+ B7RudP6d4mkJgAZeDTM8VVkNhV6Ldjta6zbq4ieUkSR8jmbrfjEqcu6vGOvLLF+zX8Z6mKo62ph
+ OeH3rnts+/70FzGezE2W+AmJ1fQSl8/m8BVhhwzG/0Sfe28BdBsFnLMguYT4We4vT7n2XGsRcTE
+ sEdhmpQ/Wo/qVgluuoeLApDVpsRypIGcVuLf/JPovEXhLQJA6CuB4G1AuWR6s9qdEwHR+4TXF1j
+ 0z3mguHJ3r5GRW5S0H44oZ8R9rFRgXBuZDaNbWVovMyuDHGnuzwGt1/GFKcJmKdMBE9wUdsnoCb
+ 80GZTYYUKio5S2PomhxaciO3KahztfUbgMDSNQ9uoztNWqZwXI5eY35VR7lU9dDBJK3/rIJJxJB
+ POastBQYg==
+X-Received: by 2002:a05:600c:8a1b:10b0:499:a685:c10 with SMTP id
+ 5b1f17b1804b1-499a68512ccmr75836625e9.4.1787075064111; 
+ Tue, 18 Aug 2026 10:44:24 -0700 (PDT)
+Received: from ?IPV6:2a07:b241:1004:8300::1000? ([2a07:b241:1004:8300::1000])
+ by smtp.gmail.com with ESMTPSA id
+ 5b1f17b1804b1-499960988c6sm277099875e9.0.2026.08.18.10.44.22
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Tue, 18 Aug 2026 10:44:23 -0700 (PDT)
+Message-ID: <38b59d36-8853-4d7b-8ca4-5a6f72667d2a@suse.com>
+Date: Tue, 18 Aug 2026 19:44:22 +0200
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+User-Agent: Mozilla Thunderbird
+To: Cyril Hrubis <chrubis@suse.cz>,
+ Andrea Cervesato <andrea.cervesato@suse.com>
+References: <an3Y03mKBzue5w2s@yuki.lan>
+ <6a846568.bf927062.274a72.c3f7@mx.google.com> <aoRo8tGffK4KkdaT@yuki.lan>
+Content-Language: en-US
+In-Reply-To: <aoRo8tGffK4KkdaT@yuki.lan>
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] sched/cfs-scheduler: Fix 'make check' errors and warnings
- in hackbench.c.
+Subject: Re: [LTP] [PATCH] openposix: Remove timer_*/speculative tests for
+ invalid timerid
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,36 +104,58 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+From: Avinesh Kumar via ltp <ltp@lists.linux.it>
+Reply-To: Avinesh Kumar <avinesh.kumar@suse.com>
 Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Samir,
+Hi Cyril, Andrea,
 
-On Tue, Aug 18, 2026, Samir Mulani wrote:
-> sched/cfs-scheduler: Fix 'make check' errors and warnings in hackbench.c.
+Thanks for the review and suggesting alternative approach.
 
-> Fix all 'make check' warnings in hackbench.c to comply with the LTP
-> coding style guidelines.
+> Hi!
+>> This is the problem with POSIX systems.. I would suggest to keep them
+>> and simply ignore them if running on Linux. Do we have a mechanism for that
+>> or we should do it at runner level?
+> 
+> I guess that we can simply #ifndef __linux__ these.
+>
 
-[Minor] Could create_worker() and reap_worker() be made static, or could the
-claim above be narrowed? The affected directory's make check still reports
-that both symbols have no prototype or library prefix and asks whether they
-should be static.
+If we agree on this, I can send revised patch as suggested for all the
+tests under conformance/interfaces/timer_[delete|getoverrun|gettime|
+settime]/speculative/
 
-Verdict - Needs revision
 
----
-Note:
+--- 
+a/testcases/open_posix_testsuite/conformance/interfaces/timer_delete/speculative/5-1.c
++++ 
+b/testcases/open_posix_testsuite/conformance/interfaces/timer_delete/speculative/5-1.c
+@@ -19,6 +19,11 @@
 
-The agent can sometimes produce false positives although often its
-findings are genuine. If you find issues with the review, please
-comment this email or ignore the suggestions.
+  int test_main(int argc PTS_ATTRIBUTE_UNUSED, char **argv 
+PTS_ATTRIBUTE_UNUSED)
+  {
++#ifdef __linux__
++       printf("Linux does not implement this optional behavior\n");
++       return PTS_UNSUPPORTED;
++#else
+         timer_t tid;
+         int tval = BOGUSTIMERID;
+         tid = (timer_t) & tval;
+@@ -37,4 +42,5 @@ int test_main(int argc PTS_ATTRIBUTE_UNUSED, char 
+**argv PTS_ATTRIBUTE_UNUSED)
 
+         printf("timer_delete() did not return -1\n");
+         return PTS_PASS;
++#endif
+
+
+--
 Regards,
-LTP AI Reviewer
+Avinesh
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
