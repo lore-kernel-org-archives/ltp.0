@@ -4,90 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EFCB1C5DF74
-	for <ltp@archiver.kernel.org>; Tue, 18 Aug 2026 14:18:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DBAB0C5DF7D
+	for <ltp@archiver.kernel.org>; Tue, 18 Aug 2026 14:18:21 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id F3BDD3C9B32
-	for <ltp@archiver.kernel.org>; Tue, 18 Aug 2026 16:18:05 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 952433CCDDF
+	for <ltp@archiver.kernel.org>; Tue, 18 Aug 2026 16:18:20 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 4503A3CCB1A
+ by picard.linux.it (Postfix) with ESMTPS id 89B343CCBD5
  for <ltp@lists.linux.it>; Tue, 18 Aug 2026 16:13:37 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id AE1352001D8
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 076B06002DA
  for <ltp@lists.linux.it>; Tue, 18 Aug 2026 16:13:36 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 2B824845A3
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 9A1B43E65
  for <ltp@lists.linux.it>; Tue, 18 Aug 2026 14:13:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
  t=1787062411; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=e5j7DyHMeapPaOMpSNSTkrqqK3sAl5YSeqQKBUbrZWY=;
- b=iI2H6JgnZD0J3aHXHsgtJugxPub/usB5Cshd32thiLtN/EiWLmKBEzIzOAlD25N/Y9H2Uf
- lScyWcNXTBQBwulZDVIjrcwTM78mhO1Ni8GCjaSnbk3scOvB78daq5up2ANqVQAR/4viZq
- Ye+jj9rtmXp3skViWPyf8Vw5DVwF3u8=
+ bh=R1bhqhUdKnnlKjRe9QykQxPLyAzzG38Pm7Azmtg9N8U=;
+ b=2GdnkVcNiz09UidTYxKy3zv7QJFH+Rq+sHUgFUVAfJxMA8+bYVaDAagsjAA2NOpE0oeT29
+ IYzBmFDQsc/tUmz6IMJuppIMW3EHNCbPUz/QB7Teer/WjwcWXts/wGD2sCDzdmd4YTarUq
+ WTpR92FW2tLDU3foiXUNPNdKRI8r2kM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
  s=susede2_ed25519; t=1787062411;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=e5j7DyHMeapPaOMpSNSTkrqqK3sAl5YSeqQKBUbrZWY=;
- b=2LOv8/yLi6V3j/CqvZ7DDnQZa9DPVI8oe2AacLcL42xYcm7kCF1R+lcmCTM9yhx1mf7qn6
- 7fpwhXY/e8vBKtAw==
-Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=yWZSf1lf;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=4ueDtkCa
+ bh=R1bhqhUdKnnlKjRe9QykQxPLyAzzG38Pm7Azmtg9N8U=;
+ b=jDRs7wZtYdIRiPCkdV8Wb2tYpUMDi792p7WMVKJzxzJzU/ktLNlTgyltYA6Kvf+0OfkaTr
+ GuMGuaQ5k4C82MBQ==
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=d8Ze9Uty;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=uaQVEq9H
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
  t=1787062407; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=e5j7DyHMeapPaOMpSNSTkrqqK3sAl5YSeqQKBUbrZWY=;
- b=yWZSf1lfryF3mfkuurZ8DkGu8PaGQBDL+FKhWsHYprDNjRBJ6iIjaJ9VZ9xYadMcnVdo8j
- 3OZ2Xv205zxjps8emdYvaJbkfIeirgGQh7v26TwSJsaYHN4xmEw6xFOzyWFd2saoSDlSMO
- LqkDilKs/WbCCrrwt7V2NDBVqFbFeco=
+ bh=R1bhqhUdKnnlKjRe9QykQxPLyAzzG38Pm7Azmtg9N8U=;
+ b=d8Ze9Uty9gVHSpbtG8nwJNsCuFcQfY5J2srkZYWQ/hSoxFWYP81OLNPSNvge3TwSUOXiXs
+ 5TRf1pKb8xcEt/dwTb5Kvun4DakFeHmei1lqfDqL2dz4+rC3FDaR5FqjAq1/JK4dmlTgkG
+ u/KsiBLbfqLopkvZHymfgYSSHPq+54U=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
  s=susede2_ed25519; t=1787062407;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=e5j7DyHMeapPaOMpSNSTkrqqK3sAl5YSeqQKBUbrZWY=;
- b=4ueDtkCaCwBdJeCPfKSMUSs/fWw6g+/5xALwUBQ1IWy+JjaTQ8iCEsMNnvC2Q9OntFBuFp
- SA2RRS4/Qx7P/QCw==
+ bh=R1bhqhUdKnnlKjRe9QykQxPLyAzzG38Pm7Azmtg9N8U=;
+ b=uaQVEq9HDawY9uLXOzhPRlOGWQinaD1SgRURZ4gaHK9lBYzmAMj4qt6Qnye8ibkiQ9ve/O
+ cHa6aBtp9tdbkmAw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 16A69339C
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 822FE364F
  for <ltp@lists.linux.it>; Tue, 18 Aug 2026 14:13:27 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id ApqQBIdohGoGcQAAD6G6ig
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 5g6yHodohGoKcQAAD6G6ig
  (envelope-from <chrubis@suse.cz>)
  for <ltp@lists.linux.it>; Tue, 18 Aug 2026 14:13:27 +0000
 From: Cyril Hrubis <chrubis@suse.cz>
 To: ltp@lists.linux.it
-Date: Tue, 18 Aug 2026 16:12:57 +0200
-Message-ID: <20260818141311.1265557-18-chrubis@suse.cz>
+Date: Tue, 18 Aug 2026 16:12:58 +0200
+Message-ID: <20260818141311.1265557-19-chrubis@suse.cz>
 X-Mailer: git-send-email 2.54.0
 In-Reply-To: <20260818141311.1265557-1-chrubis@suse.cz>
 References: <20260818141311.1265557-1-chrubis@suse.cz>
 MIME-Version: 1.0
 X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: 2B824845A3
+X-Rspamd-Queue-Id: 9A1B43E65
 X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  NEURAL_HAM_LONG(-1.00)[-1.000]; MID_CONTAINS_FROM(1.00)[];
  R_MISSING_CHARSET(0.50)[];
@@ -100,15 +101,15 @@ X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  RCPT_COUNT_ONE(0.00)[1];
  PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
  RCVD_TLS_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:mid,suse.cz:email,suse.cz:dkim];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:mid,suse.cz:email,suse.cz:dkim,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
  TO_DN_NONE(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
  MIME_TRACE(0.00)[0:+]; DKIM_TRACE(0.00)[suse.cz:+]
 X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v1 17/31] testcases: sysfs: Add sys_rtc01
+Subject: [LTP] [PATCH v1 18/31] testcases: sysfs: Add sys_thermal01
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -125,40 +126,40 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-A test for /sys/class/rtc/*/* files.
+A test for /sys/class/thermal/cooling_device*/* files.
 
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- runtest/sysfs                                |   1 +
- testcases/kernel/sysfs/class/rtc/.gitignore  |   1 +
- testcases/kernel/sysfs/class/rtc/Makefile    |   7 +
- testcases/kernel/sysfs/class/rtc/sys_rtc01.c | 200 +++++++++++++++++++
- 4 files changed, 209 insertions(+)
- create mode 100644 testcases/kernel/sysfs/class/rtc/.gitignore
- create mode 100644 testcases/kernel/sysfs/class/rtc/Makefile
- create mode 100644 testcases/kernel/sysfs/class/rtc/sys_rtc01.c
+ runtest/sysfs                                 |  1 +
+ .../kernel/sysfs/class/thermal/.gitignore     |  1 +
+ testcases/kernel/sysfs/class/thermal/Makefile |  7 ++
+ .../sysfs/class/thermal/sys_thermal01.c       | 70 +++++++++++++++++++
+ 4 files changed, 79 insertions(+)
+ create mode 100644 testcases/kernel/sysfs/class/thermal/.gitignore
+ create mode 100644 testcases/kernel/sysfs/class/thermal/Makefile
+ create mode 100644 testcases/kernel/sysfs/class/thermal/sys_thermal01.c
 
 diff --git a/runtest/sysfs b/runtest/sysfs
-index b8d003228..de58499be 100644
+index de58499be..454042ed0 100644
 --- a/runtest/sysfs
 +++ b/runtest/sysfs
-@@ -13,3 +13,4 @@ sys_bdi01 sys_bdi01
- sys_hwmon01 sys_hwmon01
+@@ -14,3 +14,4 @@ sys_hwmon01 sys_hwmon01
  sys_leds01 sys_leds01
  sys_wakeup01 sys_wakeup01
-+sys_rtc01 sys_rtc01
-diff --git a/testcases/kernel/sysfs/class/rtc/.gitignore b/testcases/kernel/sysfs/class/rtc/.gitignore
+ sys_rtc01 sys_rtc01
++sys_thermal01 sys_thermal01
+diff --git a/testcases/kernel/sysfs/class/thermal/.gitignore b/testcases/kernel/sysfs/class/thermal/.gitignore
 new file mode 100644
-index 000000000..0ce416b43
+index 000000000..c551a2cde
 --- /dev/null
-+++ b/testcases/kernel/sysfs/class/rtc/.gitignore
++++ b/testcases/kernel/sysfs/class/thermal/.gitignore
 @@ -0,0 +1 @@
-+/sys_rtc01
-diff --git a/testcases/kernel/sysfs/class/rtc/Makefile b/testcases/kernel/sysfs/class/rtc/Makefile
++/sys_thermal01
+diff --git a/testcases/kernel/sysfs/class/thermal/Makefile b/testcases/kernel/sysfs/class/thermal/Makefile
 new file mode 100644
 index 000000000..034038061
 --- /dev/null
-+++ b/testcases/kernel/sysfs/class/rtc/Makefile
++++ b/testcases/kernel/sysfs/class/thermal/Makefile
 @@ -0,0 +1,7 @@
 +# SPDX-License-Identifier: GPL-2.0-or-later
 +# Copyright (c) 2026 Cyril Hrubis <chrubis@suse.cz>
@@ -167,167 +168,55 @@ index 000000000..034038061
 +
 +include $(top_srcdir)/include/mk/testcases.mk
 +include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/sysfs/class/rtc/sys_rtc01.c b/testcases/kernel/sysfs/class/rtc/sys_rtc01.c
+diff --git a/testcases/kernel/sysfs/class/thermal/sys_thermal01.c b/testcases/kernel/sysfs/class/thermal/sys_thermal01.c
 new file mode 100644
-index 000000000..6ae1b4465
+index 000000000..8b2e5abff
 --- /dev/null
-+++ b/testcases/kernel/sysfs/class/rtc/sys_rtc01.c
-@@ -0,0 +1,200 @@
++++ b/testcases/kernel/sysfs/class/thermal/sys_thermal01.c
+@@ -0,0 +1,70 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
 + * Copyright (c) 2026 Cyril Hrubis <chrubis@suse.cz>
 + */
 +
 +/*\
-+ * Sanity checks for the RTC attributes exported under
-+ * /sys/class/rtc/rtcN/.
++ * Sanity checks for the thermal cooling devices exported under
++ * /sys/class/thermal/cooling_deviceN/.
 + *
-+ * date and time report the RTC clock in UTC, while since_epoch reports the
-+ * same value pre-converted to a Unix timestamp. For every RTC device the
-+ * test verifies that:
++ * For every cooling device the test verifies that:
 + *
-+ * - hctosys is a boolean
-+ * - max_user_freq is greater than zero
-+ * - since_epoch matches date and time converted to a Unix timestamp
-+ * - for the RTC device with hctosys == 1, i.e. the one that was actually
-+ *   used by the kernel's own CONFIG_RTC_HCTOSYS code to set the system clock
-+ *   at boot, since_epoch is additionally close to the current system time(2)
-+ *   value. On a system with multiple RTC devices the other ones are not
-+ *   guaranteed to be in sync with the system clock at all (e.g. a
-+ *   peripheral's battery-backed RTC used only for its own wakeup alarm), so
-+ *   this second check is skipped for them.
++ * - type is a non-empty string
++ * - max_state is non-negative
++ * - cur_state is in the range [0, max_state]
 + *
-+ * The hctosys only reflects whether the kernel itself performed the sync; many
-+ * setups runs "hwclock --hctosys" from a userspace init script instead sync
-+ * the system clock from the RTC without the kernel ever knowing about it,
-+ * leaving hctosys == 0 on every device despite the clock legitimately being in
-+ * sync. To still get coverage on such systems, if no RTC has hctosys == 1 at
-+ * all, rtc0 is treated as the presumed primary RTC and gets the system time
-+ * check anyway.
-+ *
-+ * The date/time vs since_epoch cross-check allows a few seconds of slack
-+ * since they are read from separate files and the wall clock keeps ticking
-+ * in between reads.
-+ *
-+ * The since_epoch vs system time(2) cross-check allows extra slack that
-+ * grows with system uptime: the RTC is a free-running hardware crystal
-+ * oscillator that (absent some periodic resync mechanism, which is not
-+ * guaranteed to be running) drifts independently of the system clock the
-+ * whole time the system is up, not just across the couple of reads this
-+ * test performs, so on a long-running system a purely fixed slack would
-+ * eventually produce false failures even on perfectly healthy hardware.
-+ *
-+ * The check may still fail if the system was booted with RTC that is fairly
-+ * off the current time and the system was later synced with NTP.
++ * The test skips with TCONF when no cooling device is present.
 + */
 +
-+#include <stdio.h>
 +#include <string.h>
-+#include <stdlib.h>
 +#include <dirent.h>
 +#include <limits.h>
-+#include <time.h>
-+#include <sys/sysinfo.h>
 +#include "tst_test.h"
 +#include "tst_sysfs_assert.h"
 +
-+#define RTC_CLASS "/sys/class/rtc"
-+#define SLACK_SEC 10
++#define THERMAL "/sys/class/thermal"
 +
-+/*
-+ * Generously high assumed worst-case RTC crystal drift, in parts per
-+ * million, used to scale the system time slack with uptime. 200 ppm covers
-+ * even fairly poor/uncompensated RTC crystals across a wide temperature
-+ * range; a decent RTC typically drifts far less than this.
-+ */
-+#define MAX_RTC_DRIFT_PPM 200
-+
-+static long sys_time_slack_sec(void)
++static void check_cooling_device(const char *name)
 +{
-+	struct sysinfo info;
++	char type[64] = "";
 +
-+	SAFE_SYSINFO(&info);
++	tst_res(TINFO, "Checking %s", name);
 +
-+	return SLACK_SEC + (long)info.uptime * MAX_RTC_DRIFT_PPM / 1000000;
-+}
++	TST_SYSFS_READ_STR(type, sizeof(type), THERMAL "/%s/type", name);
 +
-+static long read_hctosys(const char *name)
-+{
-+	return TST_SYSFS_READ_LI(RTC_CLASS "/%s/hctosys", name);
-+}
++	if (type[0] != '\0')
++		tst_res(TPASS, "%s: type = '%s'", name, type);
++	else
++		tst_res(TFAIL, "%s: type is empty", name);
 +
-+static void check_rtc(const char *name, int any_hctosys)
-+{
-+	char date[32] = "", rtc_time[32] = "";
-+	struct tm tm = { 0 };
-+	time_t rtc_epoch, sys_epoch;
-+	long  hctosys, slack;
-+	time_t since_epoch;
-+	int is_primary;
++	TST_SYSFS_ASSERT_RANGELL(0, LONG_MAX, THERMAL "/%s/max_state", name);
 +
-+	TST_SYSFS_ASSERT_BOOL(RTC_CLASS "/%s/hctosys", name);
-+	TST_SYSFS_ASSERT_RANGELL(1, LONG_MAX, RTC_CLASS "/%s/max_user_freq", name);
-+
-+	hctosys = read_hctosys(name);
-+
-+	/*
-+	 * If no RTC has hctosys == 1 anywhere (see the top comment), fall
-+	 * back to treating rtc0 as the presumed primary RTC.
-+	 */
-+	is_primary = hctosys || (!any_hctosys && !strcmp(name, "rtc0"));
-+
-+	TST_SYSFS_READ_STR(date, sizeof(date), RTC_CLASS "/%s/date", name);
-+	TST_SYSFS_READ_STR(rtc_time, sizeof(rtc_time), RTC_CLASS "/%s/time",
-+			   name);
-+
-+	since_epoch = TST_SYSFS_READ_LI(RTC_CLASS "/%s/since_epoch", name);
-+
-+	sys_epoch = time(NULL);
-+
-+	if (sscanf(date, "%d-%d-%d", &tm.tm_year, &tm.tm_mon, &tm.tm_mday) != 3 ||
-+	    sscanf(rtc_time, "%d:%d:%d", &tm.tm_hour, &tm.tm_min, &tm.tm_sec) != 3) {
-+		tst_res(TFAIL, "%s: failed to parse date '%s' / time '%s'",
-+			name, date, rtc_time);
-+		return;
-+	}
-+
-+	tm.tm_year -= 1900;
-+	tm.tm_mon -= 1;
-+	rtc_epoch = timegm(&tm);
-+
-+	if (llabs((long long)(rtc_epoch - since_epoch)) <= SLACK_SEC) {
-+		tst_res(TPASS,
-+			"%s: since_epoch (%lld) matches date '%s' time '%s' (%lld)",
-+			name, (long long)since_epoch, date, rtc_time,
-+			(long long)rtc_epoch);
-+	} else {
-+		tst_res(TFAIL,
-+			"%s: since_epoch (%lld) does not match date '%s' time '%s' (%lld)",
-+			name, (long long)since_epoch, date, rtc_time,
-+			(long long)rtc_epoch);
-+	}
-+
-+	if (!is_primary) {
-+		tst_res(TINFO,
-+			"%s: not the (assumed) primary RTC, not checking since_epoch against system time",
-+			name);
-+		return;
-+	}
-+
-+	slack = sys_time_slack_sec();
-+	long long diff = llabs((long long)(since_epoch - sys_epoch));
-+
-+	if (diff <= slack) {
-+		tst_res(TPASS,
-+			"%s: since_epoch (%lld), system time (%lld), diff %llds <= slack %lds",
-+			name, (long long)since_epoch, (long long)sys_epoch,
-+			diff, slack);
-+	} else {
-+		tst_res(TFAIL,
-+			"%s: since_epoch (%lld), system time (%lld), diff %llds > slack %lds",
-+			name, (long long)since_epoch, (long long)sys_epoch,
-+			diff, slack);
-+	}
++	TST_SYSFS_ASSERT_RANGELF(0, "cur_state", "max_state",
++				  THERMAL "/%s/", name);
 +}
 +
 +static void do_test(void)
@@ -335,39 +224,21 @@ index 000000000..6ae1b4465
 +	DIR *d;
 +	struct dirent *ent;
 +	int found = 0;
-+	int any_hctosys = 0;
 +
-+	d = SAFE_OPENDIR(RTC_CLASS);
++	d = SAFE_OPENDIR(THERMAL);
 +
-+	/* First pass: find out whether any RTC has hctosys == 1 already. */
 +	while ((ent = SAFE_READDIR(d))) {
-+		if (strncmp(ent->d_name, "rtc", 3))
++		if (strncmp(ent->d_name, "cooling_device", 14))
 +			continue;
 +
 +		found = 1;
-+
-+		if (read_hctosys(ent->d_name))
-+			any_hctosys = 1;
-+	}
-+
-+	if (!found) {
-+		tst_res(TCONF, "No RTC device found");
-+		SAFE_CLOSEDIR(d);
-+		return;
-+	}
-+
-+	rewinddir(d);
-+
-+	/* Second pass: run the actual checks. */
-+	while ((ent = SAFE_READDIR(d))) {
-+		if (strncmp(ent->d_name, "rtc", 3))
-+			continue;
-+
-+		tst_res(TINFO, "Checking %s", ent->d_name);
-+		check_rtc(ent->d_name, any_hctosys);
++		check_cooling_device(ent->d_name);
 +	}
 +
 +	SAFE_CLOSEDIR(d);
++
++	if (!found)
++		tst_res(TCONF, "No cooling device found");
 +}
 +
 +static struct tst_test test = {
