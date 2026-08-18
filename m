@@ -4,102 +4,110 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5388CC5DF7E
-	for <ltp@archiver.kernel.org>; Tue, 18 Aug 2026 14:17:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 18593C5DF74
+	for <ltp@archiver.kernel.org>; Tue, 18 Aug 2026 14:17:39 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0A6F53CD046
-	for <ltp@archiver.kernel.org>; Tue, 18 Aug 2026 16:17:18 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id BBE763CD046
+	for <ltp@archiver.kernel.org>; Tue, 18 Aug 2026 16:17:37 +0200 (CEST)
 Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id AD9EE3CD151
- for <ltp@lists.linux.it>; Tue, 18 Aug 2026 16:13:32 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+ by picard.linux.it (Postfix) with ESMTPS id 5EBAB3CD151
+ for <ltp@lists.linux.it>; Tue, 18 Aug 2026 16:13:33 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 9E01214000B8
- for <ltp@lists.linux.it>; Tue, 18 Aug 2026 16:13:31 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id DC3241400254
+ for <ltp@lists.linux.it>; Tue, 18 Aug 2026 16:13:32 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 11307845B6
- for <ltp@lists.linux.it>; Tue, 18 Aug 2026 14:13:17 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 502573E67
+ for <ltp@lists.linux.it>; Tue, 18 Aug 2026 14:13:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1787062401; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1787062408; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=oJBSl8ZZBjmlgte2pYaktd69X1My7hF3Wo0MgfraDoQ=;
- b=HqhOdZw4TKGq3yRlQaZuN/YYee8XpekZMtx+hbP+XpZR2B7Op8q5M37SIIHGFXrpIayHXC
- cGtcqTYADDsiwyMTfly+3sbR3eRy8J//2yMUViBniDd7GGfrqYCL17GuPvJaFucZ3iJNy+
- q0sDbqBdVUR2H7UR1RtRQk2Ascp14gk=
+ bh=nUY0aoMty16Ambp6qepmopezj+U7eacdSV+8ZfZz3FE=;
+ b=fsLSrYY0iCDOBocgtp8KaU7i3zhWf7DgXKaCWkSOZiUj8TknHDJ0MY/EcsFYsslvZ6Evyg
+ wEN7yvRK6OA142sYNTfglo7ULNZWS1xcbcrd2Srh/BR/yH3KTnpWqKC5nRS5PjkDV/MHxL
+ 1rHYsgrrMPeiVsk+9VANhC+/6Ai/gmU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1787062401;
+ s=susede2_ed25519; t=1787062408;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=oJBSl8ZZBjmlgte2pYaktd69X1My7hF3Wo0MgfraDoQ=;
- b=Ea9/t7gW95tz5GEKKV3EF1PsttLZ9V+lAf8W6AhBdmZLV8Sx0teEe3FpNz4JOMYfT6AgSK
- uUh8te1RTg9hdaCA==
-Authentication-Results: smtp-out1.suse.de;
-	none
+ bh=nUY0aoMty16Ambp6qepmopezj+U7eacdSV+8ZfZz3FE=;
+ b=AQ3MsBiPGiybmBBpHVbZqYW4jmteNzYbQ0OataXJt9BPtmtcIENaXdHjx3686ZC03nGVQG
+ ytaakx8mU6o9cSBA==
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=vtb0whrP;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=Dlx0xCcX
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1787062397; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1787062404; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=oJBSl8ZZBjmlgte2pYaktd69X1My7hF3Wo0MgfraDoQ=;
- b=hAGynk50JosQvGdqcd1vBUdzKKTG9rt6mvs750j2XMluxdihy3l6JPzlAdpvmF119Ljuj3
- HBki5ghz1eTdHg9v9DjXyVEZFPX9rpDQxZDl5QxBSsiBoOcfIpXpM925akG3zQbNG8L5Md
- 8SN+V6QiCWMgDqS7JCLhz/zmYSY1bAI=
+ bh=nUY0aoMty16Ambp6qepmopezj+U7eacdSV+8ZfZz3FE=;
+ b=vtb0whrPe0gaweovsw3zwZAk9mQz/MjUD9RQD9Y6s4xNItXJz9734twt1DXkUabBPljfYo
+ Lw5zrm7g+XfmW9ziz2fV0+G+p+/THXqvmasF3UdnenAg6a9wrawem6S/hcGINpeS7QxQQw
+ OGitIMa5fgA9BY6c5f4KIK6+1GscveY=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1787062397;
+ s=susede2_ed25519; t=1787062404;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=oJBSl8ZZBjmlgte2pYaktd69X1My7hF3Wo0MgfraDoQ=;
- b=Kmp7Aak6d/JbCx/L1hZzOF45CNeRfeDduLgrFmNHqcHHHDgnPyYMkBQ6fHkxjyty/HHfD4
- ruZWYIf5HiXBdXDw==
+ bh=nUY0aoMty16Ambp6qepmopezj+U7eacdSV+8ZfZz3FE=;
+ b=Dlx0xCcXFoiTGDCjfMxAK+SG1WvkLtv/ATMYjGNFKBp5l7IywIdyACJb0muiDFklmRuvvh
+ GGU0l4ZTTMYD8EAw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A0F80367F
- for <ltp@lists.linux.it>; Tue, 18 Aug 2026 14:13:15 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3E900367A
+ for <ltp@lists.linux.it>; Tue, 18 Aug 2026 14:13:18 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id vhp0JntohGrZcAAAD6G6ig
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 17dcDX5ohGrtcAAAD6G6ig
  (envelope-from <chrubis@suse.cz>)
- for <ltp@lists.linux.it>; Tue, 18 Aug 2026 14:13:15 +0000
+ for <ltp@lists.linux.it>; Tue, 18 Aug 2026 14:13:18 +0000
 From: Cyril Hrubis <chrubis@suse.cz>
 To: ltp@lists.linux.it
-Date: Tue, 18 Aug 2026 16:12:49 +0200
-Message-ID: <20260818141311.1265557-10-chrubis@suse.cz>
+Date: Tue, 18 Aug 2026 16:12:55 +0200
+Message-ID: <20260818141311.1265557-16-chrubis@suse.cz>
 X-Mailer: git-send-email 2.54.0
 In-Reply-To: <20260818141311.1265557-1-chrubis@suse.cz>
 References: <20260818141311.1265557-1-chrubis@suse.cz>
 MIME-Version: 1.0
-X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
- R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-1.000];
- MIME_GOOD(-0.10)[text/plain]; ARC_NA(0.00)[];
- RCPT_COUNT_ONE(0.00)[1]; RCVD_VIA_SMTP_AUTH(0.00)[];
- MIME_TRACE(0.00)[0:+];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_CONTAINS_FROM(1.00)[];
+ R_MISSING_CHARSET(0.50)[];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[]; TO_MATCH_ENVRCPT_ALL(0.00)[]; ARC_NA(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; RCPT_COUNT_ONE(0.00)[1];
+ MIME_TRACE(0.00)[0:+]; FROM_HAS_DN(0.00)[];
  PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:email,suse.cz:mid];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- TO_DN_NONE(0.00)[]; RCVD_TLS_ALL(0.00)[]
+ FROM_EQ_ENVFROM(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:mid,suse.cz:dkim,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ RCVD_TLS_ALL(0.00)[]; TO_DN_NONE(0.00)[];
+ RCVD_COUNT_TWO(0.00)[2];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ DKIM_TRACE(0.00)[suse.cz:+]
+X-Rspamd-Queue-Id: 502573E67
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
 X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v1 09/31] testcases: sysfs: Add sys_cpu_smt01
+Subject: [LTP] [PATCH v1 15/31] testcases: sysfs: sys_leds01
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -116,100 +124,116 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-A test for /sys/devices/system/cpu/smt/* files.
+Add test for /sys/class/leds/*/* files.
 
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
  runtest/sysfs                                 |  1 +
- .../sysfs/devices/system/cpu/.gitignore       |  1 +
- .../sysfs/devices/system/cpu/sys_cpu_smt01.c  | 65 +++++++++++++++++++
- 3 files changed, 67 insertions(+)
- create mode 100644 testcases/kernel/sysfs/devices/system/cpu/sys_cpu_smt01.c
+ testcases/kernel/sysfs/class/leds/.gitignore  |  1 +
+ testcases/kernel/sysfs/class/leds/Makefile    |  7 ++
+ .../kernel/sysfs/class/leds/sys_leds01.c      | 67 +++++++++++++++++++
+ 4 files changed, 76 insertions(+)
+ create mode 100644 testcases/kernel/sysfs/class/leds/.gitignore
+ create mode 100644 testcases/kernel/sysfs/class/leds/Makefile
+ create mode 100644 testcases/kernel/sysfs/class/leds/sys_leds01.c
 
 diff --git a/runtest/sysfs b/runtest/sysfs
-index 663c1d203..4cc2360c6 100644
+index 23c7adc7a..f515c4c1e 100644
 --- a/runtest/sysfs
 +++ b/runtest/sysfs
-@@ -5,3 +5,4 @@ sys_node01 sys_node01
- sys_cpu_topology01 sys_cpu_topology01
- sys_cpu_topology02 sys_cpu_topology02
- sys_cpu_vulnerabilities01 sys_cpu_vulnerabilities01
-+sys_cpu_smt01 sys_cpu_smt01
-diff --git a/testcases/kernel/sysfs/devices/system/cpu/.gitignore b/testcases/kernel/sysfs/devices/system/cpu/.gitignore
-index 3ae5f494f..d0f8a6dab 100644
---- a/testcases/kernel/sysfs/devices/system/cpu/.gitignore
-+++ b/testcases/kernel/sysfs/devices/system/cpu/.gitignore
-@@ -1,3 +1,4 @@
- /sys_cpu_topology01
- /sys_cpu_topology02
- /sys_cpu_vulnerabilities01
-+/sys_cpu_smt01
-diff --git a/testcases/kernel/sysfs/devices/system/cpu/sys_cpu_smt01.c b/testcases/kernel/sysfs/devices/system/cpu/sys_cpu_smt01.c
+@@ -11,3 +11,4 @@ sys_clockevents01 sys_clockevents01
+ sys_ata01 sys_ata01
+ sys_bdi01 sys_bdi01
+ sys_hwmon01 sys_hwmon01
++sys_leds01 sys_leds01
+diff --git a/testcases/kernel/sysfs/class/leds/.gitignore b/testcases/kernel/sysfs/class/leds/.gitignore
 new file mode 100644
-index 000000000..ae9612955
+index 000000000..96e026b0d
 --- /dev/null
-+++ b/testcases/kernel/sysfs/devices/system/cpu/sys_cpu_smt01.c
-@@ -0,0 +1,65 @@
++++ b/testcases/kernel/sysfs/class/leds/.gitignore
+@@ -0,0 +1 @@
++/sys_leds01
+diff --git a/testcases/kernel/sysfs/class/leds/Makefile b/testcases/kernel/sysfs/class/leds/Makefile
+new file mode 100644
+index 000000000..034038061
+--- /dev/null
++++ b/testcases/kernel/sysfs/class/leds/Makefile
+@@ -0,0 +1,7 @@
++# SPDX-License-Identifier: GPL-2.0-or-later
++# Copyright (c) 2026 Cyril Hrubis <chrubis@suse.cz>
++
++top_srcdir		?= ../../../../..
++
++include $(top_srcdir)/include/mk/testcases.mk
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/sysfs/class/leds/sys_leds01.c b/testcases/kernel/sysfs/class/leds/sys_leds01.c
+new file mode 100644
+index 000000000..5b840f5e5
+--- /dev/null
++++ b/testcases/kernel/sysfs/class/leds/sys_leds01.c
+@@ -0,0 +1,67 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
 + * Copyright (c) 2026 Cyril Hrubis <chrubis@suse.cz>
 + */
 +
 +/*\
-+ * Sanity checks for the SMT (simultaneous multithreading) control exported
-+ * under /sys/devices/system/cpu/smt/.
++ * Sanity checks for the LED class devices exported under
++ * /sys/class/leds/<led>/.
 + *
-+ * The test verifies that:
++ * For every LED the test verifies that:
 + *
-+ * - active is a boolean (0 or 1)
-+ * - control is one of the known states (on, off, forceoff, notsupported,
-+ *   notimplemented)
-+ * - when SMT is not usable (control is notsupported or notimplemented) active
-+ *   reads back as 0
++ * - max_brightness is greater than zero
++ * - brightness is in the range [0, max_brightness]
++ * - trigger is a bracketed-choice file listing the available triggers with
++ *   exactly one of them selected via [] (the set of triggers is not checked
++ *   as it is highly kernel- and hardware-dependent)
 + *
-+ * The test skips with TCONF when the smt directory is not present.
++ * The test skips with TCONF when no LED device is present.
 + */
 +
-+#include <stdio.h>
-+#include <string.h>
-+#include <unistd.h>
++#include <limits.h>
++#include <dirent.h>
 +#include "tst_test.h"
 +#include "tst_sysfs_assert.h"
 +
-+#define SMT "/sys/devices/system/cpu/smt"
++#define LEDS "/sys/class/leds"
 +
-+static const char *const control_allowed[] = {
-+	"on", "off", "forceoff", "notsupported", "notimplemented", NULL
-+};
++static void check_led(const char *name)
++{
++	char trigger[64];
++
++	tst_res(TINFO, "Checking led '%s'", name);
++
++	TST_SYSFS_ASSERT_RANGELL(1, LONG_MAX, LEDS "/%s/max_brightness", name);
++
++	TST_SYSFS_ASSERT_RANGELF(0, "brightness", "max_brightness",
++				  LEDS "/%s/", name);
++
++	TST_SYSFS_ASSERT_CHOICE(NULL, trigger, sizeof(trigger),
++				LEDS "/%s/trigger", name);
++}
 +
 +static void do_test(void)
 +{
-+	char control[32];
-+	long active;
++	DIR *d;
++	struct dirent *ent;
++	int found = 0;
 +
-+	if (access(SMT, F_OK)) {
-+		tst_res(TCONF, SMT " is not available");
-+		return;
++	d = SAFE_OPENDIR(LEDS);
++
++	while ((ent = SAFE_READDIR(d))) {
++		if (ent->d_name[0] == '.')
++			continue;
++
++		found = 1;
++		check_led(ent->d_name);
 +	}
 +
-+	TST_SYSFS_ASSERT_BOOL(SMT "/active");
++	SAFE_CLOSEDIR(d);
 +
-+	TST_SYSFS_ASSERT_ONEOF(control_allowed, SMT "/control");
-+
-+	TST_SYSFS_READ_STR(control, sizeof(control), SMT "/control");
-+	active = TST_SYSFS_READ_LI(SMT "/active");
-+
-+	if (!strcmp(control, "notsupported") ||
-+	    !strcmp(control, "notimplemented")) {
-+		if (active == 0) {
-+			tst_res(TPASS,
-+				"active is 0 while SMT control is '%s'", control);
-+		} else {
-+			tst_res(TFAIL,
-+				"active is %ld while SMT control is '%s'",
-+				active, control);
-+		}
-+	}
++	if (!found)
++		tst_res(TCONF, "No LED device found");
 +}
 +
 +static struct tst_test test = {
