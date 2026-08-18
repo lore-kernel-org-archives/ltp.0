@@ -4,110 +4,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6614FC5DF74
-	for <ltp@archiver.kernel.org>; Tue, 18 Aug 2026 14:19:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2BD9FC5DF74
+	for <ltp@archiver.kernel.org>; Tue, 18 Aug 2026 14:19:46 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E6BA63CD56B
-	for <ltp@archiver.kernel.org>; Tue, 18 Aug 2026 16:19:29 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 84C543CD0B3
+	for <ltp@archiver.kernel.org>; Tue, 18 Aug 2026 16:19:44 +0200 (CEST)
 Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 35D803CD4AC
+ by picard.linux.it (Postfix) with ESMTPS id 2E6773CD2C7
  for <ltp@lists.linux.it>; Tue, 18 Aug 2026 16:13:54 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 00889600879
- for <ltp@lists.linux.it>; Tue, 18 Aug 2026 16:13:52 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 456F76008A8
+ for <ltp@lists.linux.it>; Tue, 18 Aug 2026 16:13:53 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 3EE45845B5
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 991A23E67
  for <ltp@lists.linux.it>; Tue, 18 Aug 2026 14:13:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
  t=1787062428; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=ha4WtXoMrYGJu3vqzvt/rng+i8PfUGKIw+Tf+dprCTU=;
- b=RE6CJtsr8N5EtvJWcOMup3EpWuUL4uhFuHc1Vd+AmwKIWEYpZhndeTRxXYinsxj1vYhn68
- KC3JZNQgTUaLCDjqswYGIohWOXTATw6sEulwJCYNI8FrsxarkDKq+AOjRMoMCwhZbhhsjC
- zpCLSK8iR5aKqYlEo63t8DYFeMJpjl4=
+ bh=2TgFNDqTbxwWnOoFBV+1hn5jnLPAvORwQUWs8Cnjqg8=;
+ b=pEQkioeHbVojQbHI0qtnEzDkypydAyBzcSLcqgym98U2jlhGP/KEtIcdmPbCWpYM/lX7Up
+ bakQr9DY1VCkePNTe6B/Nz+XShRTokoQ2SuWF3togCceGs4KDk9a3VZRBSR0EcOhgwo+7W
+ VJElU35qQpa5zC1WO95X6Df/jCzBdtQ=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
  s=susede2_ed25519; t=1787062428;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=ha4WtXoMrYGJu3vqzvt/rng+i8PfUGKIw+Tf+dprCTU=;
- b=4HVBOnMRVFNkYPB6vpdhuim9eGhFfhkw5hWWS1kVsQq6ckqdItLYYYYqU0AHKy59Z6IZE1
- AQQ0YkfxcuvPDDCQ==
-Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=eakc9TLo;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=uVUbsHGt
+ bh=2TgFNDqTbxwWnOoFBV+1hn5jnLPAvORwQUWs8Cnjqg8=;
+ b=dKxcecmuod/ulB/vSXbiywNm9z41ZR6cT27vnFwPqCrtNt2xHiBe5W/DWZKHZ25Um2gb6b
+ Lcbfex7lwk7sTnBw==
+Authentication-Results: smtp-out2.suse.de;
+	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
  t=1787062424; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=ha4WtXoMrYGJu3vqzvt/rng+i8PfUGKIw+Tf+dprCTU=;
- b=eakc9TLoDALCAcb29vz9sNC6c7X4NU6e+bQENf52WRQ5bEIBvxoQVNHgapYWlpg2okg0S2
- 22O736V8sezGdjEPcNvAvqqRo75OHXQ9HL1zOYiBumBdwX9TXx+iTIyfSw+3MAuNN6Yp4h
- ygPzw4sltXC2pZVGVQMVy28PB7xc6/4=
+ bh=2TgFNDqTbxwWnOoFBV+1hn5jnLPAvORwQUWs8Cnjqg8=;
+ b=y9Eh/1fbnvUjhxQ0i175c12l5GOxCveay58Uyd9+rIPX/1HdrUSuQPrSH+26DKNZuGGBX4
+ ffczUEnmxHnoRXylDzNSsTDLhiaKImvrlbsBEizUkQamDDWvx+gEDZBXcuGlVdbtqKRY+l
+ yErzCVtxHR3cq8d89QB2Hpqe2J4qdMw=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
  s=susede2_ed25519; t=1787062424;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=ha4WtXoMrYGJu3vqzvt/rng+i8PfUGKIw+Tf+dprCTU=;
- b=uVUbsHGtJx4Hm7T0EOBKpIrqxBSHJTYqzFLreEWFooquOzRrsaEh//D4zGb8M2mUwfZml/
- TYNHHArLq4z7DbCQ==
+ bh=2TgFNDqTbxwWnOoFBV+1hn5jnLPAvORwQUWs8Cnjqg8=;
+ b=crtxiGrTm6yKoCx3c6L1ir0KmhCnckX9SNDD/H/mVdT7vlodSUiU5U8R7grUIuKNdVPAoo
+ waMsPHhHxGzut+AQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 31AE4339C
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8B272362E
  for <ltp@lists.linux.it>; Tue, 18 Aug 2026 14:13:44 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id CsgqC5hohGqycQAAD6G6ig
+ by imap1.dmz-prg2.suse.org with ESMTPSA id +XorIZhohGq0cQAAD6G6ig
  (envelope-from <chrubis@suse.cz>)
  for <ltp@lists.linux.it>; Tue, 18 Aug 2026 14:13:44 +0000
 From: Cyril Hrubis <chrubis@suse.cz>
 To: ltp@lists.linux.it
-Date: Tue, 18 Aug 2026 16:13:02 +0200
-Message-ID: <20260818141311.1265557-23-chrubis@suse.cz>
+Date: Tue, 18 Aug 2026 16:13:03 +0200
+Message-ID: <20260818141311.1265557-24-chrubis@suse.cz>
 X-Mailer: git-send-email 2.54.0
 In-Reply-To: <20260818141311.1265557-1-chrubis@suse.cz>
 References: <20260818141311.1265557-1-chrubis@suse.cz>
 MIME-Version: 1.0
-X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
- R_MISSING_CHARSET(0.50)[];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; RCPT_COUNT_ONE(0.00)[1];
- MIME_TRACE(0.00)[0:+]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-1.000];
+ MIME_GOOD(-0.10)[text/plain]; ARC_NA(0.00)[];
+ RCPT_COUNT_ONE(0.00)[1]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ MIME_TRACE(0.00)[0:+];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- ARC_NA(0.00)[]; RCVD_TLS_ALL(0.00)[];
- DKIM_TRACE(0.00)[suse.cz:+]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- RCVD_COUNT_TWO(0.00)[2];
  PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
- TO_DN_NONE(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email, suse.cz:mid, suse.cz:dkim,
- imap1.dmz-prg2.suse.org:rdns, imap1.dmz-prg2.suse.org:helo]
-X-Rspamd-Queue-Id: 3EE45845B5
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:email,suse.cz:mid];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ TO_DN_NONE(0.00)[]; RCVD_TLS_ALL(0.00)[]
 X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v1 22/31] testcases: sysfs: Add sys_net03
+Subject: [LTP] [PATCH v1 23/31] testcases: sysfs: Add sys_net04
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -126,171 +116,239 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 A test for /sys/class/net/*/* files.
 
-Similar to sys_net02 but checks bridge related files after briding a
-virtual ethernet interface.
+Similar to sys_net02 but this time for TUN/TAP devices.
 
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
  runtest/sysfs                                |   1 +
  testcases/kernel/sysfs/class/net/.gitignore  |   1 +
- testcases/kernel/sysfs/class/net/sys_net03.c | 144 +++++++++++++++++++
- 3 files changed, 146 insertions(+)
- create mode 100644 testcases/kernel/sysfs/class/net/sys_net03.c
+ testcases/kernel/sysfs/class/net/sys_net04.c | 211 +++++++++++++++++++
+ 3 files changed, 213 insertions(+)
+ create mode 100644 testcases/kernel/sysfs/class/net/sys_net04.c
 
 diff --git a/runtest/sysfs b/runtest/sysfs
-index fee8a0b2b..b2cc0005c 100644
+index b2cc0005c..290866349 100644
 --- a/runtest/sysfs
 +++ b/runtest/sysfs
-@@ -17,3 +17,4 @@ sys_rtc01 sys_rtc01
- sys_thermal01 sys_thermal01
+@@ -18,3 +18,4 @@ sys_thermal01 sys_thermal01
  sys_net01 sys_net01
  sys_net02 sys_net02
-+sys_net03 sys_net03
+ sys_net03 sys_net03
++sys_net04 sys_net04
 diff --git a/testcases/kernel/sysfs/class/net/.gitignore b/testcases/kernel/sysfs/class/net/.gitignore
-index b70d02158..8c3782a3b 100644
+index 8c3782a3b..6e934b7c1 100644
 --- a/testcases/kernel/sysfs/class/net/.gitignore
 +++ b/testcases/kernel/sysfs/class/net/.gitignore
-@@ -1,2 +1,3 @@
+@@ -1,3 +1,4 @@
  /sys_net01
  /sys_net02
-+/sys_net03
-diff --git a/testcases/kernel/sysfs/class/net/sys_net03.c b/testcases/kernel/sysfs/class/net/sys_net03.c
+ /sys_net03
++/sys_net04
+diff --git a/testcases/kernel/sysfs/class/net/sys_net04.c b/testcases/kernel/sysfs/class/net/sys_net04.c
 new file mode 100644
-index 000000000..fcc5c5451
+index 000000000..a47cf44fa
 --- /dev/null
-+++ b/testcases/kernel/sysfs/class/net/sys_net03.c
-@@ -0,0 +1,144 @@
++++ b/testcases/kernel/sysfs/class/net/sys_net04.c
+@@ -0,0 +1,211 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
 + * Copyright (c) 2026 Cyril Hrubis <chrubis@suse.cz>
 + */
 +
 +/*\
-+ * Verifies that bridge port sysfs attributes correctly appear, hold sane
-+ * values, and disappear again as a network device is enslaved to and
-+ * released from a bridge.
++ * Verifies that the link state attributes exported under
++ * /sys/class/net/<iface>/ correctly mirror the attach/detach state of a TUN
++ * device's file descriptor, and that TUN/TAP-specific sysfs attributes hold
++ * sane values.
 + *
-+ * The test creates a bridge and a veth pair, then:
++ * Unlike veth, a TUN device has no peer network device: instead, its carrier
++ * is controlled by whether a userspace process currently has the device's
++ * /dev/net/tun file descriptor attached to it (tun_attach()/tun_detach() in
++ * the kernel call netif_carrier_on()/netif_carrier_off() respectively). The
++ * device is created persistent (TUNSETPERSIST) so that it survives the file
++ * descriptor being closed, which is what allows the attach/detach cycle to
++ * be exercised here without the interface disappearing. The test checks
++ * that closing and reopening the attachment is reflected in:
 + *
-+ * - verifies /sys/class/net/<bridge>/brif/ is empty and
-+ *   /sys/class/net/<port>/brport does not exist before enslaving
-+ * - enslaves one end of the veth pair to the bridge
-+ * - verifies /sys/class/net/<bridge>/brif/<port> appears and
-+ *   /sys/class/net/<port>/brport/{state,priority,path_cost} hold sane values
-+ * - verifies /sys/class/net/<bridge>/bridge/{stp_state,forward_delay} hold
-+ *   sane values
-+ * - releases the port from the bridge
-+ * - verifies /sys/class/net/<bridge>/brif/ is empty and
-+ *   /sys/class/net/<port>/brport does not exist again
++ * - carrier - 1 while a file descriptor is attached, 0 while detached
++ * - operstate - "up" while attached, "down" while detached. Unlike veth,
++ *   this is plain "down" rather than "lowerlayerdown": the latter is only
++ *   reported when the carrier-down state is attributable to a registered
++ *   upper/lower netdevice relationship (a veth peer, a bond slave, a VLAN's
++ *   parent, ...), whereas a TUN device's carrier is driven by a userspace
++ *   file descriptor attachment, which is not a netdevice dependency at all.
++ * - carrier_up_count / carrier_down_count - incremented by exactly one on
++ *   each corresponding transition
++ * - carrier_changes - always equal to carrier_up_count + carrier_down_count
 + *
-+ * This needs root to create the bridge and veth devices.
++ * These four attributes are generic net_device core statistics updated by
++ * netif_carrier_on()/off() regardless of the underlying driver, so the
++ * expected behavior mirrors the veth peer test in sys_net02.c, aside from
++ * the "down" vs "lowerlayerdown" difference above.
++ *
++ * The very first attach happens as part of the same TUNSETIFF call that
++ * registers the netdevice, before which netif_carrier_on() skips updating
++ * carrier_up_count/operstate for it. setup() therefore performs a throwaway
++ * detach/reattach cycle so that run() starts from a state where carrier
++ * tracking already behaves normally.
++ *
++ * The test also checks attributes that are not tied to the attach state:
++ *
++ * - mtu - directly writable via sysfs; a few valid values are written and
++ *   read back, and one syntactically invalid value is rejected (with the mtu
++ *   left unchanged)
++ * - tun_flags - reflects (at least) the IFF_TUN, IFF_NO_PI and IFF_PERSIST
++ *   bits the device was created/configured with, and never has IFF_TAP set
++ * - owner / group - default to -1 (no restriction) since neither
++ *   TUNSETOWNER nor TUNSETGROUP was used
++ * - a second, TAP-mode device is created solely to cross-check that type and
++ *   addr_len correctly differ between the two: a TUN device has no
++ *   link-layer header (type == ARPHRD_NONE, addr_len == 0), while a TAP
++ *   device behaves like Ethernet (type == ARPHRD_ETHER, addr_len == 6)
++ *
++ * This needs root to create the TUN/TAP devices.
 + */
 +
-+#include <limits.h>
++#include <stdio.h>
 +#include <string.h>
-+#include <dirent.h>
 +#include <unistd.h>
++#include <fcntl.h>
++#include <linux/if.h>
++#include <linux/if_tun.h>
 +
 +#include "tst_test.h"
 +#include "tst_netdevice.h"
++#include "tst_safe_file_ops.h"
 +#include "tst_sysfs_assert.h"
 +
-+#define BRNAME "ltp_br0"
-+#define IFNAME1 "ltp_vethb1"
-+#define IFNAME2 "ltp_vethb2"
++#define TUN_PATH "/dev/net/tun"
 +
-+#define BR_PATH "/sys/class/net/" BRNAME
-+#define PORT_PATH "/sys/class/net/" IFNAME1
++#define IFNAME_TUN "ltp_tun0"
++#define IFNAME_TAP "ltp_tap0"
++#define IFACE_PATH "/sys/class/net/" IFNAME_TUN
 +
-+static int bridge_created;
-+static int veth_created;
++/* include/uapi/linux/if_arp.h, avoided pulling in the whole header. */
++#define ARPHRD_ETHER 1
++#define ARPHRD_NONE 0xFFFE
 +
-+static int count_dir_entries(const char *path)
++static int tun_fd = -1;
++static int tap_fd = -1;
++static int tun_created;
++static int tap_created;
++
++static long read_mtu(void)
 +{
-+	DIR *d;
-+	struct dirent *ent;
-+	int count = 0;
++	return TST_SYSFS_READ_LI(IFACE_PATH "/mtu");
++}
 +
-+	d = SAFE_OPENDIR(path);
++#include "sys_net_common.h"
 +
-+	while ((ent = SAFE_READDIR(d))) {
-+		if (ent->d_name[0] == '.')
-+			continue;
++static int open_tun(const char *ifname, short flags)
++{
++	struct ifreq ifr = { .ifr_flags = flags };
++	int fd = SAFE_OPEN(TUN_PATH, O_RDWR);
 +
-+		count++;
-+	}
++	strncpy(ifr.ifr_name, ifname, IFNAMSIZ - 1);
++	SAFE_IOCTL(fd, TUNSETIFF, (void *)&ifr);
 +
-+	SAFE_CLOSEDIR(d);
-+
-+	return count;
++	return fd;
 +}
 +
 +static void setup(void)
 +{
-+	NETDEV_ADD_DEVICE(BRNAME, "bridge");
-+	bridge_created = 1;
++	tun_fd = open_tun(IFNAME_TUN, IFF_TUN | IFF_NO_PI);
++	SAFE_IOCTL(tun_fd, TUNSETPERSIST, 1);
++	tun_created = 1;
 +
-+	CREATE_VETH_PAIR(IFNAME1, IFNAME2);
-+	veth_created = 1;
++	/*
++	 * The initial attach above happens as part of the same TUNSETIFF call
++	 * that registers the netdevice, before which netif_carrier_on() skips
++	 * updating carrier_up_count/operstate for it. Detach and reattach
++	 * once here so run() starts from a state where carrier tracking
++	 * already behaves normally, see the top comment.
++	 */
++	SAFE_CLOSE(tun_fd);
++	NETDEV_SET_STATE(IFNAME_TUN, 1);
++	tun_fd = open_tun(IFNAME_TUN, IFF_TUN | IFF_NO_PI);
 +
-+	NETDEV_SET_STATE(BRNAME, 1);
-+	NETDEV_SET_STATE(IFNAME1, 1);
-+	NETDEV_SET_STATE(IFNAME2, 1);
++	tap_fd = open_tun(IFNAME_TAP, IFF_TAP | IFF_NO_PI);
++	SAFE_IOCTL(tap_fd, TUNSETPERSIST, 1);
++	tap_created = 1;
 +}
 +
-+static void check_not_enslaved(const char *desc)
++static void check_tun_flags(void)
 +{
-+	int nports = count_dir_entries(BR_PATH "/brif");
++	unsigned long flags;
 +
-+	tst_res(TINFO, "%s", desc);
++	flags = TST_SYSFS_READ_LX(IFACE_PATH "/tun_flags");
 +
-+	TST_EXP_EQ_LI(nports, 0);
++	tst_res(TINFO, "%s/tun_flags = 0x%lx", IFACE_PATH, flags);
 +
-+	if (access(PORT_PATH "/brport", F_OK))
-+		tst_res(TPASS, PORT_PATH "/brport does not exist");
-+	else
-+		tst_res(TFAIL, PORT_PATH "/brport unexpectedly exists");
++	TST_EXP_EQ_LI(flags & IFF_TUN, IFF_TUN);
++	TST_EXP_EQ_LI(flags & IFF_TAP, 0);
++	TST_EXP_EQ_LI(flags & IFF_NO_PI, IFF_NO_PI);
++	TST_EXP_EQ_LI(flags & IFF_PERSIST, IFF_PERSIST);
 +}
 +
-+static void check_enslaved(void)
++static void check_owner_group(void)
 +{
-+	int nports = count_dir_entries(BR_PATH "/brif");
++	TST_SYSFS_EXP_EQ_LI(-1, IFACE_PATH "/owner");
++	TST_SYSFS_EXP_EQ_LI(-1, IFACE_PATH "/group");
++}
 +
-+	tst_res(TINFO, "port enslaved to bridge");
++static void check_tun_vs_tap_type(void)
++{
++	TST_SYSFS_EXP_EQ_LI(ARPHRD_NONE, "/sys/class/net/" IFNAME_TUN "/type");
++	TST_SYSFS_EXP_EQ_LI(0, "/sys/class/net/" IFNAME_TUN "/addr_len");
 +
-+	TST_EXP_EQ_LI(nports, 1);
-+
-+	if (!access(BR_PATH "/brif/" IFNAME1, F_OK))
-+		tst_res(TPASS, BR_PATH "/brif/" IFNAME1 " exists");
-+	else
-+		tst_res(TFAIL, BR_PATH "/brif/" IFNAME1 " does not exist");
-+
-+	TST_SYSFS_ASSERT_RANGELL(0, 4, PORT_PATH "/brport/state");
-+	TST_SYSFS_ASSERT_RANGELL(0, 255, PORT_PATH "/brport/priority");
-+	TST_SYSFS_ASSERT_RANGELL(1, LONG_MAX, PORT_PATH "/brport/path_cost");
-+
-+	TST_SYSFS_ASSERT_RANGELL(0, 2, BR_PATH "/bridge/stp_state");
-+	TST_SYSFS_ASSERT_RANGELL(1, LONG_MAX, BR_PATH "/bridge/forward_delay");
++	TST_SYSFS_EXP_EQ_LI(ARPHRD_ETHER, "/sys/class/net/" IFNAME_TAP "/type");
++	TST_SYSFS_EXP_EQ_LI(6, "/sys/class/net/" IFNAME_TAP "/addr_len");
 +}
 +
 +static void run(void)
 +{
-+	check_not_enslaved("before enslaving");
++	struct netdev_state s0, s1, s2;
 +
-+	NETDEV_SET_MASTER(IFNAME1, BRNAME);
-+	check_enslaved();
++	read_state(&s0);
++	check_state(&s0, 1, "up", "tun attached and up");
 +
-+	NETDEV_SET_MASTER(IFNAME1, NULL);
-+	check_not_enslaved("after releasing");
++	SAFE_CLOSE(tun_fd);
++	read_state(&s1);
++	check_state(&s1, 0, "down", "tun detached");
++	check_state_delta(&s0, &s1, 0, 1, "detach transition");
++
++	tun_fd = open_tun(IFNAME_TUN, IFF_TUN | IFF_NO_PI);
++	read_state(&s2);
++	check_state(&s2, 1, "up", "tun reattached");
++	check_state_delta(&s1, &s2, 1, 0, "reattach transition");
++
++	check_mtu_valid(68);
++	check_mtu_valid(1500);
++	check_mtu_valid(9000);
++	check_mtu_valid(65535);
++	check_mtu_invalid("-1");
++	check_mtu_invalid("0");
++	check_mtu_invalid("67");
++	check_mtu_invalid("70000");
++
++	check_tun_flags();
++	check_owner_group();
++	check_tun_vs_tap_type();
 +}
 +
 +static void cleanup(void)
 +{
-+	if (veth_created)
-+		NETDEV_REMOVE_DEVICE(IFNAME1);
++	if (tun_fd >= 0)
++		SAFE_CLOSE(tun_fd);
 +
-+	if (bridge_created)
-+		NETDEV_REMOVE_DEVICE(BRNAME);
++	if (tap_fd >= 0)
++		SAFE_CLOSE(tap_fd);
++
++	if (tun_created)
++		NETDEV_REMOVE_DEVICE(IFNAME_TUN);
++
++	if (tap_created)
++		NETDEV_REMOVE_DEVICE(IFNAME_TAP);
 +}
 +
 +static struct tst_test test = {
@@ -299,8 +357,7 @@ index 000000000..fcc5c5451
 +	.cleanup = cleanup,
 +	.needs_root = 1,
 +	.needs_kconfigs = (const char *const[]){
-+		"CONFIG_VETH",
-+		"CONFIG_BRIDGE",
++		"CONFIG_TUN",
 +		NULL
 +	},
 +};
