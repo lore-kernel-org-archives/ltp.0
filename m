@@ -4,102 +4,111 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A16CDC5DF7D
-	for <ltp@archiver.kernel.org>; Tue, 18 Aug 2026 14:14:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F0F91C5DF74
+	for <ltp@archiver.kernel.org>; Tue, 18 Aug 2026 14:14:35 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 260903CD0B3
-	for <ltp@archiver.kernel.org>; Tue, 18 Aug 2026 16:14:20 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 716C23CCAFE
+	for <ltp@archiver.kernel.org>; Tue, 18 Aug 2026 16:14:34 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id CE93B3CC24A
- for <ltp@lists.linux.it>; Tue, 18 Aug 2026 16:13:18 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+ by picard.linux.it (Postfix) with ESMTPS id 774ED3CC835
+ for <ltp@lists.linux.it>; Tue, 18 Aug 2026 16:13:19 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 3CD8D600807
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id E5AC51A00701
  for <ltp@lists.linux.it>; Tue, 18 Aug 2026 16:13:18 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id B5D4E845A7
- for <ltp@lists.linux.it>; Tue, 18 Aug 2026 14:13:08 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 8D9023E67
+ for <ltp@lists.linux.it>; Tue, 18 Aug 2026 14:13:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1787062392; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1787062393; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=YAZwV50A6LIxNN39aRMaTRpi/plNd9n8VIq5iei9dvc=;
- b=LiYTUnB5VCEc8U5ZXdNVi6+4GWY7qwaRRM3HMYtUuqJEIJ/RWVR132Dr5mwF8NHbeHruL1
- Ybk+ErIA5ErMxnEdV5sxPDCgK5Fh+bpgdjLuosxyC3QdXRQ4MarEk6b8fY0/cbAd5NhLit
- ipBH7AoQ+clb09uIstXbkfLdHXCUEsM=
+ bh=2H2ubx8EptlRFGUfCgRtM+0TS/gI2e39PpJHoKIW/Kg=;
+ b=1Uqyq/toHTFDDpMn7ZdMa0HaHCO/avIyr2lvrCpwEdIAqlQH0L6lbN2kjFIZj/mGcNIGR5
+ e2Ki7hWd26dt4RIVmZoxMXE1QJcUwZqW2hESgPGvmB3mshwsqF4D71J4J4fgEHMp+BoZOu
+ x4FdNbEbv07fO69G+0weiwcfSdx/ZvU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1787062392;
+ s=susede2_ed25519; t=1787062393;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=YAZwV50A6LIxNN39aRMaTRpi/plNd9n8VIq5iei9dvc=;
- b=kD1Nr8Z2shvOF5E26eajlSC31L4PbtMlsA4VqOhIiLCNkFYg/S5KKcgMn2vyYCfiN/7wps
- m1Hq26BFmKpzZ9CA==
-Authentication-Results: smtp-out1.suse.de;
-	none
+ bh=2H2ubx8EptlRFGUfCgRtM+0TS/gI2e39PpJHoKIW/Kg=;
+ b=TPLhVaNHdk3+UO4PP8+7VXvA1U0wD8hXJEJalxoeKrd89yf+247eXfH2g780I8Mu12RxpJ
+ HJB8xaO7W252oNBw==
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=RUyAjob7;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=Weman2wu
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1787062388; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1787062389; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=YAZwV50A6LIxNN39aRMaTRpi/plNd9n8VIq5iei9dvc=;
- b=CKSjp6B4Uy5j1dZJx7S61ExpE7f5pQ+t8tB4NadL9hFvbruB+10jQussbxm9NlDH6cGqWQ
- oufyWNBPs/PCLkTZeBzeCqvklhWpZCDFzlr3JtuhAXLN6tSXbTLFlQoaAyXlO3CUOIijCy
- W5hZa6k9BURhXwDaruFomD+wm0Iu0qQ=
+ bh=2H2ubx8EptlRFGUfCgRtM+0TS/gI2e39PpJHoKIW/Kg=;
+ b=RUyAjob722wAqRR42waNYJMDmk831shwB05whyCZlNsnbUVF6rYH6Uf04jyTGpH1lW0sqJ
+ eNV32Y3ctt978Rf0VwghzPHTUXc9TtZYI57fgEpK7N9k5G7rHJ1FomFsjYeDwPcyieWuvc
+ CtpQxT6TRsvV+6BOJNbOj2yoOV6djIY=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1787062388;
+ s=susede2_ed25519; t=1787062389;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=YAZwV50A6LIxNN39aRMaTRpi/plNd9n8VIq5iei9dvc=;
- b=C51EWz/PSSmmuXU8GLgYF4OF9QgEMH0R5lp51f0jXY5IuvZqsG4Wrx1S8JP8Z6jDrg7530
- PCCQWXjNyu6j1xDg==
+ bh=2H2ubx8EptlRFGUfCgRtM+0TS/gI2e39PpJHoKIW/Kg=;
+ b=Weman2wuwf4PadxI50N0ofxjB460OeYG6q6ZV9XHBewHJDKKrkIFQOqH2w7l9kJRqQd5KZ
+ tQx9vcqsSqHoulCA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9F14C362E
- for <ltp@lists.linux.it>; Tue, 18 Aug 2026 14:13:08 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 76301367A
+ for <ltp@lists.linux.it>; Tue, 18 Aug 2026 14:13:09 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id xPPRJXRohGrHcAAAD6G6ig
+ by imap1.dmz-prg2.suse.org with ESMTPSA id r+Z1G3VohGrOcAAAD6G6ig
  (envelope-from <chrubis@suse.cz>)
- for <ltp@lists.linux.it>; Tue, 18 Aug 2026 14:13:08 +0000
+ for <ltp@lists.linux.it>; Tue, 18 Aug 2026 14:13:09 +0000
 From: Cyril Hrubis <chrubis@suse.cz>
 To: ltp@lists.linux.it
-Date: Tue, 18 Aug 2026 16:12:42 +0200
-Message-ID: <20260818141311.1265557-3-chrubis@suse.cz>
+Date: Tue, 18 Aug 2026 16:12:44 +0200
+Message-ID: <20260818141311.1265557-5-chrubis@suse.cz>
 X-Mailer: git-send-email 2.54.0
 In-Reply-To: <20260818141311.1265557-1-chrubis@suse.cz>
 References: <20260818141311.1265557-1-chrubis@suse.cz>
 MIME-Version: 1.0
-X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
- R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-1.000];
- MIME_GOOD(-0.10)[text/plain]; ARC_NA(0.00)[];
- RCPT_COUNT_ONE(0.00)[1]; RCVD_VIA_SMTP_AUTH(0.00)[];
- MIME_TRACE(0.00)[0:+];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: 8D9023E67
+X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_CONTAINS_FROM(1.00)[];
+ R_MISSING_CHARSET(0.50)[];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ FROM_EQ_ENVFROM(0.00)[]; ARC_NA(0.00)[]; FROM_HAS_DN(0.00)[];
+ RCPT_COUNT_ONE(0.00)[1];
  PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:mid,suse.cz:email];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- TO_DN_NONE(0.00)[]; RCVD_TLS_ALL(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+ RCVD_TLS_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:mid,suse.cz:email,suse.cz:dkim];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ TO_DN_NONE(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ MIME_TRACE(0.00)[0:+]; DKIM_TRACE(0.00)[suse.cz:+]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v1 02/31] testcases: sysfs: Add sys_power01
+Subject: [LTP] [PATCH v1 04/31] testcases: sysfs: Add sys_clocksource01
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -116,129 +125,145 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-A test for sysfs/power/* files.
+A test for /sys/devices/system/clocksource/* files.
 
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- runtest/sysfs                              |  1 +
- testcases/kernel/sysfs/Makefile            |  7 +++
- testcases/kernel/sysfs/power/.gitignore    |  1 +
- testcases/kernel/sysfs/power/Makefile      |  7 +++
- testcases/kernel/sysfs/power/sys_power01.c | 66 ++++++++++++++++++++++
- 5 files changed, 82 insertions(+)
- create mode 100644 runtest/sysfs
- create mode 100644 testcases/kernel/sysfs/Makefile
- create mode 100644 testcases/kernel/sysfs/power/.gitignore
- create mode 100644 testcases/kernel/sysfs/power/Makefile
- create mode 100644 testcases/kernel/sysfs/power/sys_power01.c
+ runtest/sysfs                                 |  1 +
+ testcases/kernel/sysfs/devices/Makefile       |  7 ++
+ .../kernel/sysfs/devices/system/Makefile      |  7 ++
+ .../devices/system/clocksource/.gitignore     |  1 +
+ .../sysfs/devices/system/clocksource/Makefile |  7 ++
+ .../system/clocksource/sys_clocksource01.c    | 67 +++++++++++++++++++
+ 6 files changed, 90 insertions(+)
+ create mode 100644 testcases/kernel/sysfs/devices/Makefile
+ create mode 100644 testcases/kernel/sysfs/devices/system/Makefile
+ create mode 100644 testcases/kernel/sysfs/devices/system/clocksource/.gitignore
+ create mode 100644 testcases/kernel/sysfs/devices/system/clocksource/Makefile
+ create mode 100644 testcases/kernel/sysfs/devices/system/clocksource/sys_clocksource01.c
 
 diff --git a/runtest/sysfs b/runtest/sysfs
-new file mode 100644
-index 000000000..e679cacb1
---- /dev/null
+index 142b4a290..7c014a57e 100644
+--- a/runtest/sysfs
 +++ b/runtest/sysfs
-@@ -0,0 +1 @@
-+sys_power01 sys_power01
-diff --git a/testcases/kernel/sysfs/Makefile b/testcases/kernel/sysfs/Makefile
+@@ -1,2 +1,3 @@
+ sys_power01 sys_power01
+ sys_kernel01 sys_kernel01
++sys_clocksource01 sys_clocksource01
+diff --git a/testcases/kernel/sysfs/devices/Makefile b/testcases/kernel/sysfs/devices/Makefile
 new file mode 100644
-index 000000000..654cda49e
+index 000000000..5c8e7a249
 --- /dev/null
-+++ b/testcases/kernel/sysfs/Makefile
-@@ -0,0 +1,7 @@
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (c) 2026 Cyril Hrubis <chrubis@suse.cz>
-+
-+top_srcdir		?= ../../..
-+
-+include $(top_srcdir)/include/mk/env_pre.mk
-+include $(top_srcdir)/include/mk/generic_trunk_target.mk
-diff --git a/testcases/kernel/sysfs/power/.gitignore b/testcases/kernel/sysfs/power/.gitignore
-new file mode 100644
-index 000000000..835842cd0
---- /dev/null
-+++ b/testcases/kernel/sysfs/power/.gitignore
-@@ -0,0 +1 @@
-+/sys_power01
-diff --git a/testcases/kernel/sysfs/power/Makefile b/testcases/kernel/sysfs/power/Makefile
-new file mode 100644
-index 000000000..66e633f40
---- /dev/null
-+++ b/testcases/kernel/sysfs/power/Makefile
++++ b/testcases/kernel/sysfs/devices/Makefile
 @@ -0,0 +1,7 @@
 +# SPDX-License-Identifier: GPL-2.0-or-later
 +# Copyright (c) 2026 Cyril Hrubis <chrubis@suse.cz>
 +
 +top_srcdir		?= ../../../..
 +
++include $(top_srcdir)/include/mk/env_pre.mk
++include $(top_srcdir)/include/mk/generic_trunk_target.mk
+diff --git a/testcases/kernel/sysfs/devices/system/Makefile b/testcases/kernel/sysfs/devices/system/Makefile
+new file mode 100644
+index 000000000..9bc26552c
+--- /dev/null
++++ b/testcases/kernel/sysfs/devices/system/Makefile
+@@ -0,0 +1,7 @@
++# SPDX-License-Identifier: GPL-2.0-or-later
++# Copyright (c) 2026 Cyril Hrubis <chrubis@suse.cz>
++
++top_srcdir		?= ../../../../..
++
++include $(top_srcdir)/include/mk/env_pre.mk
++include $(top_srcdir)/include/mk/generic_trunk_target.mk
+diff --git a/testcases/kernel/sysfs/devices/system/clocksource/.gitignore b/testcases/kernel/sysfs/devices/system/clocksource/.gitignore
+new file mode 100644
+index 000000000..a04f05977
+--- /dev/null
++++ b/testcases/kernel/sysfs/devices/system/clocksource/.gitignore
+@@ -0,0 +1 @@
++/sys_clocksource01
+diff --git a/testcases/kernel/sysfs/devices/system/clocksource/Makefile b/testcases/kernel/sysfs/devices/system/clocksource/Makefile
+new file mode 100644
+index 000000000..781865569
+--- /dev/null
++++ b/testcases/kernel/sysfs/devices/system/clocksource/Makefile
+@@ -0,0 +1,7 @@
++# SPDX-License-Identifier: GPL-2.0-or-later
++# Copyright (c) 2026 Cyril Hrubis <chrubis@suse.cz>
++
++top_srcdir		?= ../../../../../..
++
 +include $(top_srcdir)/include/mk/testcases.mk
 +include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/sysfs/power/sys_power01.c b/testcases/kernel/sysfs/power/sys_power01.c
+diff --git a/testcases/kernel/sysfs/devices/system/clocksource/sys_clocksource01.c b/testcases/kernel/sysfs/devices/system/clocksource/sys_clocksource01.c
 new file mode 100644
-index 000000000..3c78719e5
+index 000000000..534caddd8
 --- /dev/null
-+++ b/testcases/kernel/sysfs/power/sys_power01.c
-@@ -0,0 +1,66 @@
++++ b/testcases/kernel/sysfs/devices/system/clocksource/sys_clocksource01.c
+@@ -0,0 +1,67 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
 + * Copyright (c) 2026 Cyril Hrubis <chrubis@suse.cz>
 + */
 +
 +/*\
-+ * Sanity checks for the power management attributes exported under
-+ * /sys/power/.
++ * Sanity checks for the clocksource attributes exported under
++ * /sys/devices/system/clocksource/clocksourceN/.
 + *
-+ * The test verifies that:
++ * available_clocksource lists all clocksources the kernel can switch to,
++ * while current_clocksource names the one that is active. Unlike the
++ * bracketed-choice files elsewhere in sysfs, the currently selected
++ * clocksource is not marked inside available_clocksource, so the two files
++ * have to be cross-checked explicitly. For every clocksourceN directory the
++ * test verifies that:
 + *
-+ * - pm_async, pm_debug_messages, pm_print_times and sync_on_suspend are
-+ *   booleans
-+ * - pm_freeze_timeout and wakeup_count are non-negative
-+ * - disk is a bracketed-choice file selecting one of platform, shutdown,
-+ *   reboot, suspend, test_resume or firmware
-+ * - mem_sleep is a bracketed-choice file selecting one of s2idle, shallow or
-+ *   deep
-+ * - state lists only known sleep states (freeze, standby, mem, disk, on)
++ * - current_clocksource is non-empty
++ * - current_clocksource is one of the tokens listed in available_clocksource
 + *
-+ * Unlike disk and mem_sleep, state never marks a "current" value with
-+ * brackets, it merely enumerates the sleep states the kernel supports, so it
-+ * is validated as a plain token set rather than a bracketed choice.
-+ *
-+ * All checks skip gracefully with TCONF when a particular attribute is not
-+ * present.
++ * The test skips with TCONF when no clocksource directory is present.
 + */
 +
-+#include <limits.h>
++#include <string.h>
++#include <dirent.h>
 +#include "tst_test.h"
 +#include "tst_sysfs_assert.h"
 +
-+#define POWER "/sys/power"
++#define CLOCKSOURCE "/sys/devices/system/clocksource"
 +
-+static const char *const disk_allowed[] = {
-+	"platform", "shutdown", "reboot", "suspend", "test_resume",
-+	"firmware", NULL
-+};
++static void check_clocksource(const char *name)
++{
++	char current[64] = "";
 +
-+static const char *const mem_sleep_allowed[] = {
-+	"s2idle", "shallow", "deep", NULL
-+};
++	tst_res(TINFO, "Checking %s", name);
 +
-+static const char *const state_allowed[] = {
-+	"freeze", "standby", "mem", "disk", "on", NULL
-+};
++	TST_SYSFS_READ_STR(current, sizeof(current),
++			   CLOCKSOURCE "/%s/current_clocksource", name);
++
++	TST_SYSFS_ASSERT_TOKENS(NULL, current,
++				CLOCKSOURCE "/%s/available_clocksource", name);
++}
 +
 +static void do_test(void)
 +{
-+	TST_SYSFS_ASSERT_BOOL(POWER "/pm_async");
-+	TST_SYSFS_ASSERT_BOOL(POWER "/pm_debug_messages");
-+	TST_SYSFS_ASSERT_BOOL(POWER "/pm_print_times");
-+	TST_SYSFS_ASSERT_BOOL(POWER "/sync_on_suspend");
++	DIR *d;
++	struct dirent *ent;
++	int found = 0;
 +
-+	TST_SYSFS_ASSERT_RANGELL(0, LONG_MAX, POWER "/pm_freeze_timeout");
-+	TST_SYSFS_ASSERT_RANGELL(0, LONG_MAX, POWER "/wakeup_count");
++	d = SAFE_OPENDIR(CLOCKSOURCE);
 +
-+	TST_SYSFS_ASSERT_CHOICE(disk_allowed, NULL, 0, POWER "/disk");
-+	TST_SYSFS_ASSERT_CHOICE(mem_sleep_allowed, NULL, 0, POWER "/mem_sleep");
++	while ((ent = SAFE_READDIR(d))) {
++		if (strncmp(ent->d_name, "clocksource", 11))
++			continue;
 +
-+	TST_SYSFS_ASSERT_TOKENS(state_allowed, NULL, POWER "/state");
++		found = 1;
++		check_clocksource(ent->d_name);
++	}
++
++	SAFE_CLOSEDIR(d);
++
++	if (!found)
++		tst_res(TCONF, "No clocksource directory found");
 +}
 +
 +static struct tst_test test = {
