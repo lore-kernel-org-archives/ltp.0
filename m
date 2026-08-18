@@ -4,110 +4,110 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 00EE3C5DF74
-	for <ltp@archiver.kernel.org>; Tue, 18 Aug 2026 14:19:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6614FC5DF74
+	for <ltp@archiver.kernel.org>; Tue, 18 Aug 2026 14:19:31 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E911D3CCE09
-	for <ltp@archiver.kernel.org>; Tue, 18 Aug 2026 16:19:14 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id E6BA63CD56B
+	for <ltp@archiver.kernel.org>; Tue, 18 Aug 2026 16:19:29 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 098D23CCE09
+ by picard.linux.it (Postfix) with ESMTPS id 35D803CD4AC
  for <ltp@lists.linux.it>; Tue, 18 Aug 2026 16:13:54 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 325E36006E2
- for <ltp@lists.linux.it>; Tue, 18 Aug 2026 16:13:53 +0200 (CEST)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 00889600879
+ for <ltp@lists.linux.it>; Tue, 18 Aug 2026 16:13:52 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id D59C3845B3
- for <ltp@lists.linux.it>; Tue, 18 Aug 2026 14:13:43 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 3EE45845B5
+ for <ltp@lists.linux.it>; Tue, 18 Aug 2026 14:13:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
  t=1787062428; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=dccQprkdrs4xv4DrdruDhN9Wp6cSVO+MDs156pQwTxc=;
- b=aB19DSYajhprWgHGw12s5gY6ijm1f3yCTXWiGgWcDW6QRPrk3HR+wuuNCnKSGv1ctMgpgW
- 2HBqwCkRNfJuaXVgnoJDgEX5CNsY7LkV42saJ3BenIixoK9eM1e1Pc4gGZrvWDv8ZEbHsS
- HkbPphQQJCqrp8M5ElRXAVo4MV4InoE=
+ bh=ha4WtXoMrYGJu3vqzvt/rng+i8PfUGKIw+Tf+dprCTU=;
+ b=RE6CJtsr8N5EtvJWcOMup3EpWuUL4uhFuHc1Vd+AmwKIWEYpZhndeTRxXYinsxj1vYhn68
+ KC3JZNQgTUaLCDjqswYGIohWOXTATw6sEulwJCYNI8FrsxarkDKq+AOjRMoMCwhZbhhsjC
+ zpCLSK8iR5aKqYlEo63t8DYFeMJpjl4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
  s=susede2_ed25519; t=1787062428;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=dccQprkdrs4xv4DrdruDhN9Wp6cSVO+MDs156pQwTxc=;
- b=ns79y4wm7H8bkl7Conlpo7nAFkaud3O4mLkboseqqn+ZRQbf1aHK3APCYKt34pKzkI4AN8
- Gs5Iyn16yRM3DvCA==
+ bh=ha4WtXoMrYGJu3vqzvt/rng+i8PfUGKIw+Tf+dprCTU=;
+ b=4HVBOnMRVFNkYPB6vpdhuim9eGhFfhkw5hWWS1kVsQq6ckqdItLYYYYqU0AHKy59Z6IZE1
+ AQQ0YkfxcuvPDDCQ==
 Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=WkD8tqvA;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=PR2THQ3m
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=eakc9TLo;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=uVUbsHGt
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1787062423; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1787062424; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=dccQprkdrs4xv4DrdruDhN9Wp6cSVO+MDs156pQwTxc=;
- b=WkD8tqvAKSXKvY/E1BXWB8TM9UJ8WtOLKvHW42tZk0trVpxDu6cBmRNMKEnYm7tCYHJjba
- 8OPUjG4iw3RYdIjXcQ3e90Zhjrwvxdog4EOiFziuxxjmMOydDkensBsPxUYrpap3JkvExB
- 4w+ZanekCMwSHSzfMO6NBS8JBA8FmF4=
+ bh=ha4WtXoMrYGJu3vqzvt/rng+i8PfUGKIw+Tf+dprCTU=;
+ b=eakc9TLoDALCAcb29vz9sNC6c7X4NU6e+bQENf52WRQ5bEIBvxoQVNHgapYWlpg2okg0S2
+ 22O736V8sezGdjEPcNvAvqqRo75OHXQ9HL1zOYiBumBdwX9TXx+iTIyfSw+3MAuNN6Yp4h
+ ygPzw4sltXC2pZVGVQMVy28PB7xc6/4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1787062423;
+ s=susede2_ed25519; t=1787062424;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=dccQprkdrs4xv4DrdruDhN9Wp6cSVO+MDs156pQwTxc=;
- b=PR2THQ3mg7cS0TQgPRLk0zn0lgAskyE1dvpHVjt1oVSzMOSLIZJKGFWRKOxnqO0UtMevGk
- Eo2S/FdVtMORqaBA==
+ bh=ha4WtXoMrYGJu3vqzvt/rng+i8PfUGKIw+Tf+dprCTU=;
+ b=uVUbsHGtJx4Hm7T0EOBKpIrqxBSHJTYqzFLreEWFooquOzRrsaEh//D4zGb8M2mUwfZml/
+ TYNHHArLq4z7DbCQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C371B22BA
- for <ltp@lists.linux.it>; Tue, 18 Aug 2026 14:13:43 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 31AE4339C
+ for <ltp@lists.linux.it>; Tue, 18 Aug 2026 14:13:44 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 2GueLpdohGqvcQAAD6G6ig
+ by imap1.dmz-prg2.suse.org with ESMTPSA id CsgqC5hohGqycQAAD6G6ig
  (envelope-from <chrubis@suse.cz>)
- for <ltp@lists.linux.it>; Tue, 18 Aug 2026 14:13:43 +0000
+ for <ltp@lists.linux.it>; Tue, 18 Aug 2026 14:13:44 +0000
 From: Cyril Hrubis <chrubis@suse.cz>
 To: ltp@lists.linux.it
-Date: Tue, 18 Aug 2026 16:13:01 +0200
-Message-ID: <20260818141311.1265557-22-chrubis@suse.cz>
+Date: Tue, 18 Aug 2026 16:13:02 +0200
+Message-ID: <20260818141311.1265557-23-chrubis@suse.cz>
 X-Mailer: git-send-email 2.54.0
 In-Reply-To: <20260818141311.1265557-1-chrubis@suse.cz>
 References: <20260818141311.1265557-1-chrubis@suse.cz>
 MIME-Version: 1.0
 X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_CONTAINS_FROM(1.00)[];
+ MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
  R_MISSING_CHARSET(0.50)[];
  R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; TO_MATCH_ENVRCPT_ALL(0.00)[]; ARC_NA(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[]; RCPT_COUNT_ONE(0.00)[1];
- MIME_TRACE(0.00)[0:+]; FROM_HAS_DN(0.00)[];
- PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
- FROM_EQ_ENVFROM(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.cz:email,suse.cz:mid,suse.cz:dkim];
+ MX_GOOD(-0.01)[]; RCPT_COUNT_ONE(0.00)[1];
+ MIME_TRACE(0.00)[0:+]; TO_MATCH_ENVRCPT_ALL(0.00)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RCVD_TLS_ALL(0.00)[]; TO_DN_NONE(0.00)[];
- RCVD_COUNT_TWO(0.00)[2];
+ ARC_NA(0.00)[]; RCVD_TLS_ALL(0.00)[];
+ DKIM_TRACE(0.00)[suse.cz:+]; FROM_EQ_ENVFROM(0.00)[];
+ FROM_HAS_DN(0.00)[];
  SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- DKIM_TRACE(0.00)[suse.cz:+]
-X-Rspamd-Queue-Id: D59C3845B3
+ RCVD_COUNT_TWO(0.00)[2];
+ PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
+ TO_DN_NONE(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email, suse.cz:mid, suse.cz:dkim,
+ imap1.dmz-prg2.suse.org:rdns, imap1.dmz-prg2.suse.org:helo]
+X-Rspamd-Queue-Id: 3EE45845B5
 X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
 X-Rspamd-Action: no action
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v1 21/31] testcases: sysfs: Add sys_net02
+Subject: [LTP] [PATCH v1 22/31] testcases: sysfs: Add sys_net03
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -126,209 +126,171 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 A test for /sys/class/net/*/* files.
 
-This test, unlike sys_net01, creates a virtual ethernet interface so
-that it can change various attributes and verify that they are mirrored
-into the sysfs correctly.
+Similar to sys_net02 but checks bridge related files after briding a
+virtual ethernet interface.
 
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- runtest/sysfs                                 |   1 +
- testcases/kernel/sysfs/class/net/.gitignore   |   1 +
- testcases/kernel/sysfs/class/net/sys_net02.c  | 179 ++++++++++++++++++
- .../kernel/sysfs/class/net/sys_net_common.h   |  80 ++++++++
- 4 files changed, 261 insertions(+)
- create mode 100644 testcases/kernel/sysfs/class/net/sys_net02.c
- create mode 100644 testcases/kernel/sysfs/class/net/sys_net_common.h
+ runtest/sysfs                                |   1 +
+ testcases/kernel/sysfs/class/net/.gitignore  |   1 +
+ testcases/kernel/sysfs/class/net/sys_net03.c | 144 +++++++++++++++++++
+ 3 files changed, 146 insertions(+)
+ create mode 100644 testcases/kernel/sysfs/class/net/sys_net03.c
 
 diff --git a/runtest/sysfs b/runtest/sysfs
-index 90e4d2b8e..fee8a0b2b 100644
+index fee8a0b2b..b2cc0005c 100644
 --- a/runtest/sysfs
 +++ b/runtest/sysfs
-@@ -16,3 +16,4 @@ sys_wakeup01 sys_wakeup01
- sys_rtc01 sys_rtc01
+@@ -17,3 +17,4 @@ sys_rtc01 sys_rtc01
  sys_thermal01 sys_thermal01
  sys_net01 sys_net01
-+sys_net02 sys_net02
+ sys_net02 sys_net02
++sys_net03 sys_net03
 diff --git a/testcases/kernel/sysfs/class/net/.gitignore b/testcases/kernel/sysfs/class/net/.gitignore
-index f5ef57b75..b70d02158 100644
+index b70d02158..8c3782a3b 100644
 --- a/testcases/kernel/sysfs/class/net/.gitignore
 +++ b/testcases/kernel/sysfs/class/net/.gitignore
-@@ -1 +1,2 @@
+@@ -1,2 +1,3 @@
  /sys_net01
-+/sys_net02
-diff --git a/testcases/kernel/sysfs/class/net/sys_net02.c b/testcases/kernel/sysfs/class/net/sys_net02.c
+ /sys_net02
++/sys_net03
+diff --git a/testcases/kernel/sysfs/class/net/sys_net03.c b/testcases/kernel/sysfs/class/net/sys_net03.c
 new file mode 100644
-index 000000000..f8f564c1f
+index 000000000..fcc5c5451
 --- /dev/null
-+++ b/testcases/kernel/sysfs/class/net/sys_net02.c
-@@ -0,0 +1,179 @@
++++ b/testcases/kernel/sysfs/class/net/sys_net03.c
+@@ -0,0 +1,144 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
 + * Copyright (c) 2026 Cyril Hrubis <chrubis@suse.cz>
 + */
 +
 +/*\
-+ * Verifies that the link state attributes exported under
-+ * /sys/class/net/<iface>/ correctly mirror the administrative state of a
-+ * veth peer.
++ * Verifies that bridge port sysfs attributes correctly appear, hold sane
++ * values, and disappear again as a network device is enslaved to and
++ * released from a bridge.
 + *
-+ * A veth device's carrier is expected to be up only while its peer is up:
-+ * veth_open()/veth_close() call netif_carrier_on()/netif_carrier_off() based
-+ * on whether the peer is running. The test creates a veth pair and checks
-+ * that bringing the peer down and back up is reflected in:
++ * The test creates a bridge and a veth pair, then:
 + *
-+ * - carrier - 1 while the peer is up, 0 while it is down
-+ * - operstate - "up" while the peer is up, "lowerlayerdown" while it is down
-+ * - carrier_up_count / carrier_down_count - incremented by exactly one on
-+ *   each corresponding transition
-+ * - carrier_changes - always equal to carrier_up_count + carrier_down_count
++ * - verifies /sys/class/net/<bridge>/brif/ is empty and
++ *   /sys/class/net/<port>/brport does not exist before enslaving
++ * - enslaves one end of the veth pair to the bridge
++ * - verifies /sys/class/net/<bridge>/brif/<port> appears and
++ *   /sys/class/net/<port>/brport/{state,priority,path_cost} hold sane values
++ * - verifies /sys/class/net/<bridge>/bridge/{stp_state,forward_delay} hold
++ *   sane values
++ * - releases the port from the bridge
++ * - verifies /sys/class/net/<bridge>/brif/ is empty and
++ *   /sys/class/net/<port>/brport does not exist again
 + *
-+ * Note this only checks the values synchronously after each netlink state
-+ * change (which is itself synchronous), it does not use poll(2)/select(2):
-+ * unlike some other sysfs attributes, /sys/class/net/<iface>/carrier does not
-+ * support poll() based notification on Linux, link state changes are
-+ * reported to userspace via rtnetlink instead.
-+ *
-+ * The test also checks attributes that are not tied to the peer's state:
-+ *
-+ * - mtu - directly writable via sysfs; a few valid values are written and
-+ *   read back, and one syntactically invalid value is rejected (with the mtu
-+ *   left unchanged)
-+ * - address - read-only in sysfs, changed via rtnetlink instead (the
-+ *   interface is brought down first since most drivers require this); while
-+ *   doing so, the IFF_UP bit in "flags" is also cross-checked against the
-+ *   interface's own administrative state
-+ * - netdev_group and ifalias - directly writable via sysfs, a value is
-+ *   written and read back
-+ *
-+ * This needs root to create the veth pair.
++ * This needs root to create the bridge and veth devices.
 + */
 +
-+#include <stdio.h>
++#include <limits.h>
 +#include <string.h>
++#include <dirent.h>
 +#include <unistd.h>
-+#include <net/if.h>
 +
 +#include "tst_test.h"
 +#include "tst_netdevice.h"
 +#include "tst_sysfs_assert.h"
 +
-+#define IFNAME1 "ltp_vethp1"
-+#define IFNAME2 "ltp_vethp2"
-+#define IFACE_PATH "/sys/class/net/" IFNAME1
++#define BRNAME "ltp_br0"
++#define IFNAME1 "ltp_vethb1"
++#define IFNAME2 "ltp_vethb2"
 +
++#define BR_PATH "/sys/class/net/" BRNAME
++#define PORT_PATH "/sys/class/net/" IFNAME1
++
++static int bridge_created;
 +static int veth_created;
 +
-+static long read_mtu(void)
++static int count_dir_entries(const char *path)
 +{
-+	return TST_SYSFS_READ_LI(IFACE_PATH "/mtu");
-+}
++	DIR *d;
++	struct dirent *ent;
++	int count = 0;
 +
-+#include "sys_net_common.h"
++	d = SAFE_OPENDIR(path);
++
++	while ((ent = SAFE_READDIR(d))) {
++		if (ent->d_name[0] == '.')
++			continue;
++
++		count++;
++	}
++
++	SAFE_CLOSEDIR(d);
++
++	return count;
++}
 +
 +static void setup(void)
 +{
++	NETDEV_ADD_DEVICE(BRNAME, "bridge");
++	bridge_created = 1;
++
 +	CREATE_VETH_PAIR(IFNAME1, IFNAME2);
 +	veth_created = 1;
 +
++	NETDEV_SET_STATE(BRNAME, 1);
 +	NETDEV_SET_STATE(IFNAME1, 1);
 +	NETDEV_SET_STATE(IFNAME2, 1);
 +}
 +
-+static unsigned long read_flags(void)
++static void check_not_enslaved(const char *desc)
 +{
-+	return TST_SYSFS_READ_LX(IFACE_PATH "/flags");
++	int nports = count_dir_entries(BR_PATH "/brif");
++
++	tst_res(TINFO, "%s", desc);
++
++	TST_EXP_EQ_LI(nports, 0);
++
++	if (access(PORT_PATH "/brport", F_OK))
++		tst_res(TPASS, PORT_PATH "/brport does not exist");
++	else
++		tst_res(TFAIL, PORT_PATH "/brport unexpectedly exists");
 +}
 +
-+static void check_address(void)
++static void check_enslaved(void)
 +{
-+	static const unsigned char new_addr[6] = {0x02, 0, 0, 0, 0, 0x01};
-+	char actual[32];
-+	long iff_up;
++	int nports = count_dir_entries(BR_PATH "/brif");
 +
-+	tst_res(TINFO, "IFNAME1 is up before the address change");
-+	iff_up = read_flags() & IFF_UP;
-+	TST_EXP_EQ_LI(iff_up, IFF_UP);
++	tst_res(TINFO, "port enslaved to bridge");
 +
-+	NETDEV_SET_STATE(IFNAME1, 0);
-+	tst_res(TINFO, "IFNAME1 is down for the address change");
-+	iff_up = read_flags() & IFF_UP;
-+	TST_EXP_EQ_LI(iff_up, 0);
++	TST_EXP_EQ_LI(nports, 1);
 +
-+	NETDEV_SET_HWADDR(IFNAME1, new_addr, sizeof(new_addr));
-+	NETDEV_SET_STATE(IFNAME1, 1);
-+	tst_res(TINFO, "IFNAME1 is up again after the address change");
-+	iff_up = read_flags() & IFF_UP;
-+	TST_EXP_EQ_LI(iff_up, IFF_UP);
++	if (!access(BR_PATH "/brif/" IFNAME1, F_OK))
++		tst_res(TPASS, BR_PATH "/brif/" IFNAME1 " exists");
++	else
++		tst_res(TFAIL, BR_PATH "/brif/" IFNAME1 " does not exist");
 +
-+	TST_SYSFS_READ_STR(actual, sizeof(actual), IFACE_PATH "/address");
++	TST_SYSFS_ASSERT_RANGELL(0, 4, PORT_PATH "/brport/state");
++	TST_SYSFS_ASSERT_RANGELL(0, 255, PORT_PATH "/brport/priority");
++	TST_SYSFS_ASSERT_RANGELL(1, LONG_MAX, PORT_PATH "/brport/path_cost");
 +
-+	TST_EXP_EQ_STR(actual, "02:00:00:00:00:01");
-+}
-+
-+static void check_netdev_group(void)
-+{
-+	long group;
-+
-+	if (FILE_PRINTF(IFACE_PATH "/netdev_group", "%d", 7)) {
-+		tst_res(TFAIL, "Failed to set netdev_group");
-+		return;
-+	}
-+
-+	group = TST_SYSFS_READ_LI(IFACE_PATH "/netdev_group");
-+
-+	TST_EXP_EQ_LI(group, 7);
-+}
-+
-+static void check_ifalias(void)
-+{
-+	char alias[64];
-+
-+	if (FILE_PRINTF(IFACE_PATH "/ifalias", "%s", "ltp-test-alias")) {
-+		tst_res(TFAIL, "Failed to set ifalias");
-+		return;
-+	}
-+
-+	TST_SYSFS_READ_STR(alias, sizeof(alias), IFACE_PATH "/ifalias");
-+	TST_EXP_EQ_STR(alias, "ltp-test-alias");
++	TST_SYSFS_ASSERT_RANGELL(0, 2, BR_PATH "/bridge/stp_state");
++	TST_SYSFS_ASSERT_RANGELL(1, LONG_MAX, BR_PATH "/bridge/forward_delay");
 +}
 +
 +static void run(void)
 +{
-+	struct netdev_state s0, s1, s2;
++	check_not_enslaved("before enslaving");
 +
-+	read_state(&s0);
-+	check_state(&s0, 1, "up", "both ends up");
++	NETDEV_SET_MASTER(IFNAME1, BRNAME);
++	check_enslaved();
 +
-+	NETDEV_SET_STATE(IFNAME2, 0);
-+	read_state(&s1);
-+	check_state(&s1, 0, "lowerlayerdown", "peer down");
-+	check_state_delta(&s0, &s1, 0, 1, "peer down transition");
-+
-+	NETDEV_SET_STATE(IFNAME2, 1);
-+	read_state(&s2);
-+	check_state(&s2, 1, "up", "peer back up");
-+	check_state_delta(&s1, &s2, 1, 0, "peer up transition");
-+
-+	check_mtu_valid(68);
-+	check_mtu_valid(1500);
-+	check_mtu_valid(9000);
-+	check_mtu_valid(65535);
-+	check_mtu_invalid("-1");
-+	check_mtu_invalid("0");
-+	check_mtu_invalid("67");
-+	check_mtu_invalid("70000");
-+
-+	check_address();
-+
-+	check_netdev_group();
-+	check_ifalias();
++	NETDEV_SET_MASTER(IFNAME1, NULL);
++	check_not_enslaved("after releasing");
 +}
 +
 +static void cleanup(void)
 +{
 +	if (veth_created)
 +		NETDEV_REMOVE_DEVICE(IFNAME1);
++
++	if (bridge_created)
++		NETDEV_REMOVE_DEVICE(BRNAME);
 +}
 +
 +static struct tst_test test = {
@@ -338,95 +300,10 @@ index 000000000..f8f564c1f
 +	.needs_root = 1,
 +	.needs_kconfigs = (const char *const[]){
 +		"CONFIG_VETH",
++		"CONFIG_BRIDGE",
 +		NULL
 +	},
 +};
-diff --git a/testcases/kernel/sysfs/class/net/sys_net_common.h b/testcases/kernel/sysfs/class/net/sys_net_common.h
-new file mode 100644
-index 000000000..7b0346c9c
---- /dev/null
-+++ b/testcases/kernel/sysfs/class/net/sys_net_common.h
-@@ -0,0 +1,80 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2026 Cyril Hrubis <chrubis@suse.cz>
-+ */
-+
-+#ifndef SYS_NET_COMMON
-+#define SYS_NET_COMMON
-+
-+struct netdev_state {
-+	long carrier;
-+	long carrier_changes;
-+	long carrier_up_count;
-+	long carrier_down_count;
-+	char operstate[32];
-+};
-+
-+static void read_state(struct netdev_state *st)
-+{
-+	st->carrier = TST_SYSFS_READ_LI(IFACE_PATH "/carrier");
-+	st->carrier_changes = TST_SYSFS_READ_LI(IFACE_PATH "/carrier_changes");
-+	st->carrier_up_count = TST_SYSFS_READ_LI(IFACE_PATH "/carrier_up_count");
-+	st->carrier_down_count = TST_SYSFS_READ_LI(IFACE_PATH "/carrier_down_count");
-+	TST_SYSFS_READ_STR(st->operstate, sizeof(st->operstate), IFACE_PATH "/operstate");
-+}
-+
-+static void check_state(const struct netdev_state *st, long carrier,
-+			const char *operstate, const char *desc)
-+{
-+	tst_res(TINFO, "%s", desc);
-+
-+	TST_EXP_EQ_LI(st->carrier, carrier);
-+	TST_EXP_EQ_STR(st->operstate, operstate);
-+	TST_EXP_EQ_LI(st->carrier_changes,
-+		      st->carrier_up_count + st->carrier_down_count);
-+}
-+
-+static void check_state_delta(const struct netdev_state *prev,
-+			      const struct netdev_state *cur, long up_delta,
-+			      long down_delta, const char *desc)
-+{
-+	long got_up = cur->carrier_up_count - prev->carrier_up_count;
-+	long got_down = cur->carrier_down_count - prev->carrier_down_count;
-+	long got_changes = cur->carrier_changes - prev->carrier_changes;
-+
-+	tst_res(TINFO, "%s", desc);
-+
-+	TST_EXP_EQ_LI(got_up, up_delta);
-+	TST_EXP_EQ_LI(got_down, down_delta);
-+	TST_EXP_EQ_LI(got_changes, up_delta + down_delta);
-+}
-+
-+static void check_mtu_valid(long mtu)
-+{
-+	char mtu_str[16];
-+
-+	snprintf(mtu_str, sizeof(mtu_str), "%ld", mtu);
-+
-+	if (FILE_PRINTF(IFACE_PATH "/mtu", "%s", mtu_str)) {
-+		tst_res(TFAIL, "Failed to set mtu to %ld", mtu);
-+		return;
-+	}
-+
-+	TST_EXP_EQ_LI(read_mtu(), mtu);
-+}
-+
-+static void check_mtu_invalid(const char *mtu_str)
-+{
-+	long before = read_mtu();
-+
-+	if (!FILE_PRINTF(IFACE_PATH "/mtu", "%s", mtu_str)) {
-+		tst_res(TFAIL, "Writing mtu '%s' unexpectedly succeeded",
-+			mtu_str);
-+		return;
-+	}
-+
-+	tst_res(TINFO, "Writing mtu '%s' was rejected as expected", mtu_str);
-+	TST_EXP_EQ_LI(read_mtu(), before);
-+}
-+
-+#endif /* SYS_NET_COMMON */
 -- 
 2.54.0
 
