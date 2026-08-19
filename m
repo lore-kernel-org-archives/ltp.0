@@ -4,50 +4,50 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EB18EC5DF7D
-	for <ltp@archiver.kernel.org>; Wed, 19 Aug 2026 01:24:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 08D5EC5DF81
+	for <ltp@archiver.kernel.org>; Wed, 19 Aug 2026 02:13:36 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 871233CD2C7
-	for <ltp@archiver.kernel.org>; Wed, 19 Aug 2026 03:24:24 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id AB2C73CD59B
+	for <ltp@archiver.kernel.org>; Wed, 19 Aug 2026 04:13:34 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 146E43CCA83
- for <ltp@lists.linux.it>; Wed, 19 Aug 2026 03:24:09 +0200 (CEST)
-Received: from mta1.migadu.com (out-250.mta1.migadu.com
- [IPv6:2001:41d0:203:375::fa])
+ by picard.linux.it (Postfix) with ESMTPS id 67D343CC0A7
+ for <ltp@lists.linux.it>; Wed, 19 Aug 2026 04:13:18 +0200 (CEST)
+Received: from mta1.migadu.com (out-138.mta1.migadu.com
+ [IPv6:2001:41d0:203:375::8a])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id C4D4660006D
- for <ltp@lists.linux.it>; Wed, 19 Aug 2026 03:24:07 +0200 (CEST)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id D449C1000900
+ for <ltp@lists.linux.it>; Wed, 19 Aug 2026 04:13:16 +0200 (CEST)
 X-Envelope-To: ltp@lists.linux.it
-DKIM-Signature: a=rsa-sha256; bh=zFpIaOuadHq/vmUbhZSdEDikHE1kyoOeS51mGRavW+A=; 
+DKIM-Signature: a=rsa-sha256; bh=UVmUPgXT88Pk1tJD7cz/UTa+WrG5AgcY/tGXuRWqeRI=; 
  c=simple/simple; d=linux.dev;
  h=from:to:subject:date:message-id:mime-version:content-type; s=key1;
- t=1787102647; v=1; x=1787707447;
- b=IafZCme/YmcYKeBtwC3U5pxPoNSKHvEy4lDwjDusTewi+dMscLPHzoQc6ydX1B7ShbfNiyWJ
- cdlOWiI5hpNjBCt5zEStQL77F8teNAX71t9cMYra5HXiDdFFwZU5siQ3f2715OBtnCFq/y0arVf
- 59MppL9+ZeSKBXgC1XH/w+Yc=
+ t=1787105596; v=1; x=1787710396;
+ b=HKNlcN3dmuosehAK3uM79468W11ZzKnWDj8+RCygokykttjsuOQKj2DJAhvb8NOMn+FWtdIe
+ Zk5X5hvKS9vqrGwn8ZPdUDkvw76vw0iw6EiSrvZxDnnVA1WcIowjcHpxFEWo6ttWdT1mUpILeLf
+ 8RZSd8cBzOJks/tS3Cmljis4=
 X-Envelope-To: ltp@lists.linux.it
 Received: from localhost (60.247.5.98)
- by smtp.migadu.com with ESMTPS id 4b87c3690d031f4a;
- Wed, 19 Aug 2026 01:24:07 +0000
+ by smtp.migadu.com with ESMTPS id 7877aff30362282f;
+ Wed, 19 Aug 2026 02:13:16 +0000
 X-Migadu-Flow: FLOW_OUT
-Date: Wed, 19 Aug 2026 09:23:59 +0800
+Date: Wed, 19 Aug 2026 10:13:12 +0800
 From: Li Wang <li.wang@linux.dev>
 To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <aoUFrxZAKAGWMq7i@linux.dev>
+Message-ID: <aoUROJGM1mDGTqjA@linux.dev>
 Mail-Followup-To: Cyril Hrubis <chrubis@suse.cz>, ltp@lists.linux.it
 References: <20260818141311.1265557-1-chrubis@suse.cz>
- <20260818141311.1265557-31-chrubis@suse.cz>
+ <20260818141311.1265557-24-chrubis@suse.cz>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20260818141311.1265557-31-chrubis@suse.cz>
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+In-Reply-To: <20260818141311.1265557-24-chrubis@suse.cz>
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1 30/31] testcases: sysfs: Add sys_swap01
+Subject: Re: [LTP] [PATCH v1 23/31] testcases: sysfs: Add sys_net04
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -65,58 +65,86 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> --- a/runtest/sysfs
-> +++ b/runtest/sysfs
-> @@ -25,3 +25,4 @@ sys_block_size01 sys_block_size01
->  sys_hugepages01 sys_hugepages01
->  sys_hugepages02 sys_hugepages02
->  sys_ksm01 sys_ksm01
-> +sys_swap01 sys_swap01
-
-This should be sys_mm_swap01; otherwise, the runtest file cannot
-find the correct test to execute.
-
-> --- /dev/null
-> +++ b/testcases/kernel/sysfs/kernel/mm/swap/sys_mm_swap01.c
-> @@ -0,0 +1,32 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (c) 2026 Cyril Hrubis <chrubis@suse.cz>
-> + */
+> +static void run(void)
+> +{
+> +	struct netdev_state s0, s1, s2;
 > +
-> +/*\
-> + * Sanity check for /sys/kernel/mm/swap/vma_ra_enabled.
-> + *
-> + * Unlike most other boolean sysfs tunables which use 0/1, this one is
-> + * formatted as the strings "true" or "false", so it needs its own check
-> + * rather than TST_SYSFS_ASSERT_BOOL().
-> + *
-> + * The test skips with TCONF when the attribute is not present.
-> + */
+> +	read_state(&s0);
+> +	check_state(&s0, 1, "up", "tun attached and up");
 > +
-> +#include "tst_test.h"
-> +#include "tst_sysfs_assert.h"
+> +	SAFE_CLOSE(tun_fd);
+
+Here I got intermittent fails in local test:
+
+  sys_net_common.h:32: TFAIL: st->operstate (up) != operstate (down)
+
+The possible reason is kernel asynchronous update race condition.
+The test reads operstate immediately after closing the FD, catching
+the stale "up" state before the kernel's background workqueue has
+time to update it to "down".
+
+Maybe we can add a polling mechanism with a timeout to wait for
+the operstate to transition.
+
+--- a/testcases/kernel/sysfs/class/net/sys_net04.c
++++ b/testcases/kernel/sysfs/class/net/sys_net04.c
+@@ -153,6 +153,12 @@ static void check_tun_vs_tap_type(void)
+        TST_SYSFS_EXP_EQ_LI(6, "/sys/class/net/" IFNAME_TAP "/addr_len");
+ }
+
++static int check_operstate(struct netdev_state *st, const char *expected_state)
++{
++       read_state(st);
++       return strcmp(st->operstate, expected_state);
++}
++
+ static void run(void)
+ {
+        struct netdev_state s0, s1, s2;
+@@ -161,12 +167,14 @@ static void run(void)
+        check_state(&s0, 1, "up", "tun attached and up");
+
+        SAFE_CLOSE(tun_fd);
++       TST_RETRY_FUNC(check_operstate(&s1, "down"), !);
+        read_state(&s1);
+        check_state(&s1, 0, "down", "tun detached");
+        check_state_delta(&s0, &s1, 0, 1, "detach transition");
+
+        tun_fd = open_tun(IFNAME_TUN, IFF_TUN | IFF_NO_PI);
+        read_state(&s2);
++       TST_RETRY_FUNC(check_operstate(&s2, "up"), !);
+        check_state(&s2, 1, "up", "tun reattached");
+        check_state_delta(&s1, &s2, 1, 0, "reattach transition");
+
+
+> +	read_state(&s1);
+> +	check_state(&s1, 0, "down", "tun detached");
+> +	check_state_delta(&s0, &s1, 0, 1, "detach transition");
 > +
-> +#define VMA_RA "/sys/kernel/mm/swap/vma_ra_enabled"
+> +	tun_fd = open_tun(IFNAME_TUN, IFF_TUN | IFF_NO_PI);
+> +	read_state(&s2);
+> +	check_state(&s2, 1, "up", "tun reattached");
 
-I suggest adding all of those path definitions to tst_path_defs.h
-and unifying the common macro names.
+Here also fail:
+
+  sys_net_common.h:32: TFAIL: st->operstate (down) != operstate (up)
 
 
-Also, we need to add the sysfs/ directory to testcases/kernel/Makefile
-so they can build successfully by default.
-
---- a/testcases/kernel/Makefile
-+++ b/testcases/kernel/Makefile
-@@ -36,6 +36,7 @@ SUBDIRS                       += connectors \
-                           sched \
-                           security \
-                           sound \
-+                          sysfs \
-                           thermal \
-                           tracing \
-                           uevents \
-
+> +	check_state_delta(&s1, &s2, 1, 0, "reattach transition");
+> +
+> +	check_mtu_valid(68);
+> +	check_mtu_valid(1500);
+> +	check_mtu_valid(9000);
+> +	check_mtu_valid(65535);
+> +	check_mtu_invalid("-1");
+> +	check_mtu_invalid("0");
+> +	check_mtu_invalid("67");
+> +	check_mtu_invalid("70000");
+> +
+> +	check_tun_flags();
+> +	check_owner_group();
+> +	check_tun_vs_tap_type();
+> +}
 
 -- 
 Regards,
