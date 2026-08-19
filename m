@@ -4,81 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0DE8AC5DF85
-	for <ltp@archiver.kernel.org>; Wed, 19 Aug 2026 16:18:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E1475C5DF81
+	for <ltp@archiver.kernel.org>; Wed, 19 Aug 2026 16:18:50 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id CC2453CD6A0
-	for <ltp@archiver.kernel.org>; Wed, 19 Aug 2026 18:18:33 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 1B2043CD674
+	for <ltp@archiver.kernel.org>; Wed, 19 Aug 2026 18:18:49 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9A47A3CD6A0
- for <ltp@lists.linux.it>; Wed, 19 Aug 2026 18:16:55 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id B16D43CD722
+ for <ltp@lists.linux.it>; Wed, 19 Aug 2026 18:16:56 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id ECD63600806
- for <ltp@lists.linux.it>; Wed, 19 Aug 2026 18:16:54 +0200 (CEST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 26FCF1A008A3
+ for <ltp@lists.linux.it>; Wed, 19 Aug 2026 18:16:55 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 5419B84C0F
- for <ltp@lists.linux.it>; Wed, 19 Aug 2026 16:16:46 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 2BC0584C0E
+ for <ltp@lists.linux.it>; Wed, 19 Aug 2026 16:16:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1787156210; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1787156211; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=wwS/1rUX6J+RsFvSPpBiTUU8L3RizOeSy1z5KbquYB8=;
- b=0P8Snx0P1rz92yv79b3wKqoMp5i3najdfCdDHshvaMjDAtiA2FqRZYvxngCR8AZjxk4Ln0
- bw9wQnGyK8Qpw361WQb0VgSeHvIxpYnVQswxXT8TlnEfsEYp8BPZ7VWHyGqTzvD5eLzySG
- /6NA71YMzLh8Uh+rFC5/791hvnTb5LI=
+ bh=otUIuQ8uScp8jIBKWMFlLTih1NUyB02ou/+oHwdpq/E=;
+ b=Y+vVCPjab8Mdm19MOfrMqH2NCSxVfnpJbm0lz4EWWuaQGTh/sZecD3de+xkErZpxLKqeZo
+ czm5/rOt2bDst2VVTVwaHC90zX/3HlbgztMc0b/HkfGDp9zq2GvDeZbuDp3NR2LAJU/i2v
+ yJm9YbdZr7R2qEd/j02E8I7vFQkPW7o=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1787156210;
+ s=susede2_ed25519; t=1787156211;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=wwS/1rUX6J+RsFvSPpBiTUU8L3RizOeSy1z5KbquYB8=;
- b=L1VF71NK0ngpJ7KsRXQGgFclPytV4gdGBBiz4HmTStuGFDDTN1qS81scRMwuEVosTEocaY
- pVmRC8VdeSy30CBg==
+ bh=otUIuQ8uScp8jIBKWMFlLTih1NUyB02ou/+oHwdpq/E=;
+ b=MbjDz5ptx6MhcXmoWJa++/fB6tLsw76h2c4TEE8R8DsrbkYYX5LDgdMpkev8T5c1fd8Yqo
+ 0k/aftxRp/VXebDQ==
 Authentication-Results: smtp-out1.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1787156206; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1787156207; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=wwS/1rUX6J+RsFvSPpBiTUU8L3RizOeSy1z5KbquYB8=;
- b=3AknPcA3fFR7FxfMXU/iMC/wYnsSXIvn34qzTV7RCZWPJIUTNXoqJvUW9QiwtCnMMoi0Vm
- DttAQymKnFHyMHWIw06SYW9wbj6aTCpfR8gwyIP0rokInDzybKnWlqPm8adzxRNQ1ycu8E
- FU5hBeyZk5zs4nrweYzpCWO6p+GAUNE=
+ bh=otUIuQ8uScp8jIBKWMFlLTih1NUyB02ou/+oHwdpq/E=;
+ b=Agy7OBzRgKnbFIj0A6qztt68lDjDDiQanSIrTTKTR9V1FIMk4qIdzL2ZSXUjp55sx/sZnq
+ sXIfgKFuktsUZkWnQM9pYOhCnfQd7fc5iQwKEbiKaLgBvYK7Ljfj3v5ow4VgI+vwtcUSzE
+ Wfdvs9LqYju+8MicpTXU2JkZl23G1CI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1787156206;
+ s=susede2_ed25519; t=1787156207;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=wwS/1rUX6J+RsFvSPpBiTUU8L3RizOeSy1z5KbquYB8=;
- b=5oY47CxInn5Yar5OoI7VoWCBPTwsH42ACsj7PwN+iS1XOxk06Xn+yGFaeLwtpaCCeDvrGa
- 9dSo+8Vx4+19zLAA==
+ bh=otUIuQ8uScp8jIBKWMFlLTih1NUyB02ou/+oHwdpq/E=;
+ b=co9JdPDQF3xTX4XGeJKC8dnCkiONUf+5hhVoYFVKgRGm27gAFmlXq4LPrIHOvrceRT8cSm
+ BwSkWYRn78ZZjtDw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 56940367D
- for <ltp@lists.linux.it>; Wed, 19 Aug 2026 16:16:40 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B0E523681
+ for <ltp@lists.linux.it>; Wed, 19 Aug 2026 16:16:41 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id uMBqFOjWhWr0cgAAD6G6ig
+ by imap1.dmz-prg2.suse.org with ESMTPSA id Uo9bKunWhWr7cgAAD6G6ig
  (envelope-from <chrubis@suse.cz>)
- for <ltp@lists.linux.it>; Wed, 19 Aug 2026 16:16:40 +0000
+ for <ltp@lists.linux.it>; Wed, 19 Aug 2026 16:16:41 +0000
 From: Cyril Hrubis <chrubis@suse.cz>
 To: ltp@lists.linux.it
-Date: Wed, 19 Aug 2026 18:16:09 +0200
-Message-ID: <20260819161634.1341577-7-chrubis@suse.cz>
+Date: Wed, 19 Aug 2026 18:16:12 +0200
+Message-ID: <20260819161634.1341577-10-chrubis@suse.cz>
 X-Mailer: git-send-email 2.54.0
 In-Reply-To: <20260819161634.1341577-1-chrubis@suse.cz>
 References: <20260819161634.1341577-1-chrubis@suse.cz>
@@ -95,9 +95,9 @@ X-Spamd-Result: default: False [-2.79 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:mid,imap1.dmz-prg2.suse.org:helo];
  RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
  TO_DN_NONE(0.00)[]; RCVD_TLS_ALL(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 06/31] testcases: sysfs: Add sys_cpu_topology01
+Subject: [LTP] [PATCH v2 09/31] testcases: sysfs: Add sys_cpu_smt01
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -114,156 +114,138 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-A test for /sys/devices/system/cpu/* files.
+A test for /sys/devices/system/cpu/smt/* files.
 
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- runtest/sysfs                                 |   1 +
- .../sysfs/devices/system/cpu/.gitignore       |   1 +
- .../kernel/sysfs/devices/system/cpu/Makefile  |   7 ++
- .../devices/system/cpu/sys_cpu_topology01.c   | 103 ++++++++++++++++++
- 4 files changed, 112 insertions(+)
- create mode 100644 testcases/kernel/sysfs/devices/system/cpu/.gitignore
- create mode 100644 testcases/kernel/sysfs/devices/system/cpu/Makefile
- create mode 100644 testcases/kernel/sysfs/devices/system/cpu/sys_cpu_topology01.c
+ runtest/sysfs                                 |  1 +
+ .../sysfs/devices/system/cpu/.gitignore       |  1 +
+ .../sysfs/devices/system/cpu/sys_cpu_smt01.c  | 99 +++++++++++++++++++
+ 3 files changed, 101 insertions(+)
+ create mode 100644 testcases/kernel/sysfs/devices/system/cpu/sys_cpu_smt01.c
 
 diff --git a/runtest/sysfs b/runtest/sysfs
-index 347bd78c1..4fc8f1eb2 100644
+index 663c1d203..4cc2360c6 100644
 --- a/runtest/sysfs
 +++ b/runtest/sysfs
-@@ -2,3 +2,4 @@ sys_power01 sys_power01
- sys_kernel01 sys_kernel01
- sys_clocksource01 sys_clocksource01
- sys_node01 sys_node01
-+sys_cpu_topology01 sys_cpu_topology01
+@@ -5,3 +5,4 @@ sys_node01 sys_node01
+ sys_cpu_topology01 sys_cpu_topology01
+ sys_cpu_topology02 sys_cpu_topology02
+ sys_cpu_vulnerabilities01 sys_cpu_vulnerabilities01
++sys_cpu_smt01 sys_cpu_smt01
 diff --git a/testcases/kernel/sysfs/devices/system/cpu/.gitignore b/testcases/kernel/sysfs/devices/system/cpu/.gitignore
-new file mode 100644
-index 000000000..0615aff77
---- /dev/null
+index 3ae5f494f..d0f8a6dab 100644
+--- a/testcases/kernel/sysfs/devices/system/cpu/.gitignore
 +++ b/testcases/kernel/sysfs/devices/system/cpu/.gitignore
-@@ -0,0 +1 @@
-+/sys_cpu_topology01
-diff --git a/testcases/kernel/sysfs/devices/system/cpu/Makefile b/testcases/kernel/sysfs/devices/system/cpu/Makefile
+@@ -1,3 +1,4 @@
+ /sys_cpu_topology01
+ /sys_cpu_topology02
+ /sys_cpu_vulnerabilities01
++/sys_cpu_smt01
+diff --git a/testcases/kernel/sysfs/devices/system/cpu/sys_cpu_smt01.c b/testcases/kernel/sysfs/devices/system/cpu/sys_cpu_smt01.c
 new file mode 100644
-index 000000000..781865569
+index 000000000..770b68bb4
 --- /dev/null
-+++ b/testcases/kernel/sysfs/devices/system/cpu/Makefile
-@@ -0,0 +1,7 @@
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (c) 2026 Cyril Hrubis <chrubis@suse.cz>
-+
-+top_srcdir		?= ../../../../../..
-+
-+include $(top_srcdir)/include/mk/testcases.mk
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/sysfs/devices/system/cpu/sys_cpu_topology01.c b/testcases/kernel/sysfs/devices/system/cpu/sys_cpu_topology01.c
-new file mode 100644
-index 000000000..d2aefa85e
---- /dev/null
-+++ b/testcases/kernel/sysfs/devices/system/cpu/sys_cpu_topology01.c
-@@ -0,0 +1,103 @@
++++ b/testcases/kernel/sysfs/devices/system/cpu/sys_cpu_smt01.c
+@@ -0,0 +1,99 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
 + * Copyright (c) 2026 Cyril Hrubis <chrubis@suse.cz>
 + */
 +
 +/*\
-+ * Sanity checks for the CPU topology attributes exported under
-+ * /sys/devices/system/cpu/.
++ * Sanity checks for the SMT (simultaneous multithreading) control exported
++ * under /sys/devices/system/cpu/smt/.
 + *
-+ * The kernel exports several cpulist files describing the state of the CPUs:
++ * The test verifies that:
 + *
-+ * - possible - CPUs that could possibly be brought online during this boot
-+ * - present  - CPUs that are populated (physically present)
-+ * - online   - CPUs that are currently online and usable
-+ * - offline  - CPUs that are known to the system but currently offline
++ * - active is a boolean (0 or 1)
++ * - control is one of the known states (on, off, forceoff, notsupported,
++ *   notimplemented) or, on architectures that support a partial SMT level
++ *   (CONFIG_SMT_NUM_THREADS_DYNAMIC), a positive integer greater than one
++ *   that denotes the number of active threads per core
++ * - when SMT is not usable (control is notsupported or notimplemented) active
++ *   reads back as 0
 + *
-+ * These sets are nested, so the test verifies that:
-+ *
-+ * - online is a subset of present
-+ * - present is a subset of possible
-+ * - offline is a subset of possible
-+ * - kernel_max is greater than or equal to the highest possible CPU id
-+ *
-+ * The number of online CPUs is also cross-checked against /proc/stat, which
-+ * contains one "cpuN" line for each online CPU.
-+ *
-+ * All checks skip gracefully with TCONF when a particular attribute is not
-+ * present.
++ * The test skips with TCONF when the smt directory is not present.
 + */
 +
 +#include <stdio.h>
 +#include <string.h>
 +#include <ctype.h>
-+#include <limits.h>
++#include <unistd.h>
 +#include "tst_test.h"
-+#include "tst_safe_stdio.h"
 +#include "tst_sysfs_assert.h"
 +
-+#define SYS_CPU "/sys/devices/system/cpu"
++#define SMT "/sys/devices/system/cpu/smt"
 +
-+static int count_proc_stat_cpus(void)
++static const char *const control_allowed[] = {
++	"on", "off", "forceoff", "notsupported", "notimplemented", NULL
++};
++
++static int is_number(const char *str)
 +{
-+	FILE *f;
-+	char line[4096];
-+	int cpus = 0;
++	if (!*str)
++		return 0;
 +
-+	f = SAFE_FOPEN("/proc/stat", "r");
-+
-+	while (fgets(line, sizeof(line), f)) {
-+		if (!strncmp(line, "cpu", 3) && isdigit(line[3]))
-+			cpus++;
++	for (; *str; str++) {
++		if (!isdigit(*str))
++			return 0;
 +	}
 +
-+	SAFE_FCLOSE(f);
-+
-+	return cpus;
++	return 1;
 +}
 +
-+static void check_online_proc_stat(void)
++static void do_test(void)
 +{
-+	int count, max_id;
-+	int stat_cpus;
++	char control[32];
++	long active;
 +
-+	if (TST_SYSFS_ASSERT_PARSE_LIST(&count, &max_id, SYS_CPU "/online"))
++	if (access(SMT, F_OK)) {
++		tst_res(TCONF, SMT " is not available");
 +		return;
++	}
 +
-+	stat_cpus = count_proc_stat_cpus();
++	TST_SYSFS_ASSERT_BOOL(SMT "/active");
 +
-+	if (count == stat_cpus) {
-+		tst_res(TPASS,
-+			SYS_CPU "/online count (%d) == /proc/stat cpu lines (%d)",
-+			count, stat_cpus);
++	if (!TST_SYSFS_READ_STR(control, sizeof(control), SMT "/control")) {
++		tst_res(TCONF, SMT "/control file not present");
++		return;
++	}
++
++	if (is_number(control)) {
++		long threads = SAFE_STRTOL(control, 1, LONG_MAX);
++
++		if (threads > 1) {
++			tst_res(TPASS,
++				SMT "/control = '%s' (%ld threads per core)",
++				control, threads);
++		} else {
++			tst_res(TFAIL,
++				SMT "/control = '%s' is not a valid thread count",
++				control);
++		}
 +	} else {
-+		tst_res(TFAIL,
-+			SYS_CPU "/online count (%d) != /proc/stat cpu lines (%d)",
-+			count, stat_cpus);
++		TST_SYSFS_ASSERT_ONEOF(control_allowed, SMT "/control");
 +	}
-+}
 +
-+static void check_kernel_max(void)
-+{
-+	int count, max_id;
++	active = TST_SYSFS_READ_LI(SMT "/active");
 +
-+	if (TST_SYSFS_ASSERT_PARSE_LIST(&count, &max_id, SYS_CPU "/possible"))
-+		return;
-+
-+	TST_SYSFS_ASSERT_RANGELL(max_id, LONG_MAX, SYS_CPU "/kernel_max");
-+}
-+
-+static void run(void)
-+{
-+	TST_SYSFS_ASSERT_LIST_SUBSET(SYS_CPU "/online", SYS_CPU "/present");
-+	TST_SYSFS_ASSERT_LIST_SUBSET(SYS_CPU "/present", SYS_CPU "/possible");
-+	TST_SYSFS_ASSERT_LIST_SUBSET(SYS_CPU "/offline", SYS_CPU "/possible");
-+
-+	check_kernel_max();
-+
-+	check_online_proc_stat();
++	if (!strcmp(control, "notsupported") ||
++	    !strcmp(control, "notimplemented")) {
++		if (active == 0) {
++			tst_res(TPASS,
++				"active is 0 while SMT control is '%s'", control);
++		} else {
++			tst_res(TFAIL,
++				"active is %ld while SMT control is '%s'",
++				active, control);
++		}
++	}
 +}
 +
 +static struct tst_test test = {
-+	.test_all = run,
++	.test_all = do_test,
 +};
 -- 
 2.54.0
