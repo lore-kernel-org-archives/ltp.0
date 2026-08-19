@@ -4,100 +4,111 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C6AC5C5DF85
-	for <ltp@archiver.kernel.org>; Wed, 19 Aug 2026 16:21:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 93A17C5DF81
+	for <ltp@archiver.kernel.org>; Wed, 19 Aug 2026 16:21:50 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 56FE53CD682
-	for <ltp@archiver.kernel.org>; Wed, 19 Aug 2026 18:21:36 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 221513CD820
+	for <ltp@archiver.kernel.org>; Wed, 19 Aug 2026 18:21:49 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6FCFE3CD715
+ by picard.linux.it (Postfix) with ESMTPS id 84C5E3CD735
  for <ltp@lists.linux.it>; Wed, 19 Aug 2026 18:17:04 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id E99F860084E
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id DC2A460079B
  for <ltp@lists.linux.it>; Wed, 19 Aug 2026 18:17:03 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 37B5A3EE3
- for <ltp@lists.linux.it>; Wed, 19 Aug 2026 16:16:55 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 9983C84C04
+ for <ltp@lists.linux.it>; Wed, 19 Aug 2026 16:16:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1787156219; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1787156218; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=ha4WtXoMrYGJu3vqzvt/rng+i8PfUGKIw+Tf+dprCTU=;
- b=tI9h/E4Hw7ws+yL7jR57FZ9dgdjPrXWIdW1EL/I7dR28qfJ0V36hN42vYxDMGeqFU9OC1f
- 8RBXCyQTMPdu9xFnj3H29hqJvmDW6sb7vyE+dMEGZHnlJ4tCFBGBBd+y8mtF9qJFxEOPMq
- 3ir4KQFItlZn2Q4uiIiyl8P4lBSpIC8=
+ bh=TkdICtLtA6JW8mnSjOgsoMdrmpGpOTO8a+J3PTLqYuo=;
+ b=SaysRYAwj7GO19wJ6g+QlU/PPWh32pM0bvKLy9u8C5S3MInGs/WX4uaqnYm/6/Zq/4qLGv
+ 9n1RyzOWm9KWktziU/0hHYIoj431TqZGGRLLcm0T2/tacsphnCulJ8oeIqNfsh7s/di9Ou
+ m9JLWUWP7NxM7axtY+YlVQPxio9Lpd4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1787156219;
+ s=susede2_ed25519; t=1787156218;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=ha4WtXoMrYGJu3vqzvt/rng+i8PfUGKIw+Tf+dprCTU=;
- b=oN4H/oQv/wfsRx2n++ZHut0tCb2WbpnDiKOSM6I/0qTMo0fRgl/bcUr1aai6etMoLbIm78
- VhetF+JRrz1ZpxAA==
-Authentication-Results: smtp-out2.suse.de;
-	none
+ bh=TkdICtLtA6JW8mnSjOgsoMdrmpGpOTO8a+J3PTLqYuo=;
+ b=YLhBygQVlmKNT6QhzId7ouTE2ohXXZFfsolruuUBdzie9eZfH5f7ZIqN8sohDQHUPJaUoX
+ kf5Vx9myeKuKpHBw==
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=c3pxqnSX;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=wsCAhoI8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1787156215; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1787156214; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=ha4WtXoMrYGJu3vqzvt/rng+i8PfUGKIw+Tf+dprCTU=;
- b=F3XYvMw9VZ5P3tgk9YO61OLvdiKsrVPOakCYa/tPPPvnSg09HpAHLkaKxtWl4n1lzVw5kY
- w99pu/n9CbDykzW8GPUx+QQpOHbhxypneRsqS8vs1A64Qy/LL6T/g2914Hpub8ousCbkKZ
- KpLFPp9jRyfnL0r/skAXB+2GcaJ/Nbc=
+ bh=TkdICtLtA6JW8mnSjOgsoMdrmpGpOTO8a+J3PTLqYuo=;
+ b=c3pxqnSX3pGCJAAxNZuC8sKr8YiCvgPHmeq9G0x1LvE+eO7I9Ees/LJVfKhc62xpkjVj56
+ 2SHyliHhZ11uiow2ckf9l+oCRUnAg/Sm1vl89fzTaeRjwBD3bJUr+zO4DCP+1/qiBMcjyb
+ TRm5X6sQPx8OPVZ+MVRaI948Fk43ons=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1787156215;
+ s=susede2_ed25519; t=1787156214;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=ha4WtXoMrYGJu3vqzvt/rng+i8PfUGKIw+Tf+dprCTU=;
- b=0RXgvdxqWCnEF/tK71v9r9fJ6Nacj8aZYrKkvCo2HukklBkBjEdn2BH5SF2HDXm0hIfkYb
- YEEGjbj6bgO7j+Bg==
+ bh=TkdICtLtA6JW8mnSjOgsoMdrmpGpOTO8a+J3PTLqYuo=;
+ b=wsCAhoI8YnRRS9dyCwZ/VFC296z7+RwPzJCq1221TsG1LZ6W0HF4Y2/ymZTZkN5ISeFlwJ
+ uciA8AVLMg93jkAg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id DD624367C
- for <ltp@lists.linux.it>; Wed, 19 Aug 2026 16:16:54 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 166CC3682
+ for <ltp@lists.linux.it>; Wed, 19 Aug 2026 16:16:52 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id Q30iNfbWhWqlcwAAD6G6ig
+ by imap1.dmz-prg2.suse.org with ESMTPSA id j41/BPTWhWqScwAAD6G6ig
  (envelope-from <chrubis@suse.cz>)
- for <ltp@lists.linux.it>; Wed, 19 Aug 2026 16:16:54 +0000
+ for <ltp@lists.linux.it>; Wed, 19 Aug 2026 16:16:52 +0000
 From: Cyril Hrubis <chrubis@suse.cz>
 To: ltp@lists.linux.it
-Date: Wed, 19 Aug 2026 18:16:25 +0200
-Message-ID: <20260819161634.1341577-23-chrubis@suse.cz>
+Date: Wed, 19 Aug 2026 18:16:18 +0200
+Message-ID: <20260819161634.1341577-16-chrubis@suse.cz>
 X-Mailer: git-send-email 2.54.0
 In-Reply-To: <20260819161634.1341577-1-chrubis@suse.cz>
 References: <20260819161634.1341577-1-chrubis@suse.cz>
 MIME-Version: 1.0
-X-Spamd-Result: default: False [-2.79 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
- R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.19)[-0.952];
- MIME_GOOD(-0.10)[text/plain]; ARC_NA(0.00)[];
- RCPT_COUNT_ONE(0.00)[1]; RCVD_VIA_SMTP_AUTH(0.00)[];
- MIME_TRACE(0.00)[0:+];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_CONTAINS_FROM(1.00)[];
+ R_MISSING_CHARSET(0.50)[];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-0.998]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[]; TO_MATCH_ENVRCPT_ALL(0.00)[]; ARC_NA(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; RCPT_COUNT_ONE(0.00)[1];
+ MIME_TRACE(0.00)[0:+]; FROM_HAS_DN(0.00)[];
  PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:mid,suse.cz:email];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- TO_DN_NONE(0.00)[]; RCVD_TLS_ALL(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+ FROM_EQ_ENVFROM(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.cz:email,suse.cz:mid,suse.cz:dkim];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ RCVD_TLS_ALL(0.00)[]; TO_DN_NONE(0.00)[];
+ RCVD_COUNT_TWO(0.00)[2];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ DKIM_TRACE(0.00)[suse.cz:+]
+X-Rspamd-Queue-Id: 9983C84C04
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 22/31] testcases: sysfs: Add sys_net03
+Subject: [LTP] [PATCH v2 15/31] testcases: sysfs: sys_leds01
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -114,185 +125,123 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-A test for /sys/class/net/*/* files.
-
-Similar to sys_net02 but checks bridge related files after briding a
-virtual ethernet interface.
+Add test for /sys/class/leds/*/* files.
 
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- runtest/sysfs                                |   1 +
- testcases/kernel/sysfs/class/net/.gitignore  |   1 +
- testcases/kernel/sysfs/class/net/sys_net03.c | 144 +++++++++++++++++++
- 3 files changed, 146 insertions(+)
- create mode 100644 testcases/kernel/sysfs/class/net/sys_net03.c
+ runtest/sysfs                                 |  1 +
+ testcases/kernel/sysfs/class/leds/.gitignore  |  1 +
+ testcases/kernel/sysfs/class/leds/Makefile    |  7 ++
+ .../kernel/sysfs/class/leds/sys_leds01.c      | 70 +++++++++++++++++++
+ 4 files changed, 79 insertions(+)
+ create mode 100644 testcases/kernel/sysfs/class/leds/.gitignore
+ create mode 100644 testcases/kernel/sysfs/class/leds/Makefile
+ create mode 100644 testcases/kernel/sysfs/class/leds/sys_leds01.c
 
 diff --git a/runtest/sysfs b/runtest/sysfs
-index fee8a0b2b..b2cc0005c 100644
+index 23c7adc7a..f515c4c1e 100644
 --- a/runtest/sysfs
 +++ b/runtest/sysfs
-@@ -17,3 +17,4 @@ sys_rtc01 sys_rtc01
- sys_thermal01 sys_thermal01
- sys_net01 sys_net01
- sys_net02 sys_net02
-+sys_net03 sys_net03
-diff --git a/testcases/kernel/sysfs/class/net/.gitignore b/testcases/kernel/sysfs/class/net/.gitignore
-index b70d02158..8c3782a3b 100644
---- a/testcases/kernel/sysfs/class/net/.gitignore
-+++ b/testcases/kernel/sysfs/class/net/.gitignore
-@@ -1,2 +1,3 @@
- /sys_net01
- /sys_net02
-+/sys_net03
-diff --git a/testcases/kernel/sysfs/class/net/sys_net03.c b/testcases/kernel/sysfs/class/net/sys_net03.c
+@@ -11,3 +11,4 @@ sys_clockevents01 sys_clockevents01
+ sys_ata01 sys_ata01
+ sys_bdi01 sys_bdi01
+ sys_hwmon01 sys_hwmon01
++sys_leds01 sys_leds01
+diff --git a/testcases/kernel/sysfs/class/leds/.gitignore b/testcases/kernel/sysfs/class/leds/.gitignore
 new file mode 100644
-index 000000000..fcc5c5451
+index 000000000..96e026b0d
 --- /dev/null
-+++ b/testcases/kernel/sysfs/class/net/sys_net03.c
-@@ -0,0 +1,144 @@
++++ b/testcases/kernel/sysfs/class/leds/.gitignore
+@@ -0,0 +1 @@
++/sys_leds01
+diff --git a/testcases/kernel/sysfs/class/leds/Makefile b/testcases/kernel/sysfs/class/leds/Makefile
+new file mode 100644
+index 000000000..034038061
+--- /dev/null
++++ b/testcases/kernel/sysfs/class/leds/Makefile
+@@ -0,0 +1,7 @@
++# SPDX-License-Identifier: GPL-2.0-or-later
++# Copyright (c) 2026 Cyril Hrubis <chrubis@suse.cz>
++
++top_srcdir		?= ../../../../..
++
++include $(top_srcdir)/include/mk/testcases.mk
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/sysfs/class/leds/sys_leds01.c b/testcases/kernel/sysfs/class/leds/sys_leds01.c
+new file mode 100644
+index 000000000..710a6ed1e
+--- /dev/null
++++ b/testcases/kernel/sysfs/class/leds/sys_leds01.c
+@@ -0,0 +1,70 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
 + * Copyright (c) 2026 Cyril Hrubis <chrubis@suse.cz>
 + */
 +
 +/*\
-+ * Verifies that bridge port sysfs attributes correctly appear, hold sane
-+ * values, and disappear again as a network device is enslaved to and
-+ * released from a bridge.
++ * Sanity checks for the LED class devices exported under
++ * /sys/class/leds/<led>/.
 + *
-+ * The test creates a bridge and a veth pair, then:
++ * For every LED the test verifies that:
 + *
-+ * - verifies /sys/class/net/<bridge>/brif/ is empty and
-+ *   /sys/class/net/<port>/brport does not exist before enslaving
-+ * - enslaves one end of the veth pair to the bridge
-+ * - verifies /sys/class/net/<bridge>/brif/<port> appears and
-+ *   /sys/class/net/<port>/brport/{state,priority,path_cost} hold sane values
-+ * - verifies /sys/class/net/<bridge>/bridge/{stp_state,forward_delay} hold
-+ *   sane values
-+ * - releases the port from the bridge
-+ * - verifies /sys/class/net/<bridge>/brif/ is empty and
-+ *   /sys/class/net/<port>/brport does not exist again
++ * - max_brightness is greater than zero
++ * - brightness is in the range [0, max_brightness]
++ * - trigger is a bracketed-choice file listing the available triggers with
++ *   exactly one of them selected via [] (the set of triggers is not checked
++ *   as it is highly kernel- and hardware-dependent)
 + *
-+ * This needs root to create the bridge and veth devices.
++ * The test skips with TCONF when no LED device is present.
 + */
 +
 +#include <limits.h>
-+#include <string.h>
 +#include <dirent.h>
-+#include <unistd.h>
-+
 +#include "tst_test.h"
-+#include "tst_netdevice.h"
 +#include "tst_sysfs_assert.h"
 +
-+#define BRNAME "ltp_br0"
-+#define IFNAME1 "ltp_vethb1"
-+#define IFNAME2 "ltp_vethb2"
++#define LEDS "/sys/class/leds"
 +
-+#define BR_PATH "/sys/class/net/" BRNAME
-+#define PORT_PATH "/sys/class/net/" IFNAME1
++static void check_led(const char *name)
++{
++	char trigger[64];
 +
-+static int bridge_created;
-+static int veth_created;
++	tst_res(TINFO, "Checking led '%s'", name);
 +
-+static int count_dir_entries(const char *path)
++	TST_SYSFS_ASSERT_RANGELL(1, LONG_MAX, LEDS "/%s/max_brightness", name);
++
++	TST_SYSFS_ASSERT_RANGELF(0, "brightness", "max_brightness",
++				  LEDS "/%s/", name);
++
++	TST_SYSFS_ASSERT_CHOICE(NULL, trigger, sizeof(trigger),
++				LEDS "/%s/trigger", name);
++}
++
++static void do_test(void)
 +{
 +	DIR *d;
 +	struct dirent *ent;
-+	int count = 0;
++	int found = 0;
 +
-+	d = SAFE_OPENDIR(path);
++	if (!tst_sysfs_exists(LEDS))
++		tst_brk(TCONF, LEDS ": not present");
++
++	d = SAFE_OPENDIR(LEDS);
 +
 +	while ((ent = SAFE_READDIR(d))) {
 +		if (ent->d_name[0] == '.')
 +			continue;
 +
-+		count++;
++		found = 1;
++		check_led(ent->d_name);
 +	}
 +
 +	SAFE_CLOSEDIR(d);
 +
-+	return count;
-+}
-+
-+static void setup(void)
-+{
-+	NETDEV_ADD_DEVICE(BRNAME, "bridge");
-+	bridge_created = 1;
-+
-+	CREATE_VETH_PAIR(IFNAME1, IFNAME2);
-+	veth_created = 1;
-+
-+	NETDEV_SET_STATE(BRNAME, 1);
-+	NETDEV_SET_STATE(IFNAME1, 1);
-+	NETDEV_SET_STATE(IFNAME2, 1);
-+}
-+
-+static void check_not_enslaved(const char *desc)
-+{
-+	int nports = count_dir_entries(BR_PATH "/brif");
-+
-+	tst_res(TINFO, "%s", desc);
-+
-+	TST_EXP_EQ_LI(nports, 0);
-+
-+	if (access(PORT_PATH "/brport", F_OK))
-+		tst_res(TPASS, PORT_PATH "/brport does not exist");
-+	else
-+		tst_res(TFAIL, PORT_PATH "/brport unexpectedly exists");
-+}
-+
-+static void check_enslaved(void)
-+{
-+	int nports = count_dir_entries(BR_PATH "/brif");
-+
-+	tst_res(TINFO, "port enslaved to bridge");
-+
-+	TST_EXP_EQ_LI(nports, 1);
-+
-+	if (!access(BR_PATH "/brif/" IFNAME1, F_OK))
-+		tst_res(TPASS, BR_PATH "/brif/" IFNAME1 " exists");
-+	else
-+		tst_res(TFAIL, BR_PATH "/brif/" IFNAME1 " does not exist");
-+
-+	TST_SYSFS_ASSERT_RANGELL(0, 4, PORT_PATH "/brport/state");
-+	TST_SYSFS_ASSERT_RANGELL(0, 255, PORT_PATH "/brport/priority");
-+	TST_SYSFS_ASSERT_RANGELL(1, LONG_MAX, PORT_PATH "/brport/path_cost");
-+
-+	TST_SYSFS_ASSERT_RANGELL(0, 2, BR_PATH "/bridge/stp_state");
-+	TST_SYSFS_ASSERT_RANGELL(1, LONG_MAX, BR_PATH "/bridge/forward_delay");
-+}
-+
-+static void run(void)
-+{
-+	check_not_enslaved("before enslaving");
-+
-+	NETDEV_SET_MASTER(IFNAME1, BRNAME);
-+	check_enslaved();
-+
-+	NETDEV_SET_MASTER(IFNAME1, NULL);
-+	check_not_enslaved("after releasing");
-+}
-+
-+static void cleanup(void)
-+{
-+	if (veth_created)
-+		NETDEV_REMOVE_DEVICE(IFNAME1);
-+
-+	if (bridge_created)
-+		NETDEV_REMOVE_DEVICE(BRNAME);
++	if (!found)
++		tst_res(TCONF, "No LED device found");
 +}
 +
 +static struct tst_test test = {
-+	.test_all = run,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.needs_root = 1,
-+	.needs_kconfigs = (const char *const[]){
-+		"CONFIG_VETH",
-+		"CONFIG_BRIDGE",
-+		NULL
-+	},
++	.test_all = do_test,
 +};
 -- 
 2.54.0
