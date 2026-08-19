@@ -4,100 +4,111 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C4EC2C5DF85
-	for <ltp@archiver.kernel.org>; Wed, 19 Aug 2026 16:24:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4CE0BC5DF85
+	for <ltp@archiver.kernel.org>; Wed, 19 Aug 2026 16:24:25 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 3FE8B3CD69F
-	for <ltp@archiver.kernel.org>; Wed, 19 Aug 2026 18:24:10 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id CF4B43CD6A0
+	for <ltp@archiver.kernel.org>; Wed, 19 Aug 2026 18:24:23 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 71F8A3CD635
+ by picard.linux.it (Postfix) with ESMTPS id 5B4A23C731E
  for <ltp@lists.linux.it>; Wed, 19 Aug 2026 18:17:10 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id D612160080C
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id CADA01000966
  for <ltp@lists.linux.it>; Wed, 19 Aug 2026 18:17:09 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 52CDA84C18
- for <ltp@lists.linux.it>; Wed, 19 Aug 2026 16:17:01 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 87EB884C13
+ for <ltp@lists.linux.it>; Wed, 19 Aug 2026 16:17:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1787156225; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1787156224; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=8AsXS3fJxZ1xatW44btcICV/VFqKwVLN9oD1Bz+tXbA=;
- b=DNgOXxnqhIo/ovRXbDVVgpvAT4buIzTlyL5tIQKjbmg6TQQs9zFdSNYP8oUl7TDJQy00gc
- u1mN8ywZrS3FXiyp8DE1Jf6EYcmjfhAB6SV9Xk+klMw/QlXmwcPN3WeFVN+djdfIFw4Icv
- WkpjHEuUMUWD2U93RPqiu9rvnUBEqxw=
+ bh=hwT741BvgMJyi14FSiibVseo2DOO3RNFQfAqgnNf9Dw=;
+ b=y1ui3KV0j8fdgpgg1XgZ+k2hpqqui0scTMeLW6mLtXA8OBDIqwuEzl3HU9egnk6fb/xQgI
+ Rg/6polCUT4y0fUT0ycAr+EMiDTI3kqtnvIjenmxG2/EM6RrgMKx7Lr98jFZonEj8Tv6ze
+ lEilyfmhVxpyQ8JxMP44LZmkZpzs8wI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1787156225;
+ s=susede2_ed25519; t=1787156224;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=8AsXS3fJxZ1xatW44btcICV/VFqKwVLN9oD1Bz+tXbA=;
- b=cXCotD3kA+V+G2bikTyfd8NZRd9My6Bxc+nT7ppo8gRO9XBTfEfeWpoF40B7SelDKMyNw8
- 60iwsr06wdOKoPDQ==
+ bh=hwT741BvgMJyi14FSiibVseo2DOO3RNFQfAqgnNf9Dw=;
+ b=frQmsvu+5x61ix/mfRGro8ybEnunMZ5PZag9lv5rqHWMA0IgphLJOsqPd3eCTOigGBDX1T
+ 5P7oXR7OczivXrCw==
 Authentication-Results: smtp-out1.suse.de;
-	none
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=sBHADpWY;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=hgQ3ONhH
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1787156221; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1787156220; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=8AsXS3fJxZ1xatW44btcICV/VFqKwVLN9oD1Bz+tXbA=;
- b=C2KHvcSjRxmsN8m7ZOR4R9BdzosnaFW3IeNvoMDjP7QyWe1j7zVWLWuDBtoFw8pHhiuxgu
- tdJofxhwgzk6hbpC8rlTK9HsZJNM3Bkt4ABpf1Rp6fzFT7F9oPv8KNn0J8EmOjxbA8ew4T
- u4loWP+kqCEs5TLtXp4TpDQSybXQ+vA=
+ bh=hwT741BvgMJyi14FSiibVseo2DOO3RNFQfAqgnNf9Dw=;
+ b=sBHADpWYzoFhGefsfcVxMMElvkIKXsajCBgsFaYatsz+BFHtR8JiSbboCplj9p2XNcd5Uo
+ zjPJVNSkxKH86PbzSqJ9bA9yRrzFC/6sLYHgvVrpU+o7aqKBewKB8fXkAFPuSBAAE6Wcmy
+ wHziUNtkY1XXsEkWA+6PvD3DnRccyfI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1787156221;
+ s=susede2_ed25519; t=1787156220;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=8AsXS3fJxZ1xatW44btcICV/VFqKwVLN9oD1Bz+tXbA=;
- b=7MjoqpsEiYEljcftPW4L1i/iRJXO9wzQ/FWwSmCfFxGh4K5y+dv5z4LD2ScuGBfttqC3Z0
- 5HlTItUsoa2DeRBA==
+ bh=hwT741BvgMJyi14FSiibVseo2DOO3RNFQfAqgnNf9Dw=;
+ b=hgQ3ONhHtw8IfUt6hXsrqugFlmMen2AzNYDJf1pHcyBNzPfe2owftvhUyLP+rbErVdyeXT
+ ZwYjOIpsg9gJXfDQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 434CF367D
- for <ltp@lists.linux.it>; Wed, 19 Aug 2026 16:17:01 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 77133367A
+ for <ltp@lists.linux.it>; Wed, 19 Aug 2026 16:17:00 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 9vOCD/3WhWq9cwAAD6G6ig
+ by imap1.dmz-prg2.suse.org with ESMTPSA id Jj9IG/zWhWq3cwAAD6G6ig
  (envelope-from <chrubis@suse.cz>)
- for <ltp@lists.linux.it>; Wed, 19 Aug 2026 16:17:01 +0000
+ for <ltp@lists.linux.it>; Wed, 19 Aug 2026 16:17:00 +0000
 From: Cyril Hrubis <chrubis@suse.cz>
 To: ltp@lists.linux.it
-Date: Wed, 19 Aug 2026 18:16:31 +0200
-Message-ID: <20260819161634.1341577-29-chrubis@suse.cz>
+Date: Wed, 19 Aug 2026 18:16:29 +0200
+Message-ID: <20260819161634.1341577-27-chrubis@suse.cz>
 X-Mailer: git-send-email 2.54.0
 In-Reply-To: <20260819161634.1341577-1-chrubis@suse.cz>
 References: <20260819161634.1341577-1-chrubis@suse.cz>
 MIME-Version: 1.0
-X-Spamd-Result: default: False [-2.79 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
- R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.19)[-0.951];
- MIME_GOOD(-0.10)[text/plain]; ARC_NA(0.00)[];
- RCPT_COUNT_ONE(0.00)[1]; RCVD_VIA_SMTP_AUTH(0.00)[];
- MIME_TRACE(0.00)[0:+];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: 87EB884C13
+X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_CONTAINS_FROM(1.00)[];
+ R_MISSING_CHARSET(0.50)[];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-0.998]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ FROM_EQ_ENVFROM(0.00)[]; ARC_NA(0.00)[]; FROM_HAS_DN(0.00)[];
+ RCPT_COUNT_ONE(0.00)[1];
  PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:email,suse.cz:mid];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- TO_DN_NONE(0.00)[]; RCVD_TLS_ALL(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+ RCVD_TLS_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:mid,suse.cz:email,suse.cz:dkim];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ TO_DN_NONE(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ MIME_TRACE(0.00)[0:+]; DKIM_TRACE(0.00)[suse.cz:+]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 28/31] testcases: sysfs: Add sys_hugepages02
+Subject: [LTP] [PATCH v2 26/31] testcases: sysfs: Add sys_block_size01
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -114,121 +125,140 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-A test for /sys/kernel/mm/hugepages/* files.
+A test for /sys/block/*/{ro, size} files.
 
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- runtest/sysfs                                 |  1 +
- .../sysfs/kernel/mm/hugepages/.gitignore      |  1 +
- .../kernel/mm/hugepages/sys_hugepages02.c     | 84 +++++++++++++++++++
- 3 files changed, 86 insertions(+)
- create mode 100644 testcases/kernel/sysfs/kernel/mm/hugepages/sys_hugepages02.c
+ runtest/sysfs                                 |   1 +
+ testcases/kernel/sysfs/block/.gitignore       |   1 +
+ .../kernel/sysfs/block/sys_block_size01.c     | 102 ++++++++++++++++++
+ 3 files changed, 104 insertions(+)
+ create mode 100644 testcases/kernel/sysfs/block/sys_block_size01.c
 
 diff --git a/runtest/sysfs b/runtest/sysfs
-index a81fbc12e..ec38d8b44 100644
+index f7d35e0c2..46593b82f 100644
 --- a/runtest/sysfs
 +++ b/runtest/sysfs
-@@ -23,3 +23,4 @@ sys_block_loop01 sys_block_loop01
+@@ -21,3 +21,4 @@ sys_net03 sys_net03
+ sys_net04 sys_net04
+ sys_block_loop01 sys_block_loop01
  sys_block_queue01 sys_block_queue01
- sys_block_size01 sys_block_size01
- sys_hugepages01 sys_hugepages01
-+sys_hugepages02 sys_hugepages02
-diff --git a/testcases/kernel/sysfs/kernel/mm/hugepages/.gitignore b/testcases/kernel/sysfs/kernel/mm/hugepages/.gitignore
-index 1c66028fb..1bebeb2c0 100644
---- a/testcases/kernel/sysfs/kernel/mm/hugepages/.gitignore
-+++ b/testcases/kernel/sysfs/kernel/mm/hugepages/.gitignore
-@@ -1 +1,2 @@
- /sys_hugepages01
-+/sys_hugepages02
-diff --git a/testcases/kernel/sysfs/kernel/mm/hugepages/sys_hugepages02.c b/testcases/kernel/sysfs/kernel/mm/hugepages/sys_hugepages02.c
++sys_block_size01 sys_block_size01
+diff --git a/testcases/kernel/sysfs/block/.gitignore b/testcases/kernel/sysfs/block/.gitignore
+index c7011b79f..9fd4a1d82 100644
+--- a/testcases/kernel/sysfs/block/.gitignore
++++ b/testcases/kernel/sysfs/block/.gitignore
+@@ -1,2 +1,3 @@
+ /sys_block_loop01
+ /sys_block_queue01
++/sys_block_size01
+diff --git a/testcases/kernel/sysfs/block/sys_block_size01.c b/testcases/kernel/sysfs/block/sys_block_size01.c
 new file mode 100644
-index 000000000..29d89d491
+index 000000000..f974be9aa
 --- /dev/null
-+++ b/testcases/kernel/sysfs/kernel/mm/hugepages/sys_hugepages02.c
-@@ -0,0 +1,84 @@
++++ b/testcases/kernel/sysfs/block/sys_block_size01.c
+@@ -0,0 +1,102 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
 + * Copyright (c) 2026 Cyril Hrubis <chrubis@suse.cz>
 + */
 +
 +/*\
-+ * Cross-checks the default hugepage pool in sysfs against /proc/meminfo.
++ * Cross-checks the block device size reported in sysfs against /proc/partitions.
 + *
-+ * /proc/meminfo describes the default hugepage size pool, which corresponds to
-+ * one of the hugepages-<size>kB directories under /sys/kernel/mm/hugepages/.
-+ * The test verifies that for the default pool:
++ * /sys/block/<dev>/size holds the device size in 512 byte sectors while
++ * /proc/partitions lists the size in 1024 byte blocks. For every whole block
++ * device the test verifies that:
 + *
-+ * - Hugepagesize in /proc/meminfo matches the default pool directory size
-+ * - HugePages_Total matches nr_hugepages
-+ * - HugePages_Free matches free_hugepages
-+ * - HugePages_Rsvd matches resv_hugepages
-+ * - HugePages_Surp matches surplus_hugepages
++ * - the two sources agree, i.e. sysfs_size_in_sectors / 2 == proc_blocks
++ * - the ro (read-only) attribute is a boolean
 + *
-+ * The test skips with TCONF when hugepages are not available.
++ * The test skips with TCONF when a device is not present in /proc/partitions
++ * (for example device-mapper devices that are only listed under /sys/block).
 + */
 +
 +#include <stdio.h>
-+#include <limits.h>
++#include <string.h>
++#include <dirent.h>
 +#include "tst_test.h"
++#include "tst_safe_stdio.h"
 +#include "tst_sysfs_assert.h"
 +
-+#define HUGEPAGES "/sys/kernel/mm/hugepages"
++#define SYS_BLOCK "/sys/block"
 +
-+static void compare(const char *what, const char *meminfo_key, const char *attr,
-+		    long hugepagesize)
++static int proc_partition_blocks(const char *dev, long long *blocks)
 +{
-+	char path[PATH_MAX];
-+	long meminfo_val, sysfs_val;
++	FILE *f;
++	char line[4096];
++	int found = 0;
 +
-+	SAFE_FILE_LINES_SCANF("/proc/meminfo", meminfo_key, &meminfo_val);
++	f = SAFE_FOPEN("/proc/partitions", "r");
 +
-+	snprintf(path, sizeof(path), HUGEPAGES "/hugepages-%ldkB/%s",
-+		 hugepagesize, attr);
-+	SAFE_FILE_SCANF(path, "%ld", &sysfs_val);
++	while (fgets(line, sizeof(line), f)) {
++		long long nblocks;
++		char name[256];
 +
-+	if (meminfo_val == sysfs_val) {
-+		tst_res(TPASS, "%s: /proc/meminfo (%ld) == %s (%ld)",
-+			what, meminfo_val, attr, sysfs_val);
++		if (sscanf(line, "%*u %*u %lld %255s", &nblocks, name) != 2)
++			continue;
++
++		if (!strcmp(name, dev)) {
++			*blocks = nblocks;
++			found = 1;
++			break;
++		}
++	}
++
++	SAFE_FCLOSE(f);
++
++	return found;
++}
++
++static void check_device(const char *dev)
++{
++	long long sectors, proc_blocks;
++
++	tst_res(TINFO, "Checking block device '%s'", dev);
++
++	TST_SYSFS_ASSERT_BOOL(SYS_BLOCK "/%s/ro", dev);
++
++	if (!proc_partition_blocks(dev, &proc_blocks)) {
++		tst_res(TCONF, "%s not listed in /proc/partitions", dev);
++		return;
++	}
++
++	sectors = TST_SYSFS_READ_LLI(SYS_BLOCK "/%s/size", dev);
++
++	/* sysfs size is in 512 byte sectors, /proc/partitions in 1024 byte blocks */
++	if (sectors / 2 == proc_blocks) {
++		tst_res(TPASS,
++			"%s: sysfs size %lld sectors matches /proc/partitions %lld blocks",
++			dev, sectors, proc_blocks);
 +	} else {
-+		tst_res(TFAIL, "%s: /proc/meminfo (%ld) != %s (%ld)",
-+			what, meminfo_val, attr, sysfs_val);
++		tst_res(TFAIL,
++			"%s: sysfs size %lld sectors (/2 = %lld) != /proc/partitions %lld blocks",
++			dev, sectors, sectors / 2, proc_blocks);
 +	}
 +}
 +
 +static void do_test(void)
 +{
-+	long hugepagesize;
++	DIR *d;
++	struct dirent *ent;
 +
-+	SAFE_FILE_LINES_SCANF("/proc/meminfo", "Hugepagesize: %ld",
-+			      &hugepagesize);
++	d = SAFE_OPENDIR(SYS_BLOCK);
 +
-+	if (!tst_sysfs_exists(HUGEPAGES "/hugepages-%ldkB", hugepagesize)) {
-+		tst_res(TCONF,
-+			"Default hugepage pool hugepages-%ldkB not found in sysfs",
-+			hugepagesize);
-+		return;
++	while ((ent = SAFE_READDIR(d))) {
++		if (ent->d_name[0] == '.')
++			continue;
++
++		check_device(ent->d_name);
 +	}
 +
-+	tst_res(TPASS,
-+		"/proc/meminfo Hugepagesize (%ld kB) has a matching sysfs pool",
-+		hugepagesize);
-+
-+	compare("HugePages_Total", "HugePages_Total: %ld",
-+		"nr_hugepages", hugepagesize);
-+	compare("HugePages_Free", "HugePages_Free: %ld",
-+		"free_hugepages", hugepagesize);
-+	compare("HugePages_Rsvd", "HugePages_Rsvd: %ld",
-+		"resv_hugepages", hugepagesize);
-+	compare("HugePages_Surp", "HugePages_Surp: %ld",
-+		"surplus_hugepages", hugepagesize);
++	SAFE_CLOSEDIR(d);
 +}
 +
 +static struct tst_test test = {
 +	.test_all = do_test,
-+	.needs_kconfigs = (const char *const[]){
-+		"CONFIG_HUGETLBFS=y",
-+		NULL
-+	},
 +};
 -- 
 2.54.0
