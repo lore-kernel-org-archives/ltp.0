@@ -4,107 +4,98 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0CEE3C5DF88
-	for <ltp@archiver.kernel.org>; Wed, 19 Aug 2026 16:11:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1787155877; h=to : date :
- message-id : mime-version : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : cc : content-type : content-transfer-encoding : sender :
- from; bh=nw7emCrXD/ShsMur7lUzdZrGUWexNdXgHBZvwtog0IE=;
- b=e4iY2S0hEOOzgr+IBIvRX7zeIG19zK6KsbUAydQMoPgd2kqubRj0aPJDGpTaefaKeV4GY
- K2WCIOj78TZELLJc5eMjKYGdMd3KtkZpHIvhMnchUb3UhEoPxHtTqjROIsmn9rkdbAldJPR
- /F4Zc9QXHqHeW/LVfHXrbQrQ+/YR6fM=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 89242C5DF85
+	for <ltp@archiver.kernel.org>; Wed, 19 Aug 2026 16:14:01 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 092D03CD674
-	for <ltp@archiver.kernel.org>; Wed, 19 Aug 2026 18:11:17 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id C50BA3CB738
+	for <ltp@archiver.kernel.org>; Wed, 19 Aug 2026 18:13:59 +0200 (CEST)
 Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 115A73C0031
- for <ltp@lists.linux.it>; Wed, 19 Aug 2026 18:10:57 +0200 (CEST)
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
- [148.163.156.1])
+ by picard.linux.it (Postfix) with ESMTPS id E1A983C56FF
+ for <ltp@lists.linux.it>; Wed, 19 Aug 2026 18:13:43 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 5E45620092D
- for <ltp@lists.linux.it>; Wed, 19 Aug 2026 18:10:55 +0200 (CEST)
-Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id
- 67JF1XrV3801360
- for <ltp@lists.linux.it>; Wed, 19 Aug 2026 16:10:54 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
- :content-transfer-encoding:date:from:message-id:mime-version
- :subject:to; s=pp1; bh=COh8LBWnAJIZYal94Wp804JVvl6srEx+O6JGL4Veg
- Ys=; b=O2FXMw8Med4IpS3GVrJHwE4tPkfKfAK2Td386SU69ADZFC/9uRPcJJnap
- 1/OD0H1dML3YGR6C2zTNi0rWSMreASTu8hCwN5FbiQWMduBRqXx0AP/tGMJuHD+t
- tkphpdGhQ8nkSvDxra2eSZ6u7Mw/DcauT2GbLkm0idwcWRNi69uBvdiVSQF1USLh
- 4WSwQRU6Fuflsra1Ep/zeez/md58hdPFzckTwLUqxcvfqHBzNlrMqAGYgsfqXUYb
- rsoqICdBRlRA7BLNg9amvB3jUQOcQA1kZjaXrX+GpfMuUI2QETK7Rkn0Kd+yH2x0
- 5KeLEadFvR3mifSD5wnSPN5XNYQ6A==
-Received: from ppma11.dal12v.mail.ibm.com
- (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4g4yu0cva9-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
- for <ltp@lists.linux.it>; Wed, 19 Aug 2026 16:10:53 +0000 (GMT)
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
- by ppma11.dal12v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 67JFuJCa024956
- for <ltp@lists.linux.it>; Wed, 19 Aug 2026 16:10:53 GMT
-Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
- by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 4g354yhhdb-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
- for <ltp@lists.linux.it>; Wed, 19 Aug 2026 16:10:53 +0000 (GMT)
-Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com
- [10.20.54.104])
- by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 67JGApZB47579414
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Wed, 19 Aug 2026 16:10:51 GMT
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 419A02004B;
- Wed, 19 Aug 2026 16:10:51 +0000 (GMT)
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 62A3C20043;
- Wed, 19 Aug 2026 16:10:49 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.61.249.249])
- by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTP;
- Wed, 19 Aug 2026 16:10:48 +0000 (GMT)
-To: ltp@lists.linux.it
-Date: Wed, 19 Aug 2026 21:40:32 +0530
-Message-ID: <20260819161032.1883-1-sowmya.indranna@ibm.com>
-X-Mailer: git-send-email 2.48.1.windows.1
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id DE31420092D
+ for <ltp@lists.linux.it>; Wed, 19 Aug 2026 18:13:42 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 49F3384C04;
+ Wed, 19 Aug 2026 16:13:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1787156017; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=9U0hWNgGP/m2SCThWYyrQnsKJR2ne1cvXesNPWZqW+Q=;
+ b=zSPvsmyj2gYxKS0c0xKVVzX+P4G6UGIQHphtiSBxcDLEAKRV3/Rl1NiqjnvlcJxm3R1xwQ
+ QZ7Pzp5BiPdjHXNEIJlrqv56dvvOEj3dqxjlWf4+Z6rPnFdVFrey6ef8bxCr4yTIab1lEx
+ eb8Wv5P9frfqHsXJHwLV7RtUqR6m1s0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1787156017;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=9U0hWNgGP/m2SCThWYyrQnsKJR2ne1cvXesNPWZqW+Q=;
+ b=/hW1ZE37hqP31DV58herUaS62rzOWZ8o5Zbng6l7qy9fugPoZjThmGgGUH9nkSFFxYV2Ej
+ 1krR8o39b/LWtvDg==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1787156013; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=9U0hWNgGP/m2SCThWYyrQnsKJR2ne1cvXesNPWZqW+Q=;
+ b=HrDe0jZPd9ejXFjs3kpimbNA2tbEUJ9+bAOo3z45yzdzIGx/4/RDeSsLno2FgV1E1IA6bm
+ FOzxHydlxR6CrmGGz+3CeHW3Gtd6D/ntQQ6jY0LbhlVAyN/4SwUVXGOc0D/cbkcfS4y8V8
+ md3dV3vS7XIqYj4o7nmfdnYYymj1Hy8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1787156013;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=9U0hWNgGP/m2SCThWYyrQnsKJR2ne1cvXesNPWZqW+Q=;
+ b=gZlu3oe6Vp8jV6y7YXHZHfy3gH07M7HNRFlvT5RFb8n7GQHQW6+4q57jnSA5a+xdfvLO8G
+ iBhVpckQ1dg1eGAw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3527F2F81;
+ Wed, 19 Aug 2026 16:13:33 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id WkwPDC3WhWq7bwAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Wed, 19 Aug 2026 16:13:33 +0000
+Date: Wed, 19 Aug 2026 18:13:29 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: linuxtestproject.agent@gmail.com
+Message-ID: <aoXWKZtN_Ei2xkxb@yuki.lan>
+References: <20260818141311.1265557-4-chrubis@suse.cz>
+ <20260818145413.9648-1-linuxtestproject.agent@gmail.com>
 MIME-Version: 1.0
-X-TM-AS-GCONF: 00
-X-Authority-Analysis: v=2.4 cv=MthiLWae c=1 sm=1 tr=0 ts=6a85d58e cx=c_pps
- a=aDMHemPKRhS1OARIsFnwRA==:117 a=aDMHemPKRhS1OARIsFnwRA==:17
- a=Sv0fKeRqtYgA:10 a=VkNPw1HP01LnGYTKEx00:22 a=RnoormkPH1_aCDwRdu11:22
- a=U7nrCbtTmkRpXpFmAIza:22 a=VnNF1IyMAAAA:8 a=kpXN9IyGNGJCk1MaLTEA:9
-X-Proofpoint-ORIG-GUID: HrDPuoH8eqMnDjCMJtWE8hwGjMHwvTR-
-X-Proofpoint-GUID: HrDPuoH8eqMnDjCMJtWE8hwGjMHwvTR-
-X-Proofpoint-Spam-Info: AW1haW4tMjYwODE5MDEyNSBTYWx0ZWRfX83SUI5pwEyhN
- DmxxuxyIxDW3Tkz1DCJGxyNlkhUgRyv4/xzsT+t3ytAm8ErptlP9+nImPJk//ESEkRFwix2XlHx
- OXcgHHH1HOigIZHCXElXy2o/elNMj6g=
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwODE5MDEyNSBTYWx0ZWRfX57wRu3ZY4pkp
- cjuJAlsapibEv+KwEja7YmKECV+O7UBP3wIjzQyW5zJI3t+y5izMQPneJdtfO+6LjygRqPjZQQf
- S1CXVNfh7bV+LaXhGBhTLRBwPbPzwkAkpHmLIwzcJeT0yWCDkTJXrxiIskB2hV7EldZ7lAnfBQx
- Z/wVRvP+uAgihe24DkiOGR9Ux+hgBuU3/eh/3HEZ5LKC6jFo3JC6XXGEaaP8Cymns/UaQriM8nn
- 3JrjlwutVvpYWtGxSduQ+9Oxtox5sTkWpMYDunBpVbX7sRG8jqotZrkSneClrH0PQv8FRkm23As
- fDeRTJF9Vmd+BD8NKWz5xWAnomOFn3m02UHocj09Bxe0lQADdekaKT3UB/XAcXCkxYcFxQV5yNu
- FJ/XRwM42igfUypEWigMkBOdxqyRxk33BBofruBlzOkaBStj5uDACdgi2ioUlVsvcWACtop0QKH
- odcx1LxRCZlPLpUwvcg==
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1176,Hydra:6.1.134,FMLib:17.12.100.49
- definitions=2026-08-19_04,2026-08-19_02,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- malwarescore=0 impostorscore=0 bulkscore=0 phishscore=0 clxscore=1011
- spamscore=0 adultscore=0 lowpriorityscore=0 priorityscore=1501 suspectscore=0
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.22.0-2606150000 definitions=main-2608190125
+Content-Disposition: inline
+In-Reply-To: <20260818145413.9648-1-linuxtestproject.agent@gmail.com>
+X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ NEURAL_HAM_SHORT(-0.20)[-0.980]; MIME_GOOD(-0.10)[text/plain];
+ FREEMAIL_TO(0.00)[gmail.com]; RCPT_COUNT_TWO(0.00)[2];
+ TAGGED_RCPT(0.00)[]; ARC_NA(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; MISSING_XM_UA(0.00)[];
+ FREEMAIL_ENVRCPT(0.00)[gmail.com];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
+ FROM_HAS_DN(0.00)[]; MIME_TRACE(0.00)[0:+];
+ RCVD_TLS_ALL(0.00)[]; TO_DN_NONE(0.00)[];
+ RCVD_COUNT_TWO(0.00)[2];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:email]
 X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] fs: Add fsplough entries to runtest
+Subject: Re: [LTP] lib: Add tst_sysfs_assert
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -116,43 +107,355 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Sowmya Indranna via ltp <ltp@lists.linux.it>
-Reply-To: sowmya.indranna@ibm.com
-Cc: Sowmya Indranna <sowmya.indranna@ibm.com>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Sowmya Indranna <sowmya.indranna@ibm.com>
+Hi!
+> > [PATCH 01/31] lib: Add tst_sysfs_assert
+> 
+> Most commit bodies in patches 1-20 and 25-31 only restate what the subject
+> already says. Could they explain why the coverage or API is needed?
 
-The fsplough tests are present in the source tree but are not referenced in runtest/fs. As a result, kirk is unable to select or execute these tests and reports:
+I do not think that this is really needed. This information is in the
+top level comment of each test. I do not see a reason to copy&paste it
+into the commit description.
 
-Error: No tests selected
+> Patch 1 also has the typo "testscases", and the subjects of patches 14
+> and 15 do not say that a test is being added.
 
-Add the missing fsplough entries to runtest/fs so that the tests are included in the standard LTP test selection and execution workflow.
+Will fix.
 
-Signed-off-by: Sowmya Indranna <sowmya.indranna@ibm.com>
----
- runtest/fs | 2 ++
- 1 file changed, 2 insertions(+)
+> --- [PATCH 1/31] ---
+> 
+> > 	size = read_file(path, buf, sizeof(buf));
+> > 	...
+> > 	map = SAFE_CALLOC(max_id / 8 + 1, 1);
+> > 	size = read_file(path, buf, sizeof(buf));
+> > 	...
+> > 	return parse_list(path, buf, size, count, max_id, map);
+> 
+> Could the list be read once, or could parse_list() receive and enforce the
+> allocated bitmap size? A dynamic list such as CPU online can gain a higher
+> ID between these reads, after which parse_list() writes beyond map.
 
-diff --git a/runtest/fs b/runtest/fs
-index e45fba14b..36868f638 100644
---- a/runtest/fs
-+++ b/runtest/fs
-@@ -82,6 +82,8 @@ isofs isofs.sh
- 
- fs_fill fs_fill
- 
-+fsplough fsplough
-+
- binfmt_misc01 binfmt_misc01.sh
- binfmt_misc02 binfmt_misc02.sh
- 
+CPU hotplug during the testrun would break the assertions we have either
+way. It must not happen when the test is running.
+
+> --- [PATCH 6/31] ---
+> 
+> > 	TST_SYSFS_ASSERT_PARSE_LIST(&count, &max_id, SYS_CPU "/online");
+> > 	...
+> > 	while (fgets(line, sizeof(line), f)) {
+> > 		if (sscanf(line, "cpu%u ", &cpu) == 1)
+> > 			cpu_count++;
+> > 	}
+> 
+> Could this retry unless the online list is stable around the /proc/stat
+> read? CPU hotplug between these independent snapshots produces different
+> counts even when both interfaces are correct.
+
+Again, CPU hotplug must not happen during the testrun.
+
+> --- [PATCH 7/31] ---
+> 
+> > 	snprintf(sub, sizeof(sub),
+> > 		 SYS_CPU "/cpu%d/topology/package_cpus_list", cpu);
+> > 	TST_SYSFS_ASSERT_LIST_SUBSET(sub, SYS_CPU "/online");
+> 
+> Could package_cpus_list be compared with possible/present instead? Topology
+> sibling masks can contain offline CPUs, so normal CPU hotplug makes this
+> assertion fail.
+
+Right, "present" should be better here.
+
+> > 	for (cpu = 0; cpu <= max_id; cpu++)
+> > 		check_cpu_topology(cpu, poss_max_id);
+> 
+> Could this iterate the parsed online mask rather than every ID through its
+> maximum? CPU IDs can have offline holes.
+
+I do not see a reason, we properly skip the checks in
+check_cpu_topology() if the .../cpu%d/toplogy/ does not exist.
+
+> > 	TST_SYSFS_ASSERT_RANGELL(0, poss_max_id,
+> > 			       SYS_CPU "/cpu%d/topology/physical_package_id",
+> > 			       cpu);
+> 
+> Could this accept -1? The generic topology implementation exports that
+> sentinel when an architecture does not provide a physical package ID.
+
+Sure, will fix.
+
+> --- [PATCH 9/31] ---
+> 
+> > static const char *const control_allowed[] = {
+> > 	"on", "off", "forceoff", "notsupported", "notimplemented", NULL
+> > };
+> 
+> Could this also parse the numeric control form? Linux 7.2 returns the active
+> thread count as a decimal value when partial SMT is enabled.
+
+Fixed as well.
+
+> --- [PATCH 11/31] ---
+> 
+> > 	while ((ent = SAFE_READDIR(d))) {
+> > 		if (strncmp(ent->d_name, "clockevent", 10))
+> > 			continue;
+> >
+> > 		nclockevents++;
+> > 		check_clockevent(ent->d_name);
+> > 	}
+> > 	...
+> > 	if (nclockevents <= online_count) {
+> 
+> Could this validate only clockevent entries for online CPUs? Linux 7.2
+> registers clockeventN for every possible CPU, and current_device can be empty
+> for an offline CPU. Counting all entries against online CPUs therefore fails
+> on systems with offline CPUs.
+
+Fixed.
+
+> --- [PATCH 12/31] ---
+> 
+> > 	d = SAFE_OPENDIR(ATA);
+> 
+> Could the class directory be checked before SAFE_OPENDIR()? Without libata,
+> its absence currently produces TBROK rather than the documented TCONF.
+> 
+> The same ordering appears for /sys/class/hwmon in patch 14,
+> /sys/class/leds in patch 15, /sys/class/wakeup in patch 16,
+> /sys/class/rtc in patch 17, and /sys/class/thermal in patch 18. Could those
+> also return TCONF when the corresponding class is unavailable?
+
+Fixed.
+
+> --- [PATCH 13/31] ---
+> 
+> > 	min_bytes = TST_SYSFS_READ_LI(BDI "/%s/min_bytes", name);
+> > 	max_bytes = TST_SYSFS_READ_LI(BDI "/%s/max_bytes", name);
+> 
+> Could these use an unsigned 64-bit parser? Linux 7.2 exports both attributes
+> as u64, so valid values above LONG_MAX are rejected or misparsed, especially
+> on 32-bit systems.
+
+I'm looking at path 13/31 and this code is not even there.
+
+There is only:
+
+>       max_bytes = TST_SYSFS_READ_LI(BDI_CLASS "/%s/max_bytes", id);
+
+I guess that this is a hallucination. I can make the max_bytes 64bit
+though.
+
+> --- [PATCH 14/31] ---
+> 
+> > 	TST_SYSFS_ASSERT_RANGELL(0, 1000000, HWMON "/%s/temp%d_input",
+> > 			       hwmon, nr);
+> > 	...
+> > 	if (min > max)
+> > 		tst_res(TFAIL, "temp%d_min (%ld) > temp%d_max (%ld)",
+> > 			nr, min, nr, max);
+> 
+> What kernel ABI guarantees these plausibility ranges and threshold
+> orderings? Hwmon values and writable thresholds are device-specific, and
+> the kernel does not enforce these policies. Valid hardware or configuration
+> can therefore fail the test.
+
+Fair enough, I've dropped these checks.
+
+> --- [PATCH 16/31] ---
+> 
+> > 		TST_SYSFS_ASSERT_RANGELL(0, LONG_MAX, WAKEUP "/%s/%s",
+> > 				       name, counters[i]);
+> 
+> Could these counters use an unsigned-long parser? Linux 7.2 exports them with
+> "%lu", so a valid counter above LONG_MAX false-fails on 32-bit systems.
+
+I've switched the helpers to long long, that allows us to pass ULONG_MAX
+limits where needed.
+
+And also added TST_SYSFS_ASSERT_RANGEUU() that works with unsigned long
+long.
+
+> --- [PATCH 17/31] ---
+> 
+> > 	if (hctosys)
+> > 		check_system_time(rtc);
+> > 	...
+> > 	if (!hctosys_found)
+> > 		check_system_time("rtc0");
+> 
+> Could this comparison be removed or made informational? hctosys only records
+> that an RTC initialized system time at boot. NTP can subsequently correct
+> system time without updating the RTC, and rtc0 is not implicitly
+> synchronized when no hctosys attribute is set.
+
+This is all described in the test comment. I've decided to keep the
+assertion even though NTP may adjust the time.
+
+> > 	TST_SYSFS_READ_STR(date, sizeof(date), RTC "/%s/date", rtc);
+> > 	TST_SYSFS_READ_STR(time, sizeof(time), RTC "/%s/time", rtc);
+> 
+> Could this use RTC_RD_TIME or verify matching date reads around the time
+> read? A midnight rollover between these files combines the previous date
+> with the next day's time and creates a false failure of about 24 hours.
+
+I've added a retry if the rollover is detected.
+
+> --- [PATCH 19/31] ---
+> 
+> > /*
+> >  * Change the link-layer (MAC) address of an existing network device. Most
+> >  * drivers require the device to be administratively down for this to
+> >  * succeed.
+> >  */
+> > int tst_netdev_set_hwaddr(const char *file, const int lineno, int strict,
+> > 	const char *ifname, const void *addr, size_t addrlen);
+> 
+> Could the two new public APIs and their macros use kernel-doc, including
+> parameter documentation, so they are included in the generated C API
+> reference?
+
+The file is not included in documentation and there are no doc comments,
+so I decided not to add them.
+
+> --- [PATCH 20/31] ---
+> 
+> >  * - carrier is a boolean (0 or 1) when readable
+> >  *
+> >  * carrier returns an error (EINVAL) when the interface is administratively
+> >  * down, which the test tolerates.
+> 
+> Could the promised carrier check be implemented, or could this claim be
+> removed? check_iface() currently validates only type, MTU, addr_len, address,
+> and operstate.
+
+I've removed the stale comment.
+
+> --- [PATCH 23/31] ---
+> 
+> > 	SAFE_CLOSE(fd);
+> > 	read_state(state);
+> > 	assert_state("down", 0, 0, state);
+> > 	...
+> > 	fd = open_tun();
+> > 	read_state(state);
+> > 	assert_state("up", 1, 1, state);
+> 
+> Could this poll for the expected operstate with a timeout? TUN updates
+> carrier synchronously, but netdev_state_change() schedules operstate updates
+> through linkwatch. These immediate reads can still observe the previous
+> operstate.
+
+This was reported by Li as well, fixed.
+
+> --- [PATCH 24/31] ---
+> 
+> > 	if (attached) {
+> > 		tst_res(TINFO, "Autoclear did not detach the loop device");
+> > 		tst_detach_device(loopdev);
+> > 		attached = 0;
+> > 	}
+> 
+> Could attached be cleared only when the fallback detach succeeds? If
+> tst_detach_device() fails, cleanup() skips the device and the system-wide
+> loop attachment is leaked.
+
+This snippet is not present in the patchset. Looks like another
+halucination.
+
+> --- [PATCH 25/31] ---
+> 
+> > 	TST_SYSFS_ASSERT_RANGELL(0, LONG_MAX,
+> > 			       QUEUE "/%s/discard_max_bytes", dev);
+> 
+> Could discard_max_bytes use an unsigned 64-bit parser and range? The block
+> queue ABI exports an unsigned 64-bit byte count, which can exceed LONG_MAX
+> on 32-bit systems.
+
+Fixed.
+
+> > static const char *const schedulers[] = {
+> > 	"none", "mq-deadline", "kyber", "bfq", NULL
+> > };
+> 
+> Could the scheduler check validate only the bracketed single-selection
+> format? Elevators are registered dynamically, so vendor or future scheduler
+> names outside this fixed list are valid.
+
+It is expected that we will have to add new elevators into the list as
+they are added into the kernel. If that proves to be a big hassle, we
+will remove the array.
+
+> --- [PATCH 26/31] ---
+> 
+> > 	if (sscanf(line, "%u %u %*u %*s", &proc_major, &proc_minor) != 4)
+> > 		continue;
+> 
+> Could this compare the return value with 2? Assignment-suppressed conversions
+> do not count, so every valid /proc/partitions line is currently skipped and
+> the size comparison never runs.
+
+Fixed.
+
+> --- [PATCH 27/31] ---
+> 
+> > 	nr = TST_SYSFS_READ_LI(HUGEPAGES "/%s/nr_hugepages", name);
+> > 	free = TST_SYSFS_READ_LI(HUGEPAGES "/%s/free_hugepages", name);
+> > 	resv = TST_SYSFS_READ_LI(HUGEPAGES "/%s/resv_hugepages", name);
+> > 	surp = TST_SYSFS_READ_LI(HUGEPAGES "/%s/surplus_hugepages", name);
+> 
+> Could these checks retry unless surrounding pool counters are stable?
+> Allocation, reservation, or pool resizing between the separate reads can
+> violate the asserted relationships even though every individual kernel
+> snapshot is consistent.
+
+The rest of LTP tests expect that hugepage pools are not manipulated
+during their run.
+
+> --- [PATCH 28/31] ---
+> 
+> > 	proc_val = tst_read_meminfo(proc_name);
+> > 	sys_val = TST_SYSFS_READ_LI(HUGEPAGES "/%s", sys_name);
+> > 	TST_EXP_EQ_LI(proc_val, sys_val);
+> 
+> Could this compare stable snapshots or retry on a concurrent change?
+> Hugepage allocation, reservation, and pool resizing can occur between the
+> /proc and sysfs reads, producing a false mismatch.
+
+Here as well.
+
+> --- [PATCH 29/31] ---
+> 
+> > 	for (i = 0; i < ARRAY_SIZE(nonneg_counters); i++) {
+> > 		TST_SYSFS_ASSERT_RANGELL(0, LONG_MAX, KSM "/%s",
+> > 				       nonneg_counters[i]);
+> > 	}
+> 
+> Could pages_to_scan and the page counters use parsers matching their unsigned
+> kernel types? Linux 7.2 exports pages_to_scan as unsigned int and the counters
+> as unsigned long, so valid values above LONG_MAX false-fail on 32-bit systems.
+
+Fixed.
+
+> --- [PATCH 30/31] ---
+> 
+> > +sys_swap01 sys_swap01
+> 
+> > +++ b/testcases/kernel/sysfs/kernel/mm/swap/sys_mm_swap01.c
+> 
+> Could the source/binary and runtest names be made consistent? This builds
+> sys_mm_swap01, while runtest invokes the nonexistent sys_swap01.
+
+Fixed.
+
 -- 
-2.48.1.windows.1
-
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
