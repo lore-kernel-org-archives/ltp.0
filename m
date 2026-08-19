@@ -4,108 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AE78DC5B572
-	for <ltp@archiver.kernel.org>; Wed, 19 Aug 2026 21:29:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2A4B7C5B572
+	for <ltp@archiver.kernel.org>; Wed, 19 Aug 2026 22:28:08 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 53BEE3CE11E
-	for <ltp@archiver.kernel.org>; Wed, 19 Aug 2026 23:29:02 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 82D413CD682
+	for <ltp@archiver.kernel.org>; Thu, 20 Aug 2026 00:28:06 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0A01B3CD718
- for <ltp@lists.linux.it>; Wed, 19 Aug 2026 23:24:47 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id ECE9A3CD537
+ for <ltp@lists.linux.it>; Thu, 20 Aug 2026 00:27:50 +0200 (CEST)
+Received: from mail-pz2-x01.google.com (mail-pz2-x01.google.com
+ [IPv6:2607:f8b0:4864:3b::1])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 921631400DAC
- for <ltp@lists.linux.it>; Wed, 19 Aug 2026 23:24:46 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 9D5763EF2;
- Wed, 19 Aug 2026 21:24:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1787174680; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=H2/ccMF0gHp8uIiDfMtrCSTHDuuLBeEPpI9/01ns5Ew=;
- b=tXuqbrzRCd2OWLKkk5Swo2ZISUXjEHaKxnYNRtA5TDiSPoykRyyEAFrvPbI6HMoDgl2onM
- 9ht0JMnMWF6LPR2KfgdpxheNEjA+2hXn1nZ0MLnWITm9raUVlL239bkADlP11kA2993D9q
- XDu4FIEgyRSVDqDBMBKri/g6aNR+jYA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1787174680;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=H2/ccMF0gHp8uIiDfMtrCSTHDuuLBeEPpI9/01ns5Ew=;
- b=PoERzT3TgOMY/aD+GbcDmavme11+u6A+ej7ovOGbgV5j33urlQUtI46GJDmNBbiz09srlL
- OXzWcoioaCiUF5Dg==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1787174676; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=H2/ccMF0gHp8uIiDfMtrCSTHDuuLBeEPpI9/01ns5Ew=;
- b=ZhsxlBxNhoT4v+hHBC7DEWBKvV1GTLR68puyNPE+nh7fw6AjNDXrl5ZL9OXsUB6LMl0tDV
- mqO5w5r1nA1ZCE+qqEvZMwC7rjsyGwQuJKB1QbEnKKcs32tidQmqj0sKmbjc12kNcjKoNT
- JyEucgvnPDNXa2KGsak/+O+GLrT27Wk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1787174676;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=H2/ccMF0gHp8uIiDfMtrCSTHDuuLBeEPpI9/01ns5Ew=;
- b=nWSCGvris9n6yvf6xTQ4nbU+r6YqcUjTViVh74yqFEtk2YWAj1kQlrdJxOAZPc0FuDuPRj
- A55WkbGYe7gi+UDg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 36AD23689;
- Wed, 19 Aug 2026 21:24:24 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id iE83CggfhmqSGwAAD6G6ig
- (envelope-from <andrea.cervesato@suse.de>); Wed, 19 Aug 2026 21:24:24 +0000
-From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Wed, 19 Aug 2026 23:24:31 +0200
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 308B160084E
+ for <ltp@lists.linux.it>; Thu, 20 Aug 2026 00:27:50 +0200 (CEST)
+Received: by mail-pz2-x01.google.com with SMTP id
+ 41be03b00d2f7-ca00ea47337so538838a12.0
+ for <ltp@lists.linux.it>; Wed, 19 Aug 2026 15:27:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20251104; t=1787178468; x=1787783268; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to:content-type;
+ bh=zMmU8bBVQYRHXFCSRreB5N0SCqWzQrFqmxPcX/FSaYk=;
+ b=Bdz4RC/ZXSHyXbLk/umDy1QclPSwa0kaJoxpfklklqRH29VQOUQqYK5Ze16Ub97uup
+ cr+DQgNcjZzrMNAJjseE/EH+6EeEklFQq9BW+/YqMMtWvTks5oRqmaR5u6atkeWvn308
+ PuPkz8Q5A7Af5HBxjXNji/pE5n75uLCAwstWEHuVTT1/Ydl4edKdGZv5RLdAL1av56Yh
+ 8mr4pQyzKdO1IdUzYvuau8wMH3Llbs9aBhYtYQE7KoYhqrZxMcIjcobTeB7NzW013lts
+ eneAnRFsACI2kBzwzIj3nS6CPf+PDRGBGwq41PnEg2uum+vgTUiNfQm6UVpb4iyx5iym
+ 4C1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1787178468; x=1787783268;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to:content-type;
+ bh=zMmU8bBVQYRHXFCSRreB5N0SCqWzQrFqmxPcX/FSaYk=;
+ b=rIzqB50Adrem3zfaGkqswpLKrxZFDgG1ANEl/4J3u0dJ3VjlIIwMXcuFuGaRqceAKJ
+ HbS5Aa2zRd0X1USZWdKCGKr9cj/pV8OpWqWdlejZ2smMC/EVtR7xdObt6b1jWnI1NN1i
+ YgaRbzJ2kz3A5xAd35bVLWRY9NM5fK0rNxfBZrhHpAZxIqnXl3xQjXz5ANhOHEAxxe75
+ GQX6up+j1kWzX5g9jibfMKVSW6vMd4JofshoxTHjNbLdoCelDUKTiYnb4VgCI2cji3rZ
+ v0fPCpbRMvtsYfdS0w2Xa6n13C7dOmh6O7+FFAOd3lmQ7rVqb3/vL9oir2sJ2CE2SFEI
+ n4yg==
+X-Gm-Message-State: AOJu0YziWEnMzrDZyd02nqoYTNBbN+61B8u+euu5vytJsB27FDpaSHZJ
+ BxDe95w6G454U8CJfxl67zScIavqRbeXmaWAzXm21kH+ulDL+YorJGN2
+X-Gm-Gg: AR+sD12Z4AfDwzJL0YbMmDCcPRrFxNUUAUmXQuzaTqJnIoWS9fOTx/HUU7xl0RHcXVS
+ 9bbmqczokELk6r60r7Mdrkqp0eWIiR/xM4Wtbk+VU6M3R22P1vH2ysJukft1QKwPtAPkkrp20wE
+ eEwAT6wJ9eeefczmvA73kTy5D9A+5/HCnybcjuBFc2qDr+4J/BKWJ5tKwtG0pbgfnU46Xn56F3f
+ nxwHy2u8YO5SnVKtvxVgDDAjc54Kf9CVj8hKuBv6JsFb6OiUDOT3Yjumh11ys6vTADUtTs0fKLY
+ q1WnL55ALJ4W+qYySK6YLOlvbW4QQxozW22dM7mKgURFoCZXTUIAoHZKGbyLzDjGcQXNLMRcfht
+ iznxOhMMzUmRjc5OmotLQoKGNx+KKGRbjGMnwydqmHU5ZonICAVTjwEKwlr3pQfn8KHUQFUoJe0
+ UCde7tQ6PERmNpuSDIujX5BmU5Q0/V5/t4DKlPEuLtJBXDWpypzWtA1kPy/q9fNk/SICMJ/3Y9l
+ QuTbF6PiII2M5sX8At/dScdeB87pmsjvS0eGnfkGdJUErzKECByTG3GTQKr+eTnmSJmV28WvDMJ
+ sfifIlPvMw==
+X-Received: by 2002:a05:6300:67c8:b0:3c3:76a8:c0f with SMTP id
+ adf61e73a8af0-3cd00dcaa72mr14648733637.4.1787178468252; 
+ Wed, 19 Aug 2026 15:27:48 -0700 (PDT)
+Received: from
+ runnervm76f27.jugp4dghd53ezkxajpihhsqn3f.dx.internal.cloudapp.net
+ ([13.83.98.86]) by smtp.gmail.com with ESMTPSA id
+ 5a478bee46e88-327cbb46ff8sm3109844eec.23.2026.08.19.15.27.47
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 19 Aug 2026 15:27:47 -0700 (PDT)
+From: linuxtestproject.agent@gmail.com
+To: Andrea Cervesato <andrea.cervesato@suse.de>
+Date: Wed, 19 Aug 2026 22:27:46 +0000
+Message-ID: <20260819222746.4120-1-linuxtestproject.agent@gmail.com>
+X-Mailer: git-send-email 2.55.0
+In-Reply-To: <20260819-fchroot-v1-3-2dc2c3c3cf29@suse.com>
+References: <20260819-fchroot-v1-3-2dc2c3c3cf29@suse.com>
 MIME-Version: 1.0
-Message-Id: <20260819-fchroot-v1-16-2dc2c3c3cf29@suse.com>
-References: <20260819-fchroot-v1-0-2dc2c3c3cf29@suse.com>
-In-Reply-To: <20260819-fchroot-v1-0-2dc2c3c3cf29@suse.com>
-To: Linux Test Project <ltp@lists.linux.it>
-X-Mailer: b4 0.16.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1787174658; l=2998;
- i=andrea.cervesato@suse.com; s=20251210; h=from:subject:message-id;
- bh=7Yzdsy1ykGrpkrprRNmBdjaYuhm0CcKC9Ae/PzUf0Zo=;
- b=OCSlMQJ3NAST/5xQX7LZOFR7vcz1aujeNGZLL7Fog6hakjU1XU/IHXgLzLLgcvVus9P3UaL04
- M3F4AU1RpSTDQtU8DgXr/0yXlUVQpOljPDOc4BFUiH6quJ957xkdz9h
-X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
- pk=zKY+6GCauOiuHNZ//d8PQ/UL4jFCTKbXrzXAOQSLevI=
-X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- RCPT_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
- DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- TO_DN_ALL(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- FROM_HAS_DN(0.00)[]; MIME_TRACE(0.00)[0:+];
- FROM_EQ_ENVFROM(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo, suse.com:mid,
- suse.com:email]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH STAGING 16/16] fchroot13: test failfs entry when
- chrooted
+Subject: Re: [LTP] syscalls: add v7.3 syscall numbers
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -117,116 +91,174 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Andrea Cervesato <andrea.cervesato@suse.com>
+Hi Andrea,
 
-Verify that unprivileged fchroot() into failfs is refused when the
-process is already chrooted: moving the root of a chrooted task into
-failfs would allow it to escape its chroot via openat(fd, "..") with
-a pre-opened directory fd, so the kernel refuses the syscall with
-EPERM.
+On Aug 19, 2026, Andrea Cervesato wrote:
+> syscalls: add v7.3 syscall numbers
 
-Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+--- [PATCH 3/16] ---
+
+> /* Roots of kernel internal pseudo filesystems, usable as fd sentinels */
+> #ifndef FD_PIDFS_ROOT
+> # define FD_PIDFS_ROOT		-10002
+
+Could these new public macros use kernel-doc comments? Public macros added
+under include/lapi must be documented in syntax recognized by linuxdoc.
+
+--- [PATCH 4/16] ---
+
+> fchroot01: test fchroot() with a directory fd
+
+Could the subject carry the "[STAGING]" prefix? Linux 7.2 is the latest
+stable release, while this test targets fchroot() from the 7.3 development
+cycle and is placed in runtest/staging.
+
+--- [PATCH 5/16] ---
+
+> fchroot02: test fchroot() invalid arguments
+
+Could the subject carry the "[STAGING]" prefix? Linux 7.2 is the latest
+stable release, while this test targets fchroot() from the 7.3 development
+cycle and is placed in runtest/staging.
+
+--- [PATCH 6/16] ---
+
+> fchroot03: test fchroot() permission checks
+
+Could the subject carry the "[STAGING]" prefix? Linux 7.2 is the latest
+stable release, while this test targets fchroot() from the 7.3 development
+cycle and is placed in runtest/staging.
+
+--- [PATCH 7/16] ---
+
+> fchroot04: test fchroot() into failfs as root
+
+Could the subject carry the "[STAGING]" prefix? Linux 7.2 is the latest
+stable release, while this test targets fchroot() and failfs from the 7.3
+development cycle and is placed in runtest/staging.
+
+--- [PATCH 8/16] ---
+
+> fchroot05: test failfs root can not be referenced
+
+Could the subject carry the "[STAGING]" prefix? Linux 7.2 is the latest
+stable release, while this test targets fchroot() and failfs from the 7.3
+development cycle and is placed in runtest/staging.
+
+--- [PATCH 9/16] ---
+
+> fchroot06: test path walks under failfs root
+
+Could the subject carry the "[STAGING]" prefix? Linux 7.2 is the latest
+stable release, while this test targets fchroot() and failfs from the 7.3
+development cycle and is placed in runtest/staging.
+
+> #define UPWARDS "../../../../../../../../../.."
+
+Could this walk continue until the inode stops changing instead? LTP accepts
+any absolute TMPDIR, so a path more than ten components deep leaves this
+lookup at an intermediate directory and fails the root inode comparison on a
+correct kernel.
+
+--- [PATCH 10/16] ---
+
+> fchroot07: test execve blocked by failfs root
+
+Could the subject carry the "[STAGING]" prefix? Linux 7.2 is the latest
+stable release, while this test targets fchroot() and failfs from the 7.3
+development cycle and is placed in runtest/staging.
+
+--- [PATCH 11/16] ---
+
+> fchroot08: test failfs root fork inheritance
+
+Could the subject carry the "[STAGING]" prefix? Linux 7.2 is the latest
+stable release, while this test targets fchroot() and failfs from the 7.3
+development cycle and is placed in runtest/staging.
+
+--- [PATCH 12/16] ---
+
+> fchroot09: test setns escape from failfs root
+
+Could the subject carry the "[STAGING]" prefix? Linux 7.2 is the latest
+stable release, while this test targets fchroot() and failfs from the 7.3
+development cycle and is placed in runtest/staging.
+
+> 		SAFE_STAT(".", &st);
+> 		TST_EXP_EXPR(st.st_dev == realcwd.st_dev &&
+> 			st.st_ino == realcwd.st_ino,
+
+Should this compare "." with realroot instead? mntns_install() resolves the
+target namespace's "/" and assigns it to both fs->root and fs->pwd; it does
+not restore the previous working directory. Unless the test starts in "/",
+this comparison fails on a correct kernel.
+
+--- [PATCH 13/16] ---
+
+> fchroot10: test failfs entry without no_new_privs
+
+Could the subject carry the "[STAGING]" prefix? Linux 7.2 is the latest
+stable release, while this test targets fchroot() and failfs from the 7.3
+development cycle and is placed in runtest/staging.
+
+> static void setup(void)
+> {
+> 	ltpuser = SAFE_GETPWNAM("nobody");
+> }
+
+Could setup query PR_GET_NO_NEW_PRIVS and return TCONF when it is already
+set? The bit is inherited and cannot be cleared, so such a launcher makes
+this test exercise the allowed-entry path and report a kernel failure.
+
+--- [PATCH 14/16] ---
+
+> fchroot11: test failfs entry with no_new_privs
+
+Could the subject carry the "[STAGING]" prefix? Linux 7.2 is the latest
+stable release, while this test targets fchroot() and failfs from the 7.3
+development cycle and is placed in runtest/staging.
+
+> 	TST_EXP_FAIL(unshare(CLONE_NEWUSER), EPERM,
+> 		"user namespace creation blocked by the failfs root");
+
+Could a separate unprivileged child first prove that user-namespace creation
+works, with TCONF when the environment blocks it? Runtime policy, seccomp, or
+an LSM can return EPERM even with CONFIG_USER_NS=y, making this assertion pass
+without testing the failfs restriction.
+
+--- [PATCH 15/16] ---
+
+> fchroot12: test failfs entry with shared fs_struct
+
+Could the subject carry the "[STAGING]" prefix? Linux 7.2 is the latest
+stable release, while this test targets fchroot() and failfs from the 7.3
+development cycle and is placed in runtest/staging.
+
+--- [PATCH 16/16] ---
+
+> fchroot13: test failfs entry when chrooted
+
+Could the subject carry the "[STAGING]" prefix? Linux 7.2 is the latest
+stable release, while this test targets fchroot() and failfs from the 7.3
+development cycle and is placed in runtest/staging.
+
+Verdict - Needs revision
+
 ---
- runtest/staging                               |  1 +
- testcases/kernel/syscalls/fchroot/.gitignore  |  1 +
- testcases/kernel/syscalls/fchroot/fchroot13.c | 62 +++++++++++++++++++++++++++
- 3 files changed, 64 insertions(+)
+Note:
 
-diff --git a/runtest/staging b/runtest/staging
-index 1655b6813..95e777ffb 100644
---- a/runtest/staging
-+++ b/runtest/staging
-@@ -12,3 +12,4 @@ fchroot09 fchroot09
- fchroot10 fchroot10
- fchroot11 fchroot11
- fchroot12 fchroot12
-+fchroot13 fchroot13
-diff --git a/testcases/kernel/syscalls/fchroot/.gitignore b/testcases/kernel/syscalls/fchroot/.gitignore
-index de8ca0688..0c4461611 100644
---- a/testcases/kernel/syscalls/fchroot/.gitignore
-+++ b/testcases/kernel/syscalls/fchroot/.gitignore
-@@ -10,3 +10,4 @@ fchroot09
- fchroot10
- fchroot11
- fchroot12
-+fchroot13
-diff --git a/testcases/kernel/syscalls/fchroot/fchroot13.c b/testcases/kernel/syscalls/fchroot/fchroot13.c
-new file mode 100644
-index 000000000..4bedd0180
---- /dev/null
-+++ b/testcases/kernel/syscalls/fchroot/fchroot13.c
-@@ -0,0 +1,62 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (C) 2026 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
-+ */
-+
-+/*\
-+ * Test that unprivileged :manpage:`fchroot(2)` into failfs is refused
-+ * when the process is already chrooted.
-+ *
-+ * The root directory is what confines ".." resolution and the failfs root
-+ * can never be reached by walking up a real mount tree. Moving the root
-+ * of a chrooted task into failfs would allow it to escape its chroot via
-+ * openat(fd, "..") with a pre-opened directory fd, so the kernel refuses
-+ * the syscall with EPERM.
-+ *
-+ * Root is required to create the chroot jail before dropping to an
-+ * unprivileged user in the forked child.
-+ */
-+
-+#define _GNU_SOURCE
-+#include <pwd.h>
-+#include <unistd.h>
-+#include "tst_test.h"
-+#include "lapi/fcntl.h"
-+#include "lapi/prctl.h"
-+#include "lapi/syscalls.h"
-+
-+#define JAILDIR "jail"
-+
-+static struct passwd *ltpuser;
-+
-+static void run(void)
-+{
-+	if (!SAFE_FORK()) {
-+		SAFE_CHROOT(JAILDIR);
-+		SAFE_CHDIR("/");
-+
-+		SAFE_SETRESUID(ltpuser->pw_uid, ltpuser->pw_uid,
-+			ltpuser->pw_uid);
-+
-+		SAFE_PRCTL(PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0);
-+
-+		TST_EXP_FAIL(tst_syscall(__NR_fchroot, FD_FAILFS_ROOT, 0),
-+			EPERM, "fchroot() from a chrooted process");
-+
-+		exit(0);
-+	}
-+}
-+
-+static void setup(void)
-+{
-+	ltpuser = SAFE_GETPWNAM("nobody");
-+	SAFE_MKDIR(JAILDIR, 0755);
-+}
-+
-+static struct tst_test test = {
-+	.setup = setup,
-+	.test_all = run,
-+	.needs_root = 1,
-+	.needs_tmpdir = 1,
-+	.forks_child = 1,
-+};
+The agent can sometimes produce false positives although often its
+findings are genuine. If you find issues with the review, please
+comment this email or ignore the suggestions.
 
--- 
-2.51.0
-
+Regards,
+LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
