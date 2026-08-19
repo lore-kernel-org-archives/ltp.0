@@ -4,107 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 89EEAC5DF6D
-	for <ltp@archiver.kernel.org>; Wed, 19 Aug 2026 08:30:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 35B67C5DF6D
+	for <ltp@archiver.kernel.org>; Wed, 19 Aug 2026 08:39:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1787128251; h=mime-version :
- references : in-reply-to : date : message-id : to : subject : list-id
- : list-unsubscribe : list-archive : list-post : list-help :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1787128771; h=to : date :
+ message-id : in-reply-to : references : mime-version : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
  list-subscribe : from : reply-to : cc : content-type :
  content-transfer-encoding : sender : from;
- bh=tLpF42JTyv3zagv3aNSZEBagv+w9sDFJ+0R79yC15ac=;
- b=EITOPC6nId4jUxinsm8fTcuk1sUCtsb4eIR00/VfVVW7ZmsIJQEOqFyFCq4aGa5nBZcCP
- dvfk7plVfFriT6HOskJK5PFP6H3OjwnZrTEPUK7WbV+P87cOn1lsBPWOKEhdJaBcJCfGvYc
- UmHLeDBQyOPPjANAy6sX0os1ry/m8rc=
+ bh=O6KP2nnTu83Gg4ian4F7/wk9+dpzheTvvJOIWPkN7eQ=;
+ b=az9bpDquT2g+BY4GuBUDZgupXRoMonMEpQB4vbwdv8dnz043HNxRoZZHxJzWld0CYNK61
+ wSznprZel1+3n8uvuBfpFwzsRD0xE2MCrtXobAzyfl2KI3eceMBdmhYRuWzGb6Rpa3s0NCE
+ Ceby+2n8nznHQMce/F4Yq5tAhIQTBYA=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 552E53CD5B2
-	for <ltp@archiver.kernel.org>; Wed, 19 Aug 2026 10:30:51 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id CD01C3CD600
+	for <ltp@archiver.kernel.org>; Wed, 19 Aug 2026 10:39:31 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 594453CC6AC
- for <ltp@lists.linux.it>; Wed, 19 Aug 2026 10:30:32 +0200 (CEST)
-Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com
- [IPv6:2607:f8b0:4864:20::829])
+ by picard.linux.it (Postfix) with ESMTPS id 50AF43CD2C7
+ for <ltp@lists.linux.it>; Wed, 19 Aug 2026 10:39:11 +0200 (CEST)
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com
+ [IPv6:2a00:1450:4864:20::331])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 7228E600A31
- for <ltp@lists.linux.it>; Wed, 19 Aug 2026 10:30:31 +0200 (CEST)
-Received: by mail-qt1-x829.google.com with SMTP id
- d75a77b69052e-51c10ed63c0so131001cf.1
- for <ltp@lists.linux.it>; Wed, 19 Aug 2026 01:30:31 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1787128230; cv=none;
- d=google.com; s=arc-20260327;
- b=EgQQ4Re3n/DF4c0WIRSzMJV4YQ83ObxR/vbLKLqugkC6ueTfvHFzg3QWM8XrBfYsZ5
- yZXYeEXvMTHk+Nj99DPSUW24Jo26arpXIMKwZ9pIdAYEcamilLEFiA52APSLCPePocSc
- Zqkb71N5ghQRaZ1IyObJGVQkNN2xR1DBtwVdAKQLIt0XtvYfTZJHaNA+sLLarh1raXg+
- I3TlYAv/sRHoF7RJDVBQFdFkjjqvrjJtA+4Uzd+b5ngWzom1Ne/e9U7x0vL9p2JG7SV2
- U962M6MfinoEP2JSnQ5eFgQgLXuypA55e6oUxqQk/Wsi4mMDSnRTpcGBDnlCdKXj9QX3
- NNIQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com;
- s=arc-20260327; 
- h=cc:to:subject:message-id:date:from:reply-to:in-reply-to:references
- :mime-version:dkim-signature;
- bh=F+i2HTraB3eWVkV0PuVsQbDU42qFhs1Oe3DCRZlfZLI=;
- fh=SQ9N9guitCkSaO+xuxBzp1YyEEXMxSyWmXBWFIZoYuk=;
- b=AA7Si6eeSzUyxsl9ineHI6rVMIZLoJQxn3cmaByRjQJsf4CckU9TZxLGP/ZBrdT8GQ
- sIe+riSEQeDR+wRcZ8OQm0UH+6hc2OMs7BvuRNN7bgofJBLSSWxz1q60InlkvO7Qgmg/
- Vcg3YbZMiYmuObsXfdrmGnngNxi+dL2nYl8f7nLVPxrBmIHqALStQGrk8CLK4A0WyDZY
- 3eC0iwhF72WDj+ncLdzG59VlqqhMntiNU8R8MmAZBplJPyVgnubm7lrX2dLgJvY6iUKE
- I+FL69oYH7UYdzVVntBDxzmO5q6+m5TmQU1ygjpSlyvdU9ogmd0BbzNzYXt62DwT5pvD
- GRig==; darn=lists.linux.it
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 7802B1400078
+ for <ltp@lists.linux.it>; Wed, 19 Aug 2026 10:39:10 +0200 (CEST)
+Received: by mail-wm1-x331.google.com with SMTP id
+ 5b1f17b1804b1-4956869750eso4450635e9.2
+ for <ltp@lists.linux.it>; Wed, 19 Aug 2026 01:39:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=google.com; s=20251104; t=1787128230; x=1787733030; darn=lists.linux.it;
- h=content-type:cc:to:subject:message-id:date:from:reply-to
- :in-reply-to:references:mime-version:from:to:cc:subject:date
+ d=suse.com; s=google; t=1787128750; x=1787733550; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to:content-type;
- bh=F+i2HTraB3eWVkV0PuVsQbDU42qFhs1Oe3DCRZlfZLI=;
- b=GHmsxOETyMAQ/A1zq13AAJapp9qz3YkKgeWgXCgwdiWZVTMOeVf6P/yS4fAlmcAMVO
- miPs5eJdzBRkyWO9i0Kv5wHTQcMGJ4472XdUvzyTyiBJhrmJ7mBTml7ZWBN1VqqMg0cP
- 7vyRCPx4fSSoQq1iJQYGbhot2kUQoKLLLOmF13rHesEuJecN+lABFImoKoNx4Z6tj34V
- P0uIGqNWiE4meQ2rI35gglf1mR0uqiS2Ec4Jkd94jWa6g7G12QyyNG0q4dLDzsgFluIE
- 2xP+Qs7mCYjtO5k/HUVfTt19KKRMHZ911Kpob6gbak29AYJPUPdPzO27Ir0YzjcKRRC2
- PRKg==
+ bh=ol8x2/GVxVxBdYgS21lil7hPCXFYuNOdfQ+6RJDdHHE=;
+ b=TsutL5vMiV3y6HIraireuxD/T6loFQCe3bvK6Z5nZaimlQOFfXfWLhbKbvriVDZium
+ 2zA6FuoI5YivdgNwSJDE9tEca0Maf6SmaXehDL1iKL5bRx1FS+Nq2ugh/oNoPmN7oz8s
+ WpS81gX/sWg9LNw4L0xDGZoSWsTSXCXJyNzzLRvhSbLxVnfF2+tPZ+JpfbVtFWYNFrez
+ 5gdtn+z7saCgSEXFCfdKW3VqWREDjbVz7Gd2IjFZSMu/GusTyJTnOZST8NsLyu5IpYCe
+ e9WeDCz58dc3ip6wNNGAUlr1gKOIhjOjpD7Md3Jx1/1XEw3ixySa62DtIy+rNJQE41K7
+ sQFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1787128230; x=1787733030;
- h=content-type:cc:to:subject:message-id:date:from:reply-to
- :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+ d=1e100.net; s=20251104; t=1787128750; x=1787733550;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to:content-type;
- bh=F+i2HTraB3eWVkV0PuVsQbDU42qFhs1Oe3DCRZlfZLI=;
- b=p7YdF6LFf8eQL6cqkS5fk7lP1Flbq4xz4Qy11RTjzXxpdQyfTT4kOPNRNdo7YekvlX
- xwHvPBaYf+JK8g4cN4uOA6uilX1xlEwuOxLgvg8EbQhNs957oqdbBKDpn2GojlrFxAQ8
- 0zTidYFh5AjA0WTbOEFS+UfVqsEDech8LyhSbr0lD63mO6HPAXITZe7/62PQwpUodC8i
- tEXPXGoLSBZfjvWTiYapJLqYeq1x7Ba2G56HqjskxYueHMKmSh7vho8EQIvmZp2gkGEA
- 6KZIt+BkFbWZGe4jh/XccUbfeHDHl+BdCBGAnfeO83OXxqd3G5VUFVTRtLpV7QxyWnjY
- xWFg==
-X-Gm-Message-State: AOJu0YxDARbiKAMqug2ORaee0V+KoKyVGTJU1jJQF3J66nWM0g6rcCx7
- XzrwJFk2XgplMZPYRSJ/ZJUzrSqrNHx89cVCwPdOFVeeFCllfXZb1YBhO7sUSOAD4PYmfouVwYe
- AfIMhKV5TEe1lyCGP2VPH6YVSB34TeeoQkBhDR2ux
-X-Gm-Gg: AR+sD12R2j6t/6ou8OVdgf9lQ1JrXDDrXOc2ul6X1e2dBNVvaLuVqRD2aGSG9po9kHD
- /sGl2PG6V0wItYbOM/bdfcZwd8Z9k1hVlrbKDjwgrmvZH18N5Vj9NIdVPZ4FyFk5jn2g2lnwnN/
- /Ck06f3cIF/I1S9id3O5BGaeaMiEMOzUm+gU/HZrKmBLiScAGlyAzlY2wL98sz8dTvKscyqaAiX
- TNV3eE5xUO029nJYSCzeTJAskEdbBILEaR/UwUBuWibMWaRObzFNg1onJqokRSs/So/MB8ovaPe
- P+sZOL7Db5NWEY2EystkGpF/MXFGwPMLRxd3OqmIkFxLqpQLoCKUB+rNkq34L+QW1vcMBTpg1eW
- ktnEkD8WZzA==
-X-Received: by 2002:a05:622a:1f96:b0:51b:ff0a:2048 with SMTP id
- d75a77b69052e-52dd90a48femr7693491cf.3.1787128229404; Wed, 19 Aug 2026
- 01:30:29 -0700 (PDT)
+ bh=ol8x2/GVxVxBdYgS21lil7hPCXFYuNOdfQ+6RJDdHHE=;
+ b=f+EBsHhnlwuG3Rq6t+1N9cOYx5JqHj+m8xZQhCtxwE+VlEUHHwSdN3wzGUt+qtxozI
+ /bdnO/mnNXYqjOUunZDMQLSqewtom0iarQn9zxwe+04r9cnhaBvKzQ39lYtChVdFkUNw
+ ZhbaDEX38xRd6TdKa9xGC+g3BS+JBbsUaapKbyenYqg/KMoWTt775UrmnHnugwDsW53w
+ zaZKELg16bUURh7DvOwBOrHId7/a0B7Lgz1Aao4AuKciytQHP7v9tgNHy9mWi9UczcIE
+ Ut7rSasC+FPkEDOIlJoWrEjLTdq6001NLRtlhadpXoy5VpOfnjEH/C3ESKaZxFZDpIFH
+ 8rIw==
+X-Gm-Message-State: AOJu0YxbXjXSqtj5L5nZokDGyg21JybWBMxKiphZZr2LBhilqnVpWjLk
+ jb6DQj/majKhK56OzwPovvqqO4eHgHa1yDrDxIUVnemj8tJyxeq98Cc8DOgwE2CSIazbOdkLtWx
+ /T1I=
+X-Gm-Gg: AR+sD12y+vKuGn8fKUUS+ZmcwnFsZDXgcdv3TJYzGI/UxWANiZPnYUo/AcT+amnMDeW
+ dCSR8S9iNkFK/bTCXLRzAQlMjT7zmu81YvfpE7X94gPruaZhHmwo0ZdhQPn2BB3GP3cKMS9fq5M
+ hVoykiC7zQZauLVlGNj0hDl9jUI/g+WO8GlWq9sNwhTBUPodVMA3E0LcrG5xH8BU7+RDBnf7f6A
+ qEjDWITU8ptTJy7bNGX/2bFVq788i3atXXwRjHdLPMwM7kNmRgIYxXM1jRoKNu2PqqeUYutugaJ
+ 3moqGhPabK4g5z+SFKcyw0UY8Zn9lCJRPl09lz2tUEaAnrt0HgQdpoLU/gFFofTJXiZAEy8J4mR
+ hYFR2UcSdOtWfT9HGm4RtzxPhCC0e3OxOf4ZnNst5wbyGVPz+QMTOheHnT/AMrYTWHSotYWDAhR
+ HsK5MmRZX22ME0qm9uJrz//0pRIf1Aop1UhHTZZRXYvYYcWgi2VJmJBMCxvaKZX0icOj2LJdC+U
+ HTH9WtZ6YqlYTU6dYIG6qZ/wjSaJYN6
+X-Received: by 2002:a05:600c:46cb:b0:499:781e:25fc with SMTP id
+ 5b1f17b1804b1-499aa17d75bmr44663715e9.3.1787128749724; 
+ Wed, 19 Aug 2026 01:39:09 -0700 (PDT)
+Received: from localhost ([2a07:de40:b240:0:2ad6:ed42:2ad6:ed42])
+ by smtp.gmail.com with UTF8SMTPSA id
+ 5b1f17b1804b1-499a9def415sm36938515e9.2.2026.08.19.01.39.09
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 19 Aug 2026 01:39:09 -0700 (PDT)
+To: ltp@lists.linux.it
+Date: Wed, 19 Aug 2026 08:38:57 +0000
+Message-ID: <20260819083907.26866-1-wegao@suse.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20260819031716.26527-1-wegao@suse.com>
+References: <20260819031716.26527-1-wegao@suse.com>
 MIME-Version: 1.0
-References: <CAGJyJpsBXuD0p7Cb9W3oE-cOi8Vzew9y2RhvmDE0y79YH_oWkA@mail.gmail.com>
- <6a856455.35b91a9e.11438f.2fa3@mx.google.com>
-In-Reply-To: <6a856455.35b91a9e.11438f.2fa3@mx.google.com>
-Date: Wed, 19 Aug 2026 14:00:18 +0530
-X-Gm-Features: AcwNN1Xsp1IZ16_6sfSVnu8tUek5a5AQeE1pwlbcFOsDD_-pdYy8Kb3Vy1ct-Lw
-Message-ID: <CAGJyJps3ALiJ-9N9tjY2VjyLO-VcbK-1FiCL0pfHJN6EHPVXPg@mail.gmail.com>
-To: Andrea Cervesato <andrea.cervesato@suse.com>
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [PATCH] inode01: Configure 4KB cluster size on exfat to
- prevent ENOSPC
+Subject: [LTP] [PATCH v6] shmctl03: Fix 32-bit compat mode failure by
+ adjusting comparisons for compat mode truncation
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -116,24 +101,140 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: "Kinshu Agrawal \(xWF\) via ltp" <ltp@lists.linux.it>
-Reply-To: kinshu@xwf.google.com
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+From: Wei Gao via ltp <ltp@lists.linux.it>
+Reply-To: Wei Gao <wegao@suse.com>
+Cc: Dan Carpenter <dan.carpenter@linaro.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-SGkgQW5kcmVhLCBUaGFua3MgZm9yIHJldmlld2luZyEKClRvIGF2b2lkIGVtYWlsIHdoaXRlc3Bh
-Y2UgYW5kIGZvcm1hdHRpbmcgaXNzdWVzLCBJIG9wZW5lZCBhIEdpdEh1YiBQdWxsClJlcXVlc3Qg
-d2l0aCB0aGUgY2xlYW4gcGF0Y2ggYW5kIHVwZGF0ZWQgZGVzY3JpcHRpb24gaGVyZToKaHR0cHM6
-Ly9naXRodWIuY29tL2xpbnV4LXRlc3QtcHJvamVjdC9sdHAvcHVsbC8xMzQwCgpBdmluZXNoIGFs
-cmVhZHkgcmV2aWV3ZWQgdGhlIGFwcHJvYWNoIG9uIHRoZSBQUiwgYW5kIHRoZSBjb21taXQgZGVz
-Y3JpcHRpb24KaGFzIGJlZW4gdXBkYXRlZCB3aXRoIHRoZSAzMktCIGNsdXN0ZXIgc2l6ZSBkZXRh
-aWxzLiBQbGVhc2UgZmVlbCBmcmVlIHRvCnRha2UgYSBsb29rIHRoZXJlIQoKVGhhbmtzICYgUmVn
-YXJkcywKS2luc2h1IEFncmF3YWwKCk9uIFdlZCwgQXVnIDE5LCAyMDI2IGF0IDE6MzfigK9QTSBB
-bmRyZWEgQ2VydmVzYXRvIDxhbmRyZWEuY2VydmVzYXRvQHN1c2UuY29tPgp3cm90ZToKCj4gSGkg
-S2luc2h1LAo+Cj4gdGhpcyBwYXRjaCBkb2Vzbid0IGFwcGx5LCBwbGVhc2Ugc2VuZCBhIHYyLgo+
-Cj4gUmVnYXJkcywKPiAtLQo+IEFuZHJlYSBDZXJ2ZXNhdG8KPiBTVVNFIFFFIEF1dG9tYXRpb24g
-RW5naW5lZXIgTGludXgKPiBhbmRyZWEuY2VydmVzYXRvQHN1c2UuY29tCj4KCi0tIApNYWlsaW5n
-IGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5saW51eC5pdC9saXN0aW5mby9sdHAK
+On 64-bit kernels, the default shmmax and shmall values often exceed
+the range of a 32-bit unsigned long or are clipped differently by the
+kernel's compat syscall layer than they appear in /proc.
+
+Link: https://lore.kernel.org/ltp/aJm5SBOaRoe1e0PB@yuki.lan/
+Signed-off-by: Wei Gao <wegao@suse.com>
+Suggested-by: Cyril Hrubis <chrubis@suse.cz>
+Reviewed-by: Andrea Cervesato <andrea.cervesato@suse.com>
+Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+---
+v5->v6:
+ - Replaced the comma expression (0, ##__VA_ARGS__) in TST_ASSERT_ULONG with TST_2_(dummy, ##__VA_ARGS__, 0).
+
+ include/tst_assert.h                        | 10 +++++---
+ lib/tst_assert.c                            | 27 ++++++++++++++++-----
+ testcases/kernel/syscalls/shmctl/shmctl03.c | 17 ++++++++++---
+ 3 files changed, 42 insertions(+), 12 deletions(-)
+
+diff --git a/include/tst_assert.h b/include/tst_assert.h
+index dcb62dfea..a21ed5bd6 100644
+--- a/include/tst_assert.h
++++ b/include/tst_assert.h
+@@ -21,14 +21,18 @@ void tst_assert_int(const char *file, const int lineno,
+ #define TST_ASSERT_FILE_INT(path, prefix, val) \
+ 	tst_assert_file_int(__FILE__, __LINE__, path, prefix, val)
+ 
++#define TST_ASSERT_SATURATED_INT   0x01
++#define TST_ASSERT_BITWISE         0x02
++
+ /*
+  * Same as tst_assert_int() but for unsigned long.
+  */
+ void tst_assert_ulong(const char *file, const int lineno,
+-                      const char *path, unsigned long val);
++                      const char *path, unsigned long val, int flags);
+ 
+-#define TST_ASSERT_ULONG(path, val) \
+-	tst_assert_ulong(__FILE__, __LINE__, path, val)
++#define TST_ASSERT_ULONG(path, val, ...) \
++	tst_assert_ulong(__FILE__, __LINE__, path, val, \
++		TST_2_(dummy, ##__VA_ARGS__, 0))
+ 
+ /*
+  * Asserts that integer value stored in the prefix field of file pointed by path
+diff --git a/lib/tst_assert.c b/lib/tst_assert.c
+index b68bd5d39..fd651f53a 100644
+--- a/lib/tst_assert.c
++++ b/lib/tst_assert.c
+@@ -5,6 +5,7 @@
+  * Copyright (c) 2020 Cyril Hrubis <chrubis@suse.cz>
+  */
+ #include <stdio.h>
++#include <limits.h>
+ #define TST_NO_DEFAULT_MAIN
+ #include "tst_assert.h"
+ #include "tst_test.h"
+@@ -23,18 +24,32 @@ void tst_assert_int(const char *file, const int lineno, const char *path, int va
+ 	tst_res_(file, lineno, TFAIL, "%s != %d got %d", path, val, sys_val);
+ }
+ 
+-void tst_assert_ulong(const char *file, const int lineno, const char *path, unsigned long val)
++void tst_assert_ulong(const char *file, const int lineno, const char *path,
++		      unsigned long val, int flags)
+ {
+-	unsigned long sys_val;
+-
+-	safe_file_scanf(file, lineno, NULL, path, "%lu", &sys_val);
++	unsigned long long sys_val_64;
++	unsigned long expected_val;
++
++	safe_file_scanf(file, lineno, NULL, path, "%llu", &sys_val_64);
++
++	if (flags & TST_ASSERT_SATURATED_INT) {
++		if (sys_val_64 > (unsigned long long)INT_MAX)
++			expected_val = (unsigned long)INT_MAX;
++		else
++			expected_val = (unsigned long)sys_val_64;
++	} else if (flags & TST_ASSERT_BITWISE) {
++		expected_val = (unsigned long)(sys_val_64 & 0xFFFFFFFFULL);
++	} else {
++		expected_val = (unsigned long)sys_val_64;
++	}
+ 
+-	if (val == sys_val) {
++	if (val == expected_val) {
+ 		tst_res_(file, lineno, TPASS, "%s = %lu", path, val);
+ 		return;
+ 	}
+ 
+-	tst_res_(file, lineno, TFAIL, "%s != %lu got %lu", path, val, sys_val);
++	tst_res_(file, lineno, TFAIL, "%s != %lu got %lu (raw: %llu)",
++		path, val, expected_val, sys_val_64);
+ }
+ 
+ void tst_assert_file_int(const char *file, const int lineno, const char *path, const char *prefix, int val)
+diff --git a/testcases/kernel/syscalls/shmctl/shmctl03.c b/testcases/kernel/syscalls/shmctl/shmctl03.c
+index 9e1c2f099..dfe5f17e3 100644
+--- a/testcases/kernel/syscalls/shmctl/shmctl03.c
++++ b/testcases/kernel/syscalls/shmctl/shmctl03.c
+@@ -30,9 +30,20 @@ static void verify_ipcinfo(void)
+ 	else
+ 		tst_res(TPASS, "shmmin = 1");
+ 
+-	TST_ASSERT_ULONG(PATH_KERN_SHMMAX, info.shmmax);
+-	TST_ASSERT_ULONG(PATH_KERN_SHMMNI, info.shmmni);
+-	TST_ASSERT_ULONG(PATH_KERN_SHMALL, info.shmall);
++	if (tst_is_compat_mode()) {
++		/*
++		 * On 64-bit kernel, shmmax is clamped to INT_MAX for 32-bit
++		 * compat syscall, while shmmni and shmall are truncated
++		 * to 32-bit.
++		 */
++		TST_ASSERT_ULONG(PATH_KERN_SHMMAX, info.shmmax, TST_ASSERT_SATURATED_INT);
++		TST_ASSERT_ULONG(PATH_KERN_SHMMNI, info.shmmni, TST_ASSERT_BITWISE);
++		TST_ASSERT_ULONG(PATH_KERN_SHMALL, info.shmall, TST_ASSERT_BITWISE);
++	} else {
++		TST_ASSERT_ULONG(PATH_KERN_SHMMAX, info.shmmax);
++		TST_ASSERT_ULONG(PATH_KERN_SHMMNI, info.shmmni);
++		TST_ASSERT_ULONG(PATH_KERN_SHMALL, info.shmall);
++	}
+ }
+ 
+ static struct tst_test test = {
+-- 
+2.55.0
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
