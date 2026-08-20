@@ -4,107 +4,116 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 26050C5DF82
-	for <ltp@archiver.kernel.org>; Thu, 20 Aug 2026 07:45:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E7369C5DF82
+	for <ltp@archiver.kernel.org>; Thu, 20 Aug 2026 07:45:41 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C70283CDF83
-	for <ltp@archiver.kernel.org>; Thu, 20 Aug 2026 09:45:26 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 8FD0F3CDBEC
+	for <ltp@archiver.kernel.org>; Thu, 20 Aug 2026 09:45:40 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E5B2D3C0224
- for <ltp@lists.linux.it>; Thu, 20 Aug 2026 09:44:54 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+ by picard.linux.it (Postfix) with ESMTPS id 1E48C3C0224
+ for <ltp@lists.linux.it>; Thu, 20 Aug 2026 09:44:53 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 4A25C10000E5
- for <ltp@lists.linux.it>; Thu, 20 Aug 2026 09:44:54 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 650CF1000989
+ for <ltp@lists.linux.it>; Thu, 20 Aug 2026 09:44:53 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id EE1383EBC;
+ by smtp-out1.suse.de (Postfix) with ESMTPS id ABEB284F98;
  Thu, 20 Aug 2026 07:44:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1787211889; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1787211888; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=GeP68mvfEwezhYXxFp8Nsqxb1zdaXL2DgEspaOck6kk=;
- b=U0p0mSFpg+niX3SEI2bKV/2KrKJtbSw5jNkidb08nMU21BFyRag1dtjCZOhQltRu8RjeuJ
- QLwxV+KqmQdgm0vb53WV6ahiqiD7Yp6jhSeEtfjitjw96bXP7K7UJEmVPL1k7qMu4QQtO1
- 54kTPSW/E/t6KOBZNM5Z/SCvRD6hKzI=
+ bh=A3LHZgT6J1LUqgDJ/dBLSt5ejG6zEg+zXkXSGAJxqng=;
+ b=IMK2tXxsqrX4pebXpilI5Q9hamXzYhunRMpUVz2Kvca2HeIZ0YXpS21KPiKFbszQISBpLe
+ aDCTEp6sFditps3XsWEsouK9oDrpKtjGWhEEEuaUxWs94aZkIfCsP5ndFsczVMRLyiD+8v
+ TLvjYz4FAwgILN7gl2PN4+PJeXMiki4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1787211889;
+ s=susede2_ed25519; t=1787211888;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=GeP68mvfEwezhYXxFp8Nsqxb1zdaXL2DgEspaOck6kk=;
- b=SdWbq2iUL3+CT0JWOr0VaF9n0P5Es1qFBqU5uzweLh1oRO20P4tg4m7cOHBPIi/pI4IRk1
- 1UOrKqJT53E6O3AQ==
-Authentication-Results: smtp-out2.suse.de;
-	none
+ bh=A3LHZgT6J1LUqgDJ/dBLSt5ejG6zEg+zXkXSGAJxqng=;
+ b=riPBu4FuUOWpvTs6b9VNAP4tiRP4Yzmamqkopn4GrrgkbC9Sj/v4Rsnd1OUhCMPTkxC6I+
+ BrAL3DUu5Ao+EoBA==
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.de header.s=susede2_rsa header.b=fOk47XiJ;
+ dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=xDlx3TbZ
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1787211884; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=GeP68mvfEwezhYXxFp8Nsqxb1zdaXL2DgEspaOck6kk=;
- b=EPyq6qRxQwO3y3hPF+NrqeTcqknlPHIiSLAWdfXR8dDCIXNJ1CLPoJloVuiZIv7HY4ubBd
- V7JV0WhEpBqrCDMttcZ0tcFQRF/iB+xkgNqHGN310G3hURsu2NVl+2vT3vAY1/xAB/gnQh
- nKYSsB3pqwT2M3vEIf+h3eUfzQnGU8s=
+ bh=A3LHZgT6J1LUqgDJ/dBLSt5ejG6zEg+zXkXSGAJxqng=;
+ b=fOk47XiJAl0IfMqidmSE2ZXVgYhKxo88wV7tLNYD+DnJTpPhE9HZLoUXut7wUgzft0WNwN
+ dBPSTXcMHa/fz5ZSg3jk87hx2gTuIzC1W4qEoq361ymC9mGGB14L0+J1gh+diKATReJIuQ
+ Z8+AoPtjUfMHTKE6t3Y2KzCqXzyVq/E=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1787211884;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=GeP68mvfEwezhYXxFp8Nsqxb1zdaXL2DgEspaOck6kk=;
- b=ggvwmLmVND2pZDyCt80NygqrQnV+0qL1muoGB14EbYUXBoI7bgHt3DrIyn6DRa9tdveHqe
- BVtpvaBcaUwvvbBA==
+ bh=A3LHZgT6J1LUqgDJ/dBLSt5ejG6zEg+zXkXSGAJxqng=;
+ b=xDlx3TbZOTFpRo+JOGTp8MLmJW/WKl+LwgydwViezB89M/LOv1OZyUCQ6ZCUqOt1ni7ddR
+ gtjYlJ0EhsC6tqCQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BBE3A367B;
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7AC0D367A;
  Thu, 20 Aug 2026 07:44:44 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id WGvBKmywhmr3YgAAD6G6ig
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 8DfgGmywhmr3YgAAD6G6ig
  (envelope-from <andrea.cervesato@suse.de>); Thu, 20 Aug 2026 07:44:44 +0000
 From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Thu, 20 Aug 2026 09:44:44 +0200
+Date: Thu, 20 Aug 2026 09:44:43 +0200
 MIME-Version: 1.0
-Message-Id: <20260820-fchroot-v2-4-062ed20957a0@suse.com>
+Message-Id: <20260820-fchroot-v2-3-062ed20957a0@suse.com>
 References: <20260820-fchroot-v2-0-062ed20957a0@suse.com>
 In-Reply-To: <20260820-fchroot-v2-0-062ed20957a0@suse.com>
 To: Linux Test Project <ltp@lists.linux.it>
 X-Mailer: b4 0.16.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1787211883; l=3256;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1787211883; l=801;
  i=andrea.cervesato@suse.com; s=20251210; h=from:subject:message-id;
- bh=W3LmH5Iv+4DdrYI3b/gkQAKVGS/m5UsogwkhJFOPMm0=;
- b=abfcyPl85AMKQyanvqjuN3SMxfRVW/1vequyt0/6HvCFxSHDmUM50zTxNx0sQrxGn+jbz4o5A
- qHWcjC03QjlBYQQdHyC6ieAK0tqb94MDTpkOrVvpuwj+s125jw8ZXdH
+ bh=3EHGosZsiUsvPbtWv+YgPdQhXcWeCKJec/0bk4ipppw=;
+ b=AmRtWjGYYEeD9w2S1XD2QU0HCcZeK9iqI7ngOgIuOBVFxfFgO+ipFTWWnk0dT53WbyDLxh8K9
+ dRp05mjYjPoC2UyfEt9L06M20Mw5ad/wyHXltJxr4tRnePxKxFxLs5Q
 X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
  pk=zKY+6GCauOiuHNZ//d8PQ/UL4jFCTKbXrzXAOQSLevI=
-X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: ABEB284F98
+X-Spamd-Result: default: False [-5.51 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+ DWL_DNSWL_LOW(-1.00)[suse.de:dkim];
  NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-0.998]; MIME_GOOD(-0.10)[text/plain];
- RCPT_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
+ R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ RCVD_VIA_SMTP_AUTH(0.00)[];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ ARC_NA(0.00)[]; RCPT_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
  DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- TO_DN_ALL(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- FROM_HAS_DN(0.00)[]; MIME_TRACE(0.00)[0:+];
- FROM_EQ_ENVFROM(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo, suse.com:mid,
- suse.com:email]
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ MIME_TRACE(0.00)[0:+]; RCVD_COUNT_TWO(0.00)[2];
+ TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,suse.com:email,suse.com:mid,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
+ TO_DN_ALL(0.00)[]; DKIM_TRACE(0.00)[suse.de:+]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH STAGING v2 04/16] fchroot01: test fchroot() with a
- directory fd
+Subject: [LTP] [PATCH STAGING v2 03/16] lapi: fallback fchroot() parameters
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -123,113 +132,41 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-Verify that fchroot() with a directory fd moves the process root to
-the directory referenced by the fd.
+Add to fcntl.h fallback definitions:
 
-fchroot() was introduced in Linux v7.3, so the test is added to the
-staging runtest file.
+- FD_PIDFS_ROOT
+- FD_NSFS_ROOT
+- FD_FAILFS_ROOT
 
 Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
- runtest/staging                               |  2 +
- testcases/kernel/syscalls/fchroot/.gitignore  |  1 +
- testcases/kernel/syscalls/fchroot/Makefile    |  7 ++++
- testcases/kernel/syscalls/fchroot/fchroot01.c | 59 +++++++++++++++++++++++++++
- 4 files changed, 69 insertions(+)
+ include/lapi/fcntl.h | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-diff --git a/runtest/staging b/runtest/staging
-index ef1cdea15..733d5609a 100644
---- a/runtest/staging
-+++ b/runtest/staging
-@@ -1 +1,3 @@
- # Tests for features that are not yet in the stable kernel ABI
+diff --git a/include/lapi/fcntl.h b/include/lapi/fcntl.h
+index 6a9ef11ce..d70954ea7 100644
+--- a/include/lapi/fcntl.h
++++ b/include/lapi/fcntl.h
+@@ -144,6 +144,19 @@
+ # endif
+ #endif
+ 
++/* Roots of kernel internal pseudo filesystems, usable as fd sentinels */
++#ifndef FD_PIDFS_ROOT
++# define FD_PIDFS_ROOT		-10002
++#endif
 +
-+fchroot01 fchroot01
-diff --git a/testcases/kernel/syscalls/fchroot/.gitignore b/testcases/kernel/syscalls/fchroot/.gitignore
-new file mode 100644
-index 000000000..03ebdbe7a
---- /dev/null
-+++ b/testcases/kernel/syscalls/fchroot/.gitignore
-@@ -0,0 +1 @@
-+fchroot01
-diff --git a/testcases/kernel/syscalls/fchroot/Makefile b/testcases/kernel/syscalls/fchroot/Makefile
-new file mode 100644
-index 000000000..137550149
---- /dev/null
-+++ b/testcases/kernel/syscalls/fchroot/Makefile
-@@ -0,0 +1,7 @@
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (C) 2026 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
++#ifndef FD_NSFS_ROOT
++# define FD_NSFS_ROOT		-10003
++#endif
 +
-+top_srcdir		?= ../../../..
++#ifndef FD_FAILFS_ROOT
++# define FD_FAILFS_ROOT		-10004
++#endif
 +
-+include $(top_srcdir)/include/mk/testcases.mk
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/syscalls/fchroot/fchroot01.c b/testcases/kernel/syscalls/fchroot/fchroot01.c
-new file mode 100644
-index 000000000..dc83c5b0d
---- /dev/null
-+++ b/testcases/kernel/syscalls/fchroot/fchroot01.c
-@@ -0,0 +1,59 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (C) 2026 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
-+ */
-+
-+/*\
-+ * Test that :manpage:`fchroot(2)` with a regular directory fd moves the
-+ * process root to the directory referenced by the fd.
-+ *
-+ * This is the fd-based counterpart of :manpage:`chroot(2)`, introduced in
-+ * Linux v7.3. Root is required because :manpage:`fchroot(2)` with a regular
-+ * directory fd requires ``CAP_SYS_CHROOT``.
-+ *
-+ * The syscall runs in a forked child so that the root of the parent
-+ * process, which the test framework needs for its cleanup, is left
-+ * untouched.
-+ */
-+
-+#include <sys/stat.h>
-+#include <fcntl.h>
-+#include "tst_test.h"
-+#include "lapi/fcntl.h"
-+#include "lapi/syscalls.h"
-+
-+#define JAILDIR "jail"
-+#define CANARY "/canary"
-+#define CANARYDIR (JAILDIR CANARY)
-+
-+static void run(void)
-+{
-+	struct stat st;
-+
-+	if (SAFE_FORK())
-+		return;
-+
-+	int dfd = SAFE_OPEN(JAILDIR, O_PATH | O_DIRECTORY);
-+
-+	TST_EXP_PASS(tst_syscall(__NR_fchroot, dfd, 0),
-+		"fchroot() with a directory fd");
-+
-+	TST_EXP_PASS(stat(CANARY, &st),
-+		"canary file visible under the new root");
-+
-+	exit(0);
-+}
-+
-+static void setup(void)
-+{
-+	SAFE_MKDIR(JAILDIR, 0755);
-+	SAFE_TOUCH(CANARYDIR, 0644, NULL);
-+}
-+
-+static struct tst_test test = {
-+	.setup = setup,
-+	.test_all = run,
-+	.needs_root = 1,
-+	.needs_tmpdir = 1,
-+	.forks_child = 1,
-+};
+ #ifndef FALLOC_FL_KEEP_SIZE
+ # define FALLOC_FL_KEEP_SIZE 1
+ #endif
 
 -- 
 2.51.0
