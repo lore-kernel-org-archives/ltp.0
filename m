@@ -4,98 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 02F64C5DF81
-	for <ltp@archiver.kernel.org>; Thu, 20 Aug 2026 14:25:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7124CC5DF81
+	for <ltp@archiver.kernel.org>; Thu, 20 Aug 2026 14:37:17 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 33AAB3CE4B9
-	for <ltp@archiver.kernel.org>; Thu, 20 Aug 2026 16:25:07 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id A82B23CED10
+	for <ltp@archiver.kernel.org>; Thu, 20 Aug 2026 16:37:15 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2F96F3C0962
- for <ltp@lists.linux.it>; Thu, 20 Aug 2026 16:24:52 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ by picard.linux.it (Postfix) with ESMTPS id 7E0043C6EDD
+ for <ltp@lists.linux.it>; Thu, 20 Aug 2026 16:36:58 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id CC8F2200974
- for <ltp@lists.linux.it>; Thu, 20 Aug 2026 16:24:51 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 9752F600205
+ for <ltp@lists.linux.it>; Thu, 20 Aug 2026 16:36:57 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id C019B3EB9;
- Thu, 20 Aug 2026 14:24:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1787235886; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=NkPp4IlBDuvYPFxSp+DhTZK3GKd3Pa/+g6e5RL1pybU=;
- b=KCS7XMjG+dsjEBf4luNAoPxz+9UMq2a+HuhdYrY/xHpgZ3unL7yCklKJR1DyQyZ5TWmjBI
- z5ACJG5cZsyV/owROl8XGthPmQOw1mzZtaVnleekt7OV4lueYoxAQ2AUcmHC8U70MD8scS
- y58hMmpwCd7wSRBuw/X8jaXlu539/QA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1787235886;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=NkPp4IlBDuvYPFxSp+DhTZK3GKd3Pa/+g6e5RL1pybU=;
- b=eSm1LMvFXw4oSZN/Zs+bvyb1vP6ld06gAu+BtTvsFMkdSTYi92spWCRjNxQZRulbWGoWtX
- 9hFT86iuMkLO08BA==
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 6FD7D3F08;
+ Thu, 20 Aug 2026 14:36:56 +0000 (UTC)
 Authentication-Results: smtp-out2.suse.de;
 	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1787235882; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=NkPp4IlBDuvYPFxSp+DhTZK3GKd3Pa/+g6e5RL1pybU=;
- b=O2/H1MKiYodY4Kj/fyK3qR/SMdz6LSaF5T9wZtbNIP7V4PL03yR6YJOPSAD2q8Ee+Y28Ju
- 1Vm4W71I58O7g4dFY7RzSgZbg126+qxxK/fe+6uhfyWidludyUloDUPMB1yP5xnlUlj4O7
- M7hQEnk0Bed7W4F77PWDsyhjPwjLiHU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1787235882;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=NkPp4IlBDuvYPFxSp+DhTZK3GKd3Pa/+g6e5RL1pybU=;
- b=QJf+KwV1p8qhXkWuscKdHnTrdGT++Yfzc8G9PrSTCLi+Ip7hP991xJuPke9AFMBQ6C4ezO
- ds/KuOMU3jl1q2Cw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id AA90A27A8;
- Thu, 20 Aug 2026 14:24:42 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 55E44351D;
+ Thu, 20 Aug 2026 14:36:56 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id hGMNKSoOh2o2aQAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Thu, 20 Aug 2026 14:24:42 +0000
-Date: Thu, 20 Aug 2026 16:24:43 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id +UzAEwgRh2o2dQAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Thu, 20 Aug 2026 14:36:56 +0000
+Date: Thu, 20 Aug 2026 16:37:00 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
 To: Andrea Cervesato <andrea.cervesato@suse.de>
-Message-ID: <aocOKwkHbly4UstS@yuki.lan>
+Message-ID: <aocRDAKblOnWnd7u@yuki.lan>
 References: <20260820-fchroot-v2-0-062ed20957a0@suse.com>
- <20260820-fchroot-v2-7-062ed20957a0@suse.com>
+ <20260820-fchroot-v2-8-062ed20957a0@suse.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20260820-fchroot-v2-7-062ed20957a0@suse.com>
-X-Spamd-Result: default: False [-8.30 / 50.00]; REPLY(-4.00)[];
- BAYES_HAM(-3.00)[99.99%]; NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MISSING_XM_UA(0.00)[]; RCPT_COUNT_TWO(0.00)[2];
- RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
- RCVD_TLS_ALL(0.00)[]; TO_DN_ALL(0.00)[]; MIME_TRACE(0.00)[0:+];
- FROM_HAS_DN(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FROM_EQ_ENVFROM(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo, yuki.lan:mid,
- suse.cz:email]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+In-Reply-To: <20260820-fchroot-v2-8-062ed20957a0@suse.com>
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	REPLY(-4.00)[]
+X-Rspamd-Queue-Id: 6FD7D3F08
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH STAGING v2 07/16] fchroot04: test fchroot() into
- failfs as root
+Subject: Re: [LTP] [PATCH STAGING v2 08/16] fchroot05: test failfs root can
+ not be referenced
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -114,26 +80,12 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> +/*\
-> + * Test :manpage:`fchroot(2)` with the ``FD_FAILFS_ROOT`` sentinel as a
-> + * privileged process.
-> + *
-> + * :manpage:`fchroot(2)` was introduced in Linux v7.3 together with failfs,
-> + * a kernel internal filesystem where every operation fails with
-> + * ``EOPNOTSUPP``. The ``FD_FAILFS_ROOT`` sentinel moves the process root
-> + * there without needing a file descriptor: it is the ``fs_struct`` equivalent
-> + * of ``RESOLVE_BENEATH``.
-> + *
-> + * The test verifies that entering failfs succeeds with ``CAP_SYS_CHROOT`` and
-> + * that every absolute path lookup then fails with ``EOPNOTSUPP``. The working
-> + * directory, left behind in the real filesystem, is consequently reported
-> + * as unreachable by :manpage:`getcwd(2)`.
-> + *
-> + * The syscall runs in a forked child because leaving failfs requires a
-> + * mount namespace file descriptor and the parent needs its root for the
-> + * test framework cleanup.
+> +static void run(void)
+> +{
+> +	if (SAFE_FORK())
+> +		return;
 
-Here as well no need for the fork().
+Here as well, this shouldn't be needed.
 
 -- 
 Cyril Hrubis
