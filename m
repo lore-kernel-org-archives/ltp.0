@@ -4,87 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 234AAC5DF82
-	for <ltp@archiver.kernel.org>; Thu, 20 Aug 2026 07:52:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1787212366; h=message-id :
- to : in-reply-to : date : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : cc : mime-version : content-type :
- content-transfer-encoding : sender : from;
- bh=6KpUAH8iHhXPKR/95wJvVHYNeJ2KU6buSmJRSn9Sc2I=;
- b=UGZz6IvOq/K6sHOSNkYgxbnfVA8+sKg1lbeH6lZq9tiYI9d0M6w8F/jJmM7rrI9qNWpFY
- LYJyvTqCyZHSvi/brTzuU+tLjJz52sXBKdYZDmVemsMCZXcWkmulDRD7Ud1g9zkAUu2EF+E
- EiJCUg8jt+apB9WGGksi6oM5f61zwLo=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CE79EC5DF81
+	for <ltp@archiver.kernel.org>; Thu, 20 Aug 2026 07:58:30 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B56163CEE75
-	for <ltp@archiver.kernel.org>; Thu, 20 Aug 2026 09:52:46 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 2D5F43CE321
+	for <ltp@archiver.kernel.org>; Thu, 20 Aug 2026 09:58:29 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1C7823CDBEC
- for <ltp@lists.linux.it>; Thu, 20 Aug 2026 09:52:26 +0200 (CEST)
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com
- [IPv6:2a00:1450:4864:20::32b])
+ by picard.linux.it (Postfix) with ESMTPS id 93AC43CDC08
+ for <ltp@lists.linux.it>; Thu, 20 Aug 2026 09:58:11 +0200 (CEST)
+Received: from mail-oi2-x00.google.com (mail-oi2-x00.google.com
+ [IPv6:2607:f8b0:4864:32::])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id AEE21600040
- for <ltp@lists.linux.it>; Thu, 20 Aug 2026 09:52:25 +0200 (CEST)
-Received: by mail-wm1-x32b.google.com with SMTP id
- 5b1f17b1804b1-4953de5be0aso15959475e9.0
- for <ltp@lists.linux.it>; Thu, 20 Aug 2026 00:52:25 -0700 (PDT)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 0AE271000533
+ for <ltp@lists.linux.it>; Thu, 20 Aug 2026 09:58:11 +0200 (CEST)
+Received: by mail-oi2-x00.google.com with SMTP id
+ 006d021491bc7-6b1342d8cdeso62347eaf.0
+ for <ltp@lists.linux.it>; Thu, 20 Aug 2026 00:58:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1787212345; x=1787817145; darn=lists.linux.it;
- h=date:content-transfer-encoding:content-type:subject:in-reply-to:cc
- :to:from:message-id:from:to:cc:subject:date:message-id:reply-to
- :content-type; bh=maT8Q7f/gFpn7mLj/IpD7GYrFPpaE9tXyQNMe6CqB2o=;
- b=Tx1aUnswzi5EwsBwqdv8Z4U9G9uT9Q/04/xgTBc4HBwnYfogBkl+eH6rpadpl0gvRl
- 7G4ciGT0EG+Kzsu14Rlel/uZihac3FvavJ2VpEAYnqmPKQ7DoPvWB/UXSEhU0v/QAY75
- JN4CZKkQ/MFjrxiz9//A9rq7Z2ZSgU0NJtNgOX4p09lIGBAfmSzH03aBodyG0eSTEeb4
- zSZ5cz/6eekwp6UmCDVaYPeTCpNmyrs9/G2atXffCuWG8nroh8SdWQOq+02VWZ0+WVCP
- gQ3cWU45oxxnPGlQrerc7Ag+ZKtt2hkXi7ozmJTAnUZm9Bl78X/n9qjeddhMydl+Rron
- T3iQ==
+ d=gmail.com; s=20251104; t=1787212689; x=1787817489; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to:content-type;
+ bh=U4DcYR1r8A6Pb/ovi5pI/iCbMSfks76sgI+NcBjX0o4=;
+ b=ZHzSH98j/KXJKuDPyjcH3hUYCszYO/kuNRP7rtgqi3revIupHJPicO/jTZrPHR4ryI
+ /R43fBIjbonwSxoA0+3eWCA1YNE+WOPkRZm/l63GZRSKceixMjKbmCUNkL2ca0WGC54K
+ bZbZECi9BuCZTKePvrha1waPK7icHQkbUygbKh/KrjsP8rdLtfqLhPoB/9SvPvzQwcDr
+ eS2G9oGPJU8lm+A391uVY+nJLZ72D0yDRDi+i9/9hOwyxfBnkg+Wr9wUhO5TkxabY7Ez
+ vRh+CzRodIOTM5lkeEhG3aJ6SnKLI+QS7+Gtyog5CeY2CnoijtzyvDDly7ut1A9IVQEw
+ a2wg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1787212345; x=1787817145;
- h=date:content-transfer-encoding:content-type:subject:in-reply-to:cc
- :to:from:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject
- :date:message-id:reply-to:content-type;
- bh=maT8Q7f/gFpn7mLj/IpD7GYrFPpaE9tXyQNMe6CqB2o=;
- b=nA3Rk+2Dq6+xp+dydIQJO7xJCjv7amFbzqWDi5vkpmzgJlV+c6GnhrwsifK7ZZoNO+
- NsY7SGN1X5N6V8Eo3u/yEKctWrxQja+uOuFYph1RQsakhXx2e9lITEIYrykc518ux8QH
- GPsnrg/hsSF44VkDupVMbpFqNOn/vnHewkZ0ODeijefvi6LZtJYTW7CmP02EJCVL9sDG
- vlkh/LqcZl+KwLEzX1/cq7wNVmmY/276Usc4LJRpoLOYTrNbkXozDESYpVhk7ngMIcdL
- jLqcVxHzZWsnkJRTisgGYH9nDXoN5sWXBZvO2/pKX9sONnanXrtGkdQR/nhLR3ww7b0u
- IKKg==
-X-Gm-Message-State: AOJu0Yya7UD7fFRNRRc94s82luEnEHlvQ95ZtCNUIam5dmUeNyP4V9II
- mC+u/s2fABaNNpN7SqpctIU8e/uHFD/iLzreueRUl1xH6tHwZn+DNjevIa1kKrz5aslANQ/nmsF
- 43xXQ97c=
-X-Gm-Gg: AR+sD11qQeLNmqawvkDxok6+5S30zo7XmQLD5TXQ6dNhnhF9jCnk468y4FCy6CxFViX
- wFEv6be5ubgh9vfY3mR1Vi0CaPf5yyCt7YAq5Qi5NMYHFe6EKZATTB/44VEy6sikaivVEpE/Fu1
- 3Ua3VVDClfqPkS9mCBKByTAotm8fjJT8UempNnN10iu5TGiC1nml9tzsyF+pabsVWFSA3O4/Inl
- MDnF2FvX5AAYMmD679ehvNOztN998dqJ2vvbPPEDJJIKjvW9PE0C01kMrXo6VLfbDqKVKn2mvwL
- uvRR+JFiB+/jfVeeiIrEl/6GCIKnBAp8QOf9n0lRS6Iei/ektw5Imx5VtUx0LBLGwpzLrwedFNl
- 26Pb4Ibrs1ObhKILpTxK9RLbrdziq5LN1UBaGCPldkcTxYyTmBMwuNIWPPa2RfYwAMbohj5X5zM
- RxwL5mhNz3mA1paPtM1V2pnt7pO+toRdssrIrcfBQLvzQUioG/PdXLMUKTBSZ1mgprQXlk3I4=
-X-Received: by 2002:a05:600c:1385:b0:495:5890:8f6c with SMTP id
- 5b1f17b1804b1-499aa17dcd0mr155766195e9.7.1787212345042; 
- Thu, 20 Aug 2026 00:52:25 -0700 (PDT)
-Received: from 192.168.1.121 ([176.206.179.213])
- by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-499aa11fd3asm114936995e9.8.2026.08.20.00.52.24
+ d=1e100.net; s=20251104; t=1787212689; x=1787817489;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to:content-type;
+ bh=U4DcYR1r8A6Pb/ovi5pI/iCbMSfks76sgI+NcBjX0o4=;
+ b=GaAeW0MopsvmPMrTmKtI5t9rFVk9exbjh4+rZiwt1kfiak+n33kGOyRrnRLgiC6iMy
+ wzJn/QCoVoL8tyUE1W2SKhMGruN/vcbCMikAumku/klv50Fq/60eW/GgowbyqxWN3HYw
+ FO6r+Q3PpyGbtNns3rj2N8HuerqH30biZDedNVobuXSjIGBZLO4v7IxcniSoMtG4SYAt
+ nm4w4k8vr7O5vficvzMECjEbgv3OZXx7hrX8KQS74nnxnPIn03GLJXUO2tYtr84if3kz
+ oOB9vKHlQfuWC+yBA2NBYDOzBNGxtAksM8xPfM4JQKRbS1kTKXKP/DZzvJGC8zxOYtJK
+ dQuA==
+X-Gm-Message-State: AOJu0Yz51HS7JRrVU/7Mhw2MsPmOaDBL/81/2fKqGXZOP058TfwuoxRb
+ SO+JTCD04eqeKN6XXKgeYZNKPwIekKGwP1iAYrwEycU5HQAzFrFnphP83jmlK2Gu
+X-Gm-Gg: AR+sD10+FP0mqd2meOqqbiMNv5LltSvi5NFXjWZ/JCW9nJLLhpVPTu02X7ay54OAMXl
+ dv3yEOSatsfKYNeHthZq0ioI22eIxmAMObwhMz5Y3VSVb9DxAqhnpqJGGyK9/mrkiZ4wgH+bFEi
+ 2YaQ+035mBHROMruDev424IipRUlobsDa4OC2uwk3rOC7uhvnDsAFG5hgIYuVvEI8xUnsFgfdMj
+ YxRjQBRp+lfaWZwZxZwm+qedMkRVXU3dnDh1Ts6dsLED4V3lX1Zil92bmKLh9NfSMCPjHs4TvVc
+ 5Bdzm567PosEEZxJNpD6rTrlbXYchTJqaxMd/0gZE75KB8Wqfcm29jpNNs6q6Gyhu4vqkFQYwJx
+ WuveY7ynjtro7fqGtNBaLACbbVm5GXXMAI2HPRWk/R7I8pM5OQ8EfvgwSjassqakO6j5/xjMkJK
+ +iM+ESKp2+1SBnfgUiLPtEOuWKWHCaYAoFwt335m+v7CeFF/orwDtY65/2Mp7av1g1Grk/5uCuT
+ MOKCKDrBtBX2oPJZp5Umu6XFL7J9xG6Mti/0OIPIxF0DafybOwA156xGTjb+6L29jdmyMWkq4d7
+ 0Q==
+X-Received: by 2002:a05:6820:1792:b0:6ae:8ee4:e01f with SMTP id
+ 006d021491bc7-6b13c2d221bmr10635600eaf.4.1787212689584; 
+ Thu, 20 Aug 2026 00:58:09 -0700 (PDT)
+Received: from
+ runnervm76f27.vtumybzwn5zupfpawyogdsmmte.qrox.internal.cloudapp.net
+ ([158.23.19.38]) by smtp.gmail.com with ESMTPSA id
+ 006d021491bc7-6b13c90d160sm4658469eaf.0.2026.08.20.00.58.09
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 20 Aug 2026 00:52:24 -0700 (PDT)
-Message-ID: <6a86b238.80d8f3ad.1c3765.93d3@mx.google.com>
-To: "Petr Vorel" <pvorel@suse.cz>
-In-Reply-To: <20260814063537.GE261864@pevik>
-Date: Thu, 20 Aug 2026 07:52:23 +0000
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+ Thu, 20 Aug 2026 00:58:09 -0700 (PDT)
+From: linuxtestproject.agent@gmail.com
+To: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 20 Aug 2026 07:58:08 +0000
+Message-ID: <20260820075808.9294-1-linuxtestproject.agent@gmail.com>
+X-Mailer: git-send-email 2.55.0
+In-Reply-To: <20260819161634.1341577-4-chrubis@suse.cz>
+References: <20260819161634.1341577-4-chrubis@suse.cz>
+MIME-Version: 1.0
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3 3/4] tree: Use TST_EXP_PASS_OR_FAIL() and
- TST_EXP_FD_OR_FAIL()
+Subject: Re: [LTP] lib: Add tst_sysfs_assert
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -96,45 +92,97 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
 Cc: ltp@lists.linux.it
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> Therefore I suggest to merge with changes below (removed O_TRUNC and move fd =
-> to the beginning).
-> 
-> > Kind regards,
-> > Petr
-> 
-> +++ testcases/kernel/syscalls/landlock/landlock_tester.h
-> @@ -254,13 +254,13 @@ static void _test_truncate(const int exp_err)
->  	tst_res(TINFO, "Test truncating file");
->  
->  	TST_EXP_PASS_OR_FAIL(truncate(FILE_TRUNCATE, 10), exp_err);
-> -	TST_EXP_FD_OR_FAIL(fd = open(FILE_TRUNCATE, O_WRONLY | O_TRUNC, PERM_MODE), exp_err);
-> +	fd = TST_EXP_FD_OR_FAIL(open(FILE_TRUNCATE, O_WRONLY, PERM_MODE), exp_err);
->  	if (fd != -1) {
->  		TST_EXP_PASS_OR_FAIL(ftruncate(fd, 10), exp_err);
->  		SAFE_CLOSE(fd);
->  	}
->  
-> -	TST_EXP_FD_OR_FAIL(fd = open(FILE_TRUNCATE, O_WRONLY | O_TRUNC, PERM_MODE), exp_err);
-> +	fd = TST_EXP_FD_OR_FAIL(open(FILE_TRUNCATE, O_WRONLY | O_TRUNC, PERM_MODE), exp_err);
->  	if (fd != -1)
->  		SAFE_CLOSE(TST_RET);
->  }
+Hi Cyril,
 
-+1
+On Wed, 19 Aug 2026 18:16:04 +0200, Cyril Hrubis wrote:
+> lib: Add tst_sysfs_assert
 
---
-Andrea Cervesato
-SUSE QE Automation Engineer Linux
-andrea.cervesato@suse.com
+--- [PATCH 1/31] ---
+
+> +/**
+> + * tst_sysfs_exists() - Checks whether a file exists.
+> + *
+> + *
+> + * @fmt: A printf-like format to build a path to the file.
+> + * @...: A printf-like parameters for fmt.
+> + * return: 1 if the file at the path built from fmt exists, 0 otherwise.
+> + */
+
+Since kernel-doc section labels are case-sensitive, should this be "Return:"
+(capital R) instead of "return:"?
+
+Could the stray blank " *" line between the summary and the @parameters
+also be removed?
+
+--- [PATCH 14/31] ---
+
+> testcases: sysfs: sys_hwmon01
+
+Could the subject describe the change by adding "Add", consistently with
+the other test-adding commits in the series, i.e.
+"testcases: sysfs: Add sys_hwmon01"?
+
+--- [PATCH 15/31] ---
+
+> testcases: sysfs: sys_leds01
+
+Could "Add" be included here as well, i.e.
+"testcases: sysfs: Add sys_leds01"?
+
+--- [PATCH 19/31] ---
+
+> +/*
+> + * Change the link-layer (MAC) address of an existing network device.
+> ...
+> +int tst_netdev_set_hwaddr(const char *file, const int lineno, int strict,
+> +	const char *ifname, const void *addr, size_t addrlen);
+
+> +/*
+> + * Enslave ifname to the master_ifname device, e.g. add it as a bridge
+> ...
+> +int tst_netdev_set_master(const char *file, const int lineno, int strict,
+> +	const char *ifname, const char *master_ifname);
+
+Could both new public functions use kernel-doc /** comments instead of
+plain /* comments so they appear in the generated API documentation?
+
+--- [PATCH 22/31] ---
+
+> Similar to sys_net02 but checks bridge related files after briding a
+> virtual ethernet interface.
+
+Could "briding" be changed to "bridging"?
+
+--- [PATCH 23/31] ---
+
+> +static void cleanup(void)
+> +{
+> +	if (tun_fd >= 0)
+> +		SAFE_CLOSE(tun_fd);
+> +
+> +	if (tap_fd >= 0)
+> +		SAFE_CLOSE(tap_fd);
+
+Since both variables are initialized to -1, could these guards use the LTP
+"fd != -1" convention instead of "fd >= 0"?
+
+Verdict - Needs revision
+
+---
+Note:
+
+The agent can sometimes produce false positives although often its
+findings are genuine. If you find issues with the review, please
+comment this email or ignore the suggestions.
+
+Regards,
+LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
