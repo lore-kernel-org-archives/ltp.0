@@ -4,84 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E8A6EC5DF82
-	for <ltp@archiver.kernel.org>; Thu, 20 Aug 2026 07:49:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 38C10C5DF81
+	for <ltp@archiver.kernel.org>; Thu, 20 Aug 2026 07:50:19 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 71DC33CE094
-	for <ltp@archiver.kernel.org>; Thu, 20 Aug 2026 09:49:52 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id A1F813CD7A5
+	for <ltp@archiver.kernel.org>; Thu, 20 Aug 2026 09:50:17 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 426513CE11E
- for <ltp@lists.linux.it>; Thu, 20 Aug 2026 09:48:49 +0200 (CEST)
-Received: from mail-pj2-x06.google.com (mail-pj2-x06.google.com
- [IPv6:2607:f8b0:4864:39::6])
+ by picard.linux.it (Postfix) with ESMTPS id 53D7A3C0574
+ for <ltp@lists.linux.it>; Thu, 20 Aug 2026 09:50:03 +0200 (CEST)
+Received: from mail-pj2-x0b.google.com (mail-pj2-x0b.google.com
+ [IPv6:2607:f8b0:4864:39::b])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 1BA70200250
- for <ltp@lists.linux.it>; Thu, 20 Aug 2026 09:48:49 +0200 (CEST)
-Received: by mail-pj2-x06.google.com with SMTP id
- 98e67ed59e1d1-38f25802c19so383348a91.1
- for <ltp@lists.linux.it>; Thu, 20 Aug 2026 00:48:49 -0700 (PDT)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id ED62A600090
+ for <ltp@lists.linux.it>; Thu, 20 Aug 2026 09:50:02 +0200 (CEST)
+Received: by mail-pj2-x0b.google.com with SMTP id
+ 98e67ed59e1d1-38de693676dso1207001a91.0
+ for <ltp@lists.linux.it>; Thu, 20 Aug 2026 00:50:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1787212127; x=1787816927; darn=lists.linux.it;
+ d=gmail.com; s=20251104; t=1787212201; x=1787817001; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to:content-type;
- bh=pfGeAW7y/df2qmt81b45t8XswcAoA5BZPSsJJK3zb1o=;
- b=QlWOnizns7RaLKim1SBP37X1LDVva2m45Zlu7B95VvcqYYRvTVfAJW4EUsQJWGhUAb
- cu00duZcTXtFkmHmifYlEglLPJ8+W+56krOu+e7LM3H/UOkmtW1WJQ2sLTIHpA/Nac3F
- e8xZKXNOJLRQV+QiC+H08mz5P1p/SBjEMzV26CZ8VZLNfm6sM2Vc8spYysYLTvXDlaG7
- Jg97rz+aXi7F8oYnjSicQsrOEHuh7l2rynQIqsbVU2EQem0JyLLn0uvIMBnk6CQ8kgsE
- FuGxUsHq5uK0Q56K40hqwNTAtN/6YxbkLF97R5e5CwiMiIwKLJ94kXW+TWjRFRmmRUxI
- E6Pw==
+ bh=SS9bxz+t9TfJwvhacYWZzpcbobeiCYJPCh1I34Zy+fk=;
+ b=NBRYWHiqKe+ya0n5OJYuzfxXx6bEasRqF9PvTRx6UgI5+D/zdbDd/uHL8lH678bd2z
+ x7DAtkUGfx7T7Q+MOWUBzjCbVjzur6nyp8VroaMAQikMLxZpdo3nb8qhuXvlDXl5OvQR
+ smnJOsFB8o623qpNjGod7w4DSPxnAQzIsjOgLNRErQ6Hxw9/JfGecbh9RlauMQFOdP9i
+ o8onHg2B+vVwQMmMZJH4Zz4reJa4EUmbfaTEeLyrayFE7CQRPiaPVn47ljUbAHLKlKAM
+ EoBd0QPGajcLbI0qNoKbd23G/OVjHfU0n3YjXkm4f+IMamnx7MDCT34BEdqEkPFVIOzm
+ O3+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1787212127; x=1787816927;
+ d=1e100.net; s=20251104; t=1787212201; x=1787817001;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to:content-type;
- bh=pfGeAW7y/df2qmt81b45t8XswcAoA5BZPSsJJK3zb1o=;
- b=EFD1B+8H66aUt5luVIP5KUZExqldMW1UI2aHSZWhMnDO42cq7c8iw+2KW3EnuLlcre
- 2wu/+4P3nOju/lwzQ1tTEoKHEC2foyssaJscOkQoB5Z9+crM1NchlW7ITRvBlzmGTsI8
- fGWEO+AbBpR4dTGgWyh6W3iyWxXmofO6KgBR4hteISIvgO2AGEwCPRASoet5R985yO6W
- +MmQ3gV0mcP5VshtLw8iGsCgyh+GJJT/HCJtsQYITQpDuPrrr625kKMaYj2fokEAqXvX
- OvjdGrs6LbF9VOlWWj50P/sIJgn9gNVKL/aRRQrC/jOTlM0+3nkdzsXp67y9UJqZ0RYy
- MOGQ==
-X-Gm-Message-State: AFuF++niMqOEpHmcx+zWe+z0x37tAoUwHN8fNgJjOTcb33AcWmFwerpw
- 5iQ0QTbq8UAmFN1ABMpv5QeaURywV/WuKB0/eY31MMKrwGH9g//F7SHa
-X-Gm-Gg: AR+sD104hrfZIyqJzErqCjbd7Mg04z1lTcj/rr6h/97Mkp/QfzcMHgnGY7NDj5ziEWv
- QegTRQM4lUJ/hXC/LjO/VPLXu5M31CACO0UMB9SUE596PUEtZw7hgQvgfwQ8hmoKTk2U5R5L96P
- Stphst+EmuCb/2bNL8pWrEXTjLROxZof6WENFy7fyT+OTVbsLl/vQVd/ZjF/P0U4QnzpG72RMwh
- Xe4UwZAEZfBraHCG8L8YRbn49qxB4D7Fx8vMCJKtZf3MW41MK3ed8sqeHu9nH35U7cjadV6wcYZ
- caHNwHC0Jf3EVLhbu1UAqXZSrMjSxwpXwCK7CPHPiu9B9WPu7fq0eMZkvs1augVSDhevLwhkidW
- aoOjF/am4QxtgPOuNUKRhXXx57CulGKc6Z14fZcPP7R4XuIEuXjYWVclyvNk+MVPe6NwBelKJmi
- KwX58HxMCNNcRTcTutTojGZ/PuCGCVE7awS5RagX2djYlerDf+Mk9YVqVMGZ4RKa6e7MAfGxHfd
- SydRQlR3XoRF2kuA6f5VGo2YczS6hUSJSCjjV/ZX1aHOdWOpNFnaWilP0Xi3OCqAQkMjQWV9BMz
- EY43sA==
-X-Received: by 2002:a17:90b:3804:b0:37f:fd1f:d30f with SMTP id
- 98e67ed59e1d1-395813f549amr19399687a91.12.1787212127318; 
- Thu, 20 Aug 2026 00:48:47 -0700 (PDT)
+ bh=SS9bxz+t9TfJwvhacYWZzpcbobeiCYJPCh1I34Zy+fk=;
+ b=JuBWAuSbR1uJ93VBArcTx/07mZqmDn1khMc9O+6767+PblZJfE2Nb7IiYfDR/UAxQz
+ JLdFKW2+2UQ9lNeU8U73R90+xSbRS4wslnUkZ4GraAtDF1pOzJha0JL58aFpzg8fRSm2
+ oCc9sfVg/ORpdyX6T8FGeXUa2ycrWMsACUsDMMP6xINy/lEO1+1NEZ9xXyE7MfUPgmaf
+ Bl0wPwSYKx6vg8jwDiQew0LbHR822ttw52Qw6Y6F1W3VmB0Q9Guv27Ct72/G3wAxj9Ov
+ t76wSUUAJO9ofnz1k6LzTFQNJGfdl8P684nBp6KdKi1BzOAZNjwUKWeUCPDFFrT7Fblj
+ +wcw==
+X-Gm-Message-State: AFuF++mmxn4IeRUD3y5OUijhAmpZjUlYUSv1OGHrZsf7oklrKvkWcqnB
+ nfV0QMCgvmWsURX4WMSYcUqypvqUx+MTtKMkoGdsEB3qhjGqnX3iYrKvZqzoJRGb
+X-Gm-Gg: AR+sD13FHrfHxY3v9pUcXr5h8uiMLjJScyNftAY8+wfOZq7n1hmL3EvJ0mtgs29NDUv
+ 4UeQre2w/NqycXc4Kg6Wd7sQTpYleXFUhjsRB/6EEW+hY9fR+vDmR5d/uwcqrtrlOg7ogNvqHza
+ jfQpHjpea4pPSVEaBoV+byM97x+TGHMcwtjpuylMNUoJ5tKhwYouNvxBgwX4LZteMRzjYaf9GiM
+ JwQvGzjpldeVjf8EtaDVJ5pvhBt0Tzt2OTqbKBzbvo5RT9APKrxePo8L153/WKZ8h/BpPP+pBgu
+ OiUDifdLNxpkViEPHRr9RlQUrhDMlPDTEMKjoGlWHY9BqTEvJhg9AyjdFMZkysquQdvV86GbmDw
+ ZamC5lThnoiw2RX7fkLTRJILRhKZAv8cMFrIQcCSg2y8JWrpOYIrPO951s/ifT+micCNsoQho7a
+ SNF1cV1EWCeS5NhV9SDwEWLlOEZ00/0d8nkW8eb0DlKf4CVMFMpjAp/tz/S4+2z/HTw2x7rkN2g
+ a7KAMD/AyMxjThe+Iz+HbCFE7R4NEODWBEiFYKgSDQXFlPiAWTCeO68FLm3CPFXh33ho+ksBho=
+X-Received: by 2002:a17:90b:3b41:b0:38e:4114:d8c7 with SMTP id
+ 98e67ed59e1d1-3958049908amr19539569a91.0.1787212201246; 
+ Thu, 20 Aug 2026 00:50:01 -0700 (PDT)
 Received: from
- runnervmzvulz.vwvfytfcjaberc2f5qen2hdd2d.dx.internal.cloudapp.net
- ([13.83.236.193]) by smtp.gmail.com with ESMTPSA id
- a92af1059eb24-1416ad564bcsm15371216c88.5.2026.08.20.00.48.46
+ runnervm76f27.aygp4ywqhuguzgdq0r011xmwyc.dx.internal.cloudapp.net
+ ([52.159.246.2]) by smtp.gmail.com with ESMTPSA id
+ 5a478bee46e88-327bf191821sm13730885eec.28.2026.08.20.00.50.00
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 20 Aug 2026 00:48:46 -0700 (PDT)
+ Thu, 20 Aug 2026 00:50:00 -0700 (PDT)
 From: linuxtestproject.agent@gmail.com
-To: Samir Mulani <samir@linux.ibm.com>
-Date: Thu, 20 Aug 2026 07:48:45 +0000
-Message-ID: <20260820074845.8900-1-linuxtestproject.agent@gmail.com>
+To: Sowmya Indranna <sowmya.indranna@ibm.com>
+Date: Thu, 20 Aug 2026 07:49:59 +0000
+Message-ID: <20260820074959.3801-1-linuxtestproject.agent@gmail.com>
 X-Mailer: git-send-email 2.55.0
-In-Reply-To: <20260820015708.46189-1-samir@linux.ibm.com>
-References: <20260820015708.46189-1-samir@linux.ibm.com>
+In-Reply-To: <20260819161032.1883-1-sowmya.indranna@ibm.com>
+References: <20260819161032.1883-1-sowmya.indranna@ibm.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] hugemmap43: Migrate truncate_sigbus_versus_oom from
- libhugetlbfs
+Subject: Re: [LTP] fs: Add fsplough entries to runtest
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -99,52 +97,12 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Samir,
+Hi Sowmya,
 
-On Thu, Aug 20, 2026, Samir Mulani wrote:
-> hugemmap43: Migrate truncate_sigbus_versus_oom from libhugetlbfs
+On 2026-08-19, Sowmya Indranna wrote:
+> fs: Add fsplough entries to runtest
 
-> 	/* SIGBUS is what *should* happen */
-> 	SAFE_FTRUNCATE(fdx, 0);
-> 	if (sigsetjmp(sig_escape, 1) == 0)
-> 		*((volatile unsigned int *)p);
-
-Why is fdx truncated before faulting p? The original test keeps q
-instantiated so that the hugepage pool remains exhausted. On a kernel
-without ebed4bfc8da8, exhausting the pool makes allocation fail before the
-missing i_size check, causing SIGKILL instead of SIGBUS.
-
-Could this truncate be removed or moved after the fault? As written, it
-releases the pages and no longer exercises the SIGBUS-versus-OOM regression
-described by the commit message and test documentation.
-
-> /*\
->  * Some kernels have a bug in the positioning of the test against
->  * i_size. This bug means that attempting to instantiate a page
->  * beyond the end of a hugepage file can result in an OOM and SIGKILL
->  * instead of the correct SIGBUS.
->  */
-> [...]
-> 	.needs_root = 1,
-
-Could the description explain why root is required? LTP requires tests with
-.needs_root to document the reason for the privilege requirement.
-
-> +/hugetlb/hugemmap/hugemmap43
-
-Could the binary instead be added to a .gitignore in the hugemmap directory?
-LTP requires new test binaries to be ignored in their leaf test directory.
-
-> 	SAFE_CLOSE(fd);
-> 	SAFE_CLOSE(fdx);
-> 	fd = -1;
-> 	fdx = -1;
-
-Could the explicit assignments be removed? SAFE_CLOSE() already sets each
-descriptor argument to -1, and LTP's C test rules prohibit resetting it
-manually.
-
-Verdict - Needs revision
+Verdict - Reviewed
 
 ---
 Note:
