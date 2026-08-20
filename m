@@ -4,91 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1AA46C5DF82
-	for <ltp@archiver.kernel.org>; Thu, 20 Aug 2026 07:48:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 738E1C5DF81
+	for <ltp@archiver.kernel.org>; Thu, 20 Aug 2026 07:48:46 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 94E2E3CE682
-	for <ltp@archiver.kernel.org>; Thu, 20 Aug 2026 09:48:25 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 1DCAF3C0224
+	for <ltp@archiver.kernel.org>; Thu, 20 Aug 2026 09:48:45 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id AB1883CE782
- for <ltp@lists.linux.it>; Thu, 20 Aug 2026 09:45:02 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ by picard.linux.it (Postfix) with ESMTPS id 29EC73CE89A
+ for <ltp@lists.linux.it>; Thu, 20 Aug 2026 09:45:03 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 729BA14002DD
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 587C31A00346
  for <ltp@lists.linux.it>; Thu, 20 Aug 2026 09:45:02 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 212E13EF0;
- Thu, 20 Aug 2026 07:44:53 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id D81BC3EEC;
+ Thu, 20 Aug 2026 07:44:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1787211897; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=XRtsWp+BNcGp8d4nsmHFQjQNr2/3Xp+/2UEAiGiN5ZE=;
- b=sqVzDm41uWmWy1GNJkmSdogdLlkAB/jp7t59A34I4R9E6+i1Ra4huirnd7jpg1EjF2fysx
- 7lBdwn9br/ITWoAMrj5CjPb2v2BPqCm8AurOO0DJw0tkzI4uja1Gdr8w+qUatfYlzDSCaQ
- 4glfsXs1O94SPzZQKcH84puPALqz7x0=
+ bh=RKxINB/hl7cqIAldi3hoXagFeTt0F1/2xafi1OP+IA8=;
+ b=ljf2LxEH5sw9WmQTKzsjSP7dWGC1ZJ6fwxDVRHoHtrH4MElryMN40Rv0eQjavFJc4uW45b
+ 4rkYaxMxiyGnHur+wJByMkeSFw2nvkWYSimVhT05AlV69qj1LOue9ElfrcrKbMpv7ox/PM
+ o5nUnevDRaNeqXVt9ldeLyx9p2yrAGk=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1787211897;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=XRtsWp+BNcGp8d4nsmHFQjQNr2/3Xp+/2UEAiGiN5ZE=;
- b=28LciHGp9F/T/IY+l2f0htkTBFFrPAxgAefcUXHvnCKVyibAebMUMT8IjWTJIUeKCZiYMk
- 9+0LRwlcK9xGgzCw==
+ bh=RKxINB/hl7cqIAldi3hoXagFeTt0F1/2xafi1OP+IA8=;
+ b=jkF3aBAq/dP+7Igpmi1UIY3BNoMHUu/rUiiD1pWqGAaDs9+zX+ZtfzNGq5w3vn1mIGvzxS
+ EGzyc49pQLy5pyDg==
 Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.de header.s=susede2_rsa header.b=FSiWLN2O;
- dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=ZXgbPiDR
+ dkim=pass header.d=suse.de header.s=susede2_rsa header.b=nKqIS+0I;
+ dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=GYuOAiG7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1787211893; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1787211892; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=XRtsWp+BNcGp8d4nsmHFQjQNr2/3Xp+/2UEAiGiN5ZE=;
- b=FSiWLN2OaM/hp7DAYQjVON+Cef8R5QIOPg1MXPxdoMTq2TZk43Qgd4QEsFMq9kyLrwGCvw
- HvOn/ISJHOPVECGzDx1DBRGEYp5hqgztAgVTpJ7VFAR/87QbjY+JXWv5qh6vqmgjx48BC/
- s89+C3lhJoBoclBNANHbQkSFc1z5974=
+ bh=RKxINB/hl7cqIAldi3hoXagFeTt0F1/2xafi1OP+IA8=;
+ b=nKqIS+0IPWJxAhapcURr2MrYc9IxLa4On9khzepTSBHQRqhpfrEHzbNjRGFhLocVhtxw8U
+ zghSVsYjDThF6x9ovtwJZ9jYQ01cxFLmGWHAlCz35DMJOhGSTwNAn3aeWk/V4GnwzGOSy0
+ cHdIcHyk18X4+wCDf1V1JLuJMSI0rzc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1787211893;
+ s=susede2_ed25519; t=1787211892;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=XRtsWp+BNcGp8d4nsmHFQjQNr2/3Xp+/2UEAiGiN5ZE=;
- b=ZXgbPiDRBR7dUtt8S5MXgFaw1pVOcSawQyGOvZSb8Ph48nQsyXoWjnciUb+0RoDHx8206C
- RzmhPjVClpDXwbCg==
+ bh=RKxINB/hl7cqIAldi3hoXagFeTt0F1/2xafi1OP+IA8=;
+ b=GYuOAiG7JAGx5HfnySm0MMCTQ14RNYetgbwxhWTM2h2fssRrif1HwmgckLLgN63RiGEVPq
+ CNqK9dv2KG6dXuAQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 98D6B3683;
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 15E3D3681;
  Thu, 20 Aug 2026 07:44:46 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id oFw2Im6whmr3YgAAD6G6ig
+ by imap1.dmz-prg2.suse.org with ESMTPSA id aAM9Am6whmr3YgAAD6G6ig
  (envelope-from <andrea.cervesato@suse.de>); Thu, 20 Aug 2026 07:44:46 +0000
 From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Thu, 20 Aug 2026 09:44:51 +0200
+Date: Thu, 20 Aug 2026 09:44:49 +0200
 MIME-Version: 1.0
-Message-Id: <20260820-fchroot-v2-11-062ed20957a0@suse.com>
+Message-Id: <20260820-fchroot-v2-9-062ed20957a0@suse.com>
 References: <20260820-fchroot-v2-0-062ed20957a0@suse.com>
 In-Reply-To: <20260820-fchroot-v2-0-062ed20957a0@suse.com>
 To: Linux Test Project <ltp@lists.linux.it>
 X-Mailer: b4 0.16.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1787211883; l=2990;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1787211883; l=4535;
  i=andrea.cervesato@suse.com; s=20251210; h=from:subject:message-id;
- bh=xER28fWmJQspThM8dl7NAMeJJr3HiAKu18e82cFcAkg=;
- b=Xy2DApm6gULg5jnFdG4k5IBpT7H0ujgIHtHDpXL3M7cihkOD9bC9qS+n8wEy9CB4X6mR/fogp
- 9N36kQ9Jwn9DYHK4cRMLTBVYzdnOsWHrpn8tHp9nwvLvkj1hZbP4qqc
+ bh=pyeKjGE/EISWXa4T5SkkCkOlkT5jV3gj2nHq2HIWrII=;
+ b=N66q8kf4000jHjNDBvEsfBoXyxWNkjP0VMGa8lASKDa7+FCLzOfRv3yTSPg7stxaVFcADBWLB
+ HfOvsXykoj4CLYtVCJ9s6yG38IMqpso/tF/HgIBXBqJjUEpbsxaCK+b
 X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
  pk=zKY+6GCauOiuHNZ//d8PQ/UL4jFCTKbXrzXAOQSLevI=
 X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
@@ -105,13 +107,13 @@ X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
  DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.de:dkim,suse.com:mid,suse.com:email];
  DKIM_TRACE(0.00)[suse.de:+]
-X-Rspamd-Queue-Id: 212E13EF0
+X-Rspamd-Queue-Id: D81BC3EEC
 X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
 X-Rspamd-Action: no action
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH STAGING v2 11/16] fchroot08: test failfs root fork
- inheritance
+Subject: [LTP] [PATCH STAGING v2 09/16] fchroot06: test path walks under
+ failfs root
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -130,53 +132,63 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-Verify that the root moved into failfs by fchroot() lives in the
-fs_struct which is duplicated on fork, so a child of a process with
-the failfs root also fails every absolute path lookup with
-EOPNOTSUPP.
+Verify that once the root is in failfs only lookups anchored at a
+file descriptor keep working: relative lookups from the working
+directory and from a pre-opened directory fd succeed, absolute
+symlinks fail with EOPNOTSUPP and ".." walks clamp at the top of the
+mount tree, landing on the real root.
 
 Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
- runtest/staging                               |  1 +
- testcases/kernel/syscalls/fchroot/.gitignore  |  1 +
- testcases/kernel/syscalls/fchroot/fchroot08.c | 69 +++++++++++++++++++++++++++
- 3 files changed, 71 insertions(+)
+ runtest/staging                               |   1 +
+ testcases/kernel/syscalls/fchroot/.gitignore  |   1 +
+ testcases/kernel/syscalls/fchroot/fchroot06.c | 117 ++++++++++++++++++++++++++
+ 3 files changed, 119 insertions(+)
 
 diff --git a/runtest/staging b/runtest/staging
-index b8954bb5a..8dfe95c4a 100644
+index 49f51d637..8b6b1ecd9 100644
 --- a/runtest/staging
 +++ b/runtest/staging
-@@ -7,3 +7,4 @@ fchroot04 fchroot04
+@@ -5,3 +5,4 @@ fchroot02 fchroot02
+ fchroot03 fchroot03
+ fchroot04 fchroot04
  fchroot05 fchroot05
- fchroot06 fchroot06
- fchroot07 fchroot07
-+fchroot08 fchroot08
++fchroot06 fchroot06
 diff --git a/testcases/kernel/syscalls/fchroot/.gitignore b/testcases/kernel/syscalls/fchroot/.gitignore
-index b68069d9a..c099b4b3a 100644
+index 0697f10eb..12151270a 100644
 --- a/testcases/kernel/syscalls/fchroot/.gitignore
 +++ b/testcases/kernel/syscalls/fchroot/.gitignore
-@@ -5,3 +5,4 @@ fchroot04
+@@ -3,3 +3,4 @@ fchroot02
+ fchroot03
+ fchroot04
  fchroot05
- fchroot06
- fchroot07
-+fchroot08
-diff --git a/testcases/kernel/syscalls/fchroot/fchroot08.c b/testcases/kernel/syscalls/fchroot/fchroot08.c
++fchroot06
+diff --git a/testcases/kernel/syscalls/fchroot/fchroot06.c b/testcases/kernel/syscalls/fchroot/fchroot06.c
 new file mode 100644
-index 000000000..3efe8d85f
+index 000000000..bf6c4fea4
 --- /dev/null
-+++ b/testcases/kernel/syscalls/fchroot/fchroot08.c
-@@ -0,0 +1,69 @@
++++ b/testcases/kernel/syscalls/fchroot/fchroot06.c
+@@ -0,0 +1,117 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
 + * Copyright (C) 2026 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
 + */
 +
 +/*\
-+ * Test that the failfs root is inherited across :manpage:`fork(2)`.
++ * Test path walks under the failfs root.
 + *
-+ * The root moved into failfs by :manpage:`fchroot(2)` lives in the
-+ * fs_struct which is duplicated on fork, so a child of a process with the
-+ * failfs root also fails every absolute path lookup with ``EOPNOTSUPP``.
++ * Once :manpage:`fchroot(2)` moved the process root into failfs, only
++ * lookups anchored at a file descriptor keep working:
++ *
++ * - lookups relative to the working directory, which stays in the real
++ *   filesystem, keep working
++ * - lookups anchored at a pre-opened directory fd keep working, including
++ *   resolution of relative symlinks
++ * - absolute symlinks restart the walk at the failfs root and fail with
++ *   ``EOPNOTSUPP``
++ * - ".." walks clamp at the top of the mount tree, not at the failfs
++ *   root, so walking up from the working directory lands on the real
++ *   root
 + *
 + * Root is required because entering failfs with the ``FD_FAILFS_ROOT``
 + * sentinel requires ``CAP_SYS_CHROOT``.
@@ -187,31 +199,53 @@ index 000000000..3efe8d85f
 +
 +#define _GNU_SOURCE
 +#include <fcntl.h>
-+#include <sys/wait.h>
++#include <sys/stat.h>
 +#include "tst_test.h"
 +#include "lapi/fcntl.h"
 +#include "lapi/syscalls.h"
++#include "tst_safe_file_at.h"
 +
++#define RELDIR "rel"
 +#define ABSDIR "abs"
++
++static char upwards[PATH_MAX];
 +
 +static void run(void)
 +{
 +	if (SAFE_FORK())
 +		return;
 +
-+	pid_t pid;
++	struct stat realroot, st;
++	int dfd, fd;
++
++	SAFE_STAT("/", &realroot);
++	dfd = SAFE_OPEN(".", O_RDONLY | O_DIRECTORY);
 +
 +	TST_EXP_PASS(tst_syscall(__NR_fchroot, FD_FAILFS_ROOT, 0),
 +		"fchroot() with the FD_FAILFS_ROOT sentinel");
 +
-+	pid = SAFE_FORK();
-+	if (!pid) {
-+		TST_EXP_FAIL2(open(ABSDIR, O_PATH), EOPNOTSUPP,
-+			"absolute lookup in a forked child");
-+		exit(0);
-+	}
++	fd = SAFE_OPENAT(AT_FDCWD, ".", O_RDONLY | O_DIRECTORY);
++	SAFE_CLOSE(fd);
 +
-+	SAFE_WAITPID(pid, NULL, 0);
++	fd = SAFE_OPENAT(dfd, "canary", O_WRONLY | O_CREAT, 0600);
++	SAFE_WRITE(SAFE_WRITE_ALL, fd, "x", 1);
++	SAFE_CLOSE(fd);
++
++	fd = SAFE_OPENAT(dfd, RELDIR, O_RDONLY);
++	SAFE_CLOSE(fd);
++
++	TST_EXP_FAIL2(openat(dfd, ABSDIR, O_RDONLY), EOPNOTSUPP,
++		"resolution of an absolute symlink");
++
++	fd = SAFE_OPENAT(AT_FDCWD, upwards, O_PATH);
++	SAFE_FSTAT(fd, &st);
++	SAFE_CLOSE(fd);
++
++	TST_EXP_EXPR(st.st_dev == realroot.st_dev &&
++		st.st_ino == realroot.st_ino,
++		"'..' walk clamps at the top of the mount tree");
++
++	SAFE_CLOSE(dfd);
 +
 +	exit(0);
 +}
@@ -220,20 +254,37 @@ index 000000000..3efe8d85f
 +{
 +	char *tmpdir;
 +	char abs_path[PATH_MAX];
++	struct stat root_st, st;
++	int fd, off;
 +
 +	tmpdir = tst_tmpdir_path();
 +	snprintf(abs_path, sizeof(abs_path), "%s/%s", tmpdir, "target");
 +
 +	SAFE_TOUCH("target", 0644, NULL);
++	SAFE_SYMLINK("target", RELDIR);
 +	SAFE_SYMLINK(abs_path, ABSDIR);
++
++	SAFE_STAT("/", &root_st);
++
++	off = snprintf(upwards, sizeof(upwards), "..");
++	while (1) {
++		fd = SAFE_OPENAT(AT_FDCWD, upwards, O_PATH);
++		SAFE_FSTAT(fd, &st);
++		SAFE_CLOSE(fd);
++
++		if (st.st_dev == root_st.st_dev && st.st_ino == root_st.st_ino)
++			break;
++
++		off += snprintf(upwards + off, sizeof(upwards) - off, "/..");
++	}
 +}
 +
 +static struct tst_test test = {
-+	.test_all = run,
 +	.setup = setup,
++	.test_all = run,
 +	.needs_root = 1,
-+	.forks_child = 1,
 +	.needs_tmpdir = 1,
++	.forks_child = 1,
 +};
 
 -- 
