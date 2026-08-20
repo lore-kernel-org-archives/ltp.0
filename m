@@ -4,107 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 58EC0C5DF86
-	for <ltp@archiver.kernel.org>; Thu, 20 Aug 2026 19:12:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E6DF7C5DF86
+	for <ltp@archiver.kernel.org>; Thu, 20 Aug 2026 19:35:36 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id AC2033CF3D9
-	for <ltp@archiver.kernel.org>; Thu, 20 Aug 2026 21:12:53 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 584E23CE52A
+	for <ltp@archiver.kernel.org>; Thu, 20 Aug 2026 21:35:35 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 440183C7AB3
- for <ltp@lists.linux.it>; Thu, 20 Aug 2026 21:12:35 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id B53673C062E
+ for <ltp@lists.linux.it>; Thu, 20 Aug 2026 21:35:18 +0200 (CEST)
+Received: from mail-pj2-x08.google.com (mail-pj2-x08.google.com
+ [IPv6:2607:f8b0:4864:39::8])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 164FF2000A7
- for <ltp@lists.linux.it>; Thu, 20 Aug 2026 21:12:34 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 2689A85253;
- Thu, 20 Aug 2026 19:12:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1787253150;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=ciY2DoGmp/PO6nYHi1ApIPLdLfA4Sns2y3hihdPiGbA=;
- b=ln8zLT8OJByT9tdkhXJbGFIZNuXa0Th8XfisIIMAdtQNrAQ32P7xzH94K5Ne0CcFTNaTza
- IVxaYyelch+7MduRZE5HOTjP12VrGpjBShpLytETKeA1kMXkvRjZjdEa70zbx61ltFGiDj
- 3OnDGyYDwSxRKLzj869eDumrTmIWjtw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1787253150;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=ciY2DoGmp/PO6nYHi1ApIPLdLfA4Sns2y3hihdPiGbA=;
- b=QtZp9cHtzS/77xE3i368HEGfsfSoXIBqppQxTtfpZbm84RJmaMpgSazjjnBibSDBmVwuPz
- Vn3xsMwq4yoXxeBw==
-Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=pQEdPHeu;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=lICeugeh
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1787253146;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=ciY2DoGmp/PO6nYHi1ApIPLdLfA4Sns2y3hihdPiGbA=;
- b=pQEdPHeuhhYQZ26xCC5qTM3h7oFOwgh2glhOe0IqpsCXph/HVUDDphuRobFUgVwhCAlqDq
- ZFZjFrBZN0RYqr4CwLZaJBUjBUSU6S797Jht3XuYpQLTSQaiM1V7Gz9ENxZBYlToV4G32i
- 3R4NMLbvJahH2EX29jm8HI/8xLljm48=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1787253146;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=ciY2DoGmp/PO6nYHi1ApIPLdLfA4Sns2y3hihdPiGbA=;
- b=lICeugehTQPBOtTGjtah+ct94HwqWUJibS5DWdR7rVFeuT61oqcdAP1myeVOY05WQdxHuF
- IhSxio2xevh6ECCg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id CD93727A8;
- Thu, 20 Aug 2026 19:12:25 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id cFOcLplRh2pbAQAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Thu, 20 Aug 2026 19:12:25 +0000
-Date: Thu, 20 Aug 2026 21:12:23 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20260820191223.GA511766@pevik>
-References: <20260819161634.1341577-1-chrubis@suse.cz>
- <20260819161634.1341577-17-chrubis@suse.cz>
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 4865A1400043
+ for <ltp@lists.linux.it>; Thu, 20 Aug 2026 21:35:18 +0200 (CEST)
+Received: by mail-pj2-x08.google.com with SMTP id
+ 98e67ed59e1d1-392c6555df6so92800a91.0
+ for <ltp@lists.linux.it>; Thu, 20 Aug 2026 12:35:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20251104; t=1787254516; x=1787859316; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to:content-type;
+ bh=qb4ouOpC5ohCUBIu2jeNUxdUjEdZb1vgZVsqrZKQ9mw=;
+ b=h5FI10pTqPWm6WsMDlZ/VV1+PgySamO9wlqiizuy/7PrGirIThdnHdE6TtKnmlwIwL
+ VZrmFuS7vOVVhOfoHuv8Eh6ZMNl54ZnihTOJdXyl0QfIGFJG9Tliomw3NchGH1me+84/
+ ToRmlj5Hg0mqgGW9f73tB2wFwQ7+A2u62r5vR1QKMSSWBGO4TVuQl5VykWtkaaHOf+w5
+ Sc5ktaoViavUJtxdBvgNHohQa/DTXSB8sTx0TpnCsWxA21ddgf4AT5EDuNDMXmQREVXd
+ lwcJYkZDNXV9cYtd7m+ov7hJtP8IjvjoMxc6K3D8JgRCsJF7mZDqeqO43D+5BEgLuR5+
+ vqvw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1787254516; x=1787859316;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to:content-type;
+ bh=qb4ouOpC5ohCUBIu2jeNUxdUjEdZb1vgZVsqrZKQ9mw=;
+ b=aLTtYT2JC0S6NmlZBEWsMk7ws85XneaCmEVHm0Je6CkXYvFSwaSjviSt5GQyi6wbJu
+ KqNCQRAJJ7JUdpz2D4R3Na3DyZkDvRFAETowa3mtayk1DQsTabU5AmEZi0TPedRk4MX1
+ dS5Xvy8eH6+7GVX6C71kg3/1uW5f9A+bcU9Jj+UaJcSyiL7HoFVFAfslWDLDuM8R5bQW
+ eQZ3czFZtBGhUq2VSloxh0b5fPOWY/fki653ccn998fUWGRdvT4+7nx5b2nlopfoxorT
+ GHgRD0cwNLBCYPs/fdX8d5kChDcLO4W3qn7FPdUw1W1yCamXsXm4Eqzg2JBMOVRGAa2P
+ LWMQ==
+X-Gm-Message-State: AFuF++l2W1GSUovc/FAipiPgFGqlZdmHfJTxtYfOINL760haew2reqjA
+ leOpgcJGzbH7JTEv+JTvZpiffxZX2mvvdoFRF5YKYvcMrOa1P9mvT5MV
+X-Gm-Gg: AR+sD12Q3NjYgfskUhzZVLP0vFcF/IwT2t+4zuPMJVzjeRnpFSKBMgTfZLUq3+ifYWl
+ oVfbTOfk2QbvSrXg8WwetM2oexkxUnsyIxkjDaO32TJOQVihMjHdpozydrMqzW5r/n8fGb2ykcH
+ RiDFHBS4a9HRuSnIy6ndKlTAq+cIN0t15bL0y4o6hyEOcOXkCmmLb/zfw9KhXOwCWwE9xk0Mlc5
+ XvOTvCH0vMyXjv75nuckhOcR+5ttRYgxJbGBUwiKmFmmB13bR4T+pyCkY0DPv8IeugI2QqdAMJE
+ 5EsigkXAUFgYir2PblDGPbijOdw6VX7esfBtCSeRm9jBIg0w+PoDYppbldAQrwM0VwToh4Fj/hi
+ VrU4Zo4OuBV4Ut8vW7heZAZwlN/Qcx5e7/FLFjnJFgJtZBY4nn1Jb2HyPM3tWtgcfFpZCDuvF1X
+ O0achqY87GToFmko9DA987TeGFFXBP+9KBAQulcufk9kdEi/4pHJdIYV4q8pXitFi6xvjBrx+Bs
+ blw3+cIlhJIDpBXNH5xamuARqG+sbQAE4osgel1iRNZi/0D+S+rH4ChZ18oU4LNp7as1udoK2c=
+X-Received: by 2002:a17:90b:288a:b0:38e:b400:a860 with SMTP id
+ 98e67ed59e1d1-395c3719f99mr1377695a91.13.1787254516485; 
+ Thu, 20 Aug 2026 12:35:16 -0700 (PDT)
+Received: from
+ runnervm76f27.hqvb1w5sullexdfu0h25jepama.yx.internal.cloudapp.net
+ ([52.161.50.37]) by smtp.gmail.com with ESMTPSA id
+ a92af1059eb24-1416ae143edsm36103824c88.10.2026.08.20.12.35.15
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Thu, 20 Aug 2026 12:35:16 -0700 (PDT)
+From: linuxtestproject.agent@gmail.com
+To: Andrea Cervesato <andrea.cervesato@suse.de>
+Date: Thu, 20 Aug 2026 19:35:14 +0000
+Message-ID: <20260820193514.9107-1-linuxtestproject.agent@gmail.com>
+X-Mailer: git-send-email 2.55.0
+In-Reply-To: <20260820-coredump-v1-1-7ce51603cefb@suse.com>
+References: <20260820-coredump-v1-1-7ce51603cefb@suse.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20260819161634.1341577-17-chrubis@suse.cz>
-X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; ARC_NA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- MISSING_XM_UA(0.00)[]; TO_DN_SOME(0.00)[];
- MIME_TRACE(0.00)[0:+]; RCVD_TLS_ALL(0.00)[];
- RCPT_COUNT_TWO(0.00)[2];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DKIM_TRACE(0.00)[suse.cz:+]; REPLYTO_EQ_FROM(0.00)[]
-X-Rspamd-Queue-Id: 2689A85253
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 16/31] testcases: sysfs: Add sys_wakeup01
+Subject: Re: [LTP] coredump01: New core_pattern specifiers test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -116,94 +91,80 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
 Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Cyril,
+Hi Andrea,
 
-> A test for /sys/class/wakeup/*/* files.
+On Aug 20, 2026, Andrea Cervesato wrote:
+> coredump01: New core_pattern specifiers test
 
-> +++ b/testcases/kernel/sysfs/class/wakeup/sys_wakeup01.c
-> @@ -0,0 +1,118 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (c) 2026 Cyril Hrubis <chrubis@suse.cz>
-> + */
-> +
-> +/*\
-> + * Sanity checks for the wakeup source statistics exported under
-> + * /sys/class/wakeup/wakeupN/.
-> + *
-> + * For every wakeup source the test verifies that:
-> + *
-> + * - name is a non-empty string
-> + * - active_count, active_time_ms, event_count, expire_count, last_change_ms,
-> + *   max_time_ms, prevent_suspend_time_ms, total_time_ms and wakeup_count are
-> + *   all non-negative
-> + * - active_time_ms <= total_time_ms (currently active time is part of the
-> + *   accumulated total)
-> + * - max_time_ms <= total_time_ms (the longest single event cannot exceed the
-> + *   accumulated total)
-> + *
-> + * The test skips with TCONF when no wakeup source is present.
-> + */
-> +
-> +#include <string.h>
-> +#include <limits.h>
-> +#include <dirent.h>
-> +#include "tst_test.h"
-> +#include "tst_sysfs_assert.h"
-> +
-> +#define WAKEUP "/sys/class/wakeup"
-FYI some archs does not have wake up support therefore it does not have
-/sys/class/wakeup directory, e.g. s390x.
-...
-> +static void do_test(void)
-> +{
-> +	DIR *d;
-> +	struct dirent *ent;
-> +	int found = 0;
-> +
-> +	d = SAFE_OPENDIR(WAKEUP);
-Therefore this fails:
-sys_wakeup01.c:100: TBROK: opendir(/sys/class/wakeup) failed: ENOENT (2)
+> 	ssize_t rval, i;
+> 	int fd, elf;
+>
+> 	if (bytes >= 4 && !memcmp(magic, "\177ELF", 4))
+> 		elf = 1;
+>
+> 	dprintf(fd, "exe=%s pid=%s sig=%s bytes=%lld elf=%d\n",
+> 		argv[1], argv[2], argv[3], bytes, elf);
 
-I believe we need CONFIG_PM_SLEEP=y kconfig check.
+Could `elf` be initialized to zero? For short or non-ELF input the
+condition does not assign it, so `dprintf()` reads an indeterminate value.
+A nonzero value can make the test accept a malformed core stream as ELF.
 
-drivers/base/power/wakeup_stats.c creates that directory in __init
-wakeup_sources_sysfs_init(), and that source is guarded by CONFIG_PM_SLEEP=y,
-which depends on CONFIG_SUSPEND=y.
+> 	SAFE_PRCTL(PR_GET_DUMPABLE, 1, 0, 0, 0);
 
-> +
-> +	while ((ent = SAFE_READDIR(d))) {
-> +		if (strncmp(ent->d_name, "wakeup", 6))
-> +			continue;
-> +
-> +		found = 1;
-> +		check_wakeup(ent->d_name);
-> +	}
-> +
-> +	SAFE_CLOSEDIR(d);
-> +
-> +	if (!found)
-> +		tst_res(TCONF, "No wakeup source found");
+Should this use `PR_SET_DUMPABLE`? `PR_GET_DUMPABLE` only returns the
+current state and ignores arg2, so this call does not ensure that
+`abort()` can produce a core dump.
 
-This TCONF is also valid, but too late.
+> 	/* the kernel spawns the helper asynchronously */
+> 	if (TST_RETRY_FN_EXP_BACKOFF(access(res, F_OK), TST_RETVAL_EQ0, HELPER_TIMEOUT)) {
+> 		tst_res(TFAIL, "%s did not report any core dump", HELPER);
 
-There are similar failures in other tests, I guess I'll post you CI links.
+Could kernels with `CONFIG_STATIC_USERMODEHELPER` be rejected with TCONF
+before this check? In particular, an empty
+`CONFIG_STATIC_USERMODEHELPER_PATH` intentionally disables the helper, so
+this timeout reports TFAIL without testing specifier expansion.
 
-Kind regards,
-Petr
+> 	set_pattern("|%s/%s %%e %%p %%s %s/res.%%p", helper_dir, HELPER, cwd);
+>
+> 	len = SAFE_READLINK("/proc/self/exe", helper_dir, sizeof(helper_dir) - 1);
 
-> +}
-> +
-> +static struct tst_test test = {
-> +	.test_all = do_test,
-> +};
+Could the pipe case require the initial mount namespace, or otherwise use
+paths visible there? The kernel resolves and runs a `core_pattern` pipe
+handler in the initial mount namespace. If LTP runs in another mount
+namespace, these helper and result paths may not exist there, producing a
+spurious TFAIL.
+
+> /*
+>  * Core dump collector for the piped core_pattern tested by coredump01.
+>  *
+>  * Avoiding the LTP API here is correct, since the kernel spawns the helper
+>  * through ``call_usermodehelper()`` without the LTP IPC environment.
+>  */
+>
+> int main(int argc, char *argv[])
+
+Could this helper follow the LTP helper-binary convention by defining
+`TST_NO_DEFAULT_MAIN` and including `tst_test.h`? The missing IPC
+environment means it should avoid IPC-backed result calls, but does not
+require avoiding the helper API form itself.
+
+Verdict - Needs revision
+
+---
+Note:
+
+The agent can sometimes produce false positives although often its
+findings are genuine. If you find issues with the review, please
+comment this email or ignore the suggestions.
+
+Regards,
+LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
