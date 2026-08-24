@@ -4,81 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6EBF2C5DF94
-	for <ltp@archiver.kernel.org>; Mon, 24 Aug 2026 09:50:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 18FADC5DF81
+	for <ltp@archiver.kernel.org>; Mon, 24 Aug 2026 10:15:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1787566548; h=to : date :
+ message-id : mime-version : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : content-type : content-transfer-encoding : sender : from;
+ bh=uq7fKNSmokwg3jqut20gp5dhb5P0UKKFj7QWAdwN+BI=;
+ b=MT1HEWd0qPx98Nw5l5VocfXdZUB+vq2hvhvxsKhbfFh1UjwGY4hzuwJIlOE3GRhZzaC4Y
+ tSipM3nNht1fJvEaMbmc0MM7P6jMP5O/IdjUxJUdG2wyAwc9d/Gl0Z/JXQuLThEnmCQnBTd
+ 3UyN5vlQHKeOyj9o2HuQFTyxXKah3wQ=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 745573D02EF
-	for <ltp@archiver.kernel.org>; Mon, 24 Aug 2026 11:50:10 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 4C54B3D03E6
+	for <ltp@archiver.kernel.org>; Mon, 24 Aug 2026 12:15:48 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 943943C8484
- for <ltp@lists.linux.it>; Mon, 24 Aug 2026 11:49:53 +0200 (CEST)
-Received: from mail-pj2-x04.google.com (mail-pj2-x04.google.com
- [IPv6:2607:f8b0:4864:39::4])
+ by picard.linux.it (Postfix) with ESMTPS id 149C23C7136
+ for <ltp@lists.linux.it>; Mon, 24 Aug 2026 12:15:27 +0200 (CEST)
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com
+ [IPv6:2a00:1450:4864:20::634])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 72D6A140054B
- for <ltp@lists.linux.it>; Mon, 24 Aug 2026 11:49:53 +0200 (CEST)
-Received: by mail-pj2-x04.google.com with SMTP id
- d9443c01a7336-2cc80544c74so9060055ad.0
- for <ltp@lists.linux.it>; Mon, 24 Aug 2026 02:49:53 -0700 (PDT)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 47E3A1A005EB
+ for <ltp@lists.linux.it>; Mon, 24 Aug 2026 12:15:27 +0200 (CEST)
+Received: by mail-ej1-x634.google.com with SMTP id
+ a640c23a62f3a-c197e7e4e94so580884066b.2
+ for <ltp@lists.linux.it>; Mon, 24 Aug 2026 03:15:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1787564992; x=1788169792; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to:content-type;
- bh=ncLHZalwefoEoJwjBbbQaXtMPWrse+I3AlzTSk/633g=;
- b=nXMHJwrxe1zxlB+4F2+blCxBpmCpQXimX4TpHWevaT6TxM6BUssSVC+k0Zrff2Cu8I
- vRGNCtbtS6oU5AbNMdK3YQE+wBKuMObhoiGSPPxzHHpozJqWvXiec3sfcP64hm6rUO27
- rFGK2+stZK1zaK2N2TbqIK/FTBhHtsxfBi7m3ks5yTboXYa35lZh5EGgtOgcVktv2bAz
- OcR36Ss+QVD7DFhP0mjhgVCSpPAymXq938ro7v6lgMA364/Jul/46SPnVwzn0HIbKtVV
- vCBms88tC5NoDIohp8uS063P5haVrDWWBTDt3c3b4nCELaVt4a/ZszYbPfR0Uppc6MeD
- zHlw==
+ d=suse.com; s=google; t=1787566527; x=1788171327; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+ bh=fcPIwE+uxu91gPv8XTpI8GE4hmZVMAtSS+tJbn6v2p0=;
+ b=FrZ4BupHMN8g4TMZNGWerJZ0ey4tZaBLY4JaRxxu89/d1k6qGHOhMluJy+0fVZN1bz
+ t1E3FLcPpKdqj+ieGt2Na4+nBnaJnIswJu7d71YCmPEN2dayEWPvNeGYUJxGiOJV6Me7
+ Zul0J5RTIHn/wm0j2c8MXL55Ud4xyjAIqng+OVxBhvy/GoMDOzmk+enig4gbrR2XQEyx
+ DqkuKXCWcmuEgC/rmPPy5xIJd0OnBDnMSpk5dxOHkQX+7F4xK3X7fs+QeS5GFkUOW9DT
+ WCM/QknNRSnrDMAkj/pbwCj2H2vWe6PZbuPxQUSzBrUYPUFcb4IavxcUkcPSRQvwdk+f
+ jr+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1787564992; x=1788169792;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to:content-type;
- bh=ncLHZalwefoEoJwjBbbQaXtMPWrse+I3AlzTSk/633g=;
- b=IgysoCpOboZpfp2UnAWT5Jn7cPoSgQZ1PW29cX/4V/2m4Nai+6qhGq4fAT5pYtwTk2
- U7TXdpQpn1WHmIEgKrHTqEDgw28j6BJiM9N7wW00+43qDkTndobygCNCPpe1AqOr0811
- kiDO4Ofc5DmgsHj67oz2kzjgpxUbX8KF4ZKK2aJCFZajke+qrjAkysEdQZC+2KH50Idx
- JuLBzs0AYvprHAG9si9aQj4f8CQhFhwOdGy9AX5JJ+epYJMergGWB3APZM871eo2KnxN
- uKJ51AwL3gjG3XOH9/N3pdvlcGh3RwQDU49tPmKBnc6WV9XGOUmsH9GJjbDOVo6lPJAb
- B8VA==
-X-Gm-Message-State: AFuF++l1a0fZudXLUok0l212NP0wdeh6uakFJdkwgCVMbh86WGWjiUzU
- 87Q7su9gDgXvbrGeHlft2MoVdy7ndcvLozlrFSN9v6fQUtlv+yw4snfj
-X-Gm-Gg: AR+sD13T+2Hb8BLn8aGl0lTX27nn3ZHnLo8io5COT8K2uDzxsdUM2/MnjknclqUiwxk
- VtgqCNaFWDz78dfeJen1Qwc+A6MxSNJrAUNQZ55LcLs+NFyLiP13wkp36s2oAp4juEG+5NxPMUj
- x9eZ0YYW0ZiT7Nnp8HbnuUDhTyb3LWTNmAA8bVbTyVrahxekgBXg0J5KRH3QpYh7cm6la8Id+oK
- mLXpZC4sMY0urx4NXwp/vk8l5sAvUCgabYY1fck1ji8C3VdutCa3tWFH24kklkvJM2F8g0Atlj8
- 9kGIemTiJOmbEIP5zCERMypL14m+DW12fYFesY+n0dbP+q8V63bcRMg5vVc8EWYyFG0H87g4irk
- evmAYWiyeeWSSEtDos7cy6dmBoo27YHVXYQJLC6aAzIAMel+on1gsk5ZviPNSkJIS6dibW0326h
- lGoTA1qUx9sfSrpfN78gHuKN1d8pDOlL1OIEDEmfaBtz1WgO/C7tmGcEBe5rHXMAuLGgeY7rFdS
- Wo3EX+OdjRlKow4eYfD2Cc9OUoPPoDszA4APmS8GUWcK+FBsnZlRCpMv9jt33y5qj40s/AH8Qan
-X-Received: by 2002:a17:903:b4b:b0:2c9:e846:a57e with SMTP id
- d9443c01a7336-2d64a9a1b03mr507113835ad.0.1787564991547; 
- Mon, 24 Aug 2026 02:49:51 -0700 (PDT)
-Received: from
- runnervm76f27.jlritpxf4sdutfcgm12ssn1vih.xx.internal.cloudapp.net
- ([20.112.122.54]) by smtp.gmail.com with ESMTPSA id
- d9443c01a7336-2d676791d44sm16130935ad.24.2026.08.24.02.49.51
+ d=1e100.net; s=20251104; t=1787566527; x=1788171327;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to:content-type;
+ bh=fcPIwE+uxu91gPv8XTpI8GE4hmZVMAtSS+tJbn6v2p0=;
+ b=On1CU3pvH94EYJfNAQqgzgmq8GuJ8+e6LIVmQoZzRn2MAhp1qDXV0PdaIez8a3kptB
+ tQUbLeK1xZmRWw9cGFDjdxTiIZTP82sVqDMOE4kMkPBwexKxlH7XEDQh5kmd+kTwatTp
+ JF9ZYdu3tA/BqayXW5mo/WWqPgzhyfcRqoZRhnz+HJ2q75VytT7Hjtq9J11CiEgKLZPn
+ JVfCJgJLjlm2lo4BDJhNK3A8G7pI/jswLZwWRz77CYzca1qSk1w0f69y+md0ip8m2k3r
+ U+ToyT7L7gtN7wJLakfgkxico8ubvD8737cev5k2Xu1J1XbMFWeR+Dx0RSeOU3yaxuUx
+ SYsg==
+X-Gm-Message-State: AFuF++kF5grIUXih6VbKZz8Ttz1QnpmiQms7mzm5y9msIx0PTS/oBd0D
+ TUpHOFBovWn0SI4AHJSYOKMMTe1cpF5w5PCXrAMaDf5wAgAW3wLxyHI155dHpucxoJbAT/ian9/
+ YpXrXuaw=
+X-Gm-Gg: AR+sD10+K+s0MBDaZ+0Wi01aqB693BGaR67JdDiZxCeGoHAbYqWhqxDmGmT3+ZRmLoN
+ mz7hseKeiaUoN2+pir5ujfuuafDCxcTf3sf70WIgRPQoilX6bKr0CBz8EVBEo7MsHnsIV9FDSps
+ XoTPEI+f03FVK2+hFtbmN+RG5FGJtlnAxI3/e1BB8Cb8V5R6yn20Tz4emCsdgMqz+PvGE9ZVH9W
+ 7YeZsv1PZqNVUADLYWsp6M08kYtr5P7ae0bph55Fo2RuRRJILUhga7AWyFlkk3rkuZeLHf+/ZSr
+ jYEuEXt15O4TKrSjKMIwo5l9DQRsCwZ6Hj+aZP1RKmX8MohJT/7cqxanRy0afpP176XMOpYpTMT
+ WGwa1tBaqlavd4GwwNxufuTbfCCKnPgno/UDv6axpRa899bKuj253QAwFWWUNoDIkvsTpU+nuwX
+ 88NIMUlIRpuCLtAe9Z94nUC4N0HDI7T6lr80Vf16ePBGuO3Q==
+X-Received: by 2002:a17:907:1ca0:b0:c16:14d1:b529 with SMTP id
+ a640c23a62f3a-c249262043bmr2008164066b.18.1787566526532; 
+ Mon, 24 Aug 2026 03:15:26 -0700 (PDT)
+Received: from localhost ([2a07:b241:1004:8300::1000])
+ by smtp.gmail.com with ESMTPSA id
+ a640c23a62f3a-c24968abf18sm1278096966b.61.2026.08.24.03.15.25
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 24 Aug 2026 02:49:51 -0700 (PDT)
-From: linuxtestproject.agent@gmail.com
-To: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Mon, 24 Aug 2026 09:49:50 +0000
-Message-ID: <20260824094950.8983-1-linuxtestproject.agent@gmail.com>
+ Mon, 24 Aug 2026 03:15:26 -0700 (PDT)
+To: ltp@lists.linux.it
+Date: Mon, 24 Aug 2026 12:15:24 +0200
+Message-ID: <20260824101525.176017-1-avinesh.kumar@suse.com>
 X-Mailer: git-send-email 2.55.0
-In-Reply-To: <20260824-coredump-v3-1-6429da674718@suse.com>
-References: <20260824-coredump-v3-1-6429da674718@suse.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] coredump01: New core_pattern specifiers test
+Subject: [LTP] [PATCH] landlock04: Fix false TFAIL in _test_truncate() deny
+ path
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -90,28 +95,58 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+From: Avinesh Kumar via ltp <ltp@lists.linux.it>
+Reply-To: Avinesh Kumar <avinesh.kumar@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Andrea,
+From: Avinesh Kumar <avinesh.kumar@suse.com>
 
-On Mon, 24 Aug 2026, Andrea Cervesato wrote:
-> coredump01: New core_pattern specifiers test
+commit 8643b01a68cf converted an intentionally-unchecked open() call
+(used only to get an fd for the ftruncate() sub-test) into
+TST_EXP_FD_OR_FAIL(), wrongly asserting it must fail with EACCES on
+the deny path. Its outcome depends on other granted rights and isn't
+guaranteed, causing a false TFAIL when it succeeded.
 
-Verdict - Reviewed
+landlock_tester.h:257: TFAIL: open(FILE_TRUNCATE, O_WRONLY, PERM_MODE) invalid retval 4: SUCCESS (0)
 
+Restore the unchecked open() on the deny path, keep SAFE_OPEN() on the
+pass path. Also fix SAFE_CLOSE(TST_RET) to SAFE_CLOSE(fd) for consistency.
+
+Fixes: 8643b01a68cf ("tree: Use TST_EXP_PASS_OR_FAIL() and TST_EXP_FD_OR_FAIL()")
+Signed-off-by: Avinesh Kumar <avinesh.kumar@suse.com>
 ---
-Note:
+ testcases/kernel/syscalls/landlock/landlock_tester.h | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-The agent can sometimes produce false positives although often its
-findings are genuine. If you find issues with the review, please
-comment this email or ignore the suggestions.
+diff --git a/testcases/kernel/syscalls/landlock/landlock_tester.h b/testcases/kernel/syscalls/landlock/landlock_tester.h
+index f44721245144..e93f970d87c3 100644
+--- a/testcases/kernel/syscalls/landlock/landlock_tester.h
++++ b/testcases/kernel/syscalls/landlock/landlock_tester.h
+@@ -254,7 +254,8 @@ static void _test_truncate(const int exp_err)
+ 	tst_res(TINFO, "Test truncating file");
+ 
+ 	TST_EXP_PASS_OR_FAIL(truncate(FILE_TRUNCATE, 10), exp_err);
+-	fd = TST_EXP_FD_OR_FAIL(open(FILE_TRUNCATE, O_WRONLY, PERM_MODE), exp_err);
++	fd = exp_err ? open(FILE_TRUNCATE, O_WRONLY, PERM_MODE)
++		     : SAFE_OPEN(FILE_TRUNCATE, O_WRONLY, PERM_MODE);
+ 	if (fd != -1) {
+ 		TST_EXP_PASS_OR_FAIL(ftruncate(fd, 10), exp_err);
+ 		SAFE_CLOSE(fd);
+@@ -262,7 +263,7 @@ static void _test_truncate(const int exp_err)
+ 
+ 	fd = TST_EXP_FD_OR_FAIL(open(FILE_TRUNCATE, O_WRONLY | O_TRUNC, PERM_MODE), exp_err);
+ 	if (fd != -1)
+-		SAFE_CLOSE(TST_RET);
++		SAFE_CLOSE(fd);
+ }
+ 
+ static void tester_run_fs_rules(const int rules, const int result)
+-- 
+2.55.0
 
-Regards,
-LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
