@@ -4,83 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DF5BEC61DBE
-	for <ltp@archiver.kernel.org>; Tue, 25 Aug 2026 11:42:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3EF3BC61DBE
+	for <ltp@archiver.kernel.org>; Tue, 25 Aug 2026 11:42:56 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 297923C0D0D
-	for <ltp@archiver.kernel.org>; Tue, 25 Aug 2026 13:42:29 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 8C14A3C701B
+	for <ltp@archiver.kernel.org>; Tue, 25 Aug 2026 13:42:54 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 918F03C57B4
- for <ltp@lists.linux.it>; Tue, 25 Aug 2026 13:36:47 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+ by picard.linux.it (Postfix) with ESMTPS id 3DAC33C701B
+ for <ltp@lists.linux.it>; Tue, 25 Aug 2026 13:36:49 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 292321400C6F
- for <ltp@lists.linux.it>; Tue, 25 Aug 2026 13:36:45 +0200 (CEST)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 7D45510009AB
+ for <ltp@lists.linux.it>; Tue, 25 Aug 2026 13:36:48 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 3014F1F7DF
- for <ltp@lists.linux.it>; Tue, 25 Aug 2026 11:36:36 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id DA29786C50
+ for <ltp@lists.linux.it>; Tue, 25 Aug 2026 11:36:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1787657800; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1787657804; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=MSlOF3WXef2H7zoNmzzhaChjJkyR5YXNJjDv8gTyVwk=;
- b=tvKwCpV3hqa0va74gQNyTFlY25GJ25cjDkVPZtyaub3P/DcXuMV4K5HQDhriHQsh7NpDPI
- /RPkUmHVKJaX+VVowFElEB/iV8zwmiWaBuV0t0gBLXTtJH+y+ergL9IcJRkp/CJLQxNfij
- O+Q0VLi8vpU/WUbuA0U466FCNrNCzjA=
+ bh=Y0agTdib7d5KUbwrDXXE+GpyPF+VxFTe1cWz0dPUK5E=;
+ b=UT8/bwYIGcvMeXxy3JQnjzclbBImsYZpf3r4EPFah/D4c1dROo3ZpURYj49U3vyStXz8yS
+ ZqKB8qOSeZcCEMexFvrPRRetYL8ZSh8QvhK/dDYA4C3nvZorZCzUFU9+ZT4RKQ6WW9j6wJ
+ 9C9BhbRjfX9R0gfdNDSj28mytOiI30c=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1787657800;
+ s=susede2_ed25519; t=1787657804;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=MSlOF3WXef2H7zoNmzzhaChjJkyR5YXNJjDv8gTyVwk=;
- b=xiZoKePDi/XlwsCM1h666G2VRAuNaHGrs8Kv7FF/5oy4O8rB4fmfNWPwSqyy2ITzCEf/ZI
- DGswm2Ml6O8AY0BA==
-Authentication-Results: smtp-out2.suse.de;
+ bh=Y0agTdib7d5KUbwrDXXE+GpyPF+VxFTe1cWz0dPUK5E=;
+ b=PbLaR7tRb9uo3lsrRymFGP4SEMmr72dIb0bvH6zF8/ptPvsqMpVL/66wM01+UOdVngDt5G
+ nIFPhxcA49EX9YAw==
+Authentication-Results: smtp-out1.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1787657796; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1787657799; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=MSlOF3WXef2H7zoNmzzhaChjJkyR5YXNJjDv8gTyVwk=;
- b=1QB0eIC4mCtCHASU7Wf9ghY2MMfN+UsrkDASp8BstYLypmf/zHvl8ClOWf7fts/NWeIy9I
- Y9er1pc6gRqvrD3AEfFidmEae5P9nu9gsmybfaZnEi8UvPL/YAj9LIz7Jw1ZSZXiXh7mDF
- v3qHrH1nYpEGFlGQp3iJZy1vjLkQSd8=
+ bh=Y0agTdib7d5KUbwrDXXE+GpyPF+VxFTe1cWz0dPUK5E=;
+ b=EI8TOIsGek7hOVnSLilz5iDk+HCKv3fStFBHF5d80v4zBDZspFuSCIJWZwfeC2wfCLX8Nr
+ O0dF+4G2KU8OXnfXMSLESVkaw6Ipm4u3Pel7QfYrXmYP+Zl0YGbOJ/E14jE7+iPS17jFoa
+ EhPAiU6m633L84BtqTUz1+iadTd2kBI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1787657796;
+ s=susede2_ed25519; t=1787657799;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=MSlOF3WXef2H7zoNmzzhaChjJkyR5YXNJjDv8gTyVwk=;
- b=Wsnb6ALtp4V7oEo0teAE4yJtX6pk/mI7erXMj1dLiGn1nPMTyVO6xfi66/v/uHNHBJcQsC
- 1+fObGBbJ+DIYHDA==
+ bh=Y0agTdib7d5KUbwrDXXE+GpyPF+VxFTe1cWz0dPUK5E=;
+ b=NunQwFfZBSsOIM01d/s8ZjSD/JD0WnJQNh8QtxxXbCzBc+wxaaH00evDUDu+iqatoVd9g9
+ 1vBHeeoOGUwcsuCg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7CD9A1347F
- for <ltp@lists.linux.it>; Tue, 25 Aug 2026 11:36:29 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C9B0913411
+ for <ltp@lists.linux.it>; Tue, 25 Aug 2026 11:36:39 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id Jq2dHT1+jWpISAAAD6G6ig
+ by imap1.dmz-prg2.suse.org with ESMTPSA id SUdYMEd+jWq9SAAAD6G6ig
  (envelope-from <chrubis@suse.cz>)
- for <ltp@lists.linux.it>; Tue, 25 Aug 2026 11:36:29 +0000
+ for <ltp@lists.linux.it>; Tue, 25 Aug 2026 11:36:39 +0000
 From: Cyril Hrubis <chrubis@suse.cz>
 To: ltp@lists.linux.it
-Date: Tue, 25 Aug 2026 13:36:10 +0200
-Message-ID: <20260825113625.1624134-17-chrubis@suse.cz>
+Date: Tue, 25 Aug 2026 13:36:16 +0200
+Message-ID: <20260825113625.1624134-23-chrubis@suse.cz>
 X-Mailer: git-send-email 2.54.0
 In-Reply-To: <20260825113625.1624134-1-chrubis@suse.cz>
 References: <20260825113625.1624134-1-chrubis@suse.cz>
@@ -94,12 +93,12 @@ X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
  FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:mid,suse.cz:email,imap1.dmz-prg2.suse.org:helo];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:email,suse.cz:mid];
  RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
  TO_DN_NONE(0.00)[]; RCVD_TLS_ALL(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3 16/31] testcases: sysfs: Add sys_wakeup01
+Subject: [LTP] [PATCH v3 22/31] testcases: sysfs: Add sys_net03
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -116,175 +115,183 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-A test for /sys/class/wakeup/*/* files.
+A test for /sys/class/net/*/* files.
+
+Similar to sys_net02 but checks bridge related files after briding a
+virtual ethernet interface.
 
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- runtest/sysfs                                 |   1 +
- .../kernel/sysfs/class/wakeup/.gitignore      |   1 +
- testcases/kernel/sysfs/class/wakeup/Makefile  |   7 +
- .../kernel/sysfs/class/wakeup/sys_wakeup01.c  | 124 ++++++++++++++++++
- 4 files changed, 133 insertions(+)
- create mode 100644 testcases/kernel/sysfs/class/wakeup/.gitignore
- create mode 100644 testcases/kernel/sysfs/class/wakeup/Makefile
- create mode 100644 testcases/kernel/sysfs/class/wakeup/sys_wakeup01.c
+ runtest/sysfs                                |   1 +
+ testcases/kernel/sysfs/class/net/.gitignore  |   1 +
+ testcases/kernel/sysfs/class/net/sys_net03.c | 144 +++++++++++++++++++
+ 3 files changed, 146 insertions(+)
+ create mode 100644 testcases/kernel/sysfs/class/net/sys_net03.c
 
 diff --git a/runtest/sysfs b/runtest/sysfs
-index f515c4c1e..b8d003228 100644
+index fee8a0b2b..b2cc0005c 100644
 --- a/runtest/sysfs
 +++ b/runtest/sysfs
-@@ -12,3 +12,4 @@ sys_ata01 sys_ata01
- sys_bdi01 sys_bdi01
- sys_hwmon01 sys_hwmon01
- sys_leds01 sys_leds01
-+sys_wakeup01 sys_wakeup01
-diff --git a/testcases/kernel/sysfs/class/wakeup/.gitignore b/testcases/kernel/sysfs/class/wakeup/.gitignore
+@@ -17,3 +17,4 @@ sys_rtc01 sys_rtc01
+ sys_thermal01 sys_thermal01
+ sys_net01 sys_net01
+ sys_net02 sys_net02
++sys_net03 sys_net03
+diff --git a/testcases/kernel/sysfs/class/net/.gitignore b/testcases/kernel/sysfs/class/net/.gitignore
+index b70d02158..8c3782a3b 100644
+--- a/testcases/kernel/sysfs/class/net/.gitignore
++++ b/testcases/kernel/sysfs/class/net/.gitignore
+@@ -1,2 +1,3 @@
+ /sys_net01
+ /sys_net02
++/sys_net03
+diff --git a/testcases/kernel/sysfs/class/net/sys_net03.c b/testcases/kernel/sysfs/class/net/sys_net03.c
 new file mode 100644
-index 000000000..16d0375cd
+index 000000000..fcc5c5451
 --- /dev/null
-+++ b/testcases/kernel/sysfs/class/wakeup/.gitignore
-@@ -0,0 +1 @@
-+/sys_wakeup01
-diff --git a/testcases/kernel/sysfs/class/wakeup/Makefile b/testcases/kernel/sysfs/class/wakeup/Makefile
-new file mode 100644
-index 000000000..034038061
---- /dev/null
-+++ b/testcases/kernel/sysfs/class/wakeup/Makefile
-@@ -0,0 +1,7 @@
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (c) 2026 Cyril Hrubis <chrubis@suse.cz>
-+
-+top_srcdir		?= ../../../../..
-+
-+include $(top_srcdir)/include/mk/testcases.mk
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/sysfs/class/wakeup/sys_wakeup01.c b/testcases/kernel/sysfs/class/wakeup/sys_wakeup01.c
-new file mode 100644
-index 000000000..82bf5891d
---- /dev/null
-+++ b/testcases/kernel/sysfs/class/wakeup/sys_wakeup01.c
-@@ -0,0 +1,124 @@
++++ b/testcases/kernel/sysfs/class/net/sys_net03.c
+@@ -0,0 +1,144 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
 + * Copyright (c) 2026 Cyril Hrubis <chrubis@suse.cz>
 + */
 +
 +/*\
-+ * Sanity checks for the wakeup source statistics exported under
-+ * /sys/class/wakeup/wakeupN/.
++ * Verifies that bridge port sysfs attributes correctly appear, hold sane
++ * values, and disappear again as a network device is enslaved to and
++ * released from a bridge.
 + *
-+ * For every wakeup source the test verifies that:
++ * The test creates a bridge and a veth pair, then:
 + *
-+ * - name is a non-empty string
-+ * - active_count, active_time_ms, event_count, expire_count, last_change_ms,
-+ *   max_time_ms, prevent_suspend_time_ms, total_time_ms and wakeup_count are
-+ *   all non-negative
-+ * - active_time_ms <= total_time_ms (currently active time is part of the
-+ *   accumulated total)
-+ * - max_time_ms <= total_time_ms (the longest single event cannot exceed the
-+ *   accumulated total)
++ * - verifies /sys/class/net/<bridge>/brif/ is empty and
++ *   /sys/class/net/<port>/brport does not exist before enslaving
++ * - enslaves one end of the veth pair to the bridge
++ * - verifies /sys/class/net/<bridge>/brif/<port> appears and
++ *   /sys/class/net/<port>/brport/{state,priority,path_cost} hold sane values
++ * - verifies /sys/class/net/<bridge>/bridge/{stp_state,forward_delay} hold
++ *   sane values
++ * - releases the port from the bridge
++ * - verifies /sys/class/net/<bridge>/brif/ is empty and
++ *   /sys/class/net/<port>/brport does not exist again
 + *
-+ * The test skips with TCONF when no wakeup source is present.
-+ *
-+ * The /sys/class/wakeup/ itself only exists when CONFIG_PM_SLEEP=y is set.
++ * This needs root to create the bridge and veth devices.
 + */
 +
-+#include <string.h>
 +#include <limits.h>
++#include <string.h>
 +#include <dirent.h>
++#include <unistd.h>
++
 +#include "tst_test.h"
++#include "tst_netdevice.h"
 +#include "tst_sysfs_assert.h"
 +
-+#define WAKEUP "/sys/class/wakeup"
++#define BRNAME "ltp_br0"
++#define IFNAME1 "ltp_vethb1"
++#define IFNAME2 "ltp_vethb2"
 +
-+/*
-+ * active_count/event_count/wakeup_count/expire_count are exported by the
-+ * kernel as "unsigned long" (see drivers/base/power/wakeup_stats.c), hence
-+ * the RANGEUU (unsigned long long bounds) variant is used for these: it
-+ * lets us use the real ULONG_MAX.
-+ */
-+static const char *const count_attrs[] = {
-+	"active_count",
-+	"event_count",
-+	"expire_count",
-+	"wakeup_count",
-+};
++#define BR_PATH "/sys/class/net/" BRNAME
++#define PORT_PATH "/sys/class/net/" IFNAME1
 +
-+/*
-+ * active_time_ms/total_time_ms/max_time_ms/last_change_ms/
-+ * prevent_suspend_time_ms are exported by the kernel as a signed 64bit
-+ * ktime_t converted to milliseconds (see drivers/base/power/wakeup_stats.c),
-+ * i.e. their real ceiling is LLONG_MAX regardless of the architecture. On a
-+ * 32bit test build "long" is only 32bit (~24.8 days worth of ms), so plain
-+ * LONG_MAX would be too tight and could false-fail on a long-uptime system.
-+ */
-+static const char *const time_ms_attrs[] = {
-+	"active_time_ms",
-+	"last_change_ms",
-+	"max_time_ms",
-+	"prevent_suspend_time_ms",
-+	"total_time_ms",
-+};
++static int bridge_created;
++static int veth_created;
 +
-+static void check_wakeup(const char *dev)
-+{
-+	char name[128] = "";
-+	unsigned int i;
-+
-+	tst_res(TINFO, "Checking %s", dev);
-+
-+	if (!TST_SYSFS_READ_STR(name, sizeof(name), WAKEUP "/%s/name", dev)) {
-+		tst_res(TCONF, "%s vanished before it could be checked", dev);
-+		return;
-+	}
-+
-+	if (name[0] != '\0')
-+		tst_res(TPASS, "%s: name = '%s'", dev, name);
-+	else
-+		tst_res(TFAIL, "%s: name is empty", dev);
-+
-+	for (i = 0; i < ARRAY_SIZE(count_attrs); i++) {
-+		TST_SYSFS_ASSERT_RANGEUU(0, ULONG_MAX, WAKEUP "/%s/%s", dev,
-+					 count_attrs[i]);
-+	}
-+
-+	for (i = 0; i < ARRAY_SIZE(time_ms_attrs); i++) {
-+		TST_SYSFS_ASSERT_RANGELL(0, LLONG_MAX, WAKEUP "/%s/%s", dev,
-+					 time_ms_attrs[i]);
-+	}
-+
-+	TST_SYSFS_ASSERT_LE_SUFFIX("active_time_ms", "total_time_ms",
-+				   WAKEUP "/%s/", dev);
-+	TST_SYSFS_ASSERT_LE_SUFFIX("max_time_ms", "total_time_ms",
-+				   WAKEUP "/%s/", dev);
-+}
-+
-+static void do_test(void)
++static int count_dir_entries(const char *path)
 +{
 +	DIR *d;
 +	struct dirent *ent;
-+	int found = 0;
++	int count = 0;
 +
-+	d = SAFE_OPENDIR(WAKEUP);
++	d = SAFE_OPENDIR(path);
 +
 +	while ((ent = SAFE_READDIR(d))) {
-+		if (strncmp(ent->d_name, "wakeup", 6))
++		if (ent->d_name[0] == '.')
 +			continue;
 +
-+		found = 1;
-+		check_wakeup(ent->d_name);
++		count++;
 +	}
 +
 +	SAFE_CLOSEDIR(d);
 +
-+	if (!found)
-+		tst_res(TCONF, "No wakeup source found");
++	return count;
++}
++
++static void setup(void)
++{
++	NETDEV_ADD_DEVICE(BRNAME, "bridge");
++	bridge_created = 1;
++
++	CREATE_VETH_PAIR(IFNAME1, IFNAME2);
++	veth_created = 1;
++
++	NETDEV_SET_STATE(BRNAME, 1);
++	NETDEV_SET_STATE(IFNAME1, 1);
++	NETDEV_SET_STATE(IFNAME2, 1);
++}
++
++static void check_not_enslaved(const char *desc)
++{
++	int nports = count_dir_entries(BR_PATH "/brif");
++
++	tst_res(TINFO, "%s", desc);
++
++	TST_EXP_EQ_LI(nports, 0);
++
++	if (access(PORT_PATH "/brport", F_OK))
++		tst_res(TPASS, PORT_PATH "/brport does not exist");
++	else
++		tst_res(TFAIL, PORT_PATH "/brport unexpectedly exists");
++}
++
++static void check_enslaved(void)
++{
++	int nports = count_dir_entries(BR_PATH "/brif");
++
++	tst_res(TINFO, "port enslaved to bridge");
++
++	TST_EXP_EQ_LI(nports, 1);
++
++	if (!access(BR_PATH "/brif/" IFNAME1, F_OK))
++		tst_res(TPASS, BR_PATH "/brif/" IFNAME1 " exists");
++	else
++		tst_res(TFAIL, BR_PATH "/brif/" IFNAME1 " does not exist");
++
++	TST_SYSFS_ASSERT_RANGELL(0, 4, PORT_PATH "/brport/state");
++	TST_SYSFS_ASSERT_RANGELL(0, 255, PORT_PATH "/brport/priority");
++	TST_SYSFS_ASSERT_RANGELL(1, LONG_MAX, PORT_PATH "/brport/path_cost");
++
++	TST_SYSFS_ASSERT_RANGELL(0, 2, BR_PATH "/bridge/stp_state");
++	TST_SYSFS_ASSERT_RANGELL(1, LONG_MAX, BR_PATH "/bridge/forward_delay");
++}
++
++static void run(void)
++{
++	check_not_enslaved("before enslaving");
++
++	NETDEV_SET_MASTER(IFNAME1, BRNAME);
++	check_enslaved();
++
++	NETDEV_SET_MASTER(IFNAME1, NULL);
++	check_not_enslaved("after releasing");
++}
++
++static void cleanup(void)
++{
++	if (veth_created)
++		NETDEV_REMOVE_DEVICE(IFNAME1);
++
++	if (bridge_created)
++		NETDEV_REMOVE_DEVICE(BRNAME);
 +}
 +
 +static struct tst_test test = {
-+	.test_all = do_test,
-+	.needs_kconfigs = (const char *[]){
-+		"CONFIG_PM_SLEEP=y",
++	.test_all = run,
++	.setup = setup,
++	.cleanup = cleanup,
++	.needs_root = 1,
++	.needs_kconfigs = (const char *const[]){
++		"CONFIG_VETH",
++		"CONFIG_BRIDGE",
 +		NULL
 +	},
 +};
