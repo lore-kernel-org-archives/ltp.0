@@ -4,64 +4,101 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C21DAC5DF81
-	for <ltp@archiver.kernel.org>; Tue, 25 Aug 2026 04:38:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CA267C5B572
+	for <ltp@archiver.kernel.org>; Tue, 25 Aug 2026 04:45:03 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 923A33D20BA
-	for <ltp@archiver.kernel.org>; Tue, 25 Aug 2026 06:38:36 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id E86123D0F9B
+	for <ltp@archiver.kernel.org>; Tue, 25 Aug 2026 06:45:01 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A87FC3C62EA
- for <ltp@lists.linux.it>; Tue, 25 Aug 2026 06:38:20 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ by picard.linux.it (Postfix) with ESMTPS id 292F03C6EDD
+ for <ltp@lists.linux.it>; Tue, 25 Aug 2026 06:44:46 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 9EBE21A00A27
- for <ltp@lists.linux.it>; Tue, 25 Aug 2026 06:38:18 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 7C0DB100095B
+ for <ltp@lists.linux.it>; Tue, 25 Aug 2026 06:44:46 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 5FAEB86C64;
- Tue, 25 Aug 2026 04:38:18 +0000 (UTC)
-Authentication-Results: smtp-out1.suse.de;
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 7562F1F79E;
+ Tue, 25 Aug 2026 04:44:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1787633078;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=9skd5+9cIT/c7uRKuNm26Fhk4Fzs0mO6dfppmkjLXYQ=;
+ b=1dULXNBz4zH913W4wUL4IUCWxQ4R9RgxYiAhIxYeLz79RFKZxvdo4r8gBKztyX8w3piMue
+ AQP3Hpcd4RX6b+JXnIo/xl1/EYgYpwbqoNY5cgg48Zm+4I1a0NVDPmJFDVZbG2n6CygM70
+ 2k/0gPOX37jvgNcWwu+YGJXepzwnlyI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1787633078;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=9skd5+9cIT/c7uRKuNm26Fhk4Fzs0mO6dfppmkjLXYQ=;
+ b=Z8JekwTpJ1NNzxIGt+KrAtJBmrUOHf8DumCETR0ZyPjnV/ePt5yz8wXzhKDNZmyWYUT1RG
+ XssGLrmB5XPxIrAQ==
+Authentication-Results: smtp-out2.suse.de;
 	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1787633074;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=9skd5+9cIT/c7uRKuNm26Fhk4Fzs0mO6dfppmkjLXYQ=;
+ b=DPtbjt5SX9hUkiyNGpFD5z49xCpbxd5HsFG2xLTBGg96QZt7CF1uOG2J/Y/7j7/zyxyniV
+ j2+ZwY0rCnbjdiAXT5NkkHJSFsccQutA62WCt1lkyU1M1ltNpaiBOifsBCqmrgdJgsPXBj
+ B5p8CgP7UMHwXhs/E+pIjdhYiYPfSb4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1787633074;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=9skd5+9cIT/c7uRKuNm26Fhk4Fzs0mO6dfppmkjLXYQ=;
+ b=9gphUR2SqYea5DfgdmiUnv6kN6QLpY7F1njugPx5Lnc8M8x9Kk4M4yv5Lr625L1pj7qB8f
+ SQ8j2VSU8aVU6xDg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3C84513331;
- Tue, 25 Aug 2026 04:38:18 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 54FE813331;
+ Tue, 25 Aug 2026 04:44:34 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id pqsODTocjWrPMAAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Tue, 25 Aug 2026 04:38:18 +0000
-Date: Tue, 25 Aug 2026 06:38:16 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id nlwHE7IdjWp3NgAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Tue, 25 Aug 2026 04:44:34 +0000
+Date: Tue, 25 Aug 2026 06:44:33 +0200
 From: Petr Vorel <pvorel@suse.cz>
-To: Avinesh Kumar <avinesh.kumar@suse.com>
-Message-ID: <20260825043816.GA22725@pevik>
-References: <20260824103832.4058-1-linuxtestproject.agent@gmail.com>
- <20260824135722.200152-1-avinesh.kumar@suse.com>
+To: linuxtestproject.agent@gmail.com
+Message-ID: <20260825044433.GB22725@pevik>
+References: <20260821200620.902699-1-zohar@linux.ibm.com>
+ <20260821202613.4033-1-linuxtestproject.agent@gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20260824135722.200152-1-avinesh.kumar@suse.com>
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	REPLY(-4.00)[]
-X-Rspamd-Queue-Id: 5FAEB86C64
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+In-Reply-To: <20260821202613.4033-1-linuxtestproject.agent@gmail.com>
+X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ NEURAL_HAM_SHORT(-0.20)[-0.999]; MIME_GOOD(-0.10)[text/plain];
+ MISSING_XM_UA(0.00)[]; FREEMAIL_TO(0.00)[gmail.com];
+ ARC_NA(0.00)[]; TO_DN_SOME(0.00)[]; MIME_TRACE(0.00)[0:+];
+ TAGGED_RCPT(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ FREEMAIL_ENVRCPT(0.00)[gmail.com]; RCPT_COUNT_THREE(0.00)[3];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ RCVD_TLS_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:replyto];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ REPLYTO_EQ_FROM(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] landlock04: Fix false TFAIL in
- _test_truncate() deny path
+Subject: Re: [LTP] ima_selinux.sh: test2 assumes CONFIG_IMA_DISABLE_HTABLE
+ is configured
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -80,44 +117,44 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Avinesh,
+Hi Mimi,
 
-Thanks for the fix, merged!
+> Hi Mimi,
 
-I'm sorry for introducing the regression (I tested whole landlock part, but
-obviously wrongly when this one slipped in).
-...
->  	TST_EXP_PASS_OR_FAIL(truncate(FILE_TRUNCATE, 10), exp_err);
-> -	fd = TST_EXP_FD_OR_FAIL(open(FILE_TRUNCATE, O_WRONLY, PERM_MODE), exp_err);
-> +
-> +	if (!exp_err) {
-> +		fd = SAFE_OPEN(FILE_TRUNCATE, O_WRONLY, PERM_MODE);
-> +	} else {
-> +		fd = open(FILE_TRUNCATE, O_WRONLY, PERM_MODE);
-> +		if (fd == -1 && errno != EACCES)
-> +			 tst_res(TFAIL | TERRNO, "open(%s, O_WRONLY) failed unexpectedly", FILE_TRUNCATE);
+> On August 21, 2026, Mimi Zohar wrote:
+> > ima_selinux.sh: test2 assumes CONFIG_IMA_DISABLE_HTABLE is configured
 
-nit: there still could have been TST_EXP_FD_OR_FAIL() for else part:
+> > +		if ! tst_check_kconfigs "CONFIG_IMA_DISABLE_HTABLE=y"; then
+> > +			tst_res TPASS "Duplicate \"selinux-state\" record missing (CONFIG_IMA_DISABLE_HTABLE not set)"
 
-fd = TST_EXP_FD_OR_FAIL(open(FILE_TRUNCATE, O_WRONLY, PERM_MODE), exp_err);
+I would suggest the same, it makes sense to use TCONF to make it visible that
+it's not an error but OTOH it was not actually tested due
+CONFIG_IMA_DISABLE_HTABLE not set. If you don't mind, I'd change TPASS to TCONF
+before merge (or feel free to send v2 with this change yourself with my
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
+).
 
-I personally prefer these shortening macros, but maybe they aren't that much
-readable when others don't use it. Therefore merged as is.
+Thanks for the fix!
 
 Kind regards,
 Petr
 
-> +	}
->  	if (fd != -1) {
->  		TST_EXP_PASS_OR_FAIL(ftruncate(fd, 10), exp_err);
->  		SAFE_CLOSE(fd);
-> @@ -262,7 +269,7 @@ static void _test_truncate(const int exp_err)
+> Could this path report TCONF instead? Without duplicate records, test2 cannot
+> compare the current enforcing state with a fresh measurement and returns
+> before checking the remaining state fields. TPASS turns this untested
+> configuration into a successful test result.
 
->  	fd = TST_EXP_FD_OR_FAIL(open(FILE_TRUNCATE, O_WRONLY | O_TRUNC, PERM_MODE), exp_err);
->  	if (fd != -1)
-> -		SAFE_CLOSE(TST_RET);
-> +		SAFE_CLOSE(fd);
->  }
+> Verdict - Needs revision
+
+> ---
+> Note:
+
+> The agent can sometimes produce false positives although often its
+> findings are genuine. If you find issues with the review, please
+> comment this email or ignore the suggestions.
+
+> Regards,
+> LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
