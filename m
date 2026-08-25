@@ -4,101 +4,98 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CA267C5B572
-	for <ltp@archiver.kernel.org>; Tue, 25 Aug 2026 04:45:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C80A6C5B572
+	for <ltp@archiver.kernel.org>; Tue, 25 Aug 2026 04:55:51 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E86123D0F9B
-	for <ltp@archiver.kernel.org>; Tue, 25 Aug 2026 06:45:01 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 84F663CFAFA
+	for <ltp@archiver.kernel.org>; Tue, 25 Aug 2026 06:55:49 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 292F03C6EDD
- for <ltp@lists.linux.it>; Tue, 25 Aug 2026 06:44:46 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 0AD3F3C900A
+ for <ltp@lists.linux.it>; Tue, 25 Aug 2026 06:55:32 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 7C0DB100095B
- for <ltp@lists.linux.it>; Tue, 25 Aug 2026 06:44:46 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 1C531200989
+ for <ltp@lists.linux.it>; Tue, 25 Aug 2026 06:55:30 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 7562F1F79E;
- Tue, 25 Aug 2026 04:44:34 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 4D1E11F74D;
+ Tue, 25 Aug 2026 04:55:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1787633078;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=9skd5+9cIT/c7uRKuNm26Fhk4Fzs0mO6dfppmkjLXYQ=;
- b=1dULXNBz4zH913W4wUL4IUCWxQ4R9RgxYiAhIxYeLz79RFKZxvdo4r8gBKztyX8w3piMue
- AQP3Hpcd4RX6b+JXnIo/xl1/EYgYpwbqoNY5cgg48Zm+4I1a0NVDPmJFDVZbG2n6CygM70
- 2k/0gPOX37jvgNcWwu+YGJXepzwnlyI=
+ t=1787633726; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=mie/3cyqpZyf3RoQzfKnk4+1jJU3yj1P9pXr8AwwcrA=;
+ b=uY13ePyOvRaUvznH24mhTkqYBL8y6kWj3RnEuoYIFnul+Nzsomi2Mt6oRnWu0ilh1Z1vbc
+ Q5gE+eg4X6n6scQJJM0G2GhZUOPmkwBJ3sRxWwnURch9yKntfk8Otk6tI9Y29X/fTCIDnE
+ XjWzwbIhujOs4yXjym127DHCyaHarJE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1787633078;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=9skd5+9cIT/c7uRKuNm26Fhk4Fzs0mO6dfppmkjLXYQ=;
- b=Z8JekwTpJ1NNzxIGt+KrAtJBmrUOHf8DumCETR0ZyPjnV/ePt5yz8wXzhKDNZmyWYUT1RG
- XssGLrmB5XPxIrAQ==
+ s=susede2_ed25519; t=1787633726;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=mie/3cyqpZyf3RoQzfKnk4+1jJU3yj1P9pXr8AwwcrA=;
+ b=XV7WW0/trvHgmlftJpjj/sw3gCX2Ii+G+AMCquRr/ze7KIox5TFtSBwt0bHW+bof1Q9dER
+ hrC9B4RdEnVmTUAA==
 Authentication-Results: smtp-out2.suse.de;
-	none
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=gPyeStDy;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=hCyCTfzi
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1787633074;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=9skd5+9cIT/c7uRKuNm26Fhk4Fzs0mO6dfppmkjLXYQ=;
- b=DPtbjt5SX9hUkiyNGpFD5z49xCpbxd5HsFG2xLTBGg96QZt7CF1uOG2J/Y/7j7/zyxyniV
- j2+ZwY0rCnbjdiAXT5NkkHJSFsccQutA62WCt1lkyU1M1ltNpaiBOifsBCqmrgdJgsPXBj
- B5p8CgP7UMHwXhs/E+pIjdhYiYPfSb4=
+ t=1787633722; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=mie/3cyqpZyf3RoQzfKnk4+1jJU3yj1P9pXr8AwwcrA=;
+ b=gPyeStDydjbqWw/q8bbibYV7GfRC/F/ipssauE1qACRqzUNmHPGF2mycHYl8wrASwnfPI8
+ LrHTWrXLHXxO+j2HQS/31pGkGtz5LGI06ofUVU/bhIWkn2+z//sqtSvmn/kHi4PLbmKRPS
+ kIV3ItdINtNq+EsgEBMssttbxJL6THY=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1787633074;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=9skd5+9cIT/c7uRKuNm26Fhk4Fzs0mO6dfppmkjLXYQ=;
- b=9gphUR2SqYea5DfgdmiUnv6kN6QLpY7F1njugPx5Lnc8M8x9Kk4M4yv5Lr625L1pj7qB8f
- SQ8j2VSU8aVU6xDg==
+ s=susede2_ed25519; t=1787633722;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=mie/3cyqpZyf3RoQzfKnk4+1jJU3yj1P9pXr8AwwcrA=;
+ b=hCyCTfzi/G639RpGet2P6g8VqXfMGhrkPItoV/6YIuNQSWe4WeCBaJOToj2dxESNQ5wZcD
+ L++Md6H775Jy1zCQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 54FE813331;
- Tue, 25 Aug 2026 04:44:34 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 30CE613331;
+ Tue, 25 Aug 2026 04:55:22 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id nlwHE7IdjWp3NgAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Tue, 25 Aug 2026 04:44:34 +0000
-Date: Tue, 25 Aug 2026 06:44:33 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id K3+SCjogjWqGQAAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Tue, 25 Aug 2026 04:55:22 +0000
 From: Petr Vorel <pvorel@suse.cz>
-To: linuxtestproject.agent@gmail.com
-Message-ID: <20260825044433.GB22725@pevik>
-References: <20260821200620.902699-1-zohar@linux.ibm.com>
- <20260821202613.4033-1-linuxtestproject.agent@gmail.com>
+To: ltp@lists.linux.it
+Date: Tue, 25 Aug 2026 06:55:15 +0200
+Message-ID: <20260825045515.24503-1-pvorel@suse.cz>
+X-Mailer: git-send-email 2.55.0
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20260821202613.4033-1-linuxtestproject.agent@gmail.com>
-X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz];
+X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_MISSING_CHARSET(0.50)[];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  NEURAL_HAM_SHORT(-0.20)[-0.999]; MIME_GOOD(-0.10)[text/plain];
- MISSING_XM_UA(0.00)[]; FREEMAIL_TO(0.00)[gmail.com];
- ARC_NA(0.00)[]; TO_DN_SOME(0.00)[]; MIME_TRACE(0.00)[0:+];
- TAGGED_RCPT(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- FREEMAIL_ENVRCPT(0.00)[gmail.com]; RCPT_COUNT_THREE(0.00)[3];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ MX_GOOD(-0.01)[]; ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ MIME_TRACE(0.00)[0:+]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received,2a07:de40:b281:104:10:150:64:97:from];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RCVD_TLS_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:replyto];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ RCPT_COUNT_THREE(0.00)[3]; RCVD_TLS_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:mid,suse.cz:dkim,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
  RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- REPLYTO_EQ_FROM(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+ DKIM_TRACE(0.00)[suse.cz:+]
+X-Rspamd-Queue-Id: 4D1E11F74D
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] ima_selinux.sh: test2 assumes CONFIG_IMA_DISABLE_HTABLE
- is configured
+Subject: [LTP] [PATCH 1/1] lib: test.sh: Backport tst_cmd_available (DRY)
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -110,51 +107,60 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Mimi,
+Backport tst_cmd_available() from tst_test.sh in order to have 'command -v'
+used only once. That helps to maintain LTP preferred way to check
+command in shell.
 
-> Hi Mimi,
+Follow-up: 772e7d6851 ("lib: test: check systemd in tst_virt_hyperv() as tst_test.sh")
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ testcases/lib/test.sh | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
-> On August 21, 2026, Mimi Zohar wrote:
-> > ima_selinux.sh: test2 assumes CONFIG_IMA_DISABLE_HTABLE is configured
+diff --git a/testcases/lib/test.sh b/testcases/lib/test.sh
+index edae1313ed..0d4f3fe4d2 100644
+--- a/testcases/lib/test.sh
++++ b/testcases/lib/test.sh
+@@ -148,6 +148,11 @@ tst_rmdir()
+ 	fi
+ }
+ 
++tst_cmd_available()
++{
++	command -v $1 >/dev/null 2>&1
++}
++
+ #
+ # Checks if commands passed as arguments exists
+ #
+@@ -155,9 +160,7 @@ tst_require_cmds()
+ {
+ 	local cmd
+ 	for cmd in $*; do
+-		if ! command -v $cmd > /dev/null 2>&1; then
+-			tst_brkm TCONF "'$cmd' not found"
+-		fi
++		tst_cmd_available $cmd || tst_brkm TCONF "'$cmd' not found"
+ 	done
+ }
+ 
+@@ -331,7 +334,7 @@ tst_virt_hyperv()
+ {
+ 	local v
+ 
+-	command -v systemd-detect-virt > /dev/null 2>&1 || return 1
++	tst_cmd_available systemd-detect-virt || return 1
+ 
+ 	v="$(systemd-detect-virt)"
+ 
+-- 
+2.55.0
 
-> > +		if ! tst_check_kconfigs "CONFIG_IMA_DISABLE_HTABLE=y"; then
-> > +			tst_res TPASS "Duplicate \"selinux-state\" record missing (CONFIG_IMA_DISABLE_HTABLE not set)"
-
-I would suggest the same, it makes sense to use TCONF to make it visible that
-it's not an error but OTOH it was not actually tested due
-CONFIG_IMA_DISABLE_HTABLE not set. If you don't mind, I'd change TPASS to TCONF
-before merge (or feel free to send v2 with this change yourself with my
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
-).
-
-Thanks for the fix!
-
-Kind regards,
-Petr
-
-> Could this path report TCONF instead? Without duplicate records, test2 cannot
-> compare the current enforcing state with a fresh measurement and returns
-> before checking the remaining state fields. TPASS turns this untested
-> configuration into a successful test result.
-
-> Verdict - Needs revision
-
-> ---
-> Note:
-
-> The agent can sometimes produce false positives although often its
-> findings are genuine. If you find issues with the review, please
-> comment this email or ignore the suggestions.
-
-> Regards,
-> LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
