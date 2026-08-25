@@ -4,117 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 96EC3C61DB9
-	for <ltp@archiver.kernel.org>; Tue, 25 Aug 2026 16:42:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B7B97C61DBD
+	for <ltp@archiver.kernel.org>; Tue, 25 Aug 2026 17:14:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1787676142; h=to : date :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1787678067; h=to : date :
  message-id : mime-version : subject : list-id : list-unsubscribe :
  list-archive : list-post : list-help : list-subscribe : from :
- reply-to : cc : content-type : content-transfer-encoding : sender :
- from; bh=mqKhdggiQVsfUAdRk4JwVOM8ZqevOzN65+mWqZ84nbo=;
- b=okrti2WrQvlU7WjiLmV+yu93pmgU2zwPCvnp/WM58NOiY/zBQqo/pVkfKZKHRCHnc5iLw
- On9V4np0VGH8szNJLEVhJmNqwUNhmQkdaoRgPVkSkTrj/GCBheYNdS/PV/t18Z6Y00j4HWO
- 0KJAlzmzaIPu04urTQhjE/makZ334kk=
+ reply-to : content-type : content-transfer-encoding : sender : from;
+ bh=J9b27+WfUCzecbJsueOza/d7OcUWcDugR013+Yqilt4=;
+ b=Uc32G2VwDSlwdVczRFMD1gzrt4O+rkIhipBdLlWacxwfZFlPGQCL/7rCzW0sQiMeIf2jA
+ t/zg6B9cwlFqo0U8t7RL9poNliuLwUC441F2tBr7XRy2VjPQUForolnVykjpRsUzekxKMk7
+ q6z8bXjVzS2sU66nJf0VRWM9HnuZq7E=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 622CC3C6FE1
-	for <ltp@archiver.kernel.org>; Tue, 25 Aug 2026 18:42:22 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id D348F3C850D
+	for <ltp@archiver.kernel.org>; Tue, 25 Aug 2026 19:14:27 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 7D4893C0D0D
- for <ltp@lists.linux.it>; Tue, 25 Aug 2026 17:26:51 +0200 (CEST)
-Received: from BN8PR05CU002.outbound.protection.outlook.com
- (mail-eastus2azlp170110003.outbound.protection.outlook.com
- [IPv6:2a01:111:f403:c110::3])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange ECDHE (secp384r1) server-signature RSA-PSS (2048 bits)
- server-digest SHA256) (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 362741400C7D
- for <ltp@lists.linux.it>; Tue, 25 Aug 2026 17:26:50 +0200 (CEST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=dQ0dwz9Ien25F0wx0yaUUQEA5r1PeOtPSqRXdP5eTQeTF9xocPw28uVP0ebP1LugSmZAa89u7k/CAmHtK2jp4sYA0wq1316LoLnxYwEg2oFhGXxlMPDm3De8WyCOhThmdDxKEcffsq/wdsvrmZnXP6peagGbCvaea6yTfHSLDZK/rrSW7V4/GwJqGqujEIMAy5p0es9RjgTOu7+sLo1LFhMm+H/T2nasdww7Wi+WXPP+qQsm/ws9WMhmsEWHNK+am2aj7K5DVI1MDSmmjiIUiouczqkF3LzjyQfMFpaIW/nmQ1WcusavSAvm0DJI/1vpnHBJwP1ONko6s4x70P1NvQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=401T/OpounW5uPF5j4gj1vMrNs8kAQ8OECHqoNerTds=;
- b=rB7H1UO2YprcTO0rw4ME8uq7iY+9eg8ttIeN77+xf6G8a8Im+WurDla9DU30oGVDHWUXqccjNOmsle1fD6ecS75yhxeZ4c/It5NBaTGDP99ZY1l+GwOl2WfSxOzGs6hXSA2ThnhDFEg+EaaK9tJirTfxV775hwdqJQeNKh2WnXWjvryBOjndKomhAlIrZOp2XNNalPovtk2B55VT95n03T2qmw98LZH7yFuS6ovztS47us8V68qAkxtFZcjMB9PHbM/w5yXNu0IebppTYn3ir3r7SKteoxXn2pSAYGNXFyM0407LDw3nLCvEs0kc3JXHWr5ZJ/7DBbv7XpVTHJK67g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.160) smtp.rcpttodomain=lists.linux.it smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=401T/OpounW5uPF5j4gj1vMrNs8kAQ8OECHqoNerTds=;
- b=DNbzNDHyDlKvP1IMh9mNyzg2aFxQyjO5a2Z7sY0nR0+zCwBXf6NOj6O/FQLYkminCHamF9gs1bD6bqaSYqBvoOstY33hEUGTt89I1IUI7ogPpnXZsvEfWrJj9Jt6TR5bEtFeREzN/G+Nil2urh51QZbUnvM3mg9gixQaqGK5R5sw1ZGEH32NUvzJURN26fOnusL0y9hZ+PwU7xISKJqNc6/fY0hdOdVW3x3Jkw1WyhG/JtVO/ZTSC3FelNdtBwKMpIKuCKpen5BPpsciib9NDDOEPCvatABiTFVfBzXIr4RjUXWbr3d2VtbBg9HPq01k4JwSDMXQMmxvtbThm7+iRw==
-Received: from CH0PR03CA0103.namprd03.prod.outlook.com (2603:10b6:610:cd::18)
- by SJ0PR12MB8114.namprd12.prod.outlook.com (2603:10b6:a03:4e8::18)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.360.6; Tue, 25 Aug
- 2026 15:26:42 +0000
-Received: from BL6PEPF00020E5F.namprd04.prod.outlook.com
- (2603:10b6:610:cd:cafe::98) by CH0PR03CA0103.outlook.office365.com
- (2603:10b6:610:cd::18) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.21.360.6 via Frontend Transport; Tue, 25
- Aug 2026 15:26:41 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
- smtp.mailfrom=nvidia.com;
- dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.160) by
- BL6PEPF00020E5F.mail.protection.outlook.com (10.167.249.20) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.21.360.3 via Frontend Transport; Tue, 25 Aug 2026 15:26:41 +0000
-Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
- (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.46; Tue, 25 Aug
- 2026 08:26:09 -0700
-Received: from 82875d6-lcedt.nvidia.com (10.126.230.37) by
- rnnvmail201.nvidia.com (10.129.68.8) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.46; Tue, 25 Aug 2026 08:26:09 -0700
-To: <ltp@lists.linux.it>
-Date: Tue, 25 Aug 2026 08:25:44 -0700
-Message-ID: <20260825152544.1675541-1-nirmoyd@nvidia.com>
-X-Mailer: git-send-email 2.43.0
+ by picard.linux.it (Postfix) with ESMTPS id 8E4483C210D
+ for <ltp@lists.linux.it>; Tue, 25 Aug 2026 19:14:08 +0200 (CEST)
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com
+ [IPv6:2a00:1450:4864:20::534])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 9A3E21A0037F
+ for <ltp@lists.linux.it>; Tue, 25 Aug 2026 19:14:07 +0200 (CEST)
+Received: by mail-ed1-x534.google.com with SMTP id
+ 4fb4d7f45d1cf-6a36982a875so7596678a12.0
+ for <ltp@lists.linux.it>; Tue, 25 Aug 2026 10:14:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1787678047; x=1788282847; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:to
+ :from:from:to:cc:subject:date:message-id:reply-to:content-type;
+ bh=P7YUmG036QIY5PSbEJqAWBbrHFHZvEXHOP4wcgYgvSA=;
+ b=MXELFZfywek/IZ3tEELS+Y/BmXN9RIUiFDVktL/FVS9Cid47k2qDmbM0eidI+nsSlP
+ JWK6+p506W2FmW70dW7movFww5dWG1fb5saV+q52YGb6HSSWaClWigiJyyeOWy+TZxkC
+ ZS0YO0c8ekAcZZDl/GnTkfoT625GnAAQwfDDv4jGrXahcX564LmrST7bI8PcjVg9FDXf
+ O08pp6z9QD9Wk2kiI7b31xBR8eYMLDnkBa+VLNZoQdLsJbaQ6ysdbaSSD+muKUt2C2Ls
+ mvxli/61vLO60Cyi+57GJO218QYlYn/nYVeE9g43wBwWlze77NLtdpaxIPAuB+bsUnO0
+ hZhQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1787678047; x=1788282847;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:to
+ :from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to:content-type;
+ bh=P7YUmG036QIY5PSbEJqAWBbrHFHZvEXHOP4wcgYgvSA=;
+ b=g/anfFNAPsiwlkN6n91hdQJ/+/sHZchShmtHdumx8+xAb7x2VBLB7a8o2EtoEYx3E9
+ aMNq5JfvlOryfRkPLV/44FLBKx7HhUtbqKUT9gcuNYpoQY1xBYdLOL0ZLR6sElrJmjbj
+ 3kwj1rJzc4j4j8ntVC76JA+fBDbv/Pi4eqfdZROp+PhEB05rtbtNbKzBggsxiyUyLhpI
+ 39kaa7Vr0mEw3q4WbP9kQ2RSh04ewXWR148ePqKX9xkSwsXZtZJJTiOtWWbP8dve+C38
+ hd9UKiEqSONDhVjZnN08bVIn9D3Rkff9mTIGuo20BbYyoCMeGiOXDdx0rnwQ3wkDs4nF
+ J6rQ==
+X-Gm-Message-State: AFuF++kjoFdrDalNCXsvQyyaWuTi/w+bHhR1D9STqIYzFS1eEgUUECs8
+ HvTosI/KycAoVd+G3Hzxii7CBMlhsQ+/bUBVq0vw2JFNgBUHkjbogSjqZgdQjPN4ZT0JzAt78N8
+ faZvyq/8=
+X-Gm-Gg: AR+sD111UCm8v1cw83Xdw0OI1aiHo+gx16+cYweyo6o3CnYlVG0nLZgMshFLHDB5nSc
+ i4LLdbcUmRMVNq1PO82FiV/VjHXY9IPUtYLu4tTpA6zekMMqC/otnmNNq30I0uVFz9r8gBDsay4
+ UJhJbpI/IfNOLPRTqH8oeu9F/px4FVotObh6fXM5GEpAqnEJXOoOSONsZff5vlvVDtSsyzxTIap
+ rwEZQreGDzydWQwlV4a41NxQNvtHsLiFo+p2YC6kTyAVqB7+v5qgUdsgaEZ2E4HMYuimbxeGHMt
+ GYcTHJq/jRDPtHjm6Bk+Nke5w8rt9OrO8lLu5WsREYncNtcmiwc0Bh+zfMDslXTsRqLlI8w6KrM
+ wYWbN6PN86krr9MJ0olcFxUjdn85FBuqhjp14dqR/3obE2ESAA1A32resg9N64ylskaIQPjbJCd
+ lghVoHuD+u5BxMNI3W8rvhj8pn6fQenfm+SwpQqAlXD9gY5xgx7XV1KtaU
+X-Received: by 2002:a17:906:fe08:b0:c21:34a3:4d9c with SMTP id
+ a640c23a62f3a-c250c345beamr11011166b.21.1787678046827; 
+ Tue, 25 Aug 2026 10:14:06 -0700 (PDT)
+Received: from localhost ([2a07:b241:1004:8300::1000])
+ by smtp.gmail.com with ESMTPSA id
+ 4fb4d7f45d1cf-6a5deaa786csm500661a12.20.2026.08.25.10.14.06
+ for <ltp@lists.linux.it>
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 25 Aug 2026 10:14:06 -0700 (PDT)
+To: ltp@lists.linux.it
+Date: Tue, 25 Aug 2026 19:14:01 +0200
+Message-ID: <20260825171405.123011-1-avinesh.kumar@suse.com>
+X-Mailer: git-send-email 2.55.0
 MIME-Version: 1.0
-X-Originating-IP: [10.126.230.37]
-X-ClientProxiedBy: rnnvmail202.nvidia.com (10.129.68.7) To
- rnnvmail201.nvidia.com (10.129.68.8)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL6PEPF00020E5F:EE_|SJ0PR12MB8114:EE_
-X-MS-Office365-Filtering-Correlation-Id: f7a92721-b469-4034-dbfa-08df02bd4386
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
- ARA:13230040|23010399003|36860700016|376014|1800799024|82310400026|10067099003|18002099003|11063799006|56012099006;
-X-Microsoft-Antispam-Message-Info: njjTaiKLO9fcNzxR4RMpUs1HjnqrLNTYp/57h+U6rq6MyzDFt36SRvlziIhcOhCtM60rtmUUkljvSxyZAd/kd6UCwEfBy1M0pL+cOFcUg40dbHpOgQLZIsablnIJqlsrdgcTGKEzywUrNfr3WlVlpwNASCxVHZ2/M8pFKelC69knDAeQKeAvIrIKvWtra8Nq+h0BzwYtM+l3OtwpCztItMoirPW257QDPKDnWCKt4LvVvu++SLSt5tlNMpPdJrvrdQw/MLndMIbMf6gtMMbR74T3pHITqiSVgZn4UPTTGBGqIeWrKJ3EVxxkuo41KWxBVqaxeddisrgI3PqJ7XWVRm5yzXLJgpPDwiDJH+syl6uQ9FjAnwuwemSzPVNie9IR4vkXpaX0LShXcuZ3gQE1y9FblNLdhmR1FNltIktRsvSOLVGI2YnjrDm719opC2c0jIIuEUVX2u5YgKrpkUmgnzXCPKHwkpg5wkp8UUUxqjA+PW9UM934mqeoUYey5gSzSSPQVmLrrEwg3maj8PvfUQO/d18RFuuxSWLRPX6wpYnTm3Mi8wcyPSDxLkoPx1omfEVehyA5Rh5/RFTm3/JLC/f1ghQULNr9OHP01sySg7osu8gXzYGCAKNzm05dEWKJXDJe7Qkl3WcJM5aqgzQqAyYxRyvobyrY5tR1yBz24HBtDUsOmHsMmV1tM5TbMh7RNs4kHMi9hLeZAgylM63I1g==
-X-Forefront-Antispam-Report: CIP:216.228.117.160; CTRY:US; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:mail.nvidia.com; PTR:dc6edge1.nvidia.com; CAT:NONE;
- SFS:(13230040)(23010399003)(36860700016)(376014)(1800799024)(82310400026)(10067099003)(18002099003)(11063799006)(56012099006);
- DIR:OUT; SFP:1101; 
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 3a20kMBN3DTsanwMFVrvXgGuvqRUiCuwuOHK35mbmHLcz2somgwukvT4qI/giRCV4xU0UtONLUbhZP7bCDey6kgr0HvRD4YPgSEZxwUZkTv6rFl9/P/qcIbbQMkGbnLI5LjnAafWRKcXEc8n0eWR4fiRxAIPfQB4bJxW9qSYC4B61KWLHNuyQhphdVwJJYl74196axGb3MkjygxV69upRctOR3+IsG4ep6g6yk71uWROYQ4xdXtWQjVhQpfWxgCcB0sgVD6hCbLIMng6D/jijtSNhFUBYnVhw0B64uHoFllMbnBTykcj+kHkYYkKEYsfpUpWzFrYmJ45p/v40pwBwxwOp/GsOiTx/eBPM2aMo940vQ8EMkzLyFZGwinO2g65+yjx2ihIIZmFrJ86AjwopKqcBzauw3Ypv31fFmgzFtVGdGJU9on6dwu6cNgabSoW
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Aug 2026 15:26:41.3048 (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: f7a92721-b469-4034-dbfa-08df02bd4386
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a; Ip=[216.228.117.160];
- Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: BL6PEPF00020E5F.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR12MB8114
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Mailman-Approved-At: Tue, 25 Aug 2026 18:42:03 +0200
-Subject: [LTP] [RFC PATCH] getrusage03: account for percpu RSS counter
- batching
+Subject: [LTP] [PATCH] uevent02: Make wait_for_uevents() order-independent
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -126,72 +95,110 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Nirmoy Das via ltp <ltp@lists.linux.it>
-Reply-To: Nirmoy Das <nirmoyd@nvidia.com>
-Cc: Nirmoy Das <nirmoyd@nvidia.com>
+From: Avinesh Kumar via ltp <ltp@lists.linux.it>
+Reply-To: Avinesh Kumar <avinesh.kumar@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-getrusage03 allows ru_maxrss to differ from the expected value by a
-fixed 20 MiB. That can be too small on large systems after Linux commit
-f1a7941243c1 ("mm: convert mm's rss stats into percpu_counter").
+From: Avinesh Kumar <avinesh.kumar@suse.com>
 
-The fast RSS read may miss percpu counter batches, and the batch size
-scales with the number of online CPUs. The test child is single threaded,
-but it can migrate while faulting memory, so allow two batches worth of
-slack based on the online CPU count and page size. Keep the existing
-20 MiB floor for smaller systems.
+Commit 8e63c9e6179a ("net: Defer netdev KOBJ_ADD uevent until the
+device is published")[0] in kernel v7.2 changed register_netdevice()
+to emit a network interface's own "add" uevent only after the
+interface is fully registered, instead of before its queue kobjects
+are created. This flips the uevent order for tun device creation from:
 
-This is sent as RFC because it makes the test tolerate Linux's current
-percpu counter batching behavior instead of treating the smaller
-ru_maxrss value as a kernel failure.
+    add(net), add(rx queue), add(tx queue)
+to:
+    add(rx queue), add(tx queue), add(net)
 
-Signed-off-by: Nirmoy Das <nirmoyd@nvidia.com>
+wait_for_uevents() matched events strictly in the order given in the
+uevents array, so on kernels with the reordered uevents the "add(net)"
+event only matches once the rx/tx queue events have already been
+consumed from the socket, leaving wait_for_uevents() stuck waiting for
+events that already went by, until uevent02 times out and fails.
+
+Since the relative order of unrelated uevents is a kernel
+implementation detail the test should not depend on, make
+wait_for_uevents() track the still-unmatched events in a pending set
+and match incoming uevents against any of them, regardless of
+position.
+
+[0] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=8e63c9e6179a
+
+Signed-off-by: Avinesh Kumar <avinesh.kumar@suse.com>
 ---
- .../kernel/syscalls/getrusage/getrusage03.h     | 17 +++++++++++++++--
- 1 file changed, 15 insertions(+), 2 deletions(-)
+ testcases/kernel/uevents/uevent.h | 37 ++++++++++++++++++++++++-------
+ 1 file changed, 29 insertions(+), 8 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/getrusage/getrusage03.h b/testcases/kernel/syscalls/getrusage/getrusage03.h
-index 58a98b430..9a7d8e8fa 100644
---- a/testcases/kernel/syscalls/getrusage/getrusage03.h
-+++ b/testcases/kernel/syscalls/getrusage/getrusage03.h
-@@ -7,9 +7,20 @@
- #define LTP_GETRUSAGE03_H
- 
- #include <sched.h>
-+#include "tst_cpu.h"
- #include "tst_test.h"
- 
--#define DELTA_MAX 20480
-+#define DELTA_MAX 20480L
-+#define MAXRSS_BATCHES 2L
-+
-+static long maxrss_delta(void)
-+{
-+	long batch = MAX(32L, tst_ncpus() * 2);
-+	long delta = MAXRSS_BATCHES * batch * SAFE_SYSCONF(_SC_PAGESIZE) / 1024;
-+
-+	/* Linux RSS counters can miss percpu counter batches after migration. */
-+	return MAX(DELTA_MAX, delta);
-+}
- 
- static void force_context_switches(int iterations)
- {
-@@ -40,7 +51,9 @@ static void consume_mb(int consume_nr)
- 
- static int is_in_delta(long value)
- {
--	return (value >= -DELTA_MAX && value <= DELTA_MAX);
-+	long delta = maxrss_delta();
-+
-+	return (value >= -delta && value <= delta);
+diff --git a/testcases/kernel/uevents/uevent.h b/testcases/kernel/uevents/uevent.h
+index 1ad092d5ea39..b4e4fce2b2f5 100644
+--- a/testcases/kernel/uevents/uevent.h
++++ b/testcases/kernel/uevents/uevent.h
+@@ -117,15 +117,30 @@ static inline int open_uevent_netlink(void)
+ 	return fd;
  }
  
- #endif //LTP_GETRUSAGE03_H
++#define UEVENT_MAX_PENDING 16
++
+ /*
+  * Reads events from uevent netlink socket until all expected events passed in
+- * the uevent array are matched.
++ * the uevent array are matched. Events do not have to arrive in the order
++ * they are listed in the uevents array, since the kernel is free to reorder
++ * unrelated uevents, e.g. commit 8e63c9e6179a ("net: Defer netdev KOBJ_ADD
++ * uevent until the device is published") changed the order in which a
++ * network interface and its queues announce themselves.
+  */
+ static inline void wait_for_uevents(int fd, const struct uevent_desc *const uevents[])
+ {
+-	int i = 0;
++	const struct uevent_desc *pending[UEVENT_MAX_PENDING];
++	int i, cnt = 0, remaining;
++
++	while (uevents[cnt]) {
++		if (cnt >= UEVENT_MAX_PENDING)
++			tst_brk(TBROK, "Too many expected uevents, increase UEVENT_MAX_PENDING");
++		pending[cnt] = uevents[cnt];
++		cnt++;
++	}
++	remaining = cnt;
+ 
+-	while (1) {
++	while (remaining) {
+ 		int len;
+ 		char buf[4096];
+ 
+@@ -136,14 +151,20 @@ static inline void wait_for_uevents(int fd, const struct uevent_desc *const ueve
+ 
+ 		print_uevent(buf, len);
+ 
+-		if (uevent_match(buf, len, uevents[i])) {
+-			tst_res(TPASS, "Got expected UEVENT");
+-			if (!uevents[++i]) {
+-				close(fd);
+-				return;
++		for (i = 0; i < cnt; i++) {
++			if (!pending[i])
++				continue;
++
++			if (uevent_match(buf, len, pending[i])) {
++				tst_res(TPASS, "Got expected UEVENT");
++				pending[i] = NULL;
++				remaining--;
++				break;
+ 			}
+ 		}
+ 	}
++
++	close(fd);
+ }
+ 
+ /*
 -- 
-2.43.0
+2.55.0
 
 
 -- 
