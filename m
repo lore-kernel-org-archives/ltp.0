@@ -4,81 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 68EBDC61DBD
-	for <ltp@archiver.kernel.org>; Tue, 25 Aug 2026 11:41:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E9AC4C61DBD
+	for <ltp@archiver.kernel.org>; Tue, 25 Aug 2026 11:41:17 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B0AF13C4C64
-	for <ltp@archiver.kernel.org>; Tue, 25 Aug 2026 13:41:02 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 6CDB93C57AC
+	for <ltp@archiver.kernel.org>; Tue, 25 Aug 2026 13:41:16 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6EAC43C244F
- for <ltp@lists.linux.it>; Tue, 25 Aug 2026 13:36:45 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ by picard.linux.it (Postfix) with ESMTPS id 189823C5706
+ for <ltp@lists.linux.it>; Tue, 25 Aug 2026 13:36:47 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id EC96C200048
- for <ltp@lists.linux.it>; Tue, 25 Aug 2026 13:36:44 +0200 (CEST)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 2B6B610009A2
+ for <ltp@lists.linux.it>; Tue, 25 Aug 2026 13:36:45 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 3E18086E8E
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 81BF31F7BC
  for <ltp@lists.linux.it>; Tue, 25 Aug 2026 11:36:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
  t=1787657800; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=YKn8reNDNtzdpWg0pxlaQ6iuioQT7pT6SoAu5mqQRgo=;
- b=oPcBOZm7aaH2V77L001jMsLQdh1rm8ehXwmUfJhXzS21v34AtF5u2Ij9duPqRBRC801Oa7
- WSkk2uj3nZ/ASzA75xpO9Nhk4gOSQ9mP60POM6JMbuzmqViDGidyg03xKTYx8l8O/RcAq9
- HHt/zt7n7ocmRcFqHQJjdFAncSzKx40=
+ bh=OZyryl5o9xKKLCmrkBMhaI2khYxB1YsV/P1igUoiHZk=;
+ b=umuTTvO1M39wZMFSrLcatn0meMaTAzFavZGG//oAjlcoT3nMXqd+fvyPizeEYKO+8USKcl
+ EUeN/BmxjWH5tDnaIHoZ2WNrhClHRbAT5VaMNICXRX+NZUhI7BP5UIuLRb8VzfN0oyloWE
+ EgzlWTNbKut+LzNOeDd8fxlFbfDqV9Q=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
  s=susede2_ed25519; t=1787657800;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=YKn8reNDNtzdpWg0pxlaQ6iuioQT7pT6SoAu5mqQRgo=;
- b=TzS8qltjZ3ByIYiAizck6vTd4QIinWb+GcSf/FudKkAr1JOmB3yP3umEsy/j4h5kNskViD
- P0T2IE6CbcXj9ZAg==
-Authentication-Results: smtp-out1.suse.de;
+ bh=OZyryl5o9xKKLCmrkBMhaI2khYxB1YsV/P1igUoiHZk=;
+ b=ulC5wKdHEKQqaU5l3eyzdHrvJRfouGbQA0doQiOVCRiqRwZXfgv7O0Ce2LlTG03aVQRubl
+ EYbCAJnUPkrpCtCQ==
+Authentication-Results: smtp-out2.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
  t=1787657796; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=YKn8reNDNtzdpWg0pxlaQ6iuioQT7pT6SoAu5mqQRgo=;
- b=PXXbdcUJdVqBXyBJXocpNQI+pwGGBGpyoQfwjMoCY70hdO0M3IPEZssmVkafACDqd/iPOZ
- H+VCB2720GSdadZDBJq19ivoceMQOypzuUgy6VJ92iQxL8wzzSZslo5y5BA9SKkopd5EjM
- elfRbYNKvk+dYx9sZVwZXKvgMuuGIDw=
+ bh=OZyryl5o9xKKLCmrkBMhaI2khYxB1YsV/P1igUoiHZk=;
+ b=Gw9AwGory41cUzqJ3yy9BHLCOgeKMnxPBUi15iLAPpq7C2RgPmfMNxFF92dZfU9bX5xqj1
+ w/jh34zdbs9doaJl5gPhdVMYsy7URiNMZpkOiAdkRSbdfR4jKgRsrMMi7g5Nc4qo/zlTcf
+ FJNb5gGDlA1nKD+scK8h9IHF1LbbMVw=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
  s=susede2_ed25519; t=1787657796;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=YKn8reNDNtzdpWg0pxlaQ6iuioQT7pT6SoAu5mqQRgo=;
- b=gyPmgg6Bh6WyImX+ss//SWm4IwUZWV/BdxmUNXqTKclQ3TO2lo4Qwm30SzBKSpVBKDiJQ9
- CjayOlFUhOcCVCBQ==
+ bh=OZyryl5o9xKKLCmrkBMhaI2khYxB1YsV/P1igUoiHZk=;
+ b=Yq1ZGmtspCR1beL6Stov4AgjACUUN/Vkj/Bvq0Pu/lvi5r9rOO/vOrLJVeZOeqxoqIBsPE
+ 4Pq5619rqUlBUxDA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5255B1339D
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id AD6681348F
  for <ltp@lists.linux.it>; Tue, 25 Aug 2026 11:36:34 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id xnE1E0J+jWp5SAAAD6G6ig
+ by imap1.dmz-prg2.suse.org with ESMTPSA id c4hwKUJ+jWp7SAAAD6G6ig
  (envelope-from <chrubis@suse.cz>)
  for <ltp@lists.linux.it>; Tue, 25 Aug 2026 11:36:34 +0000
 From: Cyril Hrubis <chrubis@suse.cz>
 To: ltp@lists.linux.it
-Date: Tue, 25 Aug 2026 13:36:12 +0200
-Message-ID: <20260825113625.1624134-19-chrubis@suse.cz>
+Date: Tue, 25 Aug 2026 13:36:13 +0200
+Message-ID: <20260825113625.1624134-20-chrubis@suse.cz>
 X-Mailer: git-send-email 2.54.0
 In-Reply-To: <20260825113625.1624134-1-chrubis@suse.cz>
 References: <20260825113625.1624134-1-chrubis@suse.cz>
@@ -92,12 +93,12 @@ X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
  FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:mid,imap1.dmz-prg2.suse.org:helo];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:email,suse.cz:mid];
  RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
  TO_DN_NONE(0.00)[]; RCVD_TLS_ALL(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3 18/31] testcases: sysfs: Add sys_thermal01
+Subject: [LTP] [PATCH v3 19/31] tst_netdevice: Add two more helper macros
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -114,127 +115,147 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-A test for /sys/class/thermal/cooling_device*/* files.
+- NETDEV_SET_HWADDR() helper to change MAC address
+- NETDEV_SET_MASTER() helper to connect two devices as master-slave
 
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- runtest/sysfs                                 |  1 +
- .../kernel/sysfs/class/thermal/.gitignore     |  1 +
- testcases/kernel/sysfs/class/thermal/Makefile |  7 ++
- .../sysfs/class/thermal/sys_thermal01.c       | 73 +++++++++++++++++++
- 4 files changed, 82 insertions(+)
- create mode 100644 testcases/kernel/sysfs/class/thermal/.gitignore
- create mode 100644 testcases/kernel/sysfs/class/thermal/Makefile
- create mode 100644 testcases/kernel/sysfs/class/thermal/sys_thermal01.c
+ include/tst_netdevice.h | 20 +++++++++
+ lib/tst_netdevice.c     | 90 +++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 110 insertions(+)
 
-diff --git a/runtest/sysfs b/runtest/sysfs
-index de58499be..454042ed0 100644
---- a/runtest/sysfs
-+++ b/runtest/sysfs
-@@ -14,3 +14,4 @@ sys_hwmon01 sys_hwmon01
- sys_leds01 sys_leds01
- sys_wakeup01 sys_wakeup01
- sys_rtc01 sys_rtc01
-+sys_thermal01 sys_thermal01
-diff --git a/testcases/kernel/sysfs/class/thermal/.gitignore b/testcases/kernel/sysfs/class/thermal/.gitignore
-new file mode 100644
-index 000000000..c551a2cde
---- /dev/null
-+++ b/testcases/kernel/sysfs/class/thermal/.gitignore
-@@ -0,0 +1 @@
-+/sys_thermal01
-diff --git a/testcases/kernel/sysfs/class/thermal/Makefile b/testcases/kernel/sysfs/class/thermal/Makefile
-new file mode 100644
-index 000000000..034038061
---- /dev/null
-+++ b/testcases/kernel/sysfs/class/thermal/Makefile
-@@ -0,0 +1,7 @@
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (c) 2026 Cyril Hrubis <chrubis@suse.cz>
-+
-+top_srcdir		?= ../../../../..
-+
-+include $(top_srcdir)/include/mk/testcases.mk
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/sysfs/class/thermal/sys_thermal01.c b/testcases/kernel/sysfs/class/thermal/sys_thermal01.c
-new file mode 100644
-index 000000000..2ed1167ab
---- /dev/null
-+++ b/testcases/kernel/sysfs/class/thermal/sys_thermal01.c
-@@ -0,0 +1,73 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
+diff --git a/include/tst_netdevice.h b/include/tst_netdevice.h
+index 2617bb149..934ee5fb4 100644
+--- a/include/tst_netdevice.h
++++ b/include/tst_netdevice.h
+@@ -61,6 +61,26 @@ int tst_netdev_remove_address_inet(const char *file, const int lineno,
+ #define NETDEV_REMOVE_ADDRESS_INET(ifname, address) \
+ 	tst_netdev_remove_address_inet(__FILE__, __LINE__, 1, (ifname), \
+ 		(address))
 +/*
-+ * Copyright (c) 2026 Cyril Hrubis <chrubis@suse.cz>
++ * Change the link-layer (MAC) address of an existing network device. Most
++ * drivers require the device to be administratively down for this to
++ * succeed.
 + */
++int tst_netdev_set_hwaddr(const char *file, const int lineno, int strict,
++	const char *ifname, const void *addr, size_t addrlen);
++#define NETDEV_SET_HWADDR(ifname, addr, addrlen) \
++	tst_netdev_set_hwaddr(__FILE__, __LINE__, 1, (ifname), (addr), \
++		(addrlen))
 +
-+/*\
-+ * Sanity checks for the thermal cooling devices exported under
-+ * /sys/class/thermal/cooling_deviceN/.
-+ *
-+ * For every cooling device the test verifies that:
-+ *
-+ * - type is a non-empty string
-+ * - max_state is non-negative
-+ * - cur_state is in the range [0, max_state]
-+ *
-+ * The test skips with TCONF when no cooling device is present.
++/*
++ * Enslave ifname to the master_ifname device, e.g. add it as a bridge or bond
++ * port. Pass NULL as master_ifname to release the device from its current
++ * master.
 + */
-+
-+#include <string.h>
-+#include <dirent.h>
-+#include <limits.h>
-+#include "tst_test.h"
-+#include "tst_sysfs_assert.h"
-+
-+#define THERMAL "/sys/class/thermal"
-+
-+static void check_cooling_device(const char *name)
++int tst_netdev_set_master(const char *file, const int lineno, int strict,
++	const char *ifname, const char *master_ifname);
++#define NETDEV_SET_MASTER(ifname, master_ifname) \
++	tst_netdev_set_master(__FILE__, __LINE__, 1, (ifname), (master_ifname))
+ 
+ int tst_netdev_change_ns_fd(const char *file, const int lineno, int strict,
+ 	const char *ifname, int nsfd);
+diff --git a/lib/tst_netdevice.c b/lib/tst_netdevice.c
+index 1042466bf..0861d39fc 100644
+--- a/lib/tst_netdevice.c
++++ b/lib/tst_netdevice.c
+@@ -287,6 +287,96 @@ static int modify_address(const char *file, const int lineno, int strict,
+ 	return ret;
+ }
+ 
++int tst_netdev_set_hwaddr(const char *file, const int lineno, int strict,
++	const char *ifname, const void *addr, size_t addrlen)
 +{
-+	char type[64] = "";
++	struct ifinfomsg info = { .ifi_family = AF_UNSPEC };
++	struct tst_netlink_context *ctx;
++	int ret;
 +
-+	tst_res(TINFO, "Checking %s", name);
-+
-+	TST_SYSFS_READ_STR(type, sizeof(type), THERMAL "/%s/type", name);
-+
-+	if (type[0] != '\0')
-+		tst_res(TPASS, "%s: type = '%s'", name, type);
-+	else
-+		tst_res(TFAIL, "%s: type is empty", name);
-+
-+	TST_SYSFS_ASSERT_RANGELL(0, LONG_MAX, THERMAL "/%s/max_state", name);
-+
-+	TST_SYSFS_ASSERT_RANGELF(0, "cur_state", "max_state",
-+				  THERMAL "/%s/", name);
-+}
-+
-+static void do_test(void)
-+{
-+	DIR *d;
-+	struct dirent *ent;
-+	int found = 0;
-+
-+	if (!tst_sysfs_exists(THERMAL))
-+		tst_brk(TCONF, THERMAL ": not present");
-+
-+	d = SAFE_OPENDIR(THERMAL);
-+
-+	while ((ent = SAFE_READDIR(d))) {
-+		if (strncmp(ent->d_name, "cooling_device", 14))
-+			continue;
-+
-+		found = 1;
-+		check_cooling_device(ent->d_name);
++	if (strlen(ifname) >= IFNAMSIZ) {
++		tst_brk_(file, lineno, TBROK,
++			"Network device name \"%s\" too long", ifname);
++		return 0;
 +	}
 +
-+	SAFE_CLOSEDIR(d);
++	ctx = create_request(file, lineno, RTM_NEWLINK, 0, &info, sizeof(info));
 +
-+	if (!found)
-+		tst_res(TCONF, "No cooling device found");
++	if (!ctx)
++		return 0;
++
++	if (!tst_rtnl_add_attr_string(file, lineno, ctx, IFLA_IFNAME, ifname)) {
++		tst_netlink_destroy_context(file, lineno, ctx);
++		return 0;
++	}
++
++	if (!tst_rtnl_add_attr(file, lineno, ctx, IFLA_ADDRESS, addr, addrlen)) {
++		tst_netlink_destroy_context(file, lineno, ctx);
++		return 0;
++	}
++
++	ret = tst_netlink_send_validate(file, lineno, ctx);
++	tst_netlink_destroy_context(file, lineno, ctx);
++
++	if (strict && !ret) {
++		tst_brk_(file, lineno, TBROK,
++			"Failed to set hwaddr for %s: %s", ifname,
++			tst_strerrno(tst_netlink_errno));
++	}
++
++	return ret;
 +}
 +
-+static struct tst_test test = {
-+	.test_all = do_test,
-+};
++int tst_netdev_set_master(const char *file, const int lineno, int strict,
++	const char *ifname, const char *master_ifname)
++{
++	struct ifinfomsg info = { .ifi_family = AF_UNSPEC };
++	struct tst_netlink_context *ctx;
++	int32_t master_index = 0;
++	int ret;
++
++	if (strlen(ifname) >= IFNAMSIZ) {
++		tst_brk_(file, lineno, TBROK,
++			"Network device name \"%s\" too long", ifname);
++		return 0;
++	}
++
++	if (master_ifname) {
++		master_index = tst_netdev_index_by_name(file, lineno,
++			master_ifname);
++
++		if (master_index < 0)
++			return 0;
++	}
++
++	ctx = create_request(file, lineno, RTM_NEWLINK, 0, &info, sizeof(info));
++
++	if (!ctx)
++		return 0;
++
++	if (!tst_rtnl_add_attr_string(file, lineno, ctx, IFLA_IFNAME, ifname)) {
++		tst_netlink_destroy_context(file, lineno, ctx);
++		return 0;
++	}
++
++	if (!tst_rtnl_add_attr(file, lineno, ctx, IFLA_MASTER, &master_index,
++		sizeof(master_index))) {
++		tst_netlink_destroy_context(file, lineno, ctx);
++		return 0;
++	}
++
++	ret = tst_netlink_send_validate(file, lineno, ctx);
++	tst_netlink_destroy_context(file, lineno, ctx);
++
++	if (strict && !ret) {
++		tst_brk_(file, lineno, TBROK,
++			"Failed to set master for %s: %s", ifname,
++			tst_strerrno(tst_netlink_errno));
++	}
++
++	return ret;
++}
++
+ int tst_netdev_add_address(const char *file, const int lineno, int strict,
+ 	const char *ifname, unsigned int family, const void *address,
+ 	unsigned int prefix, size_t addrlen, unsigned int flags)
 -- 
 2.51.0
 
