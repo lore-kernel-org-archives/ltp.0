@@ -4,66 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 06E03C61DBE
-	for <ltp@archiver.kernel.org>; Tue, 25 Aug 2026 13:46:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ECCADC61DB9
+	for <ltp@archiver.kernel.org>; Tue, 25 Aug 2026 13:53:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1787665984; h=message-id :
+ to : in-reply-to : date : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : cc : mime-version : content-type :
+ content-transfer-encoding : sender : from;
+ bh=Q+8PSE7wTjFbxEZebEQN6zqRoJBCF3lNxOjyb6r4qN4=;
+ b=Gg/7/G5a7BovD9qT1JFuVBPMnIT1Qc9v22m9G5QuEVJOZ38dIWdwJeelpVdwaUYgJuftf
+ Vi0INg8Edc/jjsvqQXrHbNjKME/gBSNETCLT8XjntTEBqpJBJZVp2MBbb1Ev0so4vHj3JSz
+ bm6FK701nMQeByyZAfhfrWU5MFQmfd4=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id CE76F3C5A12
-	for <ltp@archiver.kernel.org>; Tue, 25 Aug 2026 15:46:25 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 2F4143C5A12
+	for <ltp@archiver.kernel.org>; Tue, 25 Aug 2026 15:53:04 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A4F273C062E
- for <ltp@lists.linux.it>; Tue, 25 Aug 2026 15:46:10 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 5B9C83C062E
+ for <ltp@lists.linux.it>; Tue, 25 Aug 2026 15:52:43 +0200 (CEST)
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com
+ [IPv6:2a00:1450:4864:20::629])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id E4B656002D2
- for <ltp@lists.linux.it>; Tue, 25 Aug 2026 15:46:09 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 754331F7E5;
- Tue, 25 Aug 2026 13:46:09 +0000 (UTC)
-Authentication-Results: smtp-out2.suse.de;
-	none
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 52EBF13335;
- Tue, 25 Aug 2026 13:46:09 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 3AJEEaGcjWqOSgAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Tue, 25 Aug 2026 13:46:09 +0000
-Date: Tue, 25 Aug 2026 15:46:15 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <ao2cpyGYcL-rZLgc@yuki.lan>
-References: <ajQFErzQW4qfU_Cp@li-276bd24c-2dcc-11b2-a85c-945b6f05615c.ibm.com>
- <6a463902.41a38e5f.27f5bd.337a@mx.google.com>
- <akzN_iISxNTztbEw@li-276bd24c-2dcc-11b2-a85c-945b6f05615c.ibm.com>
- <20260825112755.GA62429@pevik> <ao2TtyQpCGP5TLpx@yuki.lan>
- <20260825132604.GA70046@pevik>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20260825132604.GA70046@pevik>
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	REPLY(-4.00)[]
-X-Rspamd-Queue-Id: 754331F7E5
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id F227E60012C
+ for <ltp@lists.linux.it>; Tue, 25 Aug 2026 15:52:42 +0200 (CEST)
+Received: by mail-ej1-x629.google.com with SMTP id
+ a640c23a62f3a-c16794450aeso709333566b.2
+ for <ltp@lists.linux.it>; Tue, 25 Aug 2026 06:52:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1787665962; x=1788270762; darn=lists.linux.it;
+ h=date:content-transfer-encoding:content-type:subject:in-reply-to:cc
+ :to:from:message-id:from:to:cc:subject:date:message-id:reply-to
+ :content-type; bh=Apu6RSh4qqDQ9HKfJdG+CHhvYlAJ8Hy31j/mZyDd6bc=;
+ b=XdwYc69L1/OjUgwwFP0SMwqBWTpIVufbQ9DbtvDt4PX1jxuQmO3BJetnsk13Utf8aP
+ 3J4qLxAaQqgLFVapMuT2FbuKm1OwXFd9Yk5eiP6/8EFiShAdvDISw7T/lW87E09fJjMJ
+ kpTnitn7Ryq6JGIWlZNdCA1pFEtfP4PxGmeE/uIfmqALEMsJrPQYHUv97pKtpj5tcH3x
+ HvsCjwH8Xi7YXxLG1yXwAuQSEvScJ6OsC/s7fQb11vLDZ0Klx4aqXtqV0xu+jLLonDiE
+ OMbriQzpZUj6NawR/OSxoLMIRSplKyE5gbtJ6LLJIVQMZcmhwXFh1Q47hLTRp3w2gq/q
+ k7pQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1787665962; x=1788270762;
+ h=date:content-transfer-encoding:content-type:subject:in-reply-to:cc
+ :to:from:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject
+ :date:message-id:reply-to:content-type;
+ bh=Apu6RSh4qqDQ9HKfJdG+CHhvYlAJ8Hy31j/mZyDd6bc=;
+ b=oZYKYusA1Bb3P4gsuqrAF70VpmeDmHCQUzjq07ik2GKLWY0Hhuh1+yhYhRsl7jaGiL
+ 2M/b65wYmfgJWzCFf9A2T9Av387W7UOGJwM9R1IZB7rlUc0cyBaUvMvLJrPXPKHekQl0
+ X6NHbQaAtoMUDJOiDjyDcf18ojauIzFGJWuv9uE9AohcT1+YKWDPsxmDCXVLslvpt+Tr
+ B72K1KwEVjuiKKA9iQKTPHSosj+y/XrKZXMD89kH5mobV2FcoGzTMKSvOS/IFy2htkIs
+ F1oJGbe9r3jgLE9ZUN00IPEDrPdrC1DeIYY7EJEuEWnSwVZFYf0L5n3bLfxwMeFdEyCn
+ o4ZA==
+X-Gm-Message-State: AFuF++kPCYjL+IoGKKV+9OHh2rYGvu0gEl8YL1hXf3K1nUleVEG9fLjE
+ oOx9VpDxp3Cv8qDJEaO976SgS6M1gTh6aNY+qUpsXF9AdYrocrhmUFzO7bHEI09+ics4Uori6Qv
+ CZgobeJ0=
+X-Gm-Gg: AR+sD10tEGhGsEZ3kN8AeV0FpNSZBDLn8fMrqVAvXv6AlycreooeG+jtzOG4QgUEoCy
+ qjUrAt7toLqILGMNKlkmY7tHPRscRjmW3ZkKNbtSDguRG5jb1XAMwlgMBXgSJMCwAdyyoLKo7IH
+ oypcAouGcvqatbuuxHdOy4kvP9aPSkFgyx/bmQbuMxVk6q0kVlqYlgdp6U0W9VDainlMINhQh9t
+ T068ej8S+2tlDTZ7IsOgrSRgnjAHS7j5n3NLWnzsIsIfVPRFHTOb9JHyt6xSnb5C1Tj3rjt2k4N
+ 9AIoIw3f/HW6THsu/jKg9BCAA6vr5Roh1unGSoP6C99y9r5us5cqaT0C/JlgMBVYBflWoNVx1wk
+ MfRZKIGTqaUEytPHu/8nulyaePI8X5KvOFOM0SHN1ki6gwZIMHLSkEEp9yIjM8+MGLIttGUucD3
+ DhCWiNpKsr9SzM7zmmtUI35v9maJZ3HeNZmVY7xKaYe9PfVuqAsens3Z8yZLsUjfl4RwgbiNe+o
+ ufBAQaMjT2imWbDT07nBHANQ7O9Iin5tiQx
+X-Received: by 2002:a17:907:e1d0:20b0:c20:f864:d480 with SMTP id
+ a640c23a62f3a-c246a6559aemr2885304866b.13.1787665962211; 
+ Tue, 25 Aug 2026 06:52:42 -0700 (PDT)
+Received: from localhost.localdomain (p4fcc8213.dip0.t-ipconnect.de.
+ [79.204.130.19]) by smtp.gmail.com with ESMTPSA id
+ a640c23a62f3a-c2496297189sm1734898166b.22.2026.08.25.06.52.41
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 25 Aug 2026 06:52:41 -0700 (PDT)
+Message-ID: <6a8d9e29.215ab133.223754.df6f@mx.google.com>
+To: "Wei Gao" <wegao@suse.com>
+In-Reply-To: <20260821013917.28499-1-wegao@suse.com>
+Date: Tue, 25 Aug 2026 13:52:41 +0000
 X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1 1/1] swap: Add exfat to filesystems requiring
- tst_fill_file
+Subject: Re: [LTP] [PATCH v7] shmctl03: Fix 32-bit compat mode failure by
+ adjusting comparisons for compat mode truncation
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -75,33 +97,43 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: regressions@lists.linux.dev, Yuezhang Mo <yuezhang.mo@sony.com>,
- linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
- "Darrick J . Wong" <djwong@kernel.org>, Sungjong Seo <sj1557.seo@samsung.com>,
- Namjae Jeon <linkinjeon@kernel.org>, ltp@lists.linux.it
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Cc: Dan Carpenter <dan.carpenter@linaro.org>, ltp@lists.linux.it
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> > That does not make much sense, if swap_activate was added to kernel,
-> > pre-filling the fallocated file shouldn't be needed anymore.
-> 
-> Good catch, you're right. I'm also confused, before v7.2 swap worked on exfat,
-> now even with 82a81a7352bc ("exfat: add iomap buffered I/O support") [2]
-> and your fix 03a43677ca91 ("exfat: add swap_activate support") [3] is not
-> working. Obviously the fix was not good enough.
+Hi Wei,
 
-There were two bugs I suppose, one is that fallocate() support for exfat broke
-the swapon on fallocated file. The second bug was introduced later when
-exfat was rewritten to use iomap. The iomap case was fixed in the patch
-above, however it looks like the original bug caused by fallocate()
-implementation for exfat is still there.
+title is too long, it needs to be shorten.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> On 64-bit kernels, the default shmmax and shmall values often exceed
+> the range of a 32-bit unsigned long or are clipped differently by the
+> kernel's compat syscall layer than they appear in /proc.
+
+Also here we are above 85 lines.
+
+> +/**
+> + * TST_ASSERT_BITWISE - Keep only the lower 32 bits of the read value.
+> + *
+> + * If this flag is set, only the low 32 bits of the value read from the
+> + * sysfs/procfs file are compared.
+> + */
+> +#define TST_ASSERT_BITWISE         0x02
+
+I was thinking that this should be probably TST_ASSERT_TRUNC_32BIT, since
+bitwise is misleading.
+
+needs to be fixed before merge.
+
+Thanks,
+--
+Andrea Cervesato
+SUSE QE Automation Engineer Linux
+andrea.cervesato@suse.com
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
