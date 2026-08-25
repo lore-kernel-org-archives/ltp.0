@@ -4,111 +4,102 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0E0C3C61DBD
-	for <ltp@archiver.kernel.org>; Tue, 25 Aug 2026 11:42:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 45A43C61DBD
+	for <ltp@archiver.kernel.org>; Tue, 25 Aug 2026 11:42:16 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 5D8B63C5E52
-	for <ltp@archiver.kernel.org>; Tue, 25 Aug 2026 13:42:00 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 9EE6A3C7152
+	for <ltp@archiver.kernel.org>; Tue, 25 Aug 2026 13:42:14 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 5BB823C5A59
+ by picard.linux.it (Postfix) with ESMTPS id 5C7413C5E52
  for <ltp@lists.linux.it>; Tue, 25 Aug 2026 13:36:47 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id B8D0A6008E9
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 9675110009A1
  for <ltp@lists.linux.it>; Tue, 25 Aug 2026 13:36:45 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 860D41F7E7
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 39BBB1F7E1
  for <ltp@lists.linux.it>; Tue, 25 Aug 2026 11:36:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
  t=1787657800; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=Vxuz0QMFmPHVDrln+lH9q2U6HN+rFS5IVkN1wTBM3lQ=;
- b=O7DL1YgOqQAzKS4cfm6x+kUu382DrhBDg/Hsq9RH5c5BYAMzakog4bIpwWb9zDP1DYJ35L
- +g/Rv/CUmZrhQBDk4NH2wm0l7oNByLa+GIKdCshXVp66zPPyCpgUjeaG4lI2Fbv/FnQc3J
- khW1nFFruWbS/dY7/jlN61td2YNirS4=
+ bh=82Ivl0iS1L9oI0BJ3KzNNj3i5PpVjtnc1im6el6TUf8=;
+ b=hf2zrlzMAxIfLDdO9Kj/D99OxMB+m+it7s90rLZS+X0J8vzHWUt8/AhI6qzYXD31tesZ4O
+ aEfhxo++8X7JGVyd+W/dLl1tLNqp1sR/2GgiojseVurSL3eIdn1cTbevwSQP1nArCW1mYt
+ Ri+wEmTf7nxwtZOmA3ybxMI0wLvepK8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
  s=susede2_ed25519; t=1787657800;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=Vxuz0QMFmPHVDrln+lH9q2U6HN+rFS5IVkN1wTBM3lQ=;
- b=F+8OwOaMBfx4TS1pzyaVKlYKyR81Bkjc5Vn81s3p1Sy2pcAs+ctqDA7+d27lcXS2GeqtQr
- UL25Uadt2s/K8FBA==
+ bh=82Ivl0iS1L9oI0BJ3KzNNj3i5PpVjtnc1im6el6TUf8=;
+ b=byg7yhjQgH6yuQBk1TTMoi17dOcFFD2tvFSVua62MkYO1tpXypN/YyARfg6nctyxV95q9B
+ Kr+zisFqSEI7MhCg==
 Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=ezSl0JKM;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=fYqnQnZo
+	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
  t=1787657796; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=Vxuz0QMFmPHVDrln+lH9q2U6HN+rFS5IVkN1wTBM3lQ=;
- b=ezSl0JKMvOiwlPDl+qCA+0KCDA3ONTXAt6laKUs4BoDN3L91Gvfc6OgLdn4vIBRLHFQntx
- nUZ0wMskflaqNCTS4rWb+TJMPXzMy2fnzVM8ISWtoh21o+3cl80b96VOvJivk2WzjbrX0Y
- AnLeVWcFmPcaXkbeYlv+hIC2l3SQamA=
+ bh=82Ivl0iS1L9oI0BJ3KzNNj3i5PpVjtnc1im6el6TUf8=;
+ b=QmZ6D4h5Jdk0IzSLK0vo6LTt6QsY0ZPWUGXpFsfWqx5h3uUZad9xDifVPQtyklHP9f8XaI
+ oLYf85+IEWAiFtUM7xj1blTT2+Uu7s1CD0uxsj6qWcchljI5n/6o6ieatj958F77yi7L6U
+ JXgp0DRlYz7IKuTjNLegelPGbcu4qPA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
  s=susede2_ed25519; t=1787657796;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=Vxuz0QMFmPHVDrln+lH9q2U6HN+rFS5IVkN1wTBM3lQ=;
- b=fYqnQnZoOEt/maWW+k2DJVEofDQ0Sh4dfncxmQ38JvXxOfbXGnmRk4lyM5bi3j1Zw2hBpb
- cXFvJBSpCoYQKZCg==
+ bh=82Ivl0iS1L9oI0BJ3KzNNj3i5PpVjtnc1im6el6TUf8=;
+ b=RiaC3biGL4/cMKwLjdcmWQLnkUpvyxi3v9lQ7BfinOmBK1tIZN3PHHIr/NUpLZX0b9/CjG
+ UjSMk344T5Iw+jAg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 715BA134B3
- for <ltp@lists.linux.it>; Tue, 25 Aug 2026 11:36:35 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id DEB001339C
+ for <ltp@lists.linux.it>; Tue, 25 Aug 2026 11:36:33 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id mGHBGkN+jWqZSAAAD6G6ig
+ by imap1.dmz-prg2.suse.org with ESMTPSA id t2J/NUF+jWp3SAAAD6G6ig
  (envelope-from <chrubis@suse.cz>)
- for <ltp@lists.linux.it>; Tue, 25 Aug 2026 11:36:35 +0000
+ for <ltp@lists.linux.it>; Tue, 25 Aug 2026 11:36:33 +0000
 From: Cyril Hrubis <chrubis@suse.cz>
 To: ltp@lists.linux.it
-Date: Tue, 25 Aug 2026 13:36:15 +0200
-Message-ID: <20260825113625.1624134-22-chrubis@suse.cz>
+Date: Tue, 25 Aug 2026 13:36:11 +0200
+Message-ID: <20260825113625.1624134-18-chrubis@suse.cz>
 X-Mailer: git-send-email 2.54.0
 In-Reply-To: <20260825113625.1624134-1-chrubis@suse.cz>
 References: <20260825113625.1624134-1-chrubis@suse.cz>
 MIME-Version: 1.0
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: 860D41F7E7
-X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_CONTAINS_FROM(1.00)[];
- R_MISSING_CHARSET(0.50)[];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- RCVD_VIA_SMTP_AUTH(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- ARC_NA(0.00)[]; RCPT_COUNT_ONE(0.00)[1]; FROM_HAS_DN(0.00)[];
- MIME_TRACE(0.00)[0:+]; FROM_EQ_ENVFROM(0.00)[];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:mid,suse.cz:email,suse.cz:dkim,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; TO_DN_NONE(0.00)[];
- RCVD_TLS_ALL(0.00)[];
- PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
- DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received,2a07:de40:b281:104:10:150:64:97:from];
+X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-1.000];
+ MIME_GOOD(-0.10)[text/plain]; ARC_NA(0.00)[];
+ RCPT_COUNT_ONE(0.00)[1]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ MIME_TRACE(0.00)[0:+];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- DKIM_TRACE(0.00)[suse.cz:+]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+ PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:mid,suse.cz:email,imap1.dmz-prg2.suse.org:helo];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ TO_DN_NONE(0.00)[]; RCVD_TLS_ALL(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3 21/31] testcases: sysfs: Add sys_net02
+Subject: [LTP] [PATCH v3 17/31] testcases: sysfs: Add sys_rtc01
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -125,332 +116,313 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-A test for /sys/class/net/*/* files.
-
-This test, unlike sys_net01, creates a virtual ethernet interface so
-that it can change various attributes and verify that they are mirrored
-into the sysfs correctly.
+A test for /sys/class/rtc/*/* files.
 
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- runtest/sysfs                                 |   1 +
- testcases/kernel/sysfs/class/net/.gitignore   |   1 +
- testcases/kernel/sysfs/class/net/sys_net02.c  | 185 ++++++++++++++++++
- .../kernel/sysfs/class/net/sys_net_common.h   |  97 +++++++++
- 4 files changed, 284 insertions(+)
- create mode 100644 testcases/kernel/sysfs/class/net/sys_net02.c
- create mode 100644 testcases/kernel/sysfs/class/net/sys_net_common.h
+ runtest/sysfs                                |   1 +
+ testcases/kernel/sysfs/class/rtc/.gitignore  |   1 +
+ testcases/kernel/sysfs/class/rtc/Makefile    |   7 +
+ testcases/kernel/sysfs/class/rtc/sys_rtc01.c | 259 +++++++++++++++++++
+ 4 files changed, 268 insertions(+)
+ create mode 100644 testcases/kernel/sysfs/class/rtc/.gitignore
+ create mode 100644 testcases/kernel/sysfs/class/rtc/Makefile
+ create mode 100644 testcases/kernel/sysfs/class/rtc/sys_rtc01.c
 
 diff --git a/runtest/sysfs b/runtest/sysfs
-index 90e4d2b8e..fee8a0b2b 100644
+index b8d003228..de58499be 100644
 --- a/runtest/sysfs
 +++ b/runtest/sysfs
-@@ -16,3 +16,4 @@ sys_wakeup01 sys_wakeup01
- sys_rtc01 sys_rtc01
- sys_thermal01 sys_thermal01
- sys_net01 sys_net01
-+sys_net02 sys_net02
-diff --git a/testcases/kernel/sysfs/class/net/.gitignore b/testcases/kernel/sysfs/class/net/.gitignore
-index f5ef57b75..b70d02158 100644
---- a/testcases/kernel/sysfs/class/net/.gitignore
-+++ b/testcases/kernel/sysfs/class/net/.gitignore
-@@ -1 +1,2 @@
- /sys_net01
-+/sys_net02
-diff --git a/testcases/kernel/sysfs/class/net/sys_net02.c b/testcases/kernel/sysfs/class/net/sys_net02.c
+@@ -13,3 +13,4 @@ sys_bdi01 sys_bdi01
+ sys_hwmon01 sys_hwmon01
+ sys_leds01 sys_leds01
+ sys_wakeup01 sys_wakeup01
++sys_rtc01 sys_rtc01
+diff --git a/testcases/kernel/sysfs/class/rtc/.gitignore b/testcases/kernel/sysfs/class/rtc/.gitignore
 new file mode 100644
-index 000000000..97de58c42
+index 000000000..0ce416b43
 --- /dev/null
-+++ b/testcases/kernel/sysfs/class/net/sys_net02.c
-@@ -0,0 +1,185 @@
++++ b/testcases/kernel/sysfs/class/rtc/.gitignore
+@@ -0,0 +1 @@
++/sys_rtc01
+diff --git a/testcases/kernel/sysfs/class/rtc/Makefile b/testcases/kernel/sysfs/class/rtc/Makefile
+new file mode 100644
+index 000000000..034038061
+--- /dev/null
++++ b/testcases/kernel/sysfs/class/rtc/Makefile
+@@ -0,0 +1,7 @@
++# SPDX-License-Identifier: GPL-2.0-or-later
++# Copyright (c) 2026 Cyril Hrubis <chrubis@suse.cz>
++
++top_srcdir		?= ../../../../..
++
++include $(top_srcdir)/include/mk/testcases.mk
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/sysfs/class/rtc/sys_rtc01.c b/testcases/kernel/sysfs/class/rtc/sys_rtc01.c
+new file mode 100644
+index 000000000..a3d6d418d
+--- /dev/null
++++ b/testcases/kernel/sysfs/class/rtc/sys_rtc01.c
+@@ -0,0 +1,259 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
 + * Copyright (c) 2026 Cyril Hrubis <chrubis@suse.cz>
 + */
 +
 +/*\
-+ * Verifies that the link state attributes exported under
-+ * /sys/class/net/<iface>/ correctly mirror the administrative state of a
-+ * veth peer.
++ * Sanity checks for the RTC attributes exported under
++ * /sys/class/rtc/rtcN/.
 + *
-+ * A veth device's carrier is expected to be up only while its peer is up:
-+ * veth_open()/veth_close() call netif_carrier_on()/netif_carrier_off() based
-+ * on whether the peer is running. The test creates a veth pair and checks
-+ * that bringing the peer down and back up is reflected in:
++ * date and time report the RTC clock in UTC, while since_epoch reports the
++ * same value pre-converted to a Unix timestamp. For every RTC device the
++ * test verifies that:
 + *
-+ * - carrier - 1 while the peer is up, 0 while it is down
-+ * - operstate - "up" while the peer is up, "lowerlayerdown" while it is down
-+ * - carrier_up_count / carrier_down_count - incremented by exactly one on
-+ *   each corresponding transition
-+ * - carrier_changes - always equal to carrier_up_count + carrier_down_count
++ * - hctosys is a boolean
++ * - max_user_freq is greater than zero
++ * - since_epoch matches date and time converted to a Unix timestamp
++ * - for the RTC device with hctosys == 1, i.e. the one that was actually
++ *   used by the kernel's own CONFIG_RTC_HCTOSYS code to set the system clock
++ *   at boot, since_epoch is additionally close to the current system time(2)
++ *   value. On a system with multiple RTC devices the other ones are not
++ *   guaranteed to be in sync with the system clock at all (e.g. a
++ *   peripheral's battery-backed RTC used only for its own wakeup alarm), so
++ *   this second check is skipped for them.
 + *
-+ * Note that while the NETDEV_SET_STATE() netlink call itself is synchronous,
-+ * operstate is not: veth_open()/veth_close() call netif_carrier_on()/off(),
-+ * but the kernel's linkwatch mechanism (net/core/link_watch.c) applies the
-+ * resulting operstate transition asynchronously via a workqueue, so reading
-+ * it right after the netlink call can still observe the previous value for
-+ * a little while, particularly on a loaded/slow system. The test retries
-+ * (see read_operstate() in sys_net_common.h) rather than using
-+ * poll(2)/select(2): unlike some other sysfs attributes,
-+ * /sys/class/net/<iface>/carrier does not support poll() based notification
-+ * on Linux, link state changes are reported to userspace via rtnetlink
-+ * instead.
++ * The hctosys only reflects whether the kernel itself performed the sync; many
++ * setups runs "hwclock --hctosys" from a userspace init script instead to sync
++ * the system clock from the RTC without the kernel ever knowing about it,
++ * leaving hctosys == 0 on every device despite the clock legitimately being in
++ * sync. To still get coverage on such systems, if no RTC has hctosys == 1 at
++ * all, rtc0 is treated as the presumed primary RTC and gets the system time
++ * check anyway.
 + *
-+ * The test also checks attributes that are not tied to the peer's state:
++ * The date/time vs since_epoch cross-check allows a few seconds of slack since
++ * they are read from separate files and the wall clock keeps ticking in
++ * between reads. The code also checks for midnight rollover and re-reads the
++ * values if that happens.
 + *
-+ * - mtu - directly writable via sysfs; a few valid values are written and
-+ *   read back, and one syntactically invalid value is rejected (with the mtu
-+ *   left unchanged)
-+ * - address - read-only in sysfs, changed via rtnetlink instead (the
-+ *   interface is brought down first since most drivers require this); while
-+ *   doing so, the IFF_UP bit in "flags" is also cross-checked against the
-+ *   interface's own administrative state
-+ * - netdev_group and ifalias - directly writable via sysfs, a value is
-+ *   written and read back
++ * The since_epoch vs system time(2) cross-check allows extra slack that
++ * grows with system uptime: the RTC is a free-running hardware crystal
++ * oscillator that (absent some periodic resync mechanism, which is not
++ * guaranteed to be running) drifts independently of the system clock the
++ * whole time the system is up, not just across the couple of reads this
++ * test performs, so on a long-running system a purely fixed slack would
++ * eventually produce false failures even on perfectly healthy hardware.
 + *
-+ * This needs root to create the veth pair.
++ * The check may still fail if the system was booted with RTC that is fairly
++ * off the current time and the system was later synced with NTP. This is out
++ * of scope of this test.
++ *
++ * Under virtualization the slack is additionally multiplied, since a VM's
++ * clock (and thus its emulated RTC) commonly lags real time by tens of
++ * seconds right after boot due to hypervisor scheduling delays (steal time)
++ * during the guest's own boot sequence, which is unrelated to physical RTC
++ * crystal drift and not scaled away by the uptime-based slack above.
 + */
 +
 +#include <stdio.h>
 +#include <string.h>
-+#include <unistd.h>
-+#include <net/if.h>
-+
++#include <stdlib.h>
++#include <dirent.h>
++#include <limits.h>
++#include <time.h>
++#include <sys/sysinfo.h>
 +#include "tst_test.h"
-+#include "tst_netdevice.h"
 +#include "tst_sysfs_assert.h"
 +
-+#define IFNAME1 "ltp_vethp1"
-+#define IFNAME2 "ltp_vethp2"
-+#define IFACE_PATH "/sys/class/net/" IFNAME1
++#define RTC_CLASS "/sys/class/rtc"
++#define SLACK_SEC 10
 +
-+static int veth_created;
++/*
++ * Generously high assumed worst-case RTC crystal drift, in parts per
++ * million, used to scale the system time slack with uptime. 200 ppm covers
++ * even fairly poor/uncompensated RTC crystals across a wide temperature
++ * range; a decent RTC typically drifts far less than this.
++ */
++#define MAX_RTC_DRIFT_PPM 200
 +
-+static long read_mtu(void)
++/*
++ * VM guest clocks commonly lag behind real time by tens of seconds right
++ * after boot due to hypervisor steal time accumulated during the guest's
++ * own boot sequence, see the top comment. This is unrelated to physical RTC
++ * crystal drift, hence a flat multiplier here rather than folding it into
++ * MAX_RTC_DRIFT_PPM's uptime-based scaling.
++ */
++#define VIRT_SLACK_MULTIPLIER 10
++
++static long sys_time_slack_sec(void)
 +{
-+	return TST_SYSFS_READ_LI(IFACE_PATH "/mtu");
++	struct sysinfo info;
++	long slack;
++
++	SAFE_SYSINFO(&info);
++
++	slack = SLACK_SEC + (long)info.uptime * MAX_RTC_DRIFT_PPM / 1000000;
++
++	if (tst_is_virt(VIRT_ANY)) {
++		tst_res(TINFO,
++			"Running in a VM, multiplying the RTC vs system time slack by %d",
++			VIRT_SLACK_MULTIPLIER);
++		slack *= VIRT_SLACK_MULTIPLIER;
++	}
++
++	return slack;
 +}
 +
-+#include "sys_net_common.h"
-+
-+static void setup(void)
++static long read_hctosys(const char *name)
 +{
-+	CREATE_VETH_PAIR(IFNAME1, IFNAME2);
-+	veth_created = 1;
-+
-+	NETDEV_SET_STATE(IFNAME1, 1);
-+	NETDEV_SET_STATE(IFNAME2, 1);
++	return TST_SYSFS_READ_LI(RTC_CLASS "/%s/hctosys", name);
 +}
 +
-+static unsigned long read_flags(void)
++static void read_rtc_snapshot(const char *name, char *date, size_t date_size,
++			      char *rtc_time, size_t time_size,
++			      time_t *since_epoch)
 +{
-+	return TST_SYSFS_READ_LX(IFACE_PATH "/flags");
++	char date2[32];
++	int i;
++
++	/*
++	 * Retry if the date changed between the reads -> midnight rollover
++	 * happened.
++	 */
++	for (i = 0; i < 2; i++) {
++		TST_SYSFS_READ_STR(date, date_size, RTC_CLASS "/%s/date", name);
++		TST_SYSFS_READ_STR(rtc_time, time_size, RTC_CLASS "/%s/time",
++				   name);
++
++		*since_epoch = TST_SYSFS_READ_LI(RTC_CLASS "/%s/since_epoch", name);
++
++		TST_SYSFS_READ_STR(date2, sizeof(date2), RTC_CLASS "/%s/date",
++				   name);
++
++		if (!strcmp(date, date2))
++			return;
++
++		tst_res(TINFO,
++			"%s: date rolled over mid-read (%s -> %s), retrying",
++			name, date, date2);
++	}
++
++	tst_res(TWARN, "%s: date kept rolling over across the retry", name);
 +}
 +
-+static void check_address(void)
++static void check_rtc(const char *name, int any_hctosys)
 +{
-+	static const unsigned char new_addr[6] = {0x02, 0, 0, 0, 0, 0x01};
-+	char actual[32];
-+	long iff_up;
++	char date[32] = "", rtc_time[32] = "";
++	struct tm tm = { 0 };
++	time_t rtc_epoch, sys_epoch;
++	long hctosys, slack;
++	time_t since_epoch;
++	int is_primary;
 +
-+	tst_res(TINFO, "IFNAME1 is up before the address change");
-+	iff_up = read_flags() & IFF_UP;
-+	TST_EXP_EQ_LI(iff_up, IFF_UP);
++	TST_SYSFS_ASSERT_BOOL(RTC_CLASS "/%s/hctosys", name);
++	TST_SYSFS_ASSERT_RANGELL(1, LONG_MAX, RTC_CLASS "/%s/max_user_freq", name);
 +
-+	NETDEV_SET_STATE(IFNAME1, 0);
-+	tst_res(TINFO, "IFNAME1 is down for the address change");
-+	iff_up = read_flags() & IFF_UP;
-+	TST_EXP_EQ_LI(iff_up, 0);
++	hctosys = read_hctosys(name);
 +
-+	NETDEV_SET_HWADDR(IFNAME1, new_addr, sizeof(new_addr));
-+	NETDEV_SET_STATE(IFNAME1, 1);
-+	tst_res(TINFO, "IFNAME1 is up again after the address change");
-+	iff_up = read_flags() & IFF_UP;
-+	TST_EXP_EQ_LI(iff_up, IFF_UP);
++	/*
++	 * If no RTC has hctosys == 1 anywhere (see the top comment), fall
++	 * back to treating rtc0 as the presumed primary RTC.
++	 */
++	is_primary = hctosys || (!any_hctosys && !strcmp(name, "rtc0"));
 +
-+	TST_SYSFS_READ_STR(actual, sizeof(actual), IFACE_PATH "/address");
++	read_rtc_snapshot(name, date, sizeof(date), rtc_time, sizeof(rtc_time),
++			  &since_epoch);
 +
-+	TST_EXP_EQ_STR(actual, "02:00:00:00:00:01");
-+}
++	sys_epoch = time(NULL);
 +
-+static void check_netdev_group(void)
-+{
-+	long group;
-+
-+	if (FILE_PRINTF(IFACE_PATH "/netdev_group", "%d", 7)) {
-+		tst_res(TFAIL, "Failed to set netdev_group");
++	if (sscanf(date, "%d-%d-%d", &tm.tm_year, &tm.tm_mon, &tm.tm_mday) != 3 ||
++	    sscanf(rtc_time, "%d:%d:%d", &tm.tm_hour, &tm.tm_min, &tm.tm_sec) != 3) {
++		tst_res(TFAIL, "%s: failed to parse date '%s' / time '%s'",
++			name, date, rtc_time);
 +		return;
 +	}
 +
-+	group = TST_SYSFS_READ_LI(IFACE_PATH "/netdev_group");
++	tm.tm_year -= 1900;
++	tm.tm_mon -= 1;
++	rtc_epoch = timegm(&tm);
 +
-+	TST_EXP_EQ_LI(group, 7);
-+}
++	if (llabs((long long)(rtc_epoch - since_epoch)) <= SLACK_SEC) {
++		tst_res(TPASS,
++			"%s: since_epoch (%lld) matches date '%s' time '%s' (%lld)",
++			name, (long long)since_epoch, date, rtc_time,
++			(long long)rtc_epoch);
++	} else {
++		tst_res(TFAIL,
++			"%s: since_epoch (%lld) does not match date '%s' time '%s' (%lld)",
++			name, (long long)since_epoch, date, rtc_time,
++			(long long)rtc_epoch);
++	}
 +
-+static void check_ifalias(void)
-+{
-+	char alias[64];
-+
-+	if (FILE_PRINTF(IFACE_PATH "/ifalias", "%s", "ltp-test-alias")) {
-+		tst_res(TFAIL, "Failed to set ifalias");
++	if (!is_primary) {
++		tst_res(TINFO,
++			"%s: not the (assumed) primary RTC, not checking since_epoch against system time",
++			name);
 +		return;
 +	}
 +
-+	TST_SYSFS_READ_STR(alias, sizeof(alias), IFACE_PATH "/ifalias");
-+	TST_EXP_EQ_STR(alias, "ltp-test-alias");
++	slack = sys_time_slack_sec();
++	long long diff = llabs((long long)(since_epoch - sys_epoch));
++
++	if (diff <= slack) {
++		tst_res(TPASS,
++			"%s: since_epoch (%lld), system time (%lld), diff %llds <= slack %lds",
++			name, (long long)since_epoch, (long long)sys_epoch,
++			diff, slack);
++	} else {
++		tst_res(TFAIL,
++			"%s: since_epoch (%lld), system time (%lld), diff %llds > slack %lds",
++			name, (long long)since_epoch, (long long)sys_epoch,
++			diff, slack);
++	}
 +}
 +
-+static void run(void)
++static void do_test(void)
 +{
-+	struct netdev_state s0, s1, s2;
++	DIR *d;
++	struct dirent *ent;
++	int found = 0;
++	int any_hctosys = 0;
 +
-+	TST_RETRY_FUNC(read_operstate(&s0, "up"), TST_RETVAL_EQ0);
-+	check_state(&s0, 1, "up", "both ends up");
++	if (!tst_sysfs_exists(RTC_CLASS))
++		tst_brk(TCONF, RTC_CLASS ": not present");
 +
-+	NETDEV_SET_STATE(IFNAME2, 0);
-+	TST_RETRY_FUNC(read_operstate(&s1, "lowerlayerdown"), TST_RETVAL_EQ0);
-+	check_state(&s1, 0, "lowerlayerdown", "peer down");
-+	check_state_delta(&s0, &s1, 0, 1, "peer down transition");
++	d = SAFE_OPENDIR(RTC_CLASS);
 +
-+	NETDEV_SET_STATE(IFNAME2, 1);
-+	TST_RETRY_FUNC(read_operstate(&s2, "up"), TST_RETVAL_EQ0);
-+	check_state(&s2, 1, "up", "peer back up");
-+	check_state_delta(&s1, &s2, 1, 0, "peer up transition");
++	/* First pass: find out whether any RTC has hctosys == 1 already. */
++	while ((ent = SAFE_READDIR(d))) {
++		if (strncmp(ent->d_name, "rtc", 3))
++			continue;
 +
-+	check_mtu_valid(68);
-+	check_mtu_valid(1500);
-+	check_mtu_valid(9000);
-+	check_mtu_valid(65535);
-+	check_mtu_invalid("-1");
-+	check_mtu_invalid("0");
-+	check_mtu_invalid("67");
-+	check_mtu_invalid("70000");
++		found = 1;
 +
-+	check_address();
++		if (read_hctosys(ent->d_name))
++			any_hctosys = 1;
++	}
 +
-+	check_netdev_group();
-+	check_ifalias();
-+}
++	if (!found) {
++		tst_res(TCONF, "No RTC device found");
++		SAFE_CLOSEDIR(d);
++		return;
++	}
 +
-+static void cleanup(void)
-+{
-+	if (veth_created)
-+		NETDEV_REMOVE_DEVICE(IFNAME1);
++	rewinddir(d);
++
++	/* Second pass: run the actual checks. */
++	while ((ent = SAFE_READDIR(d))) {
++		if (strncmp(ent->d_name, "rtc", 3))
++			continue;
++
++		tst_res(TINFO, "Checking %s", ent->d_name);
++		check_rtc(ent->d_name, any_hctosys);
++	}
++
++	SAFE_CLOSEDIR(d);
 +}
 +
 +static struct tst_test test = {
-+	.test_all = run,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.needs_root = 1,
-+	.needs_kconfigs = (const char *const[]){
-+		"CONFIG_VETH",
-+		NULL
-+	},
++	.test_all = do_test,
 +};
-diff --git a/testcases/kernel/sysfs/class/net/sys_net_common.h b/testcases/kernel/sysfs/class/net/sys_net_common.h
-new file mode 100644
-index 000000000..06f5c38c5
---- /dev/null
-+++ b/testcases/kernel/sysfs/class/net/sys_net_common.h
-@@ -0,0 +1,97 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2026 Cyril Hrubis <chrubis@suse.cz>
-+ */
-+
-+#ifndef SYS_NET_COMMON
-+#define SYS_NET_COMMON
-+
-+struct netdev_state {
-+	long carrier;
-+	long carrier_changes;
-+	long carrier_up_count;
-+	long carrier_down_count;
-+	char operstate[32];
-+};
-+
-+static void read_state(struct netdev_state *st)
-+{
-+	st->carrier = TST_SYSFS_READ_LI(IFACE_PATH "/carrier");
-+	st->carrier_changes = TST_SYSFS_READ_LI(IFACE_PATH "/carrier_changes");
-+	st->carrier_up_count = TST_SYSFS_READ_LI(IFACE_PATH "/carrier_up_count");
-+	st->carrier_down_count = TST_SYSFS_READ_LI(IFACE_PATH "/carrier_down_count");
-+	TST_SYSFS_READ_STR(st->operstate, sizeof(st->operstate), IFACE_PATH "/operstate");
-+}
-+
-+/*
-+ * operstate is not updated synchronously with the event that changes the
-+ * underlying carrier (netif_carrier_on()/off(), called either directly, or
-+ * indirectly e.g. via veth_open()/veth_close() reacting to the peer's
-+ * administrative state): the kernel's linkwatch mechanism
-+ * (net/core/link_watch.c) applies the operstate transition asynchronously
-+ * via a workqueue, so it may still read the previous state for a little
-+ * while after the event that changes the carrier, particularly on a
-+ * loaded/slow system. Callers should wrap this in TST_RETRY_FUNC() rather
-+ * than assume operstate is already settled right after such an event.
-+ */
-+static int read_operstate(struct netdev_state *st, const char *expected_state)
-+{
-+	read_state(st);
-+	return strcmp(st->operstate, expected_state);
-+}
-+
-+static void check_state(const struct netdev_state *st, long carrier,
-+			const char *operstate, const char *desc)
-+{
-+	tst_res(TINFO, "%s", desc);
-+
-+	TST_EXP_EQ_LI(st->carrier, carrier);
-+	TST_EXP_EQ_STR(st->operstate, operstate);
-+	TST_EXP_EQ_LI(st->carrier_changes,
-+		      st->carrier_up_count + st->carrier_down_count);
-+}
-+
-+static void check_state_delta(const struct netdev_state *prev,
-+			      const struct netdev_state *cur, long up_delta,
-+			      long down_delta, const char *desc)
-+{
-+	long got_up = cur->carrier_up_count - prev->carrier_up_count;
-+	long got_down = cur->carrier_down_count - prev->carrier_down_count;
-+	long got_changes = cur->carrier_changes - prev->carrier_changes;
-+
-+	tst_res(TINFO, "%s", desc);
-+
-+	TST_EXP_EQ_LI(got_up, up_delta);
-+	TST_EXP_EQ_LI(got_down, down_delta);
-+	TST_EXP_EQ_LI(got_changes, up_delta + down_delta);
-+}
-+
-+static void check_mtu_valid(long mtu)
-+{
-+	char mtu_str[16];
-+
-+	snprintf(mtu_str, sizeof(mtu_str), "%ld", mtu);
-+
-+	if (FILE_PRINTF(IFACE_PATH "/mtu", "%s", mtu_str)) {
-+		tst_res(TFAIL, "Failed to set mtu to %ld", mtu);
-+		return;
-+	}
-+
-+	TST_EXP_EQ_LI(read_mtu(), mtu);
-+}
-+
-+static void check_mtu_invalid(const char *mtu_str)
-+{
-+	long before = read_mtu();
-+
-+	if (!FILE_PRINTF(IFACE_PATH "/mtu", "%s", mtu_str)) {
-+		tst_res(TFAIL, "Writing mtu '%s' unexpectedly succeeded",
-+			mtu_str);
-+		return;
-+	}
-+
-+	tst_res(TINFO, "Writing mtu '%s' was rejected as expected", mtu_str);
-+	TST_EXP_EQ_LI(read_mtu(), before);
-+}
-+
-+#endif /* SYS_NET_COMMON */
 -- 
 2.51.0
 
