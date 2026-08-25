@@ -4,83 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D3468C61DBE
-	for <ltp@archiver.kernel.org>; Tue, 25 Aug 2026 11:38:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 722D1C61DBE
+	for <ltp@archiver.kernel.org>; Tue, 25 Aug 2026 11:38:37 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7795E3C7449
-	for <ltp@archiver.kernel.org>; Tue, 25 Aug 2026 13:38:20 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id C8A1A3C59DD
+	for <ltp@archiver.kernel.org>; Tue, 25 Aug 2026 13:38:35 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0D9723C62EA
+ by picard.linux.it (Postfix) with ESMTPS id 2CE163C7394
  for <ltp@lists.linux.it>; Tue, 25 Aug 2026 13:36:38 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 72FA51000997
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id A265A60070F
  for <ltp@lists.linux.it>; Tue, 25 Aug 2026 13:36:37 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 26DDB1F7CD
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 2C5F186E47
  for <ltp@lists.linux.it>; Tue, 25 Aug 2026 11:36:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
  t=1787657792; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=LMBXf85PuQ0SPpXwKVof5G4tHbiuUGWBnBts7bA3ofY=;
- b=agh55xZVkoT9p2ymZNImBvMinEjd8Nux5V5dWyVMjlD/fB0wIDJyLrkpFrQhT8Ce3op0bN
- kTZrR3y6nnB7CT9dF/R7r8KugVcll/l64/2EqIuNg6cOdjgkqneT270LY+7hzm9j5yzCcA
- ksYEOKmlfPLXpWxi9Zktzitm3135vGs=
+ bh=tQvhcDs9hWTOtsdcPSwy25N+2FdDoGeTwmaRdYYcXZQ=;
+ b=nW6EHcQHG1CUGQ+i0ZqdzQSSfD3Uu5sv8+m8A8J+Ktv5z6pkqWrvkcCqbt5z08fiWospt+
+ vXJoZy6WubJFPqXX/fFGoEQZwIYrMJBUyRjgzzBJSSmhf7oxpPXcW0Lnvjg6T/lGYP7x6J
+ tszweVvriwQfEJ5cQGLQeu47E8KUS0I=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
  s=susede2_ed25519; t=1787657792;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=LMBXf85PuQ0SPpXwKVof5G4tHbiuUGWBnBts7bA3ofY=;
- b=/uH/G4HrivPt4w+fLL3wYEC4mFrjpQmFeyvfRgZKbdQpORV7GE/XeShISX4mqbfebGyEhJ
- miSKQAhL6I+opzAQ==
-Authentication-Results: smtp-out2.suse.de;
+ bh=tQvhcDs9hWTOtsdcPSwy25N+2FdDoGeTwmaRdYYcXZQ=;
+ b=6uTFbNT4rVfA32ZoStggDOjfAFGozgEZMWbPN2ATxBIzHSAhKM60C5InOzHEhcIhR1KqY0
+ M6oDnTmomIHfQpDw==
+Authentication-Results: smtp-out1.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
  t=1787657788; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=LMBXf85PuQ0SPpXwKVof5G4tHbiuUGWBnBts7bA3ofY=;
- b=Q7GQBoaF2daZxUlsNydGXilF9XTZofOxSgUgoZ+Pa99xrN2IT++TfVVI5BYrmCkd5z3vtC
- uGFnK70rqKN0vF//mAKc7VwihmYrN3EMUH1v28qwVyUN9w1tSHiHtYGTafcUvvGo5gJGGh
- WAauoqQao8nhEmAe59+3LD18BmxPdTk=
+ bh=tQvhcDs9hWTOtsdcPSwy25N+2FdDoGeTwmaRdYYcXZQ=;
+ b=aztej2tEL0ryTXBH3benL1jHyvuP7qi5y6clODC5BKUNK+BiWM9dE3ggV+E3MvszcZVh+7
+ JG7/4kmlQpFrwox/EPismTSaXEijCCT9uX76nwZH7ewGL/1wRFVwLiUtIXNRmC8galbfjJ
+ G39phWaPoWzmhCt2OHgmMKtf+mJvP4I=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
  s=susede2_ed25519; t=1787657788;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=LMBXf85PuQ0SPpXwKVof5G4tHbiuUGWBnBts7bA3ofY=;
- b=parQoHDa9T3arjA1eIAEhmEonVHHr80e1G1vlBPPQ5v4SR/hfYeJrzZF9+UNi51QXvKxNc
- uPNVdlvTs3wGCaAw==
+ bh=tQvhcDs9hWTOtsdcPSwy25N+2FdDoGeTwmaRdYYcXZQ=;
+ b=Z57JU7g3XhvSN9EUaXBo8dYa6OD3qxwPTqOS0Qv1BcCP2CZlUz1TCkRj5QHw+dzf4qGnGP
+ MBtiHjgtK6Tg7yDQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 13FEC1342D
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 750DF1342F
  for <ltp@lists.linux.it>; Tue, 25 Aug 2026 11:36:26 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id q5fhAzp+jWowSAAAD6G6ig
+ by imap1.dmz-prg2.suse.org with ESMTPSA id DZenGzp+jWozSAAAD6G6ig
  (envelope-from <chrubis@suse.cz>)
  for <ltp@lists.linux.it>; Tue, 25 Aug 2026 11:36:26 +0000
 From: Cyril Hrubis <chrubis@suse.cz>
 To: ltp@lists.linux.it
-Date: Tue, 25 Aug 2026 13:36:01 +0200
-Message-ID: <20260825113625.1624134-8-chrubis@suse.cz>
+Date: Tue, 25 Aug 2026 13:36:02 +0200
+Message-ID: <20260825113625.1624134-9-chrubis@suse.cz>
 X-Mailer: git-send-email 2.54.0
 In-Reply-To: <20260825113625.1624134-1-chrubis@suse.cz>
 References: <20260825113625.1624134-1-chrubis@suse.cz>
@@ -94,12 +93,13 @@ X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
  FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:mid,imap1.dmz-prg2.suse.org:helo];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:email,suse.cz:mid];
  RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
  TO_DN_NONE(0.00)[]; RCVD_TLS_ALL(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3 07/31] testcases: sysfs: Add sys_cpu_topology02
+Subject: [LTP] [PATCH v3 08/31] testcases: sysfs: Add
+ sys_cpu_vulnerabilities01
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -116,166 +116,119 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-A test for /sys/devices/system/cpu/cpu*/topology/* files.
+A test for /sys/devices/system/cpu/vulnerabilities/* files.
 
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- runtest/sysfs                                 |   1 +
- .../sysfs/devices/system/cpu/.gitignore       |   1 +
- .../devices/system/cpu/sys_cpu_topology02.c   | 133 ++++++++++++++++++
- 3 files changed, 135 insertions(+)
- create mode 100644 testcases/kernel/sysfs/devices/system/cpu/sys_cpu_topology02.c
+ runtest/sysfs                                 |  1 +
+ .../sysfs/devices/system/cpu/.gitignore       |  1 +
+ .../system/cpu/sys_cpu_vulnerabilities01.c    | 85 +++++++++++++++++++
+ 3 files changed, 87 insertions(+)
+ create mode 100644 testcases/kernel/sysfs/devices/system/cpu/sys_cpu_vulnerabilities01.c
 
 diff --git a/runtest/sysfs b/runtest/sysfs
-index 4fc8f1eb2..b1daab68f 100644
+index b1daab68f..663c1d203 100644
 --- a/runtest/sysfs
 +++ b/runtest/sysfs
-@@ -3,3 +3,4 @@ sys_kernel01 sys_kernel01
- sys_clocksource01 sys_clocksource01
+@@ -4,3 +4,4 @@ sys_clocksource01 sys_clocksource01
  sys_node01 sys_node01
  sys_cpu_topology01 sys_cpu_topology01
-+sys_cpu_topology02 sys_cpu_topology02
+ sys_cpu_topology02 sys_cpu_topology02
++sys_cpu_vulnerabilities01 sys_cpu_vulnerabilities01
 diff --git a/testcases/kernel/sysfs/devices/system/cpu/.gitignore b/testcases/kernel/sysfs/devices/system/cpu/.gitignore
-index 0615aff77..a688a9b50 100644
+index a688a9b50..3ae5f494f 100644
 --- a/testcases/kernel/sysfs/devices/system/cpu/.gitignore
 +++ b/testcases/kernel/sysfs/devices/system/cpu/.gitignore
-@@ -1 +1,2 @@
+@@ -1,2 +1,3 @@
  /sys_cpu_topology01
-+/sys_cpu_topology02
-diff --git a/testcases/kernel/sysfs/devices/system/cpu/sys_cpu_topology02.c b/testcases/kernel/sysfs/devices/system/cpu/sys_cpu_topology02.c
+ /sys_cpu_topology02
++/sys_cpu_vulnerabilities01
+diff --git a/testcases/kernel/sysfs/devices/system/cpu/sys_cpu_vulnerabilities01.c b/testcases/kernel/sysfs/devices/system/cpu/sys_cpu_vulnerabilities01.c
 new file mode 100644
-index 000000000..7759d4098
+index 000000000..ae1bb8b7c
 --- /dev/null
-+++ b/testcases/kernel/sysfs/devices/system/cpu/sys_cpu_topology02.c
-@@ -0,0 +1,133 @@
++++ b/testcases/kernel/sysfs/devices/system/cpu/sys_cpu_vulnerabilities01.c
+@@ -0,0 +1,85 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
 + * Copyright (c) 2026 Cyril Hrubis <chrubis@suse.cz>
 + */
 +
 +/*\
-+ * Sanity checks for the per-CPU topology attributes exported under
-+ * /sys/devices/system/cpu/cpuN/topology/.
++ * Sanity checks for the CPU vulnerability reports exported under
++ * /sys/devices/system/cpu/vulnerabilities/.
 + *
-+ * The topology masks describe how a CPU relates to the others. They are nested
-+ * from the smallest (SMT threads) to the largest (package) group, so for every
-+ * online CPU the test verifies that:
++ * Each file describes the status of one hardware vulnerability. The kernel
++ * always prints a human readable status that starts with one of a few known
++ * prefixes. The test verifies that every vulnerability file:
 + *
-+ * - thread_siblings_list is a subset of core_cpus_list
-+ * - core_cpus_list is a subset of package_cpus_list
-+ * - package_cpus_list is a subset of the present CPUs, not just the online
-+ *   ones: the whole topology/ directory (package_cpus_list included) is
-+ *   added/removed per-CPU on hotplug (drivers/base/topology.c registers it
-+ *   against a cpuhp state), so it only ever lists CPUs that share the
-+ *   package and are also online right now. Comparing against "present"
-+ *   instead of "online" avoids relying on that always being reliably kept
-+ *   in sync on every architecture, and avoids a spurious failure if a
-+ *   sibling CPU is hot-unplugged concurrently with this test running.
-+ * - the CPU itself is contained in its own thread_siblings_list
-+ * - core_id is in [0, highest possible CPU id], since there can be at most
-+ *   as many cores as possible CPUs (every core has at least one thread)
-+ * - physical_package_id is in [-1, highest possible CPU id] on physical
-+ *   hardware, or just at least -1 under virtualization (see below). -1 is a
-+ *   legitimate value here, not just a range extension for safety: per
-+ *   include/linux/topology.h, -1 is the architecture-neutral default for
-+ *   topology_physical_package_id() (and die_id/cluster_id/book_id/
-+ *   drawer_id) on any architecture, or any CPU type within one, that does
-+ *   not implement package detection. topology_core_id() does not have this
-+ *   documented -1 fallback (its generic default is 0), so core_id is not
-+ *   given the same allowance.
++ * - is non-empty
++ * - starts with one of the known status prefixes (Not affected, Vulnerable,
++ *   Mitigation:, Unknown, Processor vulnerable)
 + *
-+ *   The upper bound on physical_package_id is dropped under virtualization:
-+ *   store_cpu_topology() in drivers/base/arch_topology.c falls back to
-+ *   physical_package_id = cpu_to_node(cpu) whenever ACPI/DT topology
-+ *   parsing did not already populate it (common on minimal/generic arm64 VM
-+ *   firmware without full ACPI PPTT tables). On physical hardware this
-+ *   fallback is still bounded by the number of possible CPUs, since NUMA
-+ *   node ids are compacted/renumbered from the firmware's proximity domains
-+ *   and there can never be more NUMA nodes than CPUs (each node needs at
-+ *   least one). But a VM's NUMA node numbering is a hypervisor/firmware
-+ *   policy choice entirely unrelated to its own CPU count, e.g. mirroring a
-+ *   large host's own (possibly sparse) NUMA node ids under NUMA
-+ *   passthrough/vNUMA configuration, so the bound would not be meaningful
-+ *   there and is dropped to avoid a false failure.
-+ *
-+ * All checks skip gracefully with TCONF when a particular attribute is not
-+ * present, as the exact set of topology files differs between kernel versions
-+ * and architectures.
++ * The test skips with TCONF when the vulnerabilities directory is not present,
++ * which is the case on architectures that do not report them.
 + */
 +
-+#include <stdio.h>
-+#include <limits.h>
++#include <string.h>
++#include <dirent.h>
 +#include <unistd.h>
 +#include "tst_test.h"
 +#include "tst_sysfs_assert.h"
 +
-+#define SYS_CPU "/sys/devices/system/cpu"
++#define VULN "/sys/devices/system/cpu/vulnerabilities"
 +
-+static void check_self_in_threads(int cpu)
++static const char *const known_prefixes[] = {
++	"Not affected",
++	"Vulnerable",
++	"Mitigation:",
++	"Unknown",
++	"Processor vulnerable",
++};
++
++static void check_vuln(const char *name)
 +{
-+	TST_SYSFS_ASSERT_LIST_CONTAINS(cpu,
-+		SYS_CPU "/cpu%d/topology/thread_siblings_list", cpu);
-+}
++	char status[256] = "";
++	unsigned int i;
 +
-+static void check_cpu_topology(int cpu, int poss_max_id, long pkg_max_id)
-+{
-+	char sub[PATH_MAX], super[PATH_MAX];
++	TST_SYSFS_READ_STR(status, sizeof(status), VULN "/%s", name);
 +
-+	if (access(SYS_CPU, F_OK))
-+		return;
-+
-+	if (!tst_sysfs_exists(SYS_CPU "/cpu%d/topology/core_id", cpu)) {
-+		tst_res(TCONF, "cpu%d has no topology directory", cpu);
++	if (status[0] == '\0') {
++		tst_res(TFAIL, "%s/%s is empty", VULN, name);
 +		return;
 +	}
 +
-+	tst_res(TINFO, "Checking cpu%d topology", cpu);
++	for (i = 0; i < ARRAY_SIZE(known_prefixes); i++) {
++		if (!strncmp(status, known_prefixes[i],
++			     strlen(known_prefixes[i]))) {
++			tst_res(TPASS, "%s: '%s'", name, status);
++			return;
++		}
++	}
 +
-+	TST_SYSFS_ASSERT_RANGELL(0, poss_max_id,
-+			       SYS_CPU "/cpu%d/topology/core_id", cpu);
-+
-+	TST_SYSFS_ASSERT_RANGELL(-1, pkg_max_id,
-+			       SYS_CPU "/cpu%d/topology/physical_package_id",
-+			       cpu);
-+
-+	snprintf(sub, sizeof(sub),
-+		 SYS_CPU "/cpu%d/topology/thread_siblings_list", cpu);
-+	snprintf(super, sizeof(super),
-+		 SYS_CPU "/cpu%d/topology/core_cpus_list", cpu);
-+	TST_SYSFS_ASSERT_LIST_SUBSET(sub, super);
-+
-+	snprintf(sub, sizeof(sub),
-+		 SYS_CPU "/cpu%d/topology/core_cpus_list", cpu);
-+	snprintf(super, sizeof(super),
-+		 SYS_CPU "/cpu%d/topology/package_cpus_list", cpu);
-+	TST_SYSFS_ASSERT_LIST_SUBSET(sub, super);
-+
-+	snprintf(sub, sizeof(sub),
-+		 SYS_CPU "/cpu%d/topology/package_cpus_list", cpu);
-+	TST_SYSFS_ASSERT_LIST_SUBSET(sub, SYS_CPU "/present");
-+
-+	check_self_in_threads(cpu);
++	tst_res(TFAIL, "%s has unexpected status '%s'", name, status);
 +}
 +
 +static void do_test(void)
 +{
-+	int count, max_id, poss_count, poss_max_id, cpu;
-+	long pkg_max_id;
++	DIR *d;
++	struct dirent *ent;
 +
-+	if (TST_SYSFS_ASSERT_PARSE_LIST(&count, &max_id, SYS_CPU "/online"))
++	if (access(VULN, F_OK)) {
++		tst_res(TCONF, VULN " is not available");
 +		return;
++	}
 +
-+	if (TST_SYSFS_ASSERT_PARSE_LIST(&poss_count, &poss_max_id,
-+					SYS_CPU "/possible"))
-+		return;
++	d = SAFE_OPENDIR(VULN);
 +
-+	if (tst_is_virt(VIRT_ANY))
-+		pkg_max_id = LONG_MAX;
-+	else
-+		pkg_max_id = poss_max_id;
++	while ((ent = SAFE_READDIR(d))) {
++		if (ent->d_name[0] == '.')
++			continue;
 +
-+	for (cpu = 0; cpu <= max_id; cpu++)
-+		check_cpu_topology(cpu, poss_max_id, pkg_max_id);
++		check_vuln(ent->d_name);
++	}
++
++	SAFE_CLOSEDIR(d);
 +}
 +
 +static struct tst_test test = {
