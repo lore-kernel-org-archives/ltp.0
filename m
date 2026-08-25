@@ -4,87 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0CF75C5DF9C
-	for <ltp@archiver.kernel.org>; Tue, 25 Aug 2026 02:29:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1787624990; h=to : date :
- message-id : mime-version : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : content-type : content-transfer-encoding : sender : from;
- bh=i70qFCt7bEWxEE8uIV2r3XFxH0NKwWP2vr1CF3qXjqY=;
- b=YIn21hf6xr6W9xr4sPwD2TN1tNwTlNApmQF4+XMM2ySPX/1U1B5wVagLkgww6bB/89FQH
- ZRw4C7pC2w4vrg/3W43Q7fdVHP84hJ/SiVxhjJXW4ZcAo3f2qHZqP2Iuyvlxf5zjGiWe7J9
- Yg5Y6NUQVpn9qwZloe/wHC66wuMyTk0=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5A347C5DF9C
+	for <ltp@archiver.kernel.org>; Tue, 25 Aug 2026 03:00:46 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 266C63C2C93
-	for <ltp@archiver.kernel.org>; Tue, 25 Aug 2026 04:29:50 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 4DB253C9D1D
+	for <ltp@archiver.kernel.org>; Tue, 25 Aug 2026 05:00:44 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6F5E03C93DF
- for <ltp@lists.linux.it>; Tue, 25 Aug 2026 04:29:30 +0200 (CEST)
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com
- [IPv6:2a00:1450:4864:20::62d])
+ by picard.linux.it (Postfix) with ESMTPS id 7EBBE3C2C93
+ for <ltp@lists.linux.it>; Tue, 25 Aug 2026 05:00:27 +0200 (CEST)
+Received: from mail-qk2-x08.google.com (mail-qk2-x08.google.com
+ [IPv6:2607:f8b0:4864:34::8])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 7DE81600834
- for <ltp@lists.linux.it>; Tue, 25 Aug 2026 04:29:29 +0200 (CEST)
-Received: by mail-ej1-x62d.google.com with SMTP id
- a640c23a62f3a-c15cd3fd760so510127766b.2
- for <ltp@lists.linux.it>; Mon, 24 Aug 2026 19:29:29 -0700 (PDT)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 2E2391400B9D
+ for <ltp@lists.linux.it>; Tue, 25 Aug 2026 05:00:27 +0200 (CEST)
+Received: by mail-qk2-x08.google.com with SMTP id
+ af79cd13be357-93688f1172fso128114985a.0
+ for <ltp@lists.linux.it>; Mon, 24 Aug 2026 20:00:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1787624969; x=1788229769; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
- bh=VSnz4L+40w4IG0ugJr7f8H14pLxHOdj6KuhbLlPbpWU=;
- b=ILwGeIyuDpbAUIJpiBk4CsuUYhbQZYcDZ4Rb6U1RNmhD9WMjrFG58nxQCVXeMLxIQQ
- CrGrXPk+nKYx1aCsAGgJD7vOFl3J5FHrk0KgxcwFPPYtonzYY+vM4uW9fohqmwYZEacr
- am3NMwDT1g/I8KmqzVPRtRgFoVV4Z83Zqu59XryyG565s+ruk8uYvR4f07aQmA4zGWiM
- j8qxEeMiTk9NeYattmEoA7E9kUUnMcH/k9ZLHIsxrNz5ykmWQoOJm+rM547281GeYf3/
- SnYWQy+Ih6SaXJr0CGGtSP6CbLyEBNEP0fBnCfCFg+KKxzeotm5EfKjbr/RSV/NhVxB5
- CNPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1787624969; x=1788229769;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+ d=gmail.com; s=20251104; t=1787626826; x=1788231626; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to:content-type;
- bh=VSnz4L+40w4IG0ugJr7f8H14pLxHOdj6KuhbLlPbpWU=;
- b=YxmmwqwLURqI5Lm1SuXzfN7alHhpERza4wwEzsjCNU8thP9PgsFFhWVCn/w0J+g9We
- 6NoZTd1spll+sjyE+lzJNDzT2sj6fD1Sl7HNV9YN9bmOPUI5lbqeUJ1Np7q7m2Pc4U+7
- 5uAX0kFdIHEulAoCL8xOCFZ96LiWKOHk3YTDpqf7Dca1aOfvkfk7S0mjIvKxZDvCX3q2
- BMGxmnKOADNMyFEGnYLye5ULWUIuow92BucIDgEv36Lxk3c1MwivKCyhrCVLhddrXU/t
- RQ/N3MYEm98bVCAKxpxeYeG6H8aTBIx6aMxK/RBL7PXY51t7McG89f8A4rOxuxlqBY5c
- L9zA==
-X-Gm-Message-State: AFuF++ljkqDksfM8jxpxWS4hGNIOUsLXDtoeHEPILdkUOKTr0QSYKKfA
- 9OYS1pNJS6hvgeEZ3BxH4+oVJTotSbFEy02oWHngkoiwWXahIShxsxo3+uml3Xbfz/yBD9/YPK8
- Ukgo=
-X-Gm-Gg: AR+sD10JkPRBzrikPiDyWIDTE3NJE7XQP4hDANBnCMqjKsRxg7F9jRC6smm5z6+4p4K
- gscnytlh6/kqasQSM5xx+6ZaVFCfzFhVOo7vJCcVGXJeytKbDfbmAjY6B513pH5mWVbQxe/JSNY
- /YS5L7+FKzRsNucqD0TDxMvS2pVpMa8RshuEwFGIWSA8KESR4rdnu/zVL44Eo/f/Px4QunZ4med
- but0mMXj5CXn7adLMa+0+eHNKq9EPCcWcGaEV6RW2jZNFilzlvWJrkw3a3oiAi1Ep3B6Cz+OQgv
- hCa8vmbdYDTLDsM7m9ZoH1ffvSu2cihosGXlxFo/tCGUiMnurbqVoEQbJmFJG18UkGP+cSvOl8W
- vaAMzfoWpm3FGYYylVxEWZmR5uPYDumpx8svkVcTL8vCKuFBEAL2OBxWDmKQ3TI7NEGPcSWR7aj
- XV3eDR4I0p3SVQ08GbCIKjU8A4i1N1oDBhS10xr2Ui+dThJlt9sKllQsJKoaD0DcgyPKNlNjLfv
- Mf3ct3IvPyOIgYUnyL0YT80zOgX5vuW
-X-Received: by 2002:a17:906:7311:b0:c24:8af3:c92 with SMTP id
- a640c23a62f3a-c249257bc04mr2438184066b.3.1787624968948; 
- Mon, 24 Aug 2026 19:29:28 -0700 (PDT)
-Received: from localhost ([2a07:de40:b240:0:2ad6:ed42:2ad6:ed42])
- by smtp.gmail.com with UTF8SMTPSA id
- a640c23a62f3a-c2496738e7esm1698168966b.46.2026.08.24.19.29.28
+ bh=lS0RrzMOV2saZbKlUHrUUf5mZn8D8zM8njKh8XYSVvo=;
+ b=qALaPrJG3yeMlN0yFbpjjbed8EVrTK2jGhNvS2O600IHcIpJmzs/ewsmpHc0yP3Uen
+ dgZTCt/Q4AJs+WSP4VQK8XKocvjF6iZYqdj/KKhdbsHpmnVqCs9u7Q6pCubcgr9vHHxu
+ JewLPgJcdxqsy9ZyUXiOuBhFBxCTZ4cvSDVXS9KARWrqTAzXmvxa8xGr1RvxjnxQZ02p
+ SxGKSLW0MGyG8tnw9tlszNVBkNgjIh85LgjAKy3sCGr2b9fjXET84ptxtQygsc8FCmeL
+ SKYPPp4E5cdohJLJZg5PohZvTieJSnhQp3XvMfh2MkDPu0nU42aBPmLcGnBSUuIMHI2N
+ CURA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1787626826; x=1788231626;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to:content-type;
+ bh=lS0RrzMOV2saZbKlUHrUUf5mZn8D8zM8njKh8XYSVvo=;
+ b=Gi1O/iP5an/fPrhxVQEoLkJikNe5+QcgI800SIBc7do9CUXw7xfktw+wFXE4wDl2mK
+ 3xHO1R/UxUgb6dILn8ssj3oW3H/VfXvtM+vHH0Eo/g9MCr8k5WX/nPzt2xpME4U4aibe
+ zARCuC685eWfAj2K9SMwWM8r8dtgpNoFq7AhkYv399ugcrhAS/rbRKVjiGb+vn9qWk74
+ t+OMIooP7X34F6DkeyjBMtxfqLdOJA6wR9VD8VVPNFmgJRMXpfOKaKHeY0/xrbopRSFc
+ XW88xRUA0NrB1qhuYFKunPoIORqbH+isedObSJ1FpiPfj74I1xZY6w3olwyKx24v9aPW
+ NE1g==
+X-Gm-Message-State: AFuF++nkaIa+1rrvzRasHzq/2fLSCHdTbe3qeeGjjP6i8dZLe/hL/k+X
+ xSOhFvSp5kgBJrP5Qci87k+NnTrUyqBAbbpyXTke9XqSGkRFjQR0qsgq
+X-Gm-Gg: AR+sD111oU8y9br3f+irEteFpUO9XYsM0hmVd4NvaU1mcyBJU9il7Jzd88QBGMC04yT
+ wjzhIm3F6fQjrZsi2T6NOP/fxrfnCGbXl3O173hEfYdOEpY8ijnuOd4sP7UPyiQ2BEpryjRNm7i
+ 8yuyYxXRV+/HtFlhJAo/zqfe05A85pn/5jIW0Hm5hnWxPLWC7kXGa7++9jSouxosZ5W+mjRWkL0
+ uWPwVjHm4qyaYspY4Cw984iv5EyVReri5ssBcWgPdKcrdCtdrhZTWrEDCokhjQUpa9iwtXKdyHR
+ VUkViDOFjuKJorJIRHx1ajZS85d22MhX9Xl80tOv3Ak+KUNs+besyt8dJPWS32EOCg8akyRIpye
+ 7TA6iOZmfoCmTkr54mnFyMofbIvQ1gzr/37WPxEOp2X+7IlYejDfj2KbR3ZUGiWHCaRNApK9WLP
+ a9un/y31Pk0vvR9CeSmfbbRKr1kx0Svk8JlE2s/Nep2OmxgNmR65/J1J5HaY+FKl5S4fctdfrfg
+ zwtekbU0gWUVRXGST3PFhboFIcGz7A32HnUqFkigvLekdmeaowuKGbtjsXoINTxihnYm7Zy8JuG
+ HQ==
+X-Received: by 2002:a05:620a:20d8:b0:937:3c82:299e with SMTP id
+ af79cd13be357-9376fab47acmr301368685a.38.1787626825484; 
+ Mon, 24 Aug 2026 20:00:25 -0700 (PDT)
+Received: from
+ runnervm76f27.wzbkwdbpglyu3opx21frospznb.bx.internal.cloudapp.net
+ ([48.217.251.130]) by smtp.gmail.com with ESMTPSA id
+ af79cd13be357-93749d91ec0sm638387885a.26.2026.08.24.20.00.24
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 24 Aug 2026 19:29:28 -0700 (PDT)
-To: ltp@lists.linux.it
-Date: Tue, 25 Aug 2026 02:13:06 +0000
-Message-ID: <20260825022926.9649-1-wegao@suse.com>
-X-Mailer: git-send-email 2.43.0
+ Mon, 24 Aug 2026 20:00:25 -0700 (PDT)
+From: linuxtestproject.agent@gmail.com
+To: Wei Gao <wegao@suse.com>
+Date: Tue, 25 Aug 2026 03:00:23 +0000
+Message-ID: <20260825030023.9054-1-linuxtestproject.agent@gmail.com>
+X-Mailer: git-send-email 2.55.0
+In-Reply-To: <20260825022926.9649-1-wegao@suse.com>
+References: <20260825022926.9649-1-wegao@suse.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v1] mmapstress06: Rate limit page-dirtying loop to
- prevent MemCG OOM-kills
+Subject: Re: [LTP] mmapstress06: Rate limit page-dirtying loop to prevent
+ MemCG OOM-kills
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -96,47 +92,47 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Wei Gao via ltp <ltp@lists.linux.it>
-Reply-To: Wei Gao <wegao@suse.com>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Reduce the throttling interval from 2 MB to 64 KB (usleep for 200us
-every 64 KB) in the page-dirtying loop. This smooths out allocation
-spikes and gives asynchronous swap writeback time to catch up under
-slower VM storage environments, avoiding unexpected MemCG OOM-kills.
+Hi Wei,
 
-Signed-off-by: Wei Gao <wegao@suse.com>
+On Tue, Aug 25, 2026, Wei Gao wrote:
+> mmapstress06: Rate limit page-dirtying loop to prevent MemCG OOM-kills
+
+> +		/*
+> +		 * Yield periodically to space out allocation spikes and allow
+> +		 * asynchronous swap writeback to catch up on slower VM disks.
+> +		 */
+>  		for (size_t i = 0; i < map_size; i += page_size) {
+>  			mmapaddr[i] = 'a';
+> -			if ((i % (2 * 1024 * 1024)) == 0)
+> -				usleep(1000);
+> +			if ((i % (64 * 1024)) == 0)
+> +				usleep(200);
+
+Could this avoid using a fixed sleep to synchronize with asynchronous swap
+writeback? The 7.2 cgroup documentation says memory.max invokes the cgroup OOM
+killer when reclaim cannot reduce usage, while the delay here is unrelated to
+actual reclaim progress. A swap device slower than the chosen dirtying rate
+can therefore still OOM-kill the child and make the test fail for
+environmental timing reasons. Please use reclaim throttling or poll observable
+progress with backoff instead of tuning a fixed delay.
+
+Verdict - Needs revision
+
 ---
- testcases/kernel/mem/mmapstress/mmapstress06.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+Note:
 
-diff --git a/testcases/kernel/mem/mmapstress/mmapstress06.c b/testcases/kernel/mem/mmapstress/mmapstress06.c
-index 4e6023399..2813ef185 100644
---- a/testcases/kernel/mem/mmapstress/mmapstress06.c
-+++ b/testcases/kernel/mem/mmapstress/mmapstress06.c
-@@ -57,10 +57,14 @@ static void run_test(void)
- 
- 		tst_res(TINFO, "Dirtying %zu bytes in child", map_size);
- 
-+		/*
-+		 * Yield periodically to space out allocation spikes and allow
-+		 * asynchronous swap writeback to catch up on slower VM disks.
-+		 */
- 		for (size_t i = 0; i < map_size; i += page_size) {
- 			mmapaddr[i] = 'a';
--			if ((i % (2 * 1024 * 1024)) == 0)
--				usleep(1000);
-+			if ((i % (64 * 1024)) == 0)
-+				usleep(200);
- 		}
- 
- 		SAFE_CG_SCANF(cg_child, "memory.swap.current", "%lu", &cg_swap_after);
--- 
-2.55.0
+The agent can sometimes produce false positives although often its
+findings are genuine. If you find issues with the review, please
+comment this email or ignore the suggestions.
 
+Regards,
+LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
