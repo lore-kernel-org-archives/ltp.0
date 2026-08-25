@@ -4,83 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2FA74C61DBD
-	for <ltp@archiver.kernel.org>; Tue, 25 Aug 2026 11:38:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D3468C61DBE
+	for <ltp@archiver.kernel.org>; Tue, 25 Aug 2026 11:38:21 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A9E7B3C5706
-	for <ltp@archiver.kernel.org>; Tue, 25 Aug 2026 13:38:04 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 7795E3C7449
+	for <ltp@archiver.kernel.org>; Tue, 25 Aug 2026 13:38:20 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A16DE3C5E2C
- for <ltp@lists.linux.it>; Tue, 25 Aug 2026 13:36:35 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 0D9723C62EA
+ for <ltp@lists.linux.it>; Tue, 25 Aug 2026 13:36:38 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de
  [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id E1CD21400BCC
- for <ltp@lists.linux.it>; Tue, 25 Aug 2026 13:36:34 +0200 (CEST)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 72FA51000997
+ for <ltp@lists.linux.it>; Tue, 25 Aug 2026 13:36:37 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 477351F7DB
- for <ltp@lists.linux.it>; Tue, 25 Aug 2026 11:36:20 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 26DDB1F7CD
+ for <ltp@lists.linux.it>; Tue, 25 Aug 2026 11:36:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1787657784; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1787657792; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=Z8agq85jJzPnKPu28MxoHt2sMa6/+kYLCq4nb4KliLo=;
- b=KWiI67z9wSMiw76cmIEMIdc060aJjQ7PTnXnGMcRnaEoky+AONqEyDJ9VrVJvpvNxqcMNH
- ciQPnUDyRok2VizGRtAkCL9eXrAWcKcnM+pmWGhkt5IE91nHMA9rX1myf6WPeeEEmAWrWS
- 3Tzxcksfc61GW6CmGgVTwo9Z7DhzcXI=
+ bh=LMBXf85PuQ0SPpXwKVof5G4tHbiuUGWBnBts7bA3ofY=;
+ b=agh55xZVkoT9p2ymZNImBvMinEjd8Nux5V5dWyVMjlD/fB0wIDJyLrkpFrQhT8Ce3op0bN
+ kTZrR3y6nnB7CT9dF/R7r8KugVcll/l64/2EqIuNg6cOdjgkqneT270LY+7hzm9j5yzCcA
+ ksYEOKmlfPLXpWxi9Zktzitm3135vGs=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1787657784;
+ s=susede2_ed25519; t=1787657792;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=Z8agq85jJzPnKPu28MxoHt2sMa6/+kYLCq4nb4KliLo=;
- b=JdMK5KgFcBeUK3WQtOtlEblfHP36RDthfcIlvcV5fPsXlN/Ff+uwL/uOxG6VXF8dw37hNN
- HZjUX6B8owXzMPCw==
+ bh=LMBXf85PuQ0SPpXwKVof5G4tHbiuUGWBnBts7bA3ofY=;
+ b=/uH/G4HrivPt4w+fLL3wYEC4mFrjpQmFeyvfRgZKbdQpORV7GE/XeShISX4mqbfebGyEhJ
+ miSKQAhL6I+opzAQ==
 Authentication-Results: smtp-out2.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1787657780; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1787657788; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=Z8agq85jJzPnKPu28MxoHt2sMa6/+kYLCq4nb4KliLo=;
- b=L44ItF2ApyjXESNdUnWMgikaILK4lBqLtv51xBMKz5KDwA0k2qJ409kLWNvUkCo0YqaVJu
- ett7Yixjro8N9VC/iplps7vXzkT8Goy2qFZWmPZGwLzPmFYK0plQLt+rSjyOnel2ijPssV
- Cm3xguACneoUpx/6KWM9nCooT7gWqMc=
+ bh=LMBXf85PuQ0SPpXwKVof5G4tHbiuUGWBnBts7bA3ofY=;
+ b=Q7GQBoaF2daZxUlsNydGXilF9XTZofOxSgUgoZ+Pa99xrN2IT++TfVVI5BYrmCkd5z3vtC
+ uGFnK70rqKN0vF//mAKc7VwihmYrN3EMUH1v28qwVyUN9w1tSHiHtYGTafcUvvGo5gJGGh
+ WAauoqQao8nhEmAe59+3LD18BmxPdTk=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1787657780;
+ s=susede2_ed25519; t=1787657788;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=Z8agq85jJzPnKPu28MxoHt2sMa6/+kYLCq4nb4KliLo=;
- b=qafUUPU7jh0M/tRNBA5J+XpEydwJr0ErXFa8jwz2/XBhXTCRzLxilxC5saI16OdX+LLYax
- 0xB0t1BdQwZcvDDw==
+ bh=LMBXf85PuQ0SPpXwKVof5G4tHbiuUGWBnBts7bA3ofY=;
+ b=parQoHDa9T3arjA1eIAEhmEonVHHr80e1G1vlBPPQ5v4SR/hfYeJrzZF9+UNi51QXvKxNc
+ uPNVdlvTs3wGCaAw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 345E61339B
- for <ltp@lists.linux.it>; Tue, 25 Aug 2026 11:36:20 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 13FEC1342D
+ for <ltp@lists.linux.it>; Tue, 25 Aug 2026 11:36:26 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id KMmfCzR+jWoRSAAAD6G6ig
+ by imap1.dmz-prg2.suse.org with ESMTPSA id q5fhAzp+jWowSAAAD6G6ig
  (envelope-from <chrubis@suse.cz>)
- for <ltp@lists.linux.it>; Tue, 25 Aug 2026 11:36:20 +0000
+ for <ltp@lists.linux.it>; Tue, 25 Aug 2026 11:36:26 +0000
 From: Cyril Hrubis <chrubis@suse.cz>
 To: ltp@lists.linux.it
-Date: Tue, 25 Aug 2026 13:35:56 +0200
-Message-ID: <20260825113625.1624134-3-chrubis@suse.cz>
+Date: Tue, 25 Aug 2026 13:36:01 +0200
+Message-ID: <20260825113625.1624134-8-chrubis@suse.cz>
 X-Mailer: git-send-email 2.54.0
 In-Reply-To: <20260825113625.1624134-1-chrubis@suse.cz>
 References: <20260825113625.1624134-1-chrubis@suse.cz>
@@ -94,12 +94,12 @@ X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
  FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:mid,suse.cz:email,imap1.dmz-prg2.suse.org:helo];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:mid,imap1.dmz-prg2.suse.org:helo];
  RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
  TO_DN_NONE(0.00)[]; RCVD_TLS_ALL(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3 02/31] testcases: sysfs: Add sys_power01
+Subject: [LTP] [PATCH v3 07/31] testcases: sysfs: Add sys_cpu_topology02
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -116,147 +116,166 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-A test for sysfs/power/* files.
+A test for /sys/devices/system/cpu/cpu*/topology/* files.
 
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- runtest/sysfs                              |  1 +
- testcases/kernel/Makefile                  |  1 +
- testcases/kernel/sysfs/Makefile            |  7 +++
- testcases/kernel/sysfs/power/.gitignore    |  1 +
- testcases/kernel/sysfs/power/Makefile      |  7 +++
- testcases/kernel/sysfs/power/sys_power01.c | 71 ++++++++++++++++++++++
- 6 files changed, 88 insertions(+)
- create mode 100644 runtest/sysfs
- create mode 100644 testcases/kernel/sysfs/Makefile
- create mode 100644 testcases/kernel/sysfs/power/.gitignore
- create mode 100644 testcases/kernel/sysfs/power/Makefile
- create mode 100644 testcases/kernel/sysfs/power/sys_power01.c
+ runtest/sysfs                                 |   1 +
+ .../sysfs/devices/system/cpu/.gitignore       |   1 +
+ .../devices/system/cpu/sys_cpu_topology02.c   | 133 ++++++++++++++++++
+ 3 files changed, 135 insertions(+)
+ create mode 100644 testcases/kernel/sysfs/devices/system/cpu/sys_cpu_topology02.c
 
 diff --git a/runtest/sysfs b/runtest/sysfs
-new file mode 100644
-index 000000000..e679cacb1
---- /dev/null
+index 4fc8f1eb2..b1daab68f 100644
+--- a/runtest/sysfs
 +++ b/runtest/sysfs
-@@ -0,0 +1 @@
-+sys_power01 sys_power01
-diff --git a/testcases/kernel/Makefile b/testcases/kernel/Makefile
-index ac816e4e8..6b8367fe0 100644
---- a/testcases/kernel/Makefile
-+++ b/testcases/kernel/Makefile
-@@ -36,6 +36,7 @@ SUBDIRS			+= connectors \
- 			   sched \
- 			   security \
- 			   sound \
-+			   sysfs \
- 			   thermal \
- 			   tracing \
- 			   uevents \
-diff --git a/testcases/kernel/sysfs/Makefile b/testcases/kernel/sysfs/Makefile
+@@ -3,3 +3,4 @@ sys_kernel01 sys_kernel01
+ sys_clocksource01 sys_clocksource01
+ sys_node01 sys_node01
+ sys_cpu_topology01 sys_cpu_topology01
++sys_cpu_topology02 sys_cpu_topology02
+diff --git a/testcases/kernel/sysfs/devices/system/cpu/.gitignore b/testcases/kernel/sysfs/devices/system/cpu/.gitignore
+index 0615aff77..a688a9b50 100644
+--- a/testcases/kernel/sysfs/devices/system/cpu/.gitignore
++++ b/testcases/kernel/sysfs/devices/system/cpu/.gitignore
+@@ -1 +1,2 @@
+ /sys_cpu_topology01
++/sys_cpu_topology02
+diff --git a/testcases/kernel/sysfs/devices/system/cpu/sys_cpu_topology02.c b/testcases/kernel/sysfs/devices/system/cpu/sys_cpu_topology02.c
 new file mode 100644
-index 000000000..654cda49e
+index 000000000..7759d4098
 --- /dev/null
-+++ b/testcases/kernel/sysfs/Makefile
-@@ -0,0 +1,7 @@
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (c) 2026 Cyril Hrubis <chrubis@suse.cz>
-+
-+top_srcdir		?= ../../..
-+
-+include $(top_srcdir)/include/mk/env_pre.mk
-+include $(top_srcdir)/include/mk/generic_trunk_target.mk
-diff --git a/testcases/kernel/sysfs/power/.gitignore b/testcases/kernel/sysfs/power/.gitignore
-new file mode 100644
-index 000000000..835842cd0
---- /dev/null
-+++ b/testcases/kernel/sysfs/power/.gitignore
-@@ -0,0 +1 @@
-+/sys_power01
-diff --git a/testcases/kernel/sysfs/power/Makefile b/testcases/kernel/sysfs/power/Makefile
-new file mode 100644
-index 000000000..66e633f40
---- /dev/null
-+++ b/testcases/kernel/sysfs/power/Makefile
-@@ -0,0 +1,7 @@
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (c) 2026 Cyril Hrubis <chrubis@suse.cz>
-+
-+top_srcdir		?= ../../../..
-+
-+include $(top_srcdir)/include/mk/testcases.mk
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/sysfs/power/sys_power01.c b/testcases/kernel/sysfs/power/sys_power01.c
-new file mode 100644
-index 000000000..347478c85
---- /dev/null
-+++ b/testcases/kernel/sysfs/power/sys_power01.c
-@@ -0,0 +1,71 @@
++++ b/testcases/kernel/sysfs/devices/system/cpu/sys_cpu_topology02.c
+@@ -0,0 +1,133 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
 + * Copyright (c) 2026 Cyril Hrubis <chrubis@suse.cz>
 + */
 +
 +/*\
-+ * Sanity checks for the power management attributes exported under
-+ * /sys/power/.
++ * Sanity checks for the per-CPU topology attributes exported under
++ * /sys/devices/system/cpu/cpuN/topology/.
 + *
-+ * The test verifies that:
++ * The topology masks describe how a CPU relates to the others. They are nested
++ * from the smallest (SMT threads) to the largest (package) group, so for every
++ * online CPU the test verifies that:
 + *
-+ * - pm_async, pm_debug_messages, pm_print_times and sync_on_suspend are
-+ *   booleans
-+ * - pm_freeze_timeout and wakeup_count are non-negative
-+ * - disk is a bracketed-choice file selecting one of platform, shutdown,
-+ *   reboot, suspend, test_resume or disabled. disk_show() in
-+ *   kernel/power/hibernate.c reports "[disabled]" as the sole token whenever
-+ *   hibernation_available() is false, e.g. because of the "nohibernate" boot
-+ *   parameter, kernel lockdown (common on Secure Boot enabled distributions)
-+ *   restricting LOCKDOWN_HIBERNATION, secretmem being in use, or CXL memory
-+ *   being active
-+ * - mem_sleep is a bracketed-choice file selecting one of s2idle, shallow or
-+ *   deep
-+ * - state lists only known sleep states (freeze, standby, mem, disk)
++ * - thread_siblings_list is a subset of core_cpus_list
++ * - core_cpus_list is a subset of package_cpus_list
++ * - package_cpus_list is a subset of the present CPUs, not just the online
++ *   ones: the whole topology/ directory (package_cpus_list included) is
++ *   added/removed per-CPU on hotplug (drivers/base/topology.c registers it
++ *   against a cpuhp state), so it only ever lists CPUs that share the
++ *   package and are also online right now. Comparing against "present"
++ *   instead of "online" avoids relying on that always being reliably kept
++ *   in sync on every architecture, and avoids a spurious failure if a
++ *   sibling CPU is hot-unplugged concurrently with this test running.
++ * - the CPU itself is contained in its own thread_siblings_list
++ * - core_id is in [0, highest possible CPU id], since there can be at most
++ *   as many cores as possible CPUs (every core has at least one thread)
++ * - physical_package_id is in [-1, highest possible CPU id] on physical
++ *   hardware, or just at least -1 under virtualization (see below). -1 is a
++ *   legitimate value here, not just a range extension for safety: per
++ *   include/linux/topology.h, -1 is the architecture-neutral default for
++ *   topology_physical_package_id() (and die_id/cluster_id/book_id/
++ *   drawer_id) on any architecture, or any CPU type within one, that does
++ *   not implement package detection. topology_core_id() does not have this
++ *   documented -1 fallback (its generic default is 0), so core_id is not
++ *   given the same allowance.
 + *
-+ * Unlike disk and mem_sleep, state never marks a "current" value with
-+ * brackets, it merely enumerates the sleep states the kernel supports, so it
-+ * is validated as a plain token set rather than a bracketed choice.
++ *   The upper bound on physical_package_id is dropped under virtualization:
++ *   store_cpu_topology() in drivers/base/arch_topology.c falls back to
++ *   physical_package_id = cpu_to_node(cpu) whenever ACPI/DT topology
++ *   parsing did not already populate it (common on minimal/generic arm64 VM
++ *   firmware without full ACPI PPTT tables). On physical hardware this
++ *   fallback is still bounded by the number of possible CPUs, since NUMA
++ *   node ids are compacted/renumbered from the firmware's proximity domains
++ *   and there can never be more NUMA nodes than CPUs (each node needs at
++ *   least one). But a VM's NUMA node numbering is a hypervisor/firmware
++ *   policy choice entirely unrelated to its own CPU count, e.g. mirroring a
++ *   large host's own (possibly sparse) NUMA node ids under NUMA
++ *   passthrough/vNUMA configuration, so the bound would not be meaningful
++ *   there and is dropped to avoid a false failure.
 + *
 + * All checks skip gracefully with TCONF when a particular attribute is not
-+ * present.
++ * present, as the exact set of topology files differs between kernel versions
++ * and architectures.
 + */
 +
++#include <stdio.h>
 +#include <limits.h>
++#include <unistd.h>
 +#include "tst_test.h"
 +#include "tst_sysfs_assert.h"
 +
-+#define POWER "/sys/power"
++#define SYS_CPU "/sys/devices/system/cpu"
 +
-+static const char *const disk_allowed[] = {
-+	"platform", "shutdown", "reboot", "suspend", "test_resume",
-+	"disabled", NULL
-+};
++static void check_self_in_threads(int cpu)
++{
++	TST_SYSFS_ASSERT_LIST_CONTAINS(cpu,
++		SYS_CPU "/cpu%d/topology/thread_siblings_list", cpu);
++}
 +
-+static const char *const mem_sleep_allowed[] = {
-+	"s2idle", "shallow", "deep", NULL
-+};
++static void check_cpu_topology(int cpu, int poss_max_id, long pkg_max_id)
++{
++	char sub[PATH_MAX], super[PATH_MAX];
 +
-+static const char *const state_allowed[] = {
-+	"freeze", "standby", "mem", "disk", NULL
-+};
++	if (access(SYS_CPU, F_OK))
++		return;
++
++	if (!tst_sysfs_exists(SYS_CPU "/cpu%d/topology/core_id", cpu)) {
++		tst_res(TCONF, "cpu%d has no topology directory", cpu);
++		return;
++	}
++
++	tst_res(TINFO, "Checking cpu%d topology", cpu);
++
++	TST_SYSFS_ASSERT_RANGELL(0, poss_max_id,
++			       SYS_CPU "/cpu%d/topology/core_id", cpu);
++
++	TST_SYSFS_ASSERT_RANGELL(-1, pkg_max_id,
++			       SYS_CPU "/cpu%d/topology/physical_package_id",
++			       cpu);
++
++	snprintf(sub, sizeof(sub),
++		 SYS_CPU "/cpu%d/topology/thread_siblings_list", cpu);
++	snprintf(super, sizeof(super),
++		 SYS_CPU "/cpu%d/topology/core_cpus_list", cpu);
++	TST_SYSFS_ASSERT_LIST_SUBSET(sub, super);
++
++	snprintf(sub, sizeof(sub),
++		 SYS_CPU "/cpu%d/topology/core_cpus_list", cpu);
++	snprintf(super, sizeof(super),
++		 SYS_CPU "/cpu%d/topology/package_cpus_list", cpu);
++	TST_SYSFS_ASSERT_LIST_SUBSET(sub, super);
++
++	snprintf(sub, sizeof(sub),
++		 SYS_CPU "/cpu%d/topology/package_cpus_list", cpu);
++	TST_SYSFS_ASSERT_LIST_SUBSET(sub, SYS_CPU "/present");
++
++	check_self_in_threads(cpu);
++}
 +
 +static void do_test(void)
 +{
-+	TST_SYSFS_ASSERT_BOOL(POWER "/pm_async");
-+	TST_SYSFS_ASSERT_BOOL(POWER "/pm_debug_messages");
-+	TST_SYSFS_ASSERT_BOOL(POWER "/pm_print_times");
-+	TST_SYSFS_ASSERT_BOOL(POWER "/sync_on_suspend");
++	int count, max_id, poss_count, poss_max_id, cpu;
++	long pkg_max_id;
 +
-+	TST_SYSFS_ASSERT_RANGELL(0, LONG_MAX, POWER "/pm_freeze_timeout");
-+	TST_SYSFS_ASSERT_RANGELL(0, LONG_MAX, POWER "/wakeup_count");
++	if (TST_SYSFS_ASSERT_PARSE_LIST(&count, &max_id, SYS_CPU "/online"))
++		return;
 +
-+	TST_SYSFS_ASSERT_CHOICE(disk_allowed, NULL, 0, POWER "/disk");
-+	TST_SYSFS_ASSERT_CHOICE(mem_sleep_allowed, NULL, 0, POWER "/mem_sleep");
++	if (TST_SYSFS_ASSERT_PARSE_LIST(&poss_count, &poss_max_id,
++					SYS_CPU "/possible"))
++		return;
 +
-+	TST_SYSFS_ASSERT_TOKENS(state_allowed, NULL, POWER "/state");
++	if (tst_is_virt(VIRT_ANY))
++		pkg_max_id = LONG_MAX;
++	else
++		pkg_max_id = poss_max_id;
++
++	for (cpu = 0; cpu <= max_id; cpu++)
++		check_cpu_topology(cpu, poss_max_id, pkg_max_id);
 +}
 +
 +static struct tst_test test = {
