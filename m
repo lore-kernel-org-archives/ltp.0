@@ -4,97 +4,101 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9B772C5DF97
-	for <ltp@archiver.kernel.org>; Wed, 26 Aug 2026 15:24:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5FB4DC5DF97
+	for <ltp@archiver.kernel.org>; Wed, 26 Aug 2026 22:29:50 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 740263CC8C1
-	for <ltp@archiver.kernel.org>; Wed, 26 Aug 2026 17:24:06 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 4532E3D75B9
+	for <ltp@archiver.kernel.org>; Thu, 27 Aug 2026 00:29:48 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 370FB3C0032
- for <ltp@lists.linux.it>; Wed, 26 Aug 2026 17:23:49 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+ by picard.linux.it (Postfix) with ESMTPS id 5D7133CFEB3
+ for <ltp@lists.linux.it>; Thu, 27 Aug 2026 00:29:30 +0200 (CEST)
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
+ [148.163.158.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 9AF6D10008F4
- for <ltp@lists.linux.it>; Wed, 26 Aug 2026 17:23:43 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id C1F801F821;
- Wed, 26 Aug 2026 15:23:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1787757818; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=VmCBq95C+hO3eVCDo2YS781bOFlXSWTVEa+OhPmvags=;
- b=IfOxZxPISMSTvD4kG5BMxnNualjXIjd8xevbJSQS2akZfBYP4U+/MZwTOpw4UGA+n5AuY+
- PjC14Gi2Kta+RwrgoA64Wko8wZZ7U+Q45R1489vu5GPR5BEglxgiU9AAiq0SdeXWDtirQz
- harpDt65a3FM7sBqXnuW3hMKmPfgDvI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1787757818;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=VmCBq95C+hO3eVCDo2YS781bOFlXSWTVEa+OhPmvags=;
- b=ItTV+DvVkDr9vuSCJQtmiVOJDp2Nu8kwGZtJGg2X+KRxLMT4OmMuToNzjC2eVrs0pjmT9Z
- Cy+zN2IPYFqi/yBQ==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1787757813; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=VmCBq95C+hO3eVCDo2YS781bOFlXSWTVEa+OhPmvags=;
- b=Dh6VNoLQAM2e31B0uKgLRQfOuNIv5B1jmlUR97wbmVX2iVhfrezgM09hMSGfyDAYLIspkX
- FEvuISIfl+iz8L1QyD/2s1DEse3MJV6fpoG4z2IAH2bM4wKtdM1v4GkhAM8mM+XWyoVW9/
- TRFGY4LAKyYdTr0cMuqNiXFz303gOdk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1787757813;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=VmCBq95C+hO3eVCDo2YS781bOFlXSWTVEa+OhPmvags=;
- b=Upcve5stcK1YD7uExn+idq2wyXiBj8Ivy6AkFDNr0dMJAD8Y0kqrQEinD+zife8ISUa/3b
- +OB12NN9q5tpA+DA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B29821361C;
- Wed, 26 Aug 2026 15:23:33 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id dT5pKvUEj2rJWgAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Wed, 26 Aug 2026 15:23:33 +0000
-Date: Wed, 26 Aug 2026 17:23:35 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Andrea Cervesato <andrea.cervesato@suse.de>
-Message-ID: <ao8E9xmRqH35vJrz@yuki.lan>
-References: <20260826-convert_fallocate_suite-v3-0-1286ede0493d@suse.com>
- <20260826-convert_fallocate_suite-v3-1-1286ede0493d@suse.com>
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id C29DF140025D
+ for <ltp@lists.linux.it>; Thu, 27 Aug 2026 00:29:29 +0200 (CEST)
+Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id
+ 67QL1tEJ853478; Wed, 26 Aug 2026 22:29:27 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+ :content-transfer-encoding:date:from:message-id:mime-version
+ :subject:to; s=pp1; bh=L853njexZJ//RSiZG+KeWf1FauvA2KERRE/cGUEIU
+ Bg=; b=dblbpITvViAg9NZCjc0fRwxc6h3vUugyiO1sa0W0FW9locwaxilRkiGdY
+ YTiqCHCD5EIsKRlbEiF80O7gX0PgzHl0/7EBkxayaT4Yyf8E8GHJQjtma44q57iu
+ 4CCqZ1LX3ySpJEu4AKpvtdOkIXIZS0ucJP9Uey9eVQFzBJfOJkWMOncGxolS7md3
+ k5DWSgnlFhZTJSj71JK5WXOfbvOmYX1224YjBP1xlzWs8sc1GWWGBhnx9Uq1JhFE
+ kKzxiwQeF38S12KAob+ygc2o0q/586v8ujMuycPYLdE494XuBmT5F2s1m4Ge2bFg
+ 5oEM9IJONcQFXab4s0zIrbyl3nQZg==
+Received: from ppma13.dal12v.mail.ibm.com
+ (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4g716j1n09-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Wed, 26 Aug 2026 22:29:27 +0000 (GMT)
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+ by ppma13.dal12v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 67QMQGFS032251;
+ Wed, 26 Aug 2026 22:29:26 GMT
+Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
+ by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 4g7ragmcdx-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Wed, 26 Aug 2026 22:29:26 +0000 (GMT)
+Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com
+ [10.20.54.103])
+ by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 67QMTOVf49217824
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Wed, 26 Aug 2026 22:29:24 GMT
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 5D3F220043;
+ Wed, 26 Aug 2026 22:29:24 +0000 (GMT)
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 3A42920040;
+ Wed, 26 Aug 2026 22:29:23 +0000 (GMT)
+Received: from li-43857255-d5e6-4659-90f1-fc5cee4750ad.fios-router.home
+ (unknown [9.61.80.63])
+ by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
+ Wed, 26 Aug 2026 22:29:23 +0000 (GMT)
+From: Mimi Zohar <zohar@linux.ibm.com>
+To: ltp@lists.linux.it
+Date: Wed, 26 Aug 2026 18:29:13 -0400
+Message-ID: <20260826222913.802598-1-zohar@linux.ibm.com>
+X-Mailer: git-send-email 2.55.0
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20260826-convert_fallocate_suite-v3-1-1286ede0493d@suse.com>
-X-Spamd-Result: default: False [-8.30 / 50.00]; REPLY(-4.00)[];
- BAYES_HAM(-3.00)[99.99%]; NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-0.999]; MIME_GOOD(-0.10)[text/plain];
- MISSING_XM_UA(0.00)[]; RCPT_COUNT_TWO(0.00)[2];
- RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
- RCVD_TLS_ALL(0.00)[]; TO_DN_ALL(0.00)[]; MIME_TRACE(0.00)[0:+];
- FROM_HAS_DN(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FROM_EQ_ENVFROM(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:email]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+X-TM-AS-GCONF: 00
+X-Proofpoint-Spam-Info: AW1haW4tMjYwODI2MDE4NSBTYWx0ZWRfX/OlTqOoioLWx
+ lQGN4YWSEYO8pChBpWKs6L+5qxrvhPUiiePcau+kYbWgN/oiHxsnMDlHPmTmVSluK81AbPMCz9W
+ sDV9dkZEqdl09gB5yeTUcCu62JWt46c=
+X-Proofpoint-GUID: 455Zp8SfPEsdM_ofYhCSZVnsXtt6cKl6
+X-Proofpoint-ORIG-GUID: 455Zp8SfPEsdM_ofYhCSZVnsXtt6cKl6
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwODI2MDE4NSBTYWx0ZWRfXy6oswekeXHBE
+ 99Eq8T607GGwzjxThPAK2mfvhETdbXWl1MxHSgI2cO7IA/jI9lpjrX7N4hWASJM4fa8rlWSQOCC
+ UDyf25HZuW3ex0bWq/kxceCyGwyEdkFNc+WVZcqqppkWCrWeDHtf1wTv1Cd7azOaLDwn2xcvvNQ
+ H/YRLboWBuAb6zP4KRXfQ9IcP4toEh+315jXdz4IdYigR27J04wdHyOnmm4O7FWKhgnOPt2TSie
+ d5QsuFNZyBVqw5ktmeZI71+Sj7CFb+jQ2gv4hGB6fsWGlnNZkFw4s5jCHTsOzmW3eSBwWsbsuj1
+ 91seSnW8oMGBeQKdOxydgri17B/3wtK+4+r16opoAueSg8knuM3UaKGzTWDqQ0EfUXDvvXYE6w+
+ OAAXUpgEAlg2pWO+ghNLu7zw88z5/csubgVry4AkNIiTunmB13ciGTH+857XlkZXIvzoneapt88
+ yji7Jy6aepPjdh0TN6A==
+X-Authority-Analysis: v=2.4 cv=H7brBeYi c=1 sm=1 tr=0 ts=6a8f68c7 cx=c_pps
+ a=AfN7/Ok6k8XGzOShvHwTGQ==:117 a=AfN7/Ok6k8XGzOShvHwTGQ==:17
+ a=Sv0fKeRqtYgA:10 a=VkNPw1HP01LnGYTKEx00:22 a=RnoormkPH1_aCDwRdu11:22
+ a=Y2IxJ9c9Rs8Kov3niI8_:22 a=VnNF1IyMAAAA:8 a=DcaeczIwcw92CAh3fjEA:9
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1176,Hydra:6.1.134,FMLib:17.12.100.49
+ definitions=2026-08-26_06,2026-08-26_02,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ suspectscore=0 malwarescore=0 lowpriorityscore=0 impostorscore=0 spamscore=0
+ bulkscore=0 adultscore=0 priorityscore=1501 clxscore=1015 phishscore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.22.0-2606150000 definitions=main-2608260185
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3 1/2] fallocate01: Convert to new API
+Subject: [LTP] [PATCH v2] ima_tpm.sh: properly detect failure to verify the
+ IMA measurement list
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -106,47 +110,100 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Linux Test Project <ltp@lists.linux.it>
+Cc: linux-integrity@vger.kernel.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> -void populate_files(int fd)
-> -{
-> -	char buf[buf_size + 1];
-> -	int index;
-> -	int blocks;
-> -	int data;
-> +	TEST(fallocate(fd, 0, 0, block_size));
-> +	if (TST_RET != 0) {
-> +		if (TST_ERR == EOPNOTSUPP || TST_ERR == ENOSYS)
-> +			tst_brk(TCONF, "fallocate() not supported");
+test2 attempts to compare the aggregate PCR-10 value with the current
+TPM PCR value based on the current measurement list, but does not take
+into account that the measurement list might have grown.
 
-Sigh, looks like we need separate checks for fallocate() with and
-without FALLOC_FL_KEEP_SIZE:
+evmctl returns success/failure when verifying the IMA measurement list
+and displays the measurement list line number that matched.
 
-tst_test.c:1986: TINFO: === Testing on exfat ===
-tst_test.c:1291: TINFO: Formatting /dev/loop0 with exfat opts='' extra opts=''
-tst_test.c:1303: TINFO: Mounting /dev/loop0 to /tmp/LTP_falpgaoah/mntpoint fstyp=exfat flags=0
-fallocate01.c:92: TPASS: fallocate(DEFAULT_MODE, 393216, 32768) passed
-fallocate01.c:97: TPASS: file_stat.st_size == expected_size (425984)
-fallocate01.c:101: TPASS: pos == offset + write_offset (409600)
-fallocate01.c:103: TPASS: write into the newly allocated region returned 1
-fallocate01.c:92: TFAIL: fallocate(FALLOC_FL_KEEP_SIZE, 393216, 32768) failed: EOPNOTSUPP (95)
-fallocate01.c:97: TPASS: file_stat.st_size == expected_size (393216)
-fallocate01.c:101: TPASS: pos == offset + write_offset (409600)
-fallocate01.c:103: TPASS: write into the newly allocated region returned 1
+Update test2 to check the return code, before failing the test.
+Include the matched line number and total number of measurement
+list records.
 
+Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
+---
+Changelog:
+- addressed AI comments, minimizing changes
 
-I guess that the easiest solution is to use
-TST_EXP_PASS_OR_FAIL(..., EOPNOTSUPP, ...) in the run() function
-instead.
+ .../security/integrity/ima/tests/ima_tpm.sh   | 25 +++++++++++++++----
+ 1 file changed, 20 insertions(+), 5 deletions(-)
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+diff --git a/testcases/kernel/security/integrity/ima/tests/ima_tpm.sh b/testcases/kernel/security/integrity/ima/tests/ima_tpm.sh
+index acd8b6d30..8bb86ea4a 100755
+--- a/testcases/kernel/security/integrity/ima/tests/ima_tpm.sh
++++ b/testcases/kernel/security/integrity/ima/tests/ima_tpm.sh
+@@ -146,7 +146,7 @@ get_pcr10_aggregate()
+ 	local num_violations=0
+ 	local msg="$ERRMSG_EVMCTL"
+ 	local res=TCONF
+-	local pcr ret
++	local lineno pcr ret
+
+ 	if [ -z "$MISSING_EVMCTL" ]; then
+ 		msg=
+@@ -178,10 +178,13 @@ get_pcr10_aggregate()
+ 		tst_res $res "failed to find aggregate PCR-10 $msg"
+ 		tst_res TINFO "hash file:"
+ 		cat hash.txt >&2
+-		return
++		return $ret
+ 	fi
+
+-	echo "$pcr"
++	lineno=$(grep -E "^($ALGORITHM )*PCR(.*10)*: succeed at entry" \
++		 hash.txt | tail -1 | awk '{print $NF}')
++	echo "$pcr $lineno"
++	return $ret
+ }
+
+ test1_tpm_bypass_mode()
+@@ -249,7 +252,9 @@ test1()
+
+ test2()
+ {
+-	local hash pcr_aggregate out ret
++	local hash pcr_aggregate lineno out ret
++	local measurement_count="$IMA_DIR/runtime_measurements_count"
++	local total_measurements
+
+ 	tst_res TINFO "verify PCR values"
+
+@@ -288,7 +293,9 @@ test2()
+ 	tst_res TINFO "real PCR-10: '$hash'"
+
+ 	get_pcr10_aggregate > tmp.txt
+-	pcr_aggregate="$(cat tmp.txt)"
++	ret=$?
++
++	pcr_aggregate="$(cat tmp.txt | awk '{print $1}')"
+ 	if [ -z "$pcr_aggregate" ]; then
+ 		return
+ 	fi
+@@ -296,6 +303,14 @@ test2()
+
+ 	if [ "$hash" = "$pcr_aggregate" ]; then
+ 		tst_res TPASS "aggregate PCR value matches real PCR value"
++	elif [ $ret -eq 0 ]; then
++		lineno="$(cat tmp.txt | awk '{print $2}')"
++		if [ -z "$lineno" ]; then
++			return
++		fi
++		total_measurements=$(cat "$measurement_count")
++
++		tst_res TPASS "aggregate PCR value matched real PCR value (line: $lineno/$total_measurements)"
+ 	else
+ 		tst_res TFAIL "aggregate PCR value does not match real PCR value"
+ 	fi
+--
+2.55.0
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
