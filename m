@@ -4,107 +4,101 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 892BDC61DBD
-	for <ltp@archiver.kernel.org>; Wed, 26 Aug 2026 00:25:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2C353C61DBD
+	for <ltp@archiver.kernel.org>; Wed, 26 Aug 2026 00:35:15 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 3A2C93C9EB4
-	for <ltp@archiver.kernel.org>; Wed, 26 Aug 2026 02:25:20 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id C2D6D3C6EBE
+	for <ltp@archiver.kernel.org>; Wed, 26 Aug 2026 02:35:13 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B42E73C6EBE
- for <ltp@lists.linux.it>; Wed, 26 Aug 2026 02:25:02 +0200 (CEST)
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
- [148.163.158.5])
+ by picard.linux.it (Postfix) with ESMTPS id 5B91B3C062E
+ for <ltp@lists.linux.it>; Wed, 26 Aug 2026 02:34:57 +0200 (CEST)
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
+ [148.163.156.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id D3EF8140026C
- for <ltp@lists.linux.it>; Wed, 26 Aug 2026 02:25:01 +0200 (CEST)
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 565C71A000A0
+ for <ltp@lists.linux.it>; Wed, 26 Aug 2026 02:34:55 +0200 (CEST)
+Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
  by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id
- 67PLViSp1966846; Wed, 26 Aug 2026 00:24:59 GMT
+ 67Q0VXo92458019; Wed, 26 Aug 2026 00:34:52 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
- :content-transfer-encoding:content-type:date:from:in-reply-to
- :message-id:mime-version:references:subject:to; s=pp1; bh=XEqf+d
- afsZnCPbm+2rzhijXU0Tzq/Y8PPHFVMyq8fwI=; b=Ikr6iYe97v8dUgHR+qzcqA
- n+bVsmxdm3h6vTjSoZ8qJq++IyDDHiYTzkvBz/g5GvJ39Ydt0Yznlh3DOg4m8rB2
- 8rEB0T+VJhNcahp7hFhO2oRSFpgFwDdI+K6eKyxJGoyHMS7jNZIzyGbKIMHlFcKs
- CgF5cEPXbU9KrXyEHEzrgDMoSuQwlzjtcE6auXa0C3CBmnrcjeK8MjKfnGahpsqo
- SGW4AVF2yw2cg7rd0dfpHG4w4eZfFsW5ZgG8We6m/8FgRKzDbuN5kgBBZauoBD0e
- kaNWicv+OptBw4w5YYN26xa1DA+qvnAIULmsgV3x58/PSrQd4kZ6TrNH6lu5Q7RA
- ==
-Received: from ppma23.wdc07v.mail.ibm.com
- (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4g716hup9j-1
+ :content-transfer-encoding:date:from:message-id:mime-version
+ :subject:to; s=pp1; bh=4wFA3SYsMF8qzznrAP91sb5p35mXskhnffM5ho5oL
+ 5E=; b=Q1UCA2VtPdVikKHxO9AobzXLQ/oPA7NcwcjZ8qFaoOedKnDUjHJ3HHDR3
+ 7XnfkZlBbUXE7Xqy/AjsMBHLvT0LRLVVoq9Fnj/HXpAgG/cCsTCecWyaEz3lNkpW
+ THaRAj62QgA7rhSfIEBg/8sYFxsghSvTQZPp0t+xuzRSVRmHnu6Kvlc+xT2jKg3r
+ 5SDBZItieizftMKYLxU9gsNiwHXPyxqBOqpvdVKLtvbvQbslmR/Xi6so1D8G0lmp
+ EjmIoamiiO4y1aG455rnIQaHoIRS+YkU7TW07saJGYka/NRaJVYUJm4Yo56k0VS+
+ ecvOMB+UlYYAjy2w0bTf8C30G1s+Q==
+Received: from ppma11.dal12v.mail.ibm.com
+ (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4g73g4umkn-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Wed, 26 Aug 2026 00:24:58 +0000 (GMT)
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
- by ppma23.wdc07v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 67Q0BhT1019773;
- Wed, 26 Aug 2026 00:24:58 GMT
-Received: from smtprelay01.wdc07v.mail.ibm.com ([172.16.1.68])
- by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4g7qkh74rj-1
+ Wed, 26 Aug 2026 00:34:51 +0000 (GMT)
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+ by ppma11.dal12v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 67Q0QSOo017865;
+ Wed, 26 Aug 2026 00:34:51 GMT
+Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
+ by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 4g7rsy70h0-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Wed, 26 Aug 2026 00:24:58 +0000 (GMT)
-Received: from smtpav06.wdc07v.mail.ibm.com (smtpav06.wdc07v.mail.ibm.com
- [10.39.53.233])
- by smtprelay01.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 67Q0Owoc35783138
+ Wed, 26 Aug 2026 00:34:50 +0000 (GMT)
+Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com
+ [10.20.54.106])
+ by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 67Q0YnZZ48628190
  (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Wed, 26 Aug 2026 00:24:58 GMT
-Received: from smtpav06.wdc07v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id F00A35804E;
- Wed, 26 Aug 2026 00:24:57 +0000 (GMT)
-Received: from smtpav06.wdc07v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 88FB558054;
- Wed, 26 Aug 2026 00:24:57 +0000 (GMT)
-Received: from li-43857255-d5e6-4659-90f1-fc5cee4750ad.ibm.com (unknown
- [9.61.20.77]) by smtpav06.wdc07v.mail.ibm.com (Postfix) with ESMTP;
- Wed, 26 Aug 2026 00:24:57 +0000 (GMT)
-Message-ID: <8564c18ee78ca4f308dc0b7f48ac2f63b295ee00.camel@linux.ibm.com>
+ Wed, 26 Aug 2026 00:34:49 GMT
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 2D7482004B;
+ Wed, 26 Aug 2026 00:34:49 +0000 (GMT)
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id D0CA420040;
+ Wed, 26 Aug 2026 00:34:47 +0000 (GMT)
+Received: from li-43857255-d5e6-4659-90f1-fc5cee4750ad.fios-router.home
+ (unknown [9.61.20.77])
+ by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
+ Wed, 26 Aug 2026 00:34:47 +0000 (GMT)
 From: Mimi Zohar <zohar@linux.ibm.com>
-To: Petr Vorel <pvorel@suse.cz>, linuxtestproject.agent@gmail.com
-In-Reply-To: <20260825044433.GB22725@pevik>
-References: <20260821200620.902699-1-zohar@linux.ibm.com>
- <20260821202613.4033-1-linuxtestproject.agent@gmail.com>
- <20260825044433.GB22725@pevik>
-Date: Tue, 25 Aug 2026 20:24:57 -0400
+To: ltp@lists.linux.it
+Date: Tue, 25 Aug 2026 20:34:44 -0400
+Message-ID: <20260826003444.424097-1-zohar@linux.ibm.com>
+X-Mailer: git-send-email 2.55.0
 MIME-Version: 1.0
-User-Agent: Evolution 3.58.3 (3.58.3-1.fc43) 
 X-TM-AS-GCONF: 00
-X-Proofpoint-Reinject: loops=2 maxloops=12
-X-Proofpoint-Spam-Info: AW1haW4tMjYwODI1MDIwNSBTYWx0ZWRfX8X1O+IfWWbeh
- oLDH4E7j4H+Gu0ueBZNPUvYPEhZuIRnfqMRELTXUeExX1UbL3RVglyNry7u2+/VeAtl4eBy0u0l
- i0Y/I7CJKTNwJopKQhBHzxb9DpzxiO8=
-X-Proofpoint-GUID: CvgYdZgDvzE7TdJpy_IcPRfPA_aZMbcU
-X-Proofpoint-ORIG-GUID: LuDES5oZTedzH5htJi_qfLzduVGJ9YJU
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwODI1MDIwNSBTYWx0ZWRfX7NUuMcsxGZtQ
- NwgmnthuiRpFDqOG7khIrdrpEmZx/mShkOk4Y6hhv8jcU+w3V961gwirNOyv+/SjWX0iXfLQjpr
- dU1L0CtG7cY6zVMUR6v9dT226QdzYwQiPDZf5u7mq7X2d5crBwVL2bepvfMdu4YxFbJW13uboz5
- OMIY9rDcru9fDNLoYSE7n4+PSNUsXPh7rm6WgYgTyFDEhY3BPXtIKEoethQeDEy2XXO3Kw/egIK
- XEoiJalQdt2jDmAPkYGvC9aZJxMT3NufkpMHJUGQ08LvQQdG8PWJC+uvl+hKAE9iATrLoEashzw
- 7tD6TrMGjBZ+ekEtFwATk1nSLs3A/ZwldFMVz1cpcy+m/aKEjY0nSZKovzGgWyDGJlO5f/Pfcr7
- E/Xd+NNVn7pUuvhopM5h8DUWzni7yoQdZL/AB08hyvI8Ca+/O7zI0X5YK7E0qQyq43dMIanRnH5
- rqJuPVC2pnyuNcnU51g==
-X-Authority-Analysis: v=2.4 cv=H7brBeYi c=1 sm=1 tr=0 ts=6a8e325b cx=c_pps
- a=3Bg1Hr4SwmMryq2xdFQyZA==:117 a=3Bg1Hr4SwmMryq2xdFQyZA==:17
- a=IkcTkHD0fZMA:10 a=Sv0fKeRqtYgA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=RnoormkPH1_aCDwRdu11:22 a=Y2IxJ9c9Rs8Kov3niI8_:22 a=yiLAOaqLNPTphfV9390A:9
- a=QEXdDO2ut3YA:10
+X-Proofpoint-ORIG-GUID: kv3XaVqllBMohAAtYBciMSbGWB7UEKgd
+X-Proofpoint-Spam-Info: AW1haW4tMjYwODI2MDAwMyBTYWx0ZWRfX0tCkzR0mNa3f
+ +AYeWodgZbM2cboguBV+m4rhtlPCKALIREvCHTxjM2HAfTWAZdnRvgM0uiLCu7aujDJkhdniWGP
+ fO7eGGmKkzoGkfEJdxfLsiwBpBUVwz4=
+X-Proofpoint-GUID: kv3XaVqllBMohAAtYBciMSbGWB7UEKgd
+X-Authority-Analysis: v=2.4 cv=JZyMa0KV c=1 sm=1 tr=0 ts=6a8e34ac cx=c_pps
+ a=aDMHemPKRhS1OARIsFnwRA==:117 a=aDMHemPKRhS1OARIsFnwRA==:17
+ a=Sv0fKeRqtYgA:10 a=VkNPw1HP01LnGYTKEx00:22 a=RnoormkPH1_aCDwRdu11:22
+ a=U7nrCbtTmkRpXpFmAIza:22 a=VnNF1IyMAAAA:8 a=tqA8ivxAeGEm9z13NQ8A:9
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwODI2MDAwMyBTYWx0ZWRfX7voLwNN4DpUS
+ Fmp6JkcPHgfAZJeXsZqBLw0pHDRm9svwkv4Tsyf2M0kymIBifiUhpgQh4laf9dcHshrAJU9S/iE
+ elI5uOmFKUDz/y4wLjNItxY5wJBS5xv//vkLpy8qbhWZXYZaUQJWuTib+xZmhFVPbAc7b1SadDY
+ nfszLaiIP14voRFrttJVlqhPgiOrWfZsPAkI2RmnPGmratn16W6yJKPbQs5jPRgQP7nwNyaUFgG
+ PUL3WlDnUQRO2CILxomqdBYHFjIC7CWc6zjLLKhp3evAm8SYaE32ZTYu8x+cplFLUi11PBGPQIL
+ cNgh8nbblTrecdufPYJJ8UQPQyQ4AQ0m8MgNcc2AN1KNDpPsH7s2fnWDvzdrTr9xznW74HlydG+
+ 6YRUulIdCMvaKpuYrhBkz4oZy8PPMzA1BT6Wq2SNyPK/HWnnIBuNGudz7zG30Dp2tJbSdwdOSNM
+ rPty4vLxQz+x5SjhE/Q==
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1176,Hydra:6.1.134,FMLib:17.12.100.49
- definitions=2026-08-25_06,2026-08-24_01,2025-10-01_01
+ definitions=2026-08-25_07,2026-08-24_01,2025-10-01_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- suspectscore=0 malwarescore=0 lowpriorityscore=0 impostorscore=0 spamscore=0
- bulkscore=0 adultscore=0 priorityscore=1501 clxscore=1015 phishscore=0
+ spamscore=0 clxscore=1015 adultscore=0 priorityscore=1501 impostorscore=0
+ malwarescore=0 bulkscore=0 lowpriorityscore=0 suspectscore=0 phishscore=0
  classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.22.0-2606150000 definitions=main-2608250205
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+ reason=mlx scancount=1 engine=8.22.0-2606150000 definitions=main-2608260003
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] ima_selinux.sh: test2 assumes CONFIG_IMA_DISABLE_HTABLE
- is configured
+Subject: [LTP] [PATCH] ima_tpm.sh: properly detect failure to verify the IMA
+ measurement list
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -116,36 +110,97 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+Cc: linux-integrity@vger.kernel.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Petr.
+test2 attempts to compare the aggregate PCR-10 value with the current
+TPM PCR value based on the current measurement list, but does not take
+into account that the measurement list might have been extended.
 
-On Tue, 2026-08-25 at 06:44 +0200, Petr Vorel wrote:
-[...]
-> > On August 21, 2026, Mimi Zohar wrote:
-> > > ima_selinux.sh: test2 assumes CONFIG_IMA_DISABLE_HTABLE is configured
-> 
-> > > +		if ! tst_check_kconfigs "CONFIG_IMA_DISABLE_HTABLE=y"; then
-> > > +			tst_res TPASS "Duplicate \"selinux-state\" record missing (CONFIG_IMA_DISABLE_HTABLE not set)"
-> 
-> I would suggest the same, it makes sense to use TCONF to make it visible that
-> it's not an error but OTOH it was not actually tested due
-> CONFIG_IMA_DISABLE_HTABLE not set. If you don't mind, I'd change TPASS to TCONF
-> before merge (or feel free to send v2 with this change yourself with my
-> Reviewed-by: Petr Vorel <pvorel@suse.cz>
-> ).
-> 
-> Thanks for the fix!
+evmctl returns success/failure when verifying the IMA measurement list
+and displays the measurement list line number that matched. Update
+test2.
 
-Agreed, it should be TCONF.  Please make the change.
+Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
+---
+ .../security/integrity/ima/tests/ima_tpm.sh   | 34 +++++++++++++------
+ 1 file changed, 23 insertions(+), 11 deletions(-)
 
-thanks,
+diff --git a/testcases/kernel/security/integrity/ima/tests/ima_tpm.sh b/testcases/kernel/security/integrity/ima/tests/ima_tpm.sh
+index acd8b6d30..5f7a5e983 100755
+--- a/testcases/kernel/security/integrity/ima/tests/ima_tpm.sh
++++ b/testcases/kernel/security/integrity/ima/tests/ima_tpm.sh
+@@ -146,7 +146,7 @@ get_pcr10_aggregate()
+ 	local num_violations=0
+ 	local msg="$ERRMSG_EVMCTL"
+ 	local res=TCONF
+-	local pcr ret
++	local lineno pcr ret
+ 
+ 	if [ -z "$MISSING_EVMCTL" ]; then
+ 		msg=
+@@ -178,10 +178,13 @@ get_pcr10_aggregate()
+ 		tst_res $res "failed to find aggregate PCR-10 $msg"
+ 		tst_res TINFO "hash file:"
+ 		cat hash.txt >&2
+-		return
++		return 1
+ 	fi
+ 
+-	echo "$pcr"
++	lineno=$(grep -E "^($ALGORITHM )*PCR(.*10)*: succeed at entry" hash.txt | tail -1 \
++		| awk '{print $NF}')
++	echo "$pcr $lineno"
++	return $ret
+ }
+ 
+ test1_tpm_bypass_mode()
+@@ -249,7 +252,9 @@ test1()
+ 
+ test2()
+ {
+-	local hash pcr_aggregate out ret
++	local hash pcr_aggregate lineno out ret
++	local measurement_count="$IMA_DIR/runtime_measurements_count"
++	local total_measurements
+ 
+ 	tst_res TINFO "verify PCR values"
+ 
+@@ -288,14 +293,21 @@ test2()
+ 	tst_res TINFO "real PCR-10: '$hash'"
+ 
+ 	get_pcr10_aggregate > tmp.txt
+-	pcr_aggregate="$(cat tmp.txt)"
+-	if [ -z "$pcr_aggregate" ]; then
+-		return
+-	fi
+-	tst_res TINFO "aggregate PCR-10: '$pcr_aggregate'"
++	if [ $? -eq 0 ]; then
++		pcr_aggregate="$(cat tmp.txt | cut -d " " -f1)"
++		if [ -z "$pcr_aggregate" ]; then
++			return
++		fi
++		tst_res TINFO "aggregate PCR-10: '$pcr_aggregate'"
+ 
+-	if [ "$hash" = "$pcr_aggregate" ]; then
+-		tst_res TPASS "aggregate PCR value matches real PCR value"
++		lineno="$(cat tmp.txt | cut -d " " -f2)"
++
++		if [ "$hash" = "$pcr_aggregate" ]; then
++			tst_res TPASS "aggregate PCR value matches real PCR value (line: $lineno)"
++		else
++			total_measurements=$(cat "$measurement_count")
++			tst_res TPASS "aggregate PCR value matched real PCR value (line: $lineno/$total_measurements)"
++		fi
+ 	else
+ 		tst_res TFAIL "aggregate PCR value does not match real PCR value"
+ 	fi
+-- 
+2.55.0
 
-Mimi
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
