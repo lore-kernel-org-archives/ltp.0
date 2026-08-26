@@ -4,95 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 22DA4C61DBD
-	for <ltp@archiver.kernel.org>; Wed, 26 Aug 2026 07:13:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1787728411; h=date : to :
- message-id : references : mime-version : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=lLjtMBMVGgzKJv9OZZooG3bs9BZeHTJYHbJqz/RXcVc=;
- b=IIy9pzTy6f2DLLnkE5gXJ5/3V2W0FLfinZISlqHc9S7UfNOjaHKIabatJRiK2v3brS2iE
- I++7HPqu8VeUJOspasayOMYifJKEbsEaXd6j1SdNXid832P3lRZfmcsfRrXTiAjVR8JLuMD
- oyYKjBBjoKIkg0Wrnhi4JcVnNxbMeLQ=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9AF98C61DBD
+	for <ltp@archiver.kernel.org>; Wed, 26 Aug 2026 07:41:43 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id F07D73CB850
-	for <ltp@archiver.kernel.org>; Wed, 26 Aug 2026 09:13:30 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id A96323CB858
+	for <ltp@archiver.kernel.org>; Wed, 26 Aug 2026 09:41:41 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0C7403C8484
- for <ltp@lists.linux.it>; Wed, 26 Aug 2026 09:13:05 +0200 (CEST)
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com
- [IPv6:2a00:1450:4864:20::52f])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id E28FA3CA166
+ for <ltp@lists.linux.it>; Wed, 26 Aug 2026 09:41:24 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 36D29600A2C
- for <ltp@lists.linux.it>; Wed, 26 Aug 2026 09:13:05 +0200 (CEST)
-Received: by mail-ed1-x52f.google.com with SMTP id
- 4fb4d7f45d1cf-6a17211b9ecso1358475a12.2
- for <ltp@lists.linux.it>; Wed, 26 Aug 2026 00:13:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1787728384; x=1788333184; darn=lists.linux.it;
- h=in-reply-to:content-disposition:content-type:mime-version
- :references:message-id:subject:cc:to:from:date:from:to:cc:subject
- :date:message-id:reply-to:content-type;
- bh=ozDMdkTRa/YMJEITQFPoswLzExIJcPwb3EQ+k8c6JN0=;
- b=Rf4fWD1XUuzhqzJuNl2+tu6LWXLcQBucBVMtztgfNJa/8JBFVVGHLoNII30Rcs+HCz
- CVAyjMLtdkt3L8hJ8GBrL+LP82BM9kxNqJWMd4apADdLAJ6D85D0ZC6ZfjUO90/9Hdp7
- dIXCOr4IbzQ973cty2bsOaqCJjBpL+jFeRyQI1DrvyzbXE5irCUYytGlXGXZmye62RFH
- Jg8GN0FMBNntk3NdYyIWnbkZBrsGACrDbVOlw8Xr1hQbpJzv2k4TUiTF65+OCGZV4Gyw
- toi++SLgRy95FqkJiQYa9Lagxil3655dPsDnGl3wlcjMqgV4h4zhQSBrxy2JOIiUj5Of
- l2iQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1787728384; x=1788333184;
- h=in-reply-to:content-disposition:content-type:mime-version
- :references:message-id:subject:cc:to:from:date:x-gm-gg
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
- :content-type;
- bh=ozDMdkTRa/YMJEITQFPoswLzExIJcPwb3EQ+k8c6JN0=;
- b=rjofJJ+wO06KUhna6H3OsrX/3js7Tq3m67ng9NhrEV2PwKOh0R+qBa+lJq7AtQ3KDy
- gIrwRLqyhmvyDpndBioyjqITKybNMdgkKouUfOGizsthoPwSxA/BjOgbtrSNKolKmQ3I
- aYMdMb+eFl5bKUjcjUHEaugAG1W7YAWPKqmrTM7Gi2N0ieK7GWqjSapG/pmyVsywsrVM
- GBfxFS00WLCoKh6W50B0pYE7EWoURxoKNydf7pKq4oAW8GNJiVp8pExf366lkrYOCbAf
- Epm8MQglJKM5FN+J4W4t053ntqMuFj6ndDPuwa+wOZ6WPWWOgRu8z3UYawFX9MdyE7fj
- hzSQ==
-X-Gm-Message-State: AFuF++lpVcOgFkF/uyRlh9Mkv7+3GpqzeC7Ov6BUY+WGIwDVWLtdOPxK
- VtIfSSt1nKckTzAuiSWWXvBIsDTgu0is2pAppUF6NtVedOH9Mif42h0oSFsfZnAKiwu7ebSKtuO
- Jg5k=
-X-Gm-Gg: AR+sD10AXeMIjfYGfbodkFcSrItr+mJRmpE8totVDxOg3S6fahI90G4oem+zePm7bp2
- upYy8JXYfdJrysFRliOpu8OOIvDIrYk0Who4Ce1zsN5Hp8PBE5PXBAK9outTUbPvtjtqvnpi1vQ
- BVcz77mhCvjCL+NbdU5TmKxOIPBaFsYhoRrMZg1w//kF9yEYjn2hDbqfgY/CL+HKaUqoqD8o5tq
- xYJsSnvZJ3VVJn5CUsMjPtd5cI9sTdImdduWmIIp9g32uRwxu+I8vjw6B2R3ByibQpGg9kubDXZ
- JVr3mQ8P0q+2UTrEVXw7j8pnGE97HDx9Ko6cZvSZ+GTd55gvu21iVM3KIOQbVRcVBLNQkjR8pkj
- fO8ORjXYNstUuBrc/PouRlDjCi+80JzH2O4fMhEoyKeXhMPuAFe5e2S4FxVq+A9FxClC9N/lT3N
- GYw+Yjd5nXd1+nzbd+UPh8h905CDyUlU0YiIXxIXc0XyOFGm2l0lxtPESnyx26t5w7fV0x3hCGU
- eGFz4vwSZGeBFMr5Pf21x3UBv1/0l038SAs/O0L9f48VVCmfHpDXj4WrxevCQ==
-X-Received: by 2002:a05:6402:21d5:b0:69c:811f:8f5 with SMTP id
- 4fb4d7f45d1cf-6a5df5d005fmr5282652a12.6.1787728384049; 
- Wed, 26 Aug 2026 00:13:04 -0700 (PDT)
-Received: from autotest-wegao.qe.prg2.suse.org
- ([2a07:de40:b240:0:2ad6:ed42:2ad6:ed42])
- by smtp.gmail.com with ESMTPSA id
- 4fb4d7f45d1cf-6a5de8b641fsm3262923a12.3.2026.08.26.00.13.03
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 26 Aug 2026 00:13:03 -0700 (PDT)
-Date: Wed, 26 Aug 2026 07:13:02 +0000
-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Message-ID: <ao6R_qZC1ged_wzE@autotest-wegao.qe.prg2.suse.org>
-References: <20260825022926.9649-1-wegao@suse.com>
- <6a8d8789.e23a4405.3c1b2a.58c7@mx.google.com>
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 93E6C1400B8F
+ for <ltp@lists.linux.it>; Wed, 26 Aug 2026 09:41:23 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id EE6CE1F80F;
+ Wed, 26 Aug 2026 07:41:21 +0000 (UTC)
+Authentication-Results: smtp-out2.suse.de;
+	none
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 48D1513533;
+ Wed, 26 Aug 2026 07:41:20 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id k8EhC6CYjmoqAwAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Wed, 26 Aug 2026 07:41:20 +0000
+Date: Wed, 26 Aug 2026 09:41:14 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Namjae Jeon <linkinjeon@kernel.org>
+Message-ID: <20260826074114.GA32334@pevik>
+References: <ajQFErzQW4qfU_Cp@li-276bd24c-2dcc-11b2-a85c-945b6f05615c.ibm.com>
+ <6a463902.41a38e5f.27f5bd.337a@mx.google.com>
+ <akzN_iISxNTztbEw@li-276bd24c-2dcc-11b2-a85c-945b6f05615c.ibm.com>
+ <20260825112755.GA62429@pevik> <ao2TtyQpCGP5TLpx@yuki.lan>
+ <20260825132604.GA70046@pevik> <ao2cpyGYcL-rZLgc@yuki.lan>
+ <CAKYAXd_3Za8Jzan9VV4WrK1ATB2WXTazLVuGJ5ViQ8RGp0xbLw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <6a8d8789.e23a4405.3c1b2a.58c7@mx.google.com>
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+In-Reply-To: <CAKYAXd_3Za8Jzan9VV4WrK1ATB2WXTazLVuGJ5ViQ8RGp0xbLw@mail.gmail.com>
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	REPLY(-4.00)[]
+X-Rspamd-Queue-Id: EE6CE1F80F
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1] mmapstress06: Rate limit page-dirtying loop to
- prevent MemCG OOM-kills
+Subject: Re: [LTP] [PATCH v1 1/1] swap: Add exfat to filesystems requiring
+ tst_fill_file
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -104,54 +77,74 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Wei Gao via ltp <ltp@lists.linux.it>
-Reply-To: Wei Gao <wegao@suse.com>
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: regressions@lists.linux.dev, Yuezhang Mo <yuezhang.mo@sony.com>,
+ linux-kernel@vger.kernel.org, "Darrick J . Wong" <djwong@kernel.org>,
+ Sungjong Seo <sj1557.seo@samsung.com>, Christoph Hellwig <hch@lst.de>,
+ ltp@lists.linux.it
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Tue, Aug 25, 2026 at 12:16:08PM +0000, Andrea Cervesato wrote:
-> Hi Wei,
-> 
-> > Reduce the throttling interval from 2 MB to 64 KB (usleep for 200us
-> > every 64 KB) in the page-dirtying loop. This smooths out allocation
-> > spikes and gives asynchronous swap writeback time to catch up under
-> > slower VM storage environments, avoiding unexpected MemCG OOM-kills.
-> 
-> Unfortunately this is not a solution but a workaround, we need to make
-> sure that we are able to see any change to the swap memory while
-> allocating dirty pages close to the memory.max. This is probably a
-> fix for a specific target rather than complete fix.
-> 
-> We need to find an another way to ensure that OOM killer won't kick in.
-> That is caused by the time between releasing swap and storing swapped
-> data inside the hard disk. If that is not gonna happen for a certain
-> amount of times, the OOM killer kicks. By reducing the throttling
-> interval, we simply pause more time over 256MB of memory, but an even
-> slower machine won't fit into these intervals of 64KB.
-> 
-> There's not a "clean" solution, but we can use the v2 cgroup support
-> for `memory.reclaim` and request enough data while we are swapping it.
-The goal of this test is to reach memory.max and trigger kernel-driven 
-swapping as a direct result of hitting that limit.
-Proactively calling memory.reclaim forces swapping before reaching memory.max, 
-meaning the memory limit is never actually reached. Furthermore, if calling memory.reclaim 
-after hitting memory.max is too late to prevent OOM-kills on slow storage.
-So i do not think `memory.reclaim` solution can help on our oom failure.
-
-> 
-> On v1 we can either disable the cgroup OOM killer via memory.oom_control
-> so the child blocks instead of being killed, or keep the loop unthrottled
-> (the kernel already blocks faults in direct reclaim at memory.max) and
-> report an OOM kill as TBROK via the child's exit status.
-> 
-> Regards,
-> --
-> Andrea Cervesato
-> SUSE QE Automation Engineer Linux
-> andrea.cervesato@suse.com
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+SGkgTmFtamFlLAoKPiBPbiBUdWUsIEF1ZyAyNSwgMjAyNiBhdCAxMDo0NuKAr1BNIEN5cmlsIEhy
+dWJpcyA8Y2hydWJpc0BzdXNlLmN6PiB3cm90ZToKCj4gPiBIaSEKPiBIaSBDeXJpbCwgUGV0ciwK
+PiA+ID4gPiBUaGF0IGRvZXMgbm90IG1ha2UgbXVjaCBzZW5zZSwgaWYgc3dhcF9hY3RpdmF0ZSB3
+YXMgYWRkZWQgdG8ga2VybmVsLAo+ID4gPiA+IHByZS1maWxsaW5nIHRoZSBmYWxsb2NhdGVkIGZp
+bGUgc2hvdWxkbid0IGJlIG5lZWRlZCBhbnltb3JlLgoKPiA+ID4gR29vZCBjYXRjaCwgeW91J3Jl
+IHJpZ2h0LiBJJ20gYWxzbyBjb25mdXNlZCwgYmVmb3JlIHY3LjIgc3dhcCB3b3JrZWQgb24gZXhm
+YXQsCj4gPiA+IG5vdyBldmVuIHdpdGggODJhODFhNzM1MmJjICgiZXhmYXQ6IGFkZCBpb21hcCBi
+dWZmZXJlZCBJL08gc3VwcG9ydCIpIFsyXQo+ID4gPiBhbmQgeW91ciBmaXggMDNhNDM2NzdjYTkx
+ICgiZXhmYXQ6IGFkZCBzd2FwX2FjdGl2YXRlIHN1cHBvcnQiKSBbM10gaXMgbm90Cj4gPiA+IHdv
+cmtpbmcuIE9idmlvdXNseSB0aGUgZml4IHdhcyBub3QgZ29vZCBlbm91Z2guCgo+ID4gVGhlcmUg
+d2VyZSB0d28gYnVncyBJIHN1cHBvc2UsIG9uZSBpcyB0aGF0IGZhbGxvY2F0ZSgpIHN1cHBvcnQg
+Zm9yIGV4ZmF0IGJyb2tlCj4gPiB0aGUgc3dhcG9uIG9uIGZhbGxvY2F0ZWQgZmlsZS4gVGhlIHNl
+Y29uZCBidWcgd2FzIGludHJvZHVjZWQgbGF0ZXIgd2hlbgo+ID4gZXhmYXQgd2FzIHJld3JpdHRl
+biB0byB1c2UgaW9tYXAuIFRoZSBpb21hcCBjYXNlIHdhcyBmaXhlZCBpbiB0aGUgcGF0Y2gKPiA+
+IGFib3ZlLCBob3dldmVyIGl0IGxvb2tzIGxpa2UgdGhlIG9yaWdpbmFsIGJ1ZyBjYXVzZWQgYnkg
+ZmFsbG9jYXRlKCkKPiA+IGltcGxlbWVudGF0aW9uIGZvciBleGZhdCBpcyBzdGlsbCB0aGVyZS4K
+PiBDYW4geW91IGNoZWNrIGlmIGFuIGF0dGFjaGVkIHBhdGNoIGltcHJvdmVzIHRoaXMgaXNzdWU/
+Cj4gVGhhbmtzLgoKTEdUTS4KClRlc3RlZC1ieTogUGV0ciBWb3JlbCA8cHZvcmVsQHN1c2UuY3o+
+CgpUZXN0ZWQgb24gcmFwaWRvLWxpbnV4IHdpdGg6CkNPTkZJR19FWEZBVF9GUz15CkNPTkZJR19F
+WEZBVF9ERUZBVUxUX0lPQ0hBUlNFVD0idXRmOCIKCkhvcGVmdWxseSBKYW4gd2lsbCB0ZXN0IGl0
+IGFzIHdlbGwsIGJ1aWx0IGFzIG1vZHVsZS4KCktpbmQgcmVnYXJkcywKUGV0cgoKPiBGcm9tIDU2
+NzlhNjI0ODE2NDU0YzhlNzY4Mzg0MmViMGFiM2YxYWRmMGRjY2EgTW9uIFNlcCAxNyAwMDowMDow
+MCAyMDAxCj4gRnJvbTogTmFtamFlIEplb24gPGxpbmtpbmplb25Aa2VybmVsLm9yZz4KPiBEYXRl
+OiBXZWQsIDI2IEF1ZyAyMDI2IDA5OjE0OjE0ICswOTAwCj4gU3ViamVjdDogW1BBVENIXSBleGZh
+dDogbWFwIGFsbG9jYXRlZCBleHRlbnRzIGZvciBzd2FwIGFjdGl2YXRpb24KCj4gZXhGQVQgcmVw
+b3J0cyBhbGxvY2F0ZWQgcmFuZ2VzIGJleW9uZCB2YWxpZF9zaXplIGFzIElPTUFQX0hPTEUgd2hl
+bgo+IElPTUFQX1JFUE9SVCBpcyBzZXQuIGlvbWFwX3N3YXBmaWxlX2FjdGl2YXRlKCkgYWxzbyB1
+c2VzIElPTUFQX1JFUE9SVAo+IHdoaWxlIGNvbGxlY3RpbmcgcGh5c2ljYWwgZXh0ZW50cyBmb3Ig
+YSBzd2FwIGZpbGUsIHNvIGl0IHRyZWF0cyB0aGUKPiBwcmVhbGxvY2F0ZWQgdGFpbCBhcyB1bmFs
+bG9jYXRlZCBhbmQgcmVqZWN0cyB0aGUgZmlsZSB3aXRoIC1FSU5WQUwuCgo+IFVzZSBzd2FwLXNw
+ZWNpZmljIGlvbWFwIG9wZXJhdGlvbnMgdGhhdCBzdXBwcmVzcyBJT01BUF9SRVBPUlQgYmVmb3Jl
+Cj4gbWFwcGluZyB0aGUgZmlsZS4gVGhpcyByZXBvcnRzIHBoeXNpY2FsbHkgYWxsb2NhdGVkIHJh
+bmdlcyBhcwo+IElPTUFQX1VOV1JJVFRFTiBkdXJpbmcgc3dhcCBhY3RpdmF0aW9uIHdpdGhvdXQg
+Y2hhbmdpbmcgdGhlCj4gYnl0ZS1hY2N1cmF0ZSBTRUVLX0hPTEUgYW5kIFNFRUtfREFUQSBiZWhh
+dmlvciBvZiB0aGUgcmVndWxhciBpb21hcAo+IG9wZXJhdGlvbnMuCgo+IEZpeGVzOiAwM2E0MzY3
+N2NhOTEgKCJleGZhdDogYWRkIHN3YXBfYWN0aXZhdGUgc3VwcG9ydCIpCj4gU2lnbmVkLW9mZi1i
+eTogTmFtamFlIEplb24gPGxpbmtpbmplb25Aa2VybmVsLm9yZz4KPiAtLS0KPiAgZnMvZXhmYXQv
+aW9tYXAuYyB8IDE5ICsrKysrKysrKysrKysrKysrKy0KPiAgMSBmaWxlIGNoYW5nZWQsIDE4IGlu
+c2VydGlvbnMoKyksIDEgZGVsZXRpb24oLSkKCj4gZGlmZiAtLWdpdCBhL2ZzL2V4ZmF0L2lvbWFw
+LmMgYi9mcy9leGZhdC9pb21hcC5jCj4gaW5kZXggMGM4MDViZjY2NzZhLi5iZjhiYWY3OGE5Yjgg
+MTAwNjQ0Cj4gLS0tIGEvZnMvZXhmYXQvaW9tYXAuYwo+ICsrKyBiL2ZzL2V4ZmF0L2lvbWFwLmMK
+PiBAQCAtMTU1LDYgKzE1NSwyMiBAQCBjb25zdCBzdHJ1Y3QgaW9tYXBfb3BzIGV4ZmF0X2lvbWFw
+X29wcyA9IHsKPiAgCS5pb21hcF9iZWdpbiA9IGV4ZmF0X2lvbWFwX2JlZ2luLAo+ICB9OwoKPiAr
+c3RhdGljIGludCBleGZhdF9zd2FwX2lvbWFwX2JlZ2luKHN0cnVjdCBpbm9kZSAqaW5vZGUsIGxv
+ZmZfdCBvZmZzZXQsCj4gKwkJbG9mZl90IGxlbmd0aCwgdW5zaWduZWQgaW50IGZsYWdzLCBzdHJ1
+Y3QgaW9tYXAgKmlvbWFwLAo+ICsJCXN0cnVjdCBpb21hcCAqc3JjbWFwKQo+ICt7Cj4gKwkvKgo+
+ICsJICogU3dhcCBhY3RpdmF0aW9uIG5lZWRzIHRoZSBwaHlzaWNhbCBtYXBwaW5ncyBvZiBwcmVh
+bGxvY2F0ZWQKPiArCSAqIHJhbmdlcy4gRG8gbm90IHJlcG9ydCB0aGUgVkRMIHRhaWwgYXMgYSBo
+b2xlLgo+ICsJICovCj4gKwlyZXR1cm4gX19leGZhdF9pb21hcF9iZWdpbihpbm9kZSwgb2Zmc2V0
+LCBsZW5ndGgsCj4gKwkJCWZsYWdzICYgfklPTUFQX1JFUE9SVCwgaW9tYXAsIGZhbHNlKTsKPiAr
+fQo+ICsKPiArc3RhdGljIGNvbnN0IHN0cnVjdCBpb21hcF9vcHMgZXhmYXRfc3dhcF9pb21hcF9v
+cHMgPSB7Cj4gKwkuaW9tYXBfYmVnaW4gPSBleGZhdF9zd2FwX2lvbWFwX2JlZ2luLAo+ICt9Owo+
+ICsKPiAgLyoKPiAgICogZXhmYXRfd3JpdGVfaW9tYXBfZW5kIC0gVXBkYXRlIHRoZSBzdGF0ZSBh
+ZnRlciB3cml0ZQo+ICAgKgo+IEBAIC0yNzQsNSArMjkwLDYgQEAgY29uc3Qgc3RydWN0IGlvbWFw
+X3JlYWRfb3BzIGV4ZmF0X2lvbWFwX2Jpb19yZWFkX29wcyA9IHsKPiAgaW50IGV4ZmF0X2lvbWFw
+X3N3YXBfYWN0aXZhdGUoc3RydWN0IHN3YXBfaW5mb19zdHJ1Y3QgKnNpcywKPiAgCQkJICAgICAg
+IHN0cnVjdCBmaWxlICpmaWxlLCBzZWN0b3JfdCAqc3BhbikKPiAgewo+IC0JcmV0dXJuIGlvbWFw
+X3N3YXBmaWxlX2FjdGl2YXRlKHNpcywgZmlsZSwgc3BhbiwgJmV4ZmF0X2lvbWFwX29wcyk7Cj4g
+KwlyZXR1cm4gaW9tYXBfc3dhcGZpbGVfYWN0aXZhdGUoc2lzLCBmaWxlLCBzcGFuLAo+ICsJCQkJ
+ICAgICAgICZleGZhdF9zd2FwX2lvbWFwX29wcyk7Cj4gIH0KCi0tIApNYWlsaW5nIGxpc3QgaW5m
+bzogaHR0cHM6Ly9saXN0cy5saW51eC5pdC9saXN0aW5mby9sdHAK
