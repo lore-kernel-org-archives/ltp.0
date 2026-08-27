@@ -4,101 +4,112 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 803A2C61DC6
-	for <ltp@archiver.kernel.org>; Thu, 27 Aug 2026 11:30:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1F2A2C61DC6
+	for <ltp@archiver.kernel.org>; Thu, 27 Aug 2026 11:30:33 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E1AB93D8761
-	for <ltp@archiver.kernel.org>; Thu, 27 Aug 2026 13:30:17 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 9BA0B3D69E8
+	for <ltp@archiver.kernel.org>; Thu, 27 Aug 2026 13:30:31 +0200 (CEST)
 Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id F141E3D7DDF
+ by picard.linux.it (Postfix) with ESMTPS id 425A83D5989
  for <ltp@lists.linux.it>; Thu, 27 Aug 2026 13:22:43 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id B57306008DB
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 2A93E600124
  for <ltp@lists.linux.it>; Thu, 27 Aug 2026 13:22:42 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 1A1C621942
- for <ltp@lists.linux.it>; Thu, 27 Aug 2026 11:22:34 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id CF11F1F84B
+ for <ltp@lists.linux.it>; Thu, 27 Aug 2026 11:22:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1787829758; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1787829757; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=f6WiTM4tVdiQ5g8EdrEEXRTzrrbpKBaRlowE1NmTOEM=;
- b=yDsiui6+3+B693bE+xQfrl7oCu79peB/Pbx5AU3HnGwt8aOm7Q2rHrPcsuXxsWUgoYaHcW
- EMiLShfzg36W2r5TQyL2Rxte7jwu0ilPGvazxuoM4WqD1Kaf5QD2TJ/FMs1pZ/2I1yRce1
- xVZhEAkv6Ylfr2bg/4Gcj2VqFP98POM=
+ bh=OaEAjEW9roemzxvo0ffE5Z/kSAT43v30/x+3AH4Pe+Y=;
+ b=xXW6dThi6oC3Kk0Yxnk3R0k/Ik869chFapU+lGiZiIgWUBPg2zZr+z7oECJZTH8OQfkT6+
+ U9kUQpnDfSEOlw3qOVnFMhsx8mLdviD9jbMjVtHG9DlWRfW67YqOc3Bjy+eRkU90uBjdgv
+ Z6bL8TKkPLRmHQjFl7B+vKH5M1vIEaU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1787829758;
+ s=susede2_ed25519; t=1787829757;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=f6WiTM4tVdiQ5g8EdrEEXRTzrrbpKBaRlowE1NmTOEM=;
- b=UtODGmjvvNwsq7lwQoVUeSz/Nx0zn9c6f8DhR5N0XhCsTAPfRPd1PgbwDosPJxQJD7k5Kt
- BP557wvtRQYNdaCA==
-Authentication-Results: smtp-out1.suse.de;
-	none
+ bh=OaEAjEW9roemzxvo0ffE5Z/kSAT43v30/x+3AH4Pe+Y=;
+ b=0CR1n/yBhH5dq55OshnORZdHbgaP9ZgAhXnhXOHHY/7D5TWyZWUXN1iXVevUI+TVEQJ7il
+ Aayqxbjqfb13v6DA==
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=njtrY4if;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=c32aTrHR
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1787829754; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1787829752; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=f6WiTM4tVdiQ5g8EdrEEXRTzrrbpKBaRlowE1NmTOEM=;
- b=sPSJMFMhZcQE7ZGDze8VUY4HzoEUjrQ+yJzw1L988sN3ebS2GyxJHdNO2tiUC2czTfBdmj
- Ondrp6QKBHusWUgO34qen6t5cx8spJPSdAAN/SloKRzKpLHBY+y0OoAggP5Oo/VQ/nogA4
- +nEqRzSk/YkAf84qSP8jmcud2xzcjhw=
+ bh=OaEAjEW9roemzxvo0ffE5Z/kSAT43v30/x+3AH4Pe+Y=;
+ b=njtrY4ifCaJXl0E/3KE/ZpDJ+u0KMGflsejNQ2J+ybqYYGRQ1bhuTwOKRcwzy9DTS8b7RD
+ eb584Jt8dM1dVULIq0IPl4ghFgZDy9CHwzKpAqnuDIHf1wRjki0ChYVDrpxlnYbllN0QTp
+ Arv4hfJHBlH5vSqfgAqLz1k/b8kMPGw=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1787829754;
+ s=susede2_ed25519; t=1787829752;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=f6WiTM4tVdiQ5g8EdrEEXRTzrrbpKBaRlowE1NmTOEM=;
- b=qKKeZ8ndHkM3KJ4XVGFIlhj+yg7LYWz0u/wU8JN0BTunBDME6evZDy1Q1sLYWe/0d7xmnp
- BugPE6CCXka8e4Aw==
+ bh=OaEAjEW9roemzxvo0ffE5Z/kSAT43v30/x+3AH4Pe+Y=;
+ b=c32aTrHRPtR3Xxk1EnxXLmYyD6hZMSM1Sze0e5splmaKpKirpSIaJU5Fn+uJ6WbVKaZKy5
+ Afi5u5oo0F0mEaCQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 387091352D
- for <ltp@lists.linux.it>; Thu, 27 Aug 2026 11:22:33 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4B1FD13687
+ for <ltp@lists.linux.it>; Thu, 27 Aug 2026 11:22:27 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id a8DcDPkdkGqsawAAD6G6ig
+ by imap1.dmz-prg2.suse.org with ESMTPSA id SDhUEvMdkGqfawAAD6G6ig
  (envelope-from <chrubis@suse.cz>)
- for <ltp@lists.linux.it>; Thu, 27 Aug 2026 11:22:33 +0000
+ for <ltp@lists.linux.it>; Thu, 27 Aug 2026 11:22:27 +0000
 From: Cyril Hrubis <chrubis@suse.cz>
 To: ltp@lists.linux.it
-Date: Thu, 27 Aug 2026 13:21:54 +0200
-Message-ID: <20260827112157.1748734-29-chrubis@suse.cz>
+Date: Thu, 27 Aug 2026 13:21:50 +0200
+Message-ID: <20260827112157.1748734-25-chrubis@suse.cz>
 X-Mailer: git-send-email 2.54.0
 In-Reply-To: <20260827112157.1748734-1-chrubis@suse.cz>
 References: <20260827112157.1748734-1-chrubis@suse.cz>
 MIME-Version: 1.0
-X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+X-Rspamd-Queue-Id: CF11F1F84B
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
- R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-0.996];
- MIME_GOOD(-0.10)[text/plain]; ARC_NA(0.00)[];
- RCPT_COUNT_ONE(0.00)[1]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ R_MISSING_CHARSET(0.50)[];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ RCPT_COUNT_ONE(0.00)[1]; ARC_NA(0.00)[];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
  MIME_TRACE(0.00)[0:+];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:email,suse.cz:mid,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
+ DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
  PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
  FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:mid,imap1.dmz-prg2.suse.org:helo];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ RCVD_TLS_ALL(0.00)[]; TO_DN_NONE(0.00)[];
  RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- TO_DN_NONE(0.00)[]; RCVD_TLS_ALL(0.00)[]
+ DKIM_TRACE(0.00)[suse.cz:+]
 X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v4 28/31] testcases: sysfs: Add sys_hugepages02
+Subject: [LTP] [PATCH v4 24/31] testcases: sysfs: Add sys_block_loop01
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -115,121 +126,374 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-A test for /sys/kernel/mm/hugepages/* files.
+A test for /sys/block/loop*/* files.
+
+The test attaches loop device with different attributes and checks that
+the sysfs files are correctly populated.
 
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- runtest/sysfs                                 |  1 +
- .../sysfs/kernel/mm/hugepages/.gitignore      |  1 +
- .../kernel/mm/hugepages/sys_hugepages02.c     | 86 +++++++++++++++++++
- 3 files changed, 88 insertions(+)
- create mode 100644 testcases/kernel/sysfs/kernel/mm/hugepages/sys_hugepages02.c
+ runtest/sysfs                                 |   1 +
+ testcases/kernel/sysfs/block/.gitignore       |   1 +
+ testcases/kernel/sysfs/block/Makefile         |   7 +
+ .../kernel/sysfs/block/sys_block_loop01.c     | 320 ++++++++++++++++++
+ 4 files changed, 329 insertions(+)
+ create mode 100644 testcases/kernel/sysfs/block/.gitignore
+ create mode 100644 testcases/kernel/sysfs/block/Makefile
+ create mode 100644 testcases/kernel/sysfs/block/sys_block_loop01.c
 
 diff --git a/runtest/sysfs b/runtest/sysfs
-index a81fbc12e..ec38d8b44 100644
+index 290866349..26a229f03 100644
 --- a/runtest/sysfs
 +++ b/runtest/sysfs
-@@ -23,3 +23,4 @@ sys_block_loop01 sys_block_loop01
- sys_block_queue01 sys_block_queue01
- sys_block_size01 sys_block_size01
- sys_hugepages01 sys_hugepages01
-+sys_hugepages02 sys_hugepages02
-diff --git a/testcases/kernel/sysfs/kernel/mm/hugepages/.gitignore b/testcases/kernel/sysfs/kernel/mm/hugepages/.gitignore
-index 1c66028fb..1bebeb2c0 100644
---- a/testcases/kernel/sysfs/kernel/mm/hugepages/.gitignore
-+++ b/testcases/kernel/sysfs/kernel/mm/hugepages/.gitignore
-@@ -1 +1,2 @@
- /sys_hugepages01
-+/sys_hugepages02
-diff --git a/testcases/kernel/sysfs/kernel/mm/hugepages/sys_hugepages02.c b/testcases/kernel/sysfs/kernel/mm/hugepages/sys_hugepages02.c
+@@ -19,3 +19,4 @@ sys_net01 sys_net01
+ sys_net02 sys_net02
+ sys_net03 sys_net03
+ sys_net04 sys_net04
++sys_block_loop01 sys_block_loop01
+diff --git a/testcases/kernel/sysfs/block/.gitignore b/testcases/kernel/sysfs/block/.gitignore
 new file mode 100644
-index 000000000..c30b357e1
+index 000000000..c64e99087
 --- /dev/null
-+++ b/testcases/kernel/sysfs/kernel/mm/hugepages/sys_hugepages02.c
-@@ -0,0 +1,86 @@
++++ b/testcases/kernel/sysfs/block/.gitignore
+@@ -0,0 +1 @@
++/sys_block_loop01
+diff --git a/testcases/kernel/sysfs/block/Makefile b/testcases/kernel/sysfs/block/Makefile
+new file mode 100644
+index 000000000..66e633f40
+--- /dev/null
++++ b/testcases/kernel/sysfs/block/Makefile
+@@ -0,0 +1,7 @@
++# SPDX-License-Identifier: GPL-2.0-or-later
++# Copyright (c) 2026 Cyril Hrubis <chrubis@suse.cz>
++
++top_srcdir		?= ../../../..
++
++include $(top_srcdir)/include/mk/testcases.mk
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/sysfs/block/sys_block_loop01.c b/testcases/kernel/sysfs/block/sys_block_loop01.c
+new file mode 100644
+index 000000000..a99083a99
+--- /dev/null
++++ b/testcases/kernel/sysfs/block/sys_block_loop01.c
+@@ -0,0 +1,320 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
 + * Copyright (c) 2026 Cyril Hrubis <chrubis@suse.cz>
 + */
 +
 +/*\
-+ * Cross-checks the default hugepage pool in sysfs against /proc/meminfo.
++ * Verifies that the loop device sysfs attributes exported under
++ * /sys/block/loopN/loop/ correctly reflect the state of an attached backing
++ * file, and reset once the device is detached again.
 + *
-+ * /proc/meminfo describes the default hugepage size pool, which corresponds to
-+ * one of the hugepages-<size>kB directories under /sys/kernel/mm/hugepages/.
-+ * The test verifies that for the default pool:
++ * The test creates a plain file, attaches it to a free loop device and
++ * verifies that:
 + *
-+ * - Hugepagesize in /proc/meminfo matches the default pool directory size
-+ * - HugePages_Total matches nr_hugepages
-+ * - HugePages_Free matches free_hugepages
-+ * - HugePages_Rsvd matches resv_hugepages
-+ * - HugePages_Surp matches surplus_hugepages
++ * - loop/backing_file matches the absolute path of the attached file
++ * - loop/offset and loop/sizelimit are 0 (defaults for a plain attach)
++ * - loop/autoclear, loop/partscan and loop/dio (when present) are booleans
++ *   and default to 0
++ * - the device's own size (in 512 byte sectors) matches the backing file
++ *   size
++ * - ro is 0 (attached read-write by default)
 + *
-+ * The test skips with TCONF when hugepages are not available.
++ * After detaching the device it verifies that:
++ *
++ * - the device's size is back to 0
++ * - loop/backing_file no longer exists or reads back empty
++ *
++ * The device is then reconfigured via the LOOP_SET_STATUS64 ioctl (offset,
++ * sizelimit and the partscan flag) and it is verified that:
++ *
++ * - loop/offset and loop/sizelimit match the values that were set
++ * - loop/partscan reflects the requested flag
++ * - the device's size matches sizelimit/512, i.e. it is capped by sizelimit
++ *   rather than reflecting the whole backing file
++ *
++ * Note that LO_FLAGS_READ_ONLY is not exercised this way: on an already
++ * attached (read-write) device, LOOP_SET_STATUS64 does not actually flip the
++ * device to read-only, ro stays 0 regardless of the flag passed in. Read-only
++ * mode has to be requested at LOOP_SET_FD time instead, by opening the loop
++ * device (or the backing file) O_RDONLY before issuing the ioctl, which is
++ * exercised separately: the device is attached this way and it is verified
++ * that:
++ *
++ * - ro reads back as 1
++ * - the device genuinely rejects being opened or written to O_RDWR, not just
++ *   that the attribute says so
++ *
++ * ro turns out not to reset to 0 merely from detaching: it is a property of
++ * the whole gendisk, recalculated only on the next LOOP_SET_FD, so after
++ * detaching the device is reattached read-write and ro is checked to be 0
++ * then instead.
++ *
++ * Finally, autoclear is exercised for real rather than just checking that
++ * the attribute round-trips: the device is attached again, LO_FLAGS_AUTOCLEAR
++ * is set and the last open file descriptor on the device is closed without
++ * calling LOOP_CLR_FD explicitly. The kernel is expected to detach the
++ * device on its own (asynchronously, hence the test polls for it).
++ *
++ * This needs root to attach a loop device.
 + */
 +
-+#include <stdio.h>
++#include <errno.h>
 +#include <limits.h>
++#include <stdio.h>
++#include <string.h>
++#include <unistd.h>
++
 +#include "tst_test.h"
++#include "tst_device.h"
 +#include "tst_sysfs_assert.h"
-+#include "tst_path_defs.h"
++#include "lapi/loop.h"
 +
-+static void compare(const char *what, const char *meminfo_key, const char *attr,
-+		    long hugepagesize)
++#define BACKING_FILE "sys_block_loop01.img"
++#define FILE_SIZE_MB 4
++#define RECONF_OFFSET 4096
++#define RECONF_SIZELIMIT (1024 * 1024)
++
++static char dev_path[64];
++static char loop_dir[64];
++static char abs_backing_file[PATH_MAX + sizeof(BACKING_FILE)];
++static int dev_num;
++static int attached;
++
++static void setup(void)
 +{
-+	char path[PATH_MAX];
-+	long meminfo_val, sysfs_val;
++	char cwd[PATH_MAX];
 +
-+	SAFE_FILE_LINES_SCANF("/proc/meminfo", meminfo_key, &meminfo_val);
++	dev_num = tst_find_free_loopdev(dev_path, sizeof(dev_path));
++	if (dev_num < 0)
++		tst_brk(TBROK, "Failed to find free loop device");
 +
-+	snprintf(path, sizeof(path), PATH_MM_HUGEPAGES "/hugepages-%ldkB/%s",
-+		 hugepagesize, attr);
-+	SAFE_FILE_SCANF(path, "%ld", &sysfs_val);
++	snprintf(loop_dir, sizeof(loop_dir), "/sys/block/loop%d", dev_num);
 +
-+	if (meminfo_val == sysfs_val) {
-+		tst_res(TPASS, "%s: /proc/meminfo (%ld) == %s (%ld)",
-+			what, meminfo_val, attr, sysfs_val);
++	tst_prealloc_file(BACKING_FILE, 1024 * 1024, FILE_SIZE_MB);
++
++	SAFE_GETCWD(cwd, sizeof(cwd));
++	snprintf(abs_backing_file, sizeof(abs_backing_file), "%s/%s", cwd,
++		 BACKING_FILE);
++}
++
++static void check_backing_file(void)
++{
++	char actual[PATH_MAX] = "";
++
++	TST_SYSFS_READ_STR(actual, sizeof(actual), "%s/loop/backing_file",
++			   loop_dir);
++
++	TST_EXP_EQ_STR(actual, abs_backing_file);
++}
++
++static void check_attached(void)
++{
++	check_backing_file();
++
++	TST_SYSFS_EXP_EQ_LI(0, "%s/loop/offset", loop_dir);
++	TST_SYSFS_EXP_EQ_LI(0, "%s/loop/sizelimit", loop_dir);
++
++	TST_SYSFS_ASSERT_BOOL("%s/loop/autoclear", loop_dir);
++	TST_SYSFS_EXP_EQ_LI(0, "%s/loop/autoclear", loop_dir);
++
++	TST_SYSFS_ASSERT_BOOL("%s/loop/partscan", loop_dir);
++	TST_SYSFS_EXP_EQ_LI(0, "%s/loop/partscan", loop_dir);
++
++	if (tst_sysfs_exists("%s/loop/dio", loop_dir)) {
++		TST_SYSFS_ASSERT_BOOL("%s/loop/dio", loop_dir);
++		TST_SYSFS_EXP_EQ_LI(0, "%s/loop/dio", loop_dir);
 +	} else {
-+		tst_res(TFAIL, "%s: /proc/meminfo (%ld) != %s (%ld)",
-+			what, meminfo_val, attr, sysfs_val);
++		tst_res(TCONF, "%s/loop/dio does not exist", loop_dir);
++	}
++
++	TST_SYSFS_ASSERT_BOOL("/sys/block/loop%d/ro", dev_num);
++	TST_SYSFS_EXP_EQ_LI(0, "/sys/block/loop%d/ro", dev_num);
++
++	TST_SYSFS_EXP_EQ_LI((long)FILE_SIZE_MB * 1024 * 1024 / 512,
++			 "/sys/block/loop%d/size", dev_num);
++}
++
++static void check_detached(void)
++{
++	TST_SYSFS_EXP_EQ_LI(0, "/sys/block/loop%d/size", dev_num);
++
++	if (!tst_sysfs_exists("%s/loop/backing_file", loop_dir)) {
++		tst_res(TPASS, "backing_file no longer exists after detach");
++		return;
++	}
++
++	char actual[PATH_MAX] = "";
++
++	TST_SYSFS_READ_STR(actual, sizeof(actual), "%s/loop/backing_file",
++			   loop_dir);
++
++	if (actual[0] == '\0')
++		tst_res(TPASS, "backing_file is empty after detach");
++	else
++		tst_res(TFAIL, "backing_file = '%s' after detach, expected empty",
++			actual);
++}
++
++static void check_reconfigured(void)
++{
++	struct loop_info64 info = { 0 };
++	int fd;
++
++	fd = SAFE_OPEN(dev_path, O_RDWR);
++
++	info.lo_offset = RECONF_OFFSET;
++	info.lo_sizelimit = RECONF_SIZELIMIT;
++	info.lo_flags = LO_FLAGS_PARTSCAN;
++
++	SAFE_IOCTL(fd, LOOP_SET_STATUS64, &info);
++	SAFE_CLOSE(fd);
++
++	tst_res(TINFO,
++		"Reconfigured via LOOP_SET_STATUS64: offset=%d sizelimit=%d partscan",
++		RECONF_OFFSET, RECONF_SIZELIMIT);
++
++	TST_SYSFS_EXP_EQ_LI(RECONF_OFFSET, "%s/loop/offset", loop_dir);
++	TST_SYSFS_EXP_EQ_LI(RECONF_SIZELIMIT, "%s/loop/sizelimit", loop_dir);
++	TST_SYSFS_EXP_EQ_LI(1, "%s/loop/partscan", loop_dir);
++	TST_SYSFS_EXP_EQ_LI(RECONF_SIZELIMIT / 512, "/sys/block/loop%d/size",
++			 dev_num);
++}
++
++static void check_readonly_attach(void)
++{
++	int dev_fd, file_fd;
++
++	tst_res(TINFO,
++		"Checking a read-only attach (LOOP_SET_FD with an O_RDONLY device fd)");
++
++	dev_fd = SAFE_OPEN(dev_path, O_RDWR);
++	file_fd = SAFE_OPEN(BACKING_FILE, O_RDONLY);
++
++	SAFE_IOCTL(dev_fd, LOOP_SET_FD, file_fd);
++	SAFE_CLOSE(file_fd);
++	SAFE_CLOSE(dev_fd);
++	attached = 1;
++
++	TST_SYSFS_EXP_EQ_LI(1, "/sys/block/loop%d/ro", dev_num);
++
++	dev_fd = open(dev_path, O_RDWR);
++
++	if (dev_fd < 0) {
++		tst_res(TPASS,
++			"open(%s, O_RDWR) failed as expected on a read-only device: %s",
++			dev_path, tst_strerrno(errno));
++	} else {
++		char buf[512] = { 0 };
++		ssize_t written = write(dev_fd, buf, sizeof(buf));
++
++		if (written < 0) {
++			tst_res(TPASS,
++				"write() to a read-only loop device failed as expected: %s",
++				tst_strerrno(errno));
++		} else {
++			tst_res(TFAIL,
++				"write() to a read-only loop device unexpectedly succeeded (%zd bytes)",
++				written);
++		}
++
++		SAFE_CLOSE(dev_fd);
++	}
++
++	if (tst_detach_device(dev_path))
++		tst_brk(TBROK, "Failed to detach %s", dev_path);
++	attached = 0;
++
++	/*
++	 * ro does not reset to 0 merely from detaching, it is a property of
++	 * the whole gendisk that is only recalculated on the next LOOP_SET_FD,
++	 * so the device is reattached read-write here to verify that.
++	 */
++	if (tst_attach_device(dev_path, BACKING_FILE))
++		tst_brk(TBROK, "Failed to attach %s to %s", BACKING_FILE,
++			dev_path);
++	attached = 1;
++
++	TST_SYSFS_EXP_EQ_LI(0, "/sys/block/loop%d/ro", dev_num);
++
++	if (tst_detach_device(dev_path))
++		tst_brk(TBROK, "Failed to detach %s", dev_path);
++	attached = 0;
++}
++
++/* Reads back /sys/block/loopN/size, used to poll for autoclear below. */
++static long read_loop_size(void)
++{
++	return TST_SYSFS_READ_LI("/sys/block/loop%d/size", dev_num);
++}
++
++static void check_autoclear_behavior(void)
++{
++	struct loop_info64 info = { 0 };
++	long size;
++	int fd;
++
++	tst_res(TINFO,
++		"Checking that autoclear detaches the device on last close");
++
++	if (tst_attach_device(dev_path, BACKING_FILE)) {
++		tst_res(TFAIL, "Failed to attach %s to %s for autoclear check",
++			BACKING_FILE, dev_path);
++		return;
++	}
++	attached = 1;
++
++	fd = SAFE_OPEN(dev_path, O_RDWR);
++	info.lo_flags = LO_FLAGS_AUTOCLEAR;
++	SAFE_IOCTL(fd, LOOP_SET_STATUS64, &info);
++	SAFE_CLOSE(fd);
++
++	/* autoclear runs asynchronously off a kernel workqueue, poll for it */
++	size = TST_RETRY_FN_EXP_BACKOFF(read_loop_size(), TST_RETVAL_EQ0, 5);
++
++	if (size == 0) {
++		tst_res(TPASS, "Device auto-detached");
++		attached = 0;
++	} else {
++		tst_res(TFAIL, "Device did not auto-detach in time");
++		tst_detach_device(dev_path);
++		attached = 0;
 +	}
 +}
 +
-+static void do_test(void)
++static void run(void)
 +{
-+	long hugepagesize;
++	if (tst_attach_device(dev_path, BACKING_FILE))
++		tst_brk(TBROK, "Failed to attach %s to %s", BACKING_FILE,
++			dev_path);
++	attached = 1;
 +
-+	if (FILE_LINES_SCANF("/proc/meminfo", MEMINFO_HPAGE_SIZE " %ld",
-+			     &hugepagesize)) {
-+		tst_res(TCONF, "No Hugepagesize in /proc/meminfo");
-+		return;
-+	}
++	check_attached();
++	check_reconfigured();
 +
-+	if (!tst_sysfs_exists(PATH_MM_HUGEPAGES "/hugepages-%ldkB", hugepagesize)) {
-+		tst_res(TCONF,
-+			"Default hugepage pool hugepages-%ldkB not found in sysfs",
-+			hugepagesize);
-+		return;
-+	}
++	if (tst_detach_device(dev_path))
++		tst_brk(TBROK, "Failed to detach %s", dev_path);
++	attached = 0;
 +
-+	tst_res(TPASS,
-+		"/proc/meminfo Hugepagesize (%ld kB) has a matching sysfs pool",
-+		hugepagesize);
++	check_detached();
 +
-+	compare("HugePages_Total", MEMINFO_HPAGE_TOTAL " %ld",
-+		"nr_hugepages", hugepagesize);
-+	compare("HugePages_Free", MEMINFO_HPAGE_FREE " %ld",
-+		"free_hugepages", hugepagesize);
-+	compare("HugePages_Rsvd", MEMINFO_HPAGE_RSVD " %ld",
-+		"resv_hugepages", hugepagesize);
-+	compare("HugePages_Surp", MEMINFO_HPAGE_SURP " %ld",
-+		"surplus_hugepages", hugepagesize);
++	check_readonly_attach();
++	check_autoclear_behavior();
++}
++
++static void cleanup(void)
++{
++	if (attached)
++		tst_detach_device(dev_path);
 +}
 +
 +static struct tst_test test = {
-+	.test_all = do_test,
++	.test_all = run,
++	.setup = setup,
++	.cleanup = cleanup,
++	.needs_root = 1,
++	.needs_tmpdir = 1,
 +	.needs_kconfigs = (const char *const[]){
-+		"CONFIG_HUGETLBFS=y",
++		"CONFIG_BLK_DEV_LOOP",
 +		NULL
 +	},
 +};
