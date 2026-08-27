@@ -4,104 +4,104 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 933D4C61DC6
-	for <ltp@archiver.kernel.org>; Thu, 27 Aug 2026 11:54:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B11BAC61DC6
+	for <ltp@archiver.kernel.org>; Thu, 27 Aug 2026 11:55:06 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 00CB23C210D
-	for <ltp@archiver.kernel.org>; Thu, 27 Aug 2026 13:54:51 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id E4A8C3D753B
+	for <ltp@archiver.kernel.org>; Thu, 27 Aug 2026 13:55:04 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id BD2643C210D
- for <ltp@lists.linux.it>; Thu, 27 Aug 2026 13:54:20 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ by picard.linux.it (Postfix) with ESMTPS id 9E2CE3D666E
+ for <ltp@lists.linux.it>; Thu, 27 Aug 2026 13:54:21 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 2A0206008E6
- for <ltp@lists.linux.it>; Thu, 27 Aug 2026 13:54:19 +0200 (CEST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 381BC1A000B5
+ for <ltp@lists.linux.it>; Thu, 27 Aug 2026 13:54:20 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 5155E21C43;
- Thu, 27 Aug 2026 11:54:11 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id DBC9121C14;
+ Thu, 27 Aug 2026 11:54:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1787831655; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=+533WkCvem/Ecey10uH296joLIaCV6yFpBxg/r3RxTc=;
- b=xHbbadDbht7bqLMC0Huqxp3LQ2Vgfp2M0g6QiJU6gW45j2p19yH77NsXtKA7jIg5SzuiQY
- QWr0TdN3eSNyoAKMhaukzxDPVJoQpDK9s0wFsS+6C5uD5Rf3LV18so54thfKZe4snrwgr+
- zYS2zeFlbKYZQWbwLWJBL5EH+Zmfh5g=
+ content-transfer-encoding:content-transfer-encoding;
+ bh=Gv6emOXx1BcvcBvQAL10HY5nBmXXCLx7GQOodIbYWiw=;
+ b=lxNy9b/fsHzqscxkRh7TI0z7uJI6ucetcr7fWPgA+m4LOokLAiW9RS2gQC95SalMZYd1GM
+ C6cr+e2+uX8EVqzjHSOYnqHuMGjdbG7HcjVV8czXiqqAFJweJjpYJFI+v8cQSBQR/Z84CY
+ +t8s6hPXEEKwFYxGfJ2XMq6YO4Q4w4I=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1787831655;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=+533WkCvem/Ecey10uH296joLIaCV6yFpBxg/r3RxTc=;
- b=qyNMzqLOLzq3YKXqq62m1vqXoW9fL6tMspQrvYpR8cfaMTthQJuztMGXFqI5guukB4Q6sp
- XO/E6RobF3pQD5DA==
+ content-transfer-encoding:content-transfer-encoding;
+ bh=Gv6emOXx1BcvcBvQAL10HY5nBmXXCLx7GQOodIbYWiw=;
+ b=XEYPkY9P8R4BFPH3eRLtnLcb1qmadkUcAIKS1Xw6u1MZJDatI3zu3fls4HPPIbC3Re/2KX
+ TzPjuF6nZFtoLqDw==
 Authentication-Results: smtp-out1.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1787831651; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1787831650; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=+533WkCvem/Ecey10uH296joLIaCV6yFpBxg/r3RxTc=;
- b=Jlb2WjPp334DbVmpasDhCJJdaOcHaAJLiREDyySx4+dK5GB3XO4PJzs1m7kKZy0bzxbNsm
- Hu+a9NBWz6AOhYFjgo68KhunbsW6M9lPFn/BYMkC8NCdbYl1IwUGNQ+NR5/MTGmgJjAzMz
- PJNF4sDzbw/aEhXzvzdM1W6/H9pPuJ0=
+ content-transfer-encoding:content-transfer-encoding;
+ bh=Gv6emOXx1BcvcBvQAL10HY5nBmXXCLx7GQOodIbYWiw=;
+ b=KFxFIfqOkMrqxKkeY4e6oUewoB23eTrXltJLSB3wwDC2/VkQth+AXtoBItIdFvgrtca5Gs
+ My4aENgMHXhdIsFM8baEx2KP0R62ZbciRLZ8by1wMNgNhADXnyTyYwb+Ii23nKH1eoWjPa
+ tmauktyiQKwcJHqlruj/Wj6xYBv7VfQ=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1787831651;
+ s=susede2_ed25519; t=1787831650;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=+533WkCvem/Ecey10uH296joLIaCV6yFpBxg/r3RxTc=;
- b=wSw9B7XlT2c0LhkNbDFuNXm9Ih4wKhfSQyS74K5kf2yY0iFkf1vhty0c3SKbyox/om4GlQ
- gt8JXr7dyn7vy/BA==
+ content-transfer-encoding:content-transfer-encoding;
+ bh=Gv6emOXx1BcvcBvQAL10HY5nBmXXCLx7GQOodIbYWiw=;
+ b=32sc3qQim1hVLq/qYiTl7iHljmfzknkH5uNivEKMzUD2ic/LWoiuJ58BoAjWJQJ68JAnLh
+ Foseey5UKEZqquCw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3268B13682;
- Thu, 27 Aug 2026 11:54:11 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C39501352C;
+ Thu, 27 Aug 2026 11:54:10 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id aH3JCmMlkGq6DAAAD6G6ig
- (envelope-from <andrea.cervesato@suse.de>); Thu, 27 Aug 2026 11:54:11 +0000
+ by imap1.dmz-prg2.suse.org with ESMTPSA id /UMSLmIlkGq6DAAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>); Thu, 27 Aug 2026 11:54:10 +0000
 From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Thu, 27 Aug 2026 13:54:06 +0200
+Date: Thu, 27 Aug 2026 13:54:03 +0200
+Message-Id: <20260827-swapon_discard_coverage-v1-0-633bcb11c181@suse.com>
 MIME-Version: 1.0
-Message-Id: <20260827-swapon_discard_coverage-v1-3-633bcb11c181@suse.com>
-References: <20260827-swapon_discard_coverage-v1-0-633bcb11c181@suse.com>
-In-Reply-To: <20260827-swapon_discard_coverage-v1-0-633bcb11c181@suse.com>
+X-B4-Tracking: v=1; b=H4sIAFwlkGoC/yXMQQqDMBCF4avIrCtorFG8ShFJJ2MdF4nM2LQg3
+ r1pu/zgvf8AJWFSGIoDhBIrx5BRXwrAxYUHleyzwVTGVr3pSn25LYbJs6ITP2FMJC7Pmmtva2+
+ bGdsW8nsTmvn9K9/Gv/V5Xwn3bw7O8wPkIDP9ewAAAA==
+X-Change-ID: 20260827-swapon_discard_coverage-34861d63fc55
 To: Linux Test Project <ltp@lists.linux.it>
 X-Mailer: b4 0.16.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1787831650; l=3168;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1787831650; l=910;
  i=andrea.cervesato@suse.com; s=20251210; h=from:subject:message-id;
- bh=97mQM39sr7Lkmg/1e01pwmr1X/vpYQzWCS17LtmF8ZM=;
- b=IIt//DIMRkHDca3WmQMxfJp9Lgbke2wymNqsk/C3W5JrP3pSXVOo44dqW2Pp1Oq8knyp62W8s
- gU9I1ulGVWTAGMwQJ0ZHWCV8a2cGMjNaPf0iYS2Mfd37pBoNZHT/yCO
+ bh=0w+V+bLJt8usz5BQElvC0fKOSRLOaEdYVHcm3d8QutE=;
+ b=q3ALYilCD43upP8tSWWHH1wvuW4maFAiPAOOA26pUmro9TliIKiOrFyuUCKBX8jV3flf9p6J+
+ sD2rOMuPRKoDL1zXjlNGy1GYdmrlQ6qsLVXg1zDhpGdnSdvtJARW9sI
 X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
  pk=zKY+6GCauOiuHNZ//d8PQ/UL4jFCTKbXrzXAOQSLevI=
 X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  NEURAL_HAM_LONG(-1.00)[-1.000];
  NEURAL_HAM_SHORT(-0.20)[-0.997]; MIME_GOOD(-0.10)[text/plain];
- RCVD_TLS_ALL(0.00)[]; RCPT_COUNT_TWO(0.00)[2]; ARC_NA(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[];
+ RCPT_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
  DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- TO_DN_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; FROM_HAS_DN(0.00)[];
- FROM_EQ_ENVFROM(0.00)[]; MIME_TRACE(0.00)[0:+]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+ TO_DN_ALL(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ FROM_HAS_DN(0.00)[]; MIME_TRACE(0.00)[0:+];
+ FROM_EQ_ENVFROM(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 3/3] swapon02: Add test cases for invalid swapflags
+Subject: [LTP] [PATCH 0/3] Increase coverage for swapon syscall
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -118,120 +118,29 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Andrea Cervesato <andrea.cervesato@suse.com>
-
-Add test cases verifying that swapon(2) returns EINVAL when swapflags
-contains undefined or invalid flag bits.
+Complete the EINVAL coverage on invalid input data and create a new test
+to verify discarding pages functionalities.
 
 Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
- testcases/kernel/syscalls/swapon/swapon02.c | 58 +++++++++++++++++++++--------
- 1 file changed, 42 insertions(+), 16 deletions(-)
+Andrea Cervesato (3):
+      lapi: fallback definitions for swapon syscall
+      swapon04: Add test for discard flags
+      swapon02: Add test cases for invalid swapflags
 
-diff --git a/testcases/kernel/syscalls/swapon/swapon02.c b/testcases/kernel/syscalls/swapon/swapon02.c
-index d3e528c94..9d30f8527 100644
---- a/testcases/kernel/syscalls/swapon/swapon02.c
-+++ b/testcases/kernel/syscalls/swapon/swapon02.c
-@@ -5,10 +5,11 @@
-  */
- 
- /*\
-- * This test case checks whether swapon(2) system call returns:
-+ * This test case checks whether :manpage:`swapon(2)` system call returns:
-  *
-  * - ENOENT when the path does not exist
-  * - EINVAL when the path exists but is invalid
-+ * - EINVAL when swapflags contains invalid or undefined flag bits
-  * - EPERM when user is not a superuser
-  * - EBUSY when the specified path is already being used as a swap area
-  */
-@@ -20,10 +21,10 @@
- #include "tse_swap.h"
- 
- #define MNTPOINT	"mntpoint"
--#define TEST_FILE	MNTPOINT"/testswap"
--#define NOTSWAP_FILE	MNTPOINT"/notswap"
--#define SWAP_FILE	MNTPOINT"/swapfile"
--#define USED_FILE	MNTPOINT"/alreadyused"
-+#define TEST_FILE	MNTPOINT "/testswap"
-+#define NOTSWAP_FILE	MNTPOINT "/notswap"
-+#define SWAP_FILE	MNTPOINT "/swapfile"
-+#define USED_FILE	MNTPOINT "/alreadyused"
- 
- static uid_t nobody_uid;
- static int do_swapoff;
-@@ -32,11 +33,40 @@ static struct tcase {
- 	char *err_desc;
- 	int exp_errno;
- 	char *path;
-+	int flags;
- } tcases[] = {
--	{"Path does not exist", ENOENT, "./doesnotexist"},
--	{"Invalid path", EINVAL, NOTSWAP_FILE},
--	{"Permission denied", EPERM, SWAP_FILE},
--	{"File already used", EBUSY, USED_FILE},
-+	{
-+		.err_desc = "Path does not exist",
-+		.exp_errno = ENOENT,
-+		.path = "./doesnotexist",
-+	},
-+	{
-+		.err_desc = "Invalid path",
-+		.exp_errno = EINVAL,
-+		.path = NOTSWAP_FILE,
-+	},
-+	{
-+		.err_desc = "Permission denied",
-+		.exp_errno = EPERM,
-+		.path = SWAP_FILE,
-+	},
-+	{
-+		.err_desc = "File already used",
-+		.exp_errno = EBUSY,
-+		.path = USED_FILE,
-+	},
-+	{
-+		.err_desc = "Invalid swapflags (undefined flag bits)",
-+		.exp_errno = EINVAL,
-+		.path = SWAP_FILE,
-+		.flags = 0x80000,
-+	},
-+	{
-+		.err_desc = "Invalid swapflags (high bits set)",
-+		.exp_errno = EINVAL,
-+		.path = SWAP_FILE,
-+		.flags = ~0,
-+	},
- };
- 
- static void setup(void)
-@@ -66,20 +96,16 @@ static void cleanup(void)
- 
- static void verify_swapon(unsigned int i)
- {
--	struct tcase *tc = tcases + i;
-+	struct tcase *tc = &tcases[i];
-+
- 	if (tc->exp_errno == EPERM)
- 		SAFE_SETEUID(nobody_uid);
- 
--	TST_EXP_FAIL(tst_syscall(__NR_swapon, tc->path, 0), tc->exp_errno,
-+	TST_EXP_FAIL(tst_syscall(__NR_swapon, tc->path, tc->flags), tc->exp_errno,
- 		     "swapon(2) fail with %s", tc->err_desc);
- 
- 	if (tc->exp_errno == EPERM)
- 		SAFE_SETEUID(0);
--
--	if (TST_RET != -1) {
--		tst_res(TFAIL, "swapon(2) failed unexpectedly, expected: %s",
--			tst_strerrno(tc->exp_errno));
--	}
- }
- 
- static struct tst_test test = {
+ include/tse_swap.h                          |  16 +++
+ runtest/syscalls                            |   1 +
+ testcases/kernel/syscalls/swapon/.gitignore |   1 +
+ testcases/kernel/syscalls/swapon/swapon02.c |  58 +++++---
+ testcases/kernel/syscalls/swapon/swapon04.c | 197 ++++++++++++++++++++++++++++
+ 5 files changed, 257 insertions(+), 16 deletions(-)
+---
+base-commit: 9118a480cc68700f27944aab817e0202e9e6136c
+change-id: 20260827-swapon_discard_coverage-34861d63fc55
 
--- 
-2.51.0
+Best regards,
+--  
+Andrea Cervesato <andrea.cervesato@suse.com>
 
 
 -- 
