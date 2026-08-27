@@ -4,81 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4AEFCC61DC2
-	for <ltp@archiver.kernel.org>; Thu, 27 Aug 2026 11:24:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0132FC61DC6
+	for <ltp@archiver.kernel.org>; Thu, 27 Aug 2026 11:24:41 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B8EAE3D236B
-	for <ltp@archiver.kernel.org>; Thu, 27 Aug 2026 13:24:25 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 880C43D236B
+	for <ltp@archiver.kernel.org>; Thu, 27 Aug 2026 13:24:40 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D6F983D2321
+ by picard.linux.it (Postfix) with ESMTPS id EE3B73D85B8
  for <ltp@lists.linux.it>; Thu, 27 Aug 2026 13:22:13 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 71B481400125
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 587391A002E8
  for <ltp@lists.linux.it>; Thu, 27 Aug 2026 13:22:13 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 754A41F8A3
- for <ltp@lists.linux.it>; Thu, 27 Aug 2026 11:22:04 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id E879D211E6
+ for <ltp@lists.linux.it>; Thu, 27 Aug 2026 11:22:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
  t=1787829728; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=kqRQrYMHEafVnpON6vXOIXrT5BS5diMLgMiZRiq17xY=;
- b=OiVKoSnI29uh/hTFxinax/LV03eWRwUBgnftARg1KwLPULkohZDnRqRilqX7pmf15mY/Gh
- LQoaPFxX/y+4RfvhD1jWzeZvVTZcQZJ7kBZRTBQqCzSg45/Ej+1LWt67OY2R2n3XrJJxiF
- VmMhtGa2iSHwnFSHo8bTxBVzXGbrJLY=
+ bh=E67pV2AUNof5sA1BKgLuVoxPs/ypWCDUhS+1BzXPUQA=;
+ b=GplEJpuMqOfcp6l8MAUMpbZaMkqWe/+8BZrYjxlQIXJzc6mwkt/Z3uIFvhs5ma/i2MGk4O
+ Vcf/wy59rR9pgSEoy11Lw7tMLYDmaTMycwi2Es26fTJrXN7gny9L5sIxhfc5mIZ6MmDJ2i
+ LtY1XrUq4Y86natNUifake7eioMN8ec=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
  s=susede2_ed25519; t=1787829728;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=kqRQrYMHEafVnpON6vXOIXrT5BS5diMLgMiZRiq17xY=;
- b=f5+UEhADDXWLfuAzNXBlua+bKqDvJuLk2tI8uANANTEJJUkS3Tea3TC0oVOSdy7O1G33vM
- TY2xyYP2YBuXI2CQ==
-Authentication-Results: smtp-out2.suse.de;
+ bh=E67pV2AUNof5sA1BKgLuVoxPs/ypWCDUhS+1BzXPUQA=;
+ b=bQvlUAVS5Dk0GLKpRokFPaERwCeUqyyF+JJAqyDRIIE6vwO3J+bggtkZMMOAEk2Zaq6MWp
+ R/YMe42qh5V43OBQ==
+Authentication-Results: smtp-out1.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1787829724; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1787829723; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=kqRQrYMHEafVnpON6vXOIXrT5BS5diMLgMiZRiq17xY=;
- b=fJyL6HyDm3KGwcP7fTS0zXrnIrimFGm9LpjW3VZ7qNeiGutkOBYSa+KFcA9G6alt3icIl+
- eZ4MqoywkzTNsAS8AOx3JKaIdgEeuHEV0za1HJI2hPFyBv1+fKAQat/WYSqrZpONFu/Ip+
- X2iyg/YwbuLJ+fE68wWVERBgokFVZ2E=
+ bh=E67pV2AUNof5sA1BKgLuVoxPs/ypWCDUhS+1BzXPUQA=;
+ b=tGOqr9kFcvOFUC9RhvIfW/vFyXSF2DqeM5IerrAXLAWaqcipIOKEygYwIfoqn/nNxM6eJa
+ 04c9SCyHw9Exi4Ee4Co9w+sqkmYkG1Ed0WCy8FdT9mtVWa/9xWv5d/Xa/WriCD9hSxGpSO
+ 9fqFR4482MY2FX6FKawqZU0YECgqsqY=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1787829724;
+ s=susede2_ed25519; t=1787829723;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=kqRQrYMHEafVnpON6vXOIXrT5BS5diMLgMiZRiq17xY=;
- b=zFn/6ZDX1KY9I5bzE1lXc2QWmqAL3g5YwQ4mmmPYk2lUKkcR8t/JUsPNGLCTmD84a1IGdn
- Nw01DzE8TkH2BzAA==
+ bh=E67pV2AUNof5sA1BKgLuVoxPs/ypWCDUhS+1BzXPUQA=;
+ b=0WLOe2uFMzlCzrB56HUfrJfxKHa/hQ+B3DuP6YRyc65nYKmoZVC0cCP9TGsLF4PM8zUi0I
+ 9AUhEsgrvCl5nEAQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 53EBA13688
- for <ltp@lists.linux.it>; Thu, 27 Aug 2026 11:22:03 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 71BAA13686
+ for <ltp@lists.linux.it>; Thu, 27 Aug 2026 11:22:02 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id FANqE9sdkGpWawAAD6G6ig
+ by imap1.dmz-prg2.suse.org with ESMTPSA id CompGtodkGpSawAAD6G6ig
  (envelope-from <chrubis@suse.cz>)
- for <ltp@lists.linux.it>; Thu, 27 Aug 2026 11:22:03 +0000
+ for <ltp@lists.linux.it>; Thu, 27 Aug 2026 11:22:02 +0000
 From: Cyril Hrubis <chrubis@suse.cz>
 To: ltp@lists.linux.it
-Date: Thu, 27 Aug 2026 13:21:34 +0200
-Message-ID: <20260827112157.1748734-9-chrubis@suse.cz>
+Date: Thu, 27 Aug 2026 13:21:32 +0200
+Message-ID: <20260827112157.1748734-7-chrubis@suse.cz>
 X-Mailer: git-send-email 2.54.0
 In-Reply-To: <20260827112157.1748734-1-chrubis@suse.cz>
 References: <20260827112157.1748734-1-chrubis@suse.cz>
@@ -92,13 +93,12 @@ X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
  FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:mid,suse.cz:email];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:email,suse.cz:mid];
  RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
  TO_DN_NONE(0.00)[]; RCVD_TLS_ALL(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v4 08/31] testcases: sysfs: Add
- sys_cpu_vulnerabilities01
+Subject: [LTP] [PATCH v4 06/31] testcases: sysfs: Add sys_cpu_topology01
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -115,142 +115,168 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-A test for /sys/devices/system/cpu/vulnerabilities/* files.
+A test for /sys/devices/system/cpu/* files.
 
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- include/tst_path_defs.h                       |  1 +
- runtest/sysfs                                 |  1 +
- .../sysfs/devices/system/cpu/.gitignore       |  1 +
- .../system/cpu/sys_cpu_vulnerabilities01.c    | 91 +++++++++++++++++++
- 4 files changed, 94 insertions(+)
- create mode 100644 testcases/kernel/sysfs/devices/system/cpu/sys_cpu_vulnerabilities01.c
+ include/tst_path_defs.h                       |   1 +
+ runtest/sysfs                                 |   1 +
+ .../sysfs/devices/system/cpu/.gitignore       |   1 +
+ .../kernel/sysfs/devices/system/cpu/Makefile  |   7 ++
+ .../devices/system/cpu/sys_cpu_topology01.c   | 102 ++++++++++++++++++
+ 5 files changed, 112 insertions(+)
+ create mode 100644 testcases/kernel/sysfs/devices/system/cpu/.gitignore
+ create mode 100644 testcases/kernel/sysfs/devices/system/cpu/Makefile
+ create mode 100644 testcases/kernel/sysfs/devices/system/cpu/sys_cpu_topology01.c
 
 diff --git a/include/tst_path_defs.h b/include/tst_path_defs.h
-index d915ecdb0..31581482d 100644
+index c96a1454c..d915ecdb0 100644
 --- a/include/tst_path_defs.h
 +++ b/include/tst_path_defs.h
-@@ -95,6 +95,7 @@
+@@ -94,6 +94,7 @@
+ 
  /* SYSFS DEVICES */
  #define PATH_SYS_CLOCKSOURCE			"/sys/devices/system/clocksource"
- #define PATH_SYS_CPU				"/sys/devices/system/cpu"
-+#define PATH_SYS_CPU_VULN			"/sys/devices/system/cpu/vulnerabilities"
++#define PATH_SYS_CPU				"/sys/devices/system/cpu"
  #define PATH_SYS_NODE				"/sys/devices/system/node"
  
  /* SYSFS */
 diff --git a/runtest/sysfs b/runtest/sysfs
-index b1daab68f..663c1d203 100644
+index 347bd78c1..4fc8f1eb2 100644
 --- a/runtest/sysfs
 +++ b/runtest/sysfs
-@@ -4,3 +4,4 @@ sys_clocksource01 sys_clocksource01
+@@ -2,3 +2,4 @@ sys_power01 sys_power01
+ sys_kernel01 sys_kernel01
+ sys_clocksource01 sys_clocksource01
  sys_node01 sys_node01
- sys_cpu_topology01 sys_cpu_topology01
- sys_cpu_topology02 sys_cpu_topology02
-+sys_cpu_vulnerabilities01 sys_cpu_vulnerabilities01
++sys_cpu_topology01 sys_cpu_topology01
 diff --git a/testcases/kernel/sysfs/devices/system/cpu/.gitignore b/testcases/kernel/sysfs/devices/system/cpu/.gitignore
-index a688a9b50..3ae5f494f 100644
---- a/testcases/kernel/sysfs/devices/system/cpu/.gitignore
-+++ b/testcases/kernel/sysfs/devices/system/cpu/.gitignore
-@@ -1,2 +1,3 @@
- /sys_cpu_topology01
- /sys_cpu_topology02
-+/sys_cpu_vulnerabilities01
-diff --git a/testcases/kernel/sysfs/devices/system/cpu/sys_cpu_vulnerabilities01.c b/testcases/kernel/sysfs/devices/system/cpu/sys_cpu_vulnerabilities01.c
 new file mode 100644
-index 000000000..7990f8285
+index 000000000..0615aff77
 --- /dev/null
-+++ b/testcases/kernel/sysfs/devices/system/cpu/sys_cpu_vulnerabilities01.c
-@@ -0,0 +1,91 @@
++++ b/testcases/kernel/sysfs/devices/system/cpu/.gitignore
+@@ -0,0 +1 @@
++/sys_cpu_topology01
+diff --git a/testcases/kernel/sysfs/devices/system/cpu/Makefile b/testcases/kernel/sysfs/devices/system/cpu/Makefile
+new file mode 100644
+index 000000000..781865569
+--- /dev/null
++++ b/testcases/kernel/sysfs/devices/system/cpu/Makefile
+@@ -0,0 +1,7 @@
++# SPDX-License-Identifier: GPL-2.0-or-later
++# Copyright (c) 2026 Cyril Hrubis <chrubis@suse.cz>
++
++top_srcdir		?= ../../../../../..
++
++include $(top_srcdir)/include/mk/testcases.mk
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/sysfs/devices/system/cpu/sys_cpu_topology01.c b/testcases/kernel/sysfs/devices/system/cpu/sys_cpu_topology01.c
+new file mode 100644
+index 000000000..b181f2603
+--- /dev/null
++++ b/testcases/kernel/sysfs/devices/system/cpu/sys_cpu_topology01.c
+@@ -0,0 +1,102 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
 + * Copyright (c) 2026 Cyril Hrubis <chrubis@suse.cz>
 + */
 +
 +/*\
-+ * Sanity checks for the CPU vulnerability reports exported under
-+ * /sys/devices/system/cpu/vulnerabilities/.
++ * Sanity checks for the CPU topology attributes exported under
++ * /sys/devices/system/cpu/.
 + *
-+ * Each file describes the status of one hardware vulnerability. The kernel
-+ * always prints a human readable status that starts with one of a few known
-+ * prefixes. The test verifies that every vulnerability file:
++ * The kernel exports several cpulist files describing the state of the CPUs:
 + *
-+ * - is non-empty
-+ * - starts with one of the known status prefixes (Not affected, Vulnerable,
-+ *   Mitigation:, Unknown, Processor vulnerable, KVM:)
++ * - possible - CPUs that could possibly be brought online during this boot
++ * - present  - CPUs that are populated (physically present)
++ * - online   - CPUs that are currently online and usable
++ * - offline  - CPUs that are known to the system but currently offline
 + *
-+ * KVM: is used by itlb_multihit_show_state() in arch/x86/kernel/cpu/bugs.c
-+ * (guarded by CONFIG_KVM_INTEL, i.e. present on most x86_64 distribution
-+ * kernels), e.g. ``KVM: Mitigation: VMX disabled`` or ``KVM: Vulnerable``,
-+ * for hosts where the vulnerability only matters to KVM guests, not the
-+ * host itself.
++ * These sets are nested, so the test verifies that:
 + *
-+ * The test skips with TCONF when the vulnerabilities directory is not present,
-+ * which is the case on architectures that do not report them.
++ * - online is a subset of present
++ * - present is a subset of possible
++ * - offline is a subset of possible
++ * - kernel_max is greater than or equal to the highest possible CPU id
++ *
++ * The number of online CPUs is also cross-checked against /proc/stat, which
++ * contains one ``cpuN`` line for each online CPU.
++ *
++ * All checks skip gracefully with TCONF when a particular attribute is not
++ * present.
 + */
 +
++#include <stdio.h>
 +#include <string.h>
-+#include <dirent.h>
-+#include <unistd.h>
++#include <ctype.h>
++#include <limits.h>
 +#include "tst_test.h"
++#include "tst_safe_stdio.h"
 +#include "tst_sysfs_assert.h"
 +#include "tst_path_defs.h"
 +
-+static const char *const known_prefixes[] = {
-+	"Not affected",
-+	"Vulnerable",
-+	"Mitigation:",
-+	"Unknown",
-+	"Processor vulnerable",
-+	"KVM:",
-+};
-+
-+static void check_vuln(const char *name)
++static int count_proc_stat_cpus(void)
 +{
-+	char status[256] = "";
-+	unsigned int i;
++	FILE *f;
++	char line[4096];
++	int cpus = 0;
 +
-+	TST_SYSFS_READ_STR(status, sizeof(status), PATH_SYS_CPU_VULN "/%s", name);
++	f = SAFE_FOPEN("/proc/stat", "r");
 +
-+	if (status[0] == '\0') {
-+		tst_res(TFAIL, "%s/%s is empty", PATH_SYS_CPU_VULN, name);
-+		return;
++	while (fgets(line, sizeof(line), f)) {
++		if (!strncmp(line, "cpu", 3) && isdigit(line[3]))
++			cpus++;
 +	}
 +
-+	for (i = 0; i < ARRAY_SIZE(known_prefixes); i++) {
-+		if (!strncmp(status, known_prefixes[i],
-+			     strlen(known_prefixes[i]))) {
-+			tst_res(TPASS, "%s: '%s'", name, status);
-+			return;
-+		}
-+	}
++	SAFE_FCLOSE(f);
 +
-+	tst_res(TFAIL, "%s has unexpected status '%s'", name, status);
++	return cpus;
 +}
 +
-+static void do_test(void)
++static void check_online_proc_stat(void)
 +{
-+	DIR *d;
-+	struct dirent *ent;
++	int count, max_id;
++	int stat_cpus;
 +
-+	if (access(PATH_SYS_CPU_VULN, F_OK)) {
-+		tst_res(TCONF, PATH_SYS_CPU_VULN " is not available");
++	if (TST_SYSFS_ASSERT_PARSE_LIST(&count, &max_id, PATH_SYS_CPU "/online"))
 +		return;
++
++	stat_cpus = count_proc_stat_cpus();
++
++	if (count == stat_cpus) {
++		tst_res(TPASS,
++			PATH_SYS_CPU "/online count (%d) == /proc/stat cpu lines (%d)",
++			count, stat_cpus);
++	} else {
++		tst_res(TFAIL,
++			PATH_SYS_CPU "/online count (%d) != /proc/stat cpu lines (%d)",
++			count, stat_cpus);
 +	}
++}
 +
-+	d = SAFE_OPENDIR(PATH_SYS_CPU_VULN);
++static void check_kernel_max(void)
++{
++	int count, max_id;
 +
-+	while ((ent = SAFE_READDIR(d))) {
-+		if (ent->d_name[0] == '.')
-+			continue;
++	if (TST_SYSFS_ASSERT_PARSE_LIST(&count, &max_id, PATH_SYS_CPU "/possible"))
++		return;
 +
-+		check_vuln(ent->d_name);
-+	}
++	TST_SYSFS_ASSERT_RANGELL(max_id, LONG_MAX, PATH_SYS_CPU "/kernel_max");
++}
 +
-+	SAFE_CLOSEDIR(d);
++static void run(void)
++{
++	TST_SYSFS_ASSERT_LIST_SUBSET(PATH_SYS_CPU "/online", PATH_SYS_CPU "/present");
++	TST_SYSFS_ASSERT_LIST_SUBSET(PATH_SYS_CPU "/present", PATH_SYS_CPU "/possible");
++	TST_SYSFS_ASSERT_LIST_SUBSET(PATH_SYS_CPU "/offline", PATH_SYS_CPU "/possible");
++
++	check_kernel_max();
++
++	check_online_proc_stat();
 +}
 +
 +static struct tst_test test = {
-+	.test_all = do_test,
++	.test_all = run,
 +};
 -- 
 2.54.0
