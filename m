@@ -4,102 +4,111 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0ECF3C61DC2
-	for <ltp@archiver.kernel.org>; Thu, 27 Aug 2026 10:23:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0EA64C61DC6
+	for <ltp@archiver.kernel.org>; Thu, 27 Aug 2026 11:22:29 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 14F0C3D1C07
-	for <ltp@archiver.kernel.org>; Thu, 27 Aug 2026 12:23:28 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 2DEA53D5989
+	for <ltp@archiver.kernel.org>; Thu, 27 Aug 2026 13:22:28 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0850C3C8484
- for <ltp@lists.linux.it>; Thu, 27 Aug 2026 12:23:11 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ by picard.linux.it (Postfix) with ESMTPS id 755CD3D20BA
+ for <ltp@lists.linux.it>; Thu, 27 Aug 2026 13:22:06 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 55CFC600839
- for <ltp@lists.linux.it>; Thu, 27 Aug 2026 12:23:10 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id C6B3D1A008B9
+ for <ltp@lists.linux.it>; Thu, 27 Aug 2026 13:22:05 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 4A8231F86B;
- Thu, 27 Aug 2026 10:23:02 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id C47A621903
+ for <ltp@lists.linux.it>; Thu, 27 Aug 2026 11:21:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1787826186;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ t=1787829720; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=NB1YXotfksaoS7aBOxa6DMEEHL2SiVBmnYBq09qovIM=;
- b=qH74BuTz2QOQosyzLpRH9OEA5xefmXfHw9T4CZ5um+4p3Ci9gnbkpsf2OO4ThxBmNvxPpc
- AYhgdxOFPlgDQCZCPb93AMeew9fS7EBMvmlr3GkemRlW+5m54H0ka3P+rLUWEAeiy+0B8M
- GAGzc0FkbTqi5OmZ9z2sImVFWfKTT6w=
+ bh=1JvWGEMohEQagHf28OheZYae/M0LO1DwyngvRBUH9L8=;
+ b=ZsZtLHGzzL5bB43q8zGp/h8MdSQ1QMJs4W1AfSFlNxDywN5YpQUa9+l7V4uaZcN1S1HSi1
+ YQlndbdJRq+DAH1wIUsQQ1rz5mR2+rrNQ/xYhUEoPR39gbgMkd8DccDSDU5QqP+Anz6nEF
+ OLiP1pY7O/4HfKf2gypDCZ0ntH/eEO0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1787826186;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ s=susede2_ed25519; t=1787829720;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=NB1YXotfksaoS7aBOxa6DMEEHL2SiVBmnYBq09qovIM=;
- b=Jkcwl8Z8bjpuEZXH6r6ELHcwJjH5p08rZsYxN2O675MhFydpzzQXiD01zNURG+osuJZbQ7
- WNAkTx7DcKFMe4BQ==
-Authentication-Results: smtp-out2.suse.de;
-	none
+ bh=1JvWGEMohEQagHf28OheZYae/M0LO1DwyngvRBUH9L8=;
+ b=31fVljcAVK8qnxVMWCHZVZkl8dG29R6TpluB+CyCMHvX68KzrINvvQ9h4fqQ65GdQx9zj/
+ 2Rt3LtzC2fQELbAA==
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=u4yS9ABl;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=5Eih3YSv
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1787826182;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ t=1787829716; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=NB1YXotfksaoS7aBOxa6DMEEHL2SiVBmnYBq09qovIM=;
- b=0YHePXbuIAcV4lQhIU63/RdEYOBWG7Iu583w1VSR1xsYD2xQ45RSOIUwTURgqf3lv90UHX
- mHjiIUgw+ePfrLZgK/DIc71SoLMyfW3N2HZcd3vhF+NDurNa2GcBaxguZshHJrvSdoT8MS
- /anE8hDaY12MKGtXwprx9HDhwQDjdHE=
+ bh=1JvWGEMohEQagHf28OheZYae/M0LO1DwyngvRBUH9L8=;
+ b=u4yS9ABlqyKXrThbNOc1+gyPmqA0QuXswVSCVXa9oB8cfXvIogsupxHSci+K+cyKOZ3T4b
+ X4KuwUaKLY51tW6H1/Rdg08Ued4Vx9zgvQw1PhVV5DQvHTz+sh2nBRtDzRz8BpT6FSMSdP
+ TktJWL4cOYZGXx4CRbf+z6EyG8ooVqo=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1787826182;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ s=susede2_ed25519; t=1787829716;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=NB1YXotfksaoS7aBOxa6DMEEHL2SiVBmnYBq09qovIM=;
- b=RSPwS4pugaa7ajBbe1WoyMUpJHwAomC6xgElttVaVanqVrc/uZYe38tIXvPvKvU78M5xJd
- D8Mpxd8c191+bIAQ==
+ bh=1JvWGEMohEQagHf28OheZYae/M0LO1DwyngvRBUH9L8=;
+ b=5Eih3YSvDZ7VAZqQr/daazw7um/wKQPWUqh6miBDSXR2WYNI6IDcBd1kO7jfPhqWQPzvCr
+ nXyps2ODdtHee9DQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 27EA013354;
- Thu, 27 Aug 2026 10:23:02 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A9A311361C
+ for <ltp@lists.linux.it>; Thu, 27 Aug 2026 11:21:56 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id oVlqCAYQkGrjLwAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Thu, 27 Aug 2026 10:23:02 +0000
-Date: Thu, 27 Aug 2026 12:22:52 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Message-ID: <20260827102252.GA442795@pevik>
-References: <20260827030518.4078-1-linuxtestproject.agent@gmail.com>
- <6a8fdf90.52a3ce3c.38dd62.6301@mx.google.com>
+ by imap1.dmz-prg2.suse.org with ESMTPSA id DvrTJ9QdkGpCawAAD6G6ig
+ (envelope-from <chrubis@suse.cz>)
+ for <ltp@lists.linux.it>; Thu, 27 Aug 2026 11:21:56 +0000
+From: Cyril Hrubis <chrubis@suse.cz>
+To: ltp@lists.linux.it
+Date: Thu, 27 Aug 2026 13:21:28 +0200
+Message-ID: <20260827112157.1748734-3-chrubis@suse.cz>
+X-Mailer: git-send-email 2.54.0
+In-Reply-To: <20260827112157.1748734-1-chrubis@suse.cz>
+References: <20260827112157.1748734-1-chrubis@suse.cz>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <6a8fdf90.52a3ce3c.38dd62.6301@mx.google.com>
-X-Spamd-Result: default: False [-2.00 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- SUSPICIOUS_RECIPS(1.50)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
- MID_RHS_NOT_FQDN(0.50)[]; HAS_REPLYTO(0.30)[pvorel@suse.cz];
+X-Rspamd-Queue-Id: C47A621903
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_MISSING_CHARSET(0.50)[];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- RCVD_VIA_SMTP_AUTH(0.00)[]; TO_DN_SOME(0.00)[];
- MISSING_XM_UA(0.00)[]; RCVD_TLS_ALL(0.00)[];
- TAGGED_RCPT(0.00)[]; MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[];
- FREEMAIL_ENVRCPT(0.00)[gmail.com]; RCPT_COUNT_THREE(0.00)[4];
- FROM_HAS_DN(0.00)[];
- FREEMAIL_CC(0.00)[gmail.com,linux.ibm.com,lists.linux.it];
+ MX_GOOD(-0.01)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ RCPT_COUNT_ONE(0.00)[1]; ARC_NA(0.00)[];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ MIME_TRACE(0.00)[0:+];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:dkim,suse.cz:email,suse.cz:mid];
+ DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FROM_EQ_ENVFROM(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,opensuse.org:url]; 
- RCVD_COUNT_TWO(0.00)[2]; REPLYTO_EQ_FROM(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+ RCVD_TLS_ALL(0.00)[]; TO_DN_NONE(0.00)[];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DKIM_TRACE(0.00)[suse.cz:+]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] ima_tpm.sh: properly detect failure to verify the IMA
- measurement list
+Subject: [LTP] [PATCH v4 02/31] testcases: sysfs: Add sys_power01
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -111,128 +120,172 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it, linuxtestproject.agent@gmail.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Mimi, Andrea,
+A test for sysfs/power/* files.
 
-> Hi Mimi,
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+---
+ include/tst_path_defs.h                    |  3 +
+ runtest/sysfs                              |  1 +
+ testcases/kernel/Makefile                  |  1 +
+ testcases/kernel/sysfs/Makefile            |  7 +++
+ testcases/kernel/sysfs/power/.gitignore    |  1 +
+ testcases/kernel/sysfs/power/Makefile      |  7 +++
+ testcases/kernel/sysfs/power/sys_power01.c | 70 ++++++++++++++++++++++
+ 7 files changed, 90 insertions(+)
+ create mode 100644 runtest/sysfs
+ create mode 100644 testcases/kernel/sysfs/Makefile
+ create mode 100644 testcases/kernel/sysfs/power/.gitignore
+ create mode 100644 testcases/kernel/sysfs/power/Makefile
+ create mode 100644 testcases/kernel/sysfs/power/sys_power01.c
 
-> > > +	pcr_aggregate="$(cat tmp.txt | awk '{print $1}')"
-
-> > The cat here is redundant, awk can read the file directly:
-
-
-> This is valid.
-
-+1, agent did a good job here :). We could even avoid using tail (awk has this
-feature), but let's ignore that.
-
-As it is trivial, I can change it before merge (see diff below).
-
-> > > +		lineno="$(cat tmp.txt | awk '{print $2}')"
-
-> > Same here:
-
-> > 	lineno="$(awk '{print $2}' tmp.txt)"
-
-> [..]
-
-
-> > > +		tst_res TPASS "aggregate PCR value matched real PCR value (line: $lineno/$total_measurements)"
-
-> > This line is about 100 columns wide. LTP shell style asks for lines
-> > under 80 characters; perhaps wrap it or shorten the message.
-
-> we can ignore this one.
-
-We should teach agent that splitting quotes string does more harm than slightly
-longer line.
-
-> @Petr can you please take a look?
-
-Sure :). FYI I already did have a brief look yesterday, and I also triggered CI
-jobs for v1 and wait them to finish. Of course I'll rerun them for v2.
-
-@Mimi FYI v1 patch triggers failure - it just calculate a different
-aggregate PCR-10. Although the commit subject is "properly detect failure" ..
-I'm not sure if this is a false negative or the current code on master just did
-not find error (false positive). As I said, I'll rerun v2 and let you know if
-it's the same.
-
-Testing on openSUSE Tumbleweed x86_64 VM with kernel: 7.1.8-1, virtualized TPM
-2.0, evmctl 1.6.2. Working master [1], broken with your patch [2].
-
-FYI TPM 2.0 used:
-
-swtpm socket --tpmstate dir=/tmp/mytpm25 --ctrl \
-type=unixio,path=/tmp/mytpm25/swtpm-sock --log level=20 -d --tpm2
-
-Whole QEMU command:
-
-/usr/bin/qemu-system-x86_64 -device VGA,edid=on,xres=1024,yres=768 \
--only-migratable -chardev ringbuf,id=serial0,logfile=serial0,logappend=on \
--serial chardev:serial0 -audiodev none,id=snd0 -device intel-hda -device \
-hda-output,audiodev=snd0 -global isa-fdc.fdtypeA=none -m 1536 -cpu host -netdev \
-user,id=qanet0 -device virtio-net,netdev=qanet0,mac=52:54:00:12:34:56 -object \
-rng-random,filename=/dev/urandom,id=rng0 -device virtio-rng-pci,rng=rng0 \
--chardev socket,id=chrtpm,path=/tmp/mytpm25/swtpm-sock -tpmdev \
-emulator,id=tpm0,chardev=chrtpm -device tpm-tis,tpmdev=tpm0 -boot order=c \
--device qemu-xhci -device usb-tablet -smp 1 -enable-kvm -no-shutdown -vnc \
-:115,share=force-shared -device virtio-serial -chardev \
-pipe,id=virtio_console,path=virtio_console,logfile=virtio_console.log,logappend=on \
--device \
-virtconsole,chardev=virtio_console,name=org.openqa.console.virtio_console \
--chardev \
-pipe,id=virtio_console_user,path=virtio_console_user,logfile=virtio_console_user.log,logappend=on \
--device \
-virtconsole,chardev=virtio_console_user,name=org.openqa.console.virtio_console_user \
--chardev \
-socket,path=qmp_socket,server=on,wait=off,id=qmp_socket,logfile=qmp_socket.log,logappend=on \
--qmp chardev:qmp_socket -S -device virtio-scsi-pci,id=scsi0 -blockdev \
-driver=file,node-name=hd0-overlay0-file,filename=/var/lib/openqa/pool/25/raid/hd0-overlay0,cache.no-flush=on \
--blockdev \
-driver=qcow2,node-name=hd0-overlay0,file=hd0-overlay0-file,cache.no-flush=on,discard=unmap \
--device virtio-blk,id=hd0-device,drive=hd0-overlay0,bootindex=0,serial=hd0 \
--blockdev \
-driver=file,node-name=cd0-overlay0-file,filename=/var/lib/openqa/pool/25/raid/cd0-overlay0,cache.no-flush=on \
--blockdev \
-driver=qcow2,node-name=cd0-overlay0,file=cd0-overlay0-file,cache.no-flush=on,discard=unmap \
--device scsi-cd,id=cd0-device,drive=cd0-overlay0,serial=cd0
-
-Kind regards,
-Petr
-
-[1] https://openqa.opensuse.org/tests/6185158#step/ima_tpm/4
-[2] https://openqa.opensuse.org/tests/6185106#step/ima_tpm/4
-[3] https://openqa.opensuse.org/tests/6185106/file/autoinst-log.txt
-
-diff --git testcases/kernel/security/integrity/ima/tests/ima_tpm.sh testcases/kernel/security/integrity/ima/tests/ima_tpm.sh
-index 8bb86ea4ac..edf8699f83 100755
---- testcases/kernel/security/integrity/ima/tests/ima_tpm.sh
-+++ testcases/kernel/security/integrity/ima/tests/ima_tpm.sh
-@@ -295,7 +295,7 @@ test2()
- 	get_pcr10_aggregate > tmp.txt
- 	ret=$?
+diff --git a/include/tst_path_defs.h b/include/tst_path_defs.h
+index 35fb24274..b13559af8 100644
+--- a/include/tst_path_defs.h
++++ b/include/tst_path_defs.h
+@@ -92,4 +92,7 @@
+ #define MEMINFO_HPAGE_SURP	"HugePages_Surp:"
+ #define MEMINFO_HPAGE_SIZE	"Hugepagesize:"
  
--	pcr_aggregate="$(cat tmp.txt | awk '{print $1}')"
-+	pcr_aggregate="$(awk '{print $1}' tmp.txt)"
- 	if [ -z "$pcr_aggregate" ]; then
- 		return
- 	fi
-@@ -304,7 +304,7 @@ test2()
- 	if [ "$hash" = "$pcr_aggregate" ]; then
- 		tst_res TPASS "aggregate PCR value matches real PCR value"
- 	elif [ $ret -eq 0 ]; then
--		lineno="$(cat tmp.txt | awk '{print $2}')"
-+		lineno="$(awk '{print $2}' tmp.txt)"
- 		if [ -z "$lineno" ]; then
- 			return
- 		fi
++/* SYSFS */
++#define PATH_SYS_POWER				"/sys/power"
++
+ #endif /* TST_PATH_DEFS__ */
+diff --git a/runtest/sysfs b/runtest/sysfs
+new file mode 100644
+index 000000000..e679cacb1
+--- /dev/null
++++ b/runtest/sysfs
+@@ -0,0 +1 @@
++sys_power01 sys_power01
+diff --git a/testcases/kernel/Makefile b/testcases/kernel/Makefile
+index ac816e4e8..6b8367fe0 100644
+--- a/testcases/kernel/Makefile
++++ b/testcases/kernel/Makefile
+@@ -36,6 +36,7 @@ SUBDIRS			+= connectors \
+ 			   sched \
+ 			   security \
+ 			   sound \
++			   sysfs \
+ 			   thermal \
+ 			   tracing \
+ 			   uevents \
+diff --git a/testcases/kernel/sysfs/Makefile b/testcases/kernel/sysfs/Makefile
+new file mode 100644
+index 000000000..654cda49e
+--- /dev/null
++++ b/testcases/kernel/sysfs/Makefile
+@@ -0,0 +1,7 @@
++# SPDX-License-Identifier: GPL-2.0-or-later
++# Copyright (c) 2026 Cyril Hrubis <chrubis@suse.cz>
++
++top_srcdir		?= ../../..
++
++include $(top_srcdir)/include/mk/env_pre.mk
++include $(top_srcdir)/include/mk/generic_trunk_target.mk
+diff --git a/testcases/kernel/sysfs/power/.gitignore b/testcases/kernel/sysfs/power/.gitignore
+new file mode 100644
+index 000000000..835842cd0
+--- /dev/null
++++ b/testcases/kernel/sysfs/power/.gitignore
+@@ -0,0 +1 @@
++/sys_power01
+diff --git a/testcases/kernel/sysfs/power/Makefile b/testcases/kernel/sysfs/power/Makefile
+new file mode 100644
+index 000000000..66e633f40
+--- /dev/null
++++ b/testcases/kernel/sysfs/power/Makefile
+@@ -0,0 +1,7 @@
++# SPDX-License-Identifier: GPL-2.0-or-later
++# Copyright (c) 2026 Cyril Hrubis <chrubis@suse.cz>
++
++top_srcdir		?= ../../../..
++
++include $(top_srcdir)/include/mk/testcases.mk
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/sysfs/power/sys_power01.c b/testcases/kernel/sysfs/power/sys_power01.c
+new file mode 100644
+index 000000000..0c8430ca9
+--- /dev/null
++++ b/testcases/kernel/sysfs/power/sys_power01.c
+@@ -0,0 +1,70 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2026 Cyril Hrubis <chrubis@suse.cz>
++ */
++
++/*\
++ * Sanity checks for the power management attributes exported under
++ * /sys/power/.
++ *
++ * The test verifies that:
++ *
++ * - pm_async, pm_debug_messages, pm_print_times and sync_on_suspend are
++ *   booleans
++ * - pm_freeze_timeout and wakeup_count are non-negative
++ * - disk is a bracketed-choice file selecting one of platform, shutdown,
++ *   reboot, suspend, test_resume or disabled. disk_show() in
++ *   kernel/power/hibernate.c reports ``[disabled]`` as the sole token whenever
++ *   hibernation_available() is false, e.g. because of the ``nohibernate`` boot
++ *   parameter, kernel lockdown (common on Secure Boot enabled distributions)
++ *   restricting LOCKDOWN_HIBERNATION, secretmem being in use, or CXL memory
++ *   being active
++ * - mem_sleep is a bracketed-choice file selecting one of s2idle, shallow or
++ *   deep
++ * - state lists only known sleep states (freeze, standby, mem, disk)
++ *
++ * Unlike disk and mem_sleep, state never marks a ``current`` value with
++ * brackets, it merely enumerates the sleep states the kernel supports, so it
++ * is validated as a plain token set rather than a bracketed choice.
++ *
++ * All checks skip gracefully with TCONF when a particular attribute is not
++ * present.
++ */
++
++#include <limits.h>
++#include "tst_test.h"
++#include "tst_sysfs_assert.h"
++#include "tst_path_defs.h"
++
++static const char *const disk_allowed[] = {
++	"platform", "shutdown", "reboot", "suspend", "test_resume",
++	"disabled", NULL
++};
++
++static const char *const mem_sleep_allowed[] = {
++	"s2idle", "shallow", "deep", NULL
++};
++
++static const char *const state_allowed[] = {
++	"freeze", "standby", "mem", "disk", NULL
++};
++
++static void do_test(void)
++{
++	TST_SYSFS_ASSERT_BOOL(PATH_SYS_POWER "/pm_async");
++	TST_SYSFS_ASSERT_BOOL(PATH_SYS_POWER "/pm_debug_messages");
++	TST_SYSFS_ASSERT_BOOL(PATH_SYS_POWER "/pm_print_times");
++	TST_SYSFS_ASSERT_BOOL(PATH_SYS_POWER "/sync_on_suspend");
++
++	TST_SYSFS_ASSERT_RANGELL(0, LONG_MAX, PATH_SYS_POWER "/pm_freeze_timeout");
++	TST_SYSFS_ASSERT_RANGELL(0, LONG_MAX, PATH_SYS_POWER "/wakeup_count");
++
++	TST_SYSFS_ASSERT_CHOICE(disk_allowed, NULL, 0, PATH_SYS_POWER "/disk");
++	TST_SYSFS_ASSERT_CHOICE(mem_sleep_allowed, NULL, 0, PATH_SYS_POWER "/mem_sleep");
++
++	TST_SYSFS_ASSERT_TOKENS(state_allowed, NULL, PATH_SYS_POWER "/state");
++}
++
++static struct tst_test test = {
++	.test_all = do_test,
++};
+-- 
+2.54.0
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
