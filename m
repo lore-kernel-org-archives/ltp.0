@@ -4,105 +4,105 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AB091C5DF9D
-	for <ltp@archiver.kernel.org>; Thu, 27 Aug 2026 07:55:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A35B7C61DC2
+	for <ltp@archiver.kernel.org>; Thu, 27 Aug 2026 07:56:05 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 266823D0EF4
-	for <ltp@archiver.kernel.org>; Thu, 27 Aug 2026 09:55:49 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 1D6383D070E
+	for <ltp@archiver.kernel.org>; Thu, 27 Aug 2026 09:56:04 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 847D83C2861
+ by picard.linux.it (Postfix) with ESMTPS id F25353C2861
  for <ltp@lists.linux.it>; Thu, 27 Aug 2026 09:55:31 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id AA309600642
- for <ltp@lists.linux.it>; Thu, 27 Aug 2026 09:55:30 +0200 (CEST)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 4E2AC100045B
+ for <ltp@lists.linux.it>; Thu, 27 Aug 2026 09:55:31 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id C0B3E2124E;
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 9F5981F841;
  Thu, 27 Aug 2026 07:55:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1787817325; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=2E0EyBcYWWfcFCBLJ7K/VeWwuk7di+jN+cTehJT6IMg=;
- b=Pt58GoSSsu8V6hjxJFOu0b4D29J6x8iaCXUWW2RJj/j3S+HGyBbXYO5KoD/83PQ3VTpbt2
- HUUlH0Co4qOj4+sDau5QKVIwf7GMTi0Y8Ai5xht1Zsnz1msG3mdqAOf5e8K0Pg10TTJpGp
- ubM0Clp4W4byUYsOGkP3dBw0HYGdhy8=
+ content-transfer-encoding:content-transfer-encoding;
+ bh=cFkr5jLgWBwmz5xBxqSDQtmYFt6xpYIZcQS1sDRCyQM=;
+ b=Pi+p3lF3dIQPpZmxdyzseycm55npG/pmsq0f1dbgukPl4KtI81fmnWe5RMb7mLeYGAOqDm
+ je6HpTEsEt5yhrFQYh3SDH6UlnNetK8Jf4zmhT/Vl3q/kTxlnMsyXO/whC1r36+ijOdJAC
+ BbEyJ0E90ykeDK989vHHT8FPChpQqiQ=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1787817325;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=2E0EyBcYWWfcFCBLJ7K/VeWwuk7di+jN+cTehJT6IMg=;
- b=S6f4vhMpFa54DAxFFgj7BI0MpmSr+ahLQni+1zGmAthBNshR6oG9nLBcSOh3CMHcckVfog
- bA+QHrJ1WwLBhJDw==
-Authentication-Results: smtp-out1.suse.de;
+ content-transfer-encoding:content-transfer-encoding;
+ bh=cFkr5jLgWBwmz5xBxqSDQtmYFt6xpYIZcQS1sDRCyQM=;
+ b=QABJxoru5blIvN7N8v9cyy0xkb/oyyEyniHjOG4il0moevmkgcFuVz4zRYI48yqPrG3l8j
+ AaxlMQVFN6yHULAw==
+Authentication-Results: smtp-out2.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1787817321; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=2E0EyBcYWWfcFCBLJ7K/VeWwuk7di+jN+cTehJT6IMg=;
- b=ks2bqLjQRm7om7Y87X9VWvUpMpEKHqxgahYVh7R39Jm7G4MTPdqI+4t5Vv/KYKN4erqO0J
- Kt2rMlAT42kigVCXTfN9i4g3DElwF1UisfK8wsrKy33t5cpK5GZ8picUyu0BmtqxfoqFVI
- T0hMuyKOIP1L1FQFnrxY10U4QPeIbmU=
+ content-transfer-encoding:content-transfer-encoding;
+ bh=cFkr5jLgWBwmz5xBxqSDQtmYFt6xpYIZcQS1sDRCyQM=;
+ b=aiesfuHeXTBWURJhGIAj9SLE8LtfWH0lX0zygshTgn4IbdX02IUtkquyMBcBtowavFxXKh
+ CPveYz0Ff0pctEPz3WfdXSuaCUandPL5cb9G+XQNY7CgyuNLfM1oCZ+lQSV1biHP8uyume
+ T1jZuCe8GsoMkFH00SM1bayaNyobLE4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1787817321;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=2E0EyBcYWWfcFCBLJ7K/VeWwuk7di+jN+cTehJT6IMg=;
- b=zCZLbtjauods8chzSN7nWi1tWKbTaFRm6GZ3M5SxAH/QcnlRHXyr/wNVbRIJ2uK/vkJKzZ
- kmY/jdd2LaH4lYDQ==
+ content-transfer-encoding:content-transfer-encoding;
+ bh=cFkr5jLgWBwmz5xBxqSDQtmYFt6xpYIZcQS1sDRCyQM=;
+ b=dANL1ORzHN8ZuzWnJ7VxQDO2B91asFm94OpOqqVq36yGSiwTrxB6qpvRk/HERnqfc1e/7/
+ lj/bYbQU/gNXC0Cw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A295B1352C;
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7E90C13354;
  Thu, 27 Aug 2026 07:55:21 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 8Iz4JWntj2peGwAAD6G6ig
+ by imap1.dmz-prg2.suse.org with ESMTPSA id ZUbUHGntj2peGwAAD6G6ig
  (envelope-from <andrea.cervesato@suse.de>); Thu, 27 Aug 2026 07:55:21 +0000
 From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Thu, 27 Aug 2026 09:55:20 +0200
+Date: Thu, 27 Aug 2026 09:55:19 +0200
+Message-Id: <20260827-convert_fallocate_suite-v4-0-cb146b9e5623@suse.com>
 MIME-Version: 1.0
-Message-Id: <20260827-convert_fallocate_suite-v4-1-cb146b9e5623@suse.com>
-References: <20260827-convert_fallocate_suite-v4-0-cb146b9e5623@suse.com>
-In-Reply-To: <20260827-convert_fallocate_suite-v4-0-cb146b9e5623@suse.com>
+X-B4-Tracking: v=1; b=H4sIAGftj2oC/4XNQQrCMBCF4auUrI1MJm1SXXkPEWnTiQ3URpIaF
+ OndjW4Uobj8H8w3DxYpOIpsWzxYoOSi82OOclUw0zfjibjrcjMEVKARuPFjojAdbTMM3jQTHeP
+ VTcRrBCnQtlZWyPL1JZB1t7e8P+TuXZx8uL8fJfFa/5tJcOAVNFRXplIG5C5eI62NP7MXmfDD1
+ KCXGcyM1EpY3eqyFfaHkV8MqmVGZkZgragjKDey+2LmeX4C+dcZ+UsBAAA=
+X-Change-ID: 20260720-convert_fallocate_suite-820312fbf352
 To: Linux Test Project <ltp@lists.linux.it>
 X-Mailer: b4 0.16.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1787817321; l=12569;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1787817321; l=1449;
  i=andrea.cervesato@suse.com; s=20251210; h=from:subject:message-id;
- bh=d5UbPaHbZWIpeiXfuFE7bWnJCB0BaPSaHbrpOt223Pk=;
- b=XKvJPcT97pC3Bcb7Qg9QWttfwPrB3r6gzyd9rfkIhc1I8wZlJ0qLtiB4QGiNkaj1AZbDKGVXW
- JapMg0nh0CFBtp5tu7ntRa9jOKFNx2IYBXKdlfiXLwKD06UlWKFEPb+
+ bh=95OakezPBIhM4g3G9680RkcgrLRJfTW/EDc8+rW5dB8=;
+ b=e6rw4Rkir9W/ZdNMzKPZNExkQq943d4mXKMlmPJqF9TwC6iyfZ70qMSWeooNF16sI8WhkvSWj
+ N/DWNwVkJxHBHXNzEFQ+Egd875slzyO3Vm6cZQIJzM24pRDrjlnlvhl
 X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
  pk=zKY+6GCauOiuHNZ//d8PQ/UL4jFCTKbXrzXAOQSLevI=
 X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-0.997]; MIME_GOOD(-0.10)[text/plain];
+ NEURAL_HAM_SHORT(-0.20)[-0.996]; MIME_GOOD(-0.10)[text/plain];
  RCPT_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
  RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
  DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
  TO_DN_ALL(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
  FROM_HAS_DN(0.00)[]; MIME_TRACE(0.00)[0:+];
  FROM_EQ_ENVFROM(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email, suse.com:mid,
+ DBL_BLOCKED_OPENRESOLVER(0.00)[linux.it:email, suse.com:mid, suse.com:email,
  imap1.dmz-prg2.suse.org:helo]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v4 1/2] fallocate01: Convert to new API
+Subject: [LTP] [PATCH v4 0/2] Convert fallocate testing suite
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -119,395 +119,44 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Andrea Cervesato <andrea.cervesato@suse.com>
-
-Convert the fallocate01 test case from the legacy LTP API (test.h) to the
-new tst_test API using a table-driven struct tcase[] and TST_EXP_* macros.
+Testing a new multi-agent converter that does a deep analysis on the
+code, evaluate if it needs to be converted line by line or it only needs
+a complete rewrite, then it spawn an agent for writing the test, one for
+reviewing and it iterates until test is out of issues.
 
 Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
+Changes in v4:
+- fallocate01: make sure we handle ENOTSUPP
+- Link to v3: https://lore.kernel.org/20260826-convert_fallocate_suite-v3-0-1286ede0493d@suse.com
+
+Changes in v3:
+- fallocate01: all filesystems, check for ENOSYS/ENOTSUPP, use TST_EXP_*
+- fallocate02: check for ENOSYS/ENOTSUPP
+- Link to v2: https://lore.kernel.org/20260807-convert_fallocate_suite-v2-0-3761f7b74b1f@suse.com
+
+Changes in v2:
+- fix fname size
+- simplify commit messages
+- Link to v1: https://lore.kernel.org/20260720-convert_fallocate_suite-v1-0-50ae85c56c03@suse.com
+
+To: Linux Test Project <ltp@lists.linux.it>
+
+---
+Andrea Cervesato (2):
+      fallocate01: Convert to new API
+      fallocate02: Convert to new API
+
  testcases/kernel/syscalls/fallocate/fallocate01.c | 340 ++++++----------------
- 1 file changed, 97 insertions(+), 243 deletions(-)
+ testcases/kernel/syscalls/fallocate/fallocate02.c | 192 ++++--------
+ 2 files changed, 158 insertions(+), 374 deletions(-)
+---
+base-commit: 9118a480cc68700f27944aab817e0202e9e6136c
+change-id: 20260720-convert_fallocate_suite-820312fbf352
 
-diff --git a/testcases/kernel/syscalls/fallocate/fallocate01.c b/testcases/kernel/syscalls/fallocate/fallocate01.c
-index d21936eba..fe26785ec 100644
---- a/testcases/kernel/syscalls/fallocate/fallocate01.c
-+++ b/testcases/kernel/syscalls/fallocate/fallocate01.c
-@@ -1,274 +1,128 @@
--/******************************************************************************
-- *				 fallocate01.c
-- *	Mon Dec 24 2007
-- *	Copyright (c) International Business Machines  Corp., 2007
-- *	Emali : sharyathi@in.ibm.com
-- ******************************************************************************/
--
--/***************************************************************************
-- * This program is free software;  you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License as published by
-- * the Free Software Foundation; either version 2 of the License, or
-- * (at your option) any later version.
-- *
-- * This program is distributed in the hope that it will be useful,
-- * but WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-- * GNU Library General Public License for more details.
-- *
-- * You should have received a copy of the GNU General Public License
-- * along with this program; if not, write to the Free Software
-- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
--***************************************************************************/
--
--/*****************************************************************************
-- *
-- *	OS Test - International Business Machines Corp. 2007.
-- *
-- *	TEST IDENTIFIER	: fallocate01
-- *
-- *	EXECUTED BY		: anyone
-- *
-- *	TEST TITLE		: Basic test for fallocate()
-- *
-- *	TEST CASE TOTAL	: 2
-- *
-- *	CPU ARCHITECTURES	: PPC,X86, X86_64
-- *
-- *	AUTHOR			: Sharyathi Nagesh
-- *
-- *	CO-PILOT			:
-- *
-- *	DATE STARTED		: 24/12/2007
-- *
-- *	TEST CASES
-- *	(Working of fallocate under 2 modes)
-- *	 1) DEFAULT 2)FALLOC_FL_KEEP_SIZE
-- *
-- *	INPUT SPECIFICATIONS
-- *		No input needs to be specified
-- *		  fallocate() in puts are generated randomly
-- *
-- *	OUTPUT SPECIFICATIONS
-- *		Output describing whether test cases passed or failed.
-- *
-- *	ENVIRONMENTAL NEEDS
-- *		Test Needs to be executed on file system supporting ext4
-- *   LTP {TMP} Needs to be set to such a folder
-- *
-- *	SPECIAL PROCEDURAL REQUIREMENTS
-- *		None
-- *
-- *	DETAILED DESCRIPTION
-- *		This is a test case for fallocate() system call.
-- *		This test suite tests basic working of fallocate under different modes
-- *		It trys to fallocate memory blocks and write into that block
-- *
-- *		Total 2 Test Cases :-
-- *		(1) Test Case for DEFAULT MODE
-- *		(2) Test Case for FALLOC_FL_KEEP_SIZE
-- *
-- *	Setup:
-- *		Setup file on which fallocate is to be called
-- *		Set up 2 files for each mode
-- *
-- *	Test:
-- *		Loop if the proper options are given.
-- *		Execute system call
-- *		Check return code, if system call did fail
-- *		lseek to some random location with in allocate block
-- *		write data into the locattion Report if any error encountered
-- *		PASS the test otherwise
-- *
-- *	Cleanup:
-- *		Cleanup the temporary folder
-- *
--*************************************************************************/
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) International Business Machines  Corp., 2007
-+ * Author: Sharyathi Nagesh <sharyathi@in.ibm.com>
-+ * Copyright (c) Linux Test Project, 2008-2024
-+ */
-+
-+/*\
-+ * Basic test for :manpage:`fallocate(2)` covering the two preallocation
-+ * modes and their effect on the file size.
-+ *
-+ * A file is pre-populated to 12 blocks and a single extra block is
-+ * preallocated past the end of the file. The test verifies that the
-+ * resulting file size matches the mode semantics and that the newly
-+ * allocated region is writable.
-+ *
-+ * [Algorithm]
-+ *
-+ * - Populate the working file with 12 blocks of block_size bytes.
-+ * - Preallocate one block at the end of the file.
-+ * - In DEFAULT_MODE the file grows to 13 blocks.
-+ * - In FALLOC_FL_KEEP_SIZE mode the file size stays at 12 blocks.
-+ * - Seek into the newly allocated region and write a byte to it.
-+ */
- 
- #define _GNU_SOURCE
- 
--#include <stdio.h>
--#include <stdlib.h>
--#include <endian.h>
--#include <errno.h>
--#include <sys/stat.h>
--#include <sys/types.h>
--#include <sys/syscall.h>
--#include <unistd.h>
--#include <inttypes.h>
--#include <sys/utsname.h>
--
--#include "test.h"
--#include "tso_safe_macros.h"
-+#include "tst_test.h"
- #include "lapi/fallocate.h"
--#include "lapi/fcntl.h"
- 
-+#define MNTPOINT "mntpoint"
-+#define FNAME MNTPOINT "/tfile"
- #define BLOCKS_WRITTEN 12
- 
--void get_blocksize(int);
--void populate_files(int fd);
--void runtest(int, int, loff_t);
-+static int fd = -1;
-+static int block_size;
- 
--char *TCID = "fallocate01";
--char fname_mode1[255], fname_mode2[255];	/* Files used for testing */
--int fd_mode1, fd_mode2;
--int TST_TOTAL = 2;
--loff_t block_size;
--int buf_size;
-+static struct tcase {
-+	int mode;
-+	int expected_blocks;
-+	const char *desc;
-+} tcases[] = {
-+	{0, BLOCKS_WRITTEN + 1, "DEFAULT_MODE"},
-+	{FALLOC_FL_KEEP_SIZE, BLOCKS_WRITTEN, "FALLOC_FL_KEEP_SIZE"},
-+};
- 
--/******************************************************************************
-- * Performs all one time clean up for this test on successful
-- * completion,  premature exit or  failure. Closes all temporary
-- * files, removes all temporary directories exits the test with
-- * appropriate return code by calling tst_exit() function.
--******************************************************************************/
--void cleanup(void)
-+static void populate_file(void)
- {
-+	char buf[block_size];
- 
--	if (close(fd_mode1) == -1)
--		tst_resm(TWARN | TERRNO, "close(%s) failed", fname_mode1);
--	if (close(fd_mode2) == -1)
--		tst_resm(TWARN | TERRNO, "close(%s) failed", fname_mode2);
--	tst_rmdir();
--}
-+	for (int blocks = 0; blocks < BLOCKS_WRITTEN; blocks++) {
-+		for (int i = 0; i < block_size; i++)
-+			buf[i] = 'A' + (i % 26);
- 
--/*****************************************************************************
-- * Performs all one time setup for this test. This function is
-- * used to create temporary dirs and temporary files
-- * that may be used in the course of this test
-- ******************************************************************************/
--void setup(void)
--{
--	/* Create temporary directories */
--	TEST_PAUSE;
--
--	tst_tmpdir();
--
--	sprintf(fname_mode1, "tfile_mode1_%d", getpid());
--	fd_mode1 = SAFE_OPEN(cleanup, fname_mode1, O_RDWR | O_CREAT, 0700);
--	get_blocksize(fd_mode1);
--	populate_files(fd_mode1);
--
--	sprintf(fname_mode2, "tfile_mode2_%d", getpid());
--	fd_mode2 = SAFE_OPEN(cleanup, fname_mode2, O_RDWR | O_CREAT, 0700);
--	populate_files(fd_mode2);
-+		SAFE_WRITE(SAFE_WRITE_ALL, fd, buf, block_size);
-+	}
- }
- 
--/*****************************************************************************
-- * Gets the block size for the file system
-- ******************************************************************************/
--void get_blocksize(int fd)
-+static void setup(void)
- {
- 	struct stat file_stat;
- 
--	if (fstat(fd, &file_stat) < 0)
--		tst_resm(TFAIL | TERRNO,
--			 "fstat failed while getting block_size");
-+	fd = SAFE_OPEN(FNAME, O_RDWR | O_CREAT, 0700);
- 
--	block_size = file_stat.st_blksize;
--	buf_size = block_size;
-+	SAFE_FSTAT(fd, &file_stat);
-+	block_size = (int)file_stat.st_blksize;
- }
- 
--/*****************************************************************************
-- * Writes data into the file
-- ******************************************************************************/
--
--void populate_files(int fd)
-+static void run(unsigned int n)
- {
--	char buf[buf_size + 1];
--	int index;
--	int blocks;
--	int data;
-+	struct tcase *tc = &tcases[n];
-+	struct stat file_stat;
-+	loff_t offset, len, pos, write_offset, expected_size;
-+
-+	/* Reset the backing file to a pristine 12-block state per run. */
-+	SAFE_FTRUNCATE(fd, 0);
-+	SAFE_LSEEK(fd, 0, SEEK_SET);
-+	populate_file();
-+
-+	offset = SAFE_LSEEK(fd, 0, SEEK_END);
-+	len = block_size;
-+	expected_size = (loff_t)tc->expected_blocks * block_size;
-+
-+	TEST(fallocate(fd, tc->mode, offset, len));
-+	if (TST_RET != 0) {
-+		if (TST_ERR == EOPNOTSUPP || TST_ERR == ENOSYS) {
-+			tst_res(TCONF | TTERRNO,
-+				"fallocate(%s, %lld, %lld) not supported",
-+				tc->desc, (long long)offset, (long long)len);
-+			return;
-+		}
- 
--	for (blocks = 0; blocks < BLOCKS_WRITTEN; blocks++) {
--		for (index = 0; index < buf_size; index++)
--			buf[index] = 'A' + (index % 26);
--		buf[buf_size] = '\0';
--		if ((data = write(fd, buf, buf_size)) == -1)
--			tst_brkm(TBROK | TERRNO, cleanup, "write failed");
-+		tst_res(TFAIL | TTERRNO,
-+			"fallocate(%s, %lld, %lld) failed",
-+			tc->desc, (long long)offset, (long long)len);
-+		return;
- 	}
--}
--
--int main(int ac, char **av)
--{
--	loff_t expected_size;
--	int lc;
--
--	tst_parse_opts(ac, av, NULL, NULL);
--
--	setup();
- 
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--		tst_count = 0;
-+	tst_res(TPASS, "fallocate(%s, %lld, %lld) passed",
-+		tc->desc, (long long)offset, (long long)len);
- 
--		expected_size = BLOCKS_WRITTEN * block_size + block_size;
--		runtest(0, fd_mode1, expected_size);
-+	SAFE_FSTAT(fd, &file_stat);
-+	TST_EXP_EQ_LI(file_stat.st_size, expected_size);
- 
--		expected_size = BLOCKS_WRITTEN * block_size;
--		runtest(FALLOC_FL_KEEP_SIZE, fd_mode2, expected_size);
--	}
-+	write_offset = len / 2;
-+	pos = SAFE_LSEEK(fd, write_offset, SEEK_CUR);
-+	TST_EXP_EQ_LI(pos, offset + write_offset);
- 
--	cleanup();
--	tst_exit();
-+	TST_EXP_POSITIVE(write(fd, "A", 1),
-+			 "write into the newly allocated region");
- }
- 
--/*****************************************************************************
-- * Calls the system call, with appropriate parameters and writes data
-- ******************************************************************************/
--void runtest(int mode, int fd, loff_t expected_size)
-+static void cleanup(void)
- {
--	loff_t offset;
--	loff_t len = block_size;
--	loff_t write_offset, lseek_offset;
--	offset = lseek(fd, 0, SEEK_END);
--	struct stat file_stat;
--	errno = 0;
--
--	TEST(fallocate(fd, mode, offset, len));
--	/* check return code */
--	if (TEST_RETURN != 0) {
--		if (TEST_ERRNO == EOPNOTSUPP || TEST_ERRNO == ENOSYS) {
--			tst_brkm(TCONF, cleanup,
--				 "fallocate system call is not implemented");
--		}
--		tst_resm(TFAIL | TTERRNO,
--			 "fallocate(%d, %d, %" PRId64 ", %" PRId64 ") failed",
--			 fd, mode, offset, len);
--		return;
--	} else {
--		tst_resm(TPASS,
--			 "fallocate(%d, %d, %" PRId64 ", %" PRId64
--			 ") returned %ld", fd, mode, offset, len,
--			 TEST_RETURN);
--	}
--
--	if (fstat(fd, &file_stat) < 0)
--		tst_resm(TFAIL | TERRNO, "fstat failed after fallocate()");
--
--	if (file_stat.st_size != expected_size)
--		tst_resm(TFAIL | TERRNO,
--			 "fstat test fails on fallocate (%d, %d, %" PRId64 ", %"
--			 PRId64 ") Failed on mode", fd, mode, offset, len);
--
--	write_offset = random() % len;
--	lseek_offset = lseek(fd, write_offset, SEEK_CUR);
--	if (lseek_offset != offset + write_offset) {
--		tst_resm(TFAIL | TERRNO,
--			 "lseek fails in fallocate(%d, %d, %" PRId64 ", %"
--			 PRId64 ") failed on mode", fd, mode, offset, len);
--		return;
--	}
--	//Write a character to file at random location
--	TEST(write(fd, "A", 1));
--	/* check return code */
--	if (TEST_RETURN == -1) {
--		tst_resm(TFAIL | TTERRNO,
--			 "write fails in fallocate(%d, %d, %" PRId64 ", %"
--			 PRId64 ") failed", fd, mode, offset, len);
--	} else {
--		tst_resm(TPASS,
--			 "write operation on fallocated(%d, %d, %"
--			 PRId64 ", %" PRId64 ") returned %ld", fd, mode,
--			 offset, len, TEST_RETURN);
--	}
-+	if (fd != -1)
-+		SAFE_CLOSE(fd);
- }
-+
-+static struct tst_test test = {
-+	.needs_root = 1,
-+	.mount_device = 1,
-+	.mntpoint = MNTPOINT,
-+	.all_filesystems = 1,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.test = run,
-+	.tcnt = ARRAY_SIZE(tcases),
-+};
-
--- 
-2.51.0
+Best regards,
+--  
+Andrea Cervesato <andrea.cervesato@suse.com>
 
 
 -- 
