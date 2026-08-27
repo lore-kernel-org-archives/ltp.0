@@ -4,83 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9C68BC61DC4
-	for <ltp@archiver.kernel.org>; Thu, 27 Aug 2026 14:04:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0ACBDC61DC2
+	for <ltp@archiver.kernel.org>; Thu, 27 Aug 2026 14:22:19 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id DEB423D74E4
-	for <ltp@archiver.kernel.org>; Thu, 27 Aug 2026 16:04:22 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 199E43D0F3F
+	for <ltp@archiver.kernel.org>; Thu, 27 Aug 2026 16:22:18 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 137FE3C2861
- for <ltp@lists.linux.it>; Thu, 27 Aug 2026 16:04:08 +0200 (CEST)
-Received: from mail-qk2-x01.google.com (mail-qk2-x01.google.com
- [IPv6:2607:f8b0:4864:34::1])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 1B1313D0F3F
+ for <ltp@lists.linux.it>; Thu, 27 Aug 2026 16:22:01 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id A652720004B
- for <ltp@lists.linux.it>; Thu, 27 Aug 2026 16:04:07 +0200 (CEST)
-Received: by mail-qk2-x01.google.com with SMTP id
- af79cd13be357-92e56000adeso11610085a.0
- for <ltp@lists.linux.it>; Thu, 27 Aug 2026 07:04:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1787839446; x=1788444246; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to:content-type;
- bh=VLZy4NcHcME+GQtiPAicqp9UHTL6UU4vEF/ZmXu8MfA=;
- b=iw2FTTCta4INNAe3Vb9eV4FBcvCuQ5D7iQomgh0A+6M/pvOatxl/Zuol8B9o6F4/If
- SGqugyGhGC7qu3zTB25L5vvr4Y+v0gR/6UWoL0icqkDKG7N6b3S+/45aVmXmWBZ6cyEJ
- pChekUInx74DW6l1OTcsa/nE/EpJ/1Xo4VgQcIIorVd0vmcKUdxsWrLlE0t7RlXlJnVh
- WPe3A/tHyE+oFc4K1q3q5S5uMjDSpMCOGJsuFDASteI1AmjTwQRTsche6/FEnWlA33hP
- uKp+ZrQsBZsMVU1vJZGjQ0RvUPpr9KSN1QssNdyGf4VW0F1w158iLahIfcfsKpDM7fTf
- f4Gw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1787839446; x=1788444246;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to:content-type;
- bh=VLZy4NcHcME+GQtiPAicqp9UHTL6UU4vEF/ZmXu8MfA=;
- b=rlP04WigeZj0AOadzlNHoc11UhMaokpPr355pcOsWmBHqW3uMFC2jqOZ+Sthxwr5W9
- YXBGbUqMf2dYGiA5JadhWd5E6JDURtX5ath1OpiqHzucV9/OWufDLkO4MreaKYc6LRsn
- sIWwxTRfheC/4Zf+Sqv+tg6S+3JCRLXNfWC/9Sq1xSPoQwc8CZEZKHlkqslxgRbh1BQC
- sursr9ijbHp/byjVfIlP0wFvkZ4exdWmDeP3z+OI3g8DxCNo+D4+UG3VsG+TczfdSKly
- qIYL7+q2Xrg64EUxf/WfPMWLgMsdXLslzY8KzLh6evhOUSkS6W9d0Y0TKQsasztNJH3t
- vWcw==
-X-Gm-Message-State: AFuF++ky++Zd3bIhr3TNNgXGSWKE2oOuERotojbvX1oMV47InfpbukkI
- 4AqX2YTIS/+OoxAuPzHWyzVNwQc9rS8ptGBOx8YDhS8OOQA30M0imiElGVQe2qhw
-X-Gm-Gg: AR+sD120I0kmQU1ioN7wGzf8XweGj4dNMeJxZADKIjuVA81/IwiXjPVzKVDxYUijl1I
- RUKTdNqQwgKoQe/lei9cvmvkS/35NhWwXXXMcLPTUHlwr4ceyhYPmyYin2+t2iYaZhgiUsRRbX6
- 79R/R+CeEn/A9/nfx7XzJ9dxIl0I2UczaTI46dsrzliQGeiIWL/AGI36C51teh9s8kxYiB69uI4
- 3aE4mfo9N3ZiQ2X1hhAnEiXoF00/sQBY5KJiXJbC7D4kqJBXQfELGG/us2gXnD6pY8Dc5N2V9tX
- iyCdyrmTDo9Jk9lbo9YRU5FHGNo1Tt8nDZkSoR3MiEnuq9O+vHhYDD7nmLijM3766iFJ2kN3ihW
- AoM02gSFYU4dNJoDlhpsF7z/NEA8hmw79xiog3cNEtIZGCH9lf4cEQuo2mkNFvD8PqjfHv9u95c
- ysAATon/tIgl7MdvgKM9g7oZMDXzobLkVKn5IFBcQVjkZiI9lVhAuWj8ngBCrrTL9QAefjqSi3o
- 1KXDQ87CqbIQm+a4i5KKUuIakCRu08cojcEr7yxfCF6Rz7qopM7jfGhzlC/BxHiSgcTIl45atDi
- HXI=
-X-Received: by 2002:a05:620a:1792:b0:939:614:4815 with SMTP id
- af79cd13be357-9390614539fmr391750185a.40.1787839446066; 
- Thu, 27 Aug 2026 07:04:06 -0700 (PDT)
-Received: from
- runnervmgx7h7.erb3uqmdxmruvjrqbzwtgewnmd.bx.internal.cloudapp.net
- ([172.190.109.35]) by smtp.gmail.com with ESMTPSA id
- af79cd13be357-9377e30f0a2sm455238585a.3.2026.08.27.07.04.05
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 27 Aug 2026 07:04:05 -0700 (PDT)
-From: linuxtestproject.agent@gmail.com
-To: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 27 Aug 2026 14:04:04 +0000
-Message-ID: <20260827140404.4666-1-linuxtestproject.agent@gmail.com>
-X-Mailer: git-send-email 2.55.0
-In-Reply-To: <20260827112157.1748734-3-chrubis@suse.cz>
-References: <20260827112157.1748734-3-chrubis@suse.cz>
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id ACA7C1A007FD
+ for <ltp@lists.linux.it>; Thu, 27 Aug 2026 16:22:00 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 10EE31F867;
+ Thu, 27 Aug 2026 14:21:59 +0000 (UTC)
+Authentication-Results: smtp-out2.suse.de;
+	none
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id F113C1352D;
+ Thu, 27 Aug 2026 14:21:58 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id VKJGOQZIkGoKJAAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Thu, 27 Aug 2026 14:21:58 +0000
+Date: Thu, 27 Aug 2026 16:21:50 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Andrea Cervesato <andrea.cervesato@suse.com>
+Message-ID: <apBH_mTl9lUxbGdZ@yuki.lan>
+References: <ao7sDiRA4JguwRUl@autotest-wegao.qe.prg2.suse.org>
+ <6a8ff007.b1f9e4c6.15919c.5636@mx.google.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <6a8ff007.b1f9e4c6.15919c.5636@mx.google.com>
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Rspamd-Queue-Id: 10EE31F867
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	REPLY(-4.00)[]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] lib: Add tst_sysfs_assert
+Subject: Re: [LTP] [PATCH v1] mmapstress06: Rate limit page-dirtying loop to
+ prevent MemCG OOM-kills
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -98,43 +79,46 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Cyril,
+Hi!
+> yes, basically we re-implement some sort of OOM-killer/memory.reclaim
+> inside the code, instead of using them directly. That means we need to
+> disable OOM killer, loop over the current swap status and eventually
+> raise an error if after N iterations pages are not swapped.
+> 
+> But I feel it's not deterministic because on a really slow device we
+> might run out of iterations. I still think memory.reclaim is the best
+> choice for v2 in this case, because it will wait until a certain amount
+> of memory has been reclaimed and eventually raise an error.
+> 
+> @Cyril do you have any idea on how to proceed here?	
 
-On Thu, 27 Aug 2026 13:21:27 +0200, Cyril Hrubis wrote:
-> lib: Add tst_sysfs_assert
+If the goal is to make sure that kernel swaps when memory.max is reached
+we may as well slow down the dirtying loop so that it dirties memory
+with speed 20MB/s when it gets close to the limit.
 
---- [PATCH 9/31] ---
+Something as:
 
-> testcases: sysfs: Add sys_cpu_smt01
+diff --git a/testcases/kernel/mem/mmapstress/mmapstress06.c b/testcases/kernel/mem/mmapstress/mmapstress06.c
+index 4e6023399..2c0c6fb02 100644
+--- a/testcases/kernel/mem/mmapstress/mmapstress06.c
++++ b/testcases/kernel/mem/mmapstress/mmapstress06.c
+@@ -59,8 +59,9 @@ static void run_test(void)
+ 
+                for (size_t i = 0; i < map_size; i += page_size) {
+                        mmapaddr[i] = 'a';
+-                       if ((i % (2 * 1024 * 1024)) == 0)
+-                               usleep(1000);
++
++                       if (i >= mem_limit && !(i % (2 * 1024 * 1024)))
++                               usleep(100000);
+                }
 
-> 			tst_res(TPASS,
-> 				"active is 0 while PATH_SYS_CPU_SMT control is '%s'", control);
+The testrun increses to 6s from 1s but it makes the OOM very unlikely to
+happen.
 
-> 			tst_res(TFAIL,
-> 				"active is %ld while PATH_SYS_CPU_SMT control is '%s'",
-> 				active, control);
-
-PATH_SYS_CPU_SMT is inside a string literal here, so the preprocessor
-will not expand it. The test output will print the macro name verbatim.
-Other tst_res() calls in the same file correctly use string
-concatenation, e.g.:
-
-    tst_res(TCONF, PATH_SYS_CPU_SMT " is not available");
-
-Could these two messages use the same concatenation pattern so that
-they print the actual active and control paths?
-
-Verdict - Needs revision
-
----
-Note:
-
-The agent can sometimes produce false positives although often its
-findings are genuine. If you find issues with the review, please
-comment this email or ignore the suggestions.
-
-Regards,
-LTP AI Reviewer
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
