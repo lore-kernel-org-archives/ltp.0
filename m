@@ -4,112 +4,101 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 53B6CC61DC2
-	for <ltp@archiver.kernel.org>; Thu, 27 Aug 2026 11:26:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CA534C61DC6
+	for <ltp@archiver.kernel.org>; Thu, 27 Aug 2026 11:26:31 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C0E9F3D3C07
-	for <ltp@archiver.kernel.org>; Thu, 27 Aug 2026 13:26:10 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 243633D7C3B
+	for <ltp@archiver.kernel.org>; Thu, 27 Aug 2026 13:26:30 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id EF4FF3D8567
- for <ltp@lists.linux.it>; Thu, 27 Aug 2026 13:22:23 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 975823D865A
+ for <ltp@lists.linux.it>; Thu, 27 Aug 2026 13:22:24 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de
  [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 6604520014E
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id A96E31000799
  for <ltp@lists.linux.it>; Thu, 27 Aug 2026 13:22:23 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 133B21F84B
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 801D11F88B
  for <ltp@lists.linux.it>; Thu, 27 Aug 2026 11:22:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
  t=1787829738; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=wpJY0w3q9MH5x65fAX25KhhW0LsQR44IsNRPYcxsLuE=;
- b=qqvbLQKuhoki848Hkl2KjrZ1mBZsgqGDLyj+VcyA0KP1RuhDhR0JMg1cAs0MLwSXu3hIBB
- dSpd3lcDv24ROHjwpd9LSrYrjivXMraHFSlcKUjmYwqytTkNPqboCRWZX2x/PZDXMtsnhv
- f8yQi4r/xK2uop6EM8G406+68WAQDb8=
+ bh=uLo3cTRProDnT84czjM+tuOg/BNC0FL0fv6A0Ym+jf8=;
+ b=p1hdcFQLltIaubSLZEMLwR9ErBNv4tPXblIT9iLDpT0yOOr74QyBiCTCJFLhtqC08ET6YQ
+ 8kusv8Okyg1QcJAuFdPApPCzmULJQFdriAufQAM5h1a/VuV6ECDMmneOsP0LGKbkTJgHS6
+ /SiQOI5Dumj/n69g918+TK6QThUzhIg=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
  s=susede2_ed25519; t=1787829738;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=wpJY0w3q9MH5x65fAX25KhhW0LsQR44IsNRPYcxsLuE=;
- b=kc7Po7qvuw3UBLW3RToYxSvjroEiIpkZ6hOFr2DW+Wnc1DsktMkHu/XJDLaeB6KEBeYq1H
- cH3BPgl4hQ9PLJCw==
+ bh=uLo3cTRProDnT84czjM+tuOg/BNC0FL0fv6A0Ym+jf8=;
+ b=imfnSDvBAfN9XV6mCRPKBKgRDwNsjBxYu9XY+irHKGcNHN1qIcpFLo4zVbXUgAYVxhDfgP
+ gmynVVyVt8SWFpDg==
 Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=H9QqVzpE;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=z8zmWFaC
+	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
  t=1787829734; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=wpJY0w3q9MH5x65fAX25KhhW0LsQR44IsNRPYcxsLuE=;
- b=H9QqVzpEErwo6da8V0Yf6DXdibKbKfQkYTJr+t434j6khRdmfPNu2r7MsGodZZLdrGCwNG
- GumTdjgfGRJA+XotD0cyT6XR6911MVowoWH5Ls5IvYfNEOFAruh5h97OV8SgAWGiZXUz8J
- 31ANRCxTdHCa891k56E1lUq9PE3uAxA=
+ bh=uLo3cTRProDnT84czjM+tuOg/BNC0FL0fv6A0Ym+jf8=;
+ b=bR8m6T0DX9FrhCKmoVvchGjIwt5wf56Zl804lAdmCCGBmtD3MQE8am/MPWzDG2MZ6SO4Ax
+ 2U8W57JNECegGGEknqFsSuF3QtwQmjdIodwtnNHdkQCP3Pjcm8nsw0d1PsnuqQkOtuItCa
+ WQr8V+voZQXsbG6gIlulGq/gfClWcdY=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
  s=susede2_ed25519; t=1787829734;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=wpJY0w3q9MH5x65fAX25KhhW0LsQR44IsNRPYcxsLuE=;
- b=z8zmWFaCHArAvDb1uXk9njtvnACrFGoaLQya0f3ZC3YXYfiHwStsfqE+hRPEcc5ChVDrAL
- 0bR7R7A6m6DZOkCw==
+ bh=uLo3cTRProDnT84czjM+tuOg/BNC0FL0fv6A0Ym+jf8=;
+ b=4nJi/4juXfnBesZc3JWkhJYsTuqZLBzgIbQywPHfgRc9/pgNL3agjgRjwvteUi8PU7Rqli
+ hwQWujroRJZl1nDw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id EB0F513354
- for <ltp@lists.linux.it>; Thu, 27 Aug 2026 11:22:13 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6EDCF13682
+ for <ltp@lists.linux.it>; Thu, 27 Aug 2026 11:22:14 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 6aZJNeUdkGpuawAAD6G6ig
+ by imap1.dmz-prg2.suse.org with ESMTPSA id DMuoGeYdkGpxawAAD6G6ig
  (envelope-from <chrubis@suse.cz>)
- for <ltp@lists.linux.it>; Thu, 27 Aug 2026 11:22:13 +0000
+ for <ltp@lists.linux.it>; Thu, 27 Aug 2026 11:22:14 +0000
 From: Cyril Hrubis <chrubis@suse.cz>
 To: ltp@lists.linux.it
-Date: Thu, 27 Aug 2026 13:21:39 +0200
-Message-ID: <20260827112157.1748734-14-chrubis@suse.cz>
+Date: Thu, 27 Aug 2026 13:21:40 +0200
+Message-ID: <20260827112157.1748734-15-chrubis@suse.cz>
 X-Mailer: git-send-email 2.54.0
 In-Reply-To: <20260827112157.1748734-1-chrubis@suse.cz>
 References: <20260827112157.1748734-1-chrubis@suse.cz>
 MIME-Version: 1.0
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: 133B21F84B
-X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_CONTAINS_FROM(1.00)[];
- R_MISSING_CHARSET(0.50)[];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- RCVD_COUNT_TWO(0.00)[2]; ARC_NA(0.00)[];
- RCPT_COUNT_ONE(0.00)[1]; FROM_HAS_DN(0.00)[];
- MIME_TRACE(0.00)[0:+]; FROM_EQ_ENVFROM(0.00)[];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.cz:dkim,suse.cz:email,suse.cz:mid];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; TO_DN_NONE(0.00)[];
- RCVD_TLS_ALL(0.00)[];
- PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
- DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-0.997];
+ MIME_GOOD(-0.10)[text/plain]; ARC_NA(0.00)[];
+ RCPT_COUNT_ONE(0.00)[1]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ MIME_TRACE(0.00)[0:+];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- DKIM_TRACE(0.00)[suse.cz:+]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+ PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:mid,suse.cz:email];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ TO_DN_NONE(0.00)[]; RCVD_TLS_ALL(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v4 13/31] testcases: sysfs: Add sys_bdi01
+Subject: [LTP] [PATCH v4 14/31] testcases: sysfs: sys_hwmon01
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -126,53 +115,53 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-A test for /sys/class/bdi/*/* files.
+Add test for /sys/class/hwmon/*/* files.
 
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- include/tst_path_defs.h                      |   1 +
- runtest/sysfs                                |   1 +
- testcases/kernel/sysfs/class/bdi/.gitignore  |   1 +
- testcases/kernel/sysfs/class/bdi/Makefile    |   7 ++
- testcases/kernel/sysfs/class/bdi/sys_bdi01.c | 101 +++++++++++++++++++
- 5 files changed, 111 insertions(+)
- create mode 100644 testcases/kernel/sysfs/class/bdi/.gitignore
- create mode 100644 testcases/kernel/sysfs/class/bdi/Makefile
- create mode 100644 testcases/kernel/sysfs/class/bdi/sys_bdi01.c
+ include/tst_path_defs.h                       |   1 +
+ runtest/sysfs                                 |   1 +
+ testcases/kernel/sysfs/class/hwmon/.gitignore |   1 +
+ testcases/kernel/sysfs/class/hwmon/Makefile   |   7 +
+ .../kernel/sysfs/class/hwmon/sys_hwmon01.c    | 173 ++++++++++++++++++
+ 5 files changed, 183 insertions(+)
+ create mode 100644 testcases/kernel/sysfs/class/hwmon/.gitignore
+ create mode 100644 testcases/kernel/sysfs/class/hwmon/Makefile
+ create mode 100644 testcases/kernel/sysfs/class/hwmon/sys_hwmon01.c
 
 diff --git a/include/tst_path_defs.h b/include/tst_path_defs.h
-index 94c4a65bc..f3fa3efd6 100644
+index f3fa3efd6..7e9180ffe 100644
 --- a/include/tst_path_defs.h
 +++ b/include/tst_path_defs.h
-@@ -94,6 +94,7 @@
- 
+@@ -95,6 +95,7 @@
  /* SYSFS CLASS */
  #define PATH_CLASS_ATA_DEVICE			"/sys/class/ata_device"
-+#define PATH_CLASS_BDI				"/sys/class/bdi"
+ #define PATH_CLASS_BDI				"/sys/class/bdi"
++#define PATH_CLASS_HWMON			"/sys/class/hwmon"
  
  /* SYSFS DEVICES */
  #define PATH_SYS_CLOCKEVENTS			"/sys/devices/system/clockevents"
 diff --git a/runtest/sysfs b/runtest/sysfs
-index b5e644237..c0983a5be 100644
+index c0983a5be..23c7adc7a 100644
 --- a/runtest/sysfs
 +++ b/runtest/sysfs
-@@ -9,3 +9,4 @@ sys_cpu_smt01 sys_cpu_smt01
- sys_cpu_cache01 sys_cpu_cache01
+@@ -10,3 +10,4 @@ sys_cpu_cache01 sys_cpu_cache01
  sys_clockevents01 sys_clockevents01
  sys_ata01 sys_ata01
-+sys_bdi01 sys_bdi01
-diff --git a/testcases/kernel/sysfs/class/bdi/.gitignore b/testcases/kernel/sysfs/class/bdi/.gitignore
+ sys_bdi01 sys_bdi01
++sys_hwmon01 sys_hwmon01
+diff --git a/testcases/kernel/sysfs/class/hwmon/.gitignore b/testcases/kernel/sysfs/class/hwmon/.gitignore
 new file mode 100644
-index 000000000..93ce63f2c
+index 000000000..f619181d7
 --- /dev/null
-+++ b/testcases/kernel/sysfs/class/bdi/.gitignore
++++ b/testcases/kernel/sysfs/class/hwmon/.gitignore
 @@ -0,0 +1 @@
-+/sys_bdi01
-diff --git a/testcases/kernel/sysfs/class/bdi/Makefile b/testcases/kernel/sysfs/class/bdi/Makefile
++/sys_hwmon01
+diff --git a/testcases/kernel/sysfs/class/hwmon/Makefile b/testcases/kernel/sysfs/class/hwmon/Makefile
 new file mode 100644
 index 000000000..034038061
 --- /dev/null
-+++ b/testcases/kernel/sysfs/class/bdi/Makefile
++++ b/testcases/kernel/sysfs/class/hwmon/Makefile
 @@ -0,0 +1,7 @@
 +# SPDX-License-Identifier: GPL-2.0-or-later
 +# Copyright (c) 2026 Cyril Hrubis <chrubis@suse.cz>
@@ -181,82 +170,155 @@ index 000000000..034038061
 +
 +include $(top_srcdir)/include/mk/testcases.mk
 +include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/sysfs/class/bdi/sys_bdi01.c b/testcases/kernel/sysfs/class/bdi/sys_bdi01.c
+diff --git a/testcases/kernel/sysfs/class/hwmon/sys_hwmon01.c b/testcases/kernel/sysfs/class/hwmon/sys_hwmon01.c
 new file mode 100644
-index 000000000..91b1e4762
+index 000000000..8e2e569ae
 --- /dev/null
-+++ b/testcases/kernel/sysfs/class/bdi/sys_bdi01.c
-@@ -0,0 +1,101 @@
++++ b/testcases/kernel/sysfs/class/hwmon/sys_hwmon01.c
+@@ -0,0 +1,173 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
 + * Copyright (c) 2026 Cyril Hrubis <chrubis@suse.cz>
 + */
 +
 +/*\
-+ * Sanity checks for the backing device info (BDI) attributes exported under
-+ * /sys/class/bdi/<id>/.
++ * Walks all hardware monitoring devices under /sys/class/hwmon/ and performs
++ * sanity and cross-checks on the sensor channels exported per the stable
++ * hwmon sysfs ABI (Documentation/hwmon/sysfs-interface.rst).
 + *
-+ * For every BDI the test verifies that:
++ * For every discovered channel it verifies that:
 + *
-+ * - min_ratio <= max_ratio (both are percentages)
-+ * - min_ratio_fine <= max_ratio_fine (both are in parts-per-million, i.e.
-+ *   100% == 1000000)
-+ * - min_bytes <= max_bytes on kernel 6.2 or later, when max_bytes is set
-+ *   (0 means ``no limit``)
-+ * - stable_pages_required and strict_limit are booleans
-+ * - read_ahead_kb is non-negative
++ * - tempN_input is within a plausible range (-55000 to 200000 millidegree
++ *   Celsius, i.e. within the extended-industrial silicon sensor rating floor
++ *   and below a generously high bound)
++ * - tempN_alarm, tempN_crit_alarm, tempN_min_alarm, tempN_max_alarm and
++ *   tempN_fault are booleans, when present
++ * - fanN_input is within a plausible range (0 to 100000 RPM, comfortably
++ *   above even exotic small high-speed blower fans)
++ * - fanN_alarm, fanN_fault, fanN_min_alarm and fanN_max_alarm are booleans,
++ *   when present
++ * - inN_input is within a plausible range (-100000 to 100000 millivolt,
++ *   allowing for negative supply rails, not just positive ones, inN
++ *   channels are numbered from 0, unlike the other channel types which
++ *   start at 1)
++ * - inN_alarm and related alarm attributes are booleans, when present
++ * - currN_input is within a plausible range (-500000 to 500000 milliampere,
++ *   allowing for negative values on bidirectional/battery charge-discharge
++ *   current sensors)
++ * - powerN_input is within a plausible range (0 to 2000000000 microwatt,
++ *   i.e. 2 kW, chosen to stay within LONG_MAX on 32bit architectures as well)
++ * - pwmN is in the documented range [0, 255]
++ * - update_interval, when present, is within a plausible range (1 to
++ *   3600000 millisecond, i.e. up to an hour)
 + *
-+ * The test skips with TCONF when no BDI is present.
++ * All checks skip silently when a particular channel or attribute is not
++ * present, since the set of exposed sensors varies wildly between chips and
++ * platforms and up to MAX_CHANNELS indices are probed for every channel type
++ * regardless of how many are actually implemented by a given chip.
 + *
-+ * min_bytes/max_bytes were added by commit 1bf27e98d26d (``mm: add
-+ * bdi_set_max_bytes() function``), targeting the Linux 6.2 merge window.
++ * Note: per Documentation/ABI/testing/sysfs-class-hwmon, tempN/inN/currN
++ * min/max/crit/lcrit are plain independent RW attributes. The kernel does
++ * not cross-validate them against each other (only tempN_crit/tempN_lcrit
++ * even mention a ``typically greater/lower than`` relation to max/min, and
++ * that is explicitly not a guarantee), so this test deliberately does not
++ * assert any ordering between them, e.g. a firmware default of minN > maxN
++ * is not a kernel or driver bug.
 + */
 +
-+#include <stdio.h>
 +#include <string.h>
-+#include <limits.h>
 +#include <dirent.h>
-+#include <unistd.h>
++
 +#include "tst_test.h"
 +#include "tst_sysfs_assert.h"
 +#include "tst_path_defs.h"
 +
-+static int has_max_bytes;
++#define MAX_CHANNELS 32
 +
-+static void check_bdi(const char *id)
++static void check_temp_channel(const char *hwmon, int idx)
 +{
-+	long long max_bytes;
++	TST_SYSFS_ASSERT_RANGELL_SILENT(-55000, 200000,
++					PATH_CLASS_HWMON "/%s/temp%d_input", hwmon, idx);
 +
-+	tst_res(TINFO, "Checking bdi '%s'", id);
-+
-+	TST_SYSFS_ASSERT_RANGELL(0, 100, PATH_CLASS_BDI "/%s/min_ratio", id);
-+	TST_SYSFS_ASSERT_RANGELL(0, 100, PATH_CLASS_BDI "/%s/max_ratio", id);
-+	TST_SYSFS_ASSERT_LE_SUFFIX("min_ratio", "max_ratio",
-+				   PATH_CLASS_BDI "/%s/", id);
-+
-+	TST_SYSFS_ASSERT_RANGELL(0, 1000000, PATH_CLASS_BDI "/%s/min_ratio_fine", id);
-+	TST_SYSFS_ASSERT_RANGELL(0, 1000000, PATH_CLASS_BDI "/%s/max_ratio_fine", id);
-+	TST_SYSFS_ASSERT_LE_SUFFIX("min_ratio_fine", "max_ratio_fine",
-+				   PATH_CLASS_BDI "/%s/", id);
-+
-+	if (has_max_bytes) {
-+		max_bytes = TST_SYSFS_READ_LLI(PATH_CLASS_BDI "/%s/max_bytes", id);
-+
-+		if (max_bytes > 0) {
-+			TST_SYSFS_ASSERT_LE_SUFFIX("min_bytes", "max_bytes",
-+						   PATH_CLASS_BDI "/%s/", id);
-+		}
-+	}
-+
-+	TST_SYSFS_ASSERT_BOOL(PATH_CLASS_BDI "/%s/stable_pages_required", id);
-+	TST_SYSFS_ASSERT_BOOL(PATH_CLASS_BDI "/%s/strict_limit", id);
-+
-+	TST_SYSFS_ASSERT_RANGELL(0, LONG_MAX, PATH_CLASS_BDI "/%s/read_ahead_kb", id);
++	TST_SYSFS_ASSERT_BOOL_SILENT(PATH_CLASS_HWMON "/%s/temp%d_alarm", hwmon, idx);
++	TST_SYSFS_ASSERT_BOOL_SILENT(PATH_CLASS_HWMON "/%s/temp%d_crit_alarm", hwmon, idx);
++	TST_SYSFS_ASSERT_BOOL_SILENT(PATH_CLASS_HWMON "/%s/temp%d_min_alarm", hwmon, idx);
++	TST_SYSFS_ASSERT_BOOL_SILENT(PATH_CLASS_HWMON "/%s/temp%d_max_alarm", hwmon, idx);
++	TST_SYSFS_ASSERT_BOOL_SILENT(PATH_CLASS_HWMON "/%s/temp%d_fault", hwmon, idx);
 +}
 +
-+static void setup(void)
++static void check_fan_channel(const char *hwmon, int idx)
 +{
-+	has_max_bytes = tst_kvercmp(6, 2, 0) >= 0;
++	TST_SYSFS_ASSERT_RANGELL_SILENT(0, 100000,
++					PATH_CLASS_HWMON "/%s/fan%d_input", hwmon, idx);
++
++	TST_SYSFS_ASSERT_BOOL_SILENT(PATH_CLASS_HWMON "/%s/fan%d_alarm", hwmon, idx);
++	TST_SYSFS_ASSERT_BOOL_SILENT(PATH_CLASS_HWMON "/%s/fan%d_min_alarm", hwmon, idx);
++	TST_SYSFS_ASSERT_BOOL_SILENT(PATH_CLASS_HWMON "/%s/fan%d_max_alarm", hwmon, idx);
++	TST_SYSFS_ASSERT_BOOL_SILENT(PATH_CLASS_HWMON "/%s/fan%d_fault", hwmon, idx);
++}
++
++static void check_in_channel(const char *hwmon, int idx)
++{
++	TST_SYSFS_ASSERT_RANGELL_SILENT(-100000, 100000,
++					PATH_CLASS_HWMON "/%s/in%d_input", hwmon, idx);
++
++	TST_SYSFS_ASSERT_BOOL_SILENT(PATH_CLASS_HWMON "/%s/in%d_alarm", hwmon, idx);
++	TST_SYSFS_ASSERT_BOOL_SILENT(PATH_CLASS_HWMON "/%s/in%d_min_alarm", hwmon, idx);
++	TST_SYSFS_ASSERT_BOOL_SILENT(PATH_CLASS_HWMON "/%s/in%d_max_alarm", hwmon, idx);
++	TST_SYSFS_ASSERT_BOOL_SILENT(PATH_CLASS_HWMON "/%s/in%d_crit_alarm", hwmon, idx);
++	TST_SYSFS_ASSERT_BOOL_SILENT(PATH_CLASS_HWMON "/%s/in%d_lcrit_alarm", hwmon, idx);
++}
++
++static void check_curr_channel(const char *hwmon, int idx)
++{
++	/*
++	 * Unlike fan/power, current can be negative on bidirectional sensors,
++	 * e.g. a battery charge/discharge current monitor.
++	 */
++	TST_SYSFS_ASSERT_RANGELL_SILENT(-500000, 500000,
++					PATH_CLASS_HWMON "/%s/curr%d_input", hwmon, idx);
++
++	TST_SYSFS_ASSERT_BOOL_SILENT(PATH_CLASS_HWMON "/%s/curr%d_alarm", hwmon, idx);
++}
++
++static void check_power_channel(const char *hwmon, int idx)
++{
++	/*
++	 * 2000000000 uW (2 kW) comfortably covers any single-component power
++	 * sensor (CPU, GPU, PSU rail, ...) while still fitting within
++	 * LONG_MAX on 32bit architectures.
++	 */
++	TST_SYSFS_ASSERT_RANGELL_SILENT(0, 2000000000,
++					PATH_CLASS_HWMON "/%s/power%d_input", hwmon, idx);
++}
++
++static void check_pwm_channel(const char *hwmon, int idx)
++{
++	TST_SYSFS_ASSERT_RANGELL_SILENT(0, 255, PATH_CLASS_HWMON "/%s/pwm%d", hwmon, idx);
++}
++
++static void check_hwmon_device(const char *hwmon)
++{
++	char name[64];
++	int i;
++
++	if (TST_SYSFS_READ_STR(name, sizeof(name), PATH_CLASS_HWMON "/%s/name", hwmon))
++		tst_res(TINFO, "%s: name = '%s'", hwmon, name);
++
++	TST_SYSFS_ASSERT_RANGELL_SILENT(1, 3600000,
++					PATH_CLASS_HWMON "/%s/update_interval", hwmon);
++
++	/* inN channels are numbered from 0, per the hwmon ABI */
++	for (i = 0; i <= MAX_CHANNELS; i++)
++		check_in_channel(hwmon, i);
++
++	for (i = 1; i <= MAX_CHANNELS; i++) {
++		check_temp_channel(hwmon, i);
++		check_fan_channel(hwmon, i);
++		check_curr_channel(hwmon, i);
++		check_power_channel(hwmon, i);
++		check_pwm_channel(hwmon, i);
++	}
 +}
 +
 +static void do_test(void)
@@ -265,28 +327,27 @@ index 000000000..91b1e4762
 +	struct dirent *ent;
 +	int found = 0;
 +
-+	if (!tst_sysfs_exists(PATH_CLASS_BDI))
-+		tst_brk(TCONF, PATH_CLASS_BDI ": not present");
++	if (!tst_sysfs_exists(PATH_CLASS_HWMON))
++		tst_brk(TCONF, PATH_CLASS_HWMON ": not present");
 +
-+	d = SAFE_OPENDIR(PATH_CLASS_BDI);
++	d = SAFE_OPENDIR(PATH_CLASS_HWMON);
 +
 +	while ((ent = SAFE_READDIR(d))) {
-+		if (ent->d_name[0] == '.')
++		if (strncmp(ent->d_name, "hwmon", 5))
 +			continue;
 +
 +		found = 1;
-+		check_bdi(ent->d_name);
++		check_hwmon_device(ent->d_name);
 +	}
 +
 +	SAFE_CLOSEDIR(d);
 +
 +	if (!found)
-+		tst_res(TCONF, "No BDI found");
++		tst_res(TCONF, "No hwmon device found");
 +}
 +
 +static struct tst_test test = {
 +	.test_all = do_test,
-+	.setup = setup,
 +};
 -- 
 2.54.0
