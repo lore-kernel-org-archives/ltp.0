@@ -4,90 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B663EC5DF9D
-	for <ltp@archiver.kernel.org>; Thu, 27 Aug 2026 07:08:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0444BC61DC2
+	for <ltp@archiver.kernel.org>; Thu, 27 Aug 2026 07:44:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1787814485; h=message-id :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1787816653; h=message-id :
  to : in-reply-to : date : subject : list-id : list-unsubscribe :
  list-archive : list-post : list-help : list-subscribe : from :
  reply-to : cc : mime-version : content-type :
  content-transfer-encoding : sender : from;
- bh=2b4NGI21cQHf/WkokvyhnUXDcQ2cvW6UMBfpYW7PKu8=;
- b=koRDrygOf6F1oijKNW3Zs/A9RyLXmJkNb/XtibbdDtUHvHNljx3XKY+MUANC5TxYqPrDr
- NZnSATUnq+bjEyI1wH7dZzq2942CEy4ySW6pb9lK+kGW1UVdbEefnvY9mttisQxpD2IlYYU
- 3CSbe764eokfxLQBxjBKnfBX4w7E73M=
+ bh=HJsHlc5YuLVfa8AC5vcF4qlX8evbnIO3rBTjMkR+n5M=;
+ b=grrw9hZLKiPhjTUxOc55BHlCp/pka4Lpv+JA/nLVF9kE6BHrTJkyOqiIAazvCF6OWqcmt
+ N5dUMNk7xzb5fLsu1h5JvS3tYFZW1CmYKNEOzE6nnU7t42nS4CkLvQB76lroHbn32au0KOK
+ GgO08gABC/9VuCFTFzMjZVIv/2LA6xA=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 00BF73D0F92
-	for <ltp@archiver.kernel.org>; Thu, 27 Aug 2026 09:08:05 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 94AFB3D0EE9
+	for <ltp@archiver.kernel.org>; Thu, 27 Aug 2026 09:44:13 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1A2783C8484
- for <ltp@lists.linux.it>; Thu, 27 Aug 2026 09:07:45 +0200 (CEST)
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com
- [IPv6:2a00:1450:4864:20::430])
+ by picard.linux.it (Postfix) with ESMTPS id 833D73C20C3
+ for <ltp@lists.linux.it>; Thu, 27 Aug 2026 09:43:50 +0200 (CEST)
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com
+ [IPv6:2a00:1450:4864:20::331])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 9CE03100044F
- for <ltp@lists.linux.it>; Thu, 27 Aug 2026 09:07:44 +0200 (CEST)
-Received: by mail-wr1-x430.google.com with SMTP id
- ffacd0b85a97d-47db714766aso441357f8f.0
- for <ltp@lists.linux.it>; Thu, 27 Aug 2026 00:07:44 -0700 (PDT)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 772242000DB
+ for <ltp@lists.linux.it>; Thu, 27 Aug 2026 09:43:45 +0200 (CEST)
+Received: by mail-wm1-x331.google.com with SMTP id
+ 5b1f17b1804b1-499ae1c6471so10640895e9.3
+ for <ltp@lists.linux.it>; Thu, 27 Aug 2026 00:43:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1787814464; x=1788419264; darn=lists.linux.it;
+ d=suse.com; s=google; t=1787816625; x=1788421425; darn=lists.linux.it;
  h=date:content-transfer-encoding:content-type:subject:in-reply-to:cc
  :to:from:message-id:from:to:cc:subject:date:message-id:reply-to
- :content-type; bh=Jgm/Bt0uENZOZamiY/85sukbmnoUlJXY+J66QxyzlAk=;
- b=hF8qyXK2urewxpurbgTui5ARSJR2pyBkQMYXhmKTnPs0ma3TkyB8YNIRliMy8vxrpg
- xGXHlx93BjPkKHW8ZmFXhu/AOstuF0nM1rWFctxTUuRHq4Ov7rwnNZRNqlDV0yV0JjXG
- O1OPC0t/8Ake52Q3Uw+2bIQE9frOO1ig8lPyxQfzqy3rj2iVos++fx3uGzjr3Fty0o4E
- lTcoiu+DPOd0IvddQIZp8kgL0DGxmfQv6NP1GO58/PBtHxXJ41coDbztyU4c4izvWjsT
- eaOIGgmik6HLfvbmv4rCuW5yiMSHHUcHCtnOSRmNrj/P/pOqWAcBfRbMdAFa5Awtnbpb
- xdaQ==
+ :content-type; bh=Kq8lYcolIRGh9KC4ZpgkTZDC5uTTeyYQwTyeQYhSvYQ=;
+ b=NKIFbPi1rwq85mFJFsuL3YuaghJ294V45MuNyFdUF654aPpDb1KZlVOGG3ul6E/7tI
+ 008c5NCugaBm17Nf+FqUgALjmAhqX16JaGPVJhMmSWWoUI221cZ8whnDZ9NisgQqEDEZ
+ AHKwWHJy0ZpsQMi4QDxhWWX2w9OvWzwN1UgHqpYNagid56yv2lDXDZ6LNyJy89tDTdTr
+ NufUh9FBED+nBC97oCCHlWwcPJKy8kndjqLdkeMH2xOgNIP9LsUKKWtluaJrbdNWVPF1
+ ENdV5oBlMDT51+UErpj+oL0tMh7+yz7JbfaIf4IDnvRqY2LHyRE4tTONbsK3StkAOwoi
+ pLNQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1787814464; x=1788419264;
+ d=1e100.net; s=20251104; t=1787816625; x=1788421425;
  h=date:content-transfer-encoding:content-type:subject:in-reply-to:cc
  :to:from:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject
  :date:message-id:reply-to:content-type;
- bh=Jgm/Bt0uENZOZamiY/85sukbmnoUlJXY+J66QxyzlAk=;
- b=VShzgp9oqMCflUNrrq2Sbs98mAQoaemX6GQdmC5/EYi25wZyBL2YmboIhaiXUj7wwV
- nRoAHKm9e+4zOYPbhLQr8RksbCBTDKFtctMWMlg4of4H6yW9RYPM4R2eALmaODeQU/3m
- zeKkM5TfCSEu67Q9E2rVHyW+Yfa+w4JWgETxfeb1LZDUu6WZ5veDjxA0yxLMY7F5uRnb
- 84dwCd6Gc/qvNqiB4j8Eya9JoqZxtZmwQ1aVMjQ7oc64vMXUuicIE+9sK0kyN93mLFuM
- U8H5+cjGcuv2KdCmbOiUGcG0bJO1qUq3bVQgSJqTRpyCl+QikU7vTkHrUaZ11ZlUiNsr
- sAtw==
+ bh=Kq8lYcolIRGh9KC4ZpgkTZDC5uTTeyYQwTyeQYhSvYQ=;
+ b=gQsd5dc6QHDQ4Owy0Uw4RMHqi45eDmcO9znohAWBxKloQDCHYk4A9njEWb5R0t5rSg
+ vuPpXshMxUSrlLOud5sOtDUILpiju2WL4UZduQrDtDnUtLoRcsQkCvD5nBweErR6IsEl
+ QUIftZ7+9OsDE/1HBouxiIjwlXQXRmtpjG+WLK1JJ6lFKbW6CwEO3XVHDFvAyNXaQEJD
+ tP/Fektd8lDZtUeqeu1MEn8Mb6Qd5rsVY80+S5c18fFGPgaiCYVXnKQF2KcXOK9KZGO2
+ 7z7lW48JZmcs1JYoAmtO/qShOhgC5xlrzwS/MHYy3eZPK/4E8WT6g+20dnTwjnYSkqb1
+ toqQ==
 X-Forwarded-Encrypted: i=1;
- AHgh+RoxnzFtCP/u3rf2ISJS406DEqWsq4EofI088SyLFZzJAhg4fz19tjYWryGs6sLnugclOtQ=@lists.linux.it
-X-Gm-Message-State: AFuF++lg0AF8bIqZuMJTNaVBa/7+740F39+u4LuQ1NbfsjCPgO8Fa0ZV
- grBhaErG3ZC4QdlgrDB7svLqnZEKfxTl+vcllrMORxW6xpK6SvaPtXy1CwbHleGU5fE=
-X-Gm-Gg: AR+sD11aUzFMHj3aN/14goQ/q4OfI1I/rZ67GA3FIxFVUSZ3zNeIVml3u2MM3CoFkhC
- 2t8ttPRSd/w/ZQPl8HEzmPXDOjwoxB2DC5xAqJLV4xBNJv6kTAENylF/kMVfG7SQA05/tNKZgmH
- ytAG0sBEgAR6WE/Ij45MK996QHNDhjN6Whlm5FjlRjfeMj1VaUCH2gPNGmrvwP8M7WGqxoJbBDL
- r4ZCYH3SpOxa236+d4RO1L/JhUF/g+J3eUV0lTSZstsAaegKK3jWuDrifhmDEWWYW8T7iXVyvW9
- epfu7tKRAeGWit63WC8qdTSTIMxdV1NUoqnOKGhL0w60kkaRoIswc9MKuxj+d+z6kLSfDPJSqgS
- mQhoD24kcUrJHNzgzrEJlaHOf/ChuTZULlpKAo3/HC+oP1hsG/oWnsH+wHpuubNqCxz2RXOYYeY
- A96mlXjeLtRCeVA54MOunEVj7UiHqVxqoPtN/9FaCeW39eSf1hGB3Va1YFjXnvaPORDCyoJP4SV
- tHKvfHOAcjePgygWwgq5F3U3gFz26GxCbsueJt9SY2F2dH1VvzgYOAWU8753L+ikCGWPoE=
-X-Received: by 2002:a05:6000:2201:b0:47f:e7f7:370f with SMTP id
- ffacd0b85a97d-482eab9f5c2mr4973550f8f.10.1787814463996; 
- Thu, 27 Aug 2026 00:07:43 -0700 (PDT)
+ AHgh+Rp8pJvRTFeLOfgUzKEHU0vgIcuhRxGUqhcdyOZyFtvV1YZJF5WZ7rQjewTAoFl4mMx1NxY=@lists.linux.it
+X-Gm-Message-State: AFuF++mlWwC9bobeD1hX+Xw56+H3I2Uh/WGkoB24qSC9U+i6P01wRoGa
+ upSujC7cT8g0Q6yFvisOCzjaHn8APvPNdKdWz3tS8V3z2vlGsT4ifxUnBC8xMX8fgodR5iS7CIs
+ rW5cQN34iug==
+X-Gm-Gg: AR+sD10c43NEa4z4MnT0hAWNsqEXKvU0hZ/0j0q3+uYlm0v58ekN2xHHGveWtC3C5XP
+ H1pmj8rLsIQDQD2VXHf897pgJXvfa5lcVNRHJ75755JrOiMGX4Ac6c15zGICQReteF54XxzCedi
+ FKlZGfG+3WyVJ2Wr+zRsWMn+K8bLEBSHRvDyWhQg9utNLjbGEvBCpXGb3sEoy06FaxcWb6We4XR
+ RJIgDjIH/olVipfB49zPGR1zt3YYf7ueEWBYh2nUQ9DY+KXccYc3SfOdKAZSGHbXtASe76VyVD3
+ VuZnsV70ZkJfTiqmuXeGEacOXsYIRQR+F3o83GIbRRFGhcI7Ei+pznj5ajH8KYSR1qF7FCXYzG0
+ 8heBPvh94ZRqFDxvLTMpEGJYOH6jWpL4iayYOr6Jtap2FUXfWre0XqlQtFdE/0REMZ5GyZGpZAg
+ wHL6KyVEUeTDRDkjq0RiTNv5Cw2VorsYjIE73ngSLViCpY8qcYoOGhxOKvpdI0giP/hnryYyxOy
+ Vjq/vo1tgq4ewdd018DHk3QwgchXZE4xdrPNzBxS6TH2bPASRcPNkVZgshgRpPw7dkaadH0rNt/
+ IPaXyg==
+X-Received: by 2002:a05:600c:8597:b0:49a:252d:52f5 with SMTP id
+ 5b1f17b1804b1-49a252d5393mr93052195e9.11.1787816613311; 
+ Thu, 27 Aug 2026 00:43:33 -0700 (PDT)
 Received: from localhost.localdomain
  (p200300ef2f066800c8b8b5e69b9f6a3a.dip0.t-ipconnect.de.
  [2003:ef:2f06:6800:c8b8:b5e6:9b9f:6a3a])
  by smtp.gmail.com with ESMTPSA id
- ffacd0b85a97d-482e28f6119sm7011036f8f.34.2026.08.27.00.07.43
+ ffacd0b85a97d-482e28f231dsm6711228f8f.31.2026.08.27.00.43.32
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 27 Aug 2026 00:07:43 -0700 (PDT)
-Message-ID: <6a8fe23f.be490abf.117ecb.9102@mx.google.com>
-To: linuxtestproject.agent@gmail.com
-In-Reply-To: <20260819103310.39525-1-linuxtestproject.agent@gmail.com>
-Date: Thu, 27 Aug 2026 07:07:42 +0000
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+ Thu, 27 Aug 2026 00:43:32 -0700 (PDT)
+Message-ID: <6a8feaa4.c69142e7.26d8ab.d0a0@mx.google.com>
+To: "Cyril Hrubis" <chrubis@suse.cz>
+In-Reply-To: <ao8E9xmRqH35vJrz@yuki.lan>
+Date: Thu, 27 Aug 2026 07:43:32 +0000
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] openposix: timer_*/speculative: Skip untestable optional
- behavior on Linux
+Subject: Re: [LTP] [PATCH v3 1/2] fallocate01: Convert to new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -101,26 +103,43 @@ List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 From: Andrea Cervesato via ltp <ltp@lists.linux.it>
 Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Cc: ltp@lists.linux.it
+Cc: Linux Test Project <ltp@lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Avinesh,
-
-> > +#ifdef __linux__
-> > +	printf("Linux does not implement this optional behavior\n");
-> > +	return PTS_UNSUPPORTED;
-> > +#else
+> fallocate01.c:103: TPASS: write into the newly allocated region returned 1
+> fallocate01.c:92: TFAIL: fallocate(FALLOC_FL_KEEP_SIZE, 393216, 32768) failed: EOPNOTSUPP (95)
+> fallocate01.c:97: TPASS: file_stat.st_size == expected_size (393216)
+> fallocate01.c:101: TPASS: pos == offset + write_offset (409600)
+> fallocate01.c:103: TPASS: write into the newly allocated region returned 1
 > 
-> Could these branches be removed from all eleven tests? Linux 7.2 uses
-> scoped_timer_get_or_fail() to return -EINVAL for invalid timer IDs in
-> timer_gettime(), timer_getoverrun(), timer_settime(), and timer_delete().
-> The installed man pages document the same EINVAL result.
+> 
+> I guess that the easiest solution is to use
+> TST_EXP_PASS_OR_FAIL(..., EOPNOTSUPP, ...) in the run() function
+> instead.
 
-can you please take a look at this?
+mmmh...I guess we need to keep the gate on ENOSYS and to check for
+ENOTSUPP in here, but we can't use TST_EXP_PASS_OR_FAIL(). That will
+TFAIL on succeed, so I need to use the same test function for both
+setup() and run()
+
+static int test_fallocate(int fd, int mode, long len, long off)
+{
+	TEST(fallocate(fd, mode, len, off));
+	if (TST_RET != 0) {
+		if (TST_ERR == EOPNOTSUPP || TST_ERR == ENOSYS)
+			tst_brk(TCONF, "fallocate() not supported");
+
+		tst_brk(TBROK | TTERRNO, "fallocate() failed");
+	}
+
+	return TST_RET;
+}
+
+and use it into setup() + run() with TST_EXP_PASS()
 
 --
 Andrea Cervesato
