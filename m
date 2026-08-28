@@ -4,86 +4,105 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E26B6C61DCB
-	for <ltp@archiver.kernel.org>; Fri, 28 Aug 2026 13:39:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E2B1BC61DCB
+	for <ltp@archiver.kernel.org>; Fri, 28 Aug 2026 13:51:33 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 357413E9A6E
-	for <ltp@archiver.kernel.org>; Fri, 28 Aug 2026 15:39:51 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 5F09C3E9A5D
+	for <ltp@archiver.kernel.org>; Fri, 28 Aug 2026 15:51:32 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9C4F93C0E10
- for <ltp@lists.linux.it>; Fri, 28 Aug 2026 15:39:33 +0200 (CEST)
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com
- [IPv6:2a00:1450:4864:20::42a])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 7A10A3C0E10
+ for <ltp@lists.linux.it>; Fri, 28 Aug 2026 15:51:16 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 9AC1820007B
- for <ltp@lists.linux.it>; Fri, 28 Aug 2026 15:39:32 +0200 (CEST)
-Received: by mail-wr1-x42a.google.com with SMTP id
- ffacd0b85a97d-482fc3327fdso337358f8f.2
- for <ltp@lists.linux.it>; Fri, 28 Aug 2026 06:39:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1787924372; x=1788529172; darn=lists.linux.it;
- h=in-reply-to:content-disposition:content-type:mime-version
- :references:message-id:subject:cc:to:from:date:from:to:cc:subject
- :date:message-id:reply-to:content-type;
- bh=YR1y999JbnlkcKke8NjUlz1/oaThubAGYcCrn+dsyDs=;
- b=oXLzc3JyOZFSUhBGeY/tXlYuw6hAEJN1DPg4GKf6B1Vlt8MOvHtwNq+PxjfSjrBWTw
- fixKTKFyuzHY719/U0RYKOo5Lry35+Wo3IbELeETZXw2HUcJJh4ijY8fMaCgaZ0UEzJE
- hVusHya6LZp+dVuiGpNEcJh24MZ6bu+ThLDT6kzZoOBiMi2m63t2qGePeOfXFRh62Qko
- 6VxW40GIsadYxKWmyhtOyyK9CxKoYYOozh8cJZNW813u5/8Ipaz6HOth1seI7Bur5usi
- Dj9p0ILZguDYAkH5ZSBV18aT0BbIJV4uEEUe5UsaBEFIjvISKWigkdkJ7Cwf3tzGHgtA
- SStw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1787924372; x=1788529172;
- h=in-reply-to:content-disposition:content-type:mime-version
- :references:message-id:subject:cc:to:from:date:x-gm-gg
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
- :content-type;
- bh=YR1y999JbnlkcKke8NjUlz1/oaThubAGYcCrn+dsyDs=;
- b=YFlJZn3RwBXNVvIdkxS3NMfTxd8e5GuojzPRl5I4n9zHq1RgEj7Nblip2qi/4GT2MQ
- iOQjRFBiv032ejLmAaR/mW3nqYgGeIh5+D9lJwVOVTLSZDDiRvwcSUMnA7iN5qOoubo4
- SG4BUQiHeYCVk140XlLBvcoOOqhLLAZkncIrxmZ4OXNftoKwq0DEFEi9eP7zR29iUny4
- ivsEVYjlUJxU8pgl9QwEAlWIoeECoGzC4o+w2Tqa/Q6TNuW12oEfat+fgRrIz2n0Fhdq
- oV4UMY3YLeH01VijvI6ycT87Z+a9Dlho5o8DieGeCrmWZBkfglhOsMJGUi9MW/8aXfDd
- FHyA==
-X-Forwarded-Encrypted: i=1;
- AHgh+RobNnRyIYp1BvcY0QvjsjCZ34oGm9gD2GG5uWxcqEVxtl30WVCdys4Z+TsMVuSxCTunOtc=@lists.linux.it
-X-Gm-Message-State: AFuF++l6SL3JW9fIDoomkDWcHCMvqNbcPU3dqfWLUYpP8dP7w0Yi5/Ak
- maBKXW4deK4piy/97hAua/3l1l6nxrv13UqvumJ6iT/6fSDjsSqO2pEn
-X-Gm-Gg: AR+sD11wFgMgiw2xNQkbaB9tGoWy+RjPLLrY0lgXeJ1Bm+8rttZE2m68Kb4X0CmZb4w
- wuinZIqBJ+t1HX8jhr58Lj9CsTgeCK3sEHP146f8Bx3xJl/d8Ka0MZzZpPOOWtRmZQDpuLLpmhB
- Z1dsnI+TBilxzhYyn7EhhLkSAQgsUnsWzPYUugY881Grm2nTTvBm3eM7/SvPkGxUv/Fy3msLtna
- 06bh7uCN0QlGpUqIvtok/OXjCrerDAwAF91k4voaHxn7nF9aywYg7H+LouzUN4TC0t2jC2v5diM
- qHVDw+fBIuMHvJNKiI5J96TZwS57yw1AP1EKoQ1nvA9BNAxaYG8wUMSyT1WUfFzmMSUcrremV8A
- 2gprSVHhQpaVjBTeJEF5a89R3mJF+eYdNC+LUNeG1OJM6UfEZ6M0/G3I5s9m4fIctibTK3sZl4a
- HR1L65gFx3qahCP3yCr8NGpYAJsKibY4HcyD1zGP/18OHK8lq/zYk5tV6+6DK/wGozQP/Y7BAxT
- iSBTGOgjyuFKw==
-X-Received: by 2002:a05:6000:4715:b0:47f:c648:e265 with SMTP id
- ffacd0b85a97d-482f79bf064mr12569612f8f.17.1787924371667; 
- Fri, 28 Aug 2026 06:39:31 -0700 (PDT)
-Received: from localhost (178-84-201-199.dynamic.upc.nl. [178.84.201.199])
- by smtp.gmail.com with ESMTPSA id
- ffacd0b85a97d-482fbb2794dsm4250162f8f.25.2026.08.28.06.39.31
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 28 Aug 2026 06:39:31 -0700 (PDT)
-Date: Fri, 28 Aug 2026 15:39:30 +0200
-From: Amir Goldstein <amir73il@gmail.com>
-To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <apGPksbQajf2vVJF@amir-ThinkPad-T480>
-References: <20260616210448.12175-1-anonymemeow@gmail.com>
- <20260616210448.12175-3-anonymemeow@gmail.com>
- <20260825103609.GA56957@pevik>
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 156E31000606
+ for <ltp@lists.linux.it>; Fri, 28 Aug 2026 15:51:15 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id ED3241FE1C;
+ Fri, 28 Aug 2026 13:51:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1787925071; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=1tHAJTryEdluZJo3dsqDD4mvBEm9y5u2bEI6YqV+4uE=;
+ b=3GDl6fJZhU55eLKcCrn64ZwetbKo1hNDv90SXh6XqL4Wf0+q2klpNx6E5PJAp/ojZrXOsy
+ lQEeTdRK3OCJos7UPeL/IsEm+8tQF+DnL7nZiGFxuLt3DwsNHJcLIKDuvFQjUjC6W66Mdb
+ N5YfXGG3sFazCMh8lQ7cDSm9DpnPjQA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1787925071;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=1tHAJTryEdluZJo3dsqDD4mvBEm9y5u2bEI6YqV+4uE=;
+ b=3UCyNz2Kp99feYZs9n5rEGMWqCF+MIW7J6TcE+ufJQdVk6wClbh6cr/KtOxzQaSjck1xrz
+ 9nXrlUdwxOfvEzBg==
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="uxHk1YQ/";
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=rOsSi8VA
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1787925066; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=1tHAJTryEdluZJo3dsqDD4mvBEm9y5u2bEI6YqV+4uE=;
+ b=uxHk1YQ/raSlnuD5v1gRFgBUrpK/Pf+NIkOIBN+KiJFKzhvIRjTFo/3XlRQqOkwAxeUSLT
+ 6fABXkOFmmlNej8zaB7MYMAfrexNySuefZJsKJ+Bp92QKy3iU+Wc+XwMR0MVH+nCn6Ctcp
+ Szf6oBh/zWnLb34QdJiMFkpA6N4SXmo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1787925066;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=1tHAJTryEdluZJo3dsqDD4mvBEm9y5u2bEI6YqV+4uE=;
+ b=rOsSi8VAOgyAOzX/ghSd61rwCMomKOvBiVGW11t5DnKduWwDdD63VL21cMBRJ3E4iHcJH0
+ O94KDkW1adoSbHBQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C95351352D;
+ Fri, 28 Aug 2026 13:51:06 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id ftwcMUqSkWo/BgAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Fri, 28 Aug 2026 13:51:06 +0000
+Date: Fri, 28 Aug 2026 15:51:05 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Andrea Cervesato <andrea.cervesato@suse.com>
+Message-ID: <apGSSZrHmOe4M4yO@yuki.lan>
+References: <aocM-vVTSlaqdXve@yuki.lan>
+ <6a918e90.62f374cd.18666e.d1ad@mx.google.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20260825103609.GA56957@pevik>
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+In-Reply-To: <6a918e90.62f374cd.18666e.d1ad@mx.google.com>
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: ED3241FE1C
+X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ RCVD_VIA_SMTP_AUTH(0.00)[]; MISSING_XM_UA(0.00)[];
+ ARC_NA(0.00)[]; MIME_TRACE(0.00)[0:+]; RCVD_TLS_ALL(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ TO_DN_ALL(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
+ FROM_HAS_DN(0.00)[]; RCPT_COUNT_THREE(0.00)[3];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.cz:dkim,suse.cz:email];
+ DKIM_TRACE(0.00)[suse.cz:+]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 2/5] fanotify21: Stop relying on exited child
- for pidfd error
+Subject: Re: [LTP] [PATCH STAGING v2 06/16] fchroot03: test fchroot()
+ permission checks
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -95,131 +114,33 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: jack@suse.cz, ltp@lists.linux.it, AnonymeMeow <anonymemeow@gmail.com>
+Cc: Linux Test Project <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Tue, Aug 25, 2026 at 12:36:09PM +0200, Petr Vorel wrote:
-> Hi all,
+Hi!
+> > > Verify that with a regular directory fd the kernel first checks the
+> > > execute permission on the directory and then CAP_SYS_CHROOT: an
+> > > unprivileged process with an accessible directory fails with EPERM and
+> > > a process without execute permission fails with EACCES.
+> > 
+> > Here as well, the order of the checks is subject to change.
 > 
-> > fanotify21 used to verify the pidfd error case by generating an event
-> > from a child process and reading the event after the child had exited.
-> > This is no longer a stable way to trigger a pidfd error, because newer
-> > kernels can report pidfds for exited event processes.
+> sorry I don't get the review, can you please explain where is the
+> issue? it's a description problem only?
 > 
-> > Read the event from a child process in a descendant PID namespace
-> > instead. The reader cannot get the pidfd in the parent PID namespace
-> > from fanotify, so pidfd creation will fail and the test can verify
-> > FAN_NOPIDFD, or -ESRCH with FAN_REPORT_FD_ERROR.
-> 
-> > Signed-off-by: AnonymeMeow <anonymemeow@gmail.com>
-> > Reviewed-by: Jan Kara <jack@suse.cz>
-> > Reviewed-by: Amir Goldstein <amir73il@gmail.com>
-> 
-> ...
-> >  	/*
-> > -	 * Generate the event in either self or a child process. Event
-> > -	 * generation in a child process is done so that the FAN_NOPIDFD case
-> > -	 * can be verified.
-> > +	 * Read the event in either self or a child process in a descendant
-> > +	 * PID namespace. A reader in a descendant PID namespace cannot obtain
-> > +	 * the pidfd of the event process in the parent PID namespace so that
-> > +	 * the FAN_NOPIDFD case can be verified.
-> >  	 */
-> > -	if (tc->fork)
-> > -		do_fork();
-> > -	else
-> > -		generate_event();
-> > +	if (tc->want_pidfd_err && (reader_pid = SAFE_CLONE(&clone_args))) {
-> nit: although I'd write it this way as well, checkpatch does not like this
-> effective way :) (do not use assignment in if condition).
-> 
-> > +		SAFE_WAITPID(reader_pid, &reader_exit_status, 0);
-> > +		if (!WIFEXITED(reader_exit_status) || WEXITSTATUS(reader_exit_status))
-> > +			tst_brk(TBROK, "reader process exited incorrectly");
-> 
-> nit: And the above should be probably replaced with tst_reap_children().
-> 
-> But because I should have merged this long time ago to prevent false positive on
-> 7.2, merging it now. Cleanup can be done later (together with using designated
-> initializers).
-> 
-> Merged the rest of the patch, thank you!
-> 
+> same for the other reviews
 
-Hi Petr,
+The problem here is that the order in which kernel checks for
+CAP_SYS_ROOT or invalid fchroot() flags is not defined. It checks for
+CAP_SYS_ROOT last now, but that is not something we can take for
+granted.
 
-Sorry I did not have time to investigate and need to leave now
-just wanted to let you know that test ends with failure exit code.
-and does not seem to run with pretty recent rc7 kernel.
-
-Is that expected?
-Maybe it's something in my own test env.
-
-Thanks,
-Amir.
-
-root@kvm-xfstests:~/ltp# ./fanotify/fanotify20 || echo FAIL
-tst_tmpdir.c:308: TINFO: Using /tmp/LTP_fanTTAwH1 as tmpdir (tmpfs filesystem)
-tst_kconfig.c:90: TINFO: Parsing kernel config '/proc/config.gz'
-tst_kconfig.c:756: TINFO: CONFIG_PROVE_LOCKING kernel option detected which might slow the execution
-tst_device.c:103: TINFO:[  787.367492] loop0: detected capacity change from 0 to 614400
- Found free device 0 '/dev/loop0'
-tst_test.c:2048: TINFO: LTP version: 20260529-243-g9118a480c
-tst_tes[  787.391529] /dev/zero: Can't lookup blockdev
-t.c:2051: TINFO: Tested kernel: 7.2.0-rc7-xfstests-00008-g55d5763db1de #2982 SMP PREEMPT_DYNAMIC Thu Aug 27 12:04:04 CEST 2026 x86_64
-tst_test.c:1876: TINFO: Overall timeout per run is 0h 02m 00s
-tst_supported_fs_types.c:108: TINFO: Kernel supports ext2
-tst_supported_fs_types.c:67: TINFO: mkfs.ext2 does exist
-[  787.418143] /dev/zero: Can't lookup blockdev
-tst_supported_fs_types.c:108: TINFO: Kernel supports ext3
-tst_supported_fs_types.c:67: TINFO: mkfs.ext3 does exist
-[  787.443657] /dev/zero: Can't lookup blockdev
-tst_supported_fs_types.c:108: TINFO: Kernel supports ext4
-tst_supported_fs_types.c:67: TINFO: m[  787.467489] /dev/zero: Can't lookup blockdev
-kfs.ext4 does exist
-tst_supported_fs_types.c:108: TINFO: Kernel supports xfs
-tst_supported_fs_types.c:67: TINFO: mkfs.xfs does exist
-tst_supported_fs_types.c:108: TINFO: Kernel supports btrfs
-tst_supported_fs_types.c:67: TINFO: mkfs.btrfs does exist
-tst_supported_fs_types.c:117: TINFO: Skipping bcachefs because of FUSE blacklist
-[  787.521515] /dev/zero: Can't lookup blockdev
-tst_supported_fs_types.c:108: TINFO: Kernel supports vfat
-tst_supported_fs_types.c:67: TINFO: mkfs.vfat does exist
-tst_supported_fs_types.c:140: TINFO: Filesystem exfat is not supported
-tst_supported_fs_types.c:144: TINFO: FUSE does support ntfs
-tst_supported_fs_types.c:63: TINFO: mkfs.ntfs does not exist
-[  787.576420] /dev/zero: Can't lookup blockdev
-tst_supported_fs_types.c:108: TINFO: Kernel supports ntfs3
-tst_supported_fs_types.c:63: TINFO: mkfs.ntfs does not exist
-tst_supported_fs_types.c:108: TINFO: Kernel supports tmpfs
-tst_supported_fs_types.c:51: TINFO: mkfs is not needed for tmpfs
-tst_test.c:1986: TINFO: === Testing on ext2 ===
-fanotify20.c:51: TCONF: FAN_REPORT_PIDFD | FAN_REPORT_TID is supported since v7.2
-tst_test.c:1986: TINFO: === Testing on ext3 ===
-fanotify20.c:51: TCONF: FAN_REPORT_PIDFD | FAN_REPORT_TID is supported since v7.2
-tst_test.c:1986: TINFO: === Testing on ext4 ===
-fanotify20.c:51: TCONF: FAN_REPORT_PIDFD | FAN_REPORT_TID is supported since v7.2
-tst_test.c:1986: TINFO: === Testing on xfs ===
-fanotify20.c:51: TCONF: FAN_REPORT_PIDFD | FAN_REPORT_TID is supported since v7.2
-tst_test.c:1986: TINFO: === Testing on btrfs ===
-fanotify20.c:51: TCONF: FAN_REPORT_PIDFD | FAN_REPORT_TID is supported since v7.2
-tst_test.c:1986: TINFO: === Testing on vfat ===
-fanotify20.c:51: TCONF: FAN_REPORT_PIDFD | FAN_REPORT_TID is supported since v7.2
-tst_test.c:1986: TINFO: === Testing on tmpfs ===
-fanotify20.c:51: TCONF: FAN_REPORT_PIDFD | FAN_REPORT_TID is supported since v7.2
-
-Summary:
-passed   0
-failed   0
-broken   0
-skipped  7
-warnings 0
-
-FAIL
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
