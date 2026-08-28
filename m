@@ -4,82 +4,98 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BEC1FC61DBD
-	for <ltp@archiver.kernel.org>; Fri, 28 Aug 2026 09:46:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DE9B7C61DBD
+	for <ltp@archiver.kernel.org>; Fri, 28 Aug 2026 09:48:26 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0855B3D2321
-	for <ltp@archiver.kernel.org>; Fri, 28 Aug 2026 11:46:52 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 256E33D2321
+	for <ltp@archiver.kernel.org>; Fri, 28 Aug 2026 11:48:25 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 375AE3CB52D
- for <ltp@lists.linux.it>; Fri, 28 Aug 2026 11:46:35 +0200 (CEST)
-Received: from mail-pj2-x06.google.com (mail-pj2-x06.google.com
- [IPv6:2607:f8b0:4864:39::6])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 5D68F3CB52D
+ for <ltp@lists.linux.it>; Fri, 28 Aug 2026 11:48:08 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 8C691600B34
- for <ltp@lists.linux.it>; Fri, 28 Aug 2026 11:46:35 +0200 (CEST)
-Received: by mail-pj2-x06.google.com with SMTP id
- 98e67ed59e1d1-3964deae8a7so280203a91.0
- for <ltp@lists.linux.it>; Fri, 28 Aug 2026 02:46:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1787910394; x=1788515194; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to:content-type;
- bh=V0o6MwSLLiq8belyoUK37sI8zrG11H4EBs+ZGt99Ymk=;
- b=X2KPY9ofTqupKIBHTlxbqAbKcSXU+bJzZm3lRK4wIiUTx5WozihiL1wnpG8Qw+1rrw
- 5cTi0MN4QWtxgdF3luxiSPBNeBCYunlekCXLx/jDLUHuQLhLFsP9Wt3tXbnUYmVj1BsW
- LTHujKOJbnacpVrYnDGYesOonU+wGc2syQt+o39VcgZyj0cX03p7XYBmDN3Nwx/adVBL
- mwUcmRmi0jeIuL7zElEU4oLK1ZooR+Tedgwu/N9qm/jUKrAhZjjP39MdqEbavsgr56v5
- EM2iOQ3+MIy4h1kmz3FFOaKTqm6FywgHRzI4m4RdjZb97LTx0ZnO9yDLJB53fqlhCmdJ
- ZRNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1787910394; x=1788515194;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to:content-type;
- bh=V0o6MwSLLiq8belyoUK37sI8zrG11H4EBs+ZGt99Ymk=;
- b=e0QIbs4H0ikyEMEsZCJHHClVLKkoF6YrYr+j+oRYK+FQVt+nuzjZiX4C+WGctyj1Gc
- kysJKOzR6SPjRm0vao1UC/vRqmexyNKDyVeHcPR4APT7yqT5iHLNcgafq34bD0/94LjD
- uBJPHipRPKHI+HCK+rr2WnJKVu/hAbYKqtJfwTrWXXdobTqii6a9eOFNjSJqlfMe+Bx0
- P/2PIyVkCfWGNOtVfB8WCKE6OYsYS59m5f0CD9/t0NJL9FhpFsWH9ijf6MVN1NL/qSuX
- H2goMUY3ErbOXTzX9TucTN16eU12Dm9BBKOsLSUg3pPTbOyz8uMfW2LCk8I3UkouTk92
- 3X2A==
-X-Gm-Message-State: AFuF++kQI4h7YnvS+pRqAxENgIXFaDdBPyW+r2oyyb52hf2sawmqtouQ
- K44BeiGrxVbBLm7aDZptl+o5ym70WXw3HvNayx41rMhFRCAfTF1n6/x5YizJS4KG
-X-Gm-Gg: AR+sD12QIrYjIOYG8goyYK/l73EgHFbDQQlnkF+Mx0MenDC8/0LsSjzOfwwqbFMlyEL
- 1Lo7ERYXwDSNO1nhQzofT2Yp+wjZlavfiAPJXgoQgY5oHA7pkaNBUTAsAujYbgDxyHEN6yFBXym
- dXdB9HEB6whx27Ocs817Bcut+/arhTJpr2x+qrbFet3NuL57hZGZoRx79bhDRYaYOpY861HN7Nt
- OZjUy1uqPTmj4RyWGqwvCNcGyL1tebE3FIu41eaVNFrmFvqhf/EzEbCLbGBNDHxv5fpgL5zcA3b
- tgpm7Bskb6ReXhpqdVrFUBdka/yHvl18+/4e+PBCI48lhGl4XdCgWKy6wrFFUBk01WUJk9VKxZp
- EFIU7fKlafHKsjhS+wh5YZTpDT1Cs+IswWZAEg6vP2YHU1oHdJ9ynzX1PLN50my2bCPZjtsGuL+
- Pv+7L391tDnOuq1xuuEsZQrbDgiNLVw4Xlzf2tbDddJB76QOIx3N5huZlX7yb+K3pwRs6BdimDz
- yCHfwadkyyfL4fzlEOq3FUOgqMsyAJkRyjNRQRBEy5SaEAzwRM24tfv8q6m8BjV05hYGEvw1G3+
- 1g==
-X-Received: by 2002:a17:90b:4a42:b0:37f:e326:6557 with SMTP id
- 98e67ed59e1d1-396d0e7c071mr10439748a91.4.1787910393882; 
- Fri, 28 Aug 2026 02:46:33 -0700 (PDT)
-Received: from
- runnervmgx7h7.hwdy1fi52d2utifharbblzvnqc.phxx.internal.cloudapp.net
- ([20.169.77.228]) by smtp.gmail.com with ESMTPSA id
- 5a478bee46e88-3286f9e907fsm3609676eec.25.2026.08.28.02.46.33
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 28 Aug 2026 02:46:33 -0700 (PDT)
-From: linuxtestproject.agent@gmail.com
-To: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Fri, 28 Aug 2026 09:46:32 +0000
-Message-ID: <20260828094632.9559-1-linuxtestproject.agent@gmail.com>
-X-Mailer: git-send-email 2.55.0
-In-Reply-To: <20260828-swapon_discard_coverage-v2-1-e55a86dad729@suse.com>
-References: <20260828-swapon_discard_coverage-v2-1-e55a86dad729@suse.com>
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 970A4600A6F
+ for <ltp@lists.linux.it>; Fri, 28 Aug 2026 11:48:07 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id DC11622018;
+ Fri, 28 Aug 2026 09:47:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1787910482; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=BqDr6yGbyLfv2XkHfx7PkH2+JEdYAo5GBNPFdiwg7n0=;
+ b=jq9r5legep+MHke/dTaba3PXg5c9xZ2uqXsiRQlnBYAPLynlEMiYELv1OjTxNdaFGPQaOz
+ lAcefTP5kmPcLUhgptWp3pq9+dMBwEnTUxym3+AYtIO3Rkbp9RcVg+xmLJAJxWr4g4wFce
+ aT/oGOQJExV9HJ6iuvFWSBGEEm55OWU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1787910482;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=BqDr6yGbyLfv2XkHfx7PkH2+JEdYAo5GBNPFdiwg7n0=;
+ b=L9oKDcOCYkIjs9Vtjg/wNTWq+xCBDl4t7iAkMMrTaSlAvUWeSVAQOTldc3LQe4fdTGJTgC
+ GfDx+pw2c9eQp5CA==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1787910477; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=BqDr6yGbyLfv2XkHfx7PkH2+JEdYAo5GBNPFdiwg7n0=;
+ b=szlYn9DOqkVrHYdpA0+EKroSwGJr5CH8fQBIijCWdNkkWprNjokF1Tk0clVfCVkBtq4erv
+ ePFigDue5SX2RQyQwJiO5xY99jFAxZtBlB/1P7e4G271eljAHvTSBkbb6VF2jUR47AJOrF
+ OT/6YQ6sxaZ4lVuOq4oOo9CLPX23W80=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1787910477;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=BqDr6yGbyLfv2XkHfx7PkH2+JEdYAo5GBNPFdiwg7n0=;
+ b=zBZXmujLCessmgSlc4lvPMusAuHt73fcQL7R9n3CSkcqn/VABTTXI4KShzoVquxSAO/nGn
+ yoqZCERDunT1A4DA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9FC9613674;
+ Fri, 28 Aug 2026 09:47:57 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 46X8Jk1ZkWpVDQAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Fri, 28 Aug 2026 09:47:57 +0000
+Date: Fri, 28 Aug 2026 11:48:04 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Pavithra <pavrampu@linux.ibm.com>
+Message-ID: <apFZVNffUt7v9t5V@yuki.lan>
+References: <20260809174900.1847247-1-pavrampu@linux.ibm.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20260809174900.1847247-1-pavrampu@linux.ibm.com>
+X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; MIME_TRACE(0.00)[0:+];
+ ARC_NA(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ RCPT_COUNT_TWO(0.00)[2]; FROM_HAS_DN(0.00)[];
+ RCVD_TLS_ALL(0.00)[]; MISSING_XM_UA(0.00)[];
+ FROM_EQ_ENVFROM(0.00)[]; TO_DN_SOME(0.00)[];
+ RCVD_COUNT_TWO(0.00)[2]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[yuki.lan:mid, suse.cz:email,
+ imap1.dmz-prg2.suse.org:helo]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] lapi: fallback definitions for swapon syscall
+Subject: Re: [LTP] [PATCH v4] hugetlb/hugemmap: add hugemmap33 to test
+ hugetlbfs quota accounting
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -97,49 +113,104 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Andrea,
+Hi!
+> +static void verify_quota_stat(long tot, long free, long avail)
+> +{
+> +	struct statfs s;
+> +
+> +	SAFE_STATFS(MNTPOINT, &s);
+> +
+> +	if ((long)s.f_blocks != tot || (long)s.f_bfree != free || (long)s.f_bavail != avail) {
+> +		tst_res(TFAIL, "Bad quota counters: total=%li free=%li avail=%li, expected %li %li %li",
+> +			(long)s.f_blocks, (long)s.f_bfree, (long)s.f_bavail,
+> +			tot, free, avail);
+> +		return;
+> +	}
+> +	tst_res(TPASS, "Quota counters are correct: total=%li free=%li avail=%li",
+> +		tot, free, avail);
+> +}
+> +
+> +static void do_map(unsigned long size, int mmap_flags, int action_flags,
+> +		   int expected)
+> +{
+> +	int fd;
+> +	char *a = MAP_FAILED, *b, *c = MAP_FAILED;
+> +	char path[PATH_MAX];
+> +
+> +	snprintf(path, sizeof(path), "%s/test_file_%d", MNTPOINT, getpid());
+> +	fd = SAFE_OPEN(path, O_CREAT | O_RDWR, 0600);
+> +	SAFE_UNLINK(path);
+> +
+> +	TESTPTR(mmap(NULL, size, PROT_READ | PROT_WRITE, mmap_flags, fd, 0));
+> +	a = TST_RET_PTR;
+> +	if (a == MAP_FAILED) {
+> +		if (expected == QUOTA_FAIL && TST_ERR == ENOMEM) {
+> +			tst_res(TPASS | TERRNO, "mmap failed as expected due to quota");
+> +			SAFE_CLOSE(fd);
+> +			return;
+> +		}
+> +		tst_res(TFAIL | TERRNO, "mmap failed unexpectedly");
+> +		SAFE_CLOSE(fd);
+> +		return;
+> +	}
+> +
+> +	if (expected == QUOTA_FAIL) {
+> +		tst_res(TFAIL, "mmap succeeded but quota exhaustion was expected");
+> +		goto cleanup_a;
+> +	}
+> +
+> +	if (action_flags & ACTION_TOUCH) {
+> +		for (b = a; b < a + size; b += hpage_size)
+> +			*b = 1;
+> +	}
+> +
+> +	if (action_flags & ACTION_COW) {
+> +		TESTPTR(mmap(NULL, size, PROT_READ | PROT_WRITE, MAP_PRIVATE, fd, 0));
+> +		c = TST_RET_PTR;
+> +		if (c == MAP_FAILED) {
+> +			if (expected == QUOTA_COW_FAIL && TST_ERR == ENOMEM) {
+> +				tst_res(TPASS | TERRNO, "COW mmap failed as expected due to quota");
+> +				goto cleanup_a;
+> +			}
+> +			tst_res(TFAIL | TERRNO, "COW mmap failed unexpectedly");
+> +			goto cleanup_a;
+> +		}
+> +
+> +		if (expected == QUOTA_COW_FAIL) {
+> +			tst_res(TFAIL, "COW mmap succeeded but quota exhaustion was expected");
+> +			goto cleanup_c;
+> +		}
+> +
+> +		if (*c != 1) {
+> +			tst_res(TFAIL, "Data mismatch when setting up COW");
+> +			goto cleanup_c;
+> +		}
+> +		*c = 0;
+> +		SAFE_MUNMAP(c, size);
+> +	}
+> +
+> +	if (expected == QUOTA_OK)
+> +		tst_res(TPASS, "Quota test passed as expected");
+> +
+> +	SAFE_MUNMAP(a, size);
+> +	SAFE_CLOSE(fd);
+> +	return;
+> +
+> +cleanup_c:
+> +	SAFE_MUNMAP(c, size);
+> +cleanup_a:
+> +	SAFE_MUNMAP(a, size);
+> +	SAFE_CLOSE(fd);
+> +}
 
-On Aug 28, 2026, Andrea Cervesato wrote:
-> lapi: fallback definitions for swapon syscall
+I think that it would be much more readable if this was split into
+several functions. It would make sense to split this into three
+different functions one function verify_quota_ok() verify_quota_fail()
+and verify_quota_cow_fail().
 
---- [PATCH 1/3] ---
-
-> lapi: fallback definitions for swapon syscall
->
-> Introduce fallback definition inside lapi for:
-
-Could the subject and body name include/tse_swap.h rather than lapi? The
-fallback definitions are not added under include/lapi/, so the current
-component and location do not match the patch.
-
---- [PATCH 3/3] ---
-
-> +	TST_EXP_FAIL(tst_syscall(__NR_swapon, tc->path, tc->flags), tc->exp_errno,
->  		     "swapon(2) fail with %s", tc->err_desc);
->
->  static void cleanup(void)
->  {
->  	if (do_swapoff && tst_syscall(__NR_swapoff, USED_FILE))
->  		tst_res(TWARN | TERRNO, "swapoff(alreadyused) failed");
->  }
-
-Could an unexpected successful swapon() of SWAP_FILE be tracked and undone?
-This is the failure mode these new cases are intended to detect, but
-TST_EXP_FAIL() only reports TFAIL. The swap area remains active, the next
-case gets EBUSY, and cleanup only disables USED_FILE, so the test filesystem
-cannot be unmounted.
-
-Verdict - Needs revision
-
----
-Note:
-
-The agent can sometimes produce false positives although often its
-findings are genuine. If you find issues with the review, please
-comment this email or ignore the suggestions.
-
-Regards,
-LTP AI Reviewer
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
