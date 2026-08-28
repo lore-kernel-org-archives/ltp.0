@@ -4,117 +4,96 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1CDD2C61DCB
-	for <ltp@archiver.kernel.org>; Fri, 28 Aug 2026 14:16:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 50C2DC61DCB
+	for <ltp@archiver.kernel.org>; Fri, 28 Aug 2026 14:33:05 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 5856A3E9A72
-	for <ltp@archiver.kernel.org>; Fri, 28 Aug 2026 16:16:17 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 8C2EA3E9A6E
+	for <ltp@archiver.kernel.org>; Fri, 28 Aug 2026 16:33:03 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 96BE23E5E15
- for <ltp@lists.linux.it>; Fri, 28 Aug 2026 16:12:10 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id C33153D0F40
+ for <ltp@lists.linux.it>; Fri, 28 Aug 2026 16:32:47 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 10674600472
- for <ltp@lists.linux.it>; Fri, 28 Aug 2026 16:12:09 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 3D04D1000530
+ for <ltp@lists.linux.it>; Fri, 28 Aug 2026 16:32:47 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 679E421BD1;
- Fri, 28 Aug 2026 14:12:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1787926325; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 7367221E19;
+ Fri, 28 Aug 2026 14:32:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1787927562; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=RgObFFTGxv/gv0VNLW/fwshWPqB281yygmhHUpYuuB8=;
- b=z3C400v77/iw2ETsDumsl2mBc3PuEkWYN54sblFXJUfZYGrXdhgQ//EIYUClP3NAqQoyW1
- EABkZ18Ppc+OqRyWzTIuMmjuupzqFyGXQ/uTwpGtDDVrVLQ2vsX4hnCQSVhKqBMXEp9UM1
- MbPT+a2XDgCJEUmgG28YdGAgIdQqeSs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1787926325;
+ bh=FzZQwcDbCvS4v1vd/CUG9nBhv11sB7AbkdJD6FBNE04=;
+ b=07PadHe9C7KFN2BTxlvBjpUFY0tl4FWBTiC9YbWN/o4cqqs1TR3GeEHOxw1s1/lJ2yoxze
+ 8+44WJ0cBTbsqMRjfaL+WTDLJdzMoh+IlLMdLdTvoL3FgdJn3cas1DVE0bZYLYKU7vR09K
+ bEGd+ISQEBZGVy5IrIPBpNoSdXfDeTM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1787927562;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=RgObFFTGxv/gv0VNLW/fwshWPqB281yygmhHUpYuuB8=;
- b=roqAvdtj2xRzxL5NCCEagMTOg4f1X/wYBxw5g8A2raoq9vi6kyPzNtOEBQGPGuphytbQiN
- i5tni500ahblzBCw==
+ bh=FzZQwcDbCvS4v1vd/CUG9nBhv11sB7AbkdJD6FBNE04=;
+ b=UZFWpRUfDIMJkEWtPwXyKeZo62+TOQzptlmXpnX22cUwtA34+EMfVVKSfPbkZ4BwPB6eRx
+ 4gLN+qFlkHxUAEDA==
 Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.de header.s=susede2_rsa header.b=jAhqXEjC;
- dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b="mdju2hv/"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1787926321; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1787927558; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=RgObFFTGxv/gv0VNLW/fwshWPqB281yygmhHUpYuuB8=;
- b=jAhqXEjCoZsKMCsToOuuYgG2YKgqjlWqya0IYB1GLsF1XNauN7/ITBilT9KfHXBULULolN
- BGiY8GavZuOOjTWmJ5TcPP/KgeDgZ3gcnUqc7Wg6Aqu/ajKtEKZ9rvar4weIOY8wnO3CIM
- qtup22iSa+OD0i1qAgbASP73cPu/izs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1787926321;
+ bh=FzZQwcDbCvS4v1vd/CUG9nBhv11sB7AbkdJD6FBNE04=;
+ b=XI1TWHZ/1BkMcXk2WmM74khVygOBXQOc30PwccCwqx1y0QirZfNsC1ffTwUQGIGM30mHk0
+ WzQZetNFG9bNoBpQGm38mwTNMwrLsv+xfOAApBwlRIZue//8X+mXkBo24YV0i8fHs8TqFa
+ lMKy8NU0uoFdfS/ZwyXp5Dey6pZqb8k=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1787927558;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=RgObFFTGxv/gv0VNLW/fwshWPqB281yygmhHUpYuuB8=;
- b=mdju2hv/fUJwaQgS4NXw0l2EvRVHa6Rq4y/9iTD2u8LJdYWw9GjSGa9CaDU3ybWi/wSjmQ
- 60Zh5ImxgR6iEDCg==
+ bh=FzZQwcDbCvS4v1vd/CUG9nBhv11sB7AbkdJD6FBNE04=;
+ b=ZplhZStBDS67Zd54cHTbmdc5petUTj9GbC1pv3/ahMWvSeexblo8gutkcRVl8O5vWeM5em
+ mmWKH/e48lN7+PDQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 521AD13763;
- Fri, 28 Aug 2026 14:11:46 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4AF4813515;
+ Fri, 28 Aug 2026 14:32:38 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 0CWJEiKXkWpoGwAAD6G6ig
- (envelope-from <andrea.cervesato@suse.de>); Fri, 28 Aug 2026 14:11:46 +0000
-From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Fri, 28 Aug 2026 16:11:49 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 01BHEgackWrZLwAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Fri, 28 Aug 2026 14:32:38 +0000
+Date: Fri, 28 Aug 2026 16:32:44 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Pavithra <pavrampu@linux.ibm.com>
+Message-ID: <apGcDIIDG8u2NoQy@yuki.lan>
+References: <20260817155701.943752-1-pavrampu@linux.ibm.com>
 MIME-Version: 1.0
-Message-Id: <20260828-fchroot-v3-15-656a2b515726@suse.com>
-References: <20260828-fchroot-v3-0-656a2b515726@suse.com>
-In-Reply-To: <20260828-fchroot-v3-0-656a2b515726@suse.com>
-To: Linux Test Project <ltp@lists.linux.it>
-X-Mailer: b4 0.16.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1787926304; l=3005;
- i=andrea.cervesato@suse.com; s=20251210; h=from:subject:message-id;
- bh=Frdr0EWc7VJ3+NedtLt0rw5ysc/qYRUox7XrYQ5uBJM=;
- b=7s6CDotVNT5Ame55ZlCBIxyLMmHXeUArrTshYerVd/mhW6InV5SCMNumFtNP70mIRXi4hv6fe
- 37wMT+4eoKLDZ3oNtRwJhrG0nkmB0c57Eincbq6WtPmHBfVTKynV7Zh
-X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
- pk=zKY+6GCauOiuHNZ//d8PQ/UL4jFCTKbXrzXAOQSLevI=
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: 679E421BD1
-X-Spamd-Result: default: False [-5.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+Content-Disposition: inline
+In-Reply-To: <20260817155701.943752-1-pavrampu@linux.ibm.com>
+X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  NEURAL_HAM_LONG(-1.00)[-1.000];
- DWL_DNSWL_LOW(-1.00)[suse.de:dkim];
- R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- MIME_TRACE(0.00)[0:+];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- RCVD_TLS_ALL(0.00)[]; RCPT_COUNT_TWO(0.00)[2];
- DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,suse.com:email,suse.com:mid];
- TO_DN_ALL(0.00)[]; DKIM_TRACE(0.00)[suse.de:+]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+ NEURAL_HAM_SHORT(-0.20)[-0.999]; MIME_GOOD(-0.10)[text/plain];
+ ARC_NA(0.00)[]; MISSING_XM_UA(0.00)[]; MIME_TRACE(0.00)[0:+];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; RCPT_COUNT_TWO(0.00)[2];
+ RCVD_TLS_ALL(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
+ FROM_EQ_ENVFROM(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ RCVD_COUNT_TWO(0.00)[2];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[yuki.lan:mid, suse.cz:email,
+ imap1.dmz-prg2.suse.org:helo, linux.it:url]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH STAGING v3 15/15] fchroot13: test failfs entry when
- chrooted
+Subject: Re: [LTP] [PATCH v6] memcg/memcontrol05: add cgroup v2 task
+ migration charge accounting test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -126,117 +105,215 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Andrea Cervesato <andrea.cervesato@suse.com>
+Hi!
+> +enum checkpoints {
+> +	WORKER_ALLOC_DONE,
+> +	WORKER_RESUME,
+> +	WORKER_ALLOC2_DONE,
+> +	WORKER_EXIT,
+> +};
+> +
+> +static struct tst_cg_group *group_a;
+> +static struct tst_cg_group *group_b;
+> +static pid_t worker_pid;
+> +
+> +enum worker_stage {
+> +	STAGE_NOT_STARTED,
+> +	STAGE_WAITING_RESUME,   /* worker blocked on WORKER_RESUME */
+> +	STAGE_WAITING_EXIT,     /* worker blocked on WORKER_EXIT  */
+> +	STAGE_DONE,             /* worker reaped                  */
+> +};
 
-Verify that unprivileged fchroot() into failfs is refused when the
-process is already chrooted: moving the root of a chrooted task into
-failfs would allow it to escape its chroot via openat(fd, "..") with
-a pre-opened directory fd, so the kernel refuses the syscall with
-EPERM.
+First of all since we serialize only two processes, all that is needed
+is single checkpoint.
 
-Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
----
- runtest/staging                               |  1 +
- testcases/kernel/syscalls/fchroot/.gitignore  |  1 +
- testcases/kernel/syscalls/fchroot/fchroot13.c | 63 +++++++++++++++++++++++++++
- 3 files changed, 65 insertions(+)
+> +static enum worker_stage worker_stage;
+> +
+> +static void touch_pages(char *buf, size_t size)
+> +{
+> +	size_t i;
+> +
+> +	for (i = 0; i < size; i += getpagesize())
+> +		buf[i] = 1;
+> +}
+> +
+> +static void worker(void)
+> +{
+> +	char *buf1, *buf2;
+> +
+> +	SAFE_CG_PRINTF(group_a, "cgroup.procs", "%d", getpid());
+> +
+> +	buf1 = SAFE_MMAP(NULL, ALLOC_SIZE, PROT_READ | PROT_WRITE,
+> +			 MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+> +	touch_pages(buf1, ALLOC_SIZE);
+> +
+> +	TST_CHECKPOINT_WAKE(WORKER_ALLOC_DONE);
+> +
+> +	TST_CHECKPOINT_WAIT(WORKER_RESUME);
 
-diff --git a/runtest/staging b/runtest/staging
-index 1655b6813..95e777ffb 100644
---- a/runtest/staging
-+++ b/runtest/staging
-@@ -12,3 +12,4 @@ fchroot09 fchroot09
- fchroot10 fchroot10
- fchroot11 fchroot11
- fchroot12 fchroot12
-+fchroot13 fchroot13
-diff --git a/testcases/kernel/syscalls/fchroot/.gitignore b/testcases/kernel/syscalls/fchroot/.gitignore
-index e8a6730ee..3e77e3762 100644
---- a/testcases/kernel/syscalls/fchroot/.gitignore
-+++ b/testcases/kernel/syscalls/fchroot/.gitignore
-@@ -11,3 +11,4 @@ fchroot09
- fchroot10
- fchroot11
- fchroot12
-+fchroot13
-diff --git a/testcases/kernel/syscalls/fchroot/fchroot13.c b/testcases/kernel/syscalls/fchroot/fchroot13.c
-new file mode 100644
-index 000000000..e90e6f663
---- /dev/null
-+++ b/testcases/kernel/syscalls/fchroot/fchroot13.c
-@@ -0,0 +1,63 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (C) 2026 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
-+ */
-+
-+/*\
-+ * Test that unprivileged :manpage:`fchroot(2)` into failfs is refused
-+ * when the process is already chrooted.
-+ *
-+ * The root directory is what confines ".." resolution and the failfs root
-+ * can never be reached by walking up a real mount tree. Moving the root
-+ * of a chrooted task into failfs would allow it to escape its chroot via
-+ * ``openat(fd, "..")`` with a pre-opened directory fd, so the kernel refuses
-+ * the syscall with ``EPERM``.
-+ *
-+ * Root is required to create the chroot jail before dropping to an
-+ * unprivileged user in the forked child.
-+ */
-+
-+#define _GNU_SOURCE
-+#include <pwd.h>
-+#include <unistd.h>
-+#include "tst_test.h"
-+#include "lapi/fcntl.h"
-+#include "lapi/prctl.h"
-+#include "lapi/syscalls.h"
-+
-+#define JAILDIR "jail"
-+
-+static struct passwd *ltpuser;
-+
-+static void run(void)
-+{
-+	if (SAFE_FORK())
-+		return;
-+
-+	SAFE_CHROOT(JAILDIR);
-+	SAFE_CHDIR("/");
-+
-+	SAFE_SETRESUID(ltpuser->pw_uid, ltpuser->pw_uid,
-+		ltpuser->pw_uid);
-+
-+	SAFE_PRCTL(PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0);
-+
-+	TST_EXP_FAIL(tst_syscall(__NR_fchroot, FD_FAILFS_ROOT, 0),
-+		EPERM, "fchroot() from a chrooted process");
-+
-+	exit(0);
-+}
-+
-+static void setup(void)
-+{
-+	ltpuser = SAFE_GETPWNAM("nobody");
-+	SAFE_MKDIR(JAILDIR, 0755);
-+}
-+
-+static struct tst_test test = {
-+	.setup = setup,
-+	.test_all = run,
-+	.needs_root = 1,
-+	.needs_tmpdir = 1,
-+	.forks_child = 1,
-+};
+Should be just TST_CHECKPOINT_WAKE_AND_WAIT(0);
+
+> +	buf2 = SAFE_MMAP(NULL, ALLOC_SIZE2, PROT_READ | PROT_WRITE,
+> +			 MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+> +	touch_pages(buf2, ALLOC_SIZE2);
+> +
+> +	TST_CHECKPOINT_WAKE(WORKER_ALLOC2_DONE);
+> +
+> +	TST_CHECKPOINT_WAIT(WORKER_EXIT);
+
+Here as well.
+
+> +	SAFE_MUNMAP(buf1, ALLOC_SIZE);
+> +	SAFE_MUNMAP(buf2, ALLOC_SIZE2);
+> +}
+
+With the checkpoints unified to a single checkpoint we do not need to
+track the worker_stage either.
+
+> +static void test_memcg_task_migration(void)
+> +{
+> +	long baseline_b, after_migrate, after_migrate_a, after_alloc2, current_a;
+> +
+> +	worker_pid = 0;
+> +	worker_stage = STAGE_NOT_STARTED;
+> +
+> +	group_a = tst_cg_group_mk(tst_cg, "group_a");
+> +	group_b = tst_cg_group_mk(tst_cg, "group_b");
+> +
+> +	if (SAFE_CG_HAS(tst_cg, "memory.swap.max")) {
+> +		SAFE_CG_PRINT(group_a, "memory.swap.max", "0");
+> +		SAFE_CG_PRINT(group_b, "memory.swap.max", "0");
+> +	}
+> +
+> +	SAFE_CG_SCANF(group_b, "memory.current", "%ld", &baseline_b);
+> +	tst_res(TINFO, "group_b baseline memory.current=%ld", baseline_b);
+> +
+> +	worker_pid = SAFE_FORK();
+> +	if (!worker_pid) {
+> +		worker();
+> +		exit(0);
+> +	}
+> +	worker_stage = STAGE_WAITING_RESUME;
+> +
+> +	TST_CHECKPOINT_WAIT(WORKER_ALLOC_DONE);
+> +
+> +	SAFE_CG_SCANF(group_a, "memory.current", "%ld", &current_a);
+
+
+> +	tst_res(TINFO, "group_a memory.current=%ld after alloc", current_a);
+> +	if (current_a < (long)ALLOC_SIZE) {
+> +		tst_res(TFAIL,
+> +			"group_a memory.current (%ld) < ALLOC_SIZE (%ld)",
+> +			current_a, (long)ALLOC_SIZE);
+> +		goto done;
+> +	}
+> +	tst_res(TPASS,
+> +		"group_a memory.current (%ld) >= ALLOC_SIZE (%ld)",
+> +		current_a, (long)ALLOC_SIZE);
+
+This whole block should be TST_EXP_LE_LU()
+
+
+> +	SAFE_CG_PRINTF(group_b, "cgroup.procs", "%d", worker_pid);
+> +	tst_res(TINFO, "Migrated worker PID %d to group_b", worker_pid);
+> +
+> +	SAFE_CG_SCANF(group_b, "memory.current", "%ld", &after_migrate);
+> +
+> +	tst_res(TINFO,
+> +		"group_b memory.current=%ld after migration (baseline=%ld)",
+> +		after_migrate, baseline_b);
+> +
+> +	TST_EXP_EXPR(after_migrate <= baseline_b + (long)MB(4),
+> +		     "group_b memory.current (%ld) not increased after migration (baseline=%ld)",
+> +		     after_migrate, baseline_b);
+
+Where did the MB(4) came from? Magic constants like that surely wouldn't
+work universally.
+
+> +	SAFE_CG_SCANF(group_a, "memory.current", "%ld", &after_migrate_a);
+> +	tst_res(TINFO, "group_a memory.current=%ld after migration", after_migrate_a);
+> +	TST_EXP_EXPR(after_migrate_a >= (long)ALLOC_SIZE,
+> +		     "group_a memory.current (%ld) still holds pre-migration charges (>= ALLOC_SIZE %ld)",
+> +		     after_migrate_a, (long)ALLOC_SIZE);
+> +
+> +	TST_CHECKPOINT_WAKE(WORKER_RESUME);
+> +	worker_stage = STAGE_WAITING_EXIT;
+> +	TST_CHECKPOINT_WAIT(WORKER_ALLOC2_DONE);
+
+Here as well should be just TST_CHECKPOINT_WAKE_AND_WAIT(0);
+
+> +	SAFE_CG_SCANF(group_b, "memory.current", "%ld", &after_alloc2);
+> +	tst_res(TINFO, "group_b memory.current=%ld after second alloc (baseline=%ld)",
+> +		after_alloc2, after_migrate);
+> +
+> +	TST_EXP_EXPR(after_alloc2 >= after_migrate + (long)ALLOC_SIZE2,
+> +		     "group_b memory.current (%ld) increased by >= ALLOC_SIZE2 (%ld)",
+> +		     after_alloc2, (long)ALLOC_SIZE2);
+> +
+> +done:
+> +	if (worker_stage == STAGE_WAITING_RESUME) {
+> +		TST_CHECKPOINT_WAKE(WORKER_RESUME);
+> +		worker_stage = STAGE_WAITING_EXIT;
+> +		TST_CHECKPOINT_WAIT(WORKER_ALLOC2_DONE);
+> +	}
+> +	if (worker_stage == STAGE_WAITING_EXIT) {
+> +		TST_CHECKPOINT_WAKE(WORKER_EXIT);
+> +		tst_reap_children();
+> +		worker_pid = 0;
+> +		worker_stage = STAGE_DONE;
+> +	}
+
+I would be way easier to SAFE_KILL() and SAFE_WAITPID() the worker
+process. And the same in the test setup.
+
+> +	group_a = tst_cg_group_rm(group_a);
+> +	group_b = tst_cg_group_rm(group_b);
+> +}
+> +
+> +static void cleanup(void)
+> +{
+> +	if (worker_stage == STAGE_WAITING_RESUME) {
+> +		TST_CHECKPOINT_WAKE(WORKER_RESUME);
+> +		worker_stage = STAGE_WAITING_EXIT;
+> +		TST_CHECKPOINT_WAIT(WORKER_ALLOC2_DONE);
+> +	}
+> +	if (worker_stage == STAGE_WAITING_EXIT) {
+> +		TST_CHECKPOINT_WAKE(WORKER_EXIT);
+> +		tst_reap_children();
+> +	}
+> +
+> +	if (group_a)
+> +		group_a = tst_cg_group_rm(group_a);
+> +	if (group_b)
+> +		group_b = tst_cg_group_rm(group_b);
+> +}
+> +
+> +static struct tst_test test = {
+> +	.test_all	= test_memcg_task_migration,
+> +	.cleanup	= cleanup,
+> +	.forks_child	= 1,
+> +	.needs_root	= 1,
+> +	.needs_checkpoints = 1,
+> +	.needs_cgroup_ver  = TST_CG_V2,
+> +	.needs_cgroup_ctrls = (const char *const []){ "memory", NULL },
+> +	.min_mem_avail	= MIN_MEM_AVAIL,
+> +};
+> -- 
+> 2.55.0
+> 
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
 
 -- 
-2.51.0
-
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
