@@ -4,52 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9CA09C61DB9
-	for <ltp@archiver.kernel.org>; Fri, 28 Aug 2026 03:58:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 62FC5C61DB9
+	for <ltp@archiver.kernel.org>; Fri, 28 Aug 2026 07:15:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1787901321; h=message-id :
+ to : in-reply-to : date : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : cc : mime-version : content-type :
+ content-transfer-encoding : sender : from;
+ bh=vKc30fL4rRcr7NgZewUjUxjVSab6re/yosAL0f5ut2I=;
+ b=TgIQYgId0Zn+fFs6wlNAuRqaV451iC0Hbd0vWs/uql6Jl6ZSss2ssOC3lnH80m1Urxrql
+ JRxIM2jHRNLLAajshhj5brJ3ywdHs38/JgHzDwgShYIdEWUjBhCeH+MJEXJ6DaIgveSCRVO
+ x/frQILR1VA8qpHO2amrurC+e8nkTBw=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 793883CD6A6
-	for <ltp@archiver.kernel.org>; Fri, 28 Aug 2026 05:58:18 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 423863DCD6A
+	for <ltp@archiver.kernel.org>; Fri, 28 Aug 2026 09:15:21 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id DD7EB3CD6A6
- for <ltp@lists.linux.it>; Fri, 28 Aug 2026 05:58:01 +0200 (CEST)
-Received: from mta1.migadu.com (out-19.mta1.migadu.com
- [IPv6:2001:41d0:203:375::13])
+ by picard.linux.it (Postfix) with ESMTPS id 38A9D3D9F02
+ for <ltp@lists.linux.it>; Fri, 28 Aug 2026 09:15:01 +0200 (CEST)
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com
+ [IPv6:2a00:1450:4864:20::32e])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id AADED200279
- for <ltp@lists.linux.it>; Fri, 28 Aug 2026 05:57:59 +0200 (CEST)
-X-Envelope-To: ltp@lists.linux.it
-DKIM-Signature: a=rsa-sha256; bh=fT5yAyDESYOmFDS3/nEWxopgMThtyyuuXPHlV5OmlUU=; 
- c=simple/simple; d=linux.dev;
- h=from:to:subject:date:message-id:mime-version:content-type; s=key1;
- t=1787889479; v=1; x=1788494279;
- b=R+o9OphpSkLmbOaHrPo2gRdzAtkMB1RfmpBbtZM7/ZvBPQtqcc8ewJMQYuXxeUZC0tjcOx7H
- FCrRZesEgC7z2ZaVn5gacDmnVyTfrDBEJ14+dEeVxsFZg+4WXSK/ym/v5kNMj66YTY9RpnsWgM5
- u5S/qAJKObLK8aZmdHs0X6mM=
-X-Envelope-To: ltp@lists.linux.it
-Received: by smtp.migadu.com with ESMTPS id 055274b413752636;
- Fri, 28 Aug 2026 03:57:59 +0000
-X-Mizu-Trace-ID: 055274b413752636
-X-Migadu-Flow: FLOW_OUT
-Date: Fri, 28 Aug 2026 11:57:55 +0800
-From: Li Wang <li.wang@linux.dev>
-To: Andrea Cervesato <andrea.cervesato@suse.de>
-Message-ID: <apEHQxmBxBG4Vm7w@linux.dev>
-Mail-Followup-To: Andrea Cervesato <andrea.cervesato@suse.de>,
- Linux Test Project <ltp@lists.linux.it>
-References: <20260827-swapon_discard_coverage-v1-0-633bcb11c181@suse.com>
- <20260827-swapon_discard_coverage-v1-2-633bcb11c181@suse.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20260827-swapon_discard_coverage-v1-2-633bcb11c181@suse.com>
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 66306140026A
+ for <ltp@lists.linux.it>; Fri, 28 Aug 2026 09:15:00 +0200 (CEST)
+Received: by mail-wm1-x32e.google.com with SMTP id
+ 5b1f17b1804b1-49b8687630fso3906815e9.3
+ for <ltp@lists.linux.it>; Fri, 28 Aug 2026 00:15:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1787901300; x=1788506100; darn=lists.linux.it;
+ h=date:content-transfer-encoding:content-type:subject:in-reply-to:cc
+ :to:from:message-id:from:to:cc:subject:date:message-id:reply-to
+ :content-type; bh=cEiIZ8L3im5T0mdXNRFz8Q2Zl0qLxnfLR5HeTcGl4iU=;
+ b=gdyTLuzVC45tdZUr027dsEnEC8zNuFXbCrd43uNBBNkOCm7v5UrSttPk2NpTmQDLz1
+ t609Pnwcb8HgTcPDHCI2FP/tjqXNCWpRQtbkSqZD8L0+d8bG2ggnf3CrBbdkkf8Wp4Ql
+ fI2VqIy0BfWe9goh3WA0mn4x66Kh8eRdaSlhwcdVItemE4ADa7T4oOBn0omM/wYWlTEl
+ iRVpZ8FsG4jAIVrdcnHcoNgIcGUUNKbHjyxaQjmeIwL841oU2jp3oUwkrnvmEJ7hoex3
+ pyyVvHHdtD5dyQLPvY+6avVKj9qhKvZU0xpf/Vlq8b9Bfg1503s8Y+q91A9Gz5PMiTzH
+ MLCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1787901300; x=1788506100;
+ h=date:content-transfer-encoding:content-type:subject:in-reply-to:cc
+ :to:from:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject
+ :date:message-id:reply-to:content-type;
+ bh=cEiIZ8L3im5T0mdXNRFz8Q2Zl0qLxnfLR5HeTcGl4iU=;
+ b=fWNr3TmK5fkzJzIcuwkTX0FKWhjnkxs+czKyshpjVcINDruHtjWffggJI9IxKdb5pD
+ QCJ10oMYV6OgWnSnY0p5yUOgv72kYqwIcv5vTSsnB0S6fpvd1Lx9p90z9HbEH5R+KWmD
+ 9MyGNowfGDqpNlXEklpRUp9ZhoHscVccuZo+z+M5oPUsOCDg3b5G5HpnASefPDnejCAL
+ 5OopFx2kQU6McQN2eoDq8f3pQEbf9f/z4WpbJTtfEki/j6mWNo0KUMne5NtHnQ0W5/eG
+ w8NAPXpbZ8ft8CZ0gWO3VUgOBf8vdhK7SQpd96Exoa5gFycVO5tpVV4qFqqvUc6hKfDx
+ Mhjw==
+X-Gm-Message-State: AFuF++ngAl621XG9VsW0Vi+M0uX/vGeFc2Gc5/OWTzT5yt9+EVHibNR2
+ CFk9nqBmc1ZLfzbQ8DeR3NI/hUOhwtkzWf/k/xOsqPjTBYExsI3jnK8uqgGNofaAEhw=
+X-Gm-Gg: AR+sD11C8JksJwDa5H2cv9Oaso3HyAracmfWl8+/hYk1rRky5WIz6xXDYuQQTdwK+ef
+ G61M7yqU183GDTjw/H37CvTLWPdSv/iNX3OpOofV8L66Ox54cOMvZtnlDUmxTviDJSGZbL+mYG8
+ 16gU/CyUqxjs0991DAe9K/DpKQc9k4MVEIhA8/NcT+Birqr2Qi94zYzxBR/r8Vph8ldQa/PMHAU
+ xaExzM4Ntxxgn2vJrlaOBfs4HZR2leoVyGnpEhRIgPtIUUxjPWNm48d3om3mQyPiGnAAzlZ059k
+ A/bLEg0kUPgIwN8U9PouFso8q/GAohPw1B4T2+vXoSV62tJfd6yts7TeEpfxoGyTXHeUltznDmY
+ pAPnH/6HswCevAUc+ZaIR4LRCGtQSz4oC87OBWjpJDWd3o5Bk4vIm9K0RP8jIKSloIHMXQ85UMt
+ NMmVJszIiD4X78pzTX3D7H3pv0CTGab1xsdu8SbkUPUWK0+ziTYB6WSTkIPqTcUtMmfZ2DQiBZV
+ JdIgAvFBf3R1R6A/frfPoXylYDsHVTdkY9pfsHkBM7AggC4cRHkR1U6GsLHloiei2TbomM=
+X-Received: by 2002:a05:600c:4e41:b0:495:6e68:5df2 with SMTP id
+ 5b1f17b1804b1-49b91c63a47mr66208025e9.12.1787901299739; 
+ Fri, 28 Aug 2026 00:14:59 -0700 (PDT)
+Received: from localhost.localdomain
+ (p200300ef2f066800c8b8b5e69b9f6a3a.dip0.t-ipconnect.de.
+ [2003:ef:2f06:6800:c8b8:b5e6:9b9f:6a3a])
+ by smtp.gmail.com with ESMTPSA id
+ ffacd0b85a97d-482fbb278f7sm2280943f8f.26.2026.08.28.00.14.58
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 28 Aug 2026 00:14:59 -0700 (PDT)
+Message-ID: <6a913573.16149c93.337a9a.89de@mx.google.com>
+To: "Wei Gao" <wegao@suse.com>
+In-Reply-To: <amKjoM7YCXGrzkoD@autotest-wegao.qe.prg2.suse.org>
+Date: Fri, 28 Aug 2026 07:14:58 +0000
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 2/3] swapon04: Add test for discard flags
+Subject: Re: [LTP] [PATCH v12 1/3] lib/tst_uid: Remove spurious TERRNO from
+ tst_get_free_gid success path
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -61,277 +97,24 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Linux Test Project <ltp@lists.linux.it>
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Cc: ltp@lists.linux.it
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Thu, Aug 27, 2026 at 01:54:05PM +0200, Andrea Cervesato wrote:
-> From: Andrea Cervesato <andrea.cervesato@suse.com>
-> 
-> Verify that swapon(2) discard flags (SWAP_FLAG_DISCARD,
-> SWAP_FLAG_DISCARD_ONCE, SWAP_FLAG_DISCARD_PAGES) correctly control
-> swapon-time area discard on block devices supporting discard operations.
-> 
-> Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
-> ---
->  runtest/syscalls                            |   1 +
->  testcases/kernel/syscalls/swapon/.gitignore |   1 +
->  testcases/kernel/syscalls/swapon/swapon04.c | 197 ++++++++++++++++++++++++++++
->  3 files changed, 199 insertions(+)
-> 
-> diff --git a/runtest/syscalls b/runtest/syscalls
-> index 737c63e31..ca190dd97 100644
-> --- a/runtest/syscalls
-> +++ b/runtest/syscalls
-> @@ -1676,6 +1676,7 @@ swapoff02 swapoff02
->  swapon01 swapon01
->  swapon02 swapon02
->  swapon03 swapon03
-> +swapon04 swapon04
->  
->  #Exclusive syscall() for POWER6 machines only
->  switch01 endian_switch01
-> diff --git a/testcases/kernel/syscalls/swapon/.gitignore b/testcases/kernel/syscalls/swapon/.gitignore
-> index 729226b11..db03b81ea 100644
-> --- a/testcases/kernel/syscalls/swapon/.gitignore
-> +++ b/testcases/kernel/syscalls/swapon/.gitignore
-> @@ -1,3 +1,4 @@
->  /swapon01
->  /swapon02
->  /swapon03
-> +/swapon04
-> diff --git a/testcases/kernel/syscalls/swapon/swapon04.c b/testcases/kernel/syscalls/swapon/swapon04.c
-> new file mode 100644
-> index 000000000..cf527586b
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/swapon/swapon04.c
-> @@ -0,0 +1,197 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (c) Linux Test Project, 2026
-> + */
-> +
-> +/*\
-> + * Check that :manpage:`swapon(2)` discard flags control swapon-time area discard:
-> + *
-> + * - With 0 (no flags), the swap area is not discarded at swapon.
-> + * - With SWAP_FLAG_DISCARD, the swap area is discarded at swapon.
-> + * - With SWAP_FLAG_DISCARD | SWAP_FLAG_DISCARD_ONCE, the swap area is discarded at swapon.
-> + * - With SWAP_FLAG_DISCARD | SWAP_FLAG_DISCARD_PAGES, swapon-time area discard
-> + *   is disabled (page-cluster discard only).
-> + * - With SWAP_FLAG_DISCARD | SWAP_FLAG_DISCARD_ONCE | SWAP_FLAG_DISCARD_PAGES,
-> + *   SWAP_FLAG_DISCARD_ONCE takes precedence and discards the swap area at swapon.
-> + * - With SWAP_FLAG_DISCARD_ONCE or SWAP_FLAG_DISCARD_PAGES alone (without the
-> + *   SWAP_FLAG_DISCARD master enable bit), discard is not enabled.
-> + *
-> + * [Algorithm]
-> + *
-> + * - Create a backing file on the test filesystem and fill it completely.
-> + * - Attach the backing file to a loop device supporting discard.
-> + * - For each test case, populate the backing file and format it with mkswap.
-> + * - Record the allocated block count before swapon().
-> + * - Call swapon() with the test case flags.
-> + * - Verify whether the allocated block count dropped (discarded) or remained.
-> + * - Call swapoff() to reset the swap device state.
-> + */
-> +
-> +#define _GNU_SOURCE
-> +
-> +#include <sys/stat.h>
-> +#include <unistd.h>
-> +
-> +#include "tst_test.h"
-> +#include "tse_swap.h"
-> +#include "lapi/syscalls.h"
-> +#include "lapi/fallocate.h"
-> +
-> +#define MNTPOINT "mntpoint"
-> +#define BACKING_FILE MNTPOINT "/swap_backing_file"
-> +#define SWAP_SIZE_MB 16
-> +
-> +static char loop_dev[PATH_MAX];
-> +static int loop_dev_id = -1;
-> +static int loop_attached;
-> +static int swap_active;
-> +static size_t max_header_blocks;
-> +
-> +static struct tcase {
-> +	int flags;
-> +	int exp_discard;
-> +	const char *desc;
-> +} tcases[] = {
-> +	{
-> +		.desc = "0 (no flags)",
-> +	},
-> +	{
-> +		.flags = SWAP_FLAG_DISCARD,
-> +		.exp_discard = 1,
-> +		.desc = "SWAP_FLAG_DISCARD",
-> +	},
-> +	{
-> +		.flags = SWAP_FLAG_DISCARD | SWAP_FLAG_DISCARD_ONCE,
-> +		.exp_discard = 1,
-> +		.desc = "SWAP_FLAG_DISCARD | SWAP_FLAG_DISCARD_ONCE",
-> +	},
+> AI feedback error is misleading need remove in patch10 , so do you want add new AI
+> rule fix it?
 
-I encountered an intermittent failure on my x86_64 platform running kernel 6.6.
-This needs further investigation.
+sorry, I overlooked. It's correct, thanks for pointing it out :)
 
-tst_test.c:1986: TINFO: === Testing on xfs ===
-tst_test.c:1291: TINFO: Formatting /dev/loop0 with xfs opts='' extra opts=''
-tst_test.c:1303: TINFO: Mounting /dev/loop0 to /tmp/LTP_swa4Dz6aP/mntpoint fstyp=xfs flags=0
-tst_device.c:103: TINFO: Found free device 1 '/dev/loop1'
-swapon04.c:170: TPASS: blocks_after == blocks_before (32768)
-swapon04.c:168: TPASS: blocks_after <= max_header_blocks (8 <= 16)
-swapon04.c:168: TFAIL: blocks_after (32648) > max_header_blocks (16)
-swapon04.c:170: TPASS: blocks_after == blocks_before (32768)
-swapon04.c:168: TPASS: blocks_after <= max_header_blocks (8 <= 16)
-swapon04.c:170: TPASS: blocks_after == blocks_before (32768)
-swapon04.c:170: TPASS: blocks_after == blocks_before (32768)
-
-> +	{
-> +		.flags = SWAP_FLAG_DISCARD | SWAP_FLAG_DISCARD_PAGES,
-> +		.desc = "SWAP_FLAG_DISCARD | SWAP_FLAG_DISCARD_PAGES",
-> +	},
-> +	{
-> +		.flags = SWAP_FLAG_DISCARD | SWAP_FLAG_DISCARD_ONCE | SWAP_FLAG_DISCARD_PAGES,
-> +		.exp_discard = 1,
-> +		.desc = "SWAP_FLAG_DISCARD | SWAP_FLAG_DISCARD_ONCE | SWAP_FLAG_DISCARD_PAGES",
-> +	},
-> +	{
-> +		.flags = SWAP_FLAG_DISCARD_ONCE,
-> +		.desc = "SWAP_FLAG_DISCARD_ONCE (alone without master flag)",
-> +	},
-> +	{
-> +		.flags = SWAP_FLAG_DISCARD_PAGES,
-> +		.desc = "SWAP_FLAG_DISCARD_PAGES (alone without master flag)",
-> +	},
-> +};
-> +
-> +static void setup(void)
-> +{
-> +	char discard_path[PATH_MAX];
-> +	unsigned long discard_max_bytes = 0;
-> +	size_t page_size, blk_size, alloc_units;
-> +	struct stat st;
-> +	int fd;
-> +
-> +	if (access("/proc/swaps", F_OK))
-> +		tst_brk(TCONF, "swap is not supported by kernel");
-> +
-> +	fd = SAFE_OPEN(BACKING_FILE, O_RDWR | O_CREAT | O_TRUNC, 0600);
-> +	TEST(fallocate(fd, FALLOC_FL_PUNCH_HOLE | FALLOC_FL_KEEP_SIZE, 0, 4096));
-> +
-> +	if (TST_RET != 0) {
-> +		SAFE_CLOSE(fd);
-> +
-> +		if (TST_ERR == EOPNOTSUPP || TST_ERR == ENOSYS) {
-> +			tst_brk(TCONF, "Filesystem %s does not support FALLOC_FL_PUNCH_HOLE",
-> +				tst_device->fs_type);
-> +		}
-> +
-> +		tst_brk(TBROK | TERRNO, "fallocate() error");
-> +	}
-> +
-> +	SAFE_FTRUNCATE(fd, SWAP_SIZE_MB * TST_MB);
-> +	SAFE_CLOSE(fd);
-> +
-> +	loop_dev_id = tst_find_free_loopdev(loop_dev, sizeof(loop_dev));
-> +	if (loop_dev_id < 0)
-> +		tst_brk(TBROK, "No free loop device found");
-> +
-> +	if (tst_attach_device(loop_dev, BACKING_FILE))
-> +		tst_brk(TBROK, "Failed to attach %s to %s", loop_dev, BACKING_FILE);
-> +	loop_attached = 1;
-> +
-> +	snprintf(discard_path, sizeof(discard_path),
-> +		 "/sys/block/loop%d/queue/discard_max_bytes", loop_dev_id);
-> +	if (FILE_SCANF(discard_path, "%lu", &discard_max_bytes) != 0 || discard_max_bytes == 0) {
-> +		tst_brk(TCONF, "Loop device %s does not support discard on %s",
-> +			loop_dev, tst_device->fs_type);
-> +	}
-> +
-> +	SAFE_STAT(BACKING_FILE, &st);
-> +
-> +	page_size = getpagesize();
-> +	blk_size = st.st_blksize;
-> +	alloc_units = page_size > blk_size ? page_size : blk_size;
-> +
-> +	/* Minimum 512-byte blocks for 1 page + small tolerance for filesystem metadata */
-> +	max_header_blocks = (alloc_units / 512) * 2;
-> +}
-> +
-> +static void verify_swapon(unsigned int n)
-> +{
-> +	struct tcase *tc = &tcases[n];
-> +	struct stat st;
-> +	blkcnt_t blocks_before, blocks_after;
-> +	const char *const mkswap_argv[] = {"mkswap", loop_dev, NULL};
-> +
-> +	tst_fill_file(BACKING_FILE, 'A', TST_MB, SWAP_SIZE_MB);
-> +
-> +	tst_cmd(mkswap_argv, "/dev/null", "/dev/null", TST_CMD_TCONF_ON_MISSING);
-> +
-> +	SAFE_STAT(BACKING_FILE, &st);
-> +	blocks_before = st.st_blocks;
-> +
-> +	if (!blocks_before)
-> +		tst_brk(TBROK, "Backing file has 0 allocated blocks");
-> +
-> +	TEST(tst_syscall(__NR_swapon, loop_dev, tc->flags));
-> +	if (TST_RET != 0) {
-> +		tst_res(TFAIL | TTERRNO, "swapon(%s, %s)", loop_dev, tc->desc);
-> +		return;
-> +	}
-> +	swap_active = 1;
-> +
-> +	SAFE_STAT(BACKING_FILE, &st);
-> +	blocks_after = st.st_blocks;
-> +
-> +	if (tc->exp_discard)
-> +		TST_EXP_LE_LU(blocks_after, max_header_blocks);
-> +	else
-> +		TST_EXP_EQ_LI(blocks_after, blocks_before);
-> +
-> +	if (tst_syscall(__NR_swapoff, loop_dev) != 0)
-> +		tst_brk(TBROK | TTERRNO, "swapoff(%s) failed", loop_dev);
-> +	swap_active = 0;
-> +}
-> +
-> +static void cleanup(void)
-> +{
-> +	if (swap_active && tst_syscall(__NR_swapoff, loop_dev) != 0)
-> +		tst_res(TWARN | TTERRNO, "swapoff(%s) failed", loop_dev);
-> +	swap_active = 0;
-> +
-> +	if (loop_attached)
-> +		tst_detach_device(loop_dev);
-> +	loop_attached = 0;
-> +}
-> +
-> +static struct tst_test test = {
-> +	.needs_root = 1,
-> +	.mount_device = 1,
-> +	.mntpoint = MNTPOINT,
-> +	.all_filesystems = 1,
-> +	.setup = setup,
-> +	.cleanup = cleanup,
-> +	.test = verify_swapon,
-> +	.tcnt = ARRAY_SIZE(tcases),
-> +};
-> 
-> -- 
-> 2.51.0
-> 
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
-
--- 
-Regards,
-Li Wang
+--
+Andrea Cervesato
+SUSE QE Automation Engineer Linux
+andrea.cervesato@suse.com
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
