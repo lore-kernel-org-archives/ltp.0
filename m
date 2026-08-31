@@ -4,108 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 47A55C624A5
-	for <ltp@archiver.kernel.org>; Mon, 31 Aug 2026 08:05:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9E4D8C624A5
+	for <ltp@archiver.kernel.org>; Mon, 31 Aug 2026 08:05:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1788163523; h=message-id :
+ to : in-reply-to : date : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : cc : mime-version : content-type :
+ content-transfer-encoding : sender : from;
+ bh=zaCYP1meOzbAYbPgV3swvW6J4lslu3XqgUtLEc9Iz3k=;
+ b=mOAWdNzW7wUdfE6+W5VOxPpUHDmcZ8ehYkG3lnxVZUfykJBtko8aRY3d0CgLmfclK/zn0
+ 7+9m+K5AzOJaLgGmME3NMroc85dC+7YU9Efy76R1R7HqNiXrwGxqZ5gGZDLBQ9dRg+AdJ3V
+ l/zHkXdIYjTNQjvbkP3mAKPEI+nqusI=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 667653E9482
-	for <ltp@archiver.kernel.org>; Mon, 31 Aug 2026 10:04:59 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 851EE3E59C9
+	for <ltp@archiver.kernel.org>; Mon, 31 Aug 2026 10:05:23 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 7B6903E5B5A
- for <ltp@lists.linux.it>; Mon, 31 Aug 2026 10:00:25 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 8CD203CE1C1
+ for <ltp@lists.linux.it>; Mon, 31 Aug 2026 10:03:01 +0200 (CEST)
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com
+ [IPv6:2a00:1450:4864:20::436])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id D4AA9200969
- for <ltp@lists.linux.it>; Mon, 31 Aug 2026 10:00:24 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 6719C224CC;
- Mon, 31 Aug 2026 08:00:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1788163219; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=ncP+hYIYJWGSlD209FHm7Gh0mSUN+i8BU6Mjr5TfaeA=;
- b=E1ySPSF7/8qeuFaBx1sQMrNNXIsJ0k6NNtN61B2zxTmdkXS2a5vCXH7oCmSlNSmKJuoboB
- 2PWpw3krMpqgo5Xun0r8KguAQWmEFIkBDrayvmyAIkC/u9saREFsnGK6ZOCs3ShizDYJo4
- VNWus3VjYUxtESbiCA6NQoXaweAiIAk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1788163219;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=ncP+hYIYJWGSlD209FHm7Gh0mSUN+i8BU6Mjr5TfaeA=;
- b=ob1c0cqNMcIzTIdp7LE3fAwJvys49tpjm1EbFSlBha9R3eM0dC4nt3VrexB3C8XR24uyUj
- UvVe6r9jyKdGpDBg==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1788163215; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=ncP+hYIYJWGSlD209FHm7Gh0mSUN+i8BU6Mjr5TfaeA=;
- b=Z5Bk6sQ1mL7FtoPxqaPZiMyfiEl3sgapjzy1jvGBT9qYNXF351KgwFnERK7d/nU1xZbWAs
- vOeHP2nr70iYXBEmuM5qMVYH8WUU5P3lgOo102hlIsO49tSOJ3BY9OLt6CpPTGsqO+C4W0
- MDm6lgf85nwnIcj4Gb/Zp8TubS+EWfY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1788163215;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=ncP+hYIYJWGSlD209FHm7Gh0mSUN+i8BU6Mjr5TfaeA=;
- b=R+0fMLe2tuoBG3m47vTg7jS2q/L4D0Z4cRkBHoOq17Uqi4o7WSpTCg9+aJjMbZj8+v6c32
- kmzg7vGB4aHgHcBA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4395613865;
- Mon, 31 Aug 2026 08:00:08 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id mErNDog0lWo9dQAAD6G6ig
- (envelope-from <andrea.cervesato@suse.de>); Mon, 31 Aug 2026 08:00:08 +0000
-From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Mon, 31 Aug 2026 10:00:17 +0200
-MIME-Version: 1.0
-Message-Id: <20260831-fchroot-v4-16-57cceb68f927@suse.com>
-References: <20260831-fchroot-v4-0-57cceb68f927@suse.com>
-In-Reply-To: <20260831-fchroot-v4-0-57cceb68f927@suse.com>
-To: Linux Test Project <ltp@lists.linux.it>
-X-Mailer: b4 0.16.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1788163205; l=3027;
- i=andrea.cervesato@suse.com; s=20251210; h=from:subject:message-id;
- bh=Wj/DBIqQYvuGlkNMe2quoaCd/d3WAuAc7DDOJnfHc/c=;
- b=KIIx+j76I7tRgxHYyXg94aF7+Op9252pigndsyX6Te2oC+NByzCSh1pDQUhyViRth01jlDJtv
- URaarEWOUCCC7tYRtIoMWZItWo2NtrvNurCQa/ypOB8vn6lBMVs7Ap+
-X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
- pk=zKY+6GCauOiuHNZ//d8PQ/UL4jFCTKbXrzXAOQSLevI=
-X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-0.997]; MIME_GOOD(-0.10)[text/plain];
- RCPT_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
- DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- TO_DN_ALL(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- FROM_HAS_DN(0.00)[]; MIME_TRACE(0.00)[0:+];
- FROM_EQ_ENVFROM(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email, suse.com:mid,
- imap1.dmz-prg2.suse.org:helo]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 15EA8600444
+ for <ltp@lists.linux.it>; Mon, 31 Aug 2026 10:03:01 +0200 (CEST)
+Received: by mail-wr1-x436.google.com with SMTP id
+ ffacd0b85a97d-47f96c5b722so1912351f8f.0
+ for <ltp@lists.linux.it>; Mon, 31 Aug 2026 01:03:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1788163380; x=1788768180; darn=lists.linux.it;
+ h=date:content-transfer-encoding:content-type:subject:in-reply-to:cc
+ :to:from:message-id:from:to:cc:subject:date:message-id:reply-to
+ :content-type; bh=mlAsk53q6Yisg87tMEERAKD4INYHCJWUgjAEh5Jz8cs=;
+ b=cHcHcarx5zgpCxT+KrYp24f9+MzyCu1D/CSP+typwgzW5KHdqCyoi26gutvFfooKtZ
+ 1EBNhCDDvjY2MfOfPkdTJVGcxUCQ2qC7+4K+2T3c/szT2JkHR4+OjolNreAXBADMpvAg
+ 6OtLIt1yEegjQ7Z/Bvaido9naMS3Rc7p1xnhgXEiLzKhJVFOrbSwfyMPnJYv7vtcN1XR
+ vNE28kI3uvYL6ar2BHc1lPC/ty73HlBvJI4l4CUWtUP6Lnidi7Upp2H22lHPZBZqLu9d
+ +l+HE/nkb917cK05kl96VzogMUSdQZ1qN4d777Do/gFw0IdamVobQOYWElhdcvLu5e1K
+ 3hPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1788163380; x=1788768180;
+ h=date:content-transfer-encoding:content-type:subject:in-reply-to:cc
+ :to:from:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject
+ :date:message-id:reply-to:content-type;
+ bh=mlAsk53q6Yisg87tMEERAKD4INYHCJWUgjAEh5Jz8cs=;
+ b=K78J9qrNrsPYjuosRlrq4t5eJjXrUiDibZgcwkyaPjVjL9Pbe8JSxb80tBJCElKrEf
+ HttTY4MQckiHO8qbu3SIzZD3boiG8pZXf3aHgYaj/shvJ58D9thM7zP0sOCBrwIXFbas
+ FGlyVSWRb+LQBB/DhYqa7LpoC40Mn3ngM0YAdfIRbyxKEy3q3dPa7u+No2r+D8hcz2Kt
+ EnehzUJPZL+qbpfn4sACfvnQih3UWFMjCwjNvg9Isa6fzVE3EX1ABo1WRLK5vANmxLKW
+ YnphbzYoX+PO32rfPM6gKCjwYeKjf8xNZuIY+XQuLn7SETuw7FUS6meyefuKPu65yy5d
+ OrSQ==
+X-Forwarded-Encrypted: i=1;
+ AKwUvByuLFBCLNXIVlaZzQs6mmNWWueMOxEcMvZUVXWhpnB0eG/Iw+QO4WuL12Yp91MLrgfeCMU=@lists.linux.it
+X-Gm-Message-State: AFuF++n1zhPZ2y7wlT1fw+4ipIK6ed80sUsacdjXfjBWLipA3r8UZoFH
+ tXMOErj8Wse/R9aS4n03pvjVB0Bto7YlsQrZ4EmDQtvk9sINZJGC3SIk4ivtxdGyaw0GypGG7NP
+ QScyas//v/g==
+X-Gm-Gg: AYBFou0rRHBilmvSfUiDLfZS/PJj+SJ7kzV/GegvlCb3b4NCizB1lSVYXtmUcgofZ7z
+ RmXbfY1pmQvU6cafxO3CMeY965yuj2wyEqAEuSCggQoodNoZ60yIIMSEefs/RxZyvHUXOKg7AYC
+ hCVVNdvPar8FMKUORKzrYOJr7ABh9O/c9CftdgUac+HcvM4drSsj6S5pbIjZDqmHYjYDb4/iocq
+ T21wdQbHvS3wCf/wMs+21gZesCBYdtDU/+qP3sSXKTX1t30e8kmrsAaS6PCzOEhS44L1h2soR3U
+ 5OY8g9ofcZhLepIrNuB8Dx9KBBYaQL7dNr3GmVca0HMNRTNomQHzIoq5HYiIqwYfN9nDV9/P942
+ 2yMX6Ecyo75UsyTeXiwSUujKmg/GvHDOuI1G5pbPF9TbhMH+wazTlVHqWDkFKoMZHxcxaGH/UIU
+ IRq/ekWWlAY08zt9sSuVtV8OICPRWI4LZCieaHkWPZg5f0izP5i6SMTk90YI6YjlUzxdi0PBOKE
+ YJ0xGXpX672SdHixg5xe30kfOUK92ljMcdIQEQfOOAH0Oxvx04vzqEvn8nD3/PuJRyslFE=
+X-Received: by 2002:a05:6000:18a6:b0:482:f724:f4ba with SMTP id
+ ffacd0b85a97d-482f79de104mr34009287f8f.19.1788163380385; 
+ Mon, 31 Aug 2026 01:03:00 -0700 (PDT)
+Received: from localhost.localdomain
+ (p200300ef2f066800c8b8b5e69b9f6a3a.dip0.t-ipconnect.de.
+ [2003:ef:2f06:6800:c8b8:b5e6:9b9f:6a3a])
+ by smtp.gmail.com with ESMTPSA id
+ ffacd0b85a97d-482fbb2005esm21071985f8f.24.2026.08.31.01.03.00
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 31 Aug 2026 01:03:00 -0700 (PDT)
+Message-ID: <6a953534.332d3c56.285eb4.38cf@mx.google.com>
+To: linuxtestproject.agent@gmail.com
+In-Reply-To: <20260828211038.8829-1-linuxtestproject.agent@gmail.com>
+Date: Mon, 31 Aug 2026 08:02:59 +0000
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH STAGING v4 16/16] fchroot13: test failfs entry when
- chrooted
+Subject: Re: [LTP] lapi/mmap: add MAP_32BIT fallback
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -117,117 +100,40 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Cc: ltp@lists.linux.it
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Andrea Cervesato <andrea.cervesato@suse.com>
+> On Aug 28, 2026, Andrea Cervesato wrote:
+> > lapi/mmap: add MAP_32BIT fallback
+> 
+> --- [PATCH 3/3] ---
+> 
+> >  * - Verify that memory in each chunk is readable and writable
+> > [...]
+> > 		((char *)addr)[0] = 'a';
+> > 		((char *)addr)[CHUNK_SZ - 1] = 'z';
+> 
+> The algorithm says that each chunk is verified to be both readable and
+> writable, but these statements only write to the mapping. Could the test
+> read and compare the stored bytes, or should the readability claim be
+> removed?
 
-Verify that unprivileged fchroot() into failfs is refused when the
-process is already chrooted: moving the root of a chrooted task into
-failfs would allow it to escape its chroot via openat(fd, "..") with
-a pre-opened directory fd, so the kernel refuses the syscall with
-EPERM.
+this simply requires:
 
-Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
----
- runtest/staging                               |  1 +
- testcases/kernel/syscalls/fchroot/.gitignore  |  1 +
- testcases/kernel/syscalls/fchroot/fchroot13.c | 63 +++++++++++++++++++++++++++
- 3 files changed, 65 insertions(+)
+* - Touch first and last byte of each chunk to ensure pages are writable
 
-diff --git a/runtest/staging b/runtest/staging
-index 1655b6813..95e777ffb 100644
---- a/runtest/staging
-+++ b/runtest/staging
-@@ -12,3 +12,4 @@ fchroot09 fchroot09
- fchroot10 fchroot10
- fchroot11 fchroot11
- fchroot12 fchroot12
-+fchroot13 fchroot13
-diff --git a/testcases/kernel/syscalls/fchroot/.gitignore b/testcases/kernel/syscalls/fchroot/.gitignore
-index e8a6730ee..3e77e3762 100644
---- a/testcases/kernel/syscalls/fchroot/.gitignore
-+++ b/testcases/kernel/syscalls/fchroot/.gitignore
-@@ -11,3 +11,4 @@ fchroot09
- fchroot10
- fchroot11
- fchroot12
-+fchroot13
-diff --git a/testcases/kernel/syscalls/fchroot/fchroot13.c b/testcases/kernel/syscalls/fchroot/fchroot13.c
-new file mode 100644
-index 000000000..3569ab363
---- /dev/null
-+++ b/testcases/kernel/syscalls/fchroot/fchroot13.c
-@@ -0,0 +1,63 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (C) 2026 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
-+ */
-+
-+/*\
-+ * Test that unprivileged :manpage:`fchroot(2)` into failfs is refused
-+ * when the process is already chrooted.
-+ *
-+ * The root directory is what confines ".." resolution and the failfs root
-+ * can never be reached by walking up a real mount tree. Moving the root
-+ * of a chrooted task into failfs would allow it to escape its chroot via
-+ * :manpage:`openat(2)` with ".." and a pre-opened directory file descriptor,
-+ * so the kernel refuses the syscall with ``EPERM``.
-+ *
-+ * Root is required to create the chroot jail before dropping to an
-+ * unprivileged user in the forked child.
-+ */
-+
-+#define _GNU_SOURCE
-+#include <pwd.h>
-+#include <unistd.h>
-+#include "tst_test.h"
-+#include "lapi/fcntl.h"
-+#include "lapi/prctl.h"
-+#include "lapi/syscalls.h"
-+
-+#define JAILDIR "jail"
-+
-+static struct passwd *ltpuser;
-+
-+static void run(void)
-+{
-+	if (SAFE_FORK())
-+		return;
-+
-+	SAFE_CHROOT(JAILDIR);
-+	SAFE_CHDIR("/");
-+
-+	SAFE_SETRESUID(ltpuser->pw_uid, ltpuser->pw_uid,
-+		ltpuser->pw_uid);
-+
-+	SAFE_PRCTL(PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0);
-+
-+	TST_EXP_FAIL(tst_syscall(__NR_fchroot, FD_FAILFS_ROOT, 0),
-+		EPERM, "fchroot() from a chrooted process");
-+
-+	exit(0);
-+}
-+
-+static void setup(void)
-+{
-+	ltpuser = SAFE_GETPWNAM("nobody");
-+	SAFE_MKDIR(JAILDIR, 0755);
-+}
-+
-+static struct tst_test test = {
-+	.setup = setup,
-+	.test_all = run,
-+	.needs_root = 1,
-+	.needs_tmpdir = 1,
-+	.forks_child = 1,
-+};
+will add before merge.
 
--- 
-2.51.0
-
+--
+Andrea Cervesato
+SUSE QE Automation Engineer Linux
+andrea.cervesato@suse.com
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
