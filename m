@@ -4,106 +4,115 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1EC0CC61DD3
-	for <ltp@archiver.kernel.org>; Mon, 31 Aug 2026 08:02:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5735EC61DD3
+	for <ltp@archiver.kernel.org>; Mon, 31 Aug 2026 08:02:40 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A4E8F3E9476
-	for <ltp@archiver.kernel.org>; Mon, 31 Aug 2026 10:02:17 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id D74063E96B5
+	for <ltp@archiver.kernel.org>; Mon, 31 Aug 2026 10:02:38 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 827A53E5B59
- for <ltp@lists.linux.it>; Mon, 31 Aug 2026 10:00:21 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+ by picard.linux.it (Postfix) with ESMTPS id 0556A3E599C
+ for <ltp@lists.linux.it>; Mon, 31 Aug 2026 10:00:23 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id B5D7F1400B6A
- for <ltp@lists.linux.it>; Mon, 31 Aug 2026 10:00:20 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 69895200975
+ for <ltp@lists.linux.it>; Mon, 31 Aug 2026 10:00:23 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 4D09C1FB4C;
- Mon, 31 Aug 2026 08:00:06 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id BD57F223E9;
+ Mon, 31 Aug 2026 08:00:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1788163210; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1788163218; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=yVzJOoxwMcbhuNHk54nG3JuR2HFCPxk4Lc0GHLbA3Fo=;
- b=teiNJ1rfhX9nuXWggFY07fq+i04WJFfvO1FMkmaVf6LpFrErWiM1vn+JFl9/gXBxYYePda
- 7SW8nl9+iy4+Pr2+1+jIy7ITWrOBUrcddBIeTGZe3UgjNISSWOtQldYsrUEOi/77I7Swjk
- Fn4dKZdJ1OLdqEsP9/vR9et4UQ8aiz4=
+ bh=aNlyhVFVVK3APobvXogDWmxpwp7EV9nCQ57Tvn8voy0=;
+ b=INYJRyS2EXuj1UEv6l283u/9TkXarJzMCGblu+LrH+nC4GcC9HY7e5mL6vHkCvSgWHS3Wv
+ ePYHaxVkbLyoKUZRIgHb0w9n6yICaVaS93s+BOydhwOpS66L8R/UqL5SDWf7ISs7Kuu3QW
+ iGktvBr2312XrmQLvHOAFFzb6uWw7Kg=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1788163210;
+ s=susede2_ed25519; t=1788163218;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=yVzJOoxwMcbhuNHk54nG3JuR2HFCPxk4Lc0GHLbA3Fo=;
- b=/f9IEHl5TLStPkOF0Fqc6lLGl1oC2t1frExvCs6herjcz6YELvBcGgcdvMeuliWd7+NPDB
- ecGffIpRgYSNzABg==
-Authentication-Results: smtp-out2.suse.de;
-	none
+ bh=aNlyhVFVVK3APobvXogDWmxpwp7EV9nCQ57Tvn8voy0=;
+ b=f9fAZkAUIvIIrcb8Nozwn9pw3dDtRlK5rkbzQsJhh+3uV/DY2h7f8zCRvbbubhVRUlHJwL
+ zZtiNIv4pYDzPfDw==
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.de header.s=susede2_rsa header.b=vvb48BEm;
+ dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=Mykk9x6s
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1788163206; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1788163214; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=yVzJOoxwMcbhuNHk54nG3JuR2HFCPxk4Lc0GHLbA3Fo=;
- b=VmnO+yx9YqtWxQtIosf8Xza927REcmZC0FGbYBOHxgGwj746h7VPRlRDXXD27/+Q0Icd1Z
- GDHH8WLFKHXegKVO7SbDOIu2PsPNkkb+FWG7c0rLiETRn1HPTK2g4qOPa7UMddYu94wAA/
- rfeptTc2Wo1qdOJBXkMZBhMThkdhSlY=
+ bh=aNlyhVFVVK3APobvXogDWmxpwp7EV9nCQ57Tvn8voy0=;
+ b=vvb48BEmeN2Z4zlRSD8YWEEnYjCi/M6yZBLS+pgpChQ/bCvPpIpjvVR7mWU4PnP5QH+W/w
+ n1IeEdG9Dy8bkDdGc7pWFkzzYBJn3GaxXETvBCHW3rIlgqFdGagEaZtC1onASF5J5IckWZ
+ yGQAXoCI96bXgs2kvi6AN7KN2HKGAvw=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1788163206;
+ s=susede2_ed25519; t=1788163214;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=yVzJOoxwMcbhuNHk54nG3JuR2HFCPxk4Lc0GHLbA3Fo=;
- b=lwl8+yWIOLo1+RTP2cDOEwubMEDe5benji1CErAEKyknxy6+DdoYw29cLV/urnKmKuAfvh
- aCI6K4A5mBd9K6AA==
+ bh=aNlyhVFVVK3APobvXogDWmxpwp7EV9nCQ57Tvn8voy0=;
+ b=Mykk9x6sn06yOBTjDgNz4EnFDi3vcJSF7hdNITdCQ7v29yIjGurdnbhOTwjVomq/JuvC0H
+ aRLqcPJnOR2iSPCA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 18E9A13694;
- Mon, 31 Aug 2026 08:00:06 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3CA8F13738;
+ Mon, 31 Aug 2026 08:00:07 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 4NpyBIY0lWo9dQAAD6G6ig
- (envelope-from <andrea.cervesato@suse.de>); Mon, 31 Aug 2026 08:00:06 +0000
+ by imap1.dmz-prg2.suse.org with ESMTPSA id eG8uDYc0lWo9dQAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>); Mon, 31 Aug 2026 08:00:07 +0000
 From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Mon, 31 Aug 2026 10:00:02 +0200
+Date: Mon, 31 Aug 2026 10:00:10 +0200
 MIME-Version: 1.0
-Message-Id: <20260831-fchroot-v4-1-57cceb68f927@suse.com>
+Message-Id: <20260831-fchroot-v4-9-57cceb68f927@suse.com>
 References: <20260831-fchroot-v4-0-57cceb68f927@suse.com>
 In-Reply-To: <20260831-fchroot-v4-0-57cceb68f927@suse.com>
 To: Linux Test Project <ltp@lists.linux.it>
 X-Mailer: b4 0.16.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1788163205; l=6871;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1788163205; l=4758;
  i=andrea.cervesato@suse.com; s=20251210; h=from:subject:message-id;
- bh=jnROHS15uGVvbczIH8VQxdVC5dLBqKbai+ZsvN4OImU=;
- b=Xgu87kLJ6utNrUJJ8SZoisxMZjtFGYwkgy9/ij7d0vV81MX/l6GLMeN27vX0dWd0ZKlT9Xh7l
- yq7hQWFjV5oCzXUdAm9JBqgH2/mK9dlxyT7ouzF+ifZpRJpQDAPNcRQ
+ bh=H3ZYCD8q+f+jx7zpzn9WlHPDUT+owSzr94jNx8EDbfo=;
+ b=npdAUzDGpJnxLJeraxUVMfz7zVD9Cwv0EGf3D+6/UQ2T5O7JxNBpfrLCS1jWtTXtpvYJv3Zgg
+ 0uWXtaZyf32D2TxXRXNzrvLxYGOCM/oO7L1HFxqmi/n48tpDT60gwdh
 X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
  pk=zKY+6GCauOiuHNZ//d8PQ/UL4jFCTKbXrzXAOQSLevI=
-X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: BD57F223E9
+X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-0.997]; MIME_GOOD(-0.10)[text/plain];
+ R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ ARC_NA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
  RCPT_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
  DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- TO_DN_ALL(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- FROM_HAS_DN(0.00)[]; MIME_TRACE(0.00)[0:+];
- FROM_EQ_ENVFROM(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo, suse.com:mid,
- suse.com:email]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ MIME_TRACE(0.00)[0:+]; RCVD_COUNT_TWO(0.00)[2];
+ TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.com:email,suse.com:mid];
+ TO_DN_ALL(0.00)[]; DKIM_TRACE(0.00)[suse.de:+]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v4 01/16] syscalls: add v7.3 syscall numbers
+Subject: [LTP] [PATCH STAGING v4 09/16] fchroot06: test path walks under
+ failfs root
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -122,217 +131,169 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-Add listns (470), rseq_slice_yield (471) and fchroot (472), which are
-reserved for all architectures during the Linux v7.3 development cycle.
+Verify that once the root is in failfs only lookups anchored at a
+file descriptor keep working: relative lookups from the working
+directory and from a pre-opened directory fd succeed, absolute
+symlinks fail with EOPNOTSUPP and ".." walks clamp at the top of the
+mount tree, landing on the real root.
 
 Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
- include/lapi/syscalls/arc.in         | 3 +++
- include/lapi/syscalls/arm.in         | 3 +++
- include/lapi/syscalls/arm64.in       | 3 +++
- include/lapi/syscalls/i386.in        | 3 +++
- include/lapi/syscalls/loongarch64.in | 3 +++
- include/lapi/syscalls/mips64.in      | 3 +++
- include/lapi/syscalls/mips64n32.in   | 3 +++
- include/lapi/syscalls/mipso32.in     | 3 +++
- include/lapi/syscalls/parisc.in      | 3 +++
- include/lapi/syscalls/powerpc.in     | 3 +++
- include/lapi/syscalls/powerpc64.in   | 3 +++
- include/lapi/syscalls/s390.in        | 3 +++
- include/lapi/syscalls/s390x.in       | 3 +++
- include/lapi/syscalls/sh.in          | 3 +++
- include/lapi/syscalls/sparc.in       | 3 +++
- include/lapi/syscalls/sparc64.in     | 3 +++
- include/lapi/syscalls/x86_64.in      | 3 +++
- 17 files changed, 51 insertions(+)
+ runtest/staging                               |   1 +
+ testcases/kernel/syscalls/fchroot/.gitignore  |   1 +
+ testcases/kernel/syscalls/fchroot/fchroot06.c | 126 ++++++++++++++++++++++++++
+ 3 files changed, 128 insertions(+)
 
-diff --git a/include/lapi/syscalls/arc.in b/include/lapi/syscalls/arc.in
-index 0f0fbef6b..96b14c1b9 100644
---- a/include/lapi/syscalls/arc.in
-+++ b/include/lapi/syscalls/arc.in
-@@ -347,3 +347,6 @@ removexattrat 466
- open_tree_attr 467
- file_getattr 468
- file_setattr 469
-+listns 470
-+rseq_slice_yield 471
-+fchroot 472
-diff --git a/include/lapi/syscalls/arm.in b/include/lapi/syscalls/arm.in
-index d0238dec5..c4058e8de 100644
---- a/include/lapi/syscalls/arm.in
-+++ b/include/lapi/syscalls/arm.in
-@@ -420,3 +420,6 @@ removexattrat 466
- open_tree_attr 467
- file_getattr 468
- file_setattr 469
-+listns 470
-+rseq_slice_yield 471
-+fchroot 472
-diff --git a/include/lapi/syscalls/arm64.in b/include/lapi/syscalls/arm64.in
-index c76930e20..26a61e830 100644
---- a/include/lapi/syscalls/arm64.in
-+++ b/include/lapi/syscalls/arm64.in
-@@ -323,3 +323,6 @@ removexattrat 466
- open_tree_attr 467
- file_getattr 468
- file_setattr 469
-+listns 470
-+rseq_slice_yield 471
-+fchroot 472
-diff --git a/include/lapi/syscalls/i386.in b/include/lapi/syscalls/i386.in
-index 38ea71fb2..21d5da053 100644
---- a/include/lapi/syscalls/i386.in
-+++ b/include/lapi/syscalls/i386.in
-@@ -454,3 +454,6 @@ removexattrat 466
- open_tree_attr 467
- file_getattr 468
- file_setattr 469
-+listns 470
-+rseq_slice_yield 471
-+fchroot 472
-diff --git a/include/lapi/syscalls/loongarch64.in b/include/lapi/syscalls/loongarch64.in
-index a1dfce79e..88e77ef8a 100644
---- a/include/lapi/syscalls/loongarch64.in
-+++ b/include/lapi/syscalls/loongarch64.in
-@@ -320,3 +320,6 @@ removexattrat 466
- open_tree_attr 467
- file_getattr 468
- file_setattr 469
-+listns 470
-+rseq_slice_yield 471
-+fchroot 472
-diff --git a/include/lapi/syscalls/mips64.in b/include/lapi/syscalls/mips64.in
-index 436d5c681..3c19066b8 100644
---- a/include/lapi/syscalls/mips64.in
-+++ b/include/lapi/syscalls/mips64.in
-@@ -369,3 +369,6 @@ removexattrat 5466
- open_tree_attr 5467
- file_getattr 5468
- file_setattr 5469
-+listns 5470
-+rseq_slice_yield 5471
-+fchroot 5472
-diff --git a/include/lapi/syscalls/mips64n32.in b/include/lapi/syscalls/mips64n32.in
-index 860a19c8b..0c539bd62 100644
---- a/include/lapi/syscalls/mips64n32.in
-+++ b/include/lapi/syscalls/mips64n32.in
-@@ -393,3 +393,6 @@ removexattrat 6466
- open_tree_attr 6467
- file_getattr 6468
- file_setattr 6469
-+listns 6470
-+rseq_slice_yield 6471
-+fchroot 6472
-diff --git a/include/lapi/syscalls/mipso32.in b/include/lapi/syscalls/mipso32.in
-index 5e53e46ce..ecbe4d4b9 100644
---- a/include/lapi/syscalls/mipso32.in
-+++ b/include/lapi/syscalls/mipso32.in
-@@ -433,3 +433,6 @@ removexattrat 4466
- open_tree_attr 4467
- file_getattr 4468
- file_setattr 4469
-+listns 4470
-+rseq_slice_yield 4471
-+fchroot 4472
-diff --git a/include/lapi/syscalls/parisc.in b/include/lapi/syscalls/parisc.in
-index 238756694..e84c3b344 100644
---- a/include/lapi/syscalls/parisc.in
-+++ b/include/lapi/syscalls/parisc.in
-@@ -402,3 +402,6 @@ removexattrat 466
- open_tree_attr 467
- file_getattr 468
- file_setattr 469
-+listns 470
-+rseq_slice_yield 471
-+fchroot 472
-diff --git a/include/lapi/syscalls/powerpc.in b/include/lapi/syscalls/powerpc.in
-index 6911f9af9..9354dbe2b 100644
---- a/include/lapi/syscalls/powerpc.in
-+++ b/include/lapi/syscalls/powerpc.in
-@@ -444,3 +444,6 @@ removexattrat 466
- open_tree_attr 467
- file_getattr 468
- file_setattr 469
-+listns 470
-+rseq_slice_yield 471
-+fchroot 472
-diff --git a/include/lapi/syscalls/powerpc64.in b/include/lapi/syscalls/powerpc64.in
-index 98190ba26..e4bef6838 100644
---- a/include/lapi/syscalls/powerpc64.in
-+++ b/include/lapi/syscalls/powerpc64.in
-@@ -416,3 +416,6 @@ removexattrat 466
- open_tree_attr 467
- file_getattr 468
- file_setattr 469
-+listns 470
-+rseq_slice_yield 471
-+fchroot 472
-diff --git a/include/lapi/syscalls/s390.in b/include/lapi/syscalls/s390.in
-index a6cb85da8..4a11871b6 100644
---- a/include/lapi/syscalls/s390.in
-+++ b/include/lapi/syscalls/s390.in
-@@ -437,3 +437,6 @@ removexattrat 466
- open_tree_attr 467
- file_getattr 468
- file_setattr 469
-+listns 470
-+rseq_slice_yield 471
-+fchroot 472
-diff --git a/include/lapi/syscalls/s390x.in b/include/lapi/syscalls/s390x.in
-index 31f3ec553..055a039fb 100644
---- a/include/lapi/syscalls/s390x.in
-+++ b/include/lapi/syscalls/s390x.in
-@@ -385,3 +385,6 @@ removexattrat 466
- open_tree_attr 467
- file_getattr 468
- file_setattr 469
-+listns 470
-+rseq_slice_yield 471
-+fchroot 472
-diff --git a/include/lapi/syscalls/sh.in b/include/lapi/syscalls/sh.in
-index ac281acf8..29cd8f8df 100644
---- a/include/lapi/syscalls/sh.in
-+++ b/include/lapi/syscalls/sh.in
-@@ -431,3 +431,6 @@ removexattrat 466
- open_tree_attr 467
- file_getattr 468
- file_setattr 469
-+listns 470
-+rseq_slice_yield 471
-+fchroot 472
-diff --git a/include/lapi/syscalls/sparc.in b/include/lapi/syscalls/sparc.in
-index ffc0d9f7a..ea2bfc9c1 100644
---- a/include/lapi/syscalls/sparc.in
-+++ b/include/lapi/syscalls/sparc.in
-@@ -435,3 +435,6 @@ removexattrat 466
- open_tree_attr 467
- file_getattr 468
- file_setattr 469
-+listns 470
-+rseq_slice_yield 471
-+fchroot 472
-diff --git a/include/lapi/syscalls/sparc64.in b/include/lapi/syscalls/sparc64.in
-index 992bd307d..692652c3b 100644
---- a/include/lapi/syscalls/sparc64.in
-+++ b/include/lapi/syscalls/sparc64.in
-@@ -398,3 +398,6 @@ removexattrat 466
- open_tree_attr 467
- file_getattr 468
- file_setattr 469
-+listns 470
-+rseq_slice_yield 471
-+fchroot 472
-diff --git a/include/lapi/syscalls/x86_64.in b/include/lapi/syscalls/x86_64.in
-index e9c0d0599..7d3d8163c 100644
---- a/include/lapi/syscalls/x86_64.in
-+++ b/include/lapi/syscalls/x86_64.in
-@@ -380,3 +380,6 @@ removexattrat 466
- open_tree_attr 467
- file_getattr 468
- file_setattr 469
-+listns 470
-+rseq_slice_yield 471
-+fchroot 472
+diff --git a/runtest/staging b/runtest/staging
+index 49f51d637..8b6b1ecd9 100644
+--- a/runtest/staging
++++ b/runtest/staging
+@@ -5,3 +5,4 @@ fchroot02 fchroot02
+ fchroot03 fchroot03
+ fchroot04 fchroot04
+ fchroot05 fchroot05
++fchroot06 fchroot06
+diff --git a/testcases/kernel/syscalls/fchroot/.gitignore b/testcases/kernel/syscalls/fchroot/.gitignore
+index 0697f10eb..12151270a 100644
+--- a/testcases/kernel/syscalls/fchroot/.gitignore
++++ b/testcases/kernel/syscalls/fchroot/.gitignore
+@@ -3,3 +3,4 @@ fchroot02
+ fchroot03
+ fchroot04
+ fchroot05
++fchroot06
+diff --git a/testcases/kernel/syscalls/fchroot/fchroot06.c b/testcases/kernel/syscalls/fchroot/fchroot06.c
+new file mode 100644
+index 000000000..8f678344f
+--- /dev/null
++++ b/testcases/kernel/syscalls/fchroot/fchroot06.c
+@@ -0,0 +1,126 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (C) 2026 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
++ */
++
++/*\
++ * Test path walks under the failfs root.
++ *
++ * Once :manpage:`fchroot(2)` moved the process root into failfs, only
++ * lookups anchored at a file descriptor keep working:
++ *
++ * - lookups relative to the working directory, which stays in the real
++ *   filesystem, keep working
++ * - lookups anchored at a pre-opened directory fd keep working, including
++ *   resolution of relative symlinks
++ * - absolute symlinks restart the walk at the failfs root and fail with
++ *   ``EOPNOTSUPP``
++ * - ".." walks clamp at the top of the mount tree, not at the failfs
++ *   root, so walking up from the working directory lands on the real
++ *   root
++ *
++ * Root is required because entering failfs with the ``FD_FAILFS_ROOT``
++ * sentinel requires ``CAP_SYS_CHROOT``.
++ *
++ * The test runs in a forked child so the root of the parent process is
++ * left untouched.
++ */
++
++#define _GNU_SOURCE
++#include <fcntl.h>
++#include <sys/stat.h>
++#include "tst_test.h"
++#include "lapi/fcntl.h"
++#include "lapi/syscalls.h"
++#include "tst_safe_file_at.h"
++
++#define RELDIR "rel"
++#define ABSDIR "abs"
++
++static char upwards[PATH_MAX];
++
++static void run(void)
++{
++	if (SAFE_FORK())
++		return;
++
++	struct stat realroot, st;
++	int dfd, fd;
++
++	SAFE_STAT("/", &realroot);
++	dfd = SAFE_OPEN(".", O_RDONLY | O_DIRECTORY);
++
++	TST_EXP_PASS(tst_syscall(__NR_fchroot, FD_FAILFS_ROOT, 0),
++		"fchroot() with the FD_FAILFS_ROOT sentinel");
++
++	fd = TST_EXP_FD(openat(AT_FDCWD, ".", O_RDONLY | O_DIRECTORY));
++	if (fd != -1)
++		SAFE_CLOSE(fd);
++
++	fd = TST_EXP_FD(openat(dfd, "canary", O_WRONLY | O_CREAT, 0600));
++	if (fd != -1) {
++		SAFE_WRITE(SAFE_WRITE_ALL, fd, "x", 1);
++		SAFE_CLOSE(fd);
++	}
++
++	fd = TST_EXP_FD(openat(dfd, RELDIR, O_RDONLY));
++	if (fd != -1)
++		SAFE_CLOSE(fd);
++
++	TST_EXP_FAIL2(openat(dfd, ABSDIR, O_RDONLY), EOPNOTSUPP,
++		"resolution of an absolute symlink");
++
++	fd = TST_EXP_FD(openat(AT_FDCWD, upwards, O_PATH));
++	if (fd != -1) {
++		SAFE_FSTAT(fd, &st);
++		SAFE_CLOSE(fd);
++
++		TST_EXP_EXPR(st.st_dev == realroot.st_dev &&
++			st.st_ino == realroot.st_ino,
++			"'..' walk clamps at the top of the mount tree");
++	}
++
++	SAFE_CLOSE(dfd);
++
++	exit(0);
++}
++
++static void setup(void)
++{
++	char *tmpdir;
++	char abs_path[PATH_MAX];
++	struct stat root_st, st;
++	int fd, off;
++
++	tmpdir = tst_tmpdir_path();
++	snprintf(abs_path, sizeof(abs_path), "%s/%s", tmpdir, "target");
++
++	SAFE_TOUCH("target", 0644, NULL);
++	SAFE_SYMLINK("target", RELDIR);
++	SAFE_SYMLINK(abs_path, ABSDIR);
++
++	SAFE_STAT("/", &root_st);
++
++	off = snprintf(upwards, sizeof(upwards), "..");
++	while (1) {
++		fd = SAFE_OPENAT(AT_FDCWD, upwards, O_PATH);
++		SAFE_FSTAT(fd, &st);
++		SAFE_CLOSE(fd);
++
++		if (st.st_dev == root_st.st_dev && st.st_ino == root_st.st_ino)
++			break;
++
++		if ((size_t)off + sizeof("/..") > sizeof(upwards))
++			tst_brk(TBROK, "Path to root too long");
++
++		off += snprintf(upwards + off, sizeof(upwards) - off, "/..");
++	}
++}
++
++static struct tst_test test = {
++	.setup = setup,
++	.test_all = run,
++	.needs_root = 1,
++	.needs_tmpdir = 1,
++	.forks_child = 1,
++};
 
 -- 
 2.51.0
