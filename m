@@ -4,94 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C6793C61DD3
-	for <ltp@archiver.kernel.org>; Mon, 31 Aug 2026 08:01:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B69C1C624C2
+	for <ltp@archiver.kernel.org>; Mon, 31 Aug 2026 08:01:28 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 479A63E0E1A
-	for <ltp@archiver.kernel.org>; Mon, 31 Aug 2026 10:01:05 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 41DEC3E9481
+	for <ltp@archiver.kernel.org>; Mon, 31 Aug 2026 10:01:26 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id DA0293C98E4
- for <ltp@lists.linux.it>; Mon, 31 Aug 2026 10:00:16 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ by picard.linux.it (Postfix) with ESMTPS id E5FE53E59C9
+ for <ltp@lists.linux.it>; Mon, 31 Aug 2026 10:00:19 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 755371000972
- for <ltp@lists.linux.it>; Mon, 31 Aug 2026 10:00:15 +0200 (CEST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 75BA91400B6E
+ for <ltp@lists.linux.it>; Mon, 31 Aug 2026 10:00:19 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 70D1C21B98;
- Mon, 31 Aug 2026 08:00:06 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id DA1D51FAB2;
+ Mon, 31 Aug 2026 08:00:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1788163210; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1788163214; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=y/XSP9M+juDvV/mqAGKnIfDzapoYMJZbxm48cz7m/NI=;
- b=VSmNb7ysZc07dGzxCVu8nWkvxo+HLtLZ4MQD0a3aHeGZC3Xv6I36rk5CZl/ZMxyZydEY5X
- Wp4qjurN1YbTF9uuyhqde9cSx0Qr+REVmtgkKr3mBT34uxlYMiqm9sxyLbAzmidqW99PTv
- PcP2zQp8G0L/ylqtVDqZTVIJ/dBro7A=
+ bh=avrAx1ro4i80KPG8/6NCJS9TxGbBj8w6h1CVPr9zjM8=;
+ b=Bf6CdpHTOnCyLCPRr89IB64ixREQR0ml0wydkGYkiPlm04YLbkjknUB8eZ+YBBYBk67azh
+ Lpr00tZthDlj1u1a59NrDRlgvR28fwpBrFE1iyggC7UnU3UyA43mOADZOarDpWjViSHHTy
+ dBYaH1Z/Y0Ew4Fdc0B6bbxi8Eh2UsiM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1788163210;
+ s=susede2_ed25519; t=1788163214;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=y/XSP9M+juDvV/mqAGKnIfDzapoYMJZbxm48cz7m/NI=;
- b=PZTetISlqylpj2nN7YOMZsgW8fBDHfFBoGpVGxPY+xpE2ub5uF9so1pll8v4DwHazqcTHE
- c62FhjyECV7/xiDg==
-Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.de header.s=susede2_rsa header.b=w+28jGTi;
- dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=tUcv82v1
+ bh=avrAx1ro4i80KPG8/6NCJS9TxGbBj8w6h1CVPr9zjM8=;
+ b=poAmFxU1WWDfCtVx4jXq/B0Fds3UJZk4pE7UfLlErxaKupq57N83qGVHS9jnZUI5OD3yKA
+ V+tF0WTRKE0WWVAg==
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.de header.s=susede2_rsa header.b=rSpev7AW;
+ dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=gCOUrhvx
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1788163206; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1788163209; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=y/XSP9M+juDvV/mqAGKnIfDzapoYMJZbxm48cz7m/NI=;
- b=w+28jGTinYA0CPr68+gDfPxKzK6W2pUVugDaf6bihqN1cCcQl8YcsT9oIrL380KFnKdYKI
- 3Mv8+gCegRfjEvJbCDJHjU6pvWgPgqRBOWRnvZgWTtbtn3SWjAiML0nIP9p497hvVftPGe
- lbkwn2wtf2dR3ssfvj4ixAfiJvfg6bs=
+ bh=avrAx1ro4i80KPG8/6NCJS9TxGbBj8w6h1CVPr9zjM8=;
+ b=rSpev7AW4o//yB2mdPi9zqWlq5B03PuzzlBBtvB+4FhZt5GDlmoXTfopsuG7exdcmxd0f7
+ A4Krsa5XIcjxR/E9rQYjK1dIA6QXp1yXSjy7/p6JcGvffm8DYIiUaed5wGkg8AT8RuJmuh
+ 1kt3p27c90iKLKsNffWRip/jewA3HtQ=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1788163206;
+ s=susede2_ed25519; t=1788163209;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=y/XSP9M+juDvV/mqAGKnIfDzapoYMJZbxm48cz7m/NI=;
- b=tUcv82v1EWpnzIVJsn0tlhfwHjF00dq4/CqwH2BSQtYpuWMfizzT8dIOjhLMvNSpUGYyAL
- 0XUriKrV6WPKe3AQ==
+ bh=avrAx1ro4i80KPG8/6NCJS9TxGbBj8w6h1CVPr9zjM8=;
+ b=gCOUrhvxXv1fHd8ibsmPUGeXkhdouO8qOZm57JeOzMV5TI+ZSkKa+5TEj6vGq33shOvxei
+ Dx2q5ub3S4yQbdDQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3D300136A5;
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C81EF136DC;
  Mon, 31 Aug 2026 08:00:06 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id KHtKDYY0lWo9dQAAD6G6ig
+ by imap1.dmz-prg2.suse.org with ESMTPSA id wMo2L4Y0lWo9dQAAD6G6ig
  (envelope-from <andrea.cervesato@suse.de>); Mon, 31 Aug 2026 08:00:06 +0000
 From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Mon, 31 Aug 2026 10:00:03 +0200
+Date: Mon, 31 Aug 2026 10:00:07 +0200
 MIME-Version: 1.0
-Message-Id: <20260831-fchroot-v4-2-57cceb68f927@suse.com>
+Message-Id: <20260831-fchroot-v4-6-57cceb68f927@suse.com>
 References: <20260831-fchroot-v4-0-57cceb68f927@suse.com>
 In-Reply-To: <20260831-fchroot-v4-0-57cceb68f927@suse.com>
 To: Linux Test Project <ltp@lists.linux.it>
 X-Mailer: b4 0.16.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1788163205; l=6820;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1788163205; l=3042;
  i=andrea.cervesato@suse.com; s=20251210; h=from:subject:message-id;
- bh=m68Rq3D0AuTz0g2JYolbkLIfHkdVPUctTkcO7UmKS/A=;
- b=pmE6Z1q7noAGMXCpJNZElDFQvwBWpGchEIMa5oPlzaLglZRWa0BS+Ke1lswi1lW7xDN9pHeHh
- plmHuI57nf5Dt+Wi7zqG3fznh1L2Zh8IwN5Bt1d8mzuympjdhs9AYc8
+ bh=OwG9cifFDBVyIeuZTxCH0jiaJxAMybsgunB7iUU3IwM=;
+ b=G8w39Pe6yLdo5Alv9wh/emI3eSlAYq7l4BeP0KOSLdFh87V6mfn9SzdqgdPK8e2UJ3iO8HA7e
+ ZbjJXUOLtCICOn1WWMEpPw5dgmvgRFXAy4IrETq5/6eM2NGfnbMsui4
 X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
  pk=zKY+6GCauOiuHNZ//d8PQ/UL4jFCTKbXrzXAOQSLevI=
-X-Rspamd-Queue-Id: 70D1C21B98
+X-Rspamd-Queue-Id: DA1D51FAB2
 X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 X-Rspamd-Action: no action
 X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
@@ -106,11 +107,12 @@ X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  FROM_HAS_DN(0.00)[];
  SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
  RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,suse.com:mid,suse.com:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:email,suse.de:dkim,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
  DKIM_TRACE(0.00)[suse.de:+]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v4 02/16] syscalls: update outdated syscall entries
+Subject: [LTP] [PATCH STAGING v4 06/16] fchroot03: test fchroot() permission
+ checks
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -129,262 +131,113 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-Add uprobe (336) on x86_64 and clone3 (435) on sparc, which were
-missing from the architecture syscall tables.
-
-Drop the _sysctl and timerfd entries because both are wired to
-sys_ni_syscall in the kernel syscall tables and cannot be called.
+Verify that with a regular directory fd the kernel first checks the
+execute permission on the directory and then CAP_SYS_CHROOT: an
+unprivileged process with an accessible directory fails with EPERM and
+a process without execute permission fails with EACCES.
 
 Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
- include/lapi/syscalls/arm.in       | 1 -
- include/lapi/syscalls/i386.in      | 1 -
- include/lapi/syscalls/mips64.in    | 2 --
- include/lapi/syscalls/mips64n32.in | 2 --
- include/lapi/syscalls/mipso32.in   | 2 --
- include/lapi/syscalls/parisc.in    | 1 -
- include/lapi/syscalls/powerpc.in   | 1 -
- include/lapi/syscalls/powerpc64.in | 1 -
- include/lapi/syscalls/s390.in      | 2 --
- include/lapi/syscalls/s390x.in     | 2 --
- include/lapi/syscalls/sh.in        | 1 -
- include/lapi/syscalls/sparc.in     | 2 +-
- include/lapi/syscalls/sparc64.in   | 2 +-
- include/lapi/syscalls/x86_64.in    | 2 +-
- 14 files changed, 3 insertions(+), 19 deletions(-)
+ runtest/staging                               |  1 +
+ testcases/kernel/syscalls/fchroot/.gitignore  |  1 +
+ testcases/kernel/syscalls/fchroot/fchroot03.c | 72 +++++++++++++++++++++++++++
+ 3 files changed, 74 insertions(+)
 
-diff --git a/include/lapi/syscalls/arm.in b/include/lapi/syscalls/arm.in
-index c4058e8de..158350976 100644
---- a/include/lapi/syscalls/arm.in
-+++ b/include/lapi/syscalls/arm.in
-@@ -109,7 +109,6 @@ readv 145
- writev 146
- getsid 147
- fdatasync 148
--_sysctl 149
- mlock 150
- munlock 151
- mlockall 152
-diff --git a/include/lapi/syscalls/i386.in b/include/lapi/syscalls/i386.in
-index 21d5da053..ee229b567 100644
---- a/include/lapi/syscalls/i386.in
-+++ b/include/lapi/syscalls/i386.in
-@@ -145,7 +145,6 @@ readv 145
- writev 146
- getsid 147
- fdatasync 148
--_sysctl 149
- mlock 150
- munlock 151
- mlockall 152
-diff --git a/include/lapi/syscalls/mips64.in b/include/lapi/syscalls/mips64.in
-index 3c19066b8..d1087e049 100644
---- a/include/lapi/syscalls/mips64.in
-+++ b/include/lapi/syscalls/mips64.in
-@@ -150,7 +150,6 @@ mlockall 5148
- munlockall 5149
- vhangup 5150
- pivot_root 5151
--_sysctl 5152
- prctl 5153
- adjtimex 5154
- setrlimit 5155
-@@ -272,7 +271,6 @@ ioprio_set 5273
- ioprio_get 5274
- utimensat 5275
- signalfd 5276
--timerfd 5277
- eventfd 5278
- fallocate 5279
- timerfd_create 5280
-diff --git a/include/lapi/syscalls/mips64n32.in b/include/lapi/syscalls/mips64n32.in
-index 0c539bd62..2a3883198 100644
---- a/include/lapi/syscalls/mips64n32.in
-+++ b/include/lapi/syscalls/mips64n32.in
-@@ -150,7 +150,6 @@ mlockall 6148
- munlockall 6149
- vhangup 6150
- pivot_root 6151
--_sysctl 6152
- prctl 6153
- adjtimex 6154
- setrlimit 6155
-@@ -276,7 +275,6 @@ ioprio_set 6277
- ioprio_get 6278
- utimensat 6279
- signalfd 6280
--timerfd 6281
- eventfd 6282
- fallocate 6283
- timerfd_create 6284
-diff --git a/include/lapi/syscalls/mipso32.in b/include/lapi/syscalls/mipso32.in
-index ecbe4d4b9..0d682d072 100644
---- a/include/lapi/syscalls/mipso32.in
-+++ b/include/lapi/syscalls/mipso32.in
-@@ -144,7 +144,6 @@ cachectl 4148
- sysmips 4149
- getsid 4151
- fdatasync 4152
--_sysctl 4153
- mlock 4154
- munlock 4155
- mlockall 4156
-@@ -307,7 +306,6 @@ ioprio_set 4314
- ioprio_get 4315
- utimensat 4316
- signalfd 4317
--timerfd 4318
- eventfd 4319
- fallocate 4320
- timerfd_create 4321
-diff --git a/include/lapi/syscalls/parisc.in b/include/lapi/syscalls/parisc.in
-index e84c3b344..71d40f7b2 100644
---- a/include/lapi/syscalls/parisc.in
-+++ b/include/lapi/syscalls/parisc.in
-@@ -142,7 +142,6 @@ readv 145
- writev 146
- getsid 147
- fdatasync 148
--_sysctl 149
- mlock 150
- munlock 151
- mlockall 152
-diff --git a/include/lapi/syscalls/powerpc.in b/include/lapi/syscalls/powerpc.in
-index 9354dbe2b..85d7aec9a 100644
---- a/include/lapi/syscalls/powerpc.in
-+++ b/include/lapi/syscalls/powerpc.in
-@@ -145,7 +145,6 @@ readv 145
- writev 146
- getsid 147
- fdatasync 148
--_sysctl 149
- mlock 150
- munlock 151
- mlockall 152
-diff --git a/include/lapi/syscalls/powerpc64.in b/include/lapi/syscalls/powerpc64.in
-index e4bef6838..def01478d 100644
---- a/include/lapi/syscalls/powerpc64.in
-+++ b/include/lapi/syscalls/powerpc64.in
-@@ -145,7 +145,6 @@ readv 145
- writev 146
- getsid 147
- fdatasync 148
--_sysctl 149
- mlock 150
- munlock 151
- mlockall 152
-diff --git a/include/lapi/syscalls/s390.in b/include/lapi/syscalls/s390.in
-index 4a11871b6..5024313a5 100644
---- a/include/lapi/syscalls/s390.in
-+++ b/include/lapi/syscalls/s390.in
-@@ -126,7 +126,6 @@ readv 145
- writev 146
- getsid 147
- fdatasync 148
--_sysctl 149
- mlock 150
- munlock 151
- mlockall 152
-@@ -291,7 +290,6 @@ utimes 313
- fallocate 314
- utimensat 315
- signalfd 316
--timerfd 317
- eventfd 318
- timerfd_create 319
- timerfd_settime 320
-diff --git a/include/lapi/syscalls/s390x.in b/include/lapi/syscalls/s390x.in
-index 055a039fb..357b04ceb 100644
---- a/include/lapi/syscalls/s390x.in
-+++ b/include/lapi/syscalls/s390x.in
-@@ -107,7 +107,6 @@ readv 145
- writev 146
- getsid 147
- fdatasync 148
--_sysctl 149
- mlock 150
- munlock 151
- mlockall 152
-@@ -258,7 +257,6 @@ utimes 313
- fallocate 314
- utimensat 315
- signalfd 316
--timerfd 317
- eventfd 318
- timerfd_create 319
- timerfd_settime 320
-diff --git a/include/lapi/syscalls/sh.in b/include/lapi/syscalls/sh.in
-index 29cd8f8df..584d36a4e 100644
---- a/include/lapi/syscalls/sh.in
-+++ b/include/lapi/syscalls/sh.in
-@@ -128,7 +128,6 @@ readv 145
- writev 146
- getsid 147
- fdatasync 148
--_sysctl 149
- mlock 150
- munlock 151
- mlockall 152
-diff --git a/include/lapi/syscalls/sparc.in b/include/lapi/syscalls/sparc.in
-index ea2bfc9c1..a48c5b365 100644
---- a/include/lapi/syscalls/sparc.in
-+++ b/include/lapi/syscalls/sparc.in
-@@ -246,7 +246,6 @@ sched_get_priority_min 247
- sched_rr_get_interval 248
- nanosleep 249
- mremap 250
--_sysctl 251
- getsid 252
- fdatasync 253
- nfsservctl 254
-@@ -402,6 +401,7 @@ fsconfig 431
- fsmount 432
- fspick 433
- pidfd_open 434
-+clone3 435
- close_range 436
- openat2 437
- pidfd_getfd 438
-diff --git a/include/lapi/syscalls/sparc64.in b/include/lapi/syscalls/sparc64.in
-index 692652c3b..9f3e825a9 100644
---- a/include/lapi/syscalls/sparc64.in
-+++ b/include/lapi/syscalls/sparc64.in
-@@ -228,7 +228,6 @@ sched_get_priority_min 247
- sched_rr_get_interval 248
- nanosleep 249
- mremap 250
--_sysctl 251
- getsid 252
- fdatasync 253
- nfsservctl 254
-@@ -365,6 +364,7 @@ fsconfig 431
- fsmount 432
- fspick 433
- pidfd_open 434
-+clone3 435
- close_range 436
- openat2 437
- pidfd_getfd 438
-diff --git a/include/lapi/syscalls/x86_64.in b/include/lapi/syscalls/x86_64.in
-index 7d3d8163c..1996c26b8 100644
---- a/include/lapi/syscalls/x86_64.in
-+++ b/include/lapi/syscalls/x86_64.in
-@@ -154,7 +154,6 @@ munlockall 152
- vhangup 153
- modify_ldt 154
- pivot_root 155
--_sysctl 156
- prctl 157
- arch_prctl 158
- adjtimex 159
-@@ -334,6 +333,7 @@ statx 332
- io_pgetevents 333
- rseq 334
- uretprobe 335
-+uprobe 336
- pidfd_send_signal 424
- io_uring_setup 425
- io_uring_enter 426
+diff --git a/runtest/staging b/runtest/staging
+index e12230218..13635037b 100644
+--- a/runtest/staging
++++ b/runtest/staging
+@@ -2,3 +2,4 @@
+ 
+ fchroot01 fchroot01
+ fchroot02 fchroot02
++fchroot03 fchroot03
+diff --git a/testcases/kernel/syscalls/fchroot/.gitignore b/testcases/kernel/syscalls/fchroot/.gitignore
+index fb3287612..235befd99 100644
+--- a/testcases/kernel/syscalls/fchroot/.gitignore
++++ b/testcases/kernel/syscalls/fchroot/.gitignore
+@@ -1,2 +1,3 @@
+ fchroot01
+ fchroot02
++fchroot03
+diff --git a/testcases/kernel/syscalls/fchroot/fchroot03.c b/testcases/kernel/syscalls/fchroot/fchroot03.c
+new file mode 100644
+index 000000000..5ec5c9241
+--- /dev/null
++++ b/testcases/kernel/syscalls/fchroot/fchroot03.c
+@@ -0,0 +1,72 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (C) 2026 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
++ */
++
++/*\
++ * Test the :manpage:`fchroot(2)` permission checks with a regular directory
++ * fd:
++ *
++ * - an unprivileged process with an accessible directory fails with ``EPERM``
++ * - a process without execute permission on the directory fails with ``EACCES``
++ *
++ * Root is required to open the directory file descriptors before dropping
++ * to an unprivileged user in forked children.
++ */
++
++#include <fcntl.h>
++#include <pwd.h>
++#include "tst_test.h"
++#include "lapi/fcntl.h"
++#include "lapi/syscalls.h"
++
++static struct tcase {
++	const char *dir;
++	mode_t mode;
++	int exp_errno;
++	const char *desc;
++} tcases[] = {
++	{"pubdir", 0755, EPERM, "no CAP_SYS_CHROOT"},
++	{"privdir", 0600, EACCES, "no execute permission"},
++};
++
++static struct passwd *ltpuser;
++
++static void run(unsigned int i)
++{
++	struct tcase *tc = &tcases[i];
++
++	if (SAFE_FORK())
++		return;
++
++	int dfd = SAFE_OPEN(tc->dir, O_PATH | O_DIRECTORY);
++
++	SAFE_SETRESUID(ltpuser->pw_uid, ltpuser->pw_uid,
++		ltpuser->pw_uid);
++
++	TST_EXP_FAIL(tst_syscall(__NR_fchroot, dfd, 0),
++		tc->exp_errno, "fchroot() with %s", tc->desc);
++
++	exit(0);
++}
++
++static void setup(void)
++{
++	unsigned int i;
++
++	ltpuser = SAFE_GETPWNAM("nobody");
++
++	for (i = 0; i < ARRAY_SIZE(tcases); i++) {
++		SAFE_MKDIR(tcases[i].dir, tcases[i].mode);
++		SAFE_CHMOD(tcases[i].dir, tcases[i].mode);
++	}
++}
++
++static struct tst_test test = {
++	.test = run,
++	.tcnt = ARRAY_SIZE(tcases),
++	.setup = setup,
++	.needs_root = 1,
++	.needs_tmpdir = 1,
++	.forks_child = 1,
++};
 
 -- 
 2.51.0
