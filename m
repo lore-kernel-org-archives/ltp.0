@@ -4,78 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F0D00C61DD6
-	for <ltp@archiver.kernel.org>; Tue,  1 Sep 2026 22:45:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1788302742; h=date :
- mime-version : message-id : to : subject : list-id : list-unsubscribe
- : list-archive : list-post : list-help : list-subscribe : from :
- reply-to : cc : content-type : content-transfer-encoding : sender :
- from; bh=MnCAFMqrYnE/H7mkXCSOBYED/BoL5YCFPK5oSAY4C0Y=;
- b=gjyN8vC2DUb0QkBEkcoSXEOogK5SE2jZxnrI4R8evljmau/fmfknNloSyLmQCOSj8QYUy
- FTZPDRbzE7v1o27rigGWfstCwrs5/+mLjsJHj5nHfNXe8LmFBMIcr1P9oPQHeMgGoHVqQzQ
- oGnn2IXqbs4FFFzdzxtGrSmZi3tMl8c=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3703AC61DD6
+	for <ltp@archiver.kernel.org>; Tue,  1 Sep 2026 23:05:50 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B34EC3E997F
-	for <ltp@archiver.kernel.org>; Wed,  2 Sep 2026 00:45:42 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 286E23E997B
+	for <ltp@archiver.kernel.org>; Wed,  2 Sep 2026 01:05:48 +0200 (CEST)
 Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1A6F23C568A
- for <ltp@lists.linux.it>; Wed,  2 Sep 2026 00:45:16 +0200 (CEST)
-Received: from mail-pj1-x1046.google.com (mail-pj1-x1046.google.com
- [IPv6:2607:f8b0:4864:20::1046])
+ by picard.linux.it (Postfix) with ESMTPS id 2D2B03E5482
+ for <ltp@lists.linux.it>; Wed,  2 Sep 2026 01:05:30 +0200 (CEST)
+Received: from mail-pj2-x08.google.com (mail-pj2-x08.google.com
+ [IPv6:2607:f8b0:4864:39::8])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 8F44A100036E
- for <ltp@lists.linux.it>; Wed,  2 Sep 2026 00:45:16 +0200 (CEST)
-Received: by mail-pj1-x1046.google.com with SMTP id
- 98e67ed59e1d1-398dcfabbf8so858335a91.0
- for <ltp@lists.linux.it>; Tue, 01 Sep 2026 15:45:16 -0700 (PDT)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 00C6E100060D
+ for <ltp@lists.linux.it>; Wed,  2 Sep 2026 01:05:30 +0200 (CEST)
+Received: by mail-pj2-x08.google.com with SMTP id
+ 98e67ed59e1d1-38fd9408220so88945a91.1
+ for <ltp@lists.linux.it>; Tue, 01 Sep 2026 16:05:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=google.com; s=20251104; t=1788302715; x=1788907515; darn=lists.linux.it;
- h=content-type:cc:to:from:subject:message-id:mime-version:date:from
- :to:cc:subject:date:message-id:reply-to:content-type;
- bh=UJkmG4JyBLtjoSsdOvC9Ca0o3KW3Gqrf7ESwI9BLwjg=;
- b=ZetIvU2pQpXK1mIVqQKGMmQcQJf2/JMYfSzJ++zu0x9aLovoiSU98sY98sLasuFPFh
- EzdNbyu1JK3etx8qGKKmQDSai5uqImUQCSvfv6CWgxRKGxzDAY2+Qo2lMguntn/9pP8h
- k4SHVwpCxNhTy8nSbtIgma8T7fAix99tcCSQG3VyRoJC9M+nIY1JydisC9ai4WVhKZsY
- TS4hjWdL5FTJwXzGXAsmBNxDRbuQEkzX7pt/MJnGV+cw4NEgMvMOvutjWQrWBadVrfc4
- zTRXI7dN4GwfP9+gVBTVKlE8UUo6edznZhnyi1uftOsE3pbYR2+e7x3K+QVrJ+7yaCVx
- bsUQ==
+ d=gmail.com; s=20251104; t=1788303928; x=1788908728; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to:content-type;
+ bh=xfT8rGrqzUydO/tob9CVdsTib/kuejbVp7C4AG8R6+s=;
+ b=aR/h6KNPr5rvhIMSuIpCchmWKkTesvHstbkQ7a/Iq44lCoEMT+KugkmuxUhY7rv0Qg
+ Og8ONl0JOSBNp+kbY9qnnUsaYBkSu7K5NgaMq3/nbYRkaqcSgBWo/qLoBf+iS4CBWU0a
+ O4+jUQKgwn/efrmOBvrnpFKEnUCXdGD9xRVzietARyuktTRpwi0iBtILH0DeehlmldJG
+ zPk03X/V2Mgzstngz0Vam1FbTijTrB0QbKRouTORMLc4u+knNLwEoG1PMzbhcEvw4l6A
+ JVnGbm6gqWN9w7wBax5M9IK67R8erhJReNj7cJNfYi2jTyQWKCvlJzqFLYGjOmuAWtPP
+ JhAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1788302715; x=1788907515;
- h=content-type:cc:to:from:subject:message-id:mime-version:date
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
- :content-type;
- bh=UJkmG4JyBLtjoSsdOvC9Ca0o3KW3Gqrf7ESwI9BLwjg=;
- b=TdBm3a3Rk1cXSmQVv7MKNBnosOj9i2ix73qxW3Dpmq8kBnIl8CSZg/RRqEI+tebeu/
- esnFKT0ZdOQlmyro2iQTmIa9bcI/Vf+RVaE/Aa2SvEXO0vplx8suQlF1/rN9GubD5rwi
- 3s27TnyHMe5S/3kh5cL/jZ/0Ph4t6lfENFHxxIep70xf6hlJBe/WU5+DN1WO8GEUdKqT
- TSPouFI1qIfMakELwJb3l+kGpf0FKBoNSKbSaHVup2ZLwukaPFSf2mHmv544NdDRLSo6
- RTcXy7c6u8rp8pRraD3vXiTcs+11/KcW+wlHHCEMlAyZ8wGxJd8LoaIT6tQTNi4ngla3
- XdIg==
-X-Gm-Message-State: AFuF++ndO5EoZEg8VO+zWQ7dw2cnglreenhdGQR2NaCJFaYo5WIxaBN3
- MTXQMWH/fkWcB7MhbnQJX2ZesalM10NnMF8SbYHwe8CEbFJg/3d8zRxzkXpITU4x8gFgjrGP+Xk
- cx28YhHy4jZrpa6pQqXd/VetS+2z3UmoXGOzeal9b41mNFPnWXqHhLDMVj21ipMZXyNt06HT+0a
- Zj1L0cyhTMdnWsKoEv5S7UiI4GLw==
-X-Received: from pjbsb15.prod.google.com ([2002:a17:90b:50cf:b0:383:c59b:fc00])
- (user=wakel job=prod-delivery.src-stubby-dispatcher) by
- 2002:a17:90b:1b04:b0:398:9be5:b416
- with SMTP id 98e67ed59e1d1-39aee1c5eadmr211572a91.17.1788302714246; Tue, 01
- Sep 2026 15:45:14 -0700 (PDT)
-Date: Tue,  1 Sep 2026 22:45:12 +0000
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.55.0.966.g6673acef38-goog
-Message-ID: <20260901224512.1180203-1-wakel@google.com>
-To: ltp@lists.linux.it
+ d=1e100.net; s=20251104; t=1788303928; x=1788908728;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to:content-type;
+ bh=xfT8rGrqzUydO/tob9CVdsTib/kuejbVp7C4AG8R6+s=;
+ b=ongr3jRhC0NknxHsGdq9E90d6j4Tec259gLdjOyURfl4ql+3U6fgDmLi7ej9n5C1tQ
+ Ru6g2AkfqfHuq2V3DlhX9tkudT7B85CftzGtzWgHVVUB7eHrhu06HVwT/D+w8TNngaZP
+ S+CakvF7feJFXpiNOG2EkzpVYoYNJoGebWtxUWn0HKzaMnfW9pSBiYW4g1qpZrpJ019Z
+ vAR69f2XEIgY+FQWMimh+W1wxEgED84CldtJo47BWsjO6/+pmiRpZb9/vfiKIV22JXlT
+ Ya4fduMfh3kGSgYMIfWZtyLW4oJZ0UADS9kTaigEMfGmpDfzFDFSWUX3qHGBmO8ykBbc
+ 3vkQ==
+X-Gm-Message-State: AFuF++m7tsyQ5vler9lc0DooYxgXtrmx4AGVY0Dhs+55ZYWCRXsXwqZ6
+ FUUXOubPez1rZp5kIpCG++BGh1++WXuO+2MOC6dOEejSk8yH8BN7cvt3
+X-Gm-Gg: AYBFou1ZBIZQxXqYfP5gxAu6PfhdqYVKYfLIpx9PVuQwFny4Q3pg/X3pLarWxsV2YMy
+ b+ZFju3EVFIAZqs3aBG5+YX8ugvC2qn+4cPDfaYixawgNVEmD101D04thaSQ3PRPsscAPsZg79E
+ 50DlgFgLfRDm83rFrf/bCvG7yVX0/Q5GVaTKxrfHyw8ExDK5N9jCAWTK17L6P2PN7XzpfzVxJxe
+ azybx/R7nchqfzwP8mufWMt5B4oB7Hy5u3VobvfV1Gd2ogOKnWqpzfYDqdDQd2rtyvp+P3ltsTH
+ PlrWwF/e+2rLCqIIgdzcxWX/pK/brGJdNiW49IhAftSjbBhQWy/jafwyDmK3j0QFW7nE0bprIm1
+ j5SztjPd0TloEqlpy8Wgo9qzMb4RLd4fqjWzqLUXuxS5rbdvGN9AfdUMFka7ITW7dqEqRPo+YuF
+ 99p5dU+P3DYYvCuJZ4ZHsnX1XdNIhrZBCWyL58z+1TiCZmwVYmQ/lP8z9wJMB2T1Ts14aR4XcwJ
+ ZhEKVmONreJlCj4nz+ocoBVO2qHzwH2U5VtKbkM7XinpKeqJHAFU7XNgfIrdMxr6+FOFmo/gM3t
+ hRLC70CWhw==
+X-Received: by 2002:a17:90b:35c3:b0:398:bd37:6a49 with SMTP id
+ 98e67ed59e1d1-39aee0e6628mr504943a91.12.1788303928126; 
+ Tue, 01 Sep 2026 16:05:28 -0700 (PDT)
+Received: from
+ runnervmgx7h7.mdwwigey15hubdk4xsiuhudezb.dx.internal.cloudapp.net
+ ([52.157.2.241]) by smtp.gmail.com with ESMTPSA id
+ 5a478bee46e88-32f07bb684esm1205344eec.23.2026.09.01.16.05.26
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 01 Sep 2026 16:05:27 -0700 (PDT)
+From: linuxtestproject.agent@gmail.com
+To: Wake Liu <wakel@google.com>
+Date: Tue,  1 Sep 2026 23:05:25 +0000
+Message-ID: <20260901230525.8838-1-linuxtestproject.agent@gmail.com>
+X-Mailer: git-send-email 2.55.0
+In-Reply-To: <20260901224512.1180203-1-wakel@google.com>
+References: <20260901224512.1180203-1-wakel@google.com>
+MIME-Version: 1.0
 X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] lapi/sched: Fix sched_getattr/setattr fallback
- definitions
+Subject: Re: [LTP] lapi/sched: Fix sched_getattr/setattr fallback definitions
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -87,107 +92,28 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Wake Liu via ltp <ltp@lists.linux.it>
-Reply-To: Wake Liu <wakel@google.com>
-Cc: Wake Liu <wakel@google.com>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Commit c48700d8cdbe ("sched_attr: Do not define for glibc >= 2.41")
-guarded the definitions of struct sched_attr, sched_setattr(), and
-sched_getattr() under "#ifndef SCHED_ATTR_SIZE_VER0" to avoid conflicts
-when glibc >= 2.41 provides these definitions.
+Hi Wake,
 
-However, SCHED_ATTR_SIZE_VER0 is a standard Linux kernel UAPI macro
-defined in <linux/sched/types.h>. When headers include the kernel types
-(such as on Android Bionic, musl, or older glibc with kernel headers),
-SCHED_ATTR_SIZE_VER0 is defined even though libc does not provide the
-sched_setattr() or sched_getattr() functions. This causes the fallback
-syscall wrappers to be omitted, leading to unresolved symbol errors.
+On Tue, 1 Sep 2026, Wake Liu wrote:
+> lapi/sched: Fix sched_getattr/setattr fallback definitions
 
-Add autotools checks for sched_getattr, sched_setattr, and
-struct sched_attr. Guard the fallback functions with
-HAVE_SCHED_GETATTR and HAVE_SCHED_SETATTR, and remove const from
-sched_setattr's attr parameter to match the kernel and libc signatures.
+Verdict - Reviewed
 
-Fixes: c48700d8cdbe ("sched_attr: Do not define for glibc >= 2.41")
-Signed-off-by: Wake Liu <wakel@google.com>
 ---
- configure.ac         |  3 +++
- include/lapi/sched.h | 16 ++++++++++------
- 2 files changed, 13 insertions(+), 6 deletions(-)
+Note:
 
-diff --git a/configure.ac b/configure.ac
-index 19fc5e1b8..8aa3ff539 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -155,7 +155,9 @@ AC_CHECK_FUNCS_ONCE([ \
-     rand_r \
-     recvmmsg \
-     renameat2 \
-+    sched_getattr \
-     sched_getcpu \
-+    sched_setattr \
-     sendmmsg \
-     sethostid \
-     setns \
-@@ -199,6 +201,7 @@ AC_CHECK_DECLS([TCA_PEDIT_PARMS_EX, TCA_PEDIT_KEYS_EX, TCA_PEDIT_KEY_EX,
- AC_CHECK_TYPES([struct acct_v3],,,[#include <sys/acct.h>])
- AC_CHECK_TYPES([struct af_alg_iv, struct sockaddr_alg],,,[# include <linux/if_alg.h>])
- AC_CHECK_TYPES([struct clone_args],,,[#include <sched.h>])
-+AC_CHECK_TYPES([struct sched_attr],,,[#include <sched.h>])
- AC_CHECK_TYPES([struct fanotify_event_info_fid, struct fanotify_event_info_error,
- 		struct fanotify_event_info_header, struct fanotify_event_info_pidfd,
- 		struct fanotify_event_info_range],,,[#include <sys/fanotify.h>])
-diff --git a/include/lapi/sched.h b/include/lapi/sched.h
-index 05b322c1c..d835537e7 100644
---- a/include/lapi/sched.h
-+++ b/include/lapi/sched.h
-@@ -14,8 +14,8 @@
- #include "config.h"
- #include "lapi/syscalls.h"
- 
--/* sched_attr is not defined in glibc < 2.41 */
- #ifndef SCHED_ATTR_SIZE_VER0
-+# ifndef HAVE_STRUCT_SCHED_ATTR
- struct sched_attr {
- 	uint32_t size;
- 
-@@ -33,20 +33,24 @@ struct sched_attr {
- 	uint64_t sched_deadline;
- 	uint64_t sched_period;
- };
-+# endif
-+# define SCHED_ATTR_SIZE_VER0 48	/* sizeof first published struct */
-+#endif
- 
--static inline int sched_setattr(pid_t pid, const struct sched_attr *attr,
--                                unsigned int flags)
-+#ifndef HAVE_SCHED_SETATTR
-+static inline int sched_setattr(pid_t pid, struct sched_attr *attr,
-+				unsigned int flags)
- {
- 	return syscall(__NR_sched_setattr, pid, attr, flags);
- }
-+#endif
- 
-+#ifndef HAVE_SCHED_GETATTR
- static inline int sched_getattr(pid_t pid, struct sched_attr *attr,
--                                unsigned int size, unsigned int flags)
-+				unsigned int size, unsigned int flags)
- {
- 	return syscall(__NR_sched_getattr, pid, attr, size, flags);
- }
--
--# define SCHED_ATTR_SIZE_VER0 48	/* sizeof first published struct */
- #endif
- 
- struct clone_args_minimal {
--- 
-2.55.0.966.g6673acef38-goog
+The agent can sometimes produce false positives although often its
+findings are genuine. If you find issues with the review, please
+comment this email or ignore the suggestions.
 
+Regards,
+LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
