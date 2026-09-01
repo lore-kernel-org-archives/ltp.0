@@ -4,120 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DEFCDC624CE
-	for <ltp@archiver.kernel.org>; Tue,  1 Sep 2026 12:10:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F0D00C61DD6
+	for <ltp@archiver.kernel.org>; Tue,  1 Sep 2026 22:45:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1788302742; h=date :
+ mime-version : message-id : to : subject : list-id : list-unsubscribe
+ : list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : cc : content-type : content-transfer-encoding : sender :
+ from; bh=MnCAFMqrYnE/H7mkXCSOBYED/BoL5YCFPK5oSAY4C0Y=;
+ b=gjyN8vC2DUb0QkBEkcoSXEOogK5SE2jZxnrI4R8evljmau/fmfknNloSyLmQCOSj8QYUy
+ FTZPDRbzE7v1o27rigGWfstCwrs5/+mLjsJHj5nHfNXe8LmFBMIcr1P9oPQHeMgGoHVqQzQ
+ oGnn2IXqbs4FFFzdzxtGrSmZi3tMl8c=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A1BEE3E98E1
-	for <ltp@archiver.kernel.org>; Tue,  1 Sep 2026 14:10:46 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id B34EC3E997F
+	for <ltp@archiver.kernel.org>; Wed,  2 Sep 2026 00:45:42 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 8891F3E946D
- for <ltp@lists.linux.it>; Tue,  1 Sep 2026 14:10:30 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 1A6F23C568A
+ for <ltp@lists.linux.it>; Wed,  2 Sep 2026 00:45:16 +0200 (CEST)
+Received: from mail-pj1-x1046.google.com (mail-pj1-x1046.google.com
+ [IPv6:2607:f8b0:4864:20::1046])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id BB4F01A00CBE
- for <ltp@lists.linux.it>; Tue,  1 Sep 2026 14:10:29 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 12F0E21DB6;
- Tue,  1 Sep 2026 12:10:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1788264624;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=gvgDcyXbdCwzgKEaunLZ2MV3Gdx+qz5Dfjha87YOeNI=;
- b=YJo5XCXoZ8p0mRFIPKdZ/wCm1f9FbCbCPkOC1efTXAE0GUQ31c3tWI0hS8RdbgPBAkVie4
- T+DTIRVGuTQllW+KYxXTe4JwGw0Bmr+ufV/gfV1oUQ3C+QROrlkbirssDHxP3UsMI0wACn
- w2SmGcX4Fnbyp5TdbT582AidWZ3Hphc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1788264624;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=gvgDcyXbdCwzgKEaunLZ2MV3Gdx+qz5Dfjha87YOeNI=;
- b=hn86wIfZY9NwXHoA9x8+wrqcJw+H2btyujR+kBrXTqbAp6iZ0sVKDzuWplXA2uCzh0G98o
- mOjTOGmGw7sUnuBA==
-Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=eFgSGkvR;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=0VsFsb84
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1788264620;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=gvgDcyXbdCwzgKEaunLZ2MV3Gdx+qz5Dfjha87YOeNI=;
- b=eFgSGkvRiDv+6nh5y5rWfhyDwO3SFmMRdvcRwLakeGcsoVu+N93LIlYDnmDsf5zzY0EJXp
- vV2IB0ePQOqrWWf8RjIIZcRHxiTatsEXEf7b5NIUJeU3bp4nGqyZEdykIC3aLDhVQhvFQq
- B0VCnpYTBA6x7LEALaBjFIJ9E9BMvgk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1788264620;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=gvgDcyXbdCwzgKEaunLZ2MV3Gdx+qz5Dfjha87YOeNI=;
- b=0VsFsb84/eFaqOEgREuXVXvmAe9DpA5Xq3smTeQ6wxRepuvPXPkpWB8HYzihFOs0Fxr+yu
- hw3GlM2KHba/CSAw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C320D1369E;
- Tue,  1 Sep 2026 12:10:19 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id VRTZLavAlmpUZQAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Tue, 01 Sep 2026 12:10:19 +0000
-Date: Tue, 1 Sep 2026 14:10:18 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Amir Goldstein <amir73il@gmail.com>
-Message-ID: <20260901121018.GA862728@pevik>
-References: <20260616210448.12175-1-anonymemeow@gmail.com>
- <20260616210448.12175-3-anonymemeow@gmail.com>
- <20260825103609.GA56957@pevik>
- <apGPksbQajf2vVJF@amir-ThinkPad-T480>
- <CAOQ4uxixsiz-0S6zBjnABNwxiGyThWOoMCKSUz-Pd_fo4WWyBA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CAOQ4uxixsiz-0S6zBjnABNwxiGyThWOoMCKSUz-Pd_fo4WWyBA@mail.gmail.com>
-X-Rspamd-Queue-Id: 12F0E21DB6
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- TO_DN_SOME(0.00)[];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- FREEMAIL_TO(0.00)[gmail.com]; MIME_TRACE(0.00)[0:+];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- ARC_NA(0.00)[]; FREEMAIL_ENVRCPT(0.00)[gmail.com];
- RCVD_TLS_ALL(0.00)[]; DKIM_TRACE(0.00)[suse.cz:+];
- RCVD_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[];
- FREEMAIL_CC(0.00)[gmail.com,suse.cz,lists.linux.it];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:email,suse.cz:replyto,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
- RCVD_VIA_SMTP_AUTH(0.00)[];
- DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- RCPT_COUNT_THREE(0.00)[4]; MISSING_XM_UA(0.00)[];
- REPLYTO_EQ_FROM(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 8F44A100036E
+ for <ltp@lists.linux.it>; Wed,  2 Sep 2026 00:45:16 +0200 (CEST)
+Received: by mail-pj1-x1046.google.com with SMTP id
+ 98e67ed59e1d1-398dcfabbf8so858335a91.0
+ for <ltp@lists.linux.it>; Tue, 01 Sep 2026 15:45:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=google.com; s=20251104; t=1788302715; x=1788907515; darn=lists.linux.it;
+ h=content-type:cc:to:from:subject:message-id:mime-version:date:from
+ :to:cc:subject:date:message-id:reply-to:content-type;
+ bh=UJkmG4JyBLtjoSsdOvC9Ca0o3KW3Gqrf7ESwI9BLwjg=;
+ b=ZetIvU2pQpXK1mIVqQKGMmQcQJf2/JMYfSzJ++zu0x9aLovoiSU98sY98sLasuFPFh
+ EzdNbyu1JK3etx8qGKKmQDSai5uqImUQCSvfv6CWgxRKGxzDAY2+Qo2lMguntn/9pP8h
+ k4SHVwpCxNhTy8nSbtIgma8T7fAix99tcCSQG3VyRoJC9M+nIY1JydisC9ai4WVhKZsY
+ TS4hjWdL5FTJwXzGXAsmBNxDRbuQEkzX7pt/MJnGV+cw4NEgMvMOvutjWQrWBadVrfc4
+ zTRXI7dN4GwfP9+gVBTVKlE8UUo6edznZhnyi1uftOsE3pbYR2+e7x3K+QVrJ+7yaCVx
+ bsUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1788302715; x=1788907515;
+ h=content-type:cc:to:from:subject:message-id:mime-version:date
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+ :content-type;
+ bh=UJkmG4JyBLtjoSsdOvC9Ca0o3KW3Gqrf7ESwI9BLwjg=;
+ b=TdBm3a3Rk1cXSmQVv7MKNBnosOj9i2ix73qxW3Dpmq8kBnIl8CSZg/RRqEI+tebeu/
+ esnFKT0ZdOQlmyro2iQTmIa9bcI/Vf+RVaE/Aa2SvEXO0vplx8suQlF1/rN9GubD5rwi
+ 3s27TnyHMe5S/3kh5cL/jZ/0Ph4t6lfENFHxxIep70xf6hlJBe/WU5+DN1WO8GEUdKqT
+ TSPouFI1qIfMakELwJb3l+kGpf0FKBoNSKbSaHVup2ZLwukaPFSf2mHmv544NdDRLSo6
+ RTcXy7c6u8rp8pRraD3vXiTcs+11/KcW+wlHHCEMlAyZ8wGxJd8LoaIT6tQTNi4ngla3
+ XdIg==
+X-Gm-Message-State: AFuF++ndO5EoZEg8VO+zWQ7dw2cnglreenhdGQR2NaCJFaYo5WIxaBN3
+ MTXQMWH/fkWcB7MhbnQJX2ZesalM10NnMF8SbYHwe8CEbFJg/3d8zRxzkXpITU4x8gFgjrGP+Xk
+ cx28YhHy4jZrpa6pQqXd/VetS+2z3UmoXGOzeal9b41mNFPnWXqHhLDMVj21ipMZXyNt06HT+0a
+ Zj1L0cyhTMdnWsKoEv5S7UiI4GLw==
+X-Received: from pjbsb15.prod.google.com ([2002:a17:90b:50cf:b0:383:c59b:fc00])
+ (user=wakel job=prod-delivery.src-stubby-dispatcher) by
+ 2002:a17:90b:1b04:b0:398:9be5:b416
+ with SMTP id 98e67ed59e1d1-39aee1c5eadmr211572a91.17.1788302714246; Tue, 01
+ Sep 2026 15:45:14 -0700 (PDT)
+Date: Tue,  1 Sep 2026 22:45:12 +0000
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.55.0.966.g6673acef38-goog
+Message-ID: <20260901224512.1180203-1-wakel@google.com>
+To: ltp@lists.linux.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 2/5] fanotify21: Stop relying on exited child
- for pidfd error
+Subject: [LTP] [PATCH] lapi/sched: Fix sched_getattr/setattr fallback
+ definitions
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -129,123 +87,107 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: jack@suse.cz, ltp@lists.linux.it, AnonymeMeow <anonymemeow@gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+From: Wake Liu via ltp <ltp@lists.linux.it>
+Reply-To: Wake Liu <wakel@google.com>
+Cc: Wake Liu <wakel@google.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-PiBPbiBGcmksIEF1ZyAyOCwgMjAyNiBhdCAzOjM54oCvUE0gQW1pciBHb2xkc3RlaW4gPGFtaXI3
-M2lsQGdtYWlsLmNvbT4gd3JvdGU6Cgo+ID4gT24gVHVlLCBBdWcgMjUsIDIwMjYgYXQgMTI6MzY6
-MDlQTSArMDIwMCwgUGV0ciBWb3JlbCB3cm90ZToKPiA+ID4gSGkgYWxsLAoKPiA+ID4gPiBmYW5v
-dGlmeTIxIHVzZWQgdG8gdmVyaWZ5IHRoZSBwaWRmZCBlcnJvciBjYXNlIGJ5IGdlbmVyYXRpbmcg
-YW4gZXZlbnQKPiA+ID4gPiBmcm9tIGEgY2hpbGQgcHJvY2VzcyBhbmQgcmVhZGluZyB0aGUgZXZl
-bnQgYWZ0ZXIgdGhlIGNoaWxkIGhhZCBleGl0ZWQuCj4gPiA+ID4gVGhpcyBpcyBubyBsb25nZXIg
-YSBzdGFibGUgd2F5IHRvIHRyaWdnZXIgYSBwaWRmZCBlcnJvciwgYmVjYXVzZSBuZXdlcgo+ID4g
-PiA+IGtlcm5lbHMgY2FuIHJlcG9ydCBwaWRmZHMgZm9yIGV4aXRlZCBldmVudCBwcm9jZXNzZXMu
-Cgo+ID4gPiA+IFJlYWQgdGhlIGV2ZW50IGZyb20gYSBjaGlsZCBwcm9jZXNzIGluIGEgZGVzY2Vu
-ZGFudCBQSUQgbmFtZXNwYWNlCj4gPiA+ID4gaW5zdGVhZC4gVGhlIHJlYWRlciBjYW5ub3QgZ2V0
-IHRoZSBwaWRmZCBpbiB0aGUgcGFyZW50IFBJRCBuYW1lc3BhY2UKPiA+ID4gPiBmcm9tIGZhbm90
-aWZ5LCBzbyBwaWRmZCBjcmVhdGlvbiB3aWxsIGZhaWwgYW5kIHRoZSB0ZXN0IGNhbiB2ZXJpZnkK
-PiA+ID4gPiBGQU5fTk9QSURGRCwgb3IgLUVTUkNIIHdpdGggRkFOX1JFUE9SVF9GRF9FUlJPUi4K
-Cj4gPiA+ID4gU2lnbmVkLW9mZi1ieTogQW5vbnltZU1lb3cgPGFub255bWVtZW93QGdtYWlsLmNv
-bT4KPiA+ID4gPiBSZXZpZXdlZC1ieTogSmFuIEthcmEgPGphY2tAc3VzZS5jej4KPiA+ID4gPiBS
-ZXZpZXdlZC1ieTogQW1pciBHb2xkc3RlaW4gPGFtaXI3M2lsQGdtYWlsLmNvbT4KCj4gPiA+IC4u
-Lgo+ID4gPiA+ICAgICAvKgo+ID4gPiA+IC0gICAgKiBHZW5lcmF0ZSB0aGUgZXZlbnQgaW4gZWl0
-aGVyIHNlbGYgb3IgYSBjaGlsZCBwcm9jZXNzLiBFdmVudAo+ID4gPiA+IC0gICAgKiBnZW5lcmF0
-aW9uIGluIGEgY2hpbGQgcHJvY2VzcyBpcyBkb25lIHNvIHRoYXQgdGhlIEZBTl9OT1BJREZEIGNh
-c2UKPiA+ID4gPiAtICAgICogY2FuIGJlIHZlcmlmaWVkLgo+ID4gPiA+ICsgICAgKiBSZWFkIHRo
-ZSBldmVudCBpbiBlaXRoZXIgc2VsZiBvciBhIGNoaWxkIHByb2Nlc3MgaW4gYSBkZXNjZW5kYW50
-Cj4gPiA+ID4gKyAgICAqIFBJRCBuYW1lc3BhY2UuIEEgcmVhZGVyIGluIGEgZGVzY2VuZGFudCBQ
-SUQgbmFtZXNwYWNlIGNhbm5vdCBvYnRhaW4KPiA+ID4gPiArICAgICogdGhlIHBpZGZkIG9mIHRo
-ZSBldmVudCBwcm9jZXNzIGluIHRoZSBwYXJlbnQgUElEIG5hbWVzcGFjZSBzbyB0aGF0Cj4gPiA+
-ID4gKyAgICAqIHRoZSBGQU5fTk9QSURGRCBjYXNlIGNhbiBiZSB2ZXJpZmllZC4KPiA+ID4gPiAg
-ICAgICovCj4gPiA+ID4gLSAgIGlmICh0Yy0+Zm9yaykKPiA+ID4gPiAtICAgICAgICAgICBkb19m
-b3JrKCk7Cj4gPiA+ID4gLSAgIGVsc2UKPiA+ID4gPiAtICAgICAgICAgICBnZW5lcmF0ZV9ldmVu
-dCgpOwo+ID4gPiA+ICsgICBpZiAodGMtPndhbnRfcGlkZmRfZXJyICYmIChyZWFkZXJfcGlkID0g
-U0FGRV9DTE9ORSgmY2xvbmVfYXJncykpKSB7Cj4gPiA+IG5pdDogYWx0aG91Z2ggSSdkIHdyaXRl
-IGl0IHRoaXMgd2F5IGFzIHdlbGwsIGNoZWNrcGF0Y2ggZG9lcyBub3QgbGlrZSB0aGlzCj4gPiA+
-IGVmZmVjdGl2ZSB3YXkgOikgKGRvIG5vdCB1c2UgYXNzaWdubWVudCBpbiBpZiBjb25kaXRpb24p
-LgoKPiA+ID4gPiArICAgICAgICAgICBTQUZFX1dBSVRQSUQocmVhZGVyX3BpZCwgJnJlYWRlcl9l
-eGl0X3N0YXR1cywgMCk7Cj4gPiA+ID4gKyAgICAgICAgICAgaWYgKCFXSUZFWElURUQocmVhZGVy
-X2V4aXRfc3RhdHVzKSB8fCBXRVhJVFNUQVRVUyhyZWFkZXJfZXhpdF9zdGF0dXMpKQo+ID4gPiA+
-ICsgICAgICAgICAgICAgICAgICAgdHN0X2JyayhUQlJPSywgInJlYWRlciBwcm9jZXNzIGV4aXRl
-ZCBpbmNvcnJlY3RseSIpOwoKPiA+ID4gbml0OiBBbmQgdGhlIGFib3ZlIHNob3VsZCBiZSBwcm9i
-YWJseSByZXBsYWNlZCB3aXRoIHRzdF9yZWFwX2NoaWxkcmVuKCkuCgo+ID4gPiBCdXQgYmVjYXVz
-ZSBJIHNob3VsZCBoYXZlIG1lcmdlZCB0aGlzIGxvbmcgdGltZSBhZ28gdG8gcHJldmVudCBmYWxz
-ZSBwb3NpdGl2ZSBvbgo+ID4gPiA3LjIsIG1lcmdpbmcgaXQgbm93LiBDbGVhbnVwIGNhbiBiZSBk
-b25lIGxhdGVyICh0b2dldGhlciB3aXRoIHVzaW5nIGRlc2lnbmF0ZWQKPiA+ID4gaW5pdGlhbGl6
-ZXJzKS4KCj4gPiA+IE1lcmdlZCB0aGUgcmVzdCBvZiB0aGUgcGF0Y2gsIHRoYW5rIHlvdSEKCgo+
-ID4gSGkgUGV0ciwKCj4gPiBTb3JyeSBJIGRpZCBub3QgaGF2ZSB0aW1lIHRvIGludmVzdGlnYXRl
-IGFuZCBuZWVkIHRvIGxlYXZlIG5vdwo+ID4ganVzdCB3YW50ZWQgdG8gbGV0IHlvdSBrbm93IHRo
-YXQgdGVzdCBlbmRzIHdpdGggZmFpbHVyZSBleGl0IGNvZGUuCj4gPiBhbmQgZG9lcyBub3Qgc2Vl
-bSB0byBydW4gd2l0aCBwcmV0dHkgcmVjZW50IHJjNyBrZXJuZWwuCgo+ID4gSXMgdGhhdCBleHBl
-Y3RlZD8KPiA+IE1heWJlIGl0J3Mgc29tZXRoaW5nIGluIG15IG93biB0ZXN0IGVudi4KCj4gPiBU
-aGFua3MsCj4gPiBBbWlyLgoKPiA+IHJvb3RAa3ZtLXhmc3Rlc3RzOn4vbHRwIyAuL2Zhbm90aWZ5
-L2Zhbm90aWZ5MjAgfHwgZWNobyBGQUlMCj4gPiB0c3RfdG1wZGlyLmM6MzA4OiBUSU5GTzogVXNp
-bmcgL3RtcC9MVFBfZmFuVFRBd0gxIGFzIHRtcGRpciAodG1wZnMgZmlsZXN5c3RlbSkKPiA+IHRz
-dF9rY29uZmlnLmM6OTA6IFRJTkZPOiBQYXJzaW5nIGtlcm5lbCBjb25maWcgJy9wcm9jL2NvbmZp
-Zy5neicKPiA+IHRzdF9rY29uZmlnLmM6NzU2OiBUSU5GTzogQ09ORklHX1BST1ZFX0xPQ0tJTkcg
-a2VybmVsIG9wdGlvbiBkZXRlY3RlZCB3aGljaCBtaWdodCBzbG93IHRoZSBleGVjdXRpb24KPiA+
-IHRzdF9kZXZpY2UuYzoxMDM6IFRJTkZPOlsgIDc4Ny4zNjc0OTJdIGxvb3AwOiBkZXRlY3RlZCBj
-YXBhY2l0eSBjaGFuZ2UgZnJvbSAwIHRvIDYxNDQwMAo+ID4gIEZvdW5kIGZyZWUgZGV2aWNlIDAg
-Jy9kZXYvbG9vcDAnCj4gPiB0c3RfdGVzdC5jOjIwNDg6IFRJTkZPOiBMVFAgdmVyc2lvbjogMjAy
-NjA1MjktMjQzLWc5MTE4YTQ4MGMKPiA+IHRzdF90ZXNbICA3ODcuMzkxNTI5XSAvZGV2L3plcm86
-IENhbid0IGxvb2t1cCBibG9ja2Rldgo+ID4gdC5jOjIwNTE6IFRJTkZPOiBUZXN0ZWQga2VybmVs
-OiA3LjIuMC1yYzcteGZzdGVzdHMtMDAwMDgtZzU1ZDU3NjNkYjFkZSAjMjk4MiBTTVAgUFJFRU1Q
-VF9EWU5BTUlDIFRodSBBdWcgMjcgMTI6MDQ6MDQgQ0VTVCAyMDI2IHg4Nl82NAo+ID4gdHN0X3Rl
-c3QuYzoxODc2OiBUSU5GTzogT3ZlcmFsbCB0aW1lb3V0IHBlciBydW4gaXMgMGggMDJtIDAwcwo+
-ID4gdHN0X3N1cHBvcnRlZF9mc190eXBlcy5jOjEwODogVElORk86IEtlcm5lbCBzdXBwb3J0cyBl
-eHQyCj4gPiB0c3Rfc3VwcG9ydGVkX2ZzX3R5cGVzLmM6Njc6IFRJTkZPOiBta2ZzLmV4dDIgZG9l
-cyBleGlzdAo+ID4gWyAgNzg3LjQxODE0M10gL2Rldi96ZXJvOiBDYW4ndCBsb29rdXAgYmxvY2tk
-ZXYKPiA+IHRzdF9zdXBwb3J0ZWRfZnNfdHlwZXMuYzoxMDg6IFRJTkZPOiBLZXJuZWwgc3VwcG9y
-dHMgZXh0Mwo+ID4gdHN0X3N1cHBvcnRlZF9mc190eXBlcy5jOjY3OiBUSU5GTzogbWtmcy5leHQz
-IGRvZXMgZXhpc3QKPiA+IFsgIDc4Ny40NDM2NTddIC9kZXYvemVybzogQ2FuJ3QgbG9va3VwIGJs
-b2NrZGV2Cj4gPiB0c3Rfc3VwcG9ydGVkX2ZzX3R5cGVzLmM6MTA4OiBUSU5GTzogS2VybmVsIHN1
-cHBvcnRzIGV4dDQKPiA+IHRzdF9zdXBwb3J0ZWRfZnNfdHlwZXMuYzo2NzogVElORk86IG1bICA3
-ODcuNDY3NDg5XSAvZGV2L3plcm86IENhbid0IGxvb2t1cCBibG9ja2Rldgo+ID4ga2ZzLmV4dDQg
-ZG9lcyBleGlzdAo+ID4gdHN0X3N1cHBvcnRlZF9mc190eXBlcy5jOjEwODogVElORk86IEtlcm5l
-bCBzdXBwb3J0cyB4ZnMKPiA+IHRzdF9zdXBwb3J0ZWRfZnNfdHlwZXMuYzo2NzogVElORk86IG1r
-ZnMueGZzIGRvZXMgZXhpc3QKPiA+IHRzdF9zdXBwb3J0ZWRfZnNfdHlwZXMuYzoxMDg6IFRJTkZP
-OiBLZXJuZWwgc3VwcG9ydHMgYnRyZnMKPiA+IHRzdF9zdXBwb3J0ZWRfZnNfdHlwZXMuYzo2Nzog
-VElORk86IG1rZnMuYnRyZnMgZG9lcyBleGlzdAo+ID4gdHN0X3N1cHBvcnRlZF9mc190eXBlcy5j
-OjExNzogVElORk86IFNraXBwaW5nIGJjYWNoZWZzIGJlY2F1c2Ugb2YgRlVTRSBibGFja2xpc3QK
-PiA+IFsgIDc4Ny41MjE1MTVdIC9kZXYvemVybzogQ2FuJ3QgbG9va3VwIGJsb2NrZGV2Cj4gPiB0
-c3Rfc3VwcG9ydGVkX2ZzX3R5cGVzLmM6MTA4OiBUSU5GTzogS2VybmVsIHN1cHBvcnRzIHZmYXQK
-PiA+IHRzdF9zdXBwb3J0ZWRfZnNfdHlwZXMuYzo2NzogVElORk86IG1rZnMudmZhdCBkb2VzIGV4
-aXN0Cj4gPiB0c3Rfc3VwcG9ydGVkX2ZzX3R5cGVzLmM6MTQwOiBUSU5GTzogRmlsZXN5c3RlbSBl
-eGZhdCBpcyBub3Qgc3VwcG9ydGVkCj4gPiB0c3Rfc3VwcG9ydGVkX2ZzX3R5cGVzLmM6MTQ0OiBU
-SU5GTzogRlVTRSBkb2VzIHN1cHBvcnQgbnRmcwo+ID4gdHN0X3N1cHBvcnRlZF9mc190eXBlcy5j
-OjYzOiBUSU5GTzogbWtmcy5udGZzIGRvZXMgbm90IGV4aXN0Cj4gPiBbICA3ODcuNTc2NDIwXSAv
-ZGV2L3plcm86IENhbid0IGxvb2t1cCBibG9ja2Rldgo+ID4gdHN0X3N1cHBvcnRlZF9mc190eXBl
-cy5jOjEwODogVElORk86IEtlcm5lbCBzdXBwb3J0cyBudGZzMwo+ID4gdHN0X3N1cHBvcnRlZF9m
-c190eXBlcy5jOjYzOiBUSU5GTzogbWtmcy5udGZzIGRvZXMgbm90IGV4aXN0Cj4gPiB0c3Rfc3Vw
-cG9ydGVkX2ZzX3R5cGVzLmM6MTA4OiBUSU5GTzogS2VybmVsIHN1cHBvcnRzIHRtcGZzCj4gPiB0
-c3Rfc3VwcG9ydGVkX2ZzX3R5cGVzLmM6NTE6IFRJTkZPOiBta2ZzIGlzIG5vdCBuZWVkZWQgZm9y
-IHRtcGZzCj4gPiB0c3RfdGVzdC5jOjE5ODY6IFRJTkZPOiA9PT0gVGVzdGluZyBvbiBleHQyID09
-PQo+ID4gZmFub3RpZnkyMC5jOjUxOiBUQ09ORjogRkFOX1JFUE9SVF9QSURGRCB8IEZBTl9SRVBP
-UlRfVElEIGlzIHN1cHBvcnRlZCBzaW5jZSB2Ny4yCj4gPiB0c3RfdGVzdC5jOjE5ODY6IFRJTkZP
-OiA9PT0gVGVzdGluZyBvbiBleHQzID09PQo+ID4gZmFub3RpZnkyMC5jOjUxOiBUQ09ORjogRkFO
-X1JFUE9SVF9QSURGRCB8IEZBTl9SRVBPUlRfVElEIGlzIHN1cHBvcnRlZCBzaW5jZSB2Ny4yCj4g
-PiB0c3RfdGVzdC5jOjE5ODY6IFRJTkZPOiA9PT0gVGVzdGluZyBvbiBleHQ0ID09PQo+ID4gZmFu
-b3RpZnkyMC5jOjUxOiBUQ09ORjogRkFOX1JFUE9SVF9QSURGRCB8IEZBTl9SRVBPUlRfVElEIGlz
-IHN1cHBvcnRlZCBzaW5jZSB2Ny4yCj4gPiB0c3RfdGVzdC5jOjE5ODY6IFRJTkZPOiA9PT0gVGVz
-dGluZyBvbiB4ZnMgPT09Cj4gPiBmYW5vdGlmeTIwLmM6NTE6IFRDT05GOiBGQU5fUkVQT1JUX1BJ
-REZEIHwgRkFOX1JFUE9SVF9USUQgaXMgc3VwcG9ydGVkIHNpbmNlIHY3LjIKPiA+IHRzdF90ZXN0
-LmM6MTk4NjogVElORk86ID09PSBUZXN0aW5nIG9uIGJ0cmZzID09PQo+ID4gZmFub3RpZnkyMC5j
-OjUxOiBUQ09ORjogRkFOX1JFUE9SVF9QSURGRCB8IEZBTl9SRVBPUlRfVElEIGlzIHN1cHBvcnRl
-ZCBzaW5jZSB2Ny4yCj4gPiB0c3RfdGVzdC5jOjE5ODY6IFRJTkZPOiA9PT0gVGVzdGluZyBvbiB2
-ZmF0ID09PQo+ID4gZmFub3RpZnkyMC5jOjUxOiBUQ09ORjogRkFOX1JFUE9SVF9QSURGRCB8IEZB
-Tl9SRVBPUlRfVElEIGlzIHN1cHBvcnRlZCBzaW5jZSB2Ny4yCj4gPiB0c3RfdGVzdC5jOjE5ODY6
-IFRJTkZPOiA9PT0gVGVzdGluZyBvbiB0bXBmcyA9PT0KPiA+IGZhbm90aWZ5MjAuYzo1MTogVENP
-TkY6IEZBTl9SRVBPUlRfUElERkQgfCBGQU5fUkVQT1JUX1RJRCBpcyBzdXBwb3J0ZWQgc2luY2Ug
-djcuMgoKPiA+IFN1bW1hcnk6Cj4gPiBwYXNzZWQgICAwCj4gPiBmYWlsZWQgICAwCj4gPiBicm9r
-ZW4gICAwCj4gPiBza2lwcGVkICA3Cj4gPiB3YXJuaW5ncyAwCgo+ID4gRkFJTAoKPiBPay4gSSBz
-ZWUgdGhhdCBUQ09ORiBmb3IgYWxsIHJldHVybmluZyBub24gMCBpcyBleHBlY3RlZC4KCj4gU29y
-cnkgZm9yIHRoZSBub2lzZS4KCk5vIHByb2JsZW0sIHRoYW5rcyBmb3IgeW91ciBsb25nIHRlcm0g
-Y2FyZSBvZiBmYW5vdGlmeSB0ZXN0cyEKCkZZSSB3ZSBuZWVkIHRvIGV4aXQgd2l0aCBub24temVy
-byBleGl0IGNvZGUgb25seSB0byBkZXRlY3QgdGhhdCBzb21ldGhpbmcKd2FzIHNraXBwZWQgKHVz
-ZWZ1bCB0byBub3RpY2UpLgoKS2luZCByZWdhcmRzLApQZXRyCgo+IFRoYW5rcywKPiBBbWlyLgoK
-LS0gCk1haWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3RzLmxpbnV4Lml0L2xpc3RpbmZvL2x0
-cAo=
+Commit c48700d8cdbe ("sched_attr: Do not define for glibc >= 2.41")
+guarded the definitions of struct sched_attr, sched_setattr(), and
+sched_getattr() under "#ifndef SCHED_ATTR_SIZE_VER0" to avoid conflicts
+when glibc >= 2.41 provides these definitions.
+
+However, SCHED_ATTR_SIZE_VER0 is a standard Linux kernel UAPI macro
+defined in <linux/sched/types.h>. When headers include the kernel types
+(such as on Android Bionic, musl, or older glibc with kernel headers),
+SCHED_ATTR_SIZE_VER0 is defined even though libc does not provide the
+sched_setattr() or sched_getattr() functions. This causes the fallback
+syscall wrappers to be omitted, leading to unresolved symbol errors.
+
+Add autotools checks for sched_getattr, sched_setattr, and
+struct sched_attr. Guard the fallback functions with
+HAVE_SCHED_GETATTR and HAVE_SCHED_SETATTR, and remove const from
+sched_setattr's attr parameter to match the kernel and libc signatures.
+
+Fixes: c48700d8cdbe ("sched_attr: Do not define for glibc >= 2.41")
+Signed-off-by: Wake Liu <wakel@google.com>
+---
+ configure.ac         |  3 +++
+ include/lapi/sched.h | 16 ++++++++++------
+ 2 files changed, 13 insertions(+), 6 deletions(-)
+
+diff --git a/configure.ac b/configure.ac
+index 19fc5e1b8..8aa3ff539 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -155,7 +155,9 @@ AC_CHECK_FUNCS_ONCE([ \
+     rand_r \
+     recvmmsg \
+     renameat2 \
++    sched_getattr \
+     sched_getcpu \
++    sched_setattr \
+     sendmmsg \
+     sethostid \
+     setns \
+@@ -199,6 +201,7 @@ AC_CHECK_DECLS([TCA_PEDIT_PARMS_EX, TCA_PEDIT_KEYS_EX, TCA_PEDIT_KEY_EX,
+ AC_CHECK_TYPES([struct acct_v3],,,[#include <sys/acct.h>])
+ AC_CHECK_TYPES([struct af_alg_iv, struct sockaddr_alg],,,[# include <linux/if_alg.h>])
+ AC_CHECK_TYPES([struct clone_args],,,[#include <sched.h>])
++AC_CHECK_TYPES([struct sched_attr],,,[#include <sched.h>])
+ AC_CHECK_TYPES([struct fanotify_event_info_fid, struct fanotify_event_info_error,
+ 		struct fanotify_event_info_header, struct fanotify_event_info_pidfd,
+ 		struct fanotify_event_info_range],,,[#include <sys/fanotify.h>])
+diff --git a/include/lapi/sched.h b/include/lapi/sched.h
+index 05b322c1c..d835537e7 100644
+--- a/include/lapi/sched.h
++++ b/include/lapi/sched.h
+@@ -14,8 +14,8 @@
+ #include "config.h"
+ #include "lapi/syscalls.h"
+ 
+-/* sched_attr is not defined in glibc < 2.41 */
+ #ifndef SCHED_ATTR_SIZE_VER0
++# ifndef HAVE_STRUCT_SCHED_ATTR
+ struct sched_attr {
+ 	uint32_t size;
+ 
+@@ -33,20 +33,24 @@ struct sched_attr {
+ 	uint64_t sched_deadline;
+ 	uint64_t sched_period;
+ };
++# endif
++# define SCHED_ATTR_SIZE_VER0 48	/* sizeof first published struct */
++#endif
+ 
+-static inline int sched_setattr(pid_t pid, const struct sched_attr *attr,
+-                                unsigned int flags)
++#ifndef HAVE_SCHED_SETATTR
++static inline int sched_setattr(pid_t pid, struct sched_attr *attr,
++				unsigned int flags)
+ {
+ 	return syscall(__NR_sched_setattr, pid, attr, flags);
+ }
++#endif
+ 
++#ifndef HAVE_SCHED_GETATTR
+ static inline int sched_getattr(pid_t pid, struct sched_attr *attr,
+-                                unsigned int size, unsigned int flags)
++				unsigned int size, unsigned int flags)
+ {
+ 	return syscall(__NR_sched_getattr, pid, attr, size, flags);
+ }
+-
+-# define SCHED_ATTR_SIZE_VER0 48	/* sizeof first published struct */
+ #endif
+ 
+ struct clone_args_minimal {
+-- 
+2.55.0.966.g6673acef38-goog
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
