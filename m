@@ -4,48 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 77B48C61DD6
-	for <ltp@archiver.kernel.org>; Wed,  2 Sep 2026 11:09:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 09BDFC624D0
+	for <ltp@archiver.kernel.org>; Wed,  2 Sep 2026 11:09:38 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0D5423E6162
-	for <ltp@archiver.kernel.org>; Wed,  2 Sep 2026 13:09:23 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 8C0223E93A6
+	for <ltp@archiver.kernel.org>; Wed,  2 Sep 2026 13:09:36 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 760BA3E93B0
+ by picard.linux.it (Postfix) with ESMTPS id 80D563E588F
  for <ltp@lists.linux.it>; Wed,  2 Sep 2026 13:04:49 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id ECDA4200B02
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id CE2616012D7
  for <ltp@lists.linux.it>; Wed,  2 Sep 2026 13:04:48 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id ED1BD1FAB9;
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 7927F1F81C;
  Wed,  2 Sep 2026 11:04:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1788347084; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1788347083; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=/gUauShwARYK9UFRpnO6iZm1RvikuYvY9BkWJp2Snf4=;
- b=ieyYq+PHi7FBo8k+5OXKEJ5O+QLOEwmc4ctjP1Dv2AR887jDzQcNc5FT0rX0ZTPa33mAM1
- GM2FIGoAJeNh/d5MWaQF3mUoX9253alkDStCsgtHQq3jib3X4y7RSKF4+w75TYrB2vDByO
- PIzgaJuAaj3txSNSN/+TVOlZf5iqXv0=
+ bh=HnMBjzzTSFICvKmolxVum2sTwLKKC+15o3gh6Wzy228=;
+ b=XaMrnES9nJBEuwdJzRCa6KWkwHGTEsL0ZY19CAYHibLuXan2d1VfecczEo53qpUlHt6xZ7
+ eLf/4NomhLsyrccE9zRTl4q1MbX1yfKtFdlUQtzgH1c/zUYT+clBgTVjqJm7c8IRtI6qXa
+ IgGFSjmoHm7flYxz+ON1EzEvNqkjm2s=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1788347084;
+ s=susede2_ed25519; t=1788347083;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=/gUauShwARYK9UFRpnO6iZm1RvikuYvY9BkWJp2Snf4=;
- b=GUtt52RzmL3uzz4iCdlB8n3+ZRKaxeD8IHkHBhm/H7YZgMGYBiB9ACJIHEZCT81yvSlEZA
- oGRyBBdXHJhlEeAQ==
+ bh=HnMBjzzTSFICvKmolxVum2sTwLKKC+15o3gh6Wzy228=;
+ b=tbLbDuh+EgAV7i6vZ63uTe5qDPuZpiCJjnX7XVHgvfphQTyDiJf4MED4cZ7IwZWWMTMlsI
+ D78rQ4gCV6azmxCw==
 Authentication-Results: smtp-out2.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
@@ -53,41 +53,41 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=/gUauShwARYK9UFRpnO6iZm1RvikuYvY9BkWJp2Snf4=;
- b=ixHQL0XuPBRCG/11NbGNQYQi87kIPjyJiKpVTEDddeM1eqWNP0dHAf2tIE5zPufjGaX9TH
- RhYI/Ag6xAeHRgmaZILFG7Ya+J0A/Eyp9E7AHImcfamBPdOC50MTh8cS7nAmT9K1vn9sH2
- dpEIfahRdUhrG4jffdpuCi35fmd1YcI=
+ bh=HnMBjzzTSFICvKmolxVum2sTwLKKC+15o3gh6Wzy228=;
+ b=GY7z52y66+Jjr2UK8EBdYS1YU6yXdMkHfXg7gW0wdfouD/LlB7LsYYj8FSxxHJW3q/IqjD
+ Te7A/49xig06IteT2+gLy5TGCBmjwDPT+03mWFSDaBvZ1duTU6uzRWTsuvtnuHiOnwAaCq
+ UyI46kvoJSyfj+/8isgljI9r2zGF41U=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1788347079;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=/gUauShwARYK9UFRpnO6iZm1RvikuYvY9BkWJp2Snf4=;
- b=f/9dmUUtjR4n8TTU/AVVR76IeLIYhpFG2/QD6oSQup7dyXI1g3LVVkgRukeWppHZyw5NDH
- +R2h2aAq2zkMhfDg==
+ bh=HnMBjzzTSFICvKmolxVum2sTwLKKC+15o3gh6Wzy228=;
+ b=voNYtf9utXdZvND697vLMaP0RgOPqdqon14G8WgOlkHW23+ch9hOaMCkC90JlrjTx2r1S7
+ iPETdfeQGq5F4LBA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E84B81399C;
- Wed,  2 Sep 2026 11:04:25 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B087C13987;
+ Wed,  2 Sep 2026 11:04:24 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id gHD7NrkCmGpzQwAAD6G6ig
- (envelope-from <andrea.cervesato@suse.de>); Wed, 02 Sep 2026 11:04:25 +0000
+ by imap1.dmz-prg2.suse.org with ESMTPSA id UOhmKbgCmGpzQwAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>); Wed, 02 Sep 2026 11:04:24 +0000
 From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Wed, 02 Sep 2026 13:04:39 +0200
+Date: Wed, 02 Sep 2026 13:04:31 +0200
 MIME-Version: 1.0
-Message-Id: <20260902-keyctl_coverage-v1-24-d29dfa2ebcef@suse.com>
+Message-Id: <20260902-keyctl_coverage-v1-16-d29dfa2ebcef@suse.com>
 References: <20260902-keyctl_coverage-v1-0-d29dfa2ebcef@suse.com>
 In-Reply-To: <20260902-keyctl_coverage-v1-0-d29dfa2ebcef@suse.com>
 To: Linux Test Project <ltp@lists.linux.it>
 X-Mailer: b4 0.16.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1788347062; l=4892;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1788347062; l=6614;
  i=andrea.cervesato@suse.com; s=20251210; h=from:subject:message-id;
- bh=1aGHGBPD9V6+iKmS5eXFWvDJUNYjUrnJUonEvM/oYTI=;
- b=9NZMUiFenJpC5V2WZOZWDNXoHR3HRIgNLL4P1srP77Zfxwl39IYflt2oK6ZLrCi31RjAVFFzB
- 01fHeqycHOUAXp0kyNKi4PL5E7grQ/dw3dnGZjnE/meFLAUlBR7l+Y4
+ bh=/daZg61PYGLCxm5rrqDgaAzPStn9RZ3eHlVrsf8d8oU=;
+ b=98fSyR2VNAvUevCnFvN1UdGrbyaRTLdXvwCFXMGSfRcvm/t5b9KtyCHiMaCSO2NGI2tzqvDgc
+ d3CcoVgeBJnAFQt5iF3KUp1ZiFx13wHp5azcFhjqnZ2Rl8O/aGBLwfS
 X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
  pk=zKY+6GCauOiuHNZ//d8PQ/UL4jFCTKbXrzXAOQSLevI=
 X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
@@ -100,12 +100,12 @@ X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  TO_DN_ALL(0.00)[]; FROM_HAS_DN(0.00)[]; MIME_TRACE(0.00)[0:+];
  FROM_EQ_ENVFROM(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
  RCVD_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo, suse.com:mid,
- suse.com:email]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid, suse.com:email,
+ imap1.dmz-prg2.suse.org:helo]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 24/33] keyctl31: Test KEYCTL_PKEY_ENCRYPT and
- KEYCTL_PKEY_DECRYPT
+Subject: [LTP] [PATCH 16/33] keyctl24: Negative tests for
+ KEYCTL_RESTRICT_KEYRING
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -124,155 +124,219 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-Test public key encryption and private key decryption with
-KEYCTL_PKEY_ENCRYPT and KEYCTL_PKEY_DECRYPT: encrypt a 32-byte
-plaintext using an RSA-2048 X.509 public key with enc=pkcs1,
-decrypt with the matching PKCS#8 private key, and verify the
-decrypted output matches the original plaintext.
+Test error conditions of KEYCTL_RESTRICT_KEYRING using a parameterized
+tcase table: invalid type/restriction combinations (EINVAL), non-keyrings
+(ENOTDIR), unknown key type (ENOKEY), key type without lookup (ENOENT),
+invalid restriction string (EINVAL), bogus key serial (ENOKEY), already
+restricted (EEXIST), self-chain cycle (EDEADLK), and missing Setattr
+(EACCES).
 
 Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
  runtest/syscalls                            |   1 +
  testcases/kernel/syscalls/keyctl/.gitignore |   1 +
- testcases/kernel/syscalls/keyctl/keyctl31.c | 110 ++++++++++++++++++++++++++++
- 3 files changed, 112 insertions(+)
+ testcases/kernel/syscalls/keyctl/keyctl24.c | 173 ++++++++++++++++++++++++++++
+ 3 files changed, 175 insertions(+)
 
 diff --git a/runtest/syscalls b/runtest/syscalls
-index 15f8c892c..e43dd02ab 100644
+index f7c4830a9..be35e9f93 100644
 --- a/runtest/syscalls
 +++ b/runtest/syscalls
-@@ -748,6 +748,7 @@ keyctl27 keyctl27
- keyctl28 keyctl28
- keyctl29 keyctl29
- keyctl30 keyctl30
-+keyctl31 keyctl31
+@@ -741,6 +741,7 @@ keyctl20 keyctl20
+ keyctl21 keyctl21
+ keyctl22 keyctl22
+ keyctl23 keyctl23
++keyctl24 keyctl24
  
  kcmp01 kcmp01
  kcmp02 kcmp02
 diff --git a/testcases/kernel/syscalls/keyctl/.gitignore b/testcases/kernel/syscalls/keyctl/.gitignore
-index d5b6955f3..025dc27fc 100644
+index 803e4e94c..767ccf61a 100644
 --- a/testcases/kernel/syscalls/keyctl/.gitignore
 +++ b/testcases/kernel/syscalls/keyctl/.gitignore
-@@ -28,3 +28,4 @@
- /keyctl28
- /keyctl29
- /keyctl30
-+/keyctl31
-diff --git a/testcases/kernel/syscalls/keyctl/keyctl31.c b/testcases/kernel/syscalls/keyctl/keyctl31.c
+@@ -21,3 +21,4 @@
+ /keyctl21
+ /keyctl22
+ /keyctl23
++/keyctl24
+diff --git a/testcases/kernel/syscalls/keyctl/keyctl24.c b/testcases/kernel/syscalls/keyctl/keyctl24.c
 new file mode 100644
-index 000000000..c1e6723ac
+index 000000000..2ec78e720
 --- /dev/null
-+++ b/testcases/kernel/syscalls/keyctl/keyctl31.c
-@@ -0,0 +1,110 @@
++++ b/testcases/kernel/syscalls/keyctl/keyctl24.c
+@@ -0,0 +1,173 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
 + * Copyright (c) 2026 Andrea Cervesato <andrea.cervesato@suse.com>
 + */
 +
 +/*\
-+ * Test ``KEYCTL_PKEY_ENCRYPT`` and ``KEYCTL_PKEY_DECRYPT`` of :manpage:`keyctl(2)`.
-+ *
-+ * ``KEYCTL_PKEY_ENCRYPT`` encrypts a data blob using an asymmetric public key
-+ * and ``KEYCTL_PKEY_DECRYPT`` decrypts the encrypted blob using the matching
-+ * private key.
-+ *
-+ * Requires root (CAP_SYS_MODULE) to load the ``x509_key_parser`` and
-+ * ``pkcs8_key_parser`` modules.
++ * Negative test cases for ``KEYCTL_RESTRICT_KEYRING`` of :manpage:`keyctl(2)`.
 + *
 + * [Algorithm]
 + *
-+ * - encrypt a 32-byte plaintext using an RSA-2048 X.509 public key with ``enc=pkcs1``
-+ * - decrypt the 256-byte ciphertext using the matching PKCS#8 private key
-+ * - verify the decrypted output matches the original 32-byte plaintext
++ * - restrict with ``NULL`` type and non-NULL restriction fails with ``EINVAL``
++ * - restrict with non-NULL type and ``NULL`` restriction fails with ``EINVAL``
++ * - restrict on a non-keyring key fails with ``ENOTDIR``
++ * - restrict with unknown key type fails with ``ENOKEY``
++ * - restrict with key type having no restriction lookup fails with ``ENOENT``
++ * - restrict with asymmetric type and invalid restriction string fails with
++ *   ``EINVAL``
++ * - restrict with asymmetric type and bogus key serial fails with ``ENOKEY``
++ * - restrict an already restricted keyring fails with ``EEXIST``
++ * - restrict with self-referencing key_or_keyring chain fails with ``EDEADLK``
++ * - restrict without Setattr permission fails with ``EACCES``
 + */
 +
++#include <stdio.h>
++
 +#include "keyctl_common.h"
-+#include "keyctl_pkey_data.h"
-+#include "tst_module.h"
 +
-+#define CIPHERTEXT_SIZE	256
++static key_serial_t ring_reject, ring_no_setattr;
++static key_serial_t user_key;
++static int asym_supported;
 +
-+static const char plaintext[] = "LTP_PKEY_ENCRYPT_DECRYPT_TEST_32";
-+#define PLAINTEXT_SIZE	(sizeof(plaintext) - 1)
-+static unsigned char ciphertext[CIPHERTEXT_SIZE];
-+static unsigned char decrypted[CIPHERTEXT_SIZE];
-+
-+static key_serial_t cert_key, priv_key;
-+static struct keyctl_pkey_params *enc_params;
-+static struct keyctl_pkey_params *dec_params;
++/*
++ * A tcase with .id = NULL asks verify_negative() to allocate a fresh
++ * unrestricted keyring for the case and unlink it afterwards, so that a
++ * false-positive result cannot restrict a ring shared with later cases.
++ * .self_cycle asks for a "key_or_keyring:<fresh>:chain" restriction string
++ * pointing back at that fresh ring, needed for the EDEADLK check.
++ */
++static struct tcase {
++	key_serial_t *id;
++	int self_cycle;
++	const char *type;
++	const char *restriction;
++	int exp_errno;
++	int needs_asym;
++	const char *desc;
++} tcases[] = {
++	{
++		.restriction = "builtin_trusted",
++		.exp_errno = EINVAL,
++		.desc = "NULL type and non-NULL restriction",
++	},
++	{
++		.type = "asymmetric",
++		.exp_errno = EINVAL,
++		.desc = "non-NULL type and NULL restriction",
++	},
++	{
++		.id = &user_key,
++		.exp_errno = ENOTDIR,
++		.desc = "non-keyring key",
++	},
++	{
++		.type = "nosuchtype",
++		.restriction = "builtin_trusted",
++		.exp_errno = ENOKEY,
++		.desc = "unknown key type",
++	},
++	{
++		.type = "user",
++		.restriction = "builtin_trusted",
++		.exp_errno = ENOENT,
++		.desc = "key type having no lookup_restriction",
++	},
++	{
++		.type = "asymmetric",
++		.restriction = "bogus",
++		.exp_errno = EINVAL,
++		.needs_asym = 1,
++		.desc = "asymmetric with invalid restriction string",
++	},
++	{
++		.type = "asymmetric",
++		.restriction = "key_or_keyring:2147483647",
++		.exp_errno = ENOKEY,
++		.needs_asym = 1,
++		.desc = "asymmetric with bogus key serial",
++	},
++	{
++		.id = &ring_reject,
++		.exp_errno = EEXIST,
++		.desc = "already restricted keyring",
++	},
++	{
++		.self_cycle = 1,
++		.type = "asymmetric",
++		.exp_errno = EDEADLK,
++		.needs_asym = 1,
++		.desc = "self-referencing key_or_keyring chain",
++	},
++	{
++		.id = &ring_no_setattr,
++		.exp_errno = EACCES,
++		.desc = "keyring without Setattr permission",
++	},
++};
 +
 +static void setup(void)
 +{
++	key_serial_t probe_ring;
++
 +	SAFE_KEYCTL(KEYCTL_JOIN_SESSION_KEYRING, 0, 0, 0, 0);
 +
-+	tst_modprobe("x509_key_parser", NULL);
-+	tst_modprobe("pkcs8_key_parser", NULL);
++	ring_reject = new_ring("ltpkeyctl24_reject");
++	ring_no_setattr = new_ring("ltpkeyctl24_no_setattr");
++	SAFE_KEYCTL(KEYCTL_SETPERM, ring_no_setattr, KEY_PERM_NO_SETATTR, 0, 0);
 +
-+	cert_key = add_asymmetric_key_or_tconf("cert", rsa2048_cert,
-+					       sizeof(rsa2048_cert),
-+					       "CONFIG_X509_CERTIFICATE_PARSER");
-+	priv_key = add_asymmetric_key_or_tconf("priv", rsa2048_pkcs8,
-+					       sizeof(rsa2048_pkcs8),
-+					       "CONFIG_PKCS8_PRIVATE_KEY_PARSER");
++	/* Permanently restrict ring_reject with reject-all for EEXIST test */
++	SAFE_KEYCTL(KEYCTL_RESTRICT_KEYRING, ring_reject, 0, 0, 0);
++
++	user_key = new_user_key("k", "payload", 7, KEY_SPEC_PROCESS_KEYRING);
++
++	/* Probe asymmetric support on a throwaway ring so we cannot poison
++	 * any ring reused later by the tcase table.
++	 */
++	probe_ring = new_ring("ltpkeyctl24_probe");
++	TEST(keyctl(KEYCTL_RESTRICT_KEYRING, probe_ring,
++		    (unsigned long)"asymmetric", (unsigned long)"bogus", 0));
++	asym_supported = (TST_RET != -1 || TST_ERR != ENODEV);
++	keyctl(KEYCTL_UNLINK, probe_ring, KEY_SPEC_PROCESS_KEYRING, 0, 0);
 +}
 +
-+static void run(void)
++static void verify_negative(unsigned int n)
 +{
-+	memset(ciphertext, 0, sizeof(ciphertext));
-+	memset(decrypted, 0, sizeof(decrypted));
++	struct tcase *tc = &tcases[n];
++	key_serial_t id, fresh_ring = 0;
++	const char *restriction = tc->restriction;
++	char cycle_buf[64];
 +
-+	memset(enc_params, 0, sizeof(*enc_params));
-+	enc_params->key_id = cert_key;
-+	enc_params->in_len = PLAINTEXT_SIZE;
-+	enc_params->out_len = CIPHERTEXT_SIZE;
-+
-+	TST_EXP_EQ_LI_SILENT(keyctl(KEYCTL_PKEY_ENCRYPT, (unsigned long)enc_params,
-+				    (unsigned long)"enc=pkcs1",
-+				    (unsigned long)plaintext,
-+				    (unsigned long)ciphertext),
-+			     CIPHERTEXT_SIZE);
-+	if (!TST_PASS)
-+		return;
-+
-+	memset(dec_params, 0, sizeof(*dec_params));
-+	dec_params->key_id = priv_key;
-+	dec_params->in_len = CIPHERTEXT_SIZE;
-+	dec_params->out_len = CIPHERTEXT_SIZE;
-+
-+	TST_EXP_EQ_LI_SILENT(keyctl(KEYCTL_PKEY_DECRYPT, (unsigned long)dec_params,
-+				    (unsigned long)"enc=pkcs1",
-+				    (unsigned long)ciphertext,
-+				    (unsigned long)decrypted),
-+			     PLAINTEXT_SIZE);
-+	if (!TST_PASS)
-+		return;
-+
-+	if (memcmp(plaintext, decrypted, PLAINTEXT_SIZE)) {
-+		tst_res(TFAIL, "decrypted text does not match original plaintext");
++	if (tc->needs_asym && !asym_supported) {
++		tst_res(TCONF, "asymmetric key type not supported");
 +		return;
 +	}
 +
-+	tst_res(TPASS, "KEYCTL_PKEY_ENCRYPT and KEYCTL_PKEY_DECRYPT roundtrip succeeded");
++	if (tc->id) {
++		id = *tc->id;
++	} else {
++		fresh_ring = new_ring("ltpkeyctl24_fresh");
++		id = fresh_ring;
++		if (tc->self_cycle) {
++			snprintf(cycle_buf, sizeof(cycle_buf),
++				 "key_or_keyring:%d:chain", fresh_ring);
++			restriction = cycle_buf;
++		}
++	}
++
++	TST_EXP_FAIL(keyctl(KEYCTL_RESTRICT_KEYRING, (unsigned long)id,
++			    (unsigned long)tc->type,
++			    (unsigned long)restriction, 0),
++		     tc->exp_errno,
++		     "KEYCTL_RESTRICT_KEYRING with %s", tc->desc);
++
++	if (fresh_ring)
++		keyctl(KEYCTL_UNLINK, fresh_ring, KEY_SPEC_PROCESS_KEYRING,
++		       0, 0);
 +}
 +
 +static struct tst_test test = {
 +	.setup = setup,
-+	.test_all = run,
-+	.min_kver = "4.20",
-+	.needs_root = 1,
-+	.needs_kconfigs = (const char *[]) {
-+		"CONFIG_KEYS=y",
-+		"CONFIG_ASYMMETRIC_KEY_TYPE=y",
-+		"CONFIG_X509_CERTIFICATE_PARSER",
-+		"CONFIG_PKCS8_PRIVATE_KEY_PARSER",
-+		"CONFIG_CRYPTO_RSA",
-+		NULL
-+	},
-+	.bufs = (struct tst_buffers []) {
-+		{&enc_params, .size = sizeof(*enc_params)},
-+		{&dec_params, .size = sizeof(*dec_params)},
-+		{},
-+	},
++	.test = verify_negative,
++	.tcnt = ARRAY_SIZE(tcases),
++	.min_kver = "4.12",
 +};
 
 -- 
