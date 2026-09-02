@@ -4,95 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C6DEEC61DD6
-	for <ltp@archiver.kernel.org>; Wed,  2 Sep 2026 12:25:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 89BD8C624D3
+	for <ltp@archiver.kernel.org>; Wed,  2 Sep 2026 13:40:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1788356454; h=to : date :
+ message-id : mime-version : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : content-type : content-transfer-encoding : sender : from;
+ bh=yjJTYc900IzGf87yVDvxvrqO9kHiy0WR1DM0btmhsuI=;
+ b=jwHabZKUGeTmCBY8o2c4VpU4J+CoburVCPPDSGs9Yg5wd9wmkQeL0vlV6MqOyPPzaeKt1
+ CjHqvH/WwZfk2m96W4LY+74QuBlesp3R3QeRCRK0R5Aw0wwWoMIMmbd1GuJvDhk1O0U0Qqv
+ lGlO0SB/3Rjv/FXRUwXhbWcOQcXQBh0=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 08C6D3C6603
-	for <ltp@archiver.kernel.org>; Wed,  2 Sep 2026 14:25:50 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 87EA93E5862
+	for <ltp@archiver.kernel.org>; Wed,  2 Sep 2026 15:40:54 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 801E23C6603
- for <ltp@lists.linux.it>; Wed,  2 Sep 2026 14:25:32 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 4241F3C9A10
+ for <ltp@lists.linux.it>; Wed,  2 Sep 2026 15:40:35 +0200 (CEST)
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com
+ [IPv6:2a00:1450:4864:20::336])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 0E21E14010C4
- for <ltp@lists.linux.it>; Wed,  2 Sep 2026 14:25:31 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 091E31F7D2;
- Wed,  2 Sep 2026 12:25:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1788351927; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=go0iT95F7xAUNF8IE9ydRPtky9XrxvBWvN9o0PUAaNs=;
- b=13kd2T8XoxP3WbBWojER5Klo6gpZncgcxTEctr1ka2WrmTiJaArt8dUcqBUgQ+n27yBX04
- aeknSPQyo0WZzYSnTjH7YET29g4VnU9AjanCeFZrt7FV8gev3q1pmGNjJHJqZl6Yi6nfWT
- PzomPtFe5JY5yWiJSf03kXtIUCRHx4E=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1788351927;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=go0iT95F7xAUNF8IE9ydRPtky9XrxvBWvN9o0PUAaNs=;
- b=TK/Zl4wFj1qNSI3b1qvwXFnE2KD8R8FT5jFYZtxV+FUDBhq+3aIqpWDTB4XkTFXVjm+voi
- LlymRFEt2/OEt8DA==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1788351923; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=go0iT95F7xAUNF8IE9ydRPtky9XrxvBWvN9o0PUAaNs=;
- b=lIMIxnfTiTTEt5w2/C3kJ3tcqfj/e5aQQdAMY342CMaTjRcrmOUa064yS8c/SX/XeW3T5c
- TjEY2Anxz/3LcvTFwKN59NqTssYMPhTdvJStTe5cHssznYhuOYbBjNRO70DWihkfGH05EM
- kFVZai0Kx1ZfreOEYiCUztMS9w70WFk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1788351923;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=go0iT95F7xAUNF8IE9ydRPtky9XrxvBWvN9o0PUAaNs=;
- b=p8WXmSz2rQlX3D2EUC0YHeetoIDRedStjXhVgwteNa+SSJCnVrsX1RbE5IekRkx+xN7sl/
- VqZE7tfX+urVAbAA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A2988136E6;
- Wed,  2 Sep 2026 12:25:22 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id hMeqJ7IVmGqjFgAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Wed, 02 Sep 2026 12:25:22 +0000
-Date: Wed, 2 Sep 2026 14:25:30 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Nirmoy Das <nirmoyd@nvidia.com>
-Message-ID: <apgVur5s_potD6ND@yuki.lan>
-References: <20260825152544.1675541-1-nirmoyd@nvidia.com>
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 5FAEE6009CD
+ for <ltp@lists.linux.it>; Wed,  2 Sep 2026 15:40:34 +0200 (CEST)
+Received: by mail-wm1-x336.google.com with SMTP id
+ 5b1f17b1804b1-49a97714f5dso7831625e9.0
+ for <ltp@lists.linux.it>; Wed, 02 Sep 2026 06:40:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1788356434; x=1788961234; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:to
+ :from:from:to:cc:subject:date:message-id:reply-to:content-type;
+ bh=FDG6m4lF88AZzsfgzSIoNDm46uczWUoT6zfyrGKWGq8=;
+ b=Asoo7KpYyvXtGlN67n9d36ulSbThK7/Z2iBsFZZR5c7WeHOUVeNaa61hgp49KIfG6z
+ LeyqZvw80/Gh0V2uBNHBSd6eJ6LPjOsPLx6y0yav/eNxCoREElxL4mwCixDiKRX5MmPw
+ ugkJiLqZBbN3Q584oLz4IHdmT7if1LbvnS3MCLNucQuA1fi3ysegswn8nNDDoD4r/cMS
+ ROZKmrZyd7oY3FLq0bmnwpj5J1+KtE1T6A11MJVmow1iJlegVFg0FtSvfnP5SYd+pdpE
+ Y/P5ZmjzWjERHrWN6qczWzoCv/f4vQi2MgJ1LN2OOzQ8h4lheR4JLxuy2oKfO6ngsasX
+ j8VA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1788356434; x=1788961234;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:to
+ :from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to:content-type;
+ bh=FDG6m4lF88AZzsfgzSIoNDm46uczWUoT6zfyrGKWGq8=;
+ b=f+KRgMQqQJ7B7c6YREiMFoYbjgEjKOeSqHdiI2B/9HOPAuSadp4riBR2ajNS7AJRb2
+ LNVKp339MGJc359055SfO7BqzClM6w1zPeqh0FYp3NtBsPd6tyuK/m+jFevzPFkJz3aN
+ 9sl54UIeM3Ti60YdXuUGOQJMGw/PGBHEOPOuEjBLCfdJjpeBN2md7vwVoum+IZ23PO6h
+ VZiH4j8ojzpMiIRsdsYId8ehEqLQhCU80IMdaDbQX1OxH0hy6KuZSEPfdB5h8MFkkN7p
+ kMtjPV2md8Yc5wvfBEIpHz4RbTbijaidZdB3TmwbSnk4bjubXdTzZgpXQ0kB+DVcxUs/
+ kG4Q==
+X-Gm-Message-State: AFuF++kpuqwBY0NI28iQ9nbyL88V63GejP4ZbvIphA+Voc/maF6Zh3+j
+ WxQanoeUC2Z7e4YmwH/tbv4KjyACRHGm6SI9dBdYO1v9smcZBrAajTF1CPunmhq4rYn966UVORz
+ uAer//40=
+X-Gm-Gg: AR+sD112C16Vc4L2Qdz5VItC/m7seuSlGGCS0Pmo/4Vr9Lefs7HtPfNp8ZQigZQZtsK
+ A8B71WOo3Q1cgg5XeZmeoAjmb1ERBqQIx6dRJw31n1QOCU1PrTuDzV/q3Won3ydn6Lfnm481MIF
+ vkn7mI+qpmCAX/fx/Xug5pq4MvuZq4VhnIiuJbR++rL5MolpfCfknUml1WRwjQCuGpJtGg3m8ww
+ 0iBthZFJ6qnrC4vTeboKOgHbX/JG/ps6qjNL8jC0xNRhmjc29D+8PNDOcgKZrGAKd6vd84Egelq
+ huEIFqxfczgom+4b5nqbjjlljopSfC/L2CpBEfg8VLrZN6MPCDilBo2iP3u8HpfSLy2e5+1q5Jm
+ HV6Alyi3A+J2XF3X7bq+tA+vB+539F8ZisKUWr5CPXEyo7yuRDQ1Gzk/tcXo4HMc4G9xexjDb5Y
+ ucmYmursdVFqS1V0/QiW9KUxDffhfmmlNYz+IXyCCHf3IWlA==
+X-Received: by 2002:a05:600c:354b:b0:49b:d03:8d3a with SMTP id
+ 5b1f17b1804b1-49ce58180bbmr75784705e9.11.1788356420467; 
+ Wed, 02 Sep 2026 06:40:20 -0700 (PDT)
+Received: from localhost ([2a07:b241:1004:8300::1000])
+ by smtp.gmail.com with ESMTPSA id
+ 5b1f17b1804b1-49ce4642382sm76386395e9.3.2026.09.02.06.40.19
+ for <ltp@lists.linux.it>
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 02 Sep 2026 06:40:20 -0700 (PDT)
+To: ltp@lists.linux.it
+Date: Wed,  2 Sep 2026 15:40:18 +0200
+Message-ID: <20260902134019.163296-1-avinesh.kumar@suse.com>
+X-Mailer: git-send-email 2.55.0
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20260825152544.1675541-1-nirmoyd@nvidia.com>
-X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[99.99%];
- NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- ARC_NA(0.00)[]; MISSING_XM_UA(0.00)[]; MIME_TRACE(0.00)[0:+];
- RCVD_VIA_SMTP_AUTH(0.00)[]; RCPT_COUNT_TWO(0.00)[2];
- RCVD_TLS_ALL(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
- FROM_EQ_ENVFROM(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- RCVD_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,imap1.dmz-prg2.suse.org:helo]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [RFC PATCH] getrusage03: account for percpu RSS counter
- batching
+Subject: [LTP] [PATCH] syscalls/ioctl03: add IFF_BACKPRESSURE flag
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -104,34 +95,58 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+From: Avinesh Kumar via ltp <ltp@lists.linux.it>
+Reply-To: Avinesh Kumar <avinesh.kumar@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> getrusage03 allows ru_maxrss to differ from the expected value by a
-> fixed 20 MiB. That can be too small on large systems after Linux commit
-> f1a7941243c1 ("mm: convert mm's rss stats into percpu_counter").
-> 
-> The fast RSS read may miss percpu counter batches, and the batch size
-> scales with the number of online CPUs. The test child is single threaded,
-> but it can migrate while faulting memory, so allow two batches worth of
-> slack based on the online CPU count and page size. Keep the existing
-> 20 MiB floor for smaller systems.
-> 
-> This is sent as RFC because it makes the test tolerate Linux's current
-> percpu counter batching behavior instead of treating the smaller
-> ru_maxrss value as a kernel failure.
+From: Avinesh Kumar <avinesh.kumar@suse.com>
 
-Maybe we can pin the whole test to a single CPU instead. Otherwise the
-max rss delta can easily get into hundreds of megabytes, which is more
-than the test consumes.
+Kernel commit 485e38995cc3 ("tun/tap: add IFF_BACKPRESSURE flag")
+introduced a new TUNSETIFF flag, and d00c7369ef24 ("tun/tap &
+vhost-net: stop tail-drop when IFF_BACKPRESSURE is set") added it
+to TUN_FEATURES. TUNGETFEATURES now reports bit 0x80 on kernels
+that support it, which ioctl03 does not recognize and reports as:
 
+  ioctl03.c:90: TFAIL: (UNKNOWN 0x80)
+
+Add IFF_BACKPRESSURE to the known flags table.
+
+Signed-off-by: Avinesh Kumar <avinesh.kumar@suse.com>
+---
+ testcases/kernel/syscalls/ioctl/ioctl03.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/testcases/kernel/syscalls/ioctl/ioctl03.c b/testcases/kernel/syscalls/ioctl/ioctl03.c
+index 8a868a98e605..1f538016344c 100644
+--- a/testcases/kernel/syscalls/ioctl/ioctl03.c
++++ b/testcases/kernel/syscalls/ioctl/ioctl03.c
+@@ -44,6 +44,10 @@
+ #define IFF_NO_CARRIER	0x0040
+ #endif
+ 
++#ifndef IFF_BACKPRESSURE
++#define IFF_BACKPRESSURE	0x0080
++#endif
++
+ static struct {
+ 	unsigned int flag;
+ 	const char *name;
+@@ -56,7 +60,8 @@ static struct {
+ 	{IFF_MULTI_QUEUE, "MULTI_QUEUE"},
+ 	{IFF_NAPI, "IFF_NAPI"},
+ 	{IFF_NAPI_FRAGS, "IFF_NAPI_FRAGS"},
+-	{IFF_NO_CARRIER, "IFF_NO_CARRIER"}
++	{IFF_NO_CARRIER, "IFF_NO_CARRIER"},
++	{IFF_BACKPRESSURE, "IFF_BACKPRESSURE"}
+ };
+ 
+ static void verify_features(void)
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.55.0
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
