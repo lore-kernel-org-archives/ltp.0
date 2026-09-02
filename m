@@ -4,93 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 340A7C624D0
-	for <ltp@archiver.kernel.org>; Wed,  2 Sep 2026 11:10:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C2186C624D0
+	for <ltp@archiver.kernel.org>; Wed,  2 Sep 2026 11:10:53 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id AE59F3E93AB
-	for <ltp@archiver.kernel.org>; Wed,  2 Sep 2026 13:10:38 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 583163C198F
+	for <ltp@archiver.kernel.org>; Wed,  2 Sep 2026 13:10:52 +0200 (CEST)
 Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E7C683E93B4
- for <ltp@lists.linux.it>; Wed,  2 Sep 2026 13:04:49 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ by picard.linux.it (Postfix) with ESMTPS id E62163E93B0
+ for <ltp@lists.linux.it>; Wed,  2 Sep 2026 13:04:48 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 18F0C1000A2D
- for <ltp@lists.linux.it>; Wed,  2 Sep 2026 13:04:49 +0200 (CEST)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 6114A100023C
+ for <ltp@lists.linux.it>; Wed,  2 Sep 2026 13:04:48 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 6CEA621E35;
- Wed,  2 Sep 2026 11:04:40 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id BA1A71FAB4;
+ Wed,  2 Sep 2026 11:04:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1788347084; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1788347083; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=NA2+o2435U44H/r0d0rbcMxaFKtI5OIW0TXb7ppLuGk=;
- b=t97dI9ZKMmvWFUBkbOhTVYSU77JhykXAutgy55hdDV+tekBGGTIGb04ZkO6oZEta1INEXb
- lRDLCTdBMDAuIyM9hzwTy8bsPVfbYQi7rCibQDMcpQG7yi9Dl/cj8OtJKUYT11uR24EnId
- uEMWQFQw4WH9yu1JZyMAUrFR+0C8a4c=
+ bh=sxjZhvtbVFs4Bx4UnRsmMeW3w2R0qb4NdYT+7AFmaQE=;
+ b=N0qyBWpOcEIG/510cPwJMMKSOK7VajT438o2u4IQy+IhHSy7OnId6b2n/AOHdTnlROdiJx
+ bQWRvtfr2GjUv6uG39VcbFjMbrTTq3lrjCPtKIWlg1f4sTL1xfq0kmY9zVjmBYsAxu8TmU
+ z+T5E0SFWCwk49akiIWWDcWXaw8RN5I=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1788347084;
+ s=susede2_ed25519; t=1788347083;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=NA2+o2435U44H/r0d0rbcMxaFKtI5OIW0TXb7ppLuGk=;
- b=bO/DYriQSUrwue5LREOgpQl1mu/xf5mj1rwFD+hss66ybFA90QCZhlBRGt+EwghRhL2aow
- L6/AsMg65FJQkpCw==
-Authentication-Results: smtp-out1.suse.de;
+ bh=sxjZhvtbVFs4Bx4UnRsmMeW3w2R0qb4NdYT+7AFmaQE=;
+ b=Y5xoK3miVx8wG4uhJ/7TE2Mk1/8m6Xg2jOsdFAbYBEsAhObisTl0gzgHYKLhPCv4sSYAKt
+ 2eQka/KCFeJyKxDA==
+Authentication-Results: smtp-out2.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1788347080; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1788347079; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=NA2+o2435U44H/r0d0rbcMxaFKtI5OIW0TXb7ppLuGk=;
- b=UZVpp91uLzbe0vgJzemywapcBxAtdy/WoqoDWh37C5DK91c2thu0PGdQLu8LT7PqkTEw1B
- nr1vgn6Z3P9snWDsJlf43M0/Qrog+4XR5v4wZgty/dWBMmARsIzNnYV1089iQ+ScHrqCit
- E9dyP/0RSKeHwrO0QWgTr4wzmx0vWhY=
+ bh=sxjZhvtbVFs4Bx4UnRsmMeW3w2R0qb4NdYT+7AFmaQE=;
+ b=CAiWgs/4WC8CAPhPdtvApJOFIcAcxfJerehQIC8A4pYMANA6qjz+BnBBtFQWBbdwXefe/l
+ xFnwGmWVvA4yW/7xJJG+8w7A6T88SiXF8iRslidvfpyrvkJ5fXPjwfG+YK8NCPTzkIZJyV
+ ZoUvXkLcKQYovkHxwwsTntq2V7Bjh3I=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1788347080;
+ s=susede2_ed25519; t=1788347079;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=NA2+o2435U44H/r0d0rbcMxaFKtI5OIW0TXb7ppLuGk=;
- b=fJH1HEBVP035B8flxJu0VQd3nXcf7ONTRy8PhTJyhIDosJWyqipLCkX/5RkLl9UCNYs3bb
- DdUEPE3ulIruHrBA==
+ bh=sxjZhvtbVFs4Bx4UnRsmMeW3w2R0qb4NdYT+7AFmaQE=;
+ b=GZUWQhtTnz2wrDD+uGBgHbetzNigbwI/y56K7E9fSbOdgC9qnc1mRahFAQiXNoSZaX/fY4
+ tF2j1VwY3BwDqHCQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 01A6B139AD;
- Wed,  2 Sep 2026 11:04:26 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7816E13994;
+ Wed,  2 Sep 2026 11:04:25 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id yDxDOroCmGpzQwAAD6G6ig
- (envelope-from <andrea.cervesato@suse.de>); Wed, 02 Sep 2026 11:04:26 +0000
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 8HaRG7kCmGpzQwAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>); Wed, 02 Sep 2026 11:04:25 +0000
 From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Wed, 02 Sep 2026 13:04:46 +0200
+Date: Wed, 02 Sep 2026 13:04:36 +0200
 MIME-Version: 1.0
-Message-Id: <20260902-keyctl_coverage-v1-31-d29dfa2ebcef@suse.com>
+Message-Id: <20260902-keyctl_coverage-v1-21-d29dfa2ebcef@suse.com>
 References: <20260902-keyctl_coverage-v1-0-d29dfa2ebcef@suse.com>
 In-Reply-To: <20260902-keyctl_coverage-v1-0-d29dfa2ebcef@suse.com>
 To: Linux Test Project <ltp@lists.linux.it>
 X-Mailer: b4 0.16.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1788347062; l=2673;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1788347062; l=2386;
  i=andrea.cervesato@suse.com; s=20251210; h=from:subject:message-id;
- bh=xgAsIxoSSMpJS4C9tP/UmgDmYUMmj9MnCMwcyVTwIxw=;
- b=t2I0ysQT/wa/9n6kduB4k4VLSaQLcFUSlXFPqttvEfrUJbAZt6cmH7rvve1mZ7KwW1YLPdgz9
- 5+1WjSnLJK2DwgWfeuccjDbFlUh/YolAsBjngN/PwOlEFm1hNFOmrhk
+ bh=rbVxeqFvsi1htV0CNApzFqCRuu44LxpJCOqFWNrbtZY=;
+ b=4X5/3KvDfe4OGGHFwliL4zh/iA02b+Z7a6kAwFWeKbgy47hGkuJIOZYoerjpcagNPvGGyNKUd
+ 5gpsw5Hu2naAerur/fpVd+t2nlbmT0WO+V2qEI1Gr8q3NzfGen4yE0J
 X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
  pk=zKY+6GCauOiuHNZ//d8PQ/UL4jFCTKbXrzXAOQSLevI=
-X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[99.99%];
  NEURAL_HAM_LONG(-1.00)[-1.000];
  NEURAL_HAM_SHORT(-0.20)[-0.997]; MIME_GOOD(-0.10)[text/plain];
  RCPT_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
@@ -103,7 +103,8 @@ X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  imap1.dmz-prg2.suse.org:helo]
 X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 31/33] keyctl37: Negative tests for KEYCTL_CAPABILITIES
+Subject: [LTP] [PATCH 21/33] lapi/keyctl.h: Add fallback definitions for
+ public key ops
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -122,107 +123,93 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-Add negative test cases for KEYCTL_CAPABILITIES verifying that
-passing a NULL buffer with a non-zero length or an invalid buffer
-pointer fails with EFAULT.
+Add fallback definitions for KEYCTL_PKEY_QUERY, KEYCTL_PKEY_ENCRYPT,
+KEYCTL_PKEY_DECRYPT, KEYCTL_PKEY_SIGN, KEYCTL_PKEY_VERIFY, and
+KEYCTL_SUPPORTS_*, as well as fallback structs keyctl_pkey_query
+and keyctl_pkey_params when built without keyutils.h or linux/keyctl.h.
 
 Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
- runtest/syscalls                            |  1 +
- testcases/kernel/syscalls/keyctl/.gitignore |  1 +
- testcases/kernel/syscalls/keyctl/keyctl37.c | 63 +++++++++++++++++++++++++++++
- 3 files changed, 65 insertions(+)
+ include/lapi/keyctl.h | 52 +++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 52 insertions(+)
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 8ad8f0fe5..66215afd7 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -754,6 +754,7 @@ keyctl33 keyctl33
- keyctl34 keyctl34
- keyctl35 keyctl35
- keyctl36 keyctl36
-+keyctl37 keyctl37
+diff --git a/include/lapi/keyctl.h b/include/lapi/keyctl.h
+index a056ddaad..8820c3ddb 100644
+--- a/include/lapi/keyctl.h
++++ b/include/lapi/keyctl.h
+@@ -33,6 +33,26 @@ struct keyctl_kdf_params {
+ 	uint32_t otherinfolen;
+ 	uint32_t __spare[8];
+ };
++
++struct keyctl_pkey_query {
++	uint32_t	supported_ops;
++	uint32_t	key_size;
++	uint16_t	max_data_size;
++	uint16_t	max_sig_size;
++	uint16_t	max_enc_size;
++	uint16_t	max_dec_size;
++	uint32_t	__spare[10];
++};
++
++struct keyctl_pkey_params {
++	int32_t		key_id;
++	uint32_t	in_len;
++	union {
++		uint32_t	out_len;
++		uint32_t	in2_len;
++	};
++	uint32_t	__spare[7];
++};
+ #endif
  
- kcmp01 kcmp01
- kcmp02 kcmp02
-diff --git a/testcases/kernel/syscalls/keyctl/.gitignore b/testcases/kernel/syscalls/keyctl/.gitignore
-index a4da8ae80..7ee6b9098 100644
---- a/testcases/kernel/syscalls/keyctl/.gitignore
-+++ b/testcases/kernel/syscalls/keyctl/.gitignore
-@@ -34,3 +34,4 @@
- /keyctl34
- /keyctl35
- /keyctl36
-+/keyctl37
-diff --git a/testcases/kernel/syscalls/keyctl/keyctl37.c b/testcases/kernel/syscalls/keyctl/keyctl37.c
-new file mode 100644
-index 000000000..08d1db03b
---- /dev/null
-+++ b/testcases/kernel/syscalls/keyctl/keyctl37.c
-@@ -0,0 +1,63 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2026 Andrea Cervesato <andrea.cervesato@suse.com>
-+ */
+ static inline key_serial_t add_key(const char *type,
+@@ -199,6 +219,33 @@ static inline key_serial_t keyctl_join_session_keyring(const char *name) {
+ # define KEYCTL_MOVE_EXCL 0x00000001 /* do not displace from the to-keyring */
+ #endif
+ 
++#ifndef KEYCTL_PKEY_QUERY
++# define KEYCTL_PKEY_QUERY 24
++#endif
 +
-+/*\
-+ * Negative test cases for ``KEYCTL_CAPABILITIES`` of :manpage:`keyctl(2)`.
-+ *
-+ * [Algorithm]
-+ *
-+ * - verify ``KEYCTL_CAPABILITIES`` with NULL buffer and ``buflen > 0`` fails with ``EFAULT``
-+ * - verify ``KEYCTL_CAPABILITIES`` with invalid pointer fails with ``EFAULT``
-+ */
++#ifndef KEYCTL_PKEY_ENCRYPT
++# define KEYCTL_PKEY_ENCRYPT 25
++#endif
 +
-+#include "keyctl_common.h"
++#ifndef KEYCTL_PKEY_DECRYPT
++# define KEYCTL_PKEY_DECRYPT 26
++#endif
 +
-+static void *bad_addr;
++#ifndef KEYCTL_PKEY_SIGN
++# define KEYCTL_PKEY_SIGN 27
++#endif
 +
-+static struct tcase {
-+	void **buf;
-+	size_t buflen;
-+	int exp_errno;
-+	const char *desc;
-+} tcases[] = {
-+	{
-+		.buf = NULL,
-+		.buflen = 1,
-+		.exp_errno = EFAULT,
-+		.desc = "NULL buffer with non-zero buflen",
-+	},
-+	{
-+		.buf = &bad_addr,
-+		.buflen = 1,
-+		.exp_errno = EFAULT,
-+		.desc = "invalid buffer pointer",
-+	},
-+};
++#ifndef KEYCTL_PKEY_VERIFY
++# define KEYCTL_PKEY_VERIFY 28
++#endif
 +
-+static void setup(void)
-+{
-+	bad_addr = tst_get_bad_addr(NULL);
-+}
++#ifndef KEYCTL_SUPPORTS_ENCRYPT
++# define KEYCTL_SUPPORTS_ENCRYPT 0x01
++# define KEYCTL_SUPPORTS_DECRYPT 0x02
++# define KEYCTL_SUPPORTS_SIGN    0x04
++# define KEYCTL_SUPPORTS_VERIFY  0x08
++#endif
 +
-+static void run(unsigned int n)
-+{
-+	struct tcase *tc = &tcases[n];
-+	void *p = tc->buf ? *tc->buf : NULL;
-+
-+	TST_EXP_FAIL2(keyctl(KEYCTL_CAPABILITIES, (unsigned long)p, tc->buflen, 0, 0),
-+		      tc->exp_errno,
-+		      "%s", tc->desc);
-+}
-+
-+static struct tst_test test = {
-+	.setup = setup,
-+	.test = run,
-+	.tcnt = ARRAY_SIZE(tcases),
-+	.min_kver = "5.3",
-+	.needs_kconfigs = (const char *[]) {
-+		"CONFIG_KEYS=y",
-+		NULL
-+	},
-+};
+ /* key permissions */
+ #ifndef KEY_POS_VIEW
+ # define KEY_POS_VIEW    0x01000000
+@@ -259,6 +306,11 @@ static inline long safe_keyctl(const char *file, const int lineno,
+ 	case KEYCTL_GET_SECURITY:
+ 	case KEYCTL_GET_PERSISTENT:
+ 	case KEYCTL_DH_COMPUTE:
++	case KEYCTL_PKEY_QUERY:
++	case KEYCTL_PKEY_ENCRYPT:
++	case KEYCTL_PKEY_DECRYPT:
++	case KEYCTL_PKEY_SIGN:
++	case KEYCTL_PKEY_VERIFY:
+ 		if (rval < 0)
+ 			failure = 1;
+ 		break;
 
 -- 
 2.51.0
