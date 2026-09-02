@@ -4,83 +4,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EF1FAC61DFD
-	for <ltp@archiver.kernel.org>; Wed,  2 Sep 2026 08:28:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 15ECEC61DFD
+	for <ltp@archiver.kernel.org>; Wed,  2 Sep 2026 09:04:52 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 55ABE3E5482
-	for <ltp@archiver.kernel.org>; Wed,  2 Sep 2026 10:28:48 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id EC6863E585D
+	for <ltp@archiver.kernel.org>; Wed,  2 Sep 2026 11:04:50 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 68CFA3E29C0
- for <ltp@lists.linux.it>; Wed,  2 Sep 2026 10:28:33 +0200 (CEST)
-Received: from mail-pj2-x01.google.com (mail-pj2-x01.google.com
- [IPv6:2607:f8b0:4864:39::1])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 278D13DE96E
+ for <ltp@lists.linux.it>; Wed,  2 Sep 2026 11:04:33 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 17F2120008B
- for <ltp@lists.linux.it>; Wed,  2 Sep 2026 10:28:33 +0200 (CEST)
-Received: by mail-pj2-x01.google.com with SMTP id
- 98e67ed59e1d1-396d27bb2beso680799a91.0
- for <ltp@lists.linux.it>; Wed, 02 Sep 2026 01:28:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1788337711; x=1788942511; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to:content-type;
- bh=voBwhISdK9NYv63VnagSb1A6a/U1ikKGkPnmcU68/sk=;
- b=gIoL1C8oytj24oFlOzVMH4FG84bfPLATOENV5OjjScx4ORIr/yScLxpWz7719JOe4V
- zwnVOQN6in31phVd9EnY5MSZCi9VVW2vrGCXGP3AcIu2O5xxCyUQsUMoXQhUFGix+cw2
- QXx/EGXCStyWVc2SO/UOkO+Ncz/qFfWsTU9aQRHtZY6eORSdYNzhdiw1v1OtEjW50ye5
- mI92ReJiLA1JpEZBSHoCEIItlP+4IB+hoHpwZ7OczHHcxyfNH2eXaAbgQaHmm6AhMoCq
- F5t+9YiH7wpXuReqY7BlWsqJeHoO4Fgl1Eld1ESTwilrXb8Kh+69Nv6zz/DHAUNl+vv4
- aSBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1788337711; x=1788942511;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to:content-type;
- bh=voBwhISdK9NYv63VnagSb1A6a/U1ikKGkPnmcU68/sk=;
- b=ovfyqq0KWRf80bEMSe4mEyLA7bAiM/wm9glggQnecCsaPqfi8LRDvfIKRjNqC7K6M7
- qkYA74aerT9Gh9WeWqqDKClImAPc9P3+tRdJXcEE2oxaMUJvdLFTSeycFzFETak80KsG
- j+PLKKYALnuvQUUNRO0TSDVYO2vFc47FIeSXYMzG9TscmUxX3FCO3iL/wq4Gq6BsJVuO
- 5tsf+43afo0FozCWBzkC9mDCtfICMoOi8tq8Wan4zuwI0MTPYJEceVGW4naBnweFSaG9
- 3rzwdp4N/TkdpLyBdGG5vj2MG7wtbEqyOM34aOdXIrdrYJ8mICp2BgoqC39ZdUI/NpBf
- 732g==
-X-Gm-Message-State: AFuF++mp5a0ECEjEy3vMKRPgFWbojmNavNzPLNgzWuZkIuzxbUsQgNp/
- LObmVYglLs+YiG8/ViWjJsWhR2pHYgDPFhiu94QXlLfxNRk4FxEYY07H
-X-Gm-Gg: AYBFou2X1kcTXRjpyP885ghxKObRRCgr85kfrcOgG551J4ZzSyEwphz2tI5RlPHQzF7
- ksJFj8+Pc3wkc0Ai+KU+zSufWhkyjx+WYTG1P1Kd65ZWwXmRe3UytXZO/pHB1RBx1fwczIcH0An
- +jFl+EmmEL8EWfVtkeMmr3bSdj54SZflDxr5f4du2b/HKV+fAAVOKdZdRZyxkJFKe68RWd+UJu8
- vTQRRAj/oHE6dtuuoW1zw7/ihkUbZU2zpyoGG7G3nnwRul1laRLdtXyzuuTpASIKZmwPGje1G6q
- +g3k5VNdgraGbkFUuWpngnwTZF0e/2Bu9pz9yedTzUwIkM/9AooKSrrZi8+QQJf6fgONGLM9zkh
- PXAwCxcyTYUU3rcKJnIZ0NNGLWcnOESI3BCjSF+LBQWmO6SnIGfsaCo+KGvFQgGOX0WPe3BvDwY
- 8ZcBYdUH4DnU/ezdtpQa4c7uU8GzekMGYpBZ4xpLdWIb0JK2pDbRqCCbHdHE0d6skbXJMO/gSEY
- OP3C8k7hV8BAs4SU6AxyBFf6VGXezRiL6kDMv2KAYuXlTUWXJ/cLX3QvRGzCEDxIqRfQw1qUsg3
-X-Received: by 2002:a17:90b:4a4b:b0:38e:70d5:b12d with SMTP id
- 98e67ed59e1d1-39aedfd74f9mr4313266a91.6.1788337711228; 
- Wed, 02 Sep 2026 01:28:31 -0700 (PDT)
-Received: from
- runnervmgx7h7.rbsguloswegutosmy3ail22bod.phxx.internal.cloudapp.net
- ([134.33.70.55]) by smtp.gmail.com with ESMTPSA id
- a92af1059eb24-1430e9eb4dasm7672501c88.2.2026.09.02.01.28.30
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 02 Sep 2026 01:28:30 -0700 (PDT)
-From: linuxtestproject.agent@gmail.com
-To: Pavithra <pavrampu@linux.ibm.com>
-Date: Wed,  2 Sep 2026 08:28:29 +0000
-Message-ID: <20260902082829.8668-1-linuxtestproject.agent@gmail.com>
-X-Mailer: git-send-email 2.55.0
-In-Reply-To: <20260902075156.240295-1-pavrampu@linux.ibm.com>
-References: <20260902075156.240295-1-pavrampu@linux.ibm.com>
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 7221C1000D97
+ for <ltp@lists.linux.it>; Wed,  2 Sep 2026 11:04:33 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 8BB141F7A9;
+ Wed,  2 Sep 2026 09:04:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1788339868;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=A3963Lav4L3pY10IXkhisWwPDmajAGkEZvwxMtrWg+w=;
+ b=W91lv4+0CyD2TiAuGa2AiW8kQAN47UNuASSCXISA0qBZYGutp3JFcdUikvq/oaS4FnThoe
+ Zpz6YjtYa9/u8eg0QR0rk/R0R/tSAmY17QxRS2KHH8OwlnS9aLcM3eslsAf7i3dxWSbJtY
+ 3NkosoY3RN88+aD8oaF1WxquBzJc07o=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1788339868;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=A3963Lav4L3pY10IXkhisWwPDmajAGkEZvwxMtrWg+w=;
+ b=a/zMhtQGYReGZVuosZpPVyDnW/4BRwyxkH9Y0huNNjLhU1nPI/mWc2w+fQzOmroRGocF91
+ u1o1ipZBZHSIHQCw==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1788339864;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=A3963Lav4L3pY10IXkhisWwPDmajAGkEZvwxMtrWg+w=;
+ b=ats8FPwp2i/mL7THjZljptMMrioXGcIXaj5gAFtptPs4KbHtK4GfdvuGnQ5O3gkMNUUt3e
+ C6w+VIb0/Dy1ketAlwKM1jqlM2e1AkukYX1ZtHSR9a/qwd77Ilzb5fX0OeTPdsHghl/vCI
+ 2nfG1mzZFX1vY22H+nexw9RomNMhb9Y=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1788339864;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=A3963Lav4L3pY10IXkhisWwPDmajAGkEZvwxMtrWg+w=;
+ b=3c1tBvH5Se/5QGArIX2wraeh7Y4+WIbzZiluAFrM64pN1GeuoGHtQRO80qyavSeNFIyjxx
+ 54EKJndF/0bSTQAA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 37C1A13515;
+ Wed,  2 Sep 2026 09:04:24 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 7CXEC5jml2rESQAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Wed, 02 Sep 2026 09:04:24 +0000
+Date: Wed, 2 Sep 2026 11:04:18 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Wei Gao <wegao@suse.com>
+Message-ID: <20260902090418.GA910767@pevik>
+References: <20260831081638.19539-1-wegao@suse.com>
+ <20260831081638.19539-2-wegao@suse.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20260831081638.19539-2-wegao@suse.com>
+X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; MISSING_XM_UA(0.00)[];
+ MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
+ RCVD_TLS_ALL(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; FROM_HAS_DN(0.00)[];
+ RCPT_COUNT_THREE(0.00)[3]; FROM_EQ_ENVFROM(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:email,suse.cz:replyto,suse.com:email];
+ RCVD_COUNT_TWO(0.00)[2]; REPLYTO_EQ_FROM(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] hugetlb/hugemmap: add hugemmap33 to test hugetlbfs quota
- accounting
+Subject: Re: [LTP] [PATCH v9 1/2] lib: Extend tst_assert_ulong() with enum
+ flags
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -92,34 +109,64 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Reply-To: Petr Vorel <pvorel@suse.cz>
 Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Pavithra,
+Hi Wei,
 
-On Wed, 2 Sep 2026, Pavithra wrote:
-> hugetlb/hugemmap: add hugemmap33 to test hugetlbfs quota accounting
+> Introduce enum tst_assert_flags (including TST_ASSERT_NONE,
+> TST_ASSERT_SATURATED_INT, and TST_ASSERT_TRUNC_32BIT) to
+> tst_assert_ulong(). This enables type-safe handling of 32-bit
+> compat-mode truncation and clamping behaviors on 64-bit kernels
+> when verifying sysfs/procfs limits.
 
-> static struct tcase {
-> 	void (*fn)(unsigned long, int);
+> Signed-off-by: Wei Gao <wegao@suse.com>
+> ---
+>  include/tst_assert.h | 36 +++++++++++++++++++++++++++++++-----
+>  lib/tst_assert.c     | 26 ++++++++++++++++++++------
+>  2 files changed, 51 insertions(+), 11 deletions(-)
 
-Both callback parameters need names. `make check-hugemmap33` reports
-warnings here, so name them `size` and `mmap_flags`.
+> diff --git a/include/tst_assert.h b/include/tst_assert.h
+> index dcb62dfea..9154b7249 100644
+> --- a/include/tst_assert.h
+> +++ b/include/tst_assert.h
+> @@ -21,14 +21,40 @@ void tst_assert_int(const char *file, const int lineno,
+>  #define TST_ASSERT_FILE_INT(path, prefix, val) \
+>  	tst_assert_file_int(__FILE__, __LINE__, path, prefix, val)
 
-Verdict - Needs revision
+> -/*
+> - * Same as tst_assert_int() but for unsigned long.
+> +/**
+> + * enum tst_assert_flags - Flags for tst_assert_ulong().
+nit: I'd use "Bitwise flags" as you write below.
 
----
-Note:
+> + *
+> + * @TST_ASSERT_NONE: No flags, default direct comparison.
+> + * @TST_ASSERT_SATURATED_INT: Clamps the value at %INT_MAX if it exceeds it.
+> + * @TST_ASSERT_TRUNC_32BIT: Keeps only the low 32 bits of the read value,
+> + *                          truncating any higher bits.
+> + */
+> +enum tst_assert_flags {
+> +	TST_ASSERT_NONE          = 0x00,
+IMHO TST_ASSERT_NONE is overkill, I'd just use 0. But others might have a
+different opinion.
 
-The agent can sometimes produce false positives although often its
-findings are genuine. If you find issues with the review, please
-comment this email or ignore the suggestions.
+> +	TST_ASSERT_SATURATED_INT = 0x01,
+> +	TST_ASSERT_TRUNC_32BIT   = 0x02,
 
-Regards,
-LTP AI Reviewer
+Also, I'd use decimal numbers instead of hexadecimal when we have just 3 values
+(specially 0x00 looks really strange).
+
+The rest LGTM.
+
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
+
+Kind regards,
+Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
