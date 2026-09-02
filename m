@@ -4,117 +4,115 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6C895C624D0
-	for <ltp@archiver.kernel.org>; Wed,  2 Sep 2026 11:06:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DCFDFC624D0
+	for <ltp@archiver.kernel.org>; Wed,  2 Sep 2026 11:06:37 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A91E33E5857
-	for <ltp@archiver.kernel.org>; Wed,  2 Sep 2026 13:06:22 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 6E9F83E5821
+	for <ltp@archiver.kernel.org>; Wed,  2 Sep 2026 13:06:36 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2260D3E93B9
+ by picard.linux.it (Postfix) with ESMTPS id 7F9343E588C
  for <ltp@lists.linux.it>; Wed,  2 Sep 2026 13:04:40 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id B59A0200BCF
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id E09F21000A2D
  for <ltp@lists.linux.it>; Wed,  2 Sep 2026 13:04:39 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 18BDB1F834;
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 4142421E38;
  Wed,  2 Sep 2026 11:04:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1788347075; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=KrcGBUOZlISGz8k63v3RAmZasIssKWheL1zmOC/uqgo=;
- b=nHjG3qvHQK1GVzRL6tJMJaU8faDmfaQTTHMYstZwMNb3kg4pI5Kq6tdJsOBe4ylcGo9Z0l
- M2K/1k7YDznuxTSSL9c12DJksc21zhFCCKHDDAMkeotJdXageIdd1ztHJVV8zwx0ttR9Gh
- 6YhBAdHadnHM88rK3srvdg/LwTKEJ9s=
+ bh=beoYaZUsHFQExTCOeG1qWIsPhookPZ8bH3l+1tciFWQ=;
+ b=KhzFIOF1mJBsQTYqDopttQoMaZRWJ5oUVycPe/PwPkawHBWzZTxJuGzAtzsk22886CQQfr
+ 4YeA2FqzbwvltIZRVY2IG34HsuCnHyrLfTBVFgvVCii/Nc62aavXaazBAa+CrHiccPFBxy
+ FBB4/XhXyvxvZRjlIiZnDASgs+qgebE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1788347075;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=KrcGBUOZlISGz8k63v3RAmZasIssKWheL1zmOC/uqgo=;
- b=26a0jtUBYvrA/FGKIa5vMIYvsowdkZB6nj5POiOKcgsuIApUYhjFqUScZGzadxM/i9Tl23
- ig8u+3douvjOEICg==
-Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.de header.s=susede2_rsa header.b=EwmWJsd8;
- dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=lx3hgi1Q
+ bh=beoYaZUsHFQExTCOeG1qWIsPhookPZ8bH3l+1tciFWQ=;
+ b=0zL3Rtzv8lMX0gwKJs2nwIPjzaAQA5cZpRZpMffQe5QmYV3Puy7Zz8EDNZSzcD+3CNet0J
+ u6+Zex7UqDalMZDw==
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.de header.s=susede2_rsa header.b="Mn/CPSyI";
+ dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=U3n91yCB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1788347071; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=KrcGBUOZlISGz8k63v3RAmZasIssKWheL1zmOC/uqgo=;
- b=EwmWJsd8XSCksFEZnjU16kCqkVdIAjt2LZVWF5wwArXYAhg3DPqjlM8L5AOt7n3dbX92OC
- cOKkd2UWH096FaN4sKuKHtCyOrGQEyMSEAzhrPDCSNHHj3t6MyKE7NdxO7tRv60j/Np/85
- vTKbAbfacmgjpXaA6nea+vW1r9oU4I4=
+ bh=beoYaZUsHFQExTCOeG1qWIsPhookPZ8bH3l+1tciFWQ=;
+ b=Mn/CPSyIkhqeazEdKWUAnVXaK+KomdB02czpSqLjufKXfWoQ1r/pOBOvmNS1ZTd8Pva3XR
+ Z1dm6pvB8BGRW+4EXnc0rVmk7ycN9tuxLeO52F1tzJXnFOGLWw2JJGd7MFt2B9Bg0Kd8hu
+ 0ek/YrQySGmulkdBqnYNlqKGSfd1w30=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1788347071;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=KrcGBUOZlISGz8k63v3RAmZasIssKWheL1zmOC/uqgo=;
- b=lx3hgi1QKE/jkm1G4Dwz+6VwNntLxJccWEiF270GJ6NXaNfPulRbMsH0ZLXIAIDU6z9Iav
- hApaZTHVdiGcreAQ==
+ bh=beoYaZUsHFQExTCOeG1qWIsPhookPZ8bH3l+1tciFWQ=;
+ b=U3n91yCBslqCjpf6oITX0pfs/uLudIrExbBrAEUVa/A9kDc0VkONWE9LIJYdHEJ7af8DB6
+ KjcfukFWx3HAnpAQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 53E5F1393C;
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9D84413978;
  Wed,  2 Sep 2026 11:04:23 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id MIlhErcCmGpzQwAAD6G6ig
+ by imap1.dmz-prg2.suse.org with ESMTPSA id OHjBJLcCmGpzQwAAD6G6ig
  (envelope-from <andrea.cervesato@suse.de>); Wed, 02 Sep 2026 11:04:23 +0000
 From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Wed, 02 Sep 2026 13:04:22 +0200
+Date: Wed, 02 Sep 2026 13:04:24 +0200
 MIME-Version: 1.0
-Message-Id: <20260902-keyctl_coverage-v1-7-d29dfa2ebcef@suse.com>
+Message-Id: <20260902-keyctl_coverage-v1-9-d29dfa2ebcef@suse.com>
 References: <20260902-keyctl_coverage-v1-0-d29dfa2ebcef@suse.com>
 In-Reply-To: <20260902-keyctl_coverage-v1-0-d29dfa2ebcef@suse.com>
 To: Linux Test Project <ltp@lists.linux.it>
 X-Mailer: b4 0.16.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1788347062; l=3051;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1788347062; l=2861;
  i=andrea.cervesato@suse.com; s=20251210; h=from:subject:message-id;
- bh=u9XnpyAZTgPa/iHHByu8D/VDUQDv02tFrxxhDUwNGqA=;
- b=PKd7q+hYHb8sve85w9rP1f7o6slQQ3UJU0IvQmdWNj0MK6gZ8b2M1Nh/ntlzwC4SMaO2RjA/S
- duKRlbB4uMCDOS/WtB8GUfz6a+kFL/6Mnh/HKszOyROmKbR+GIowSQX
+ bh=05fD71NTEJcluZrPisofr9AFADpoIhe3LICmG9ZX0sc=;
+ b=DptrdpCuu4Yz5CSpDFpp2Gafwa/TLNFrDdFsLdwexVMn/EQGw9bTr9rpNp4rLnlFUu+VMN0Uw
+ 0FkYqKhJqs4C3PgQkit3RN05IL7bDd1HCWtlC8kUSTjV1SadWqGSXsM
 X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
  pk=zKY+6GCauOiuHNZ//d8PQ/UL4jFCTKbXrzXAOQSLevI=
-X-Rspamd-Queue-Id: 18BDB1F834
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: 4142421E38
 X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  NEURAL_HAM_LONG(-1.00)[-1.000];
  R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
  MX_GOOD(-0.01)[];
- DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from,2a07:de40:b281:106:10:150:64:167:received];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
  ARC_NA(0.00)[]; MIME_TRACE(0.00)[0:+];
- RCVD_VIA_SMTP_AUTH(0.00)[];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- RCPT_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
- TO_DN_ALL(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from,2a07:de40:b281:106:10:150:64:167:received];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; RCVD_TLS_ALL(0.00)[];
  DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
- DKIM_TRACE(0.00)[suse.de:+]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ RCPT_COUNT_TWO(0.00)[2]; RCVD_COUNT_TWO(0.00)[2];
+ TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.com:email,suse.com:mid];
+ TO_DN_ALL(0.00)[]; DKIM_TRACE(0.00)[suse.de:+]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 07/33] keyctl15: Test KEYCTL_GET_SECURITY label
- retrieval
+Subject: [LTP] [PATCH 09/33] keyctl17: Negative tests for KEYCTL_GET_SECURITY
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -133,109 +131,99 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-Test KEYCTL_GET_SECURITY label retrieval: verify reading the security
-label of a valid key into a large buffer returns a positive length
-and an empty string when no LSM label is set.
+Test error conditions of KEYCTL_GET_SECURITY using a parameterized
+tcase table: verify ENOKEY on a bogus key id and ENOKEY when View
+permission is missing (due to the kernel request-key auth token
+fallback path).
 
 Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
  runtest/syscalls                            |  1 +
  testcases/kernel/syscalls/keyctl/.gitignore |  1 +
- testcases/kernel/syscalls/keyctl/keyctl15.c | 66 +++++++++++++++++++++++++++++
- 3 files changed, 68 insertions(+)
+ testcases/kernel/syscalls/keyctl/keyctl17.c | 55 +++++++++++++++++++++++++++++
+ 3 files changed, 57 insertions(+)
 
 diff --git a/runtest/syscalls b/runtest/syscalls
-index 160d2f798..da901baae 100644
+index 89c8a95af..fcc1d58a8 100644
 --- a/runtest/syscalls
 +++ b/runtest/syscalls
-@@ -732,6 +732,7 @@ keyctl11 keyctl11
- keyctl12 keyctl12
- keyctl13 keyctl13
+@@ -734,6 +734,7 @@ keyctl13 keyctl13
  keyctl14 keyctl14
-+keyctl15 keyctl15
+ keyctl15 keyctl15
+ keyctl16 keyctl16
++keyctl17 keyctl17
  
  kcmp01 kcmp01
  kcmp02 kcmp02
 diff --git a/testcases/kernel/syscalls/keyctl/.gitignore b/testcases/kernel/syscalls/keyctl/.gitignore
-index 8120454d8..852fee4ea 100644
+index c351716d0..dddb45f85 100644
 --- a/testcases/kernel/syscalls/keyctl/.gitignore
 +++ b/testcases/kernel/syscalls/keyctl/.gitignore
-@@ -12,3 +12,4 @@
- /keyctl12
- /keyctl13
+@@ -14,3 +14,4 @@
  /keyctl14
-+/keyctl15
-diff --git a/testcases/kernel/syscalls/keyctl/keyctl15.c b/testcases/kernel/syscalls/keyctl/keyctl15.c
+ /keyctl15
+ /keyctl16
++/keyctl17
+diff --git a/testcases/kernel/syscalls/keyctl/keyctl17.c b/testcases/kernel/syscalls/keyctl/keyctl17.c
 new file mode 100644
-index 000000000..c281e9c69
+index 000000000..216152f1d
 --- /dev/null
-+++ b/testcases/kernel/syscalls/keyctl/keyctl15.c
-@@ -0,0 +1,66 @@
++++ b/testcases/kernel/syscalls/keyctl/keyctl17.c
+@@ -0,0 +1,55 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
 + * Copyright (c) 2026 Andrea Cervesato <andrea.cervesato@suse.com>
 + */
 +
 +/*\
-+ * Test ``KEYCTL_GET_SECURITY`` label retrieval of :manpage:`keyctl(2)`.
-+ *
-+ * ``KEYCTL_GET_SECURITY`` reads the LSM security label of a key.
-+ * When no label is set (no LSM enabled or the LSM does not label keys)
-+ * the operation returns 1 and an empty string.
++ * Negative test cases for ``KEYCTL_GET_SECURITY`` of :manpage:`keyctl(2)`.
 + *
 + * [Algorithm]
 + *
-+ * - read the label of a valid key into a large buffer, verify the return
-+ *   value is at least 1 and an empty string is returned when no label is set
++ * - get_security with bogus key id fails with ``ENOKEY``
++ * - get_security without View permission fails with ``ENOKEY`` (the kernel
++ *   falls back to looking for an auth token and returns its ``ENOKEY``)
 + */
 +
 +#include "keyctl_common.h"
 +
-+#define KEY_DESC	"ltpkeyctl15"
-+#define PAYLOAD		"payload"
 +#define BUF_SIZE	128
 +
-+static key_serial_t key;
++static key_serial_t key_no_view;
++static key_serial_t bogus_id = INT32_MAX;
 +static char buf[BUF_SIZE];
++
++static struct tcase {
++	key_serial_t *keyid;
++	int exp_errno;
++	const char *desc;
++} tcases[] = {
++	{ &bogus_id, ENOKEY, "bogus key id" },
++	{ &key_no_view, ENOKEY, "key without View permission" },
++};
 +
 +static void setup(void)
 +{
 +	SAFE_KEYCTL(KEYCTL_JOIN_SESSION_KEYRING, 0, 0, 0, 0);
 +
-+	key = new_user_key(KEY_DESC, PAYLOAD, sizeof(PAYLOAD),
-+			   KEY_SPEC_PROCESS_KEYRING);
-+	SAFE_KEYCTL(KEYCTL_SETPERM, key, KEY_PERM_SET, 0, 0);
++	key_no_view = new_user_key("k_no_view", "payload", 7, KEY_SPEC_PROCESS_KEYRING);
++	SAFE_KEYCTL(KEYCTL_SETPERM, key_no_view, KEY_PERM_NO_VIEW, 0, 0);
 +}
 +
-+static void run(void)
++static void verify_negative(unsigned int n)
 +{
-+	memset(buf, 0, sizeof(buf));
++	struct tcase *tc = &tcases[n];
 +
-+	TEST(keyctl(KEYCTL_GET_SECURITY, key, (unsigned long)buf, sizeof(buf), 0));
-+	if (TST_RET < 0)
-+		tst_brk(TBROK | TTERRNO, "KEYCTL_GET_SECURITY failed");
-+
-+	if (TST_RET < 1) {
-+		tst_res(TFAIL, "returned %ld, expected at least 1", TST_RET);
-+		return;
-+	}
-+
-+	if (TST_RET == 1) {
-+		if (buf[0] != '\0') {
-+			tst_res(TFAIL, "empty label is not NUL terminated");
-+			return;
-+		}
-+
-+		tst_res(TPASS, "no label set, empty string returned");
-+		return;
-+	}
-+
-+	tst_res(TPASS, "security label returned, full length %ld", TST_RET);
++	TST_EXP_FAIL2(keyctl(KEYCTL_GET_SECURITY, (unsigned long)*tc->keyid,
++			     (unsigned long)buf, sizeof(buf), 0),
++		      tc->exp_errno,
++		      "KEYCTL_GET_SECURITY with %s", tc->desc);
 +}
 +
 +static struct tst_test test = {
 +	.setup = setup,
-+	.test_all = run,
++	.test = verify_negative,
++	.tcnt = ARRAY_SIZE(tcases),
 +};
 
 -- 
