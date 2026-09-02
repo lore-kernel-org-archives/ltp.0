@@ -4,47 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B8A03C61DD6
-	for <ltp@archiver.kernel.org>; Wed,  2 Sep 2026 11:06:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 490B9C61DD6
+	for <ltp@archiver.kernel.org>; Wed,  2 Sep 2026 11:07:04 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6A1A53E588C
-	for <ltp@archiver.kernel.org>; Wed,  2 Sep 2026 13:06:49 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id CF3013E6162
+	for <ltp@archiver.kernel.org>; Wed,  2 Sep 2026 13:07:02 +0200 (CEST)
 Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id CC94C3E93AB
+ by picard.linux.it (Postfix) with ESMTPS id E19A93E5860
  for <ltp@lists.linux.it>; Wed,  2 Sep 2026 13:04:40 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 1FC9C200BA9
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 51C63200C74
  for <ltp@lists.linux.it>; Wed,  2 Sep 2026 13:04:40 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 7DC481F7F9;
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 9F4371F839;
  Wed,  2 Sep 2026 11:04:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1788347075; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=RJS9P/h9xh2elksAlKP0Y3B6wWeiRLMmSAR55qjiwms=;
- b=Y2Qfpe2dkdDbT0xxX3hFHQ+sLnjoaLL4DYCeM1BeXFI8SeC3ZU/FW5bNHzYAAPmpfaum0y
- EYnO+I2ynMhQ61/lXn2yhb3fV03nz47wKC87kmhk1eMO2rhCLiblIiQ5WfhzpCVHtceryE
- UOXrALcPu4QHIWszb+VG6xboisndG4Q=
+ bh=n263ojVll9TfTWZ1BC1allEu8W3vtCyWo7SHBFp225M=;
+ b=0qjpy9lxIjZgX/cpWg0MvkVObrs1EeOtHsKZv/09dCd5GcqexvDsqnOPHk04HZlgXxRHXx
+ IBz8Lsau2eBN7BGccQT3340p5Uqa7+PVRYLv1z1qFjlxq2LiPc9wzZiuJ4hit2uzBhXw9g
+ 8+H3ct0iz+oPWC5kQL27eYgfzYEq92c=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1788347075;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=RJS9P/h9xh2elksAlKP0Y3B6wWeiRLMmSAR55qjiwms=;
- b=v0Or0dvwgZpO7y0QXMh4zWECFKY2bg06Y1+HRIb8ojRQkeEX/LvoIR3dX95RDp1zYQEjNr
- Lr2Pu+LVU2MarMDA==
+ bh=n263ojVll9TfTWZ1BC1allEu8W3vtCyWo7SHBFp225M=;
+ b=snO1hDx672kzgT+osqAsYORoCPgajrBI6M+af+yvYPITRiyfkT5klRSa0fvcUWBXmqDA1e
+ oujU9fXbAf7HtiAw==
 Authentication-Results: smtp-out2.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
@@ -52,41 +52,41 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=RJS9P/h9xh2elksAlKP0Y3B6wWeiRLMmSAR55qjiwms=;
- b=tr54G7m56j6Ix5jBphuzuzlBgFU/3S8lvNA+HYIKGl6a9ectcxEsymthNEdOxuVwZWslKL
- VgHjfHimtCItoz0/uS6zm6jwbWBtqjo6l7ESlHPgGSBwaNvcNPg1XAzar8YQFu0C5B0nPr
- +4oCRM5RBZwjtYywiPQhHB9m88qj6UE=
+ bh=n263ojVll9TfTWZ1BC1allEu8W3vtCyWo7SHBFp225M=;
+ b=vRHb9SIQJp9ydFsnLx5B/v82KiEZY7v+ZjMooaklVQ5nhB/bh1JRCyZNDWxtDyTttFPatb
+ MlD9gfKAxsG5iUOIZMzIkTl6ykrmghn3rD3h8sbpOS8rfOIbvEHGof8OGxZzbjYpMTH96e
+ C/Uas4di6SCUSoxOLKDrNnsi38sncwc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1788347071;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=RJS9P/h9xh2elksAlKP0Y3B6wWeiRLMmSAR55qjiwms=;
- b=Wy1fXw+F1C8ay0Vf5uwabdzYBbcYbXLhvybSqnWsSBEzHz8wU098xqKgPdLUq4pZN/qi5H
- TqIPCa4zJvfuklAQ==
+ bh=n263ojVll9TfTWZ1BC1allEu8W3vtCyWo7SHBFp225M=;
+ b=2vDtetG95JdpnDrb1z3iD4Iy4G9BYbDceQCCRKdXo5C0Mr/Y54scYaDOMQIfa2+3Vkklts
+ ai/cmNWNNEK/0vCA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E77571397D;
- Wed,  2 Sep 2026 11:04:23 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1944E1397E;
+ Wed,  2 Sep 2026 11:04:24 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id UI6kNrcCmGpzQwAAD6G6ig
- (envelope-from <andrea.cervesato@suse.de>); Wed, 02 Sep 2026 11:04:23 +0000
+ by imap1.dmz-prg2.suse.org with ESMTPSA id IMp6BLgCmGpzQwAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>); Wed, 02 Sep 2026 11:04:24 +0000
 From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Wed, 02 Sep 2026 13:04:26 +0200
+Date: Wed, 02 Sep 2026 13:04:27 +0200
 MIME-Version: 1.0
-Message-Id: <20260902-keyctl_coverage-v1-11-d29dfa2ebcef@suse.com>
+Message-Id: <20260902-keyctl_coverage-v1-12-d29dfa2ebcef@suse.com>
 References: <20260902-keyctl_coverage-v1-0-d29dfa2ebcef@suse.com>
 In-Reply-To: <20260902-keyctl_coverage-v1-0-d29dfa2ebcef@suse.com>
 To: Linux Test Project <ltp@lists.linux.it>
 X-Mailer: b4 0.16.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1788347062; l=2299;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1788347062; l=2997;
  i=andrea.cervesato@suse.com; s=20251210; h=from:subject:message-id;
- bh=FXUJ4fL0RSqLZSy0bfMx65qehuajc481hZyXGruJ/AA=;
- b=uqLqMV/V6T/MWY94YqFwdYF0yDMWPHajhEUAaOD8m4VdYTTcjPZ3JRfFnBEmR1YgO3YOBN8hZ
- crdwreMcFNnB5y/GsrFudsJR/1fjcuNmlb5TfhNU1iVgVdlKSRD2WOT
+ bh=+G5DJhUbYX+ZZat+e4b63OcKKJMem/rds9knmtoopWQ=;
+ b=Iv9I04wAIqB6nyXrktThIHceZ8nQgIUWmt5z+YbFnP46LsWt2ES7OkFVW4BjzBSw8L2sFqmVl
+ SnsORGYnKvhDFCny1gJcVN6FtqTnu+amDwFaAxuMlhwN/MEVlaSjWfm
 X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
  pk=zKY+6GCauOiuHNZ//d8PQ/UL4jFCTKbXrzXAOQSLevI=
 X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
@@ -98,12 +98,11 @@ X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  TO_DN_ALL(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
  FROM_HAS_DN(0.00)[]; MIME_TRACE(0.00)[0:+];
  FROM_EQ_ENVFROM(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo, suse.com:email,
- suse.com:mid]
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email, suse.com:mid,
+ imap1.dmz-prg2.suse.org:helo]
 X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 11/33] keyctl19: Test KEYCTL_MOVE with same source and
- destination
+Subject: [LTP] [PATCH 12/33] keyctl20: Test KEYCTL_MOVE displacement
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -122,80 +121,99 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-Test KEYCTL_MOVE when the source keyring equals the destination
-keyring: verify the operation succeeds as a no-op and the key
-remains linked in the keyring.
+Test KEYCTL_MOVE displacement behavior: verify moving a key without
+KEYCTL_MOVE_EXCL into a destination holding a matching key displaces
+the existing key.
 
 Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
  runtest/syscalls                            |  1 +
  testcases/kernel/syscalls/keyctl/.gitignore |  1 +
- testcases/kernel/syscalls/keyctl/keyctl19.c | 43 +++++++++++++++++++++++++++++
- 3 files changed, 45 insertions(+)
+ testcases/kernel/syscalls/keyctl/keyctl20.c | 62 +++++++++++++++++++++++++++++
+ 3 files changed, 64 insertions(+)
 
 diff --git a/runtest/syscalls b/runtest/syscalls
-index 895dd0fc4..1935bee31 100644
+index 1935bee31..bfe4090a0 100644
 --- a/runtest/syscalls
 +++ b/runtest/syscalls
-@@ -736,6 +736,7 @@ keyctl15 keyctl15
- keyctl16 keyctl16
+@@ -737,6 +737,7 @@ keyctl16 keyctl16
  keyctl17 keyctl17
  keyctl18 keyctl18
-+keyctl19 keyctl19
+ keyctl19 keyctl19
++keyctl20 keyctl20
  
  kcmp01 kcmp01
  kcmp02 kcmp02
 diff --git a/testcases/kernel/syscalls/keyctl/.gitignore b/testcases/kernel/syscalls/keyctl/.gitignore
-index 808cd2d23..f32107923 100644
+index f32107923..acddfa79e 100644
 --- a/testcases/kernel/syscalls/keyctl/.gitignore
 +++ b/testcases/kernel/syscalls/keyctl/.gitignore
-@@ -16,3 +16,4 @@
- /keyctl16
+@@ -17,3 +17,4 @@
  /keyctl17
  /keyctl18
-+/keyctl19
-diff --git a/testcases/kernel/syscalls/keyctl/keyctl19.c b/testcases/kernel/syscalls/keyctl/keyctl19.c
+ /keyctl19
++/keyctl20
+diff --git a/testcases/kernel/syscalls/keyctl/keyctl20.c b/testcases/kernel/syscalls/keyctl/keyctl20.c
 new file mode 100644
-index 000000000..389ad7603
+index 000000000..6da36fe32
 --- /dev/null
-+++ b/testcases/kernel/syscalls/keyctl/keyctl19.c
-@@ -0,0 +1,43 @@
++++ b/testcases/kernel/syscalls/keyctl/keyctl20.c
+@@ -0,0 +1,62 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
 + * Copyright (c) 2026 Andrea Cervesato <andrea.cervesato@suse.com>
 + */
 +
 +/*\
-+ * Test ``KEYCTL_MOVE`` of :manpage:`keyctl(2)` with same source and destination.
++ * Test ``KEYCTL_MOVE`` displacement of :manpage:`keyctl(2)`.
 + *
 + * [Algorithm]
 + *
-+ * - move a key where the source keyring equals the destination keyring,
-+ *   verify it is a successful no-op
++ * - move a key without ``KEYCTL_MOVE_EXCL`` into a destination keyring that
++ *   already contains a matching key, verify it displaces the existing key
 + */
 +
 +#include "keyctl_common.h"
 +
-+#define RING_DESC	"ltpkeyctl19"
++#define RING_A_DESC	"ltpkeyctl20_a"
++#define RING_B_DESC	"ltpkeyctl20_b"
 +#define KEY_DESC	"k"
 +#define PAYLOAD		"payload"
 +
-+static key_serial_t ring;
-+static key_serial_t key;
++static key_serial_t ring_a, ring_b;
++static key_serial_t key_a, key_excl;
 +
 +static void setup(void)
 +{
 +	SAFE_KEYCTL(KEYCTL_JOIN_SESSION_KEYRING, 0, 0, 0, 0);
 +
-+	ring = new_ring(RING_DESC);
-+	key = new_user_key(KEY_DESC, PAYLOAD, sizeof(PAYLOAD), ring);
++	ring_a = new_ring(RING_A_DESC);
++	ring_b = new_ring(RING_B_DESC);
++
++	key_a = new_user_key(KEY_DESC, PAYLOAD, sizeof(PAYLOAD), ring_a);
++	key_excl = new_user_key(KEY_DESC, PAYLOAD, sizeof(PAYLOAD), ring_b);
++
++	/* Keep key_excl in session keyring so displacement does not destroy it */
++	SAFE_KEYCTL(KEYCTL_LINK, key_excl, KEY_SPEC_SESSION_KEYRING, 0, 0);
++}
++
++static void reset_state(void)
++{
++	SAFE_KEYCTL(KEYCTL_LINK, key_a, ring_a, 0, 0);
++	TEST(keyctl(KEYCTL_UNLINK, key_a, ring_b, 0, 0));
++	if (TST_RET == -1 && TST_ERR != ENOENT)
++		tst_brk(TBROK | TTERRNO, "failed to unlink key_a from ring_b");
++
++	SAFE_KEYCTL(KEYCTL_LINK, key_excl, ring_b, 0, 0);
 +}
 +
 +static void run(void)
 +{
-+	TST_EXP_PASS(keyctl(KEYCTL_MOVE, key, ring, ring, 0));
++	reset_state();
 +
-+	TST_EXP_EQ_LI(search_ring(ring, "user", KEY_DESC), key);
++	TST_EXP_PASS(keyctl(KEYCTL_MOVE, key_a, ring_a, ring_b, 0));
++
++	TST_EXP_EQ_LI(search_ring(ring_b, "user", KEY_DESC), key_a);
 +}
 +
 +static struct tst_test test = {
