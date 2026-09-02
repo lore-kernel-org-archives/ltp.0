@@ -4,104 +4,122 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6E1D4C624D3
-	for <ltp@archiver.kernel.org>; Wed,  2 Sep 2026 15:01:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 949FEC624D4
+	for <ltp@archiver.kernel.org>; Wed,  2 Sep 2026 16:02:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1788364941; h=to : date :
+ message-id : in-reply-to : references : mime-version : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : content-type :
+ content-transfer-encoding : sender : from;
+ bh=Piepbhfuqx4hp2U9ddmY0yHAgI2pInjzfbc3OyLeSio=;
+ b=FtzDWMslsenhHvGX/qWrPNkrZUHaegt5Fh+9+VCXTGiy0QTykoXGMnHgwW5TtZfD72+1a
+ tKfrQMh/63bvJoqvcCJdvlPhqyzVY0oIF5b26bDWHfppkxBNhWGA0MGnxltNjnkjzm9r8f8
+ CGYr7uddmU8Lm70u2DOtp66NNnf2W3Q=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 748D53E93C0
-	for <ltp@archiver.kernel.org>; Wed,  2 Sep 2026 17:01:24 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 7D5B43E93BE
+	for <ltp@archiver.kernel.org>; Wed,  2 Sep 2026 18:02:21 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 587563E93A6
- for <ltp@lists.linux.it>; Wed,  2 Sep 2026 17:01:09 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ by picard.linux.it (Postfix) with ESMTPS id 806853E23F2
+ for <ltp@lists.linux.it>; Wed,  2 Sep 2026 18:01:59 +0200 (CEST)
+Received: from PH8PR06CU001.outbound.protection.outlook.com
+ (mail-westus3azlp170120001.outbound.protection.outlook.com
+ [IPv6:2a01:111:f403:c107::1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 8B884600D63
- for <ltp@lists.linux.it>; Wed,  2 Sep 2026 17:01:08 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id B680B1FB22;
- Wed,  2 Sep 2026 15:00:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1788361263; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=uO+Lod6hPEPoReSbb0pbAZQstnpG7thvjZWUIwo4774=;
- b=xfSn+eprO5WRDBF1CEUXlwj/7NUisKRQ9A6uGYVdr97RMxuxBdCb+YaoD0rNXc4ZzoeKat
- sjH2eB1An/2MpwoCiNFRgpOMaKHpWXQYaxqUBE0/Ekf4Cry6/ma8FgOWvt0lYdWdU3k3Qt
- 85jcP+hJLGXxfgc5Id/Qa/EjwGFKLl8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1788361263;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=uO+Lod6hPEPoReSbb0pbAZQstnpG7thvjZWUIwo4774=;
- b=QVZyoUFgYvaq8yCgZpE2WuWvM0hs4SWBdy+qZ5s3bxDpqwiy5j6ZrzEZ7IcXIlmqiJDSOW
- I/qqOPQ5qop1WBCA==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1788361259; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=uO+Lod6hPEPoReSbb0pbAZQstnpG7thvjZWUIwo4774=;
- b=lxgQnnh78gb3r5FBEKQiXaqXcM1l2kJ2eXufTCAk0ghcPDx8LIZ3rSFijb3Xyl4QjTfxh5
- RW7Ybu7TgkEgk/W9vwGt13MS5WTxP9RHOjLp8K8ugwhejbcXLA6LPCGQZuhXzdmTBjTq5w
- +xKwp7GwSC5eJuzHYdSgcp4SUf/Mrwk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1788361259;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=uO+Lod6hPEPoReSbb0pbAZQstnpG7thvjZWUIwo4774=;
- b=QfQMCBbAsYUuX8tuYyf6IMofymHhiJkZPS/2lZ2ohPy14OiP1UNFSs7m5vN/FCze8Bg+Hu
- a7vMgu8Tr1jufgBw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4849813738;
- Wed,  2 Sep 2026 15:00:59 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id O1JBDCs6mGrQNwAAD6G6ig
- (envelope-from <andrea.cervesato@suse.de>); Wed, 02 Sep 2026 15:00:59 +0000
-From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Wed, 02 Sep 2026 17:00:57 +0200
+ key-exchange ECDHE (secp384r1) server-signature RSA-PSS (2048 bits)
+ server-digest SHA256) (No client certificate requested)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 60D231000910
+ for <ltp@lists.linux.it>; Wed,  2 Sep 2026 18:01:58 +0200 (CEST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=Zn0axzSrkS51ddh6GVP+G3nkpob4BkNCBla3Ny9L/4Nzs6cDdg2ZTyB5yB2mb7TInWN3eztdhlA7orgWHef0hLoaLo/t+8iOfQfsU/YlnbcbZW8ROyBKW4M89cOYmwB34WK6ee2puOS2iUGex3x+MDZbYIZhSyFBXq7GeTxmm7PwGpBCXtr7AgHKOMm+osw/UVE2ZXxeMbA3bNLwJr3ERqIg0x5jBgZLSAw+6MsmzadlFdHsbtOiYK7h/tDT6iTNfu7dZg8aqksW7cmY0tzMDT6Ei+RfpLbexGpz5qJs1OVzQq+z9XkbIGJxEXrrK035ME/xVLooare+CGD/GjU+Ug==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=DEziUA8l8Vkm0qq9ybYadYLbnAGRGZ0Vq9XJ/yY19/M=;
+ b=urhn5o8qU4pzeKoOoV/N2eIDgzsEC1WyqzaMOIovrYjJU0xdFffUhxDOdTYkmO785ynLTJdBTk2HFS1OflZjnbbB6RlLGoSxk79fs1YWhqPlTxGaCsSafbPQFf6iIOW1EqH8U054sGMoDyuit+lqEYXro8U3AsNpPVVqgOYVfvKhgTGiPxEKGmtQFO8sZQIDj7B060FgFE3+0k6VyH8sYIqDiik6jctb3N3393OPyzUnufG2j3ZIyDjj2irKkpZAxxhspX0iEvw+KqqpGaO41qRZR8RDp7DjRUjmQxMuUsH+Nfy9onu6S8VfkC/KuNxvUjOH7UVYDbiaAmOvocyFxQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.118.232) smtp.rcpttodomain=lists.linux.it smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=DEziUA8l8Vkm0qq9ybYadYLbnAGRGZ0Vq9XJ/yY19/M=;
+ b=S6Ro3jQQagmtNL6LYeo+zIIXFAz+TsUuTKqOBa4kuJcKtFBZ7v8LzmBEgJykyktz1lsreb4nlqRHMJC/zIdAkA7Vr4NfFBrFDEftklzJUNfaqviPmTdx49iGf4leutmHDRn3LS+eD+QRmUa6fLqQO16NvrZfmrjOAfIlHnxPX2/Ah9oKkm7PJDWacHBtYcxBRtnqbU0D07hEgAj44BiQQn1fh5kCfS21IlPnPnQKh1xNe9pIhpfhtn3/gGH9PHOuiNBzCEerjQHoAaDoD/qLVFJd4tjXbLlralUskbiv7Mgnh20movbw0/cq34XWVBOCCsFijd3+BbyDPsY1IODgJw==
+Received: from CH5P222CA0019.NAMP222.PROD.OUTLOOK.COM (2603:10b6:610:1ee::20)
+ by IA0PR12MB8746.namprd12.prod.outlook.com (2603:10b6:208:490::7)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.360.6; Wed, 2 Sep 2026
+ 16:01:44 +0000
+Received: from DS2PEPF00003445.namprd04.prod.outlook.com
+ (2603:10b6:610:1ee:cafe::9f) by CH5P222CA0019.outlook.office365.com
+ (2603:10b6:610:1ee::20) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.21.382.11 via Frontend Transport; Wed, 2
+ Sep 2026 16:01:42 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.232)
+ smtp.mailfrom=nvidia.com;
+ dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.118.232 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.118.232; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.118.232) by
+ DS2PEPF00003445.mail.protection.outlook.com (10.167.17.72) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.21.382.8 via Frontend Transport; Wed, 2 Sep 2026 16:01:41 +0000
+Received: from drhqmail203.nvidia.com (10.126.190.182) by mail.nvidia.com
+ (10.127.129.5) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.46; Wed, 2 Sep
+ 2026 09:01:14 -0700
+Received: from drhqmail201.nvidia.com (10.126.190.180) by
+ drhqmail203.nvidia.com (10.126.190.182) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.46; Wed, 2 Sep 2026 09:01:13 -0700
+Received: from 82875d6-lcedt.nvidia.com (10.127.8.14) by mail.nvidia.com
+ (10.126.190.180) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.46 via Frontend
+ Transport; Wed, 2 Sep 2026 09:01:13 -0700
+To: <ltp@lists.linux.it>
+Date: Wed, 2 Sep 2026 09:01:13 -0700
+Message-ID: <20260902160113.1207205-1-nirmoyd@nvidia.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <apgVur5s_potD6ND@yuki.lan>
+References: <apgVur5s_potD6ND@yuki.lan>
 MIME-Version: 1.0
-Message-Id: <20260902-coredump-v4-1-3f511ea1c96a@suse.com>
-X-B4-Tracking: v=1; b=H4sIACg6mGoC/3XNTQ6CMBQE4KuQrq1pH6WtrryHcQHlVWrCT1poN
- IS7W3BDjC4nmW9mJgG9w0DO2Uw8Rhdc36UgDhkxTdndkbo6ZQIMJNPAqOk91lM7UABrVM6rGpk
- mqT54tO65TV1vnxym6oFmXP3aaFwYe//aviJfez9mI6ecKoMFlyw3aKtLmAIeTd+SdTXC3omdg
- +QECNClsQVw+eXyfy5PTgo41aVUQnG9c8uyvAGxdEWgIQEAAA==
-X-Change-ID: 20260820-coredump-22fc731bde08
-To: Linux Test Project <ltp@lists.linux.it>
-X-Mailer: b4 0.16.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1788361259; l=10361;
- i=andrea.cervesato@suse.com; s=20251210; h=from:subject:message-id;
- bh=USqnJMxqVsn4UcpxvM6J7M4tXlsQAoTp/Qi1hb+RTEk=;
- b=AuQaKKhi2UW4G1MA1gdbJtOCMCFSlbNzNnQ4xx5uTYtXRgv5HzOMG5VLvjxJirGdcaX6Wmtrg
- 8Wd6CsA3bs3C6futBtIEJM5HKGDxrm1qI0MPl8lfIpJottsBguUrCuE
-X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
- pk=zKY+6GCauOiuHNZ//d8PQ/UL4jFCTKbXrzXAOQSLevI=
-X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-0.996]; MIME_GOOD(-0.10)[text/plain];
- TO_DN_ALL(0.00)[];
- DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- FROM_HAS_DN(0.00)[]; ARC_NA(0.00)[]; RCPT_COUNT_TWO(0.00)[2];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_TLS_ALL(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[]; MIME_TRACE(0.00)[0:+];
- FROM_EQ_ENVFROM(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo, suse.com:email,
- suse.com:mid]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS2PEPF00003445:EE_|IA0PR12MB8746:EE_
+X-MS-Office365-Filtering-Correlation-Id: db1bd55d-b4c9-4e22-415b-08df090b7ae9
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+ ARA:13230040|36860700016|1800799024|376014|23010399003|82310400026|10067099003|11063799006|56012099006|18002099003|22082099003;
+X-Microsoft-Antispam-Message-Info: wa8a7LoV1lOqAra+QotWfaOLk59K8M6+wYcFfI/mItuBjr1idGHIsKbwnk4ohAI5aDuxv8MUm+bKRdDmiGY1LaN9036anEnf16c0MVhXPKa3m3hG6J9CNZehhN8MRevAOXEoSMKwGVUQXUxcRaXkPiFXhYwkxgcGNUysy7g98e/Mde41wOblsGdJWQaAqhKAH9y/0iwgtLXCxy2Nu6eGBEA0FTIU1eM2mlHxEEqc4456KQ8jsqUNZAiFjBDeeX85jaVwnGptjvAcBjiFfmYlXuqavd1RBAHtQnKDDMyIRXTgDaGYnIzupbnThy4zq1aVowzGS+cAyBiJjx1F9reuc6NSAx4O+rbFQwvlv6uHU1Y69Pi9ADGMkjQKpwptXo4ZL355hc/uTZknf0W4ifak1xM4XaahQsGejKGjIYgVpOSZBjRmGuO1bPa1rWfKWzyOSwwj+x9v4bkI9V9IBbzP1LQhOs5BNPUpAxuS87m5jAaJm6VlWZlhV0TaxekriljXSrl0PnFQo9g6gJHBgfogotWzUGu/e5WzfYsunpETEGWx41aAMCTDCRXhB06gHM8yREMlafusC2cvsKDyhlq7/dY8guXqyGMXSQj6G6NNEBMdiiRXz2QKBKv9BynUOG+VDs9zEgHcIjmEtLf0yneA1or6pRDgAziRseZvKy9zd/UsLfRzct2Ml76qQ3YQhbsUV7L1DifONHGZBhgSmm8FvQ==
+X-Forefront-Antispam-Report: CIP:216.228.118.232; CTRY:US; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:mail.nvidia.com; PTR:dc7edge1.nvidia.com; CAT:NONE;
+ SFS:(13230040)(36860700016)(1800799024)(376014)(23010399003)(82310400026)(10067099003)(11063799006)(56012099006)(18002099003)(22082099003);
+ DIR:OUT; SFP:1101; 
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: oS/cT//1JhWNUprCc7mw7uryvtL+fllYpGE0LTn1UFnW/cnKsqISdh0ilb7Ho0XAV6NgQ7xcxbTFI/q8J/gqdP2UT3cG0jD7Cn34tKPLF30oPMm2A3pBDLmJMMLT7qIZ/zRkE7nNrme6lZzpsE8OarTdJomNVXfHIEQUqzGoZfycLeshQcfzbJmG6263MP7zR8GacOikVTtIrOj9F+LXwo0hhzFFrcZIEwLQaAOAa5RxkxlMotvqY6lqfyUHU3YczlgfgapDoobTsPCsxF7UR+HZoXyw5YGHl8WZJbG/EaVumXUeqyc8rjBZ3DmFH7nM5wswqiDl0157cEvevwEFJNAPvhxDaV/ySjAgaNop0rM2nJJeuahcGLgwM3cGAWB/lxHp8Iup1+mQsg5v2j1IHHS5BKPWEalSPjUs81/r0E9E8p2izhhAdPlxLHVRycRy
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Sep 2026 16:01:41.9792 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: db1bd55d-b4c9-4e22-415b-08df090b7ae9
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a; Ip=[216.228.118.232];
+ Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: DS2PEPF00003445.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR12MB8746
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v4] coredump01: New core_pattern specifiers test
+Subject: [LTP] [PATCH v2] getrusage03: account for percpu RSS counter
+ batching
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -113,362 +131,217 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+From: Nirmoy Das via ltp <ltp@lists.linux.it>
+Reply-To: Nirmoy Das <nirmoyd@nvidia.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Andrea Cervesato <andrea.cervesato@suse.com>
+getrusage03 allows ru_maxrss to differ from the expected value by a
+fixed 20 MiB. That can be too small on large systems after Linux commit
+f1a7941243c1, which converted mm RSS stats into percpu_counter.
 
-LTP has no coverage for the core_pattern specifiers expansion, neither
-for the pipe flavor of core_pattern, where the kernel spawns a user
-space helper and writes the core dump into its standard input.
+Pin the whole test to one CPU during setup, before it forks or execs any
+children. Every descendant inherits the affinity, which removes task
+migration as a multiplier. One CPU can still retain almost one batch of
+the deliberate anonymous allocation outside the fast RSS read.
 
-The new test verifies that %e, %p and %s are expanded both in the core
-file name and in the arguments of a piped helper, checking also that
-the helper really receives an ELF core dump.
+Use one batch only as lower-side slack for the 100, 300, and 400 MiB
+allocation checks. Preserve the fixed 20 MiB tolerance for their upper
+side and for all inheritance comparisons. Count online CPUs from
+/proc/stat because some libc implementations report only the calling
+task affinity. Skip the suite if one batch is at least the smallest
+100 MiB allocation and would make that signal non-discriminating.
 
-Root is required to rewrite the system wide core_pattern, which is
-restored by the test library on all exit paths.
+On a 352-CPU arm64 system with 64 KiB pages, a batch is 704 pages
+(44 MiB). With only the pin and fixed 20 MiB tolerance, the 300 MiB
+case returned 270336 KiB instead of 307200 KiB and failed 10/10 runs.
+The one-batch lower allowance passed 10/10 runs.
 
-Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+Signed-off-by: Nirmoy Das <nirmoyd@nvidia.com>
 ---
-Add a simple coredump01 test that simulate a coredump and verify that it
-actually works. This is a small coverage that is missing inside LTP
-testing suite.
----
-Changes in v4:
-- read back core_pattern after writing and abort with TBROK on mismatch
-- read CONFIG_STATIC_USERMODEHELPER once in setup() and cache the result
-- remove namespace visibility scaffolding and skip logic from verify_pipe_pattern()
-- resolve helper path with tst_get_path() instead of /proc/self/exe readlink
-- Link to v3: https://lore.kernel.org/20260824-coredump-v3-1-6429da674718@suse.com
-
-Changes in v3:
-- check for CONFIG_COREDUMP=y
-- Link to v2: https://lore.kernel.org/20260824-coredump-v2-1-42428acf5216@suse.com
-
 Changes in v2:
-- fix CI agent spotted errors
-- Link to v1: https://lore.kernel.org/20260820-coredump-v1-1-7ce51603cefb@suse.com
----
- runtest/kernel_misc                           |   1 +
- testcases/kernel/Makefile                     |   1 +
- testcases/kernel/coredump/.gitignore          |   2 +
- testcases/kernel/coredump/Makefile            |   7 +
- testcases/kernel/coredump/coredump01.c        | 181 ++++++++++++++++++++++++++
- testcases/kernel/coredump/coredump01_helper.c |  66 ++++++++++
- 6 files changed, 258 insertions(+)
+- Pin the whole test once in setup so every fork and exec descendant
+  inherits the singleton CPU affinity.
+- Keep one batch only as lower-side slack for the deliberate allocation
+  checks; pinning with the fixed 20 MiB tolerance failed 10/10 runs on
+  the 352-CPU, 64 KiB-page system.
+- Count kernel-wide online CPUs independently of task affinity and skip
+  when one batch would make the smallest RSS signal non-discriminating.
 
-diff --git a/runtest/kernel_misc b/runtest/kernel_misc
-index cc3562cb7..ecf9ee2a2 100644
---- a/runtest/kernel_misc
-+++ b/runtest/kernel_misc
-@@ -17,3 +17,4 @@ zram02 zram02.sh
- zram03 zram03
- umip_basic_test umip_basic_test
- aslr01 aslr01
-+coredump01 coredump01
-diff --git a/testcases/kernel/Makefile b/testcases/kernel/Makefile
-index ac816e4e8..6b303c14b 100644
---- a/testcases/kernel/Makefile
-+++ b/testcases/kernel/Makefile
-@@ -19,6 +19,7 @@ SUBDIRS			+= lib
- SUBDIRS			+= connectors \
- 			   containers \
- 			   controllers \
-+			   coredump \
- 			   crypto \
- 			   device-drivers \
- 			   firmware \
-diff --git a/testcases/kernel/coredump/.gitignore b/testcases/kernel/coredump/.gitignore
-new file mode 100644
-index 000000000..cd0b51700
---- /dev/null
-+++ b/testcases/kernel/coredump/.gitignore
-@@ -0,0 +1,2 @@
-+/coredump01
-+/coredump01_helper
-diff --git a/testcases/kernel/coredump/Makefile b/testcases/kernel/coredump/Makefile
-new file mode 100644
-index 000000000..951a3e976
---- /dev/null
-+++ b/testcases/kernel/coredump/Makefile
-@@ -0,0 +1,7 @@
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (c) 2026 Linux Test Project
-+
-+top_srcdir		?= ../../..
-+
-+include $(top_srcdir)/include/mk/testcases.mk
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/coredump/coredump01.c b/testcases/kernel/coredump/coredump01.c
-new file mode 100644
-index 000000000..9697578b7
---- /dev/null
-+++ b/testcases/kernel/coredump/coredump01.c
-@@ -0,0 +1,181 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (C) 2026 Linux Test Project
-+ */
-+
-+/*\
-+ * Verify that the kernel expands the :manpage:`core(5)` specifiers %e
-+ * (executable name), %p (PID) and %s (signal number) when it creates a
-+ * core dump.
-+ *
-+ * Both flavors of ``/proc/sys/kernel/core_pattern`` are tested:
-+ *
-+ * - a plain file name, where the specifiers become part of the core file
-+ *   name
-+ * - a pipe to a user space helper, where the specifiers are expanded in
-+ *   the helper arguments and the core dump is written to the helper
-+ *   standard input
-+ *
-+ * The test needs root because it rewrites the system wide core_pattern.
-+ * The original value is saved and restored by the test library on all
-+ * exit paths.
-+ *
-+ * [Algorithm]
-+ *
-+ * - Point core_pattern into the test temporary directory
-+ * - Fork a child which aborts itself to produce a core dump
-+ * - For the file pattern check that ``core.<exe>.<pid>.<signal>`` was created
-+ * - For the pipe pattern check the arguments the helper was called with
-+ *   and that it received an ELF core dump on its standard input
-+ */
-+
-+#include <sys/wait.h>
-+
-+#include "tst_test.h"
-+#include "tst_kconfig.h"
-+#include "lapi/prctl.h"
-+
-+#define PATTERN_MAX 128
-+#define HELPER "coredump01_helper"
-+#define HELPER_TIMEOUT 10
-+
-+static char helper_path[PATH_MAX];
-+static char cwd[PATH_MAX];
-+static int static_usermodehelper;
-+
-+static void set_pattern(const char *fmt, ...)
+ .../kernel/syscalls/getrusage/getrusage03.c   | 110 +++++++++++++++---
+ 1 file changed, 95 insertions(+), 15 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/getrusage/getrusage03.c b/testcases/kernel/syscalls/getrusage/getrusage03.c
+index a2cdd6158..38a100576 100644
+--- a/testcases/kernel/syscalls/getrusage/getrusage03.c
++++ b/testcases/kernel/syscalls/getrusage/getrusage03.c
+@@ -13,9 +13,13 @@
+  * this program.
+  */
+ 
++#define _GNU_SOURCE
+ #include <stdlib.h>
+ #include <stdio.h>
+ 
++#include "lapi/cpuset.h"
++#include "tst_safe_stdio.h"
++#include "tst_cpu.h"
+ #include "tst_test.h"
+ #include "getrusage03.h"
+ 
+@@ -23,12 +27,99 @@
+ 
+ static struct rusage ru;
+ static long maxrss_init;
++static long lower_allowance;
+ 
+ static const char *const resource[] = {
+ 	TESTBIN,
+ 	NULL,
+ };
+ 
++static long count_online_cpus(void)
 +{
-+	char pattern[PATTERN_MAX];
-+	char readback[PATTERN_MAX];
-+	va_list va;
-+	int len;
++	FILE *fp = SAFE_FOPEN("/proc/stat", "r");
++	char line[BUFSIZ];
++	long count = 0;
 +
-+	va_start(va, fmt);
-+	len = vsnprintf(pattern, sizeof(pattern), fmt, va);
-+	va_end(va);
-+
-+	if (len >= PATTERN_MAX)
-+		tst_brk(TCONF, "core_pattern does not fit into %i bytes", PATTERN_MAX - 1);
-+
-+	SAFE_FILE_PRINTF(PATH_KERN_CORE_PATTERN, "%s", pattern);
-+
-+	SAFE_FILE_LINES_SCANF(PATH_KERN_CORE_PATTERN, "%127[^\n]", readback);
-+
-+	if (strcmp(pattern, readback))
-+		tst_brk(TBROK, "core_pattern readback mismatch: wrote '%s', read '%s'",
-+			pattern, readback);
-+
-+	tst_res(TINFO, "core_pattern is '%s'", pattern);
-+}
-+
-+static pid_t crash_child(void)
-+{
-+	int status;
-+	pid_t pid;
-+
-+	pid = SAFE_FORK();
-+	if (!pid)
-+		abort();
-+
-+	SAFE_WAITPID(pid, &status, 0);
-+
-+	if (!WIFSIGNALED(status) || !WCOREDUMP(status))
-+		tst_brk(TFAIL, "Child did not dump core");
-+
-+	return pid;
-+}
-+
-+static void verify_file_pattern(void)
-+{
-+	char dump[PATH_MAX + 32];
-+	pid_t pid;
-+
-+	tst_res(TINFO, "Testing file core_pattern");
-+
-+	set_pattern("%s/core.%%e.%%p.%%s", cwd);
-+
-+	pid = crash_child();
-+
-+	snprintf(dump, sizeof(dump), "%s/core.coredump01.%d.%d", cwd, pid, SIGABRT);
-+
-+	TST_EXP_PASS(access(dump, F_OK), "core.%%e.%%p.%%s expanded to core.coredump01.%d.%d",
-+		     pid, SIGABRT);
-+}
-+
-+static void verify_pipe_pattern(void)
-+{
-+	char res[PATH_MAX + 32], exe[PATH_MAX];
-+	int pid_seen, sig_seen, elf;
-+	long long bytes;
-+	pid_t pid;
-+
-+	if (static_usermodehelper) {
-+		tst_res(TCONF, "CONFIG_STATIC_USERMODEHELPER is enabled, skipping pipe core_pattern");
-+		return;
++	while (fgets(line, sizeof(line), fp)) {
++		if (line[0] == 'c' && line[1] == 'p' && line[2] == 'u' &&
++		    line[3] >= '0' && line[3] <= '9')
++			count++;
 +	}
 +
-+	tst_res(TINFO, "Testing pipe core_pattern");
++	if (ferror(fp))
++		tst_brk(TBROK | TERRNO, "fgets(/proc/stat)");
 +
-+	set_pattern("|%s %%e %%p %%s %s/res.%%p", helper_path, cwd);
++	SAFE_FCLOSE(fp);
 +
-+	pid = crash_child();
++	if (!count)
++		tst_brk(TBROK, "No online CPUs found in /proc/stat");
 +
-+	snprintf(res, sizeof(res), "%s/res.%d", cwd, pid);
-+
-+	/* the kernel spawns the helper asynchronously */
-+	if (TST_RETRY_FN_EXP_BACKOFF(access(res, F_OK), TST_RETVAL_EQ0, HELPER_TIMEOUT)) {
-+		tst_res(TFAIL, "%s did not report any core dump", HELPER);
-+		return;
-+	}
-+
-+	SAFE_FILE_SCANF(res, "exe=%15s pid=%d sig=%d bytes=%lld elf=%d",
-+			exe, &pid_seen, &sig_seen, &bytes, &elf);
-+
-+	TST_EXP_EQ_STR(exe, "coredump01");
-+	TST_EXP_EQ_LI(pid_seen, pid);
-+	TST_EXP_EQ_LI(sig_seen, SIGABRT);
-+	TST_EXP_EXPR(elf && bytes > 0, "%s read %lli bytes of ELF core dump", HELPER, bytes);
++	return count;
 +}
 +
-+static void run(unsigned int n)
++static void pin_to_cpu(void)
 +{
-+	if (n)
-+		verify_pipe_pattern();
-+	else
-+		verify_file_pattern();
++	long ncpus = tst_ncpus_max();
++	size_t size = CPU_ALLOC_SIZE(ncpus);
++	cpu_set_t *mask = CPU_ALLOC(ncpus);
++	int cpu = -1;
++
++	if (!mask)
++		tst_brk(TBROK | TERRNO, "CPU_ALLOC()");
++
++	CPU_ZERO_S(size, mask);
++	if (sched_getaffinity(0, size, mask) < 0) {
++		CPU_FREE(mask);
++		tst_brk(TBROK | TERRNO, "sched_getaffinity()");
++	}
++
++	for (long i = 0; i < ncpus; i++) {
++		if (CPU_ISSET_S((int)i, size, mask)) {
++			cpu = (int)i;
++			break;
++		}
++	}
++
++	if (cpu < 0) {
++		CPU_FREE(mask);
++		tst_brk(TBROK, "sched_getaffinity() returned an empty CPU mask");
++	}
++
++	CPU_ZERO_S(size, mask);
++	CPU_SET_S(cpu, size, mask);
++	if (sched_setaffinity(0, size, mask) < 0) {
++		CPU_FREE(mask);
++		tst_brk(TBROK | TERRNO, "sched_setaffinity()");
++	}
++
++	CPU_FREE(mask);
 +}
 +
 +static void setup(void)
 +{
-+	struct rlimit rl = {RLIM_INFINITY, RLIM_INFINITY};
-+	struct tst_kconfig_var kconfig = TST_KCONFIG_INIT("CONFIG_STATIC_USERMODEHELPER");
++	long online_cpus = count_online_cpus();
++	long batch = MAX(32L, online_cpus * 2);
++	long page_size = SAFE_SYSCONF(_SC_PAGESIZE);
++	long batch_kib = batch * page_size / 1024;
 +
-+	tst_kconfig_read(&kconfig, 1);
-+	static_usermodehelper = (kconfig.choice == 'y');
++	lower_allowance = MAX(20 * 1024L, batch_kib);
++	if (lower_allowance >= 102400L)
++		tst_brk(TCONF, "Per-CPU RSS allowance is too large: %li KiB",
++			lower_allowance);
 +
-+	SAFE_SETRLIMIT(RLIMIT_CORE, &rl);
-+
-+	SAFE_PRCTL(PR_SET_DUMPABLE, 1, 0, 0, 0);
-+
-+	SAFE_GETCWD(cwd, sizeof(cwd));
-+
-+	if (tst_get_path(HELPER, helper_path, sizeof(helper_path)))
-+		tst_brk(TCONF, "'%s' not found in $PATH", HELPER);
++	pin_to_cpu();
 +}
 +
-+static struct tst_test test = {
-+	.test = run,
-+	.tcnt = 2,
-+	.setup = setup,
-+	.needs_root = 1,
-+	.needs_tmpdir = 1,
-+	.forks_child = 1,
-+	.needs_kconfigs = (const char* []) {
-+		"CONFIG_COREDUMP=y",
-+		NULL,
-+	},
-+	.save_restore = (const struct tst_path_val[]) {
-+		{PATH_KERN_CORE_PATTERN, NULL, TST_SR_TCONF},
-+		{}
-+	},
-+};
-diff --git a/testcases/kernel/coredump/coredump01_helper.c b/testcases/kernel/coredump/coredump01_helper.c
-new file mode 100644
-index 000000000..41091b428
---- /dev/null
-+++ b/testcases/kernel/coredump/coredump01_helper.c
-@@ -0,0 +1,66 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (C) 2026 Linux Test Project
-+ */
-+
-+/*
-+ * Core dump collector for the piped core_pattern tested by coredump01.
-+ *
-+ * Avoiding the LTP API here is correct, since the kernel spawns the helper
-+ * through ``call_usermodehelper()`` without the LTP IPC environment.
-+ *
-+ * The helper is called as:
-+ *
-+ *	coredump01_helper <exe> <pid> <signal> <result file>
-+ *
-+ * and stores what it received in the result file, which is published with
-+ * :manpage:`rename()` so that the polling test never reads a partial line.
-+ */
-+
-+#include <fcntl.h>
-+#include <limits.h>
-+#include <stdio.h>
-+#include <string.h>
-+#include <unistd.h>
-+
-+int main(int argc, char *argv[])
++static void check_maxrss(long actual, long expected, const char *name,
++			 const char *size)
 +{
-+	char buf[4096], tmp[PATH_MAX], magic[4];
-+	long long bytes = 0;
-+	ssize_t rval, i;
-+	int fd, elf = 0;
-+
-+	if (argc < 5)
-+		return 1;
-+
-+	/*
-+	 * A core dump embeds the ELF images it has mapped, so the magic is
-+	 * only meaningful at the very beginning of the stream. Collect it
-+	 * across reads, since a pipe read can return less than 4 bytes.
-+	 */
-+	while ((rval = read(STDIN_FILENO, buf, sizeof(buf))) > 0) {
-+		for (i = 0; i < rval && bytes + i < 4; i++)
-+			magic[bytes + i] = buf[i];
-+
-+		bytes += rval;
-+	}
-+
-+	if (rval < 0)
-+		return 1;
-+
-+	if (bytes >= 4 && !memcmp(magic, "\177ELF", 4))
-+		elf = 1;
-+
-+	snprintf(tmp, sizeof(tmp), "%s.tmp", argv[4]);
-+
-+	fd = open(tmp, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-+	if (fd < 0)
-+		return 1;
-+
-+	dprintf(fd, "exe=%s pid=%s sig=%s bytes=%lld elf=%d\n",
-+		argv[1], argv[2], argv[3], bytes, elf);
-+
-+	close(fd);
-+
-+	return rename(tmp, argv[4]) ? 1 : 0;
++	if (actual >= expected - lower_allowance &&
++	    actual <= expected + DELTA_MAX)
++		tst_res(TPASS, "%s ~= %s", name, size);
++	else
++		tst_res(TFAIL, "%s = %li, expected %li", name, actual, expected);
 +}
++
+ static void inherit_fork1(void)
+ {
+ 	SAFE_GETRUSAGE(RUSAGE_SELF, &ru);
+@@ -51,11 +142,7 @@ static void inherit_fork2(void)
+ {
+ 	SAFE_GETRUSAGE(RUSAGE_CHILDREN, &ru);
+ 
+-	if (is_in_delta(ru.ru_maxrss - 102400))
+-		tst_res(TPASS, "initial.children ~= 100MB");
+-	else
+-		tst_res(TFAIL, "initial.children = %li, expected %i",
+-			ru.ru_maxrss, 102400);
++	check_maxrss(ru.ru_maxrss, 102400, "initial.children", "100MB");
+ 
+ 	if (!SAFE_FORK()) {
+ 		SAFE_GETRUSAGE(RUSAGE_CHILDREN, &ru);
+@@ -78,11 +165,7 @@ static void grandchild_maxrss(void)
+ 	tst_reap_children();
+ 	SAFE_GETRUSAGE(RUSAGE_CHILDREN, &ru);
+ 
+-	if (is_in_delta(ru.ru_maxrss - 307200))
+-		tst_res(TPASS, "child.children ~= 300MB");
+-	else
+-		tst_res(TFAIL, "child.children = %li, expected %i",
+-			ru.ru_maxrss, 307200);
++	check_maxrss(ru.ru_maxrss, 307200, "child.children", "300MB");
+ }
+ 
+ static void zombie(void)
+@@ -106,11 +189,7 @@ static void zombie(void)
+ 
+ 	tst_reap_children();
+ 	SAFE_GETRUSAGE(RUSAGE_CHILDREN, &ru);
+-	if (is_in_delta(ru.ru_maxrss - 409600))
+-		tst_res(TPASS, "post_wait.children ~= 400MB");
+-	else
+-		tst_res(TFAIL, "post_wait.children = %li, expected %i",
+-			ru.ru_maxrss, 409600);
++	check_maxrss(ru.ru_maxrss, 409600, "post_wait.children", "400MB");
+ }
+ 
+ static void sig_ign(void)
+@@ -174,6 +253,7 @@ static void run(unsigned int i)
+ static struct tst_test test = {
+ 	.forks_child = 1,
+ 	.child_needs_reinit = 1,
++	.setup = setup,
+ 	.resource_files = resource,
+ 	.min_mem_avail = 512,
+ 	.tags = (const struct tst_tag[]) {
 
----
 base-commit: 12724413534a6d4160ff9694ba6f09daa4ccb6bd
-change-id: 20260820-coredump-22fc731bde08
-
-Best regards,
---  
-Andrea Cervesato <andrea.cervesato@suse.com>
+-- 
+2.43.0
 
 
 -- 
