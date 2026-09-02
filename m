@@ -4,106 +4,115 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3B5A8C624D0
-	for <ltp@archiver.kernel.org>; Wed,  2 Sep 2026 11:11:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1F5A1C61DD6
+	for <ltp@archiver.kernel.org>; Wed,  2 Sep 2026 11:12:10 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A4AB13E93AE
-	for <ltp@archiver.kernel.org>; Wed,  2 Sep 2026 13:11:54 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 7E9F93C245A
+	for <ltp@archiver.kernel.org>; Wed,  2 Sep 2026 13:12:08 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 87CA13E93AC
+ by picard.linux.it (Postfix) with ESMTPS id 947E43E93B4
  for <ltp@lists.linux.it>; Wed,  2 Sep 2026 13:04:50 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id D796F600D47
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id AA7091400E00
  for <ltp@lists.linux.it>; Wed,  2 Sep 2026 13:04:49 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 8F72021E36;
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 113841F834;
  Wed,  2 Sep 2026 11:04:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1788347084; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=5P1PMDkUGcSwrbJFFTWnd0OidQvtzboqJQZyN/DR7i8=;
- b=ABrVBTFfQlPZWX9o+AoICdryr3f3e4RhMtye4ggdTUNZ14wX/+mIUOvkKOvW28OyrIxy4h
- 9J5NkULaXpoE7uT412kJ/jAULYSMMQooCS5oli/lZxahwqX91MflmUxi4whsDOPAao/byC
- Ptj93Xe3UjfaMA+EEllGJU3KkaH48v4=
+ bh=kq1cH9hU3tH5woQUj28pAK0aUoobiZvGQhjbKZMi5Aw=;
+ b=ZEcZfPxVGzHNHGvsvW0wESwA/Gd4geIOQwjkJWI5uEpa0n/372zZYdCZG6wYMczYGZVysO
+ z2gWd1vxe2lL2ywxiw/jLRI0rRLBn+7YvCtJQWoXMeMq4Bkacx8TgQm+RRQa0Ahyxqwc0g
+ jDkUFjO2VUz5ud3ssKLePyRsnzpzanw=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1788347084;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=5P1PMDkUGcSwrbJFFTWnd0OidQvtzboqJQZyN/DR7i8=;
- b=0mqaeOa5JRQBJdSFUZbqXIerJu9Vyl0Eddm1JngLDdz32pZj/XfNbJndqv8ZVOikrzz9kJ
- UViqrJa4vlXybjCg==
-Authentication-Results: smtp-out1.suse.de;
-	none
+ bh=kq1cH9hU3tH5woQUj28pAK0aUoobiZvGQhjbKZMi5Aw=;
+ b=W8fm7++5tMM90B8CCRsZZZa+Cjc3+ikK+hztEoEGJ+kUuL1NSzRQBXiP+bbiMkb9Vu8gMm
+ VrlEFjqetZ7t/uDQ==
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.de header.s=susede2_rsa header.b="a5Nhc8+/";
+ dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=0B1+s4bI
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1788347080; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=5P1PMDkUGcSwrbJFFTWnd0OidQvtzboqJQZyN/DR7i8=;
- b=Dhv3npJuIrnQDjW5+ZRAlqFD332S12bZWr6MlnPc3OJEqZS4Q8HcadzKivNVoXWndI5LAG
- rRCHtjA7b+I+Y18w9UdK1JIpLWMkvfT53pyN3uwRxwCvOii4MlgRH/F9RPYZGIGndej/9C
- HmiNjxmVwZvFNHAgu5cCE03TJjyR+3A=
+ bh=kq1cH9hU3tH5woQUj28pAK0aUoobiZvGQhjbKZMi5Aw=;
+ b=a5Nhc8+/qym/TeXxvaEQHwtc+1sDpXD8oMPBYvWaWuk7vYjU3hTKVQJB6cA/lMuPFa11O0
+ yStvJ+L8npqzzHwmy9uE3EXjYankPyiyqA5P9YcMNplvn4tTByJzVRCNJGgQ0W89vp7BQS
+ 1LxFLSPtla/LURyGOHTbQYdnBpLpNd4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1788347080;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=5P1PMDkUGcSwrbJFFTWnd0OidQvtzboqJQZyN/DR7i8=;
- b=tAwRIWBP+SGBW+iskT/V7kclhRbI/e5AWpAG/IXOutlHpubq8SYUk3LfIW1oNBRolDxVow
- 7kk1qlX3GislNfDQ==
+ bh=kq1cH9hU3tH5woQUj28pAK0aUoobiZvGQhjbKZMi5Aw=;
+ b=0B1+s4bIf1L8Eexm/vDafQO7xkXNcVRTYaKcwGHRNnCGm4eIFtHlI/4lFGczq+PcyIIUWt
+ o4j65QSoLW4RGNAA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 25997139AF;
- Wed,  2 Sep 2026 11:04:27 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3C7DC139A2;
+ Wed,  2 Sep 2026 11:04:26 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id +MN4B7sCmGpzQwAAD6G6ig
- (envelope-from <andrea.cervesato@suse.de>); Wed, 02 Sep 2026 11:04:27 +0000
+ by imap1.dmz-prg2.suse.org with ESMTPSA id cK0WDboCmGpzQwAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>); Wed, 02 Sep 2026 11:04:26 +0000
 From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Wed, 02 Sep 2026 13:04:47 +0200
+Date: Wed, 02 Sep 2026 13:04:41 +0200
 MIME-Version: 1.0
-Message-Id: <20260902-keyctl_coverage-v1-32-d29dfa2ebcef@suse.com>
+Message-Id: <20260902-keyctl_coverage-v1-26-d29dfa2ebcef@suse.com>
 References: <20260902-keyctl_coverage-v1-0-d29dfa2ebcef@suse.com>
 In-Reply-To: <20260902-keyctl_coverage-v1-0-d29dfa2ebcef@suse.com>
 To: Linux Test Project <ltp@lists.linux.it>
 X-Mailer: b4 0.16.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1788347062; l=3944;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1788347062; l=8372;
  i=andrea.cervesato@suse.com; s=20251210; h=from:subject:message-id;
- bh=yKPm6DiRjc+hvXyQA6ki3Ae76DwaiyeZLDzUd052ykA=;
- b=BaFZgFP2/8N4FUJv4QPact4lAZ9Bb0ANaJPILnV8lB7iuKWDbMvRA9Sxxpmjm5p7IXblzJHoM
- d2cs+k+2PirCWXL7FkcoFjTKkSq7EkpVQvHY/twTtfJOJGYCAEgd2xg
+ bh=9HjPgnJPw16rvVOLRJQ7IdJi36jyswidszQSE7PCmX8=;
+ b=vw9qqD5qbF77M7/MTxjx95iDSdbFQGCcBJm7a+SCiIKkgb+h5UjlPKyLa5MAYpQDjvI1lB8IJ
+ xTjRiF9FaWjDq5POeiorCd9QSkF83JORTeDDX04mSn0/kur0JvjDWMj
 X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
  pk=zKY+6GCauOiuHNZ//d8PQ/UL4jFCTKbXrzXAOQSLevI=
-X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+X-Rspamd-Queue-Id: 113841F834
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-0.997]; MIME_GOOD(-0.10)[text/plain];
- RCPT_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
+ R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[]; RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
+ MIME_TRACE(0.00)[0:+]; RCPT_COUNT_TWO(0.00)[2];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ RCVD_TLS_ALL(0.00)[];
  DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- TO_DN_ALL(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- FROM_HAS_DN(0.00)[]; MIME_TRACE(0.00)[0:+];
- FROM_EQ_ENVFROM(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email, suse.com:mid,
- imap1.dmz-prg2.suse.org:helo]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+ URIBL_BLOCKED(0.00)[suse.de:dkim,suse.com:mid,suse.com:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received,2a07:de40:b281:104:10:150:64:97:from];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:mid,suse.com:email];
+ TO_DN_ALL(0.00)[]; DKIM_TRACE(0.00)[suse.de:+]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 32/33] keyctl38: Test KEYCTL_WATCH_KEY add and remove
+Subject: [LTP] [PATCH 26/33] keyctl33: Negative tests for KEYCTL_PKEY_*
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -122,133 +131,289 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-Test KEYCTL_WATCH_KEY by opening a watch queue notification pipe
-and adding then removing watches on both a user key and the
-session keyring.
+Add negative and boundary test cases for KEYCTL_PKEY_* operations
+(QUERY, ENCRYPT, DECRYPT, SIGN, VERIFY), testing invalid key serials,
+unsupported key types, invalid info strings, and buffer size limits.
 
 Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
- runtest/syscalls                            |  1 +
- testcases/kernel/syscalls/keyctl/.gitignore |  1 +
- testcases/kernel/syscalls/keyctl/keyctl38.c | 91 +++++++++++++++++++++++++++++
- 3 files changed, 93 insertions(+)
+ runtest/syscalls                            |   1 +
+ testcases/kernel/syscalls/keyctl/.gitignore |   1 +
+ testcases/kernel/syscalls/keyctl/keyctl33.c | 247 ++++++++++++++++++++++++++++
+ 3 files changed, 249 insertions(+)
 
 diff --git a/runtest/syscalls b/runtest/syscalls
-index 66215afd7..e9d47b5c4 100644
+index d4007f7a6..7658ac859 100644
 --- a/runtest/syscalls
 +++ b/runtest/syscalls
-@@ -755,6 +755,7 @@ keyctl34 keyctl34
- keyctl35 keyctl35
- keyctl36 keyctl36
- keyctl37 keyctl37
-+keyctl38 keyctl38
+@@ -750,6 +750,7 @@ keyctl29 keyctl29
+ keyctl30 keyctl30
+ keyctl31 keyctl31
+ keyctl32 keyctl32
++keyctl33 keyctl33
  
  kcmp01 kcmp01
  kcmp02 kcmp02
 diff --git a/testcases/kernel/syscalls/keyctl/.gitignore b/testcases/kernel/syscalls/keyctl/.gitignore
-index 7ee6b9098..c0a18dd77 100644
+index 8b1627bee..0f209d7e0 100644
 --- a/testcases/kernel/syscalls/keyctl/.gitignore
 +++ b/testcases/kernel/syscalls/keyctl/.gitignore
-@@ -35,3 +35,4 @@
- /keyctl35
- /keyctl36
- /keyctl37
-+/keyctl38
-diff --git a/testcases/kernel/syscalls/keyctl/keyctl38.c b/testcases/kernel/syscalls/keyctl/keyctl38.c
+@@ -30,3 +30,4 @@
+ /keyctl30
+ /keyctl31
+ /keyctl32
++/keyctl33
+diff --git a/testcases/kernel/syscalls/keyctl/keyctl33.c b/testcases/kernel/syscalls/keyctl/keyctl33.c
 new file mode 100644
-index 000000000..26475c7de
+index 000000000..5e9418f50
 --- /dev/null
-+++ b/testcases/kernel/syscalls/keyctl/keyctl38.c
-@@ -0,0 +1,91 @@
++++ b/testcases/kernel/syscalls/keyctl/keyctl33.c
+@@ -0,0 +1,247 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
 + * Copyright (c) 2026 Andrea Cervesato <andrea.cervesato@suse.com>
 + */
 +
 +/*\
-+ * Test ``KEYCTL_WATCH_KEY`` of :manpage:`keyctl(2)`, added in Linux 5.8.
++ * Negative and boundary test cases for ``KEYCTL_PKEY_*`` of :manpage:`keyctl(2)`.
 + *
-+ * ``KEYCTL_WATCH_KEY`` adds or removes a watch on a key or keyring to/from
-+ * a watch queue notification pipe.
++ * Requires root (CAP_SYS_MODULE) to load the ``x509_key_parser`` and
++ * ``pkcs8_key_parser`` modules.
 + *
 + * [Algorithm]
 + *
-+ * - open a notification pipe via :manpage:`pipe2()` with
-+ *   ``O_NOTIFICATION_PIPE``
-+ * - add a watch on a key with ``watch_id = 1`` and verify success
-+ * - remove the watch on the key with ``watch_id = -1`` and verify success
-+ * - add a watch on a keyring with ``watch_id = 2`` and verify success
-+ * - remove the watch on the keyring with ``watch_id = -1`` and verify success
++ * - verify ``KEYCTL_PKEY_QUERY`` with non-zero ``arg3`` fails with ``EINVAL``
++ * - verify ``KEYCTL_PKEY_QUERY`` with bogus key serial fails with ``ENOKEY``
++ * - verify ``KEYCTL_PKEY_QUERY`` with non-asymmetric key fails with ``EOPNOTSUPP``
++ * - verify ``KEYCTL_PKEY_QUERY`` with invalid info string fails with ``EINVAL``
++ * - verify ``KEYCTL_PKEY_ENCRYPT`` with bogus key serial fails with ``ENOKEY``
++ * - verify ``KEYCTL_PKEY_ENCRYPT`` with non-asymmetric key fails with ``EOPNOTSUPP``
++ * - verify ``KEYCTL_PKEY_ENCRYPT`` with invalid info string fails with ``EINVAL``
++ * - verify ``KEYCTL_PKEY_ENCRYPT`` with ``in_len`` exceeding limit fails with ``EINVAL``
++ * - verify ``KEYCTL_PKEY_DECRYPT`` on public key certificate fails with ``EINVAL``
++ * - verify ``KEYCTL_PKEY_DECRYPT`` with ``in_len`` exceeding limit fails with ``EINVAL``
++ * - verify ``KEYCTL_PKEY_SIGN`` on public key certificate fails with ``EINVAL``
++ * - verify ``KEYCTL_PKEY_SIGN`` with ``in_len`` exceeding limit fails with ``EINVAL``
++ * - verify ``KEYCTL_PKEY_VERIFY`` with non-asymmetric key fails with ``EOPNOTSUPP``
++ * - verify ``KEYCTL_PKEY_VERIFY`` with ``in2_len`` exceeding limit fails with ``EINVAL``
 + */
 +
-+#define _GNU_SOURCE
-+
-+#include <sys/resource.h>
-+#include <unistd.h>
 +#include "keyctl_common.h"
-+#include "lapi/watch_queue.h"
++#include "keyctl_pkey_data.h"
++#include "tst_module.h"
 +
-+static key_serial_t key;
++static key_serial_t cert_key, priv_key, user_key;
++static key_serial_t bogus_key = INT32_MAX;
++
++static struct keyctl_pkey_query *query_buf;
++static struct keyctl_pkey_params *params;
++
++static unsigned char in_buf[512];
++static unsigned char out_buf[512];
++
++static struct tcase {
++	int op;
++	key_serial_t *key;
++	unsigned long arg3;
++	const char *info;
++	uint32_t in_len;
++	uint32_t out_in2_len;
++	int exp_errno;
++	const char *desc;
++} tcases[] = {
++	{
++		.op = KEYCTL_PKEY_QUERY,
++		.key = &cert_key,
++		.arg3 = 1,
++		.info = "enc=pkcs1",
++		.exp_errno = EINVAL,
++		.desc = "PKEY_QUERY with non-zero arg3",
++	},
++	{
++		.op = KEYCTL_PKEY_QUERY,
++		.key = &bogus_key,
++		.info = "enc=pkcs1",
++		.exp_errno = ENOKEY,
++		.desc = "PKEY_QUERY with bogus key serial",
++	},
++	{
++		.op = KEYCTL_PKEY_QUERY,
++		.key = &user_key,
++		.info = "enc=pkcs1",
++		.exp_errno = EOPNOTSUPP,
++		.desc = "PKEY_QUERY with non-asymmetric key",
++	},
++	{
++		.op = KEYCTL_PKEY_QUERY,
++		.key = &cert_key,
++		.info = "bogus_opt",
++		.exp_errno = EINVAL,
++		.desc = "PKEY_QUERY with invalid info string",
++	},
++	{
++		.op = KEYCTL_PKEY_ENCRYPT,
++		.key = &bogus_key,
++		.info = "enc=pkcs1",
++		.in_len = 32,
++		.out_in2_len = 256,
++		.exp_errno = ENOKEY,
++		.desc = "PKEY_ENCRYPT with bogus key serial",
++	},
++	{
++		.op = KEYCTL_PKEY_ENCRYPT,
++		.key = &user_key,
++		.info = "enc=pkcs1",
++		.in_len = 32,
++		.out_in2_len = 256,
++		.exp_errno = EOPNOTSUPP,
++		.desc = "PKEY_ENCRYPT with non-asymmetric key",
++	},
++	{
++		.op = KEYCTL_PKEY_ENCRYPT,
++		.key = &cert_key,
++		.info = "invalid_info",
++		.in_len = 32,
++		.out_in2_len = 256,
++		.exp_errno = EINVAL,
++		.desc = "PKEY_ENCRYPT with invalid info string",
++	},
++	{
++		.op = KEYCTL_PKEY_ENCRYPT,
++		.key = &cert_key,
++		.info = "enc=pkcs1",
++		.in_len = 500,
++		.out_in2_len = 256,
++		.exp_errno = EINVAL,
++		.desc = "PKEY_ENCRYPT with in_len exceeding limit",
++	},
++	{
++		.op = KEYCTL_PKEY_DECRYPT,
++		.key = &cert_key,
++		.info = "enc=pkcs1",
++		.in_len = 256,
++		.out_in2_len = 256,
++		.exp_errno = EINVAL,
++		.desc = "PKEY_DECRYPT on public key certificate",
++	},
++	{
++		.op = KEYCTL_PKEY_DECRYPT,
++		.key = &priv_key,
++		.info = "enc=pkcs1",
++		.in_len = 500,
++		.out_in2_len = 256,
++		.exp_errno = EINVAL,
++		.desc = "PKEY_DECRYPT with in_len exceeding limit",
++	},
++	{
++		.op = KEYCTL_PKEY_SIGN,
++		.key = &cert_key,
++		.info = "enc=pkcs1 hash=sha256",
++		.in_len = 32,
++		.out_in2_len = 256,
++		.exp_errno = EINVAL,
++		.desc = "PKEY_SIGN on public key certificate",
++	},
++	{
++		.op = KEYCTL_PKEY_SIGN,
++		.key = &priv_key,
++		.info = "enc=pkcs1 hash=sha256",
++		.in_len = 500,
++		.out_in2_len = 256,
++		.exp_errno = EINVAL,
++		.desc = "PKEY_SIGN with in_len exceeding limit",
++	},
++	{
++		.op = KEYCTL_PKEY_VERIFY,
++		.key = &user_key,
++		.info = "enc=pkcs1 hash=sha256",
++		.in_len = 32,
++		.out_in2_len = 256,
++		.exp_errno = EOPNOTSUPP,
++		.desc = "PKEY_VERIFY with non-asymmetric key",
++	},
++	{
++		.op = KEYCTL_PKEY_VERIFY,
++		.key = &cert_key,
++		.info = "enc=pkcs1 hash=sha256",
++		.in_len = 32,
++		.out_in2_len = 500,
++		.exp_errno = EINVAL,
++		.desc = "PKEY_VERIFY with in2_len exceeding limit",
++	},
++};
 +
 +static void setup(void)
 +{
 +	SAFE_KEYCTL(KEYCTL_JOIN_SESSION_KEYRING, 0, 0, 0, 0);
 +
-+	key = new_user_key("ltpkeyctl38", "payload", 7,
-+			   KEY_SPEC_PROCESS_KEYRING);
++	tst_modprobe("x509_key_parser", NULL);
++	tst_modprobe("pkcs8_key_parser", NULL);
++
++	user_key = new_user_key("ltp_user", "data", 4,
++				KEY_SPEC_PROCESS_KEYRING);
++
++	cert_key = add_asymmetric_key_or_tconf("cert", rsa2048_cert,
++					       sizeof(rsa2048_cert),
++					       "CONFIG_X509_CERTIFICATE_PARSER");
++	priv_key = add_asymmetric_key_or_tconf("priv", rsa2048_pkcs8,
++					       sizeof(rsa2048_pkcs8),
++					       "CONFIG_PKCS8_PRIVATE_KEY_PARSER");
 +}
 +
-+static void run(void)
++static void run(unsigned int n)
 +{
-+	int pipefd[2];
++	struct tcase *tc = &tcases[n];
 +
-+	TEST(pipe2(pipefd, O_NOTIFICATION_PIPE));
-+	if (TST_RET < 0) {
-+		if (TST_ERR == ENOPKG)
-+			tst_brk(TCONF | TTERRNO, "CONFIG_WATCH_QUEUE is not set");
-+		if (TST_ERR == EINVAL)
-+			tst_brk(TCONF | TTERRNO, "O_NOTIFICATION_PIPE is not supported");
-+		tst_brk(TBROK | TTERRNO, "pipe2(O_NOTIFICATION_PIPE) failed");
++	if (tc->op == KEYCTL_PKEY_QUERY) {
++		TST_EXP_FAIL(keyctl(KEYCTL_PKEY_QUERY, (unsigned long)*tc->key,
++				    tc->arg3, (unsigned long)tc->info,
++				    (unsigned long)query_buf),
++			     tc->exp_errno,
++			     "%s", tc->desc);
++		return;
 +	}
 +
-+	SAFE_IOCTL(pipefd[0], IOC_WATCH_QUEUE_SET_SIZE, 256);
++	memset(params, 0, sizeof(*params));
++	params->key_id = *tc->key;
++	params->in_len = tc->in_len;
++	params->out_len = tc->out_in2_len;
 +
-+	TST_EXP_PASS(keyctl(KEYCTL_WATCH_KEY, key, pipefd[0], 1),
-+		     "KEYCTL_WATCH_KEY add watch on key");
-+
-+	TST_EXP_PASS(keyctl(KEYCTL_WATCH_KEY, key, pipefd[0], -1),
-+		     "KEYCTL_WATCH_KEY remove watch on key");
-+
-+	TST_EXP_PASS(keyctl(KEYCTL_WATCH_KEY, KEY_SPEC_SESSION_KEYRING,
-+			    pipefd[0], 2),
-+		     "KEYCTL_WATCH_KEY add watch on session keyring");
-+
-+	TST_EXP_PASS(keyctl(KEYCTL_WATCH_KEY, KEY_SPEC_SESSION_KEYRING,
-+			    pipefd[0], -1),
-+		     "KEYCTL_WATCH_KEY remove watch on session keyring");
-+
-+	SAFE_CLOSE(pipefd[0]);
-+	SAFE_CLOSE(pipefd[1]);
++	if (tc->op == KEYCTL_PKEY_VERIFY) {
++		TST_EXP_FAIL(keyctl(tc->op, (unsigned long)params,
++				    (unsigned long)tc->info,
++				    (unsigned long)in_buf,
++				    (unsigned long)out_buf),
++			     tc->exp_errno,
++			     "%s", tc->desc);
++	} else {
++		TST_EXP_FAIL2(keyctl(tc->op, (unsigned long)params,
++				     (unsigned long)tc->info,
++				     (unsigned long)in_buf,
++				     (unsigned long)out_buf),
++			      tc->exp_errno,
++			      "%s", tc->desc);
++	}
 +}
 +
 +static struct tst_test test = {
 +	.setup = setup,
-+	.test_all = run,
-+	.min_kver = "5.8",
-+	/*
-+	 * add_one_watch() charges per-user watches against RLIMIT_NOFILE,
-+	 * so raise the limit high enough to accommodate pre-existing
-+	 * watches on the calling user.
-+	 */
-+	.ulimit = (const struct tst_ulimit_val []) {
-+		{RLIMIT_NOFILE, 524288},
-+		{}
-+	},
++	.test = run,
++	.tcnt = ARRAY_SIZE(tcases),
++	.min_kver = "4.20",
++	.needs_root = 1,
 +	.needs_kconfigs = (const char *[]) {
 +		"CONFIG_KEYS=y",
-+		"CONFIG_KEY_NOTIFICATIONS=y",
-+		"CONFIG_WATCH_QUEUE=y",
++		"CONFIG_ASYMMETRIC_KEY_TYPE=y",
++		"CONFIG_X509_CERTIFICATE_PARSER",
++		"CONFIG_PKCS8_PRIVATE_KEY_PARSER",
++		"CONFIG_CRYPTO_RSA",
++		"CONFIG_CRYPTO_SHA256",
 +		NULL
++	},
++	.bufs = (struct tst_buffers []) {
++		{&query_buf, .size = sizeof(*query_buf)},
++		{&params, .size = sizeof(*params)},
++		{},
 +	},
 +};
 
