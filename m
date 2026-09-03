@@ -4,84 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3FB5DC624A4
-	for <ltp@archiver.kernel.org>; Thu,  3 Sep 2026 17:12:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 33A53C61DD3
+	for <ltp@archiver.kernel.org>; Thu,  3 Sep 2026 17:22:16 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9B2C43EB0AC
-	for <ltp@archiver.kernel.org>; Thu,  3 Sep 2026 19:12:16 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 86BF93EB0A5
+	for <ltp@archiver.kernel.org>; Thu,  3 Sep 2026 19:22:14 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B67EF3EB095
- for <ltp@lists.linux.it>; Thu,  3 Sep 2026 19:11:58 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ by picard.linux.it (Postfix) with ESMTPS id BC2393EB095
+ for <ltp@lists.linux.it>; Thu,  3 Sep 2026 19:21:58 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 398C014001E3
- for <ltp@lists.linux.it>; Thu,  3 Sep 2026 19:11:57 +0200 (CEST)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 0D39660043A
+ for <ltp@lists.linux.it>; Thu,  3 Sep 2026 19:21:57 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id AA1E01FB2F;
- Thu,  3 Sep 2026 17:11:48 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 438E91FEF2;
+ Thu,  3 Sep 2026 17:21:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1788455512;
+ t=1788456112;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=egaHuq2YFML3YfZQF/i+QmK/waqXrhzuFycOVysqjFE=;
- b=q11Izc68N6rwG8mYlCXwpjl4qH+MxLZXEc6EvK+tDouBwbbt6rHqEvlgj3MPLSwmPAo9lp
- GncUOcDVP4/qL3vY5ASWXr2luTpZQOVDpoQZ0/qDEbzb2cwbQFPa//G44On/BgQCyqT9oV
- ug96EgeMJVVDPYsgu5tKXya8k0BG3Wc=
+ bh=RMd8IdGCwnq+gy4zBfMEIZRqLQzwpWzexL3DOc2IjU4=;
+ b=l8DM6OMc4gZ2CRz8oRhXz2D8ZMedE+D4U7pNvCQd+X9aTyaL1htQnsjFU+HNqgvdvXde99
+ yZhVLkqY3ZZJdwDa4Mw9neXTa+54AG9mcaK2uf8q2mB/7JWecKUjyXVvSTY7iX3cIV4YE/
+ WCQo1LHuOTpIKDWkDQA9sEl7jEeUHgg=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1788455512;
+ s=susede2_ed25519; t=1788456112;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=egaHuq2YFML3YfZQF/i+QmK/waqXrhzuFycOVysqjFE=;
- b=z+N5Bx/I1efHr2zJPhDjbD8RtZxdJREHxUFOZl7+pzZY7xfKcT+28aoq83B8w8HEXw5DD7
- LzssWmwnCsSFsIAA==
+ bh=RMd8IdGCwnq+gy4zBfMEIZRqLQzwpWzexL3DOc2IjU4=;
+ b=hMmksEGWSUZpBKqcOjFyFH92UWrCGiva0c0xndE8A83SU3M71lvz8XkvA/YCRVI6iZOU04
+ sbS43SIX+lOjnvCg==
 Authentication-Results: smtp-out2.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1788455508;
+ t=1788456108;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=egaHuq2YFML3YfZQF/i+QmK/waqXrhzuFycOVysqjFE=;
- b=HRL6CRM24AgTeiRooBH19yS2LVaC995yDYrghFAczZYZLqTBGnWHV/XLz55g7hILR+W33d
- kIGXmigtGlg5qhy0e110WCuiXhagOffYlVnBeDBmJFfiFdOkzwt59NLhWS3gvWdQX9u8Dc
- MK/a0AiNoMWeMNI3p6lwuIqxAed6tLk=
+ bh=RMd8IdGCwnq+gy4zBfMEIZRqLQzwpWzexL3DOc2IjU4=;
+ b=nwelPjMiFEQQvtmf1db1kQkYI6z6oe97K3EytU2OjFGjK6NDbjvjUVjJKhnO6iiN1WZiCw
+ uOH75A8c83+Jwv4kpEZK8v5A0P5au5UzvmDSHXtSJ1C0jtTzIK9EHvPgB5xdk6Cjj+jJNz
+ yiQP/5T89HP6SgXKk+rDffaDKUxe6cA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1788455508;
+ s=susede2_ed25519; t=1788456108;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=egaHuq2YFML3YfZQF/i+QmK/waqXrhzuFycOVysqjFE=;
- b=vHFIqe96IvPvpcEsceuZVnd42P42kFkxuT7g3wpFMgayy9sbjiT5tZgIrk8BMwiNu/P+sD
- 8VniWXNmyiIstnCw==
+ bh=RMd8IdGCwnq+gy4zBfMEIZRqLQzwpWzexL3DOc2IjU4=;
+ b=7MR28+hV38np0hdIFQoZ2dP6G3l1PW+quxmDtYCo8BlVW/KiLOtZUVL9u46N7cvjxBhYV8
+ 08OsjbY/ksvG9/Dw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id F393F136E6;
- Thu,  3 Sep 2026 17:11:47 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id CD164136E6;
+ Thu,  3 Sep 2026 17:21:47 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id sK9qN1OqmWpZNwAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Thu, 03 Sep 2026 17:11:47 +0000
-Date: Thu, 3 Sep 2026 19:11:42 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id UbyiMKusmWpmQQAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Thu, 03 Sep 2026 17:21:47 +0000
+Date: Thu, 3 Sep 2026 19:21:42 +0200
 From: Petr Vorel <pvorel@suse.cz>
 To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20260903171142.GJ1107507@pevik>
+Message-ID: <20260903172142.GK1107507@pevik>
 References: <20260827112157.1748734-1-chrubis@suse.cz>
- <20260827112157.1748734-25-chrubis@suse.cz>
+ <20260827112157.1748734-29-chrubis@suse.cz>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20260827112157.1748734-25-chrubis@suse.cz>
+In-Reply-To: <20260827112157.1748734-29-chrubis@suse.cz>
 X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
  HAS_REPLYTO(0.30)[pvorel@suse.cz];
@@ -93,11 +93,11 @@ X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
  RCPT_COUNT_TWO(0.00)[2]; RCVD_COUNT_TWO(0.00)[2];
  TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,imap1.dmz-prg2.suse.org:helo]; 
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:replyto]; 
  REPLYTO_EQ_FROM(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v4 24/31] testcases: sysfs: Add sys_block_loop01
+Subject: Re: [LTP] [PATCH v4 28/31] testcases: sysfs: Add sys_hugepages02
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -119,56 +119,46 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 Hi Cyril,
 
 ...
-> +	if (tst_attach_device(dev_path, BACKING_FILE)) {
-> +		tst_res(TFAIL, "Failed to attach %s to %s for autoclear check",
-> +			BACKING_FILE, dev_path);
+> +static void do_test(void)
+> +{
+> +	long hugepagesize;
+> +
+> +	if (FILE_LINES_SCANF("/proc/meminfo", MEMINFO_HPAGE_SIZE " %ld",
+> +			     &hugepagesize)) {
+> +		tst_res(TCONF, "No Hugepagesize in /proc/meminfo");
 > +		return;
 > +	}
-> +	attached = 1;
 > +
-> +	fd = SAFE_OPEN(dev_path, O_RDWR);
-> +	info.lo_flags = LO_FLAGS_AUTOCLEAR;
-> +	SAFE_IOCTL(fd, LOOP_SET_STATUS64, &info);
-> +	SAFE_CLOSE(fd);
-> +
-> +	/* autoclear runs asynchronously off a kernel workqueue, poll for it */
-> +	size = TST_RETRY_FN_EXP_BACKOFF(read_loop_size(), TST_RETVAL_EQ0, 5);
-> +
-> +	if (size == 0) {
-> +		tst_res(TPASS, "Device auto-detached");
-> +		attached = 0;
-> +	} else {
-> +		tst_res(TFAIL, "Device did not auto-detach in time");
-> +		tst_detach_device(dev_path);
-> +		attached = 0;
+> +	if (!tst_sysfs_exists(PATH_MM_HUGEPAGES "/hugepages-%ldkB", hugepagesize)) {
+> +		tst_res(TCONF,
+> +			"Default hugepage pool hugepages-%ldkB not found in sysfs",
+> +			hugepagesize);
+> +		return;
 > +	}
-nit: attached = 0 can be only once here below if/else.
-Also, I'm not sure why it's set to 0 because tst_detach_device() was not called,
-but obviously I just miss something obvious.
+nit: We usually put this into setup() ...
 
+> +
+> +	tst_res(TPASS,
+> +		"/proc/meminfo Hugepagesize (%ld kB) has a matching sysfs pool",
+> +		hugepagesize);
+> +
+> +	compare("HugePages_Total", MEMINFO_HPAGE_TOTAL " %ld",
+> +		"nr_hugepages", hugepagesize);
+> +	compare("HugePages_Free", MEMINFO_HPAGE_FREE " %ld",
+> +		"free_hugepages", hugepagesize);
+> +	compare("HugePages_Rsvd", MEMINFO_HPAGE_RSVD " %ld",
+> +		"resv_hugepages", hugepagesize);
+> +	compare("HugePages_Surp", MEMINFO_HPAGE_SURP " %ld",
+> +		"surplus_hugepages", hugepagesize);
 > +}
-> +
-> +static void run(void)
-> +{
-> +	if (tst_attach_device(dev_path, BACKING_FILE))
-> +		tst_brk(TBROK, "Failed to attach %s to %s", BACKING_FILE,
-> +			dev_path);
-> +	attached = 1;
-> +
-> +	check_attached();
-> +	check_reconfigured();
-> +
-> +	if (tst_detach_device(dev_path))
-IMHO it'd be safer to guard this with check attached in case of later code changes:
 
-	if (attached && tst_detach_device(dev_path))
-		tst_brk(TBROK, "Failed to detach %s", dev_path);
+... and have this struct for test parameters. But previous TPASS would have to
+be removed or handled differently => ignore.
+
+Nice test coverage, thanks!
 
 Kind regards,
 Petr
-
-> +		tst_brk(TBROK, "Failed to detach %s", dev_path);
-> +	attached = 0;
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
