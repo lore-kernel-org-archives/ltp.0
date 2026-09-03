@@ -4,88 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BCADCC624A4
-	for <ltp@archiver.kernel.org>; Thu,  3 Sep 2026 13:19:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 38090C61DD3
+	for <ltp@archiver.kernel.org>; Thu,  3 Sep 2026 13:26:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1788441567; h=message-id :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1788441961; h=message-id :
  to : in-reply-to : date : subject : list-id : list-unsubscribe :
  list-archive : list-post : list-help : list-subscribe : from :
  reply-to : cc : mime-version : content-type :
  content-transfer-encoding : sender : from;
- bh=34fdjgQNrJAJRUGIWtXYUqE5GgrCLEsJhJtSlI/xQdY=;
- b=pxO+cLgxT+pju84uB8/qmHZwxUJcqYcWvW5NqgMguznlKFqeC0W2BIrt+EI9L085ZJ7vZ
- NGlYWWZ/OEYzq0I4yi7NQISnRMV5dE4hrIPnQIVYpLVpEAreAQNlomsu+KGXl6/Dokl884F
- GVvmm5TXSnEd3b/DRTq//FTFnwX+la0=
+ bh=t+tPDrkda4uUQlbqtfFN0F8xSI5bPkZcInK1UohHcIQ=;
+ b=p/9vO7b4E8giXORHUDFR0Ad8ON8cMXHG7KWCb7R7pHqZA8ojB6ZdGOJ+3HEMv3I2B03xE
+ 8RnjfVAEGAa/EmtHY4bg6HA6fgbpJDsl5P9ADK+x4uYAJOJg9ta2svQNRmFug2DcffQRqo/
+ XEdtQdq4CM1/rA0TkXxas8/0Ct8CL84=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 5BCD93EB09F
-	for <ltp@archiver.kernel.org>; Thu,  3 Sep 2026 15:19:27 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 47FA43E71B6
+	for <ltp@archiver.kernel.org>; Thu,  3 Sep 2026 15:26:01 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id CDE843E2253
- for <ltp@lists.linux.it>; Thu,  3 Sep 2026 15:19:07 +0200 (CEST)
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com
- [IPv6:2a00:1450:4864:20::32e])
+ by picard.linux.it (Postfix) with ESMTPS id 7678A3C064D
+ for <ltp@lists.linux.it>; Thu,  3 Sep 2026 15:25:41 +0200 (CEST)
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com
+ [IPv6:2a00:1450:4864:20::32a])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 569361400DB7
- for <ltp@lists.linux.it>; Thu,  3 Sep 2026 15:19:07 +0200 (CEST)
-Received: by mail-wm1-x32e.google.com with SMTP id
- 5b1f17b1804b1-495590dde14so26735195e9.0
- for <ltp@lists.linux.it>; Thu, 03 Sep 2026 06:19:07 -0700 (PDT)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id F0CAD200B00
+ for <ltp@lists.linux.it>; Thu,  3 Sep 2026 15:25:40 +0200 (CEST)
+Received: by mail-wm1-x32a.google.com with SMTP id
+ 5b1f17b1804b1-4998b5a63e2so24070655e9.1
+ for <ltp@lists.linux.it>; Thu, 03 Sep 2026 06:25:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1788441547; x=1789046347; darn=lists.linux.it;
+ d=suse.com; s=google; t=1788441940; x=1789046740; darn=lists.linux.it;
  h=date:content-transfer-encoding:content-type:subject:in-reply-to:cc
  :to:from:message-id:from:to:cc:subject:date:message-id:reply-to
- :content-type; bh=kuPSF5DA5kUKtzsujCUy981zMHn6OKsgw6LQ7prm57Q=;
- b=LYECEh0dVviw5+mJwF0QicMSSCJXcmmzAfiSOVcGCsgJvEFVvqKK+n6SstjeWgEbXE
- DGqlHX+SJSZe1ImkP8ghnB5xFwajOMHdmUi0eKsIHRKUISsYn7r3Tt4JwQv0X+vS61dG
- ZXU96CmdiHCYXXOMIdHAgw76YuOIs/Utg7t3oNzxYKnlHdZRkb0kpOsEPZ0QFD1tBWg8
- wUUuJwfEaH5x9xXO3vOmiT44B92k/vlxMXAovIRHYp2bVmQ6wqyxwUrqwxvhv6yF8CTb
- ZH4ZsMgcZ6x/t51S7UTUBGK5y363j9cS5q6GQu+06wzSSna2DgdcT1NQB7LSFQGlf+np
- zmiQ==
+ :content-type; bh=jGXancutBpAh0TGpHnpaxnKSsY5Z6csMSIKid1U+mDo=;
+ b=G51wvgHTY2VPlELVE8JCv6mglBfE9AaXguEqPYC7JFvkvJ33B4qJnam6GQ4PeUZ/HB
+ VGouiOY3NwpsQaYSFG3pLo52gJrZO6i90RQw8wUfsffGnS8dQCCCGnZ3dBnc+EkuOwTY
+ EVK+ju5Z3N0gVPvG0ASx9Oh9ouyrZ7IcULcaXH0deOQ6xaVWmwXTGhow2bqVdYSfOmum
+ NRlR9Si3X9NaimawRJCelaKb7eBWkDojoWSzWO81mpGn10jX+Xzus7N0xt0NHep8rVj0
+ hx8656r9DeMQgmcjER1JIKgWCrduhUHatqEzieN9aCVMjIar3WES5rzd5Y+JwgXAXC2Z
+ bjLQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1788441547; x=1789046347;
+ d=1e100.net; s=20251104; t=1788441940; x=1789046740;
  h=date:content-transfer-encoding:content-type:subject:in-reply-to:cc
  :to:from:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject
  :date:message-id:reply-to:content-type;
- bh=kuPSF5DA5kUKtzsujCUy981zMHn6OKsgw6LQ7prm57Q=;
- b=BDyUDIxMbHwQH4kaRGXsfECOOUTzylqqOvXmEGd31FWrVcUtXaCeEUDLmk1viUJ76r
- d779/uNapp0ZeCdU5oBPeNYU5yLaOCeWT5W2Ak0FF+lC/9EAiWPU7HQhsRjipUTY3M76
- L/wmZe5TuXgNusYVbEKpoCOmc51S0p3xoSkThUFW7DdWmhmnr1tPUPTPIPqRWT6EVSRQ
- bfckd43ADqFaDPit93dPrrVfzBYHz3nSvlcT1lyswFsuXf1Npr4ckoqu2kDEZJ6WCL/C
- eUQnldzDAFtgDzrRQAOta6IWy5pH208mG8rVLSPRDV1G94b7hMeWVAsEwsW6kksZQnrg
- 4vAg==
-X-Gm-Message-State: AFuF++klscHPXxbOG8xg+LGZaBoWSPr8v6MZI1+lrDFTNwb7dn6BXWcl
- CDXvUo0O4itz3N9Jwia+C0nRuEfcStyDHYbyyEalowPEcV1WKTP2prZqbfVvE/GxtCu/Jh63b2L
- O/3K5YbCGaw==
-X-Gm-Gg: AYBFou3Vp3ELnubTPqE0+jV134uBpxeEIFEhcSJM2Ivp+LS0zHh0YC0lkZX22qlbMkS
- Ztn4uIHVKEe7Z+c+2GB+cJMc50Mk3ki/3N4iUTsUQGcksqjk1EysoE8TfS8fKahLigJzwFuKgqd
- FnnWs5D3rISOS35CH5lYY7mX7+K+fS+rc0pr6T4CMHUTs4gPLd060nV11Xo3M++r0DlhJmIYir6
- cjv/7HGkn1iVGhRavJ6abGtAA968+XisMLj7hoj4P1Vor9fDGT0io7Qo1Mp4AXBXTSvXDVQWpoK
- 1rmJqUuO0BnHgjdKJPVS0T7ASi2B1XJM2wutZVNolTNlGyOVmh7YwPmYqgsv3PJQLQK9qbPw2CU
- yfjviD498poQ+/iZMIwFEEvZ0hSWr/wwDqj+qotFASrl8yhMzOEbYyj/X+FN3CXt/cfnN4Yx46t
- Z0K4pz9XtfcSYlj2zWRFFEZX32VwI9E9Z66utAgEI5jnSHjCi/azq8USXqIOk4fxcEVT7jgsFVE
- xZqtkfY9QsF0FoOrfYlnVQ=
-X-Received: by 2002:a05:600c:4f54:b0:49c:cee0:e7c0 with SMTP id
- 5b1f17b1804b1-49ce584ca20mr196659695e9.16.1788441546544; 
- Thu, 03 Sep 2026 06:19:06 -0700 (PDT)
+ bh=jGXancutBpAh0TGpHnpaxnKSsY5Z6csMSIKid1U+mDo=;
+ b=BGcbDyz8pPiQ777fr5OW7jnv3ilR+s5Uxj6lX/L6sk8AQZoFM00yeE0FnL+nRrKghM
+ 1wxMH8+2vF8qhZ+l8Vb10mYSiRbwRC4mcLZVgjHYjgbyP+VqPPjgtBeifvlLSIKjTGED
+ buD0nUEWX3hVRS2ehBINbFDOMFf5qmO5jSW1IkQjsVyDh3nk2gZkYv+pNS+OCniaAsdt
+ M+StMBZCOK/8RAK8Th/scCrJ1XJmOifGXKYlWIn4NjAFLTlRqu1ZYhgsNpqeYZcULJHd
+ 794ubBhYz7KEeEsUcIdfAzSxc3P8BxmDXyYis3XQapgaLLxTVcj/BKJlJAi0YKUVl9m3
+ ET6g==
+X-Gm-Message-State: AFuF++m0cv+Z9JMGAoJ/VcRLY+B+C6SF3i77X23UM69LvnrXF1hESXrC
+ VfNtNYrKseg/aCUwsJiCfEd94BRxRKg/3PSo64arZxFXEdBU7d6CYnrYEbCl3EZWIp4uL49sH+g
+ TgffjEUD35A==
+X-Gm-Gg: AYBFou3bRgn9MbN/Tg0a+6yo5fiiZrRZk8MNUOCsIhzpkIOUp72iE80ZzE2kSk5mt/v
+ R1H8Kxf0uvC0RsrLVLVynapjSOXyTPRJpcuFJrlE6cRn2SfVvX0aXXrCyk9JGdZ0BMVeTqYMOH9
+ COYyHVxq7sG5ZHtaFZIth9Ah4niqDEbGY7weYiKOATu3Zbah9xg+kS3DdteMjocILZBpQNmec5K
+ fTAGskQ5MQLZPVWdajwGZI5EqaN1CHCFCvB2urH4Py1WuQbN/zJGvyqcC7AusYB2BndsLQQ+uZ/
+ mGvRuipqmJ4giBhEYznmZm7C2uN7Su/aK2PJoANIUGNQOQsquDhhQMEfywGJNFn3sE3dww61tZB
+ HOct5Ff9/1HwLFZJ68FnX/tmRzrWfwnNgPqJOxzA+mVZ1qtd40/OVicnRxRvd1REaE1994weJ8M
+ UkFSngBQi8DElWzoN320W/gd21cdXD/WQDdJfBEXrM6QN1uW1nXhNWp0IjuSretix/rPvPb/0U/
+ 9v/cWpc+u7C
+X-Received: by 2002:a05:600c:1f88:b0:49c:ee01:8c53 with SMTP id
+ 5b1f17b1804b1-49cee018c5dmr47368955e9.2.1788441940277; 
+ Thu, 03 Sep 2026 06:25:40 -0700 (PDT)
 Received: from localhost.localdomain
  ([2a02:a31b:84a1:b780:6f4e:21d6:82d2:5333])
  by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-49cee6024a8sm70397925e9.6.2026.09.03.06.19.05
+ 5b1f17b1804b1-49cee5f912esm72031915e9.4.2026.09.03.06.25.39
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 03 Sep 2026 06:19:06 -0700 (PDT)
-Message-ID: <6a9973ca.1fb8f4c1.54226.f016@mx.google.com>
+ Thu, 03 Sep 2026 06:25:39 -0700 (PDT)
+Message-ID: <6a997553.f3563870.1e679.79e2@mx.google.com>
 To: "Avinesh Kumar" <avinesh.kumar@suse.com>
-In-Reply-To: <20260831163310.137399-1-avinesh.kumar@suse.com>
-Date: Thu, 03 Sep 2026 13:19:05 +0000
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+In-Reply-To: <20260828152631.254653-1-avinesh.kumar@suse.com>
+Date: Thu, 03 Sep 2026 13:25:39 +0000
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3] openposix: timer_*/speculative: Don't pass a
- stack pointer as timerid
+Subject: Re: [LTP] [PATCH v2] uevent02: Make wait_for_uevents()
+ order-independent
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -106,7 +107,7 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Merged, Thanks!
+Acked-by: Andrea Cervesato <andrea.cervesato@suse.com>
 
 --
 Andrea Cervesato
