@@ -4,105 +4,96 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E69DEC624D6
-	for <ltp@archiver.kernel.org>; Thu,  3 Sep 2026 15:03:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D133AC624D6
+	for <ltp@archiver.kernel.org>; Thu,  3 Sep 2026 15:08:58 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 5024F3EB0B9
-	for <ltp@archiver.kernel.org>; Thu,  3 Sep 2026 17:03:50 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 17B203EB092
+	for <ltp@archiver.kernel.org>; Thu,  3 Sep 2026 17:08:57 +0200 (CEST)
 Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C341E3E276C
- for <ltp@lists.linux.it>; Thu,  3 Sep 2026 17:03:34 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 26EA73E939B
+ for <ltp@lists.linux.it>; Thu,  3 Sep 2026 17:08:41 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de
  [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 24C451400E42
- for <ltp@lists.linux.it>; Thu,  3 Sep 2026 17:03:28 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id A07111400070
+ for <ltp@lists.linux.it>; Thu,  3 Sep 2026 17:08:40 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 9AD7A21F13;
- Thu,  3 Sep 2026 15:03:19 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 15B0221F44;
+ Thu,  3 Sep 2026 15:08:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1788447803;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ t=1788448115; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=qJr7LaLb9IIMWJkrx4xmqdBqZUF9Vk1pm16Xyyrs8LY=;
- b=FKM3TV3c8JcP3G+hptHVSr5hJhbJSS+cg9crVb5KTvjmkOBry3gdzTM71h2HFfuOteMPS2
- NDJ18wPcIE21Vj5tWF6gIZAibNVfnUUjgU4ngGsHH6eN21+9NMLPPYCtp2GlZsAHz5MtfZ
- d+Y6t7O7MrUMVmZSQK/klwgxuK4hHLQ=
+ bh=qTrJOx98tSNXSlOJiCA2QQDFyrZnb9CYZdGX6iId+1o=;
+ b=BkZ4v2JXp9NtYqMNv2osKG1kS8RPppTkntCS+X1IYjqfhhb93ZnTNlSSHMHjQ7sd7SK1NV
+ 8PUpvlafEujXZb4ehg1j/gcVzAMg9X/746cHgrZBEx2hcrI0VUyUIWQgxkjOSW2WZCtPM+
+ vlij9y2sz5T+bgWZqSpWgoSyYpT6ypk=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1788447803;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ s=susede2_ed25519; t=1788448115;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=qJr7LaLb9IIMWJkrx4xmqdBqZUF9Vk1pm16Xyyrs8LY=;
- b=DbyvkeRUARFd9dXn03IpHpOHS/XiZ3//wzOoxycsHv5pqvxoPd4Y8xykiz9PATXzVfTKUA
- LyrNF/MONxuisCBg==
+ bh=qTrJOx98tSNXSlOJiCA2QQDFyrZnb9CYZdGX6iId+1o=;
+ b=bb9FsDrA4D3cnjFSw46PNNG4BhgSYK3ILDhsGh0atxYFZf24xnw0c9M5vYNRdqsdZvXgB2
+ asz8Z8XaC9oeKBAg==
 Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=piMzn3Fq;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="8e1omx/R"
+	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1788447799;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ t=1788448111; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=qJr7LaLb9IIMWJkrx4xmqdBqZUF9Vk1pm16Xyyrs8LY=;
- b=piMzn3FqLG03jNj5/raJN5NNPm1kmefldA18UnGIV46N5KvST47+43D0xb8RX2vWLWWFnR
- 8SRX/qxyycxhGwbf0oEXRu7cWYDqE9tKqijBP6g69i21CMtQ+MjCxWErVhAzV2wG/LpnCY
- mbcnLSk3dLOW1Lh19pbAokcVgIiSglY=
+ bh=qTrJOx98tSNXSlOJiCA2QQDFyrZnb9CYZdGX6iId+1o=;
+ b=uesVn5S8H5LEulgdu9VLtjHww1u5ohlo8zzArxZajpNDQAK5AcLT4uxGX3pqj6DeCScVKH
+ 4gm/ZqM4AIQuKtJFzwWuRtB7M8rdBjQlyPpdV2mmYRn1lMekfNMqnnKg0Wt2fUNS7MnFAj
+ TTutJ3gp+aCyCWmx+mnBIiNw4pEluPg=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1788447799;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ s=susede2_ed25519; t=1788448111;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=qJr7LaLb9IIMWJkrx4xmqdBqZUF9Vk1pm16Xyyrs8LY=;
- b=8e1omx/RB+YzydOGDLIde7lsD4w+bFOtdi6TClwceV/VU6gvfmIbABsC8u9XrCZ4tKQbbb
- J61l75Kp531mIHDA==
+ bh=qTrJOx98tSNXSlOJiCA2QQDFyrZnb9CYZdGX6iId+1o=;
+ b=u8yWZatN7f6ly/W28Cwf8Xp2mTK0GE/tYG+k3Fqr6CmqVDvT1sHfk1U/oyt2ArV8dfdl3/
+ timQzNjrxwNt8bCw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 68C09136E6;
- Thu,  3 Sep 2026 15:03:19 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id DB7FC136E6;
+ Thu,  3 Sep 2026 15:08:30 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id K02SGDeMmWpVNwAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Thu, 03 Sep 2026 15:03:19 +0000
-Date: Thu, 3 Sep 2026 17:03:13 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20260903150313.GC1107507@pevik>
+ by imap1.dmz-prg2.suse.org with ESMTPSA id h2yRNW6NmWqHPAAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Thu, 03 Sep 2026 15:08:30 +0000
+Date: Thu, 3 Sep 2026 17:08:34 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Petr Vorel <pvorel@suse.cz>
+Message-ID: <apmNciM1Wnfdj5OF@yuki.lan>
 References: <20260827112157.1748734-1-chrubis@suse.cz>
  <20260827112157.1748734-2-chrubis@suse.cz>
+ <20260903145740.GB1107507@pevik>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20260827112157.1748734-2-chrubis@suse.cz>
-X-Rspamd-Queue-Id: 9AD7A21F13
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[99.99%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; MISSING_XM_UA(0.00)[];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- ARC_NA(0.00)[]; TO_DN_SOME(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- MIME_TRACE(0.00)[0:+]; REPLYTO_EQ_FROM(0.00)[];
- RCPT_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+In-Reply-To: <20260903145740.GB1107507@pevik>
+X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ NEURAL_HAM_SHORT(-0.20)[-0.999]; MIME_GOOD(-0.10)[text/plain];
+ ARC_NA(0.00)[]; MISSING_XM_UA(0.00)[]; MIME_TRACE(0.00)[0:+];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; RCPT_COUNT_TWO(0.00)[2];
  RCVD_TLS_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:dkim,suse.cz:replyto];
- RCVD_COUNT_TWO(0.00)[2]; DKIM_TRACE(0.00)[suse.cz:+]
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
+ FROM_EQ_ENVFROM(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ RCVD_COUNT_TWO(0.00)[2];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo, yuki.lan:mid,
+ suse.cz:email, linux-test-project.readthedocs.io:url]
 X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH v4 01/31] lib: Add tst_sysfs_assert
@@ -117,30 +108,30 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
 Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Cyril,
+Hi!
+> doc related nit: If you use
+> :c:enum:`TCONF <tst_res_flags>`
+> 
+> TCONF will be clickable in the docs, link to:
+> https://linux-test-project.readthedocs.io/en/latest/developers/api_c_tests.html#c.tst_res_flags
+> 
+> I admit it's really ugly construct (I haven't found better), but newcomers can
+> find quickly TCONF related doc.
 
-> +++ b/doc/developers/api_c_tests.rst
-> @@ -105,3 +105,8 @@ Test macros
->  Uinput
->  ------
->  .. kernel-doc:: ../../include/tse_uinput.h
-> +
-> +Sysfs
-> +-----
-> +
-> +.. kernel-doc:: ../../include/tst_sysfs_assert.h
-very nit: I tried this file was sorted alphabetically.
-Would you mind to keep it (just change before merge).
+Sigh, that's one thing doxygen got right it's just #TCONF there...
 
-Kind regards,
-Petr
+
+Anyways I can do that before merge.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
