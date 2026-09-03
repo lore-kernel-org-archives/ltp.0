@@ -4,108 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6C795C61DD3
-	for <ltp@archiver.kernel.org>; Thu,  3 Sep 2026 15:59:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 41342C624A4
+	for <ltp@archiver.kernel.org>; Thu,  3 Sep 2026 15:59:53 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 53D303EADA7
-	for <ltp@archiver.kernel.org>; Thu,  3 Sep 2026 17:59:38 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id A6DD03EB095
+	for <ltp@archiver.kernel.org>; Thu,  3 Sep 2026 17:59:51 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 004EE3EA7B7
- for <ltp@lists.linux.it>; Thu,  3 Sep 2026 17:59:22 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id C05253EB0A8
+ for <ltp@lists.linux.it>; Thu,  3 Sep 2026 17:59:26 +0200 (CEST)
+Received: from mail-oo2-x08.google.com (mail-oo2-x08.google.com
+ [IPv6:2607:f8b0:4864:31::8])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 62D76600479
- for <ltp@lists.linux.it>; Thu,  3 Sep 2026 17:59:21 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 3433C1F7F1;
- Thu,  3 Sep 2026 15:59:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1788451157;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=PS0sNhcpESiLcsS3gSjlxS7FROEbANyMQUaSMuRHQQ8=;
- b=DctbiPGrMFHValF6LU6ehQV9JjtfP3yiiO+eO99n2lkKNaVQbLHiOwt/0O3RRQNbgFiPEX
- lYLszdgk781vebLBcsndj8YTM2tQuQrjMFJhFCwGmuNnIZvHCQDddFCmH/H86fL297DUCv
- CTJcUtr4nitP3iewjlTUM3MLaNTSPfU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1788451157;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=PS0sNhcpESiLcsS3gSjlxS7FROEbANyMQUaSMuRHQQ8=;
- b=sDvAzqwgAEiImrFQKH0tcjaViswXXXITaC7h+EhW7gCn6pNoMFfV1PFAGOyabezAoo1E60
- 5EqZlV1S4Rd5sCBQ==
-Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=bcC0OsIS;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=QdGrtU67
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1788451153;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=PS0sNhcpESiLcsS3gSjlxS7FROEbANyMQUaSMuRHQQ8=;
- b=bcC0OsIS5IGqgPDr6GX9NroVlxiT+8sEm5ba/YqRFkglpkMkjDb/ZRszrScUbuRkeUh5Ej
- ZlEAGkAn1v5f1SvP9yIaEuXXQQNO1jupiBFvOjNc0LHPeaFJhdhfr8yIchQOCWYiQzFrLL
- pZfA58yn20jKx5HtYnRseKmwSuzQGYA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1788451153;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=PS0sNhcpESiLcsS3gSjlxS7FROEbANyMQUaSMuRHQQ8=;
- b=QdGrtU6707GIRE6ZBPLRAffdCk2gcsbSkeC2WV5PomK8dMu4HxjT1JT7Fio55rGhNm066C
- 1dVixOnDkrpBwgBQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 598D4136D9;
- Thu,  3 Sep 2026 15:59:12 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id PmwsE1CZmWojbwAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Thu, 03 Sep 2026 15:59:12 +0000
-Date: Thu, 3 Sep 2026 17:59:06 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20260903155906.GE1107507@pevik>
-References: <20260827112157.1748734-1-chrubis@suse.cz>
- <20260827112157.1748734-13-chrubis@suse.cz>
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id E69621000DBA
+ for <ltp@lists.linux.it>; Thu,  3 Sep 2026 17:59:25 +0200 (CEST)
+Received: by mail-oo2-x08.google.com with SMTP id
+ 006d021491bc7-6b1b1ca0f3aso274771eaf.0
+ for <ltp@lists.linux.it>; Thu, 03 Sep 2026 08:59:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20251104; t=1788451164; x=1789055964; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to:content-type;
+ bh=k90y3jxkHpIwle/iIOybOwegC5ZyVc3/eyvJr2xUssc=;
+ b=HfqrMiB9DEPaL9ucQezi9uxpuA74eLfnTkKtkKcOwI8/ENKCGAlZcL5xKm3dn6Z7tS
+ CXWLctnCgo+q+LccIZU948K45R75ZgHRYv9yPTbj/KqdTSJQtoOaSl0aMhl/V0tUhBUp
+ hCcZmjGay6UQ7hOu/ciR0ePC3yyHqeOSAhxRKex/4px4YwWlSdOw+b1ayWU+u4GVzlHP
+ s6BDKWIvzpTMAp3wnY6ygyzpBUQEL/Wb0JX9Xljh8V3e+5OsaXzMpzgUYZu8JNlwSBoN
+ BcOZPXz7QmLEMlfsUYQjdS+xyp0YAndRdsN8xEgied9cuBATrNWN01FPdjO57ngyiulb
+ TNJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1788451164; x=1789055964;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to:content-type;
+ bh=k90y3jxkHpIwle/iIOybOwegC5ZyVc3/eyvJr2xUssc=;
+ b=XzlSlx/ZvKUCJkSeN+/qfLwyLU+pIaMq/Shmtg0JIF7SRxcuqNV1rJ7tnr63XQkpWR
+ ZLAa/LHSd8Mg7epoVhzDYE4mSBH6cJAtGNRnMrskhaHBAiVrSBRH30OeePtXj87NLInA
+ 0d2xbf9xvT3+cW+5nyVgZx93GH+ILProbxGTmrgBI/r9n1LXh2//xCaP9yHFZrrzacXe
+ 6iXBSd5vuq3xqt1ALq/MHK8oi5zhGHdYiBUlbqiVK0xJCUJCqbRD8aiRemCvGRVBMP9Y
+ pGKs2Hcx0qFUrVHjtaKZuFsraxkt0VQiON0QskbIWKDxH8kQ7zSAtFlMnJbQmzqnw638
+ ADvA==
+X-Gm-Message-State: AFuF++mlv77+9uw8fvN7E6a/J9Rnw4JPBy4NdfH1N03xrnsAVXN3Af77
+ D1kwHinx6pCtOu2Q+6qDqFmkTuPwXcM8ioecaxwcmq6xrEtoK/GjHqPN
+X-Gm-Gg: AYBFou05sfawRk7peLLArRhSElCjHV9KybtGlaI7gyBaEYJxUZtK7g2Aznkd4aMTz9+
+ Kh6BVaPtfmE1IgJedpAU1mpg3jp5DoYfAeC8l4TIFPWNF+pZwvGqxWhI1LwWFDzsUcJyyP/TYxs
+ GgsKVFYoyYH4PUDiEvluNyMPymzskfmdrN97qClH0WhcuJ/KgVpR6G5vGnqN+ZL3HyVh6APtjJc
+ 3NspAungNTY9uNDvZbOCWIfVOqRO82985hrokAj/0LCnIugmQFgJCXM7bi60O5iI08z1NfF5sK8
+ BHXMX/x3cEgqiM4a86btccFVZMn9taokXUyVom+X6+a6ZvMZRAvBgHWbDZLh0UEAe0FHHpNZuTG
+ AYYeydXwRgicAjRmDu4Qo97qtd/PU1I1lxDAPQkkT5s10jbU/6nkUJ+HxiBa0Oh1QHDL4e+25bI
+ 2ylJ5SzpTuAWptG2VgQSCPAySRXi8J/mTpmx0vD7K1fU2X/TMCeRxpnpNH64rvRDeEfiRRI40fx
+ Yq62tHmmdhrafM3ZAYNj6uwugvUwhqKNEdGMKF0/UQ0JfEGyzLZiYsVyFzp7o2WfrZxNlWvehk=
+X-Received: by 2002:a05:6820:1997:b0:6b1:8ebb:7efd with SMTP id
+ 006d021491bc7-6b47bcc0ff1mr12384869eaf.4.1788451164520; 
+ Thu, 03 Sep 2026 08:59:24 -0700 (PDT)
+Received: from
+ runnervmgx7h7.dbuonr3pa2ke1den2z05x4ud3h.ex.internal.cloudapp.net
+ ([64.236.169.6]) by smtp.gmail.com with ESMTPSA id
+ 46e09a7af769-7f9f72d3d3csm272691a34.18.2026.09.03.08.59.23
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Thu, 03 Sep 2026 08:59:24 -0700 (PDT)
+From: linuxtestproject.agent@gmail.com
+To: Petr Vorel <pvorel@suse.cz>
+Date: Thu,  3 Sep 2026 15:59:21 +0000
+Message-ID: <20260903155921.3989-1-linuxtestproject.agent@gmail.com>
+X-Mailer: git-send-email 2.55.0
+In-Reply-To: <20260903124631.1100746-2-pvorel@suse.cz>
+References: <20260903124631.1100746-2-pvorel@suse.cz>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20260827112157.1748734-13-chrubis@suse.cz>
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: 3433C1F7F1
-X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; RCPT_COUNT_TWO(0.00)[2];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- ARC_NA(0.00)[]; TO_DN_SOME(0.00)[]; MIME_TRACE(0.00)[0:+];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:email,suse.cz:replyto,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
- RCVD_TLS_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- MISSING_XM_UA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- DKIM_TRACE(0.00)[suse.cz:+]; REPLYTO_EQ_FROM(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v4 12/31] testcases: sysfs: Add sys_ata01
+Subject: Re: [LTP] Remove testscripts/network.sh
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -117,61 +90,52 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
 Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Cyril,
+Hi Petr,
 
-...
-> +++ b/testcases/kernel/sysfs/class/ata_device/sys_ata01.c
-> @@ -0,0 +1,100 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (c) 2026 Cyril Hrubis <chrubis@suse.cz>
-> + */
-> +
-> +/*\
-> + * Sanity checks for the ATA device attributes exported under
-> + * /sys/class/ata_device/<dev>/.
-> + *
-> + * For every ATA device the test verifies that:
-> + *
-> + * - class is one of the known libata device classes (ata, atapi, pmp, semb,
-> + *   unknown, zac, none). none is a legitimate value here, not just a range
-> + *   extension for safety: ata_tdev_add() in drivers/ata/libata-transport.c
-> + *   creates a transport device object for every possible device slot on a
-> + *   link (e.g. both the master/slave slots on a PATA link), regardless of
-> + *   whether a physical device is actually attached to it, so an empty slot
-> + *   reports class = none rather than not existing at all.
-> + * - dma_mode, pio_mode and xfer_mode, when non-empty, start with the
-> + *   ``XFER_`` prefix used by all libata transfer mode names
-> + * - spdn_cnt (speed-down count) is non-negative
-> + *
-> + * dma_mode is legitimately empty for devices that only support PIO, so it is
-> + * only checked when present.
-> + *
-> + * The test skips with TCONF when no ATA device is present.
-> + */
-> +
-> +#include <string.h>
-> +#include <dirent.h>
-> +#include "tst_test.h"
-> +#include "tst_sysfs_assert.h"
-> +#include "tst_path_defs.h"
-> +
-> +static const char *const class_allowed[] = {
-> +	"ata", "atapi", "pmp", "semb", "unknown", "zac", "none", NULL
-Lol, I'd expect this would be part of Documentation/ABI/testing/sysfs-ata
-but it's only in the sources (drivers/ata/libata-transport.c).
+On Thu, Sep 3, 2026, Petr Vorel wrote:
+> Remove testscripts/network.sh
 
-You mentioned that by findings of this patchset kernel doc could be improved :).
+--- [PATCH 1/4] ---
 
-Kind regards,
-Petr
+> The network tests are executed by running the network.sh script:
+> TEST_VARS ./network.sh OPTIONS
+> To run the network stress testcases, use network.sh script, located in
+> testscripts directory.
+
+These instructions refer to the script deleted by this patch. Update both
+network README files with the supported kirk invocation.
+
+--- [PATCH 3/4] ---
+
+> Run the ltp-aiodio.sh file to execute all the tests.
+
+This instruction refers to the script deleted by this patch. Replace it with
+the supported kirk-based procedure.
+
+--- [PATCH 4/4] ---
+
+> exit 0;		#to let PAN reprt success of test
+
+run_cpuctl_stress_test.sh still contains this obsolete PAN reference. Remove
+it as was done for the corresponding comment in run_cpuctl_test.sh.
+
+Verdict - Needs revision
+
+---
+Note:
+
+The agent can sometimes produce false positives although often its
+findings are genuine. If you find issues with the review, please
+comment this email or ignore the suggestions.
+
+Regards,
+LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
