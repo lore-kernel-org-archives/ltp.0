@@ -4,83 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 910B1C61DD6
-	for <ltp@archiver.kernel.org>; Wed,  2 Sep 2026 23:08:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 69EB6C61DD6
+	for <ltp@archiver.kernel.org>; Thu,  3 Sep 2026 03:32:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1788406372; h=to : date :
+ message-id : mime-version : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : content-type : content-transfer-encoding : sender : from;
+ bh=ZfE5TBmfkcOdPPknh92BdgYuwjJWMdQ/oTNedJbnuiM=;
+ b=CzjoLs4IOq7J+27ax0EoHWd79T4GmQBDBYhDl1pb8a2lxJ0+RLa+YbDrXBcUNzPRlwz/F
+ R5NTVVIFSuW/nT/99CIVJhXsr/XrhfV5lDGiGtahETXKJInAp4DHnbugtMCSpUR7gXFNY7K
+ og5f+OPnei/wSMIbsRQ6fVQLOo1BglY=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C4F1F3E9874
-	for <ltp@archiver.kernel.org>; Thu,  3 Sep 2026 01:08:00 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 18FB03E9866
+	for <ltp@archiver.kernel.org>; Thu,  3 Sep 2026 05:32:52 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 3EEC63E2D90
- for <ltp@lists.linux.it>; Thu,  3 Sep 2026 01:07:44 +0200 (CEST)
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com
- [IPv6:2607:f8b0:4864:20::743])
+ by picard.linux.it (Postfix) with ESMTPS id 329783E2254
+ for <ltp@lists.linux.it>; Thu,  3 Sep 2026 05:32:30 +0200 (CEST)
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com
+ [IPv6:2a00:1450:4864:20::330])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 408531000448
- for <ltp@lists.linux.it>; Thu,  3 Sep 2026 01:07:44 +0200 (CEST)
-Received: by mail-qk1-x743.google.com with SMTP id
- af79cd13be357-936623c6dd3so48886985a.0
- for <ltp@lists.linux.it>; Wed, 02 Sep 2026 16:07:44 -0700 (PDT)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id DC86D200279
+ for <ltp@lists.linux.it>; Thu,  3 Sep 2026 05:32:28 +0200 (CEST)
+Received: by mail-wm1-x330.google.com with SMTP id
+ 5b1f17b1804b1-49b0d78a801so14933555e9.2
+ for <ltp@lists.linux.it>; Wed, 02 Sep 2026 20:32:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1788390463; x=1788995263; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to:content-type;
- bh=ROCqSg4YJDj/a94YF2/UalAhrRcR3k9er9FtS0oRk2A=;
- b=BhM2PUQhkWZfjtHL6YiyBIZkR+iloQfa6Yqjs6RxBAOcHHbo/+lp3uViEoG3HKfyaL
- Tizb/GhjRdAzXBZCn6MsJMqKmL9Q26p0uar88nL4TgpqUeuT8gR35X7LlAWreAQBPEAA
- yl0bjXhq3EUw8P6KDiKYvJpFEi1wwb0Hf0+3ysOCDQC/570+IV5l2vOaKkZmo5dwhUSq
- 1e9AWqzYj1rTcV8nenZ5xXkMpZL4j24MjYU1A5H2aSKDcgE1ajeu4EYvoIJYgc8ol/+t
- b5VKAEw3+BCraxeZviXAYF2qK+9a6SPbhQebMAhoYxOxuXr3LhbG/k5pvGpjRje9OXqC
- XTRg==
+ d=suse.com; s=google; t=1788406348; x=1789011148; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+ bh=MOTsUtLICgcyEubjG9RZ05wQcM8QVjkWBKsx1UU68wk=;
+ b=YleJl/EnIQqeJukHs3SSYNA3UvT6m7q0N5ay2oa3SzFO+1q+Vb1iHN4RhWjP2yl9J+
+ ek53ry2ywFSy0aXXiuPuulIbVhtcQAK+BJ58SWIaKVCqZN3KiiBzUl2XB07Hr1qXWh88
+ Lq1IoGL4VRY/NH8FsYxAhd5mBPILJCs5Txn/gskXBX8az6++LmXWuKqpHi/nLqIPteiL
+ FmeBL0hdrNupI4kJjAx+Fi0bxEaX+SSP7J4S0+4qceGI4AHcb4Wjuemnz/bRDi5Q8HPf
+ Q8zXkxgYbLtjmEqpjCdpuQe4/Mqf4qqbeWywkS2WLOAo0CTb9iX0Zd/lJxdkVy/GKymP
+ PRIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1788390463; x=1788995263;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to:content-type;
- bh=ROCqSg4YJDj/a94YF2/UalAhrRcR3k9er9FtS0oRk2A=;
- b=MHA/uNKgtJ0Kan54XTWd0A6kJjchm8TLgbG/fwREFgomhDWjLNUR65S1S46oqC4a5i
- LxTZF0+UE4mYZv5w0YJGg5IYzTHXlARJ6HkLFiWrRYQR+/xp2qPcNS8Ykbr7DnxXoyLz
- IeDeOIPbWgCCO/zJ6/MoO6lyjfN9oISE7jEEJvuBFH9K8yejzNkF+P15fwZ4Zi5hOJ0Q
- /Oo4nUJDMDLbb9mI6ZNhInlK5S9X641x8Q1nWe3gYxj128J0miZ/iKaF2MYvjEkpSvJ5
- vYfbcT6mAdZvau+Bw6WFQHd9nmqK8QohVGlzV/tGyWsA+VQ1Tv+pmx6HmCGOPcS7vJpw
- tYeg==
-X-Gm-Message-State: AFuF++nWZoh4qmKQU9vYdkG23WX+/vJdzDs/OsSXKeQtxjMqZ/MpoY3X
- cU/I9YwZLpDzuv85qRXrYk6UOJjzU4xt2CFKylO8u4fFxGSVclNXrRQX
-X-Gm-Gg: AYBFou28X+1qxJ0Xbe8+ZJij94QdOPJqJvhmyRZQr18B/FiBUroc6l46PefjcPRZXJh
- fV6inywKxBtSa+i9Fy7xy6PkM0DM70Xx4bnYtSiaMeLl6wMk+ufyL+Lbg8yKHKdAIaqoEzXNf2R
- CW4r+L9wM8p5kqrcifebLwRkNOKvxTjB0eP1y16X1Eia+uBp78xLyF8FXuobKkBcoXw41RBs0u4
- ZAbpJEShRTGMUgLTpv2xuErJxvcIoTcWN31nCMVagRqpIzzgLzOlh+k21QQvqb9zNh8h1PlLiST
- AxhyiieQXo/x3HuGyUDvz9VUY4ajwt23xV72mR5iX/Vcs93gUuCOff7wu9arvELtpafv4J2FOXv
- loiNY12uIU+zEVJAtMGE4QHYLKF8YujxLFMIhjFjaaVdrZSI+KOMUdFR/hGheGk/ZYsdXlGkLDh
- JY5JsiIumsynBONIr33vm9ZctiizMpChq4+3+nYcSbw0wr/lFLR31j0Tc8wH5TX1VbgqFyhLiBY
- TP+HubUGFLb6HZ5iz2bxtz1JoROH0urtOjIgAj805uyDAgKOWrtWesgik5dZk9LMTMOd/UBHSpY
- rQ==
-X-Received: by 2002:a05:620a:6193:b0:939:72cb:bae3 with SMTP id
- af79cd13be357-93972cbbc8amr12406785a.26.1788390462842; 
- Wed, 02 Sep 2026 16:07:42 -0700 (PDT)
-Received: from
- runnervmejwal.h0l24wjbi32ehma3ntfoutcuxb.cx.internal.cloudapp.net
- ([145.132.99.102]) by smtp.gmail.com with ESMTPSA id
- af79cd13be357-9395f398a18sm328923285a.37.2026.09.02.16.07.42
+ d=1e100.net; s=20251104; t=1788406348; x=1789011148;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to:content-type;
+ bh=MOTsUtLICgcyEubjG9RZ05wQcM8QVjkWBKsx1UU68wk=;
+ b=cLADW0cLBLyW/6QvoK0QgXTtrSYE9nGUp7L8objFCtDIzuEb8LP75zXxl04aS7eFtE
+ nBAwV8S4d5ML7oEJyAnDSA7HR65IwVy7mIOrw5Wq4WaRi9ySPo/D/YXr3S045uBz48uJ
+ UJB0gh9C3kG34AfJpDdU81pShFATPH0bqVbgxaZwMinOzpNNofBmA2v/1TOIaztuyEK3
+ GIwnWxPbxTYSm1iy0N5gTQH23GhgZur0VQxZyIHRpilzp0fsSQ48Ihfnn1JjbLWbSfZn
+ /wDAnfvS5Nxpo3ri3OOyqKIvVLQzC9sbldH10FFFyW0HpSYk3IqRnQOCQojaYl2rOdfD
+ NE7g==
+X-Gm-Message-State: AFuF++myBlHpKXDaarDRgoreFp+Y0Vpoh7ZZSlBgZuCHBYkgb8XOIOiW
+ PIYxcVc9i+KprWrS71HRov2wb/jHoIVCS7HF7Q6f+/+dh7eohgoLJVcHBElw3f0VMBcBL+GtizP
+ TjXk=
+X-Gm-Gg: AYBFou3RCr8ev2Xv5kzLCJD3SSLXVFDtkCVmYJC55sOXA6X89t7BrbX4h+CMq3mwxJ8
+ JmUNisxuyanxJq9pJjJfe+uKlm5u+WK68Eq6AAAXkhV6pN5U83WyFCKItyJZJgCgX7ffgv1Df7w
+ vXV966ACGQ3qP2MKDSVxfo96HN8V+exCFNPYxPEbXqmaf0qcwgfFEm206Vw7MOAgHSBCVN4cWL+
+ nzgzD+HDuFedyX3SO1nIB2TdmQ1YDETCGpk7w3W8pyqaaLN3grVumC0WuD13u9VQCQl2Xaw563V
+ u5wfs56GaYBe6EDQuUFxRSF4xsMhuJbbDrg8uzYvEjOfRAQaunGXJYWLCauZ/Q2k8d7vijs1hcT
+ 1V0g8Msj9Y3xkC8k0ai8a6sr+fGL9NjCnuxw8eBtHFaIY+jAnTrVh8y3hY7Vx+KaGdF6TwiFGFu
+ Q8ZyYV5hiwB+/rsLGsdVMtIvwmYRZtMnPMZ6RB/XJJOw0bc/Wwb5Xao+4+iGi+Np6/vb4+SGcsk
+ XFMx1tiuB0/dPabs5RaOLUw+lq9wlXtkE7DrDKHwiA=
+X-Received: by 2002:a05:600c:e557:10b0:49c:e42b:a4ac with SMTP id
+ 5b1f17b1804b1-49ce5822582mr121713365e9.11.1788406348349; 
+ Wed, 02 Sep 2026 20:32:28 -0700 (PDT)
+Received: from localhost ([2a07:de40:b240:0:2ad6:ed42:2ad6:ed42])
+ by smtp.gmail.com with UTF8SMTPSA id
+ 5b1f17b1804b1-49cee6023edsm34942735e9.7.2026.09.02.20.32.27
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 02 Sep 2026 16:07:42 -0700 (PDT)
-From: linuxtestproject.agent@gmail.com
-To: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Wed,  2 Sep 2026 23:07:41 +0000
-Message-ID: <20260902230741.17215-1-linuxtestproject.agent@gmail.com>
-X-Mailer: git-send-email 2.55.0
-In-Reply-To: <20260902-cve-ghostlock-v5-1-569b9eb37941@suse.com>
-References: <20260902-cve-ghostlock-v5-1-569b9eb37941@suse.com>
+ Wed, 02 Sep 2026 20:32:28 -0700 (PDT)
+To: ltp@lists.linux.it
+Date: Thu,  3 Sep 2026 03:32:12 +0000
+Message-ID: <20260903033219.4747-1-wegao@suse.com>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] lapi/sched: add SAFE_SCHED_SETATTR()
+Subject: [LTP] [PATCH v10 0/2] shmctl03: Fix 32-bit compat mode failure
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -92,93 +96,29 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+From: Wei Gao via ltp <ltp@lists.linux.it>
+Reply-To: Wei Gao <wegao@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Andrea,
+v9->v10:
+- Update comments
+- Use decimal for enum
 
-On Sep 2, 2026, Andrea Cervesato wrote:
-> lapi/sched: add SAFE_SCHED_SETATTR()
+Wei Gao (2):
+  lib: Extend tst_assert_ulong() with enum flags
+  shmctl03: Fix 32-bit compat mode failure
 
---- [PATCH 1/3] ---
+ include/tst_assert.h                        | 34 ++++++++++++++++++---
+ lib/tst_assert.c                            | 26 ++++++++++++----
+ testcases/kernel/syscalls/shmctl/shmctl03.c | 13 ++++++--
+ 3 files changed, 59 insertions(+), 14 deletions(-)
 
-> static inline int safe_sched_setattr(const char *file, const int lineno,
-> 				     pid_t pid, const struct sched_attr *attr,
-> 				     unsigned int flags)
-> {
-> 	int ret;
->
-> 	ret = sched_setattr(pid, attr, flags);
+-- 
+2.55.0
 
-glibc's sched_setattr() takes a non-const struct sched_attr pointer, so this
-discards const and fails with -Werror=discarded-qualifiers on the new glibc
-API. Match that prototype here and in the fallback declaration.
-
-> #define SAFE_SCHED_SETATTR(pid, attr, flags)\
-> 	safe_sched_setattr(__FILE__, __LINE__, (pid), (attr), (flags))
-
-This new public macro needs a kernel-doc comment documenting its arguments
-and failure behavior.
-
---- [PATCH 2/3] ---
-
-> #ifndef PR_SET_MM_MAP
-> # define PR_SET_MM_MAP	14
-> #endif
-> #ifndef PR_SET_MM_MAP_SIZE
-> # define PR_SET_MM_MAP_SIZE	15
-> #endif
->
-> #if !(HAVE_STRUCT_PRCTL_MM_MAP) && !defined(PR_SET_MM_MAP)
-> struct prctl_mm_map {
-
-The fallback struct is unreachable when needed because PR_SET_MM_MAP is
-defined immediately before the condition. Gate it solely on
-HAVE_STRUCT_PRCTL_MM_MAP, otherwise the new CVE test fails to compile on
-systems lacking the struct.
-
---- [PATCH 3/3] ---
-
-> static struct tst_test test = {
-> 	.setup = setup,
-> 	.test_all = run,
-> 	.runtime = 180,
-> 	.needs_checkpoints = 1,
-
-PR_SET_MM_MAP was added in Linux 3.18. Add .min_kver = "3.18"; otherwise
-3.3--3.17 kernels with both requested configs reach setup and report TBROK
-for the unsupported operation.
-
-> 	SAFE_CLOCK_GETTIME(CLOCK_MONOTONIC, &ts);
-> 	ts = tst_timespec_add(ts, (struct timespec){ .tv_sec = 10, .tv_nsec = 0 });
-> 	futex_wait_requeue_pi(&f_wait, &f_pi_target, &ts);
->
-> 	TST_CHECKPOINT_WAKE(CP_SPRAYED);
-
-The futex result is ignored, so expiry or another failure publishes
-CP_SPRAYED without establishing the PI topology and causes a spurious TBROK.
-Use an untimed blocking wait, or validate the result before the wake.
-
-> refluxfs
-> sctphantom
-> ghostlock
-
-Keep the new .gitignore entry sorted by placing ghostlock before refluxfs.
-
-Verdict - Needs revision
-
----
-Note:
-
-The agent can sometimes produce false positives although often its
-findings are genuine. If you find issues with the review, please
-comment this email or ignore the suggestions.
-
-Regards,
-LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
