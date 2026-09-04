@@ -4,94 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F4212C624D3
-	for <ltp@archiver.kernel.org>; Fri,  4 Sep 2026 13:38:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1788529117; h=mime-version :
- references : in-reply-to : date : message-id : to : subject : list-id
- : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=IIGGleRTUqPLutslqrSd6Ll098yro6eIL2n9PkCbS1E=;
- b=ZdooDdAY2kn151eL2QiGO06X1plK2rURYs+UD4+KQHgz4sCNPf702NgNwBExqJwVP1scu
- vBKqb62BqqSG603H/UFYdlrW8zu4nqiwWa5WjRnLZJpuEOMyfT3xYD4dey9rs3rZ/SHvfCC
- u/6S00+SafNiYkkxhmgz9A3eUJfijzo=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B3457C624DE
+	for <ltp@archiver.kernel.org>; Fri,  4 Sep 2026 14:52:22 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 3DA153E5701
-	for <ltp@archiver.kernel.org>; Fri,  4 Sep 2026 15:38:37 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 66EE93E9791
+	for <ltp@archiver.kernel.org>; Fri,  4 Sep 2026 16:52:20 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D1FAF3E30CD
- for <ltp@lists.linux.it>; Fri,  4 Sep 2026 15:38:18 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 202D63E60EA
+ for <ltp@lists.linux.it>; Fri,  4 Sep 2026 16:52:05 +0200 (CEST)
+Received: from mail-oo2-x06.google.com (mail-oo2-x06.google.com
+ [IPv6:2607:f8b0:4864:31::6])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 99D3B14004EC
- for <ltp@lists.linux.it>; Fri,  4 Sep 2026 15:38:16 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1788529095;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=x3rNOvNbdpRdftJmYSteOXneAAFByEk4MHz5LeSgXuI=;
- b=DdnVp58jXq2oUanDtoNSDiks9MI2vWxiqPCjXWuguOZHyarVeSu3P9gO1Eb0u6rmS5Ulhj
- qHLYJFi6LG7KbLgmozX55RBLQWouckqiGp0WFVhZnVjnD78cioW9c+/OpvjdPh/iamCQKI
- Icl2jFXFaTvv80TMOy5QpMArlbr0coA=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-530-M8lXdE8CPI6xz9G368qG5A-1; Fri, 04 Sep 2026 09:38:13 -0400
-X-MC-Unique: M8lXdE8CPI6xz9G368qG5A-1
-X-Mimecast-MFC-AGG-ID: M8lXdE8CPI6xz9G368qG5A_1788529092
-Received: by mail-wr1-f70.google.com with SMTP id
- ffacd0b85a97d-47f6d70223dso705822f8f.1
- for <ltp@lists.linux.it>; Fri, 04 Sep 2026 06:38:13 -0700 (PDT)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id B9A8320110F
+ for <ltp@lists.linux.it>; Fri,  4 Sep 2026 16:52:04 +0200 (CEST)
+Received: by mail-oo2-x06.google.com with SMTP id
+ 006d021491bc7-6b1b8f5a1d5so290984eaf.1
+ for <ltp@lists.linux.it>; Fri, 04 Sep 2026 07:52:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20251104; t=1788533523; x=1789138323; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to:content-type;
+ bh=KLuUaxXELue2k7by/edkiugi+ZIJnEtVT3PAo0mLRg8=;
+ b=Nk8i1JK75CEC4/Ws3PBsTtv/jhvVGjlEVe7g+4ZlHXBEPdoBHinYrHdJigmdtFZpII
+ QdX14Mm8jUYSPx++rRGHpUv+5/MLVaMoHYI9qgyhSCtrUdD0rKOVNChiZxNHdXJcOlqT
+ 2RTLsH0COI2hh3/DzmKlaY3sO4wvB/px/FEwq/lC70axgVzdff9mXXfw9YlBJMGzKD8i
+ y4RMf2fH6gZcjN0TPO07bTsUcqEGZoT8po83QvL8gAU20A71EQNidHLWHZ8i7yVonn8u
+ oc+Z2HKd5/rOWeLZPb9B5EppOC/OUlzhUozFjeLNqgZ1NwLhKO/JMx1MDuPgHtdd5QzS
+ Cr4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1788529092; x=1789133892;
- h=content-transfer-encoding:content-type:cc:to:subject:message-id
- :date:from:in-reply-to:references:mime-version:x-gm-gg
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
- :content-type;
- bh=x3rNOvNbdpRdftJmYSteOXneAAFByEk4MHz5LeSgXuI=;
- b=FTLf/aMPTw4oBJPjIg4lmnndMmsrOsMcN+iNy2KnElFYC2ONQIRvzoXNbjDmF6mSg9
- C5T4BR7sN/b4b+ueGaJPEntBjomNgPuNJQfmbCs0OsbPf2c7n4uUEIXiKeVr3JiMftV9
- y1vkCLoRXftrPXfxfdTQ92JUjJIs/Gb6tXGgCPmhtaC3dd0q4qquHYgsq9dvp5D8Ce1c
- RQFLRmPtKqASmllGdP/K+maDqXknHYPCKXzDIJZ/xmxNVaXDruvmvXdpREC48xoHGSBg
- a+qw+pkSigaZbM93e01NeEoo49n2V2Z8EwA4S9htl/wIped/eNRzObajAyjKbBZPJ+lj
- OYEA==
-X-Gm-Message-State: AFuF++lvBUYdteEYIlEhr0w5wcxu4f0E7eJMuQn4u/S54BKwQN13eMLq
- LGNzolutDYKsClUNg8BJwN8pr2bETLYHttKJ+QVEcWhQKAKQ52yVwtCwHTkstmq7s1rdUoLtoQQ
- OZWFjIYRamq7M+uoSo/+/RMxqyUAf8CtG38oW2BvqhaVY39TGQknKptJGUDflcmYbdZWWPxipnV
- QS+cXJsUF9Ymw7pH22vBoGx7qGv8g=
-X-Gm-Gg: AYBFou3b6/bUy7jS7DByF855LtMUtfhouWVer3mqoYy/aD9TzXOX4QosYFidXrxPKZF
- jgqxROVwPjHTSRSZpGWvKGsS9z17qm6NAkZ8GJ9J5iTx2sEW2e6q6q0gqL09yO8kP3OkP1G/PhW
- oAL9dvoFiU4w9e/FGQb3tAnr7INJE7gRMndj0Rn4Ce
-X-Received: by 2002:a5d:64c2:0:b0:482:e968:86f9 with SMTP id
- ffacd0b85a97d-4858708cae2mr13629908f8f.14.1788529092342; 
- Fri, 04 Sep 2026 06:38:12 -0700 (PDT)
-X-Received: by 2002:a5d:64c2:0:b0:482:e968:86f9 with SMTP id
- ffacd0b85a97d-4858708cae2mr13629765f8f.14.1788529091845; Fri, 04 Sep 2026
- 06:38:11 -0700 (PDT)
+ d=1e100.net; s=20251104; t=1788533523; x=1789138323;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to:content-type;
+ bh=KLuUaxXELue2k7by/edkiugi+ZIJnEtVT3PAo0mLRg8=;
+ b=f5O34H4rMR5Lr/jdwEVQ+qEBi1Xf49aoWFaiCeUr7DdTbyLpVvmaADQSIvPF1IC5Kq
+ n9773FYjDmlzTg4CqLzC0UvM+iAFrltBiB4ASePG/GZMgeZQO6M2qI+ikVBNsUDZtmA+
+ rTmDmzYEQWQYEV8IJUeIXpXMZdXEZq9wXYqWXo1MbxaXN96ssw8Z2inOgGiq9MGu9vX2
+ W0zVgjqLkXrjBO79MyJyjzoam80+tvsnrK+tgl6QpIEROqlkteR/0qBm9HtAr+Ny3Jmh
+ agkeet10prq0Qk85tG+DfW2k7DQwL/fBY4dFjpOCORpLHRiYsDhOmhAhnrxb5Iq36CAv
+ PEvQ==
+X-Gm-Message-State: AFuF++lRtOJL7M1+AsqLVNbySN1Q8TZkhTMyZy552gCrpVnjsT0F2ord
+ ltyzdPg+Zg0RSsysDxYuuad+a4EEAhMLbMotArEeUgbfe5Yuv2g9E9LV
+X-Gm-Gg: AYBFou0RRDXsUgVq8icV9HdE7hF3uaLgzCqatW0PYJyWVDHQN1mZKpgVPUiLp7m/oKo
+ xnHrJPEqP33HnqNDV11P/04REsCqjboeDO6jA5VlX9wEvmLC9rfeLBoAcnOTvSUuls+Lqp7oxl1
+ AFZW1SqUoMlbAPo5rAZPAeGPCSqwcAZPRHcl629Q6XYMJRM5xdDSiZgd7U0owd1YDPZTpwiuKyn
+ 3UZzhWfc4U0Hna5W8Dqs9RSVgYiCmOLtpzCLnEBrfGKi99k0CaD1pN+4teJRCTZniFAaTO38J5N
+ gnL0iyOyyK9sWPb0Do9ArbtECBkKn9uMc6/2eJxWcNClVLv06Ic3lcJ3S7s3BqbBjUZD3VGHHLW
+ Mwu4JVS54dPbpOtfvpKgtTGLIwro0iUZZ4X5V38GMYYuLdTZzjPWxb5TzUPu9zMCadkRBMx25Ng
+ PQ7ufubTm1uCM7TTlpjqd/LbSkdHFPnTa6eMMAQOWVAAFZQSl+V0Pc/rdd2JrLGEtQvMyEjd/Kh
+ 9Bs+m5PG7yjgdjzWr/OPy4DWeLAsIRRTmOsFXJ5HNYUJV1pW9t+Wl4we0UVCqNWAVG7IL5C0BE0
+ D/g=
+X-Received: by 2002:a05:6820:198b:b0:6b3:52da:b343 with SMTP id
+ 006d021491bc7-6b6fd6d3467mr4557626eaf.28.1788533523320; 
+ Fri, 04 Sep 2026 07:52:03 -0700 (PDT)
+Received: from
+ runnervmejwal.ujbej0qg0ive3kvrwq5foysb5c.yx.internal.cloudapp.net
+ ([172.215.217.193]) by smtp.gmail.com with ESMTPSA id
+ a92af1059eb24-1432435648esm8892229c88.5.2026.09.04.07.52.02
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 04 Sep 2026 07:52:02 -0700 (PDT)
+From: linuxtestproject.agent@gmail.com
+To: Changwei Zou <changwei.zou@canonical.com>
+Date: Fri,  4 Sep 2026 14:52:01 +0000
+Message-ID: <20260904145201.8776-1-linuxtestproject.agent@gmail.com>
+X-Mailer: git-send-email 2.55.0
+In-Reply-To: <20260904125031.89015-1-changwei.zou@canonical.com>
+References: <20260904125031.89015-1-changwei.zou@canonical.com>
 MIME-Version: 1.0
-References: <20260904085555.1202288-1-pvorel@suse.cz>
-In-Reply-To: <20260904085555.1202288-1-pvorel@suse.cz>
-Date: Fri, 4 Sep 2026 15:37:55 +0200
-X-Gm-Features: AcwNN1Wicn_PA-yOrWBWUiS04p43cy5GMAw7qKuuSkxY0XFeQ3COrXHdnqbMjNQ
-Message-ID: <CAASaF6wHnnH4wL217t60g+X4eS=9uFG8xj0gWdmSM_Dj-LAxtg@mail.gmail.com>
-To: Petr Vorel <pvorel@suse.cz>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: puUM1JjemNGfJGz46gvQtwO3OhFeFkYJ9cAcz3uijB4_1788529092
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 0/4] testscripts: Remove outdated scripts
- (ltp-pan)
+Subject: Re: [LTP] cpuset_memory_spread: count only the test file's page
+ cache
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -103,40 +92,47 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Jan Stancek via ltp <ltp@lists.linux.it>
-Reply-To: Jan Stancek <jstancek@redhat.com>
-Cc: Tim Bird <tim.bird@sony.com>, ltp@lists.linux.it,
- automated-testing@lists.yoctoproject.org
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gRnJpLCBTZXAgNCwgMjAyNiBhdCAxMDo1NuKAr0FNIFBldHIgVm9yZWwgPHB2b3JlbEBzdXNl
-LmN6PiB3cm90ZToKPgo+IENoYW5nZXMgdjEtPnYyOgo+ICogQWRkcmVzcyAzeCB2YWxpZCBjb21w
-bGFpbnMgYnkgYWdlbnQKPiBodHRwczovL2xvcmUua2VybmVsLm9yZy9sdHAvMjAyNjA5MDMxNTU5
-MjEuMzk4OS0xLWxpbnV4dGVzdHByb2plY3QuYWdlbnRAZ21haWwuY29tLwo+IFBhcnRseSBieSBh
-bHJlYWR5IG1lcmdlZCBjb21taXRzIGRvaW5nIGNsZWFudXAgaW4gbmV0d29yayBkb2MsIHBhcnRs
-eSBpbgo+IHRoaXMgcGF0Y2hzZXQuCgpBY2tlZC1ieTogSmFuIFN0YW5jZWsgPGpzdGFuY2VrQHJl
-ZGhhdC5jb20+Cgo+Cj4gTGluayB0byB2MToKPiBodHRwczovL2xvcmUua2VybmVsLm9yZy9sdHAv
-MjAyNjA5MDMxMjQ2MzEuMTEwMDc0Ni0xLXB2b3JlbEBzdXNlLmN6Lwo+IGh0dHBzOi8vcGF0Y2h3
-b3JrLmtlcm5lbC5vcmcvcHJvamVjdC9sdHAvbGlzdC8/c2VyaWVzPTExNTcxMDEmc3RhdGU9Kgo+
-Cj4gS2luZCByZWdhcmRzLAo+IFBldHIKPgo+IFBldHIgVm9yZWwgKDQpOgo+ICAgUmVtb3ZlIHRl
-c3RzY3JpcHRzL25ldHdvcmsuc2gKPiAgIFJlbW92ZSB0ZXN0c2NyaXB0cy90cG1fdG9vbHMuc2gK
-PiAgIFJlbW92ZSB0ZXN0c2NyaXB0cy9sdHAtYWlvZGlvLnNoCj4gICBjb250cm9sbGVyczogUmVt
-b3ZlIG9ic29sZXRlIHJlZmVyZW5jZXMgdG8gbHRwLXBhbgo+Cj4gIC4uLi9jcHVjdGwvcnVuX2Nw
-dWN0bF9zdHJlc3NfdGVzdC5zaCAgICAgICAgICB8ICAgNCArLQo+ICAuLi4vY29udHJvbGxlcnMv
-Y3B1Y3RsL3J1bl9jcHVjdGxfdGVzdC5zaCAgICAgfCAgIDQgKy0KPiAgLi4uL2NvbnRyb2xsZXJz
-L21lbWN0bC9ydW5fbWVtY3RsX3Rlc3Quc2ggICAgIHwgICAyICstCj4gIHRlc3RjYXNlcy9rZXJu
-ZWwvaW8vbHRwLWFpb2Rpby9SRUFETUUgICAgICAgICB8ICAgOCAtCj4gIHRlc3RjYXNlcy9uZXR3
-b3JrL1JFQURNRS5tZCAgICAgICAgICAgICAgICAgICB8ICAxMiArLQo+ICB0ZXN0c2NyaXB0cy9s
-dHAtYWlvZGlvLnNoICAgICAgICAgICAgICAgICAgICAgfCAzMjcgLS0tLS0tLS0tLS0tLS0tLS0t
-Cj4gIHRlc3RzY3JpcHRzL25ldHdvcmsuc2ggICAgICAgICAgICAgICAgICAgICAgICB8IDExOCAt
-LS0tLS0tCj4gIHRlc3RzY3JpcHRzL3RwbV90b29scy5zaCAgICAgICAgICAgICAgICAgICAgICB8
-IDE3MyAtLS0tLS0tLS0KPiAgdGVzdHNjcmlwdHMveWVzZW50ZXIudHh0ICAgICAgICAgICAgICAg
-ICAgICAgIHwgICAyIC0KPiAgOSBmaWxlcyBjaGFuZ2VkLCAxMiBpbnNlcnRpb25zKCspLCA2Mzgg
-ZGVsZXRpb25zKC0pCj4gIGRlbGV0ZSBtb2RlIDEwMDc1NSB0ZXN0c2NyaXB0cy9sdHAtYWlvZGlv
-LnNoCj4gIGRlbGV0ZSBtb2RlIDEwMDc1NSB0ZXN0c2NyaXB0cy9uZXR3b3JrLnNoCj4gIGRlbGV0
-ZSBtb2RlIDEwMDc1NSB0ZXN0c2NyaXB0cy90cG1fdG9vbHMuc2gKPiAgZGVsZXRlIG1vZGUgMTAw
-NjQ0IHRlc3RzY3JpcHRzL3llc2VudGVyLnR4dAo+Cj4gLS0KPiAyLjU1LjAKPgoKCi0tIApNYWls
-aW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5saW51eC5pdC9saXN0aW5mby9sdHAK
+Hi Changwei,
+
+On Sep 4, 2026, Changwei Zou wrote:
+> cpuset_memory_spread: count only the test file's page cache
+
+> +		if (query_pages_node(n, pages + off, status + off) == -1) {
+> +			warn("move_pages failed");
+> +			goto out;
+> +		}
+
+Medium: In Linux 7.3, move_pages() is built only when
+CONFIG_NUMA_MIGRATION=y. With it disabled this returns ENOSYS, the helper
+writes "0" to the FIFO, and every case reports TFAIL; require the config and
+report missing syscall support as TCONF.
+
+> +	# the unexpected nodes must hold only a negligible fraction
+> +	if [ $((unexpected_sum * 100)) -ge $((total * UNEXPECTED_TOLERANCE)) ]; then
+> +		return 1
+> +	fi
+
+Low: This rejects an unexpected share of exactly 5%, although the commit
+message and comments say that "at most" 5% is allowed. Use -gt, or document
+5% as an exclusive limit.
+
+Verdict - Needs revision
+
+---
+Note:
+
+The agent can sometimes produce false positives although often its
+findings are genuine. If you find issues with the review, please
+comment this email or ignore the suggestions.
+
+Regards,
+LTP AI Reviewer
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
