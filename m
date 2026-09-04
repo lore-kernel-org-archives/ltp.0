@@ -4,88 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D322FC624DE
-	for <ltp@archiver.kernel.org>; Fri,  4 Sep 2026 12:27:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1788524833; h=message-id :
- to : in-reply-to : date : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : cc : mime-version : content-type :
- content-transfer-encoding : sender : from;
- bh=Gvy64eoKrQvU7gUR75HaV9puh8dZtjWuwKDtqd4XgyU=;
- b=jg1AuSooNJyD+UUDrcdY3sa6Ix7MZONv7D0W225DEXoLY1qF2HMIoIs+qF4lU0yF26n1+
- 28b/+g77WfQsCXuLWNOekldBtlONDsV09xHoFfAYGKkurMHyZRoywCrVp0vrm+PpgWzVuAR
- XngrWQKt1oFjUI+zSrV88XBvKx6TbcM=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 19CDAC624DE
+	for <ltp@archiver.kernel.org>; Fri,  4 Sep 2026 12:41:17 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 189F53E9767
-	for <ltp@archiver.kernel.org>; Fri,  4 Sep 2026 14:27:13 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 6BB013E9769
+	for <ltp@archiver.kernel.org>; Fri,  4 Sep 2026 14:41:15 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id BA3D83CE9EB
- for <ltp@lists.linux.it>; Fri,  4 Sep 2026 14:26:53 +0200 (CEST)
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com
- [IPv6:2a00:1450:4864:20::430])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 21F033C6603
+ for <ltp@lists.linux.it>; Fri,  4 Sep 2026 14:40:58 +0200 (CEST)
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 3A6F72002CD
- for <ltp@lists.linux.it>; Fri,  4 Sep 2026 14:26:53 +0200 (CEST)
-Received: by mail-wr1-x430.google.com with SMTP id
- ffacd0b85a97d-48441a2ba1bso598956f8f.1
- for <ltp@lists.linux.it>; Fri, 04 Sep 2026 05:26:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1788524812; x=1789129612; darn=lists.linux.it;
- h=date:content-transfer-encoding:content-type:subject:in-reply-to:cc
- :to:from:message-id:from:to:cc:subject:date:message-id:reply-to
- :content-type; bh=M5kC2C5DQl7fWgH4ZTOitA2SC8RiNw+10VKKovqGl/4=;
- b=Rm4r+39yPfiSejeVdQbPXv+8kzbYpG98zYw0L/C6dze0GZcciO6y66XEdMx6R3212p
- 74FsC67AO17CqIUVzAOxO+GkQIwF3zaT+HYL1Q22akxJGjwE0QqmrWtUd1qsK+LMEU0g
- l00JrG+3N0WxBn0O0Za+HXT0uhTTlmSx/LFRsPGxNWMKGSxZrKUFawOKNndB50IlSwlt
- Pk4NVYyfbWqiOKeke8INu3jDxo111xfad43KsNa9jjdGkSfXOSI/gRLZOyBsI19rfBuz
- KjDp0i9nI5dx9lJVRCc7YPojs2dQ3GiKZW8le3MFUiuZHv1UIMfx4NXPVuHMD2Y25yUG
- oZHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1788524812; x=1789129612;
- h=date:content-transfer-encoding:content-type:subject:in-reply-to:cc
- :to:from:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject
- :date:message-id:reply-to:content-type;
- bh=M5kC2C5DQl7fWgH4ZTOitA2SC8RiNw+10VKKovqGl/4=;
- b=hn8oWgdtewFixBiViHthC3664Fpk6yP1iq4jVpAt+FlUro77whBQrjKmsNEnWkNYrj
- wF4Hq8CaumCBw1/VsmvZWR7qy6i7P4KuVMq2oQh+WgSOZ1GuIxtedFEyPJO+VFufrj22
- k6I1jLwoMgmE+3n1Csq0BLAEPpfxhBKe1zDT4mqTUVhpqR6IGidNSjlAWdeJ9aeef85a
- UUMy62pmn5zmaxSE7WIpnPqNEU+Dtn4b51gBpg59+fqgrkr9Ru/6hfXeDz0wETRMQvL8
- dzt9LIvaa/QL1Rf9kxKGsculiRIRcWgCeObLRP1dI1pljgprMUVti1b6lIe1sip2PJhE
- NYQA==
-X-Forwarded-Encrypted: i=1;
- AKwUvBwDWLW6RWelH06sZuccL0KdQgpurYedcTa7/5VYL8iXlgiRA1NIR3jEEi04WxATE90O2Fo=@lists.linux.it
-X-Gm-Message-State: AFuF++moOyMg1kSATs0Mz9SO5UiWngwzrZLRo1Hz741iNo/tan1giauU
- RFtiCrOl5IeudeTvfHKy5MxfIFgrxuE3J/tIzI9lbSWyrwPM68oMrxxwORbOwrpRLf0=
-X-Gm-Gg: AYBFou3bZca2cxRgsfDA1MI2IV+/yGECa1KP+IJB+rgcEA3SwK8M/glGXkJP12+VFUB
- Bofej2GjEdPRzyUTCgzDZtvOCqSJq6uO/Yrc6VFynVexKOH7+CmuQeIZ5Cqi5nJSz3EJNjJ5V35
- hfE9+K6U5yKNizvr/laP+KDDFjC1YZ2yVCMCFWO6A8MjxcYUM5OyJ6Z7eYrSvoLsLNIVOHQQJuG
- 1Ox9mi3jUbz6xD2lr788X09tkeTPBMuyUOSoAFl6ekOA3ajga5/uBeDGntBVg0JIUacSTg7BGF6
- wNvryY2q+9iRrEp4q50zIkhswAXylqAOLrJpiGb8DPxaUJOzEbqTr2vMQ9TzPyC47a5DNylE3AX
- jVySD58hgSmxFy+2oPLVeg7aQUlKJVRMcvxFzZSqgUoLxrYb+jaUUHljzzRDayQvY32BmiMyX7l
- S/g8NgDvDxJaywDRfAcMQKX9wttvGs4MQxOknPEdvMbF4uqwauWAH3hrpqcB/hEWpHmsX3A8TnL
- bZl2jBPJnSB
-X-Received: by 2002:a05:6000:46c8:b0:482:e2f2:19c9 with SMTP id
- ffacd0b85a97d-48587290dcamr7473514f8f.2.1788524812458; 
- Fri, 04 Sep 2026 05:26:52 -0700 (PDT)
-Received: from localhost.localdomain
- ([2a02:a31b:84a1:b780:6f4e:21d6:82d2:5333])
- by smtp.gmail.com with ESMTPSA id
- ffacd0b85a97d-4858d312ca0sm2348715f8f.4.2026.09.04.05.26.51
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 04 Sep 2026 05:26:52 -0700 (PDT)
-Message-ID: <6a9ab90c.622c318d.bd035.fd0c@mx.google.com>
-To: linuxtestproject.agent@gmail.com
-In-Reply-To: <20260904122012.9088-1-linuxtestproject.agent@gmail.com>
-Date: Fri, 04 Sep 2026 12:26:51 +0000
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id DA55F1000521
+ for <ltp@lists.linux.it>; Fri,  4 Sep 2026 14:40:57 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1788525658; x=1820061658;
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=KdlsH3ACDSzRI2dDCizAi8/p3ic9D6zblXVhbFsr8LI=;
+ b=AkyG3Ag11fP9nzUmCpxnUiH9qRtUz7O8741WrNHGAJOPFAiT72+kc/me
+ Xmf+nGhHovVcpvu/BgB8+aJjaABMFCX7lItTA3yF2yE+cVCH5ovhaeGST
+ B/CGMqgvzbjSM+JuxQmREmVFDuIvtmnQmmjRkKVg8aTH3l4OVCle4nWMv
+ wccpGLH1GVxB/Mpzu+IEFkCSNhvQyQfI/3UvDlDULpSTat1NoBdMCdBRL
+ bmNHCGdTaXC5ihgbQSiZmu1qdYB7f1MTHa7gaADVzaOn3iSop9xhxtG1o
+ 2RoVIUmLe813BmGhnau0Jse7KLNJ3Y1512K54xeN7wifk6zOrq/GfGHRq g==;
+X-CSE-ConnectionGUID: snGFWtsQSjuFRQwoBRqK5g==
+X-CSE-MsgGUID: o7PYkWYiSXqh2yDvIXLbTg==
+X-IronPort-AV: E=McAfee;i="6800,10657,11895"; a="106544224"
+X-IronPort-AV: E=Sophos;i="6.25,262,1779174000"; d="scan'208";a="106544224"
+Received: from fmviesa007.fm.intel.com ([10.60.135.147])
+ by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 04 Sep 2026 05:40:55 -0700
+X-CSE-ConnectionGUID: Rm8tjBDIRO69LjTeezRPcg==
+X-CSE-MsgGUID: lMP6lSsTQR2fL05Pcv/UhQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.25,262,1779174000"; d="scan'208";a="266780763"
+Received: from pkubaj-desk.igk.intel.com (HELO intel.com) ([10.237.142.111])
+ by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 04 Sep 2026 05:40:54 -0700
+From: Piotr Kubaj <piotr.kubaj@intel.com>
+To: ltp@lists.linux.it
+Date: Fri,  4 Sep 2026 14:40:39 +0200
+Message-ID: <20260904124042.212065-1-piotr.kubaj@intel.com>
+X-Mailer: git-send-email 2.47.3
+MIME-Version: 1.0
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] coredump01: New core_pattern specifiers test
+Subject: [LTP] [PATCH 0/3] pmc_core: cover the PkgC LTR blocker counters
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -97,41 +67,85 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Cc: ltp@lists.linux.it
-MIME-Version: 1.0
+Cc: helena.anna.dubel@intel.com, tomasz.ossowski@intel.com,
+ rafael.j.wysocki@intel.com, daniel.niestepski@intel.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> 
-> This manually dispatches separate functions for the two test cases. Use a
-> single struct tcase array and a generic .test callback, with
-> .tcnt = ARRAY_SIZE(tcases), as required for multi-case tests.
+The intel_pmc_core driver gained a pkgc_ltr_blocker_show debugfs file in
+kernel commit 38c79dd63b72 ("platform/x86/intel/pmc: Enable PkgC LTR
+blocking counter"), first released in v7.2, and nothing covers it yet.
+It reports, per source, how many times an LTR posted by that source
+blocked a package C-state entry.
 
-no need for this.
+Both tests added here need debugfs mounted, so the first patch moves the
+mount handling into the test library instead of open coding it twice.
 
-> 
-> --- [PATCH 2/2] ---
-> 
-> > 		} else if (ph[i].p_type == PT_LOAD) {
-> > 			have_load = 1;
-> > 		}
-> 
-> This only proves that a PT_LOAD header exists, not that its data is present.
-> A short dump_emit() after the headers and notes leaves WCOREDUMP set, so a
-> truncated core can pass every check here. Validate p_offset + p_filesz against
-> core_len with overflow-safe arithmetic for every file-backed segment.
-> 
+1/3 adds tst_test.needs_debugfs: the library mounts debugfs at
+    /sys/kernel/debug during setup unless it is mounted there already,
+    reports TCONF if it cannot, and unmounts it afterwards only if it did
+    the mount. A lib/newlib_tests self-test covers both cases. Tests
+    reading any other debugfs file can use it as well.
 
-this is valid
+2/3 checks what the file says: every line is a PKGC_PREVENT_LTR_<SOURCE>
+    token followed by one u32 value, the file reads to EOF rather than
+    erroring out mid-way, the counter set is stable across two reads, and
+    no counter advances by more entries than the package could have
+    attempted over the interval.
 
---
-Andrea Cervesato
-SUSE QE Automation Engineer Linux
-andrea.cervesato@suse.com
+3/3 checks the invariant behind the counters: a package C-state entry is
+    only attempted once every CPU in the package is idle, so counters
+    that keep advancing with every CPU busy are not counting blocked
+    entries. The test proves the counters are alive while idling first,
+    so that a counter stuck at a constant value cannot pass for free.
+
+Both tests bound what they accept in time rather than against a hardcoded
+counter list, because the counter set is platform specific. That is what
+catches a telemetry region read at the wrong offset, which overshoots the
+bounds by orders of magnitude.
+
+Tested on Nova Lake running 7.3.0-rc1, with debugfs both mounted and
+unmounted beforehand, and in the latter case the mount state is restored
+after the run. The TFAIL and TCONF paths were exercised against fake
+counter files.
+
+Piotr Kubaj (3):
+  lib: add tst_test.needs_debugfs flag
+  pmc_core: add test for pkgc_ltr_blocker_show
+  pmc_core: add ltr_counter test
+
+ doc/developers/writing_tests.rst              |   3 +
+ include/tst_fs.h                              |   4 +
+ include/tst_test.h                            |   8 +
+ lib/newlib_tests/.gitignore                   |   1 +
+ lib/newlib_tests/runtest.sh                   |   1 +
+ lib/newlib_tests/tst_needs_debugfs.c          |  37 ++
+ lib/tst_test.c                                |  35 ++
+ metadata/metaparse.c                          |   1 +
+ runtest/power_management_tests                |   2 +
+ testcases/kernel/power_management/.gitignore  |   2 +
+ .../kernel/power_management/ltr_counter.c     | 355 ++++++++++++++++++
+ .../power_management/pkgc_ltr_blocker_show.c  | 294 +++++++++++++++
+ 12 files changed, 743 insertions(+)
+ create mode 100644 lib/newlib_tests/tst_needs_debugfs.c
+ create mode 100644 testcases/kernel/power_management/ltr_counter.c
+ create mode 100644 testcases/kernel/power_management/pkgc_ltr_blocker_show.c
+
+
+base-commit: 82568ba8fad0120a9305f7a263ddb6d9d74c4f61
+-- 
+2.47.3
+
+---------------------------------------------------------------------
+Intel Technology Poland sp. z o.o.
+ul. Slowackiego 173 | 80-298 Gdansk | Sad Rejonowy Gdansk Polnoc | VII Wydzial Gospodarczy Krajowego Rejestru Sadowego - KRS 101882 | NIP 957-07-52-316 | Kapital zakladowy 200.000 PLN.
+Spolka oswiadcza, ze posiada status duzego przedsiebiorcy w rozumieniu ustawy z dnia 8 marca 2013 r. o przeciwdzialaniu nadmiernym opoznieniom w transakcjach handlowych.
+
+Ta wiadomosc wraz z zalacznikami jest przeznaczona dla okreslonego adresata i moze zawierac informacje poufne. W razie przypadkowego otrzymania tej wiadomosci, prosimy o powiadomienie nadawcy oraz trwale jej usuniecie; jakiekolwiek przegladanie lub rozpowszechnianie jest zabronione.
+This e-mail and any attachments may contain confidential material for the sole use of the intended recipient(s). If you are not the intended recipient, please contact the sender and delete all copies; any review or distribution by others is strictly prohibited.
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
