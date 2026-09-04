@@ -4,90 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 81262C624DE
-	for <ltp@archiver.kernel.org>; Fri,  4 Sep 2026 07:42:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 00FDFC79F80
+	for <ltp@archiver.kernel.org>; Fri,  4 Sep 2026 07:42:16 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B2ACF3E935B
-	for <ltp@archiver.kernel.org>; Fri,  4 Sep 2026 09:42:00 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 53E583E57EF
+	for <ltp@archiver.kernel.org>; Fri,  4 Sep 2026 09:42:15 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2EC5E3E57EF
+ by picard.linux.it (Postfix) with ESMTPS id 7491E3E6F28
  for <ltp@lists.linux.it>; Fri,  4 Sep 2026 09:41:31 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 36D02600F18
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id DB0442010E5
  for <ltp@lists.linux.it>; Fri,  4 Sep 2026 09:41:30 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id BD44922B02;
- Fri,  4 Sep 2026 07:41:20 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 9C0461FD69;
+ Fri,  4 Sep 2026 07:41:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1788507684; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1788507685; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=vY67GMoIoK5urrl2Po3CVKS7E0r3nKYjofB5+zq5kp0=;
- b=XXfAJ4O9K2y4MJl8O+AoJzIobPfqOFZDwLpeOnAT3dh49lsoN+eqZYJFriNXYGgVdmUyYm
- eVFa2NiTBfy+g3FqxkGR6lcxYsxDVjLoR14wLOsFUULMxCflVSFD5oKsPj13ds1ORZtgQ4
- +OJs8Dnnda+nZNAFHVGRG+RU71UxWnY=
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=BH7DGf0aqzIuJvH7GFUcZtDbUhKLj0ldYvRtJjs6rA4=;
+ b=iig/OqzrS/SEPz+v2INPeRNhlEiyqxyN+5kt2WtTLMY3ISJCM/WjK6M1+9h0QBX+gZku20
+ 14SZu9qxidUASsp+0OUlhwjE3+P1PWxVeUE/ksbVeXEAYtP4KKmZ6FnC4m/G9SZRSUTMHu
+ XX2a1NFhqYuXcZSyz6+YHU8omRIc7/M=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1788507684;
+ s=susede2_ed25519; t=1788507685;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=vY67GMoIoK5urrl2Po3CVKS7E0r3nKYjofB5+zq5kp0=;
- b=oO8W+nnTr7ggcj/FLVbya5XG3+YJcylsKeKne289Qa7KsNf/Z9rxwi6U5Uf/qd8O87yisG
- tJCuViwpmu6nLYDg==
-Authentication-Results: smtp-out1.suse.de;
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=BH7DGf0aqzIuJvH7GFUcZtDbUhKLj0ldYvRtJjs6rA4=;
+ b=4HlAmOh2qMf1VT5PZq3gDffTmrKPW8G98MqceRsIyqd3v3mL4AhHpeEYTG4E484asI+PMm
+ q1pwSNwRLDXXXIDQ==
+Authentication-Results: smtp-out2.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1788507680; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1788507681; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=vY67GMoIoK5urrl2Po3CVKS7E0r3nKYjofB5+zq5kp0=;
- b=B6uraS7BLfxBA/4LNuuju816RWDT/IW7rUiZIHnT41oeAZI2fUP/H0W34k/K5DGjQzwddq
- TipDTM59kLbCNdMArWueavi5eK7M6lpOUWxEoo1MQY1RyyDTmaAaLlIl9o7CcZAWOOq/h5
- iTofPuLemaThua7EkdSeLAvmhJdkVrs=
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=BH7DGf0aqzIuJvH7GFUcZtDbUhKLj0ldYvRtJjs6rA4=;
+ b=X1lvsoashi4YPJUavDeDNiVX/DZp575PMxfSkCHSuZdqWN2NAm7ObWqwvZTYu79MMqNSPY
+ 5P4Pk2vd6EC+iW8b8e4Z7w5OenOMMMM8P71ziIZnqihv+hX9OjvEpL8d0+I6jsjHV+IARm
+ W33UYzRaDR8IVn85BQCtNnb4lsgfEts=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1788507680;
+ s=susede2_ed25519; t=1788507681;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=vY67GMoIoK5urrl2Po3CVKS7E0r3nKYjofB5+zq5kp0=;
- b=epIAhZ3LUSQBb9K16n4Qc/nVU1u81THvtuyo8/Ku2ZAURaX5XZ+4m94AA87r94HdKusDp8
- zT/8lpFULFFU+fAQ==
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=BH7DGf0aqzIuJvH7GFUcZtDbUhKLj0ldYvRtJjs6rA4=;
+ b=smzkrflmO61R5lIztj8KcKSfqYbxzBTeiXpltEwktTvZn71TTSxJtfEYV8ewyMULuStC43
+ LHyva7T/E/gfxNAw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7CBD813736;
- Fri,  4 Sep 2026 07:41:20 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3B7FB13869;
+ Fri,  4 Sep 2026 07:41:21 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id KRu3GyB2mmoGHAAAD6G6ig
- (envelope-from <andrea.cervesato@suse.de>); Fri, 04 Sep 2026 07:41:20 +0000
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 6E3/CyF2mmoGHAAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>); Fri, 04 Sep 2026 07:41:21 +0000
 From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Fri, 04 Sep 2026 09:41:18 +0200
-Message-Id: <20260904-cve-ghostlock-v8-0-bd999083c7fb@suse.com>
+Date: Fri, 04 Sep 2026 09:41:21 +0200
 MIME-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAB52mmoC/33PwU4DIRDG8VdpOIuBAQboyfcwHhZ26BK1mKVuN
- M2+u2wvbjD2+JH8/hmurNKcqbLj4cpmWnLN5dyGeziwOA3nE/E8ts1AAAonJI8L8dNU6uWtxFe
- ORDpAQp9GZM18zJTy1633/NL2lOulzN+3/CK31/9Ki+SCS+tayyVvBTzVz0qPsbyzLbTAHqseQ
- 8MBhXHOGSW16LC6i1XDcSSn0qDBB9thvcOAPdYNG6Do9YioTOqw+cVeQI/NhtEHT0FZr2WHcY/
- /nI0NDwoshOAk6bHD9i62DVsryfthUMLs/7yu6w+Q/bf0FwIAAA==
-X-Change-ID: 20260801-cve-ghostlock-6ee4b2f69fd6
+Message-Id: <20260904-cve-ghostlock-v8-3-bd999083c7fb@suse.com>
+References: <20260904-cve-ghostlock-v8-0-bd999083c7fb@suse.com>
+In-Reply-To: <20260904-cve-ghostlock-v8-0-bd999083c7fb@suse.com>
 To: Linux Test Project <ltp@lists.linux.it>
 X-Mailer: b4 0.16.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1788507680; l=4281;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1788507680; l=2886;
  i=andrea.cervesato@suse.com; s=20251210; h=from:subject:message-id;
- bh=wxSkxM2YrigOGCGd0Hp3ZJRDfdjMGibLITpTe7+czEg=;
- b=lVPdXbgQerhARlMbOK248hKrLaDuwgaaW0jpwDpHMI5dZWmqS/qcbozz8FN0J/bBF5fd/y+Vm
- c+FMfLwGsvRAJAxBaLvIOJVAlLxzQeYbHVYLE5BTDA1xRrCukrzZEum
+ bh=y9d9josT3h9ixKPrnx3v7RCAXAhCRULCCJbMwXyWvZk=;
+ b=7LU6Fzm9h2tpu0TrEFl4SRmPboah08rcGdc3nFXKncrfMlReywyK3P5r6tftj67E/eojIjo1I
+ J3rDVBjv+mxCR8+XTfxAwLtBCHrwZW61q3/jnegkCt/1+pDrnFzMYzy
 X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
  pk=zKY+6GCauOiuHNZ//d8PQ/UL4jFCTKbXrzXAOQSLevI=
 X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
@@ -99,11 +99,11 @@ X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  TO_DN_ALL(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
  FROM_HAS_DN(0.00)[]; MIME_TRACE(0.00)[0:+];
  FROM_EQ_ENVFROM(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo, suse.com:email,
- suse.com:mid, nebusec.ai:url, linux.it:email]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo, suse.com:mid,
+ suse.com:email]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v8 0/5] Reproducer for ghostlock
+Subject: [LTP] [PATCH v8 3/5] lapi/sched: add SAFE_SCHED_SETATTR()
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -120,100 +120,95 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Test for CVE-2026-43499 (GhostLock), a stack use-after-free in the
-rtmutex PI code, fixed in kernel v7.1:
-3bfdc63936dd ("rtmutex: Use waiter::task instead of current in remove_waiter()")
+From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-Reproducer based on the Nebula Security writeup and open-sourced PoC
-(https://nebusec.ai/research/ionstack-part-2/, https://github.com/NebuSec/CyberMeowfia).
-Beware, this test will crash the system on a vulnerable kernel.
-
-Assisted by Kimi K3 for the analysis and written mostly with Gemini Pro
-3.1 Max.
+Add a safe variant of sched_setattr() that breaks the test with TBROK
+on failure and use it in sched_setattr01 and sched_getattr01.
 
 Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
-Changes in v8:
-- remove PR_SET_MM_MAP_SIZE from commit message
-- remove redundant assignment in ghostlock
-- Link to v7: https://lore.kernel.org/20260903-cve-ghostlock-v7-0-771e99aa3057@suse.com
+ include/lapi/sched.h                               | 29 ++++++++++++++++++++++
+ .../syscalls/sched_getattr/sched_getattr01.c       |  5 ++--
+ .../syscalls/sched_setattr/sched_setattr01.c       |  2 +-
+ 3 files changed, 32 insertions(+), 4 deletions(-)
 
-Changes in v7:
-- wrap doc-comment lines in sched_setattr01 to stay under 80 columns
-- allocate read_attr via .bufs in sched_getattr01
-- keep const in sched_setattr() fallback prototype in lapi/sched.h
-- update SAFE_SCHED_SETATTR() commit message to describe test usage and remove forward references
-- remove unused PR_SET_MM_MAP_SIZE fallback definition from lapi/prctl.h
-- wrap doc-comment lines in ghostlock.c to stay under 80 columns
-- format multi-line comment in ghostlock.c spray loop
-- add explanation comment for try_sizes[] in ghostlock.c
-- check return values of TST_THREAD_STATE_WAIT() in ghostlock.c
-- check futex_lock_pi() and futex_unlock_pi() returns, report ENOSYS as TCONF, and abort on errors
-- add ENOSYS checks for FUTEX_WAIT_REQUEUE_PI and FUTEX_CMP_REQUEUE_PI in ghostlock.c
-- Link to v6: https://lore.kernel.org/20260903-cve-ghostlock-v6-0-a3272bb81e4d@suse.com
+diff --git a/include/lapi/sched.h b/include/lapi/sched.h
+index 05b322c1c..22cd27e6d 100644
+--- a/include/lapi/sched.h
++++ b/include/lapi/sched.h
+@@ -169,4 +169,33 @@ static inline int getcpu(unsigned *cpu, unsigned *node)
+ # define CLONE_INTO_CGROUP 0x200000000ULL
+ #endif
+ 
++static inline int safe_sched_setattr(const char *file, const int lineno,
++				     pid_t pid, struct sched_attr *attr,
++				     unsigned int flags)
++{
++	int ret;
++
++	ret = sched_setattr(pid, attr, flags);
++
++	if (ret == -1) {
++		tst_brk_(file, lineno, TBROK | TERRNO,
++			"sched_setattr(%i) failed", pid);
++	}
++
++	return ret;
++}
++
++/**
++ * SAFE_SCHED_SETATTR() - Safe wrapper for sched_setattr().
++ * @pid: Target process or thread ID (0 for caller).
++ * @attr: Pointer to a sched_attr structure.
++ * @flags: Flags modifying the scheduling behavior.
++ *
++ * Calls sched_setattr() and breaks the test with TBROK | TERRNO on failure.
++ *
++ * Return: Zero on success.
++ */
++#define SAFE_SCHED_SETATTR(pid, attr, flags)\
++	safe_sched_setattr(__FILE__, __LINE__, (pid), (attr), (flags))
++
+ #endif /* LAPI_SCHED_H__ */
+diff --git a/testcases/kernel/syscalls/sched_getattr/sched_getattr01.c b/testcases/kernel/syscalls/sched_getattr/sched_getattr01.c
+index 0edd9e47e..bd05164ca 100644
+--- a/testcases/kernel/syscalls/sched_getattr/sched_getattr01.c
++++ b/testcases/kernel/syscalls/sched_getattr/sched_getattr01.c
+@@ -34,7 +34,7 @@ static void reset_sched(void)
+ 		.sched_policy = SCHED_OTHER,
+ 	};
+ 
+-	sched_setattr(0, &normal, 0);
++	SAFE_SCHED_SETATTR(0, &normal, 0);
+ }
+ 
+ static void run(void)
+@@ -47,8 +47,7 @@ static void run(void)
+ 		.sched_period = PERIOD_VAL,
+ 	};
+ 
+-	if (sched_setattr(0, &attr, 0) == -1)
+-		tst_brk(TBROK | TERRNO, "sched_setattr() failed");
++	SAFE_SCHED_SETATTR(0, &attr, 0);
+ 
+ 	memset((void *)read_attr, 0, sizeof(*read_attr));
+ 
+diff --git a/testcases/kernel/syscalls/sched_setattr/sched_setattr01.c b/testcases/kernel/syscalls/sched_setattr/sched_setattr01.c
+index 721620850..9d121327b 100644
+--- a/testcases/kernel/syscalls/sched_setattr/sched_setattr01.c
++++ b/testcases/kernel/syscalls/sched_setattr/sched_setattr01.c
+@@ -130,7 +130,7 @@ static void reset_sched(void)
+ 		.sched_policy = SCHED_OTHER,
+ 	};
+ 
+-	sched_setattr(0, &normal, 0);
++	SAFE_SCHED_SETATTR(0, &normal, 0);
+ }
+ 
+ static void verify_sched_setattr(unsigned int n)
 
-Changes in v6:
-- drop const from sched_setattr() and safe_sched_setattr() prototypes to match glibc 2.41+
-- add kernel-doc comment for SAFE_SCHED_SETATTR()
-- fix struct prctl_mm_map fallback guard in lapi/prctl.h
-- validate futex_wait_requeue_pi() outcome before waking spray checkpoint
-- sort ghostlock entry in testcases/cve/.gitignore
-- Link to v5: https://lore.kernel.org/20260902-cve-ghostlock-v5-0-569b9eb37941@suse.com
-
-Changes in v5:
-- reduced synchronization checkpoints from 5 to 3
-- introduced and used SAFE_SCHED_SETATTR() in lapi/sched.h
-- dropped unused PR_SET_MM_MAP_SIZE probe in setup()
-- fixed duplicated -pthread entry in Makefile
-- fixed CVE numerical ordering in runtest/cve
-- Link to v4: https://lore.kernel.org/20260826-cve-ghostlock-v4-0-52ec94d6635f@suse.com
-
-Changes in v4:
-- handle runtime inside the test
-- increase futext wait so we don't TBROK before runtime
-- comment prctl() syscall
-- move static vars out of the run function
-- Link to v3: https://lore.kernel.org/20260803-cve-ghostlock-v3-0-cde83fa429b7@suse.com
-
-Changes in v3:
-- improve sync mechanism
-- fix lapi imports
-- Link to v2: https://lore.kernel.org/20260803-cve-ghostlock-v2-0-b60588853140@suse.com
-
-Changes in v2:
-- fix build
-- fix 32bit run
-- Link to v1: https://lore.kernel.org/20260801-cve-ghostlock-v1-0-178f698f9702@suse.com
-
-To: Linux Test Project <ltp@lists.linux.it>
-
----
-Andrea Cervesato (5):
-      sched_setattr01: Convert to new API
-      sched_getattr01: Convert to new API
-      lapi/sched: add SAFE_SCHED_SETATTR()
-      lapi/prctl: add more fallback definitions
-      cve: add CVE-2026-43499 reproducer
-
- configure.ac                                       |   2 +
- include/lapi/prctl.h                               |  24 ++
- include/lapi/sched.h                               |  29 +++
- runtest/cve                                        |   1 +
- testcases/cve/.gitignore                           |   1 +
- testcases/cve/Makefile                             |   2 +-
- testcases/cve/ghostlock.c                          | 277 +++++++++++++++++++++
- testcases/kernel/syscalls/sched_getattr/Makefile   |   1 -
- .../syscalls/sched_getattr/sched_getattr01.c       | 134 ++++------
- testcases/kernel/syscalls/sched_setattr/Makefile   |   1 -
- .../syscalls/sched_setattr/sched_setattr01.c       | 231 ++++++++++-------
- 11 files changed, 529 insertions(+), 174 deletions(-)
----
-base-commit: 12724413534a6d4160ff9694ba6f09daa4ccb6bd
-change-id: 20260801-cve-ghostlock-6ee4b2f69fd6
-
-Best regards,
---  
-Andrea Cervesato <andrea.cervesato@suse.com>
+-- 
+2.51.0
 
 
 -- 
