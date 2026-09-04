@@ -4,64 +4,96 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7359AC79F80
-	for <ltp@archiver.kernel.org>; Fri,  4 Sep 2026 09:52:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0ABFDC61DD6
+	for <ltp@archiver.kernel.org>; Fri,  4 Sep 2026 10:23:45 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9E0233E937A
-	for <ltp@archiver.kernel.org>; Fri,  4 Sep 2026 11:52:14 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 3340A3E93A3
+	for <ltp@archiver.kernel.org>; Fri,  4 Sep 2026 12:23:44 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 7FCB73E523D
- for <ltp@lists.linux.it>; Fri,  4 Sep 2026 11:51:59 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+ by picard.linux.it (Postfix) with ESMTPS id 85C993E570A
+ for <ltp@lists.linux.it>; Fri,  4 Sep 2026 12:23:29 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 01B22200040
- for <ltp@lists.linux.it>; Fri,  4 Sep 2026 11:51:58 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id DC5851A0118F
+ for <ltp@lists.linux.it>; Fri,  4 Sep 2026 12:23:28 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id D055A2199D;
- Fri,  4 Sep 2026 09:51:57 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id C7EF72285F;
+ Fri,  4 Sep 2026 10:23:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1788517407; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=+qEjuQevZqyO6CweEJ3yMgcImI5q9b4HueNFxukrWBY=;
+ b=cN1HZZ4fLTPHutWI0uy6zdX11T+1NPUqVggxracGUyaNm7nukx5hsFJVLi1GpqjwZXlH1q
+ 8k7aRBPD/mvqbOGHSBeTiU5iBEY1xnI3VURorUy80fUn05KDqWzIjRNCnEVYGEDP9oa30E
+ ZPtO9aT4wnWM8oIUofTSAnnGSR56MBU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1788517407;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=+qEjuQevZqyO6CweEJ3yMgcImI5q9b4HueNFxukrWBY=;
+ b=4+fcOb/2Uchf1uMakZVHNYgnZxguyXL6P1JFGW2EcGxgiWtKExxFtgrCK/DnHHZ7aaHCoI
+ Hn22hRX7dnvHBAAA==
 Authentication-Results: smtp-out1.suse.de;
 	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1788517407; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=+qEjuQevZqyO6CweEJ3yMgcImI5q9b4HueNFxukrWBY=;
+ b=cN1HZZ4fLTPHutWI0uy6zdX11T+1NPUqVggxracGUyaNm7nukx5hsFJVLi1GpqjwZXlH1q
+ 8k7aRBPD/mvqbOGHSBeTiU5iBEY1xnI3VURorUy80fUn05KDqWzIjRNCnEVYGEDP9oa30E
+ ZPtO9aT4wnWM8oIUofTSAnnGSR56MBU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1788517407;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=+qEjuQevZqyO6CweEJ3yMgcImI5q9b4HueNFxukrWBY=;
+ b=4+fcOb/2Uchf1uMakZVHNYgnZxguyXL6P1JFGW2EcGxgiWtKExxFtgrCK/DnHHZ7aaHCoI
+ Hn22hRX7dnvHBAAA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4CF9613678;
- Fri,  4 Sep 2026 09:51:57 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 982E713726;
+ Fri,  4 Sep 2026 10:23:27 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 7pyRDb2UmmoPJAAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Fri, 04 Sep 2026 09:51:57 +0000
-Date: Fri, 4 Sep 2026 11:51:55 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20260904095155.GB1206368@pevik>
-References: <20260904-min_kernel-v1-1-47b556550780@suse.com>
- <apqNcb103ZVuzpIf@yuki.lan>
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 9JkeJR+cmmq1SAAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Fri, 04 Sep 2026 10:23:27 +0000
+Date: Fri, 4 Sep 2026 12:23:35 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Wei Gao <wegao@suse.com>
+Message-ID: <apqcJ1RwtKAI1DF4@yuki.lan>
+References: <20260825022926.9649-1-wegao@suse.com>
+ <20260902025816.3915-1-wegao@suse.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <apqNcb103ZVuzpIf@yuki.lan>
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Rspamd-Queue-Id: D055A2199D
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	REPLY(-4.00)[]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+In-Reply-To: <20260902025816.3915-1-wegao@suse.com>
+X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ NEURAL_HAM_SHORT(-0.20)[-0.999]; MIME_GOOD(-0.10)[text/plain];
+ ARC_NA(0.00)[]; MIME_TRACE(0.00)[0:+]; MISSING_XM_UA(0.00)[];
+ TO_DN_SOME(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ RCVD_TLS_ALL(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ FROM_HAS_DN(0.00)[]; RCPT_COUNT_THREE(0.00)[3];
+ FROM_EQ_ENVFROM(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ RCVD_COUNT_TWO(0.00)[2];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:email]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] lib: Check minimal supported kernel version
+Subject: Re: [LTP] [PATCH v2] mmapstress06: Use memory.high in cgroup v2 to
+ start swapping early
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -73,36 +105,18 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: Linux Test Project <ltp@lists.linux.it>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> Hi!
-> > LTP does not support kernels older than 4.4, but this requirement was
-> > only documented in static text without automated runtime validation.
+Hi!
+Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
 
-> > Define the minimal supported kernel version in tst_kvercmp.h so that
-> > the documentation fetches it dynamically and the core library aborts
-> > unsupported kernels with TCONF during test setup.
-
-> Great idea, but I wouldn't tst_brk() on older kernels, I would just
-> print a message that there may be failures becuase older kernels are not
-> supported or tested.
-
-Yes, exactly, tst_brk() is way too aggressive. tst_res(TINFO) is good enough
-to give the information without deliberately break all the tests.
-
-> LTP has been historically used for many different purposes, e.g. for
-> testing BSD compatibility layout for running Linux binaries and I fear
-> that hard stop on older kernel versions would break these usecases.
-
-+1.
-
-Kind regards,
-Petr
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
