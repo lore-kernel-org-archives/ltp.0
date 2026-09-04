@@ -4,118 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5F3B4C79F85
-	for <ltp@archiver.kernel.org>; Fri,  4 Sep 2026 12:17:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3E7ECC61DD6
+	for <ltp@archiver.kernel.org>; Fri,  4 Sep 2026 12:18:24 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 718983E935B
-	for <ltp@archiver.kernel.org>; Fri,  4 Sep 2026 14:17:50 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 848FE3E975D
+	for <ltp@archiver.kernel.org>; Fri,  4 Sep 2026 14:18:22 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9A7183E978F
- for <ltp@lists.linux.it>; Fri,  4 Sep 2026 14:09:18 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 5C0183E9792
+ for <ltp@lists.linux.it>; Fri,  4 Sep 2026 14:17:20 +0200 (CEST)
+Received: from mail-oo2-x08.google.com (mail-oo2-x08.google.com
+ [IPv6:2607:f8b0:4864:31::8])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 872BE100113E
- for <ltp@lists.linux.it>; Fri,  4 Sep 2026 14:09:18 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id CE1071FE88;
- Fri,  4 Sep 2026 12:09:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1788523754; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=O03HI6NdFud6YXCgTztjtcyDojzTMx+tAucdnI6+dZk=;
- b=XB8+hFakTHNaoiOYJOhMm1mc5b+FjEHtRq/t01YUsjB2Ht9iKhHFMQgP4laby9rZgfAr0x
- 01D6qJuHrqBqXjGGYuejnTv51tv0RXKWwk2tOrMCpDNQOglsb8jYV+ueZPMkDtViX9uwsy
- qfaO/QR2fRKMtN0ReTqYSi0g/NpEqhU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1788523754;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=O03HI6NdFud6YXCgTztjtcyDojzTMx+tAucdnI6+dZk=;
- b=4CkglcSUu/6med1HxedyZyz5pWasFLazqDPrQg1goi/2VQJu9it/3owJfveV8jFZF7b2fZ
- 0DNjbyNa3ycGTYAA==
-Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.de header.s=susede2_rsa header.b=uTrwC5xk;
- dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=bZJaNgbY
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1788523749; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=O03HI6NdFud6YXCgTztjtcyDojzTMx+tAucdnI6+dZk=;
- b=uTrwC5xk/FA8QjNIERC5FMg/wwXABwgl2sPB3CcyVvXFelMNk4wkpXNDgLY1FJU/O4rJ52
- BF90KIozdOWX8rMNo+wwHw5ReoYrXBL7+YE/5gIdP7TnIinDb0CmuGfr/oeRVrNsC34djm
- u2DZ/1eXh4at4IX0IC5RaV0ounDqmLM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1788523749;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=O03HI6NdFud6YXCgTztjtcyDojzTMx+tAucdnI6+dZk=;
- b=bZJaNgbYfFi+Lf8lAnmsnfvbeD4CSQ/of6qbFsGzNS4J9CjYk82vb7mbiMrFGQmBsdiknX
- 6sEWJZsQotcv1cAg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 174EA139EF;
- Fri,  4 Sep 2026 12:08:58 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id AC/7Atq0mmpENgAAD6G6ig
- (envelope-from <andrea.cervesato@suse.de>); Fri, 04 Sep 2026 12:08:58 +0000
-From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Fri, 04 Sep 2026 14:09:16 +0200
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 79326600437
+ for <ltp@lists.linux.it>; Fri,  4 Sep 2026 14:17:20 +0200 (CEST)
+Received: by mail-oo2-x08.google.com with SMTP id
+ 006d021491bc7-6b128c3af4bso65795eaf.0
+ for <ltp@lists.linux.it>; Fri, 04 Sep 2026 05:17:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20251104; t=1788524239; x=1789129039; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to:content-type;
+ bh=XSF+Nq69G/jvZDGeDONrI4RG5Yp/LQW2bYbDQvdPi8g=;
+ b=KsqUYiDr6ImM3ah1ypuLfXmMKYqaFVcraQo3mOaxerKuPDH21NhcaCAnzc/+wzuY/K
+ oYrgkbkq6Gtrslx46cKB11j4vM8amLZj4EzK79kwQISApBGveWxtR2IVIAOGiZbX60fn
+ /g/FrPIcukxLiysf6k7d42BAXIhwTOtbfghXdajob6urjml+L+2kBdDFUnMSNcU5bUf1
+ f2KqUa34+LoM6IaFi2YjqOXojrTz4ovsTG5cJf/UQkuw0iR0V55XoQtmTLomeP8M5gkC
+ ygt4YHia04B9CKQqkSXy0+/6DMmE2xkM2buzy3RHoV+McxXBd9N1uDMlQrQU4FSCAG2h
+ Znww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1788524239; x=1789129039;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to:content-type;
+ bh=XSF+Nq69G/jvZDGeDONrI4RG5Yp/LQW2bYbDQvdPi8g=;
+ b=cdrxpaERHBu4r1PNeBP1O435pF8hTORcNErvjTggM+aKHfnmRRvBt3WI5oCY/h11ui
+ sr2pycRSzosc4ERUShduea3F05USC8DJw8I7NIT5nWXQwQ8PYP1CzZcGzKeKtaIX27bo
+ +uTTfz1Z4wxjxkwWC5k5zeMEAVxg5865JU0r8QyQgWo5eqov8b0raxBqE7YCe5GeF/Tx
+ bLmReQt9TykEYkxvuhLcRZ2dLuiVwGp11VTzawWF05CJyyH8MLWrUQa577RngTjRFpRV
+ QhcUPk+whlfGHKK7v+wC5labqidYrD8PWA2oZA09kPK4wmTyB9unxBroCmwrfKZvkYvZ
+ apNw==
+X-Gm-Message-State: AFuF++mK2LC16p4v+iyUZc9h05/sdAM1pzosaOcAxpV+J/7yV1k/1XfK
+ krTdDJufTdeLFd+VZ+APvw6cYw8YEPWcCOOG1TmjMuqgHfz9s8FMfdeP
+X-Gm-Gg: AYBFou0U7G41s8xpKQYEik+ijQCqEYfs2jmL/fb4r0w6pyH3Ea+FLfCLRqrVW6I5Ca/
+ /OsMbZ0xFErN1VkGvyh+xtDj+zPgqoaEDVxSm2cOlFupTyCfWe/9wbXPOJjAqJQGqvA4cKbfdKK
+ yV7+Z0B2gWyXNR09hoxTFAKTVnmRmbN/6T7pEyvyPL7iE0QogqtXe7iWWPppqxOwN76tiB/9V3h
+ nCxIoqHDo4c5bkUFyH1Cv5Xtq3+Ri4mKeXd1XihXiMTDpm1c3MrGpd04R02ieUzDBIvxaE3/j7d
+ UJP7ZFoyGK0aAgdx8pCXYeNRif/TdmAndeySI8KaWeLe5PGmt5A1hdTF1Cb5d5biooMElhYTMHj
+ HBP7zvebp15qdH/aciYK1ZpN7uTZHKGDqWMNdyVQiP+RW0bUyUPELqEyAvSBlrw7ZmcEwimgSHn
+ RMqxg8v16hP/kuFgT011ASaCe0InoBBVpPubzMb6Fu2dVEF+wwe3YtqthmnH7aj4qJKppHvqFD5
+ FFzzENyb2Jbcxf8DVDC3cxwLXJ8P1VQPctaVfB+FUg5ILAabYJiE+A8BGz2fPaVDt/i/yPy6AaT
+ mg==
+X-Received: by 2002:a05:6820:1501:b0:6b7:8396:f3d0 with SMTP id
+ 006d021491bc7-6b78396f856mr1551099eaf.50.1788524238957; 
+ Fri, 04 Sep 2026 05:17:18 -0700 (PDT)
+Received: from
+ runnervmgx7h7.ogivjxsiwz1ezf4lkjajubtz0a.yx.internal.cloudapp.net
+ ([172.208.154.25]) by smtp.gmail.com with ESMTPSA id
+ 5a478bee46e88-3339a534152sm6285184eec.10.2026.09.04.05.17.18
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 04 Sep 2026 05:17:18 -0700 (PDT)
+From: linuxtestproject.agent@gmail.com
+To: Jan Stancek <jstancek@redhat.com>
+Date: Fri,  4 Sep 2026 12:17:17 +0000
+Message-ID: <20260904121717.8675-1-linuxtestproject.agent@gmail.com>
+X-Mailer: git-send-email 2.55.0
+In-Reply-To: <a308e12198ce96305761a009858fa4a80c91f932.1788518850.git.jstancek@redhat.com>
+References: <a308e12198ce96305761a009858fa4a80c91f932.1788518850.git.jstancek@redhat.com>
 MIME-Version: 1.0
-Message-Id: <20260904-keyctl_coverage-v2-27-43b78b15ef9f@suse.com>
-References: <20260904-keyctl_coverage-v2-0-43b78b15ef9f@suse.com>
-In-Reply-To: <20260904-keyctl_coverage-v2-0-43b78b15ef9f@suse.com>
-To: Linux Test Project <ltp@lists.linux.it>
-X-Mailer: b4 0.16.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1788523731; l=2225;
- i=andrea.cervesato@suse.com; s=20251210; h=from:subject:message-id;
- bh=TWbrA6+7G+Y9x6T8cQitSYTVNWQC1CwuzfuHBAj1NxI=;
- b=JtINYkE+fisLW/hj/NZltPSweJFI3Pze4ezJbo+lyVEfp2wXp9mspPsJ3RlpjbLIMBWJi370U
- VfBU8tb9ZimAlqapHPrLaHFWYPzn+FlqazQUfM7KM/U7yC4hRxsF6/r
-X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
- pk=zKY+6GCauOiuHNZ//d8PQ/UL4jFCTKbXrzXAOQSLevI=
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: CE1071FE88
-X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[99.99%];
- NEURAL_HAM_LONG(-1.00)[-1.000];
- R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- ARC_NA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- MIME_TRACE(0.00)[0:+]; RCPT_COUNT_TWO(0.00)[2];
- RCVD_TLS_ALL(0.00)[];
- URIBL_BLOCKED(0.00)[suse.com:email,suse.com:mid,suse.de:dkim,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.de:dkim,suse.com:email,suse.com:mid];
- TO_DN_ALL(0.00)[]; DKIM_TRACE(0.00)[suse.de:+]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 27/33] lapi/keyctl.h: Add capability fallback
- defines
+Subject: Re: [LTP] getrusage03: Pin the test to a single CPU
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -127,100 +92,55 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Andrea Cervesato <andrea.cervesato@suse.com>
+Hi Jan,
 
-Add fallback definitions for KEYCTL_CAPABILITIES, KEYCTL_CAPS0_*,
-and KEYCTL_CAPS1_* constants, and update safe_keyctl to handle
-KEYCTL_CAPABILITIES.
+On Sep 4, 2026, Jan Stancek wrote:
+> getrusage03: Pin the test to a single CPU
 
-Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+> +/*
+> + * Pin the process (and everything it forks) to the CPU it currently runs on.
+> + * Since commit f1a7941243c1 ("mm: convert mm's rss stats into percpu_counter")
+> + * the RSS is tracked in a percpu counter whose fast read
+> + * (percpu_counter_read_positive) only returns the global count, ignoring the
+> + * per-CPU caches.
+
+High: This setup makes the affected 100 MB child report pass instead of
+exposing the approximately 64 MB getrusage(2) result. That is a kernel bug
+workaround; keep the test migratable so the incorrect result remains visible.
+
+> +	unsigned int cpu;
+> +	cpu_set_t set;
+> +
+> +	if (getcpu(&cpu, NULL))
+> +		tst_brk(TBROK | TERRNO, "getcpu() failed");
+> +
+> +	CPU_ZERO(&set);
+> +	CPU_SET(cpu, &set);
+> +	if (sched_setaffinity(0, sizeof(set), &set))
+> +		tst_brk(TBROK | TERRNO, "sched_setaffinity() failed");
+
+Medium: cpu_set_t cannot represent valid CPU IDs of CPU_SETSIZE or higher, so
+CPU_SET() leaves the mask empty and sched_setaffinity() fails with EINVAL.
+Use a dynamically allocated mask with CPU_ALLOC_SIZE(tst_ncpus_max()) and the
+CPU_ZERO_S()/CPU_SET_S() interfaces.
+
+Verdict - Needs revision
+
 ---
- include/lapi/keyctl.h | 49 +++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 49 insertions(+)
+Note:
 
-diff --git a/include/lapi/keyctl.h b/include/lapi/keyctl.h
-index 2574c3168..6feca63be 100644
---- a/include/lapi/keyctl.h
-+++ b/include/lapi/keyctl.h
-@@ -226,6 +226,10 @@ struct keyctl_pkey_params {
- # define KEYCTL_MOVE_EXCL 0x00000001 /* do not displace from the to-keyring */
- #endif
- 
-+#ifndef KEYCTL_CAPABILITIES
-+# define KEYCTL_CAPABILITIES 31
-+#endif
-+
- #ifndef KEYCTL_PKEY_QUERY
- # define KEYCTL_PKEY_QUERY 24
- #endif
-@@ -253,6 +257,50 @@ struct keyctl_pkey_params {
- # define KEYCTL_SUPPORTS_VERIFY  0x08
- #endif
- 
-+#ifndef KEYCTL_CAPS0_CAPABILITIES
-+# define KEYCTL_CAPS0_CAPABILITIES		0x01
-+#endif
-+
-+#ifndef KEYCTL_CAPS0_PERSISTENT_KEYRINGS
-+# define KEYCTL_CAPS0_PERSISTENT_KEYRINGS	0x02
-+#endif
-+
-+#ifndef KEYCTL_CAPS0_DIFFIE_HELLMAN
-+# define KEYCTL_CAPS0_DIFFIE_HELLMAN		0x04
-+#endif
-+
-+#ifndef KEYCTL_CAPS0_PUBLIC_KEY
-+# define KEYCTL_CAPS0_PUBLIC_KEY		0x08
-+#endif
-+
-+#ifndef KEYCTL_CAPS0_BIG_KEY
-+# define KEYCTL_CAPS0_BIG_KEY			0x10
-+#endif
-+
-+#ifndef KEYCTL_CAPS0_INVALIDATE
-+# define KEYCTL_CAPS0_INVALIDATE		0x20
-+#endif
-+
-+#ifndef KEYCTL_CAPS0_RESTRICT_KEYRING
-+# define KEYCTL_CAPS0_RESTRICT_KEYRING		0x40
-+#endif
-+
-+#ifndef KEYCTL_CAPS0_MOVE
-+# define KEYCTL_CAPS0_MOVE			0x80
-+#endif
-+
-+#ifndef KEYCTL_CAPS1_NS_KEYRING_NAME
-+# define KEYCTL_CAPS1_NS_KEYRING_NAME		0x01
-+#endif
-+
-+#ifndef KEYCTL_CAPS1_NS_KEY_TAG
-+# define KEYCTL_CAPS1_NS_KEY_TAG		0x02
-+#endif
-+
-+#ifndef KEYCTL_CAPS1_NOTIFICATIONS
-+# define KEYCTL_CAPS1_NOTIFICATIONS		0x04
-+#endif
-+
- /* key permissions */
- #ifndef KEY_POS_VIEW
- # define KEY_POS_VIEW    0x01000000
-@@ -318,6 +366,7 @@ static inline long safe_keyctl(const char *file, const int lineno,
- 	case KEYCTL_PKEY_DECRYPT:
- 	case KEYCTL_PKEY_SIGN:
- 	case KEYCTL_PKEY_VERIFY:
-+	case KEYCTL_CAPABILITIES:
- 		if (rval < 0)
- 			failure = 1;
- 		break;
+The agent can sometimes produce false positives although often its
+findings are genuine. If you find issues with the review, please
+comment this email or ignore the suggestions.
 
--- 
-2.51.0
-
+Regards,
+LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
