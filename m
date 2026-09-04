@@ -4,98 +4,98 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BF18AC624DE
-	for <ltp@archiver.kernel.org>; Fri,  4 Sep 2026 12:16:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A057EC624DE
+	for <ltp@archiver.kernel.org>; Fri,  4 Sep 2026 12:17:01 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 4DB103E1D87
-	for <ltp@archiver.kernel.org>; Fri,  4 Sep 2026 14:16:40 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 2DC173E0E5B
+	for <ltp@archiver.kernel.org>; Fri,  4 Sep 2026 14:17:00 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D9DBA3E9762
- for <ltp@lists.linux.it>; Fri,  4 Sep 2026 14:09:19 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+ by picard.linux.it (Postfix) with ESMTPS id 0CE9B3E9764
+ for <ltp@lists.linux.it>; Fri,  4 Sep 2026 14:09:20 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 29B141A010E2
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 77EBA200D1F
  for <ltp@lists.linux.it>; Fri,  4 Sep 2026 14:09:19 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 047C822B30;
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 296F41FB57;
  Fri,  4 Sep 2026 12:09:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1788523754; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=FnQni2+x+fLvFbroFrHwSG/VmrjEZimCe81UQRZNo2M=;
- b=SazZD3DvhC9Y4QLq0upRlX6Rv/Byf6NvmJzhi1O+ySrLs2SHj9snkCuaY9uyAbwLeCgihC
- 8V2T9qg+mRVK2Jhc87AvK2SjZRFo+mPBXJgztOLyA5GvZVGw0KxdzikVihOpcPHAjxE4xR
- Oyx1sFNItFOcFcDJPCw6XIt/2953UMg=
+ bh=U3aGT5Vz+D7SsKt6DxTY5jTGB756SHtewLFiEBKiT5Q=;
+ b=YjjTaS+MhXdmP6Olx8q6YISimsLV05YDbyKU2JDJHF4BskqBky5bULgEolyf6MW6JbZVfn
+ OZBH9XLbOPgraoM2KLD6M787V0tU7nMjMTitRw1XRzfa4dSZmaYudW91D0fT8m4ReB5eHo
+ ZxGjrFLbQERZLuwNY3Gbgnkq04SX/40=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1788523754;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=FnQni2+x+fLvFbroFrHwSG/VmrjEZimCe81UQRZNo2M=;
- b=8Ph/6WnyyEsSRLFKPdja/44V1RXNMYs8lkcSvO8B1g9X7j8f+fXcjS25e/ObYDcq2VRKbm
- tl7UJXyH5UmFmHBg==
-Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.de header.s=susede2_rsa header.b=U+Q+HkT7;
- dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=wKkRBnCC
+ bh=U3aGT5Vz+D7SsKt6DxTY5jTGB756SHtewLFiEBKiT5Q=;
+ b=Kjfd5j46zebTwISxUWGmvGDzgnucOCvxDrdmU9zYw0b1KYiQPL45vIk19dXQUur83qvck0
+ 3Ov9WKkwZtGmhqDw==
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.de header.s=susede2_rsa header.b=sBVAIOS7;
+ dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=sxJR2Kls
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1788523750; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=FnQni2+x+fLvFbroFrHwSG/VmrjEZimCe81UQRZNo2M=;
- b=U+Q+HkT7Jsu3iaLrbJu1OJn6lVKvYf6r/doNoZi9PNC78j6uu1YLsqDdiXi6hBs/H/CZIv
- 4MChEspoM/3qwh3k/Pjh128vG3zKNP1VVzMT7LDbP46Kxhc0qsDezykZYSZgbEqLQng4LF
- F+0bFFv3Ys9Mby36ITo+gDTDTEg8tus=
+ bh=U3aGT5Vz+D7SsKt6DxTY5jTGB756SHtewLFiEBKiT5Q=;
+ b=sBVAIOS7fbs5c5m9qTGvXc0Qig/hUbUKpjHzikzO3btD3BKpYbTI61McAkztI+GnejBB4G
+ KitzRTGgaeEVD63ylfceOkmf8wK0Vq3aTAOPPNzCnfUG2Q7m9ntvhv3Nig02URlOZOLFy+
+ uXX2eUkQZj2C30xJkXZdUT4L5sKBOl8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1788523750;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=FnQni2+x+fLvFbroFrHwSG/VmrjEZimCe81UQRZNo2M=;
- b=wKkRBnCCpt1df64z5Zz2l1IWJSKtTwDXi44OyZ0GhRoFBIFcikIsByElrGotGAz81cJjYX
- 9vg6qhLR0jhzjWAg==
+ bh=U3aGT5Vz+D7SsKt6DxTY5jTGB756SHtewLFiEBKiT5Q=;
+ b=sxJR2KlsWCW6Bm7Q4iFJwdIgHOnw39jRdW5K4wz/CzsepiAXqTWt15g0OG2PkAzi9lcw9y
+ EeQroCyuPYTiQJBw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 87DBF139F2;
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C0EB7139F3;
  Fri,  4 Sep 2026 12:08:58 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 6HGHHtq0mmpENgAAD6G6ig
+ by imap1.dmz-prg2.suse.org with ESMTPSA id qPJCLNq0mmpENgAAD6G6ig
  (envelope-from <andrea.cervesato@suse.de>); Fri, 04 Sep 2026 12:08:58 +0000
 From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Fri, 04 Sep 2026 14:09:18 +0200
+Date: Fri, 04 Sep 2026 14:09:19 +0200
 MIME-Version: 1.0
-Message-Id: <20260904-keyctl_coverage-v2-29-43b78b15ef9f@suse.com>
+Message-Id: <20260904-keyctl_coverage-v2-30-43b78b15ef9f@suse.com>
 References: <20260904-keyctl_coverage-v2-0-43b78b15ef9f@suse.com>
 In-Reply-To: <20260904-keyctl_coverage-v2-0-43b78b15ef9f@suse.com>
 To: Linux Test Project <ltp@lists.linux.it>
 X-Mailer: b4 0.16.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1788523731; l=2551;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1788523731; l=3530;
  i=andrea.cervesato@suse.com; s=20251210; h=from:subject:message-id;
- bh=20uCEkfCaCyTI9nJBF1FQyXwrM4xPFPzmULvsbvS3QQ=;
- b=3u9x93nZcqrq8CJ1FDFTuxg2mU+ceFPRl+XMaHqrq4lsaROoC74pcqegLS7DlWZMiRgXKrML1
- 4tPK3czy70ID3uoWDjjAzcEuglyMJHUUjDDoGjScCHLgXMAYmlPaCYl
+ bh=64rkVLfxFHXH+sjSfRJe+VuVFYYeUPyzmtOHUDRHCtM=;
+ b=xtOkAVjYJmFOTSwFnRezffTOdXlF3GTWwlS6s2jTB22sxyy3l7I0epWg/OplS1AghMNEdWtl3
+ 8eu0UaY8lNWCjVKIE1rs0fFWdYI+3J44LeuuuGcb39sYdE5CGeHmzxF
 X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
  pk=zKY+6GCauOiuHNZ//d8PQ/UL4jFCTKbXrzXAOQSLevI=
 X-Rspamd-Action: no action
 X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: 047C822B30
+X-Rspamd-Queue-Id: 296F41FB57
 X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  NEURAL_HAM_LONG(-1.00)[-1.000];
  R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
@@ -107,15 +107,16 @@ X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  ARC_NA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
  MIME_TRACE(0.00)[0:+]; RCPT_COUNT_TWO(0.00)[2];
  RCVD_TLS_ALL(0.00)[];
- URIBL_BLOCKED(0.00)[suse.de:dkim,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.com:email,suse.com:mid];
+ URIBL_BLOCKED(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.com:email,suse.com:mid,suse.de:dkim];
  FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
  DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
  RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.com:email,suse.com:mid];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:mid,suse.de:dkim,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
  TO_DN_ALL(0.00)[]; DKIM_TRACE(0.00)[suse.de:+]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 29/33] keyctl35: Test KEYCTL_CAPABILITIES size query
+Subject: [LTP] [PATCH v2 30/33] keyctl36: Test KEYCTL_CAPABILITIES buffer
+ sizing
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -134,86 +135,125 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-Test that calling KEYCTL_CAPABILITIES with a NULL buffer and
-buflen of 0 returns the total size in bytes of the keyrings
-subsystem capability array without faulting.
+Test KEYCTL_CAPABILITIES with short buffer (verifying partial copy
+without overrun) and oversized buffer (verifying trailing space is
+zero-filled while returning the full capability length).
 
 Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
  runtest/syscalls                            |  1 +
  testcases/kernel/syscalls/keyctl/.gitignore |  1 +
- testcases/kernel/syscalls/keyctl/keyctl35.c | 49 +++++++++++++++++++++++++++++
- 3 files changed, 51 insertions(+)
+ testcases/kernel/syscalls/keyctl/keyctl36.c | 88 +++++++++++++++++++++++++++++
+ 3 files changed, 90 insertions(+)
 
 diff --git a/runtest/syscalls b/runtest/syscalls
-index 08877ff49..67d626c22 100644
+index 67d626c22..8ad8f0fe5 100644
 --- a/runtest/syscalls
 +++ b/runtest/syscalls
-@@ -752,6 +752,7 @@ keyctl31 keyctl31
- keyctl32 keyctl32
+@@ -753,6 +753,7 @@ keyctl32 keyctl32
  keyctl33 keyctl33
  keyctl34 keyctl34
-+keyctl35 keyctl35
+ keyctl35 keyctl35
++keyctl36 keyctl36
  
  kcmp01 kcmp01
  kcmp02 kcmp02
 diff --git a/testcases/kernel/syscalls/keyctl/.gitignore b/testcases/kernel/syscalls/keyctl/.gitignore
-index f2ce330d7..58ebb452f 100644
+index 58ebb452f..a4da8ae80 100644
 --- a/testcases/kernel/syscalls/keyctl/.gitignore
 +++ b/testcases/kernel/syscalls/keyctl/.gitignore
-@@ -32,3 +32,4 @@
- /keyctl32
+@@ -33,3 +33,4 @@
  /keyctl33
  /keyctl34
-+/keyctl35
-diff --git a/testcases/kernel/syscalls/keyctl/keyctl35.c b/testcases/kernel/syscalls/keyctl/keyctl35.c
+ /keyctl35
++/keyctl36
+diff --git a/testcases/kernel/syscalls/keyctl/keyctl36.c b/testcases/kernel/syscalls/keyctl/keyctl36.c
 new file mode 100644
-index 000000000..43a8e2c7b
+index 000000000..58fa56a07
 --- /dev/null
-+++ b/testcases/kernel/syscalls/keyctl/keyctl35.c
-@@ -0,0 +1,49 @@
++++ b/testcases/kernel/syscalls/keyctl/keyctl36.c
+@@ -0,0 +1,88 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
 + * Copyright (c) 2026 Andrea Cervesato <andrea.cervesato@suse.com>
 + */
 +
 +/*\
-+ * Test ``KEYCTL_CAPABILITIES`` size query of :manpage:`keyctl(2)`, added in Linux 5.3.
++ * Test ``KEYCTL_CAPABILITIES`` buffer sizing and padding of :manpage:`keyctl(2)`.
 + *
 + * [Algorithm]
 + *
-+ * - call ``KEYCTL_CAPABILITIES`` with NULL buffer and ``buflen = 0``
-+ * - verify the return value is at least 2 bytes
-+ * - verify calling ``KEYCTL_CAPABILITIES`` with a valid buffer returns the
-+ *   same size
++ * - verify a 1-byte buffer receives 1 byte while the full size is returned
++ *   and canary bytes beyond 1 byte remain untouched
++ * - verify an oversized buffer is zero-filled beyond the capability size
 + */
 +
 +#include "keyctl_common.h"
 +
-+static unsigned char buf[8];
++#define CANARY		0xaa
++#define OVERSIZE	16
 +
-+static void run(void)
++static long caps_len;
++static unsigned char short_buf[4];
++static unsigned char large_buf[OVERSIZE];
++
++static void setup(void)
 +{
-+	long size;
-+
 +	TEST(keyctl(KEYCTL_CAPABILITIES, (unsigned long)NULL, 0, 0, 0));
 +	if (TST_RET < 0)
 +		tst_brk(TBROK | TTERRNO, "KEYCTL_CAPABILITIES size query failed");
 +
-+	size = TST_RET;
-+	if (size < 2) {
-+		tst_res(TFAIL, "KEYCTL_CAPABILITIES size query returned %ld, expected >= 2",
-+			size);
++	caps_len = TST_RET;
++}
++
++static void run(void)
++{
++	size_t i;
++	int zero_padded = 1;
++
++	memset(short_buf, CANARY, sizeof(short_buf));
++	TST_EXP_EQ_LI_SILENT(keyctl(KEYCTL_CAPABILITIES,
++				    (unsigned long)short_buf, 1, 0, 0),
++			     caps_len);
++	if (!TST_PASS)
++		return;
++
++	if (short_buf[0] == CANARY) {
++		tst_res(TFAIL, "short buffer was not populated");
 +		return;
 +	}
 +
-+	tst_res(TPASS, "KEYCTL_CAPABILITIES size query returned %ld", size);
++	for (i = 1; i < sizeof(short_buf); i++) {
++		if (short_buf[i] != CANARY) {
++			tst_res(TFAIL, "copy overran short buffer at offset %zu", i);
++			return;
++		}
++	}
 +
-+	TST_EXP_VAL(keyctl(KEYCTL_CAPABILITIES, (unsigned long)buf, sizeof(buf), 0, 0),
-+		    size);
++	tst_res(TPASS, "short buffer copied 1 byte without overrun");
++
++	memset(large_buf, CANARY, sizeof(large_buf));
++	TST_EXP_EQ_LI_SILENT(keyctl(KEYCTL_CAPABILITIES,
++				    (unsigned long)large_buf, sizeof(large_buf), 0, 0),
++			     caps_len);
++	if (!TST_PASS)
++		return;
++
++	for (i = caps_len; i < sizeof(large_buf); i++) {
++		if (large_buf[i] != 0) {
++			zero_padded = 0;
++			break;
++		}
++	}
++
++	if (!zero_padded)
++		tst_res(TFAIL, "oversized buffer was not zero-filled at offset %zu", i);
++	else
++		tst_res(TPASS, "oversized buffer zero-filled trailing space");
 +}
 +
 +static struct tst_test test = {
++	.setup = setup,
 +	.test_all = run,
 +	.min_kver = "5.3",
 +	.needs_kconfigs = (const char *[]) {
