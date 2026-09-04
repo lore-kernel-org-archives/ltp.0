@@ -4,107 +4,118 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5FAD7C61DD6
-	for <ltp@archiver.kernel.org>; Fri,  4 Sep 2026 12:16:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BF18AC624DE
+	for <ltp@archiver.kernel.org>; Fri,  4 Sep 2026 12:16:41 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B06123CE9EB
-	for <ltp@archiver.kernel.org>; Fri,  4 Sep 2026 14:16:25 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 4DB103E1D87
+	for <ltp@archiver.kernel.org>; Fri,  4 Sep 2026 14:16:40 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id AFCBB3E9764
+ by picard.linux.it (Postfix) with ESMTPS id D9DBA3E9762
  for <ltp@lists.linux.it>; Fri,  4 Sep 2026 14:09:19 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id F0450601FF8
- for <ltp@lists.linux.it>; Fri,  4 Sep 2026 14:09:18 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 29B141A010E2
+ for <ltp@lists.linux.it>; Fri,  4 Sep 2026 14:09:19 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 4E0B822B43;
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 047C822B30;
  Fri,  4 Sep 2026 12:09:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1788523754; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=5P1PMDkUGcSwrbJFFTWnd0OidQvtzboqJQZyN/DR7i8=;
- b=J1aDxlmJy2LobPDeC1PMisKeRts+2VkLK7zY/Z6uAsHNNXOny1Ek9z7RX4Th9ppXtR/iVO
- /T7wNb6Ji/fDYxeJMSGISZlma/9sPs/IwmjbWTA7bYAQcakDhjvxg1cARB+a44E71mxZTV
- mm1Ah0xAVodi9uHBrxhBWrg8KoIM45k=
+ bh=FnQni2+x+fLvFbroFrHwSG/VmrjEZimCe81UQRZNo2M=;
+ b=SazZD3DvhC9Y4QLq0upRlX6Rv/Byf6NvmJzhi1O+ySrLs2SHj9snkCuaY9uyAbwLeCgihC
+ 8V2T9qg+mRVK2Jhc87AvK2SjZRFo+mPBXJgztOLyA5GvZVGw0KxdzikVihOpcPHAjxE4xR
+ Oyx1sFNItFOcFcDJPCw6XIt/2953UMg=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1788523754;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=5P1PMDkUGcSwrbJFFTWnd0OidQvtzboqJQZyN/DR7i8=;
- b=vulZ0wrV3JfyhjXLqK9OOFDHiF6cpR9oxvt/eaqRzMLzE/rgifKaS/egxin0UR2SxMdLSj
- 7OG7z6Vh3ijDyEAg==
+ bh=FnQni2+x+fLvFbroFrHwSG/VmrjEZimCe81UQRZNo2M=;
+ b=8Ph/6WnyyEsSRLFKPdja/44V1RXNMYs8lkcSvO8B1g9X7j8f+fXcjS25e/ObYDcq2VRKbm
+ tl7UJXyH5UmFmHBg==
 Authentication-Results: smtp-out1.suse.de;
-	none
+ dkim=pass header.d=suse.de header.s=susede2_rsa header.b=U+Q+HkT7;
+ dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=wKkRBnCC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1788523750; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=5P1PMDkUGcSwrbJFFTWnd0OidQvtzboqJQZyN/DR7i8=;
- b=xsTsPJGU9ED4NPpEdcFDEElOoeyhWXX9Lb6iQD37gtSvrj/V2xmovGSZl/KD6t2nNdUP5b
- IpbJcmIUqCb2xKl+MqfMXw+haT92i2qZPn3Zb6L114yCNRN1rUhkTz8cVSDJr3Qdl9afxG
- Tavzvg4cpNUrismiN5xMgb0qP7JGwKg=
+ bh=FnQni2+x+fLvFbroFrHwSG/VmrjEZimCe81UQRZNo2M=;
+ b=U+Q+HkT7Jsu3iaLrbJu1OJn6lVKvYf6r/doNoZi9PNC78j6uu1YLsqDdiXi6hBs/H/CZIv
+ 4MChEspoM/3qwh3k/Pjh128vG3zKNP1VVzMT7LDbP46Kxhc0qsDezykZYSZgbEqLQng4LF
+ F+0bFFv3Ys9Mby36ITo+gDTDTEg8tus=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1788523750;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=5P1PMDkUGcSwrbJFFTWnd0OidQvtzboqJQZyN/DR7i8=;
- b=iTt4y5FPI1jWOUn6V/Q/QZXdDqRLu5Z2+twDAHHnTcxDVVuGTT7zgvUX+gZeoecaxHDVM2
- y70+PUrI3QfQ3GBg==
+ bh=FnQni2+x+fLvFbroFrHwSG/VmrjEZimCe81UQRZNo2M=;
+ b=wKkRBnCCpt1df64z5Zz2l1IWJSKtTwDXi44OyZ0GhRoFBIFcikIsByElrGotGAz81cJjYX
+ 9vg6qhLR0jhzjWAg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3EB4D13A03;
- Fri,  4 Sep 2026 12:08:59 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 87DBF139F2;
+ Fri,  4 Sep 2026 12:08:58 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 0G6MDNu0mmpENgAAD6G6ig
- (envelope-from <andrea.cervesato@suse.de>); Fri, 04 Sep 2026 12:08:59 +0000
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 6HGHHtq0mmpENgAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>); Fri, 04 Sep 2026 12:08:58 +0000
 From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Fri, 04 Sep 2026 14:09:21 +0200
+Date: Fri, 04 Sep 2026 14:09:18 +0200
 MIME-Version: 1.0
-Message-Id: <20260904-keyctl_coverage-v2-32-43b78b15ef9f@suse.com>
+Message-Id: <20260904-keyctl_coverage-v2-29-43b78b15ef9f@suse.com>
 References: <20260904-keyctl_coverage-v2-0-43b78b15ef9f@suse.com>
 In-Reply-To: <20260904-keyctl_coverage-v2-0-43b78b15ef9f@suse.com>
 To: Linux Test Project <ltp@lists.linux.it>
 X-Mailer: b4 0.16.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1788523731; l=3944;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1788523731; l=2551;
  i=andrea.cervesato@suse.com; s=20251210; h=from:subject:message-id;
- bh=yKPm6DiRjc+hvXyQA6ki3Ae76DwaiyeZLDzUd052ykA=;
- b=MUucr+gpDDi4yII/YziKjlXU+ke38qPSOMyw7Wi9G22F/UMR/g8/BuZCmpSorwHWTYjGlnlYo
- TabADuBnRzYC/SSyg90x+CofsQ1LL7u5qsFejS1CpP1ddQuL6ZeVt4B
+ bh=20uCEkfCaCyTI9nJBF1FQyXwrM4xPFPzmULvsbvS3QQ=;
+ b=3u9x93nZcqrq8CJ1FDFTuxg2mU+ceFPRl+XMaHqrq4lsaROoC74pcqegLS7DlWZMiRgXKrML1
+ 4tPK3czy70ID3uoWDjjAzcEuglyMJHUUjDDoGjScCHLgXMAYmlPaCYl
 X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
  pk=zKY+6GCauOiuHNZ//d8PQ/UL4jFCTKbXrzXAOQSLevI=
-X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: 047C822B30
+X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-0.997]; MIME_GOOD(-0.10)[text/plain];
- RCPT_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
+ R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ ARC_NA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ MIME_TRACE(0.00)[0:+]; RCPT_COUNT_TWO(0.00)[2];
+ RCVD_TLS_ALL(0.00)[];
+ URIBL_BLOCKED(0.00)[suse.de:dkim,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.com:email,suse.com:mid];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
  DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- URIBL_BLOCKED(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email,suse.com:mid]; 
- TO_DN_ALL(0.00)[]; FROM_HAS_DN(0.00)[]; MIME_TRACE(0.00)[0:+];
- FROM_EQ_ENVFROM(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- RCVD_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email, suse.com:mid,
- imap1.dmz-prg2.suse.org:helo]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.com:email,suse.com:mid];
+ TO_DN_ALL(0.00)[]; DKIM_TRACE(0.00)[suse.de:+]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 32/33] keyctl38: Test KEYCTL_WATCH_KEY add and
- remove
+Subject: [LTP] [PATCH v2 29/33] keyctl35: Test KEYCTL_CAPABILITIES size query
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -123,132 +134,90 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-Test KEYCTL_WATCH_KEY by opening a watch queue notification pipe
-and adding then removing watches on both a user key and the
-session keyring.
+Test that calling KEYCTL_CAPABILITIES with a NULL buffer and
+buflen of 0 returns the total size in bytes of the keyrings
+subsystem capability array without faulting.
 
 Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
  runtest/syscalls                            |  1 +
  testcases/kernel/syscalls/keyctl/.gitignore |  1 +
- testcases/kernel/syscalls/keyctl/keyctl38.c | 91 +++++++++++++++++++++++++++++
- 3 files changed, 93 insertions(+)
+ testcases/kernel/syscalls/keyctl/keyctl35.c | 49 +++++++++++++++++++++++++++++
+ 3 files changed, 51 insertions(+)
 
 diff --git a/runtest/syscalls b/runtest/syscalls
-index 66215afd7..e9d47b5c4 100644
+index 08877ff49..67d626c22 100644
 --- a/runtest/syscalls
 +++ b/runtest/syscalls
-@@ -755,6 +755,7 @@ keyctl34 keyctl34
- keyctl35 keyctl35
- keyctl36 keyctl36
- keyctl37 keyctl37
-+keyctl38 keyctl38
+@@ -752,6 +752,7 @@ keyctl31 keyctl31
+ keyctl32 keyctl32
+ keyctl33 keyctl33
+ keyctl34 keyctl34
++keyctl35 keyctl35
  
  kcmp01 kcmp01
  kcmp02 kcmp02
 diff --git a/testcases/kernel/syscalls/keyctl/.gitignore b/testcases/kernel/syscalls/keyctl/.gitignore
-index 7ee6b9098..c0a18dd77 100644
+index f2ce330d7..58ebb452f 100644
 --- a/testcases/kernel/syscalls/keyctl/.gitignore
 +++ b/testcases/kernel/syscalls/keyctl/.gitignore
-@@ -35,3 +35,4 @@
- /keyctl35
- /keyctl36
- /keyctl37
-+/keyctl38
-diff --git a/testcases/kernel/syscalls/keyctl/keyctl38.c b/testcases/kernel/syscalls/keyctl/keyctl38.c
+@@ -32,3 +32,4 @@
+ /keyctl32
+ /keyctl33
+ /keyctl34
++/keyctl35
+diff --git a/testcases/kernel/syscalls/keyctl/keyctl35.c b/testcases/kernel/syscalls/keyctl/keyctl35.c
 new file mode 100644
-index 000000000..26475c7de
+index 000000000..43a8e2c7b
 --- /dev/null
-+++ b/testcases/kernel/syscalls/keyctl/keyctl38.c
-@@ -0,0 +1,91 @@
++++ b/testcases/kernel/syscalls/keyctl/keyctl35.c
+@@ -0,0 +1,49 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
 + * Copyright (c) 2026 Andrea Cervesato <andrea.cervesato@suse.com>
 + */
 +
 +/*\
-+ * Test ``KEYCTL_WATCH_KEY`` of :manpage:`keyctl(2)`, added in Linux 5.8.
-+ *
-+ * ``KEYCTL_WATCH_KEY`` adds or removes a watch on a key or keyring to/from
-+ * a watch queue notification pipe.
++ * Test ``KEYCTL_CAPABILITIES`` size query of :manpage:`keyctl(2)`, added in Linux 5.3.
 + *
 + * [Algorithm]
 + *
-+ * - open a notification pipe via :manpage:`pipe2()` with
-+ *   ``O_NOTIFICATION_PIPE``
-+ * - add a watch on a key with ``watch_id = 1`` and verify success
-+ * - remove the watch on the key with ``watch_id = -1`` and verify success
-+ * - add a watch on a keyring with ``watch_id = 2`` and verify success
-+ * - remove the watch on the keyring with ``watch_id = -1`` and verify success
++ * - call ``KEYCTL_CAPABILITIES`` with NULL buffer and ``buflen = 0``
++ * - verify the return value is at least 2 bytes
++ * - verify calling ``KEYCTL_CAPABILITIES`` with a valid buffer returns the
++ *   same size
 + */
 +
-+#define _GNU_SOURCE
-+
-+#include <sys/resource.h>
-+#include <unistd.h>
 +#include "keyctl_common.h"
-+#include "lapi/watch_queue.h"
 +
-+static key_serial_t key;
-+
-+static void setup(void)
-+{
-+	SAFE_KEYCTL(KEYCTL_JOIN_SESSION_KEYRING, 0, 0, 0, 0);
-+
-+	key = new_user_key("ltpkeyctl38", "payload", 7,
-+			   KEY_SPEC_PROCESS_KEYRING);
-+}
++static unsigned char buf[8];
 +
 +static void run(void)
 +{
-+	int pipefd[2];
++	long size;
 +
-+	TEST(pipe2(pipefd, O_NOTIFICATION_PIPE));
-+	if (TST_RET < 0) {
-+		if (TST_ERR == ENOPKG)
-+			tst_brk(TCONF | TTERRNO, "CONFIG_WATCH_QUEUE is not set");
-+		if (TST_ERR == EINVAL)
-+			tst_brk(TCONF | TTERRNO, "O_NOTIFICATION_PIPE is not supported");
-+		tst_brk(TBROK | TTERRNO, "pipe2(O_NOTIFICATION_PIPE) failed");
++	TEST(keyctl(KEYCTL_CAPABILITIES, (unsigned long)NULL, 0, 0, 0));
++	if (TST_RET < 0)
++		tst_brk(TBROK | TTERRNO, "KEYCTL_CAPABILITIES size query failed");
++
++	size = TST_RET;
++	if (size < 2) {
++		tst_res(TFAIL, "KEYCTL_CAPABILITIES size query returned %ld, expected >= 2",
++			size);
++		return;
 +	}
 +
-+	SAFE_IOCTL(pipefd[0], IOC_WATCH_QUEUE_SET_SIZE, 256);
++	tst_res(TPASS, "KEYCTL_CAPABILITIES size query returned %ld", size);
 +
-+	TST_EXP_PASS(keyctl(KEYCTL_WATCH_KEY, key, pipefd[0], 1),
-+		     "KEYCTL_WATCH_KEY add watch on key");
-+
-+	TST_EXP_PASS(keyctl(KEYCTL_WATCH_KEY, key, pipefd[0], -1),
-+		     "KEYCTL_WATCH_KEY remove watch on key");
-+
-+	TST_EXP_PASS(keyctl(KEYCTL_WATCH_KEY, KEY_SPEC_SESSION_KEYRING,
-+			    pipefd[0], 2),
-+		     "KEYCTL_WATCH_KEY add watch on session keyring");
-+
-+	TST_EXP_PASS(keyctl(KEYCTL_WATCH_KEY, KEY_SPEC_SESSION_KEYRING,
-+			    pipefd[0], -1),
-+		     "KEYCTL_WATCH_KEY remove watch on session keyring");
-+
-+	SAFE_CLOSE(pipefd[0]);
-+	SAFE_CLOSE(pipefd[1]);
++	TST_EXP_VAL(keyctl(KEYCTL_CAPABILITIES, (unsigned long)buf, sizeof(buf), 0, 0),
++		    size);
 +}
 +
 +static struct tst_test test = {
-+	.setup = setup,
 +	.test_all = run,
-+	.min_kver = "5.8",
-+	/*
-+	 * add_one_watch() charges per-user watches against RLIMIT_NOFILE,
-+	 * so raise the limit high enough to accommodate pre-existing
-+	 * watches on the calling user.
-+	 */
-+	.ulimit = (const struct tst_ulimit_val []) {
-+		{RLIMIT_NOFILE, 524288},
-+		{}
-+	},
++	.min_kver = "5.3",
 +	.needs_kconfigs = (const char *[]) {
 +		"CONFIG_KEYS=y",
-+		"CONFIG_KEY_NOTIFICATIONS=y",
-+		"CONFIG_WATCH_QUEUE=y",
 +		NULL
 +	},
 +};
