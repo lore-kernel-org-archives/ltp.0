@@ -4,88 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 31762C624DE
-	for <ltp@archiver.kernel.org>; Fri,  4 Sep 2026 07:17:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A782DC624DE
+	for <ltp@archiver.kernel.org>; Fri,  4 Sep 2026 07:35:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1788506234; h=message-id :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1788507339; h=message-id :
  to : in-reply-to : date : subject : list-id : list-unsubscribe :
  list-archive : list-post : list-help : list-subscribe : from :
  reply-to : cc : mime-version : content-type :
  content-transfer-encoding : sender : from;
- bh=K72aQH378eoQC3x6ErQQAfARTJ3+ujt515s4/+4dzDg=;
- b=BxOGqJOALja0OEcNKtPzquE/xIc+gVdsuerc27S9Q0vxFG99xIvOi0oPxPEGqWUJG/ZUU
- 3Snx0aAFCOWBIrJqFB8WzxZkezZ7U3Oz99q5dKhyYFgp2cd2WWXajybDAOIZuHPueokXSom
- EBgOOwCBD2hxUxp4bX2/HdQMnNT8nDw=
+ bh=kvYBWcqmMR6zNhpbTGvpQh3eFYAGHSEH8hJfm2OLjlY=;
+ b=WKRA8RiDnbpKYyACS42MHlID75mQb4ALzGnwEhTECLAMkdTmwMJCKI31VtZL9IbIzeZVo
+ RIhH2dBWso0XvKLJTgV1lDkMgAw8Wr7PSHHCbLiuAdd/PEEYQAg26E7Py7ya5cUmTy4GSv5
+ 6Wb+7I9BGfSyYrDZA7fu1DK59mHjlxc=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id CD70B3E9361
-	for <ltp@archiver.kernel.org>; Fri,  4 Sep 2026 09:17:14 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id E7ED23E9370
+	for <ltp@archiver.kernel.org>; Fri,  4 Sep 2026 09:35:39 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 13C833CE9EB
- for <ltp@lists.linux.it>; Fri,  4 Sep 2026 09:16:54 +0200 (CEST)
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com
- [IPv6:2a00:1450:4864:20::42d])
+ by picard.linux.it (Postfix) with ESMTPS id D3AFF3CE9EB
+ for <ltp@lists.linux.it>; Fri,  4 Sep 2026 09:35:19 +0200 (CEST)
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com
+ [IPv6:2a00:1450:4864:20::429])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 9AA72600F08
- for <ltp@lists.linux.it>; Fri,  4 Sep 2026 09:16:53 +0200 (CEST)
-Received: by mail-wr1-x42d.google.com with SMTP id
- ffacd0b85a97d-482f9309813so605119f8f.1
- for <ltp@lists.linux.it>; Fri, 04 Sep 2026 00:16:53 -0700 (PDT)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 48623200DCC
+ for <ltp@lists.linux.it>; Fri,  4 Sep 2026 09:35:19 +0200 (CEST)
+Received: by mail-wr1-x429.google.com with SMTP id
+ ffacd0b85a97d-482f2ee53e7so432992f8f.1
+ for <ltp@lists.linux.it>; Fri, 04 Sep 2026 00:35:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1788506213; x=1789111013; darn=lists.linux.it;
+ d=suse.com; s=google; t=1788507318; x=1789112118; darn=lists.linux.it;
  h=date:content-transfer-encoding:content-type:subject:in-reply-to:cc
  :to:from:message-id:from:to:cc:subject:date:message-id:reply-to
- :content-type; bh=Va3EIbGplGD27jgQUyW3D0J4QST7ph5a6hOmmhJlMlI=;
- b=OJnSUz28I6rUH0yWHeFLpEdmzXA4sNPIh6fhkApptl1rMYd7amUAMuQzxJx0tHQ7Sp
- ARGyFmXgpsTxLThB1xMQ8s6vsX2uzKPLDBQAfx2DRxPzm0IZOz8HzFs4KJ757B1hOCka
- mj8gIFJEEdEhmFGEj7l7H4iY6QJ/EjXdl9wXZVap076wmvJek5x6Gpi9y+P1ZbeHzOYM
- 9kv9eKToeKe8CAlTh0uWKbnKMpCQtU2+fMi10xzEgQW+1oWZAz2aqFbVNsFoPePL8Kgm
- XNX0ZeLIPDdY/y6wtA/QuhbCdZOTGbVjyOYWIVdGqtFxiIkyb2DBz1lVOhBxQvkr8oJK
- 5xdQ==
+ :content-type; bh=bTFacvnrAewRX25usihWdIJHYt79ATrsK8HVBgztRc0=;
+ b=DaKB4S6Tv6DZA2V29zCxkQQHhDGtAzuJ8lHBG0jhX2Dha/KoLzgJR2qQyuBD5XvbT1
+ OnqAS+rXZ+7eO0xktlIKpZhPFKv1byb3YID63cQrVuFrzFDdiZ3kuaEznTiXyAQsChYO
+ /x9PNlmQmSXvmx09ESH8AvY9CQAfaUC3+GuwDf7N8ARHHDXawpMUaqX9cfoIbNwIWSqV
+ aX9k8xUhOP5fwC9DPLDdq29sePG9ju9SEsrDL5Y9u0O2I+pRgsGa7B/mjmkGBEdh0y7Y
+ SWNmnLXjH+2KzdySAwpNqS9PouEzR11c02x2TLNy9HriXqMyqOpy7SEVfcB7gRk2AmBH
+ Me1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1788506213; x=1789111013;
+ d=1e100.net; s=20251104; t=1788507318; x=1789112118;
  h=date:content-transfer-encoding:content-type:subject:in-reply-to:cc
  :to:from:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject
  :date:message-id:reply-to:content-type;
- bh=Va3EIbGplGD27jgQUyW3D0J4QST7ph5a6hOmmhJlMlI=;
- b=JJg3DejODsHFdHmgpOEj1eyeoSHc026aOp2eNXELz+QAEFUaI82429gz38akP83JHx
- 1UChic1zJMEyln/ywWaNCmGz5hKjNxgx5LzzT+gdQMjYB6Se2vvxpU2KB+CmcNk+RQu1
- GnDyQXeADn5m1xcaJ9XfExdPWUxnXBCrgzyxV+2Cx8G7LhkvvzM1dgr411lOd+byQpjc
- h1ziaW/HvQWGgxgm+n3num9ElTLw2qqlg5Fts7oqvQzkZGaZcotFAVzRuhjVapDSHbRH
- 5iUERoLnn3XEjexZtC33w/y4y3YaiUd2j2mj7IqH65JcF41/ShfX3HdS2/l3A7+rMbQU
- nROg==
+ bh=bTFacvnrAewRX25usihWdIJHYt79ATrsK8HVBgztRc0=;
+ b=S/MGr4+hG1ciyPsm637iogT5IsSeYIVXS7+F1O8EW/9S190ssUu4mbqW6RGWkF5lMB
+ 7X1lAR13AHylI1NLQiNwPUQXWvPUqTY4iDYG2roZBcmCy37Q8XYr91YLYdDJF/8TcL3N
+ mY0iDUZlIaGJu2X4PF/EdaUA1j2g96ozJN3goDuO82czLxLOneh+LM2ZW6xNePvh8ZKv
+ fS7Q2ypdfJSQaIiN5Fr8XzcFjE9i2h1e3AZZ5/rFY490L5+fBzdWxcWw9DqMheUFXfsC
+ 1BPHfooiXP+sg+fKkRwWdz8jByx3/VSHE+84vbmgP4RXlBmNGRbbzhFJEn153sD8iEZs
+ dwBA==
 X-Forwarded-Encrypted: i=1;
- AKwUvBwlXrj4r8zU9CKEBDctBaW3ttsYT84kXvOSg5rR/q0HGaAYenwfchCp/lQ0FLkXJ4Xt2ME=@lists.linux.it
-X-Gm-Message-State: AFuF++nPh7VDy48WgJl6+hO5RBIPueil91cyGbp8a84E18qbiphn9QCV
- WmY0Mp9yzgwuWP81zMu6OXHitEAExSfp/3UEyN3PURe8R7crJKP2ol98YauN9e276BA=
-X-Gm-Gg: AYBFou37/E1MasvkDjCGACt22dvZRkemyZ/as2Wyg2AqAxJBKLyiXd0yzzFWbvScBT2
- SgGQ7FSii3cDewKzbxH/r4bA9ZLcqQ7T4F1KUbOgLUn3hy1JaJtWNO6YesiQCcZQYzhEz18aEzC
- lH5g56rljL04SSj/urJQVOt4gMSrf4jA8i2IlOLiyzfNIlvuYgANmHSYKHn//0gfoyohW8CXxtw
- 80BEtSyygATVhHzCu1wOQAf2S++ptXsHokpOKT5WrzzJuJUoZ0LtUirsgHMTlS7FTXW5fNl9/RS
- D5Z9lJJMQH2Y5UrLnUYqtOc7sUE7j3LZqBvXbkR5u2nwt4YC2a5Q/Pa4z2Av3EyDe8cA+ydzoX1
- gw1Wvnn2i3sIUaQefKhEYU2BmEMiau93xMe7a9Ja1HWHk07bmJ3QWbA30ykyLW1n/z8a02Vm9T5
- uzYyXQ9QKRaD1hfTzh7qgtT08uv0kYVQBB9T5e0edUtuOXTq9tMJ242gh9BQcp2yOcprSWfx3r9
- GiPfBgz+qGg
-X-Received: by 2002:a05:6000:26d3:b0:485:847f:fd8e with SMTP id
- ffacd0b85a97d-48587090f7emr6571264f8f.2.1788506212920; 
- Fri, 04 Sep 2026 00:16:52 -0700 (PDT)
+ AKwUvBzQVpYKUlX+x5wjn6I6L4WEIWMry3kLU3wrglIPKjOE5pEf4s3DPRABFSoWFt2zHN2V4ow=@lists.linux.it
+X-Gm-Message-State: AFuF++lgkDw7ePdLuYPtYAbdGJO1xcgM2M1I1Q66UOKXyjH/ddRFy3lW
+ spWR+K3ModPrOSHmxJIPBedgu06XdvbhXQd7yhyqj91Pu3JSK3ERpGJWJwWlZwMRFCI=
+X-Gm-Gg: AYBFou1G24UJg1hTsfvpInMipscTKW7IeN+Qa3zpZzK63YAaw9GQAwhefhgPF1HcKhv
+ pQnX+WgVDHBcwsM1ug5OZ7ZR4BgUMtAw9YzisfF0pUVpfthHvIbCzpvU0ief4940cvsulpJHREc
+ xyT8OwJRMiJTPICgA9AG7SUV4zCuX6770wDUFyEbgBHTLtU+D6L2sW+lc9exWnkkWPKLPPjiIJO
+ kWosMkjQQJba2CQ8u8K6U51887fRiZxxq0iOn924uX1/CXHMfC495ok0z5pIGUgwnm0gBPSUE9C
+ DQiM/LkaeWqyyWBAKIIB+b3u582X86ouTpNoRdMvuFA6MBf/2zYxxpkJkfTvW3kFWyFI/8PQMA8
+ +9DpCmsetwSmYxwFP0maVtFrkBUHTehqzlq9xppHKQM9LhxRHvyTNJapJB/takmW/KMW+k+jJsb
+ z2NkvFRjcRJZ9NoVwRM40vxWX+gjYWdBo/czSdwB+gmefhDICy0QUsmDTeGZSLh9qEyUwf3sPce
+ GvSHn0lwzJU
+X-Received: by 2002:a05:6000:4a1a:b0:485:8c17:976c with SMTP id
+ ffacd0b85a97d-4858c17994cmr1245965f8f.46.1788507318452; 
+ Fri, 04 Sep 2026 00:35:18 -0700 (PDT)
 Received: from localhost.localdomain
  ([2a02:a31b:84a1:b780:6f4e:21d6:82d2:5333])
  by smtp.gmail.com with ESMTPSA id
- ffacd0b85a97d-48588135600sm3617487f8f.2.2026.09.04.00.16.52
+ ffacd0b85a97d-485883c81c3sm4231342f8f.26.2026.09.04.00.35.17
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 04 Sep 2026 00:16:52 -0700 (PDT)
-Message-ID: <6a9a7064.18b7d65e.17573c.2e31@mx.google.com>
+ Fri, 04 Sep 2026 00:35:18 -0700 (PDT)
+Message-ID: <6a9a74b6.a294b636.15b91e.ba8d@mx.google.com>
 To: linuxtestproject.agent@gmail.com
-In-Reply-To: <20260903160137.8963-1-linuxtestproject.agent@gmail.com>
-Date: Fri, 04 Sep 2026 07:16:51 +0000
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+In-Reply-To: <20260903160411.9148-1-linuxtestproject.agent@gmail.com>
+Date: Fri, 04 Sep 2026 07:35:17 +0000
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] tse_swap: Add fallback definitions for swapon
+Subject: Re: [LTP] sched_setattr01: Convert to new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -106,48 +107,31 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> Hi Andrea,
+> --- [PATCH 4/5] ---
 > 
-> On Thu, Sep 3, 2026, Andrea Cervesato wrote:
-> > [PATCH 1/3] tse_swap: Add fallback definitions for swapon
+> > +#ifndef PR_SET_MM_MAP
+> > +# define PR_SET_MM_MAP	14
+> > +#endif
 > 
-> --- [PATCH 2/3] ---
-> 
-> > static struct tst_test test = {
-> > 	.needs_root = 1,
-> > 	.mount_device = 1,
-> 
-> SWAP_FLAG_DISCARD_ONCE and SWAP_FLAG_DISCARD_PAGES were added in Linux
-> 3.11. Add `.min_kver = "3.11"`; older kernels reject these bits and the
-> test reports TFAIL instead of TCONF.
-> 
-> --- [PATCH 3/3] ---
-> 
-> > 	{
-> > 		.err_desc = "Invalid swapflags (undefined flag bits)",
-> > 		.exp_errno = EINVAL,
-> > 		.path = SWAP_FILE,
-> > 		.flags = 0x80000,
-> > 	},
-> 
-> Invalid swap flags started returning EINVAL in Linux 3.4. Add
-> `.min_kver = "3.4"` so the test skips older kernels, which may accept the
-> flags and produce spurious failures.
-> 
-> Verdict - Needs revision
-> 
-> ---
-> Note:
-> 
-> The agent can sometimes produce false positives although often its
-> findings are genuine. If you find issues with the review, please
-> comment this email or ignore the suggestions.
-> 
-> Regards,
-> LTP AI Reviewer
+> PR_SET_MM_MAP_SIZE is listed in the commit message but is not defined here.
+> Add its UAPI value, 15, alongside PR_SET_MM_MAP.
 
-both can be ignored, we don't support those kernels. I will add a
-rule to the Agent so we remove this once for all.
+Valid.
+
+> 
+> --- [PATCH 5/5] ---
+> 
+> > +	map.start_code = map.start_data = map.end_data =
+> > +	map.start_brk = map.brk = map.start_stack = map.arg_start =
+> > +	map.arg_end = map.env_start = map.env_end = (uint64_t)(uintptr_t)&map;
+> 
+> PR_SET_MM_MAP copies these values into current->mm, so this sets the process
+> break to a stack address before the test starts. Preserve the real break with
+> sbrk(0), as waiter_fn() does, and supply valid current values for the other
+> memory-map fields.
+> 
+
+Valid.
 
 --
 Andrea Cervesato
