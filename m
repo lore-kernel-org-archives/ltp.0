@@ -4,115 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E6A16C624DE
-	for <ltp@archiver.kernel.org>; Fri,  4 Sep 2026 08:08:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A5240C79F80
+	for <ltp@archiver.kernel.org>; Fri,  4 Sep 2026 08:21:08 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 369F43E937C
-	for <ltp@archiver.kernel.org>; Fri,  4 Sep 2026 10:08:07 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 4E31A3E9373
+	for <ltp@archiver.kernel.org>; Fri,  4 Sep 2026 10:21:07 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2CA263E15C1
- for <ltp@lists.linux.it>; Fri,  4 Sep 2026 10:07:51 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 0C7263E5507
+ for <ltp@lists.linux.it>; Fri,  4 Sep 2026 10:20:52 +0200 (CEST)
+Received: from mail-qk2-x06.google.com (mail-qk2-x06.google.com
+ [IPv6:2607:f8b0:4864:34::6])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id AFFFB1401206
- for <ltp@lists.linux.it>; Fri,  4 Sep 2026 10:07:50 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 039061FD02;
- Fri,  4 Sep 2026 08:07:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1788509260; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=7vyhmbMdWivffR9oEuHzeB0OSpR7o1WS30CWQQXPruY=;
- b=E0f+yer9Kr3VXDIDM9PKxR12l+ZpDU5tF/VerxbJAnR3Q98c+6daNgYPU8SDhAn8xxFI8c
- Ko79R8yazG4uoZkH/PP+SegejduI4dTcdO46VWuUp3j1LcW0SrIzB7Otgrr8z7AW740ELn
- i7RRSOx2nuig02FZbaLCQPc53I+Oyhw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1788509260;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=7vyhmbMdWivffR9oEuHzeB0OSpR7o1WS30CWQQXPruY=;
- b=799lbApeW+gLpEGAWDbvdF1EaMoMHrDe9ZrBY6ZIyjkrvYnCxBpvIYzmur1hdWZgPGf22V
- Sj98hXkteEjHYkDw==
-Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.de header.s=susede2_rsa header.b=PVJKErxW;
- dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=C80qbZs9
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1788509256; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=7vyhmbMdWivffR9oEuHzeB0OSpR7o1WS30CWQQXPruY=;
- b=PVJKErxWltPrKbF8LyWU6h2JqeyywXrCf/BOD+M1ZEN7mhqfkgbTH40Fp2/OCe85bnREdb
- Gu47zcpKgxyw1cUygeZ0wsUI0xcTHmzZzAz4x/5BygxHL329Qp3hFA3BYwiXKdL7Hru0RZ
- e5e7ahNIlfAmlzN1Vm1zrWVIxlbNnNc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1788509256;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=7vyhmbMdWivffR9oEuHzeB0OSpR7o1WS30CWQQXPruY=;
- b=C80qbZs9MBCf8xMKVhJ896JYlakbAqNVCsDDOywVsc3srTfxdPCSWeqDuZ8z9Ed8/cFLv2
- QojpdB2NVMaAoVDw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B8BB013678;
- Fri,  4 Sep 2026 08:07:35 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id oWh9Kkd8mmpbNgAAD6G6ig
- (envelope-from <andrea.cervesato@suse.de>); Fri, 04 Sep 2026 08:07:35 +0000
-From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Fri, 04 Sep 2026 10:07:34 +0200
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id B1A481000F39
+ for <ltp@lists.linux.it>; Fri,  4 Sep 2026 10:20:51 +0200 (CEST)
+Received: by mail-qk2-x06.google.com with SMTP id
+ d75a77b69052e-52fa263dd47so4441381cf.0
+ for <ltp@lists.linux.it>; Fri, 04 Sep 2026 01:20:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20251104; t=1788510050; x=1789114850; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to:content-type;
+ bh=afwpgcpvNOBcaSfGy73ljA3UJ4edzobwU4lrHxAXi+Y=;
+ b=I7CV2hSIbdAvYtQTg28BS/IyoNGUmgiwnLrhF4UfNS8ThU+04kDyfLnnuqiyeoH1vx
+ kY6ZzhnqMN8CVIZqO+jyIfFzTXknhLZH7sY3tkETixdBGSp+1YNDEddLrknNMVqVCOrT
+ slZMlthjrpx75f46xBYHLe6knJsJBZcF92y4dEW+L861KEaPNRz0tAEzOUmjOzkrDjM8
+ Jy2yMyGoXBcJFHspl9/yck1NUsfu0CviClkC9wFa6o46CCCl8VaupEu1X2NY4eL/W/w8
+ OA4YBPVWWwVOm8OAuqYzyx4pjD/TQblwebGrU2jxvlbYbXwmvZcvHhs0GrlvRfSgsvs6
+ QhEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1788510050; x=1789114850;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to:content-type;
+ bh=afwpgcpvNOBcaSfGy73ljA3UJ4edzobwU4lrHxAXi+Y=;
+ b=IlTTqKsd34LUR4Kfu2aRuC+xyjgoXuJ1yKmLn/U9MJNZHOs1lZroIJhxc5UGuu2Xcv
+ EjX/Fq0L3yzIAm15kgwnMlO8YRXj2YQAKmto++wjiaLAVy7P8FxVA8idz7bezQs4IRVk
+ ayjSCoa+hh8ZGVxqtqRZ2KeSle9xYrY4eoJ+ZYhRhrXl04fzmq/DVzs3UG71IRvkgs6x
+ cZoE9QWU/Y37S2soVVrwu8tmQWinMmUnw2r2F+hiqc5me0eYfA2KhfSffIrZnTm14/zA
+ AUPNjgDoPcaGR2NK55fV84wC0rApFbPG5oXheGU/aRTFxjk/W4Jh7mPKLZjPQB6Nr7Vy
+ y+EA==
+X-Gm-Message-State: AFuF++kg6ROfwdrdpNeioHtCSZTxhMa3gN7DzwtMN9iAb4NNShmInkID
+ RXLZ22xCF6KBSpR468KefXH2zUNGlQiFf95caLwyC4W+BoQ0npRIDGLg
+X-Gm-Gg: AYBFou1j6flwPfS3UK7RVf/0Qoq42HtDta6ReL5+tMk8W/SgHpAMjp0rcPsPZctAgD9
+ P5WHhA+yp8hRDaSiRYgxGI40QuXI7ebYDZWPiio0ma2Q3+MpUFWGJqxLRTCDrNyHaALSZ/XruJk
+ LNzAjFg1SQlr4uaadgqiFK9nyUt7IWO/jfpaV4i+BthVGG5RHWgq1z5JTr0eVm6xQaYWKFcGgr7
+ FZqyahEBRS0WuoE/TJd8FB2AseITw6l2+oTpewDniyfDuRkIZbU/qq946ONrhvd648lPU9ETzsQ
+ lt1N5CuEyStdk9eb7e8R24CIwJJ8SxcscQIzxpZKIOMwBZTxhKSvOyLlFkxdxmHi9oRbSuFpIxY
+ cIJsa1f/fVFVCy2eOd2/vpivfgkttKQodgIJhwHEwxztjEDi2VvimRDKWFZUvnbhAGLL5Lb28yC
+ Sg6eFgSClo51eBvb27ABIlgZlAVmu4F1UOHjHYyniozmCXfSuiE9b/92sDSpCFNOMt9wGjpUgyq
+ 1FGiLLmj3XQB7VTOBPsDaZOOqe5fWIvmdH7f854sHi1B4VdDHml54AIOJeBoT2F/LS1i4/0FyEG
+X-Received: by 2002:ac8:570f:0:b0:530:3526:9ad4 with SMTP id
+ d75a77b69052e-53054944a04mr44707331cf.27.1788510050315; 
+ Fri, 04 Sep 2026 01:20:50 -0700 (PDT)
+Received: from
+ runnervmejwal.nux2vxulkvkenpsq1ny34siynf.bx.internal.cloudapp.net
+ ([20.119.103.59]) by smtp.gmail.com with ESMTPSA id
+ d75a77b69052e-53054180b8fsm15163861cf.17.2026.09.04.01.20.49
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 04 Sep 2026 01:20:50 -0700 (PDT)
+From: linuxtestproject.agent@gmail.com
+To: Andrea Cervesato <andrea.cervesato@suse.de>
+Date: Fri,  4 Sep 2026 08:20:49 +0000
+Message-ID: <20260904082049.8988-1-linuxtestproject.agent@gmail.com>
+X-Mailer: git-send-email 2.55.0
+In-Reply-To: <20260904-cve-ghostlock-v8-1-bd999083c7fb@suse.com>
+References: <20260904-cve-ghostlock-v8-1-bd999083c7fb@suse.com>
 MIME-Version: 1.0
-Message-Id: <20260904-min_kernel-v1-1-47b556550780@suse.com>
-X-B4-Tracking: v=1; b=H4sIAEV8mmoC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDIzMDSwMT3dzMvPjs1KK81BxdIyMDM7NEo1QDE7NkJaCGgqLUtMwKsGHRsRB
- +cWlSVmpyCcgEpdpaABO7yS1uAAAA
-X-Change-ID: 20260904-min_kernel-22066a2e046c
-To: Linux Test Project <ltp@lists.linux.it>
-X-Mailer: b4 0.16.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1788509255; l=4230;
- i=andrea.cervesato@suse.com; s=20251210; h=from:subject:message-id;
- bh=XFqjZBTPpVhBpvGtTwZ9wEQTLLr9vPfAmLG1Na1KJ9M=;
- b=Y6KtghOg8K1x/WOYl8hKE65j0N0XMm+rcfkhIQRBjd/8+KpL4KSqrHQk8DuiaIJxeBEkn0b4b
- 741OvvGXwg2BvsxtJDRQO9MLLfMzk2+5uO5dJIBsoy3/5WYSZTxUwku
-X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
- pk=zKY+6GCauOiuHNZ//d8PQ/UL4jFCTKbXrzXAOQSLevI=
-X-Rspamd-Queue-Id: 039061FD02
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000];
- R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[];
- DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- ARC_NA(0.00)[]; MIME_TRACE(0.00)[0:+];
- RCVD_VIA_SMTP_AUTH(0.00)[];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- RCPT_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
- TO_DN_ALL(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[];
- DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.de:dkim,suse.com:mid,suse.com:email];
- DKIM_TRACE(0.00)[suse.de:+]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] lib: Check minimal supported kernel version
+Subject: Re: [LTP] sched_setattr01: Convert to new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -124,138 +90,79 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Andrea Cervesato <andrea.cervesato@suse.com>
+Hi Andrea,
 
-LTP does not support kernels older than 4.4, but this requirement was
-only documented in static text without automated runtime validation.
+On Sep 4, 2026, Andrea Cervesato wrote:
+> sched_setattr01: Convert to new API
 
-Define the minimal supported kernel version in tst_kvercmp.h so that
-the documentation fetches it dynamically and the core library aborts
-unsupported kernels with TCONF during test setup.
+--- [PATCH 1/5] ---
 
-Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
----
-Add a variable to check minimum kernel version before running tests.
-Until now, the only place we have to verify the minimum kernel is to
-read the documentation.
----
- doc/conf.py                     | 15 +++++++++++++++
- doc/users/supported_systems.rst |  2 +-
- include/tst_kvercmp.h           |  7 ++++++-
- lib/tst_test.c                  | 17 +++++++++++++++++
- 4 files changed, 39 insertions(+), 2 deletions(-)
+> Rewrite the test to use the modern LTP API (tst_test.h) with a
+> struct tcase array and TST_EXP_* macros.
 
-diff --git a/doc/conf.py b/doc/conf.py
-index c28db7af1..69ea31b0c 100644
---- a/doc/conf.py
-+++ b/doc/conf.py
-@@ -21,6 +21,21 @@ ltp_repo = 'https://github.com/linux-test-project/ltp'
- ltp_repo_base_url = f"{ltp_repo}/tree/master"
- cve_url = "https://www.cve.org/CVERecord?id="
- 
-+def _get_min_kernel_version():
-+    header_path = os.path.join(os.path.dirname(__file__), '../include/tst_kvercmp.h')
-+    with open(header_path, 'r', encoding='utf-8') as f:
-+        match = re.search(r'#define\s+TST_MIN_KVER\s+"([^"]+)"', f.read())
-+        if match:
-+            return match.group(1)
-+    raise RuntimeError(f"Could not find TST_MIN_KVER in {header_path}")
-+
-+min_kernel_version = _get_min_kernel_version()
-+
-+rst_prolog = f"""
-+.. |min_kernel_version| replace:: **{min_kernel_version}**
-+.. |min_kernel_version_plain| replace:: {min_kernel_version}
-+"""
-+
- # -- General configuration ---------------------------------------------------
- # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
- 
-diff --git a/doc/users/supported_systems.rst b/doc/users/supported_systems.rst
-index b5d792eeb..5765214b0 100644
---- a/doc/users/supported_systems.rst
-+++ b/doc/users/supported_systems.rst
-@@ -14,7 +14,7 @@ branch is build tested in
- Kernel version
- --------------
- 
--Minimal supported kernel version is **4.4**.
-+Minimal supported kernel version is |min_kernel_version|.
- 
- Oldest build tested distributions
- ---------------------------------
-diff --git a/include/tst_kvercmp.h b/include/tst_kvercmp.h
-index 26e8f8e3c..52267fd2b 100644
---- a/include/tst_kvercmp.h
-+++ b/include/tst_kvercmp.h
-@@ -1,12 +1,17 @@
- /* SPDX-License-Identifier: GPL-2.0-or-later
-  * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
-  * Copyright (c) 2009-2016 Cyril Hrubis chrubis@suse.cz
-- * Copyright (c) Linux Test Project, 2020-2025
-+ * Copyright (c) Linux Test Project, 2020-2026
-  */
- 
- #ifndef TST_KVERCMP_H__
- #define TST_KVERCMP_H__
- 
-+/**
-+ * TST_MIN_KVER - Minimal kernel version supported by LTP.
-+ */
-+#define TST_MIN_KVER "4.4"
-+
- /**
-  * tst_kvcmp() - Compare given kernel version with kernel in string.
-  *
-diff --git a/lib/tst_test.c b/lib/tst_test.c
-index 166e0f672..1bd62e24a 100644
---- a/lib/tst_test.c
-+++ b/lib/tst_test.c
-@@ -1087,6 +1087,21 @@ static bool check_kver(const char *min_kver, const int brk_nosupp)
- 	return true;
- }
- 
-+static void check_supported_kver(void)
-+{
-+	int v1, v2, v3;
-+
-+	if (tst_parse_kver(TST_MIN_KVER, &v1, &v2, &v3)) {
-+		tst_res(TWARN,
-+			"Invalid minimal kernel version %s, expected %%d.%%d.%%d",
-+			TST_MIN_KVER);
-+		return;
-+	}
-+
-+	if (tst_kvercmp(v1, v2, v3) < 0)
-+		tst_brk(TCONF, "Kernel is older than minimal supported %s", TST_MIN_KVER);
-+}
-+
- /*
-  * Checks if the struct results values are equal.
-  *
-@@ -1455,6 +1470,8 @@ static void do_setup(int argc, char *argv[])
- 	if (context->tdebug)
- 		tst_res(TINFO, "Enabling debug info (level %d)", context->tdebug);
- 
-+	check_supported_kver();
-+
- 	if (tst_test->needs_kconfigs && tst_kconfig_check(tst_test->needs_kconfigs))
- 		tst_brk(TCONF, "Aborting due to unsuitable kernel config, see above!");
- 
+The body only restates how the test was converted. Please explain why the
+conversion is needed.
+
+--- [PATCH 2/5] ---
+
+> Rewrite the test to use the modern LTP API (tst_test.h) with
+> TST_EXP_* macros and cleanup callback.
+
+The body only restates how the test was converted. Please explain why the
+conversion is needed.
+
+--- [PATCH 3/5] ---
+
+> Add a safe variant of sched_setattr() that breaks the test with TBROK
+> on failure and use it in sched_setattr01 and sched_getattr01.
+
+The body describes the wrapper and its callers, but not why the shared
+wrapper is needed. Please add the motivation.
+
+> +	if (ret == -1) {
+> +		tst_brk_(file, lineno, TBROK | TERRNO,
+> +			"sched_setattr(%i) failed", pid);
+> +	}
+
+This body contains one statement. Please remove the braces as required by
+LTP C style.
+
+--- [PATCH 5/5] ---
+
+> +	TST_CHECKPOINT_WAKE(CP_SPRAYED);
+> +
+> +	while (!tst_atomic_load(&stop_spray)) {
+> +		prctl(PR_SET_MM, PR_SET_MM_MAP, (unsigned long)&mm_map,
+> +		      sizeof(mm_map), 0);
+> +	}
+
+> +	TST_CHECKPOINT_WAIT2(CP_SPRAYED, 18000);
+> +
+> +	SAFE_SCHED_SETATTR(waiter_tid, &attr, 0);
+
+CP_SPRAYED is signaled before the waiter enters PR_SET_MM_MAP, so nothing
+ensures that sched_setattr() overlaps the controlled kernel-stack buffer.
+Use the PoC's page-boundary and hole-punch mechanism, or an equivalent
+mechanism that guarantees a usable overlap; otherwise a vulnerable kernel
+can complete all attempts and incorrectly report TPASS.
+
+Verdict - Needs revision
 
 ---
-base-commit: d377d1cff1ec393459a136eec85088ffd5729430
-change-id: 20260904-min_kernel-22066a2e046c
+Note:
 
-Best regards,
---  
-Andrea Cervesato <andrea.cervesato@suse.com>
+The agent can sometimes produce false positives although often its
+findings are genuine. If you find issues with the review, please
+comment this email or ignore the suggestions.
 
+Regards,
+LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
