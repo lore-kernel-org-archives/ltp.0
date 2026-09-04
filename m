@@ -4,89 +4,109 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CE547C624DE
-	for <ltp@archiver.kernel.org>; Fri,  4 Sep 2026 08:23:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1788510230; h=message-id :
- to : in-reply-to : date : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : cc : mime-version : content-type :
- content-transfer-encoding : sender : from;
- bh=k1pKO1epQ0okzq+JJqUM+wZH0iJ/On2y4soR3L5rVPU=;
- b=HfxhSE9/4gzZCTwb4ouOct5f4oVyw/zUDNAWawaveHdj0Mh8BVmIQQoz5rnB5gsFo8I1K
- t2IrlkrWCbIpXWTszvKxDKIqmn0UXNSoKLAAuYs/3gmEAMeHpNfsSL9QTvOsYEu/p2OUDPz
- wbdbGWTzs2tHr5m7nDS8E+KryKdaZUQ=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9BC99C79F80
+	for <ltp@archiver.kernel.org>; Fri,  4 Sep 2026 08:45:11 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6C6DF3E969F
-	for <ltp@archiver.kernel.org>; Fri,  4 Sep 2026 10:23:50 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id D051B3E936F
+	for <ltp@archiver.kernel.org>; Fri,  4 Sep 2026 10:45:09 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 387A63E5507
- for <ltp@lists.linux.it>; Fri,  4 Sep 2026 10:23:31 +0200 (CEST)
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com
- [IPv6:2a00:1450:4864:20::329])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 8489A3E5506
+ for <ltp@lists.linux.it>; Fri,  4 Sep 2026 10:44:53 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 85AB4601D6A
- for <ltp@lists.linux.it>; Fri,  4 Sep 2026 10:23:30 +0200 (CEST)
-Received: by mail-wm1-x329.google.com with SMTP id
- 5b1f17b1804b1-49a97714f5dso6018375e9.0
- for <ltp@lists.linux.it>; Fri, 04 Sep 2026 01:23:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1788510210; x=1789115010; darn=lists.linux.it;
- h=date:content-transfer-encoding:content-type:subject:in-reply-to:cc
- :to:from:message-id:from:to:cc:subject:date:message-id:reply-to
- :content-type; bh=icm/WXNDyF/o+zX4FUfbqnOwA7+2ifUYMtXmURCAZsE=;
- b=OdKwLSkoWtVMfNmupXuTNevOnT+NqvKA5mbuSwxH+dlrXewuwlP2KhbTOyhia0iqOb
- xnJJzUfD2RqG5flPgxjBAyKF2qMFk2v6KXHPQ2i2CCH0M+EULNcTG/slkysJIor2xtbC
- +fk+3EsuA43XF69cSj7LkZx7tNQuuFZGrkcJ5kwreu/Q5Kxtj+K+LqT/rIcr8pbMpUwS
- cJljRWLo9NGa9tSFOKrIHD8Nxiu+/D0OwFXGYUBESAmiVFHassLYLLje/GiwK5oShrom
- Xwz/JEUmyWpJlqzlfbCc/hd5JdzkyYhgISgInKeNXYH8iAkGAkuqihzR53vro+gancBL
- +GPg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1788510210; x=1789115010;
- h=date:content-transfer-encoding:content-type:subject:in-reply-to:cc
- :to:from:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject
- :date:message-id:reply-to:content-type;
- bh=icm/WXNDyF/o+zX4FUfbqnOwA7+2ifUYMtXmURCAZsE=;
- b=iwf3B+hFVd5kmAEoPRjx9ZPX0teLpj2QOmi9D6KxmWg7Csuv/H3s1mIGczhijgNKX3
- UtNw1uUhFRg9dFlCGVMhh8NpdBSIr4KibpWxo2jDXkpl6mNlUYUbsaotO42lof720rGt
- ubtnm3jUV2rPnQkQDkUHAtpdiuiJi/Q18T0yLWqOQ8DMQg+jq5ryiN/2bPgR8VeAeKQQ
- hhDl2wQfvF08xvjiA3PNipNW9YF1cmHR28OiAxkuj8wES3QPhg5+iWN8uaiC/2oa1DZ0
- Vkij81juHDUwyB0+Ha1htDYm4y/S1YNswyRNGRrCf+j+5bawef/Pxqifoqq1Ff8/LIPa
- ThAg==
-X-Forwarded-Encrypted: i=1;
- AKwUvBz1Pcmg14q7FfE8La4obNVIuGDR8tIWoPIM1qbgrSwcD1xGTHWoTfgVZj2RxkJ3GFGvEHk=@lists.linux.it
-X-Gm-Message-State: AFuF++m8sG2u9PHORhMmmHcQvhmhVuoiRG71wKpwTDiI2P7sbPb35WKo
- OTVFVuKKDCqU27NBelNGZZ1katmGCnEEyvcVZf6EpJsGIpDbunviMpHzK7nbS/sWN6PY+OLfzrY
- 4CAvrvvt6cQ==
-X-Gm-Gg: AYBFou0/e+WpcN0eq0jW+M4W1CqGZLFbSrpkvGRWYvFcnqRtZbERfGs6EI7Ncfh45Za
- xQRATgyPdFWsU0R8+mrMNaSi2caQEvpkWT8DyOhf/sDlyMhiKh/LGLUaIxpteWwehXqzUkM+Eni
- sE6gXFIfcsrVgfWk26fxmnmSwwzyt4YPVLDWdPgszMQlDI5OZ9HC71mjt6RSYXIBLTRwJKmsH6+
- 2w7XzvF8uZ5Ce8BxL8KqKp2+xqKatcEDkbbRhECVv6Y2kpxU3AdUxf2Jl6RwIwMuxVi7PxJ0a32
- 22QE7bIvoSf8RmjpZWG+D2XLF2KgJgZcHtw1BQ8V6UxV0XsT0Iqr3hf9WEPGt/vtZfOh74RSl2m
- t9H2b4Ygda/bpnRI8GvQ8XEc63ut26XOqooziVulrDGSQvc5QEZ4RyHCnG9HH06H6kUHr/9+R8L
- JlNDIJcuNNEIGXT6ACOGD4/NepljzcVHkoXq2p8P+Q1bH5v/wV8W04/r5cXJcoha2C6GUjxQFDG
- o0kMuUrMa8/MiDvZblVuUE=
-X-Received: by 2002:a05:600c:3544:b0:49c:f5c0:aa79 with SMTP id
- 5b1f17b1804b1-49cf8244bd0mr41380435e9.9.1788510209814; 
- Fri, 04 Sep 2026 01:23:29 -0700 (PDT)
-Received: from localhost.localdomain
- ([2a02:a31b:84a1:b780:6f4e:21d6:82d2:5333])
- by smtp.gmail.com with ESMTPSA id
- ffacd0b85a97d-485885bbb51sm4718047f8f.30.2026.09.04.01.23.29
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 04 Sep 2026 01:23:29 -0700 (PDT)
-Message-ID: <6a9a8001.d5b2c389.20594a.c6cf@mx.google.com>
-To: linuxtestproject.agent@gmail.com
-In-Reply-To: <20260904082049.8988-1-linuxtestproject.agent@gmail.com>
-Date: Fri, 04 Sep 2026 08:23:28 +0000
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 0206A600E4F
+ for <ltp@lists.linux.it>; Fri,  4 Sep 2026 10:44:52 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 083471F801;
+ Fri,  4 Sep 2026 08:44:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1788511488;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=/M6WK+Hv5UUptUVKtNiTC1Sxo1whN2sN6KZ7sl5aZCk=;
+ b=IZZB7p+gdEPN2e84aFHE6gx18vq3lLxpBcSoLFSwef3NK4lM6t397DlUUJpaG9FgI/YeyZ
+ py+RIZtKE8ZUxIaU5eHXtxGP1rX9bJ43y+kpJiO4KLPoMxXOo3tgfgr7BW5zVwcCVknqjs
+ kGoulR+FPh65h2s9BG14ODOkWI9VTp0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1788511488;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=/M6WK+Hv5UUptUVKtNiTC1Sxo1whN2sN6KZ7sl5aZCk=;
+ b=WeueZzYyTaazrl2g5bcHT3UumPVK5nppfCvuZQDHWSA/wjhZ/M3rAFdfaL4U2YoHDcq6eB
+ 9iaI8UfGskO2TnBg==
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=QTms3rdI;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="kSJpfFZ/"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1788511484;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=/M6WK+Hv5UUptUVKtNiTC1Sxo1whN2sN6KZ7sl5aZCk=;
+ b=QTms3rdIfChFVGcR2J8urbRTeI1ErzrstUXELrVK2R2ixDtuo0w8hHh9g9/Wlsi9yTKp3Y
+ zLpwqZoe2iYzQiXo94+Aqkj4ZuPXvDsCWZwT8dN4BP1ZlteeTH/snjCk5u2jbUddC2UV6H
+ tgWw5RNppsWbzu0n3/wGzVjKY6J5Yis=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1788511484;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=/M6WK+Hv5UUptUVKtNiTC1Sxo1whN2sN6KZ7sl5aZCk=;
+ b=kSJpfFZ/IS3pEdPqOnsf460Ni/Glsg4JOq+WqXBhbN8CQpJktBk7+V4IAD4g+kvtyc9054
+ 41PHMMSWUvuuzwCg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9FB9E13738;
+ Fri,  4 Sep 2026 08:44:43 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id VTllJfuEmmpsXAAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Fri, 04 Sep 2026 08:44:43 +0000
+Date: Fri, 4 Sep 2026 10:44:38 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Cyril Hrubis <chrubis@suse.cz>, ltp@lists.linux.it
+Message-ID: <20260904084438.GA1189532@pevik>
+References: <20260827112157.1748734-1-chrubis@suse.cz>
+ <20260903172419.GL1107507@pevik>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20260903172419.GL1107507@pevik>
+X-Rspamd-Queue-Id: 083471F801
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
+ MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ TO_DN_SOME(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ RCVD_TLS_ALL(0.00)[]; RCPT_COUNT_THREE(0.00)[4];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ DKIM_TRACE(0.00)[suse.cz:+]; RCVD_COUNT_TWO(0.00)[2];
+ RCVD_VIA_SMTP_AUTH(0.00)[];
+ DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ MISSING_XM_UA(0.00)[]; REPLYTO_EQ_FROM(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] sched_setattr01: Convert to new API
+Subject: Re: [LTP] [PATCH v3 00/31] Add sysfs sanity tests
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -98,92 +118,51 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Cc: ltp@lists.linux.it
-MIME-Version: 1.0
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: linux-man@vger.kernel.org, Alejandro Colomar <alx@kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> Hi Andrea,
-> 
-> On Sep 4, 2026, Andrea Cervesato wrote:
-> > sched_setattr01: Convert to new API
-> 
-> --- [PATCH 1/5] ---
-> 
-> > Rewrite the test to use the modern LTP API (tst_test.h) with a
-> > struct tcase array and TST_EXP_* macros.
-> 
-> The body only restates how the test was converted. Please explain why the
-> conversion is needed.
-> 
-> --- [PATCH 2/5] ---
-> 
-> > Rewrite the test to use the modern LTP API (tst_test.h) with
-> > TST_EXP_* macros and cleanup callback.
-> 
-> The body only restates how the test was converted. Please explain why the
-> conversion is needed.
-> 
-> --- [PATCH 3/5] ---
-> 
-> > Add a safe variant of sched_setattr() that breaks the test with TBROK
-> > on failure and use it in sched_setattr01 and sched_getattr01.
-> 
-> The body describes the wrapper and its callers, but not why the shared
-> wrapper is needed. Please add the motivation.
-> 
-> > +	if (ret == -1) {
-> > +		tst_brk_(file, lineno, TBROK | TERRNO,
-> > +			"sched_setattr(%i) failed", pid);
-> > +	}
-> 
-> This body contains one statement. Please remove the braces as required by
-> LTP C style.
-> 
-> --- [PATCH 5/5] ---
-> 
-> > +	TST_CHECKPOINT_WAKE(CP_SPRAYED);
-> > +
-> > +	while (!tst_atomic_load(&stop_spray)) {
-> > +		prctl(PR_SET_MM, PR_SET_MM_MAP, (unsigned long)&mm_map,
-> > +		      sizeof(mm_map), 0);
-> > +	}
-> 
-> > +	TST_CHECKPOINT_WAIT2(CP_SPRAYED, 18000);
-> > +
-> > +	SAFE_SCHED_SETATTR(waiter_tid, &attr, 0);
-> 
-> CP_SPRAYED is signaled before the waiter enters PR_SET_MM_MAP, so nothing
-> ensures that sched_setattr() overlaps the controlled kernel-stack buffer.
-> Use the PoC's page-boundary and hole-punch mechanism, or an equivalent
-> mechanism that guarantees a usable overlap; otherwise a vulnerable kernel
-> can complete all attempts and incorrectly report TPASS.
-> 
-> Verdict - Needs revision
-> 
-> ---
-> Note:
-> 
-> The agent can sometimes produce false positives although often its
-> findings are genuine. If you find issues with the review, please
-> comment this email or ignore the suggestions.
-> 
-> Regards,
-> LTP AI Reviewer
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
+Hi Cyril, Alejandro,
 
-The whole AI review can be ignored
+also, its nice that only /sys/fs/smackfs and /sys/kernel/cgroup/ are not
+covered (both are subsystems are at least somehow covered in LTP).
+=> very good test coverage.
 
---
-Andrea Cervesato
-SUSE QE Automation Engineer Linux
-andrea.cervesato@suse.com
+$ for i in $(grep -h '.I /sys' ../man-pages.git/man/man5/sysfs.5 | cut -d  ' ' -f2); do git grep -q $i || echo "$i is missing"; done
+/sys/fs/smackfs is missing
+/sys/kernel/cgroup/ is missing
+
+@Alejandro FYI man/man5/sysfs.5 (or other man pages) could be updated, few
+/sys/ directories are missing:
+
+man/man5/sysfs.5 (I haven't found more specific man page)
+/sys/class/ata_device
+/sys/class/bdi
+/sys/class/hwmon
+/sys/class/leds
+/sys/class/thermal
+/sys/class/wakeup
+/sys/devices/system/cpu/vulnerabilities
+
+man/man4/loop.4
+/sys/block/loop
+
+man/man4/rtc.4
+/sys/class/rtc
+
+I'm not sure if these should be documented in man page:
+
+/sys/devices/system
+/sys/devices/system/clockevents
+/sys/devices/system/clocksource
+/sys/kernel/mm/ksm
+/sys/kernel/mm/swap
+
+Kind regards,
+Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
