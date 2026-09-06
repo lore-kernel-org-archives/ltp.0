@@ -4,84 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 57485C624D6
-	for <ltp@archiver.kernel.org>; Sat,  5 Sep 2026 15:58:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 725B4C79F8C
+	for <ltp@archiver.kernel.org>; Sun,  6 Sep 2026 13:57:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1788703039; h=to : date :
+ message-id : mime-version : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : content-type : content-transfer-encoding : sender : from;
+ bh=JHw58AY/Ii5f49y7jcCQ//tduVhcvl+eVJcqYJB5Vm4=;
+ b=AN9NqANrYmPhh+lDACQGuZGZMy9f+NFb4CXgFIxoMK+OfJ0CMeOs5ZL5/RwC1eqIiPYeA
+ zRa8k0U/TjREjbw5UbHwPSmWUPU5Z4enIJIyHlg54rg9hxTl2Ycft9/UhF3xDeJbQ2RYJi5
+ lHwinsT5hUyJkoW/j8QVndDj9l4IgxA=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7A55F3E907B
-	for <ltp@archiver.kernel.org>; Sat,  5 Sep 2026 17:58:24 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id D84923E9063
+	for <ltp@archiver.kernel.org>; Sun,  6 Sep 2026 15:57:19 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C7E4D3E525C
- for <ltp@lists.linux.it>; Sat,  5 Sep 2026 17:58:08 +0200 (CEST)
-Received: from mail-oo2-x0b.google.com (mail-oo2-x0b.google.com
- [IPv6:2607:f8b0:4864:31::b])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id F3B853C2C00
+ for <ltp@lists.linux.it>; Sun,  6 Sep 2026 15:57:00 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 3F6CF600564
- for <ltp@lists.linux.it>; Sat,  5 Sep 2026 17:58:08 +0200 (CEST)
-Received: by mail-oo2-x0b.google.com with SMTP id
- 46e09a7af769-7f0355eb4b3so744370a34.0
- for <ltp@lists.linux.it>; Sat, 05 Sep 2026 08:58:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1788623886; x=1789228686; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to:content-type;
- bh=GOBxSUur9HpW0iXofJ2qPecAi940U0kw7KyuJgOGFZg=;
- b=Ez3o91+9xpt4N0M42xyBC61H2LWP1nYLrNYzzOMBJt/dAR2C9DG44Q1cqZBbcSLotO
- +suxmvjS5P5lciaJYk/28sMIMI0XuGgyQbBI1W5/wriZHkPo1z7oT582kIsEc85iLxUJ
- V5txBVC0gbNOviqsx3RDylpkUk6/H6a+8SY9lWN91BDFnqdpSDf51XLpuTodSfzQwbx6
- dAIILVJr/ybnyDI6jr0qGOnWSpc/b0RwhAHCzdPf/QDlney1gIy/F+ojVgixB7d/jasS
- xF/wLrubbco0ujH6gBn0IGXWuTFTKEHw1G6gCV8Atwpt1XbdxX5e5M6zL3FJR3cMuL+V
- 4FrA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1788623886; x=1789228686;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to:content-type;
- bh=GOBxSUur9HpW0iXofJ2qPecAi940U0kw7KyuJgOGFZg=;
- b=LMOqtzaOzJsI4BHArZJswDE4q90G268sj7yH03ulK3GY3eGuKxUglRVSfYg0yzttsa
- 19cb25w8OVk6W24nRZwWxLDJZUz8eqZI2nmi9ocImB+caEY2YWs84jXcaF9asMLtUDSS
- +3w/5tUJ989RS2xrb7tgM7INd4pVmg0dGuC2oeuoiEjynp1yzO7pgPbTVPjLZ/+1jv93
- YoLXcAS+Qpte/lN38IAeZdPAAj/KKWamt3ngKXbrmVmX3ZLP+Upc0MRHMyc7MBJrfzxb
- v3tJusMrcLmHfGw7ZAjJFLaa+ptqyjv26cN3GEM5hyO3rXt8hp6Dj87eUNqb1pEqxoC1
- tgWw==
-X-Gm-Message-State: AFuF++lIhAaflo5oGtivBSLkM0UE7fU7GWwOouAFwrdDT3tezsrS0/ms
- rcUgoFxT1h8H/3wd/qh+B0k3Xc2q6eaLeuBlz+7FnsBdxbprSl4aks4Y
-X-Gm-Gg: AYBFou2y4rhuxQWkGfMe++0dO2inQuuziGIN0/2qOvJcybU70dBCuWe5zi2ejxsfLUA
- FQsyhaz/HCrykO+oRQ/rUe74ix/xZFv+OTMhERJ4rf8Y8R74+HaHfPVHvB7X7rKujM7kQ2nrt1q
- 1ezCoAc7tjHVhv6nO/0rKheGhxK5oo+RRT+j/jrqRFt51kIK7cfhPmWIcKImTChKBrDhden+jpS
- TOzsrivWbzA7s9JWmwUi1hdQcYme1KD8KiA4LEySiquNfSG2+nEaU1q7f9e2UTGXtOr2ZA+26AP
- mMCaAEMeLeMkN+7qFSvvh1dLMitaXt9Naz/kU8QZfwQ1eVAwOrEU38EDh7kBwwdliKOs8t0/7FA
- tKw4UwrOIYyBjILpSIaqXxH1pEiXbOy712wQi1e5wr9Uo6H8ZSkBT1mrlmd4ThPQN8V8c8X6FlN
- SC9nEnmT+8Y6NG6V52Y/9EikjDWGDEBjR7r+mSN2A04cu+74bL1b5vKCKIOels7V3gjsFqPj+Pi
- AhzuWq4bjvPYPJm2IJ0A5cLFDLGChAC3Qd4ESaMJ+IPPoj73l3XIIgyePyLfIcEmyx3eTPvHK25
- rg==
-X-Received: by 2002:a05:6820:16a6:b0:6b7:8415:d779 with SMTP id
- 006d021491bc7-6b78415d96fmr5778493eaf.36.1788623886545; 
- Sat, 05 Sep 2026 08:58:06 -0700 (PDT)
-Received: from
- runnervmejwal.yahdu5czu0kufn0zd2mtniig1d.ex.internal.cloudapp.net
- ([130.131.55.224]) by smtp.gmail.com with ESMTPSA id
- 006d021491bc7-6b6dc6aca49sm5878791eaf.6.2026.09.05.08.58.05
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sat, 05 Sep 2026 08:58:06 -0700 (PDT)
-From: linuxtestproject.agent@gmail.com
-To: Pavithra <pavrampu@linux.ibm.com>
-Date: Sat,  5 Sep 2026 15:58:04 +0000
-Message-ID: <20260905155804.8977-1-linuxtestproject.agent@gmail.com>
-X-Mailer: git-send-email 2.55.0
-In-Reply-To: <20260905124522.961300-1-pavrampu@linux.ibm.com>
-References: <20260905124522.961300-1-pavrampu@linux.ibm.com>
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 2F0831400159
+ for <ltp@lists.linux.it>; Sun,  6 Sep 2026 15:56:58 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1788703017;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=uvH65kREBlzJ7t11YQKExNX/4nLe8qqIazsDIWhBdCs=;
+ b=KJ+Jx6Kmly4pFJmosibR4xblAeTTDtsWB1YCKDEHV5brhTbvlvSCLNE25yYeIQoeIsnJSB
+ S1vgw9rOkxBXmn1kLDTQfaw7lVZs53O5wDhFqL9No5flxzzoxlYqWvZygGhOAxaBSSrLmn
+ ui1mJopZTUoZVdhqfkzaF2GjjPyioZE=
+Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-5-lN6kwVBLOXK1QfsGCxHlfg-1; Sun,
+ 06 Sep 2026 09:56:55 -0400
+X-MC-Unique: lN6kwVBLOXK1QfsGCxHlfg-1
+X-Mimecast-MFC-AGG-ID: lN6kwVBLOXK1QfsGCxHlfg_1788703014
+Received: from mx-prod-int-10.mail-002.prod.us-west-2.aws.redhat.com
+ (mx-prod-int-10.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.95])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
+ id 9D05B195608D
+ for <ltp@lists.linux.it>; Sun,  6 Sep 2026 13:56:54 +0000 (UTC)
+Received: from mmenashe-thinkpadp16vgen1.remote.csb
+ (headnet03.pony-001.prod.iad2.dc.redhat.com [10.2.32.114])
+ by mx-prod-int-10.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
+ id B037F423
+ for <ltp@lists.linux.it>; Sun,  6 Sep 2026 13:56:53 +0000 (UTC)
+To: ltp@lists.linux.it
+Date: Sun,  6 Sep 2026 16:56:50 +0300
+Message-ID: <20260906135650.52112-1-mmenashe@redhat.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+X-Scanned-By: MIMEDefang 3.6 on 10.30.177.95
+X-Mimecast-Spam-Score: 0
+X-Mimecast-MFC-PROC-ID: i7CU-M2pR0j4uUFZB1kT7npQu_ZV9bncQwHyXF5ZZZ4_1788703014
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] hugetlb/hugemmap: add hugemmap33 to test hugetlbfs quota
- accounting
+Subject: [LTP] [PATCH] read_all: Fix buffer too small for long paths
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -93,43 +82,46 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+From: Michael Menasherov via ltp <ltp@lists.linux.it>
+Reply-To: Michael Menasherov <mmenashe@redhat.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Pavithra,
+queue_pop() copies each path into popped[BUFFER_SIZE], but BUFFER_SIZE
+was 1024 while visit_dir() builds paths up to MAX_PATH (4096). Any path
+longer than 1023 bytes aborted the test with TBROK "Buffer is too small
+for path".
 
-On September 5, 2026, Pavithra wrote:
-> hugetlb/hugemmap: add hugemmap33 to test hugetlbfs quota accounting
+Set BUFFER_SIZE to 4096 to match MAX_PATH. QUEUE_SIZE (16384) still
+holds a full-length path.
 
-> +/hugetlb/hugemmap/hugemmap33
+Tested on smaller boards and then on local machines with deeply nested
+directories under /sys; read_all_sys now passes instead of aborting.
 
-New test binaries must be ignored by a .gitignore in their own directory.
-Move this entry to testcases/kernel/mem/hugetlb/hugemmap/.gitignore as
-/hugemmap33.
-
-> +	TESTPTR(mmap(NULL, size, PROT_READ | PROT_WRITE, mmap_flags, fd, 0));
-> +	if (TST_RET_PTR == MAP_FAILED) {
-> +		tst_res(TFAIL | TERRNO, "mmap failed unexpectedly");
-
-Use TST_EXP_PASS_PTR_VOID() for expected successes and
-TST_EXP_FAIL_PTR_VOID(..., ENOMEM) for expected failures instead of manually
-combining TESTPTR(), errno checks, and tst_res(). Keep only the cleanup logic
-that depends on TST_PASS or TST_RET_PTR.
-
-Verdict - Needs revision
-
+Fixes: 67c95fbbfc3a ("Add read_all file systems test")
+Signed-off-by: Michael Menasherov <mmenashe@redhat.com>
 ---
-Note:
+ testcases/kernel/fs/read_all/read_all.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-The agent can sometimes produce false positives although often its
-findings are genuine. If you find issues with the review, please
-comment this email or ignore the suggestions.
+diff --git a/testcases/kernel/fs/read_all/read_all.c b/testcases/kernel/fs/read_all/read_all.c
+index 5720ffb99..d67fe5712 100644
+--- a/testcases/kernel/fs/read_all/read_all.c
++++ b/testcases/kernel/fs/read_all/read_all.c
+@@ -51,7 +51,7 @@
+ #include "tst_timer.h"
+ 
+ #define QUEUE_SIZE 16384
+-#define BUFFER_SIZE 1024
++#define BUFFER_SIZE 4096
+ #define MAX_PATH 4096
+ #define MAX_DISPLAY 40
+ 
+-- 
+2.55.0
 
-Regards,
-LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
