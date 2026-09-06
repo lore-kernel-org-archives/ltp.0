@@ -4,81 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F088DC79F85
-	for <ltp@archiver.kernel.org>; Sun,  6 Sep 2026 16:03:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5DE1AC79F85
+	for <ltp@archiver.kernel.org>; Sun,  6 Sep 2026 16:04:02 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0A23E3E4B5C
-	for <ltp@archiver.kernel.org>; Sun,  6 Sep 2026 18:03:16 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 98A933E54E7
+	for <ltp@archiver.kernel.org>; Sun,  6 Sep 2026 18:03:59 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0EB8A3D06E0
- for <ltp@lists.linux.it>; Sun,  6 Sep 2026 18:03:00 +0200 (CEST)
-Received: from mail-pj2-x01.google.com (mail-pj2-x01.google.com
- [IPv6:2607:f8b0:4864:39::1])
+ by picard.linux.it (Postfix) with ESMTPS id C93E73C325D
+ for <ltp@lists.linux.it>; Sun,  6 Sep 2026 18:03:44 +0200 (CEST)
+Received: from mail-oa2-x0a.google.com (mail-oa2-x0a.google.com
+ [IPv6:2607:f8b0:4864:30::a])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 5CBF820013D
- for <ltp@lists.linux.it>; Sun,  6 Sep 2026 18:03:00 +0200 (CEST)
-Received: by mail-pj2-x01.google.com with SMTP id
- 98e67ed59e1d1-396d27bb2beso2330711a91.0
- for <ltp@lists.linux.it>; Sun, 06 Sep 2026 09:03:00 -0700 (PDT)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 3497F600078
+ for <ltp@lists.linux.it>; Sun,  6 Sep 2026 18:03:44 +0200 (CEST)
+Received: by mail-oa2-x0a.google.com with SMTP id
+ 586e51a60fabf-476ed83b7f6so577183fac.0
+ for <ltp@lists.linux.it>; Sun, 06 Sep 2026 09:03:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1788710579; x=1789315379; darn=lists.linux.it;
+ d=gmail.com; s=20251104; t=1788710623; x=1789315423; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to:content-type;
- bh=gnlglnodLe7GnC3nwrwxPcHQd5AzyIHvwB1opbCZVM8=;
- b=FC+AE04K5mpJB8kuCxv/hf8JXHeHjMePiom8ovX81nMnOMdDefHoyjzQdQTPtlBeSH
- CFHWhbHJQ4jLCPxFAaHYbFVzjk1GtcaT9ByPFI4pvj+wTXnMwelfKAsHgiwCtmfpYmHu
- 7dCMjWl/8SokQ3LSUJb+ETUiJ3ghfzNn5N8XZNMtAaaO/2x31ycpN7dFp0aZNrByuN6B
- YZ/CCWrOg+gBWtxx5++cjc1e60DUEOSOkHyl5ojrLQ2yT7kPl/Vo202rds0c6dplIm3Y
- TpyZ5/IMdNn8kH/wHEE76GoyUIanaKdLWIKWOnmOKhSzgv8MY2HCIWvK+2TUNhCIphdS
- x00w==
+ bh=FhMU/GYo8YCOtOQxvfmYpFC8FoMkiBWazuD/oDIqOLg=;
+ b=P2Gp6RUwS4pSznQ375bdWeTF1H8ZR5nHhOcHdMvSpLA0vJ2Ht9PCmXvBjstZvM2G2E
+ 4oZWqnt77WvGCyDNREEZG7o922cFLFZJSBACC/axvXLjA805ny0mPbdHkG9ROCYvXvli
+ WWBA5qTvtylCE+OQAD1u29pF84DSikUM7y4owj9dNA5+HKrj2PB4LVgnStul/QB5P6rS
+ 51S4ELkQj0WC1rmDsfu70TaGOge9sclCfy8d47AJxG/WO1xW5bXiqh92iu7cByl4D86r
+ RMOYT3as9Vn3q2VrhLiC3hHkur05CWPsSIvdo8WF61gqm69sDjurjf+fEKCvV12D+5tm
+ y+4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1788710579; x=1789315379;
+ d=1e100.net; s=20251104; t=1788710623; x=1789315423;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to:content-type;
- bh=gnlglnodLe7GnC3nwrwxPcHQd5AzyIHvwB1opbCZVM8=;
- b=LWLrJgVBuBtnpJZhqbrFKRntmcdtsc5Be325zcHzNO2JLNDMB9MqaaPCSqWPKuTMl5
- 9hr8SCEjrGLDzGo6qW5KqRqlLnE5WpYYF7Hfxg6Ap/3L1rQojfdlUdtXG55vlU6DlCsV
- WT0pOhoJTIer1UqK8UEVMIWzH1qs0bPV5c6VD3xWEfUBbB98uThoWFsway4jA1spSmK/
- MbbOa0TnTftVvYl06BP88PWt7FdxfwATp7U/IQ2YyLj3Dz3XF+g7eIBBF0wJOoEyu6/z
- dYwC218/jrND/4s4TtwIddBMQMWh0yZTo/+PVy9vct/YSfw3GEEWgzKMt4hs1+MR1M45
- ae+Q==
-X-Gm-Message-State: AFuF++kmUnfei8DrrNn+Akk4v7IvSa9hcXx0XQdmJb6I2hCmsMYX6ucm
- blRETnniJRmPCLDmHUDFZFStH/zzvl8X7K8ycsTCvzAjG2PJfsleuatU
-X-Gm-Gg: AYBFou09jF4poZqWiRJBnE0B9yyonStf4qn2HGTQ6CaxMJLaqVo8ERzV2aeQJrNIRKu
- ZvBnd68u3DQjTOTwIVeCVhxLp0xZ8ofefXnusETTdPlGil5lW8IgpxrHBvf1IIiVcr7pY4Xcg6y
- zFocgw/AeF4Fe5lryMXyLUZyPYuAMOJJuajyt0m5M9H+GGbnnEv5SdvyoKtxQ1+qjg+URyjhpf1
- wbt1W5UkIe9prQwa6lYJuBQfw2wBEUOtO/VBoTTej2J9vxmKDSXE6pwYIvkZMq6N37qesIjWkf9
- 7xF/+CNb0F2qz+JSgKtsssuxh6q1noICD3iY8/LkdpV3j3Sl2CgFt3C3j/dX9ccRMzo/Q/cKgjm
- UIOqmoLsVtTGICZyS0tVSzpJ3kS913bmfRq4QFe7FNMLdKr8RgYMlWybdOcUHpRk+TGdvGGjia5
- ljh6wfgVHE0/SJQHj4ACWbew/1v8br18uoxweg8huLiQF1NDXU/IjOSYz+pNC3u2QyV35NjdHFZ
- p6+xkl7bDz9KIIZbvANx+qcwU1IUyzR8OoBAsS+ADYqnRGWeReP4VBhVk7ASvvPZIhGz2f6Mv0=
-X-Received: by 2002:a17:90a:e703:b0:398:d843:cad9 with SMTP id
- 98e67ed59e1d1-39b26226de8mr29038199a91.19.1788710578622; 
- Sun, 06 Sep 2026 09:02:58 -0700 (PDT)
+ bh=FhMU/GYo8YCOtOQxvfmYpFC8FoMkiBWazuD/oDIqOLg=;
+ b=FThpipHW14iCNkAV5HQUhMIaqiypCmcijUpG2/MwmVVQs5iD0H70JgxMetbMaIOrI1
+ ZOMhcdXRgzYOWe2ko5eQkM4Fb2MC5B21sJEJ+qrFClCJNGQkhhLK6f1U6R3DN/8X1da6
+ ZHnnXoEnVYqOvls6gDseY+cgI3SEfM+ztBhAbDHpINuGq1LXyXECHeBbrg3pKmSVPZGy
+ 57ilUvqENVfaKjocT3FXWxmOd9B/ZdWjQufW6qZiHtRmqw5zNaLV05u/7YJ2M4M7lsmX
+ xUDGu5lTEBBA5TwgacDdJYFXF5zjgZFXswq28pqbVtVaO01SHBF73MRZvjQs4Lx8T/Be
+ 99tQ==
+X-Gm-Message-State: AFuF++l2+GF66X67GMyCTZ992CUvnG30whv8jKcosK/qaX+HBW64ZJpk
+ 6cvlspbn2ckxJkeQ4z764YMcVlzkmR+vxjgpHN9rmaFwKeiYHxVxsKin
+X-Gm-Gg: AYBFou3uHd4jYkoYDInW41daPOCBxQHUAC70e+JUEkLn3QhNc35jHnouZFiwxa5Rw9Q
+ LD/dUgWSyys9xoUku7EQTT6ziYFWtDrTRBdFvMG93sCuyRVC/JoVz7g0UziFplKwjrknJmr6OcM
+ UvLD2dRmW4ovIOFoniBBYq3tUi86vKr5i2FNBV9/1J6iR/GIbp77YBdzBdJ4eFpiyF6oR0PPEzO
+ XK5O/sc+TM/j8B/fw3MdFomOjCp0MnQhID7lRWBD1JsVMLDq/qP4uZebTXPvbyeAXxMW065Mah7
+ kY2oS+pri4o/3X9sTqMBbfTux2+nUoON8qp/kV4iXOV4nU5l/guVZWzdhwVSkCYtPf0IW5dN2sR
+ Rwrjq/hCjWkTFtrXUkFOCWx1cqymJfiW9ymWaHFkjXShNCspivum7hes64bMGv3fnZS/MYS6uu7
+ pN+m+M38aDMzaIGO/5fjvXKKAyBEKQttsgkaUOwKdaoCPIaNN2CajbTbYvK8dEPyBRf3wH5NnPS
+ hOEupJW+unpgM5qqvLXXFXckqVe9SwWolOAqJp3gBYYkLTEnArnx3+lwkc0wvAum/UztHwW0d6p
+ jw==
+X-Received: by 2002:a05:6870:9111:b0:471:3325:80ca with SMTP id
+ 586e51a60fabf-4754fd0e32emr19222782fac.5.1788710622777; 
+ Sun, 06 Sep 2026 09:03:42 -0700 (PDT)
 Received: from
- runnervmejwal.wxrpj2k41buetg11k0dzziqzpc.dx.internal.cloudapp.net
- ([52.159.226.1]) by smtp.gmail.com with ESMTPSA id
- a92af1059eb24-143243f780csm19153323c88.13.2026.09.06.09.02.57
+ runnervmejwal.5j2jo0nuqkhuzhctjlm4uo4bda.gx.internal.cloudapp.net
+ ([172.212.164.17]) by smtp.gmail.com with ESMTPSA id
+ 586e51a60fabf-475543f5ac5sm8101136fac.8.2026.09.06.09.03.41
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sun, 06 Sep 2026 09:02:58 -0700 (PDT)
+ Sun, 06 Sep 2026 09:03:42 -0700 (PDT)
 From: linuxtestproject.agent@gmail.com
-To: Michael Menasherov <mmenashe@redhat.com>
-Date: Sun,  6 Sep 2026 16:02:56 +0000
-Message-ID: <20260906160256.8824-1-linuxtestproject.agent@gmail.com>
+To: Pavithra <pavrampu@linux.ibm.com>
+Date: Sun,  6 Sep 2026 16:03:41 +0000
+Message-ID: <20260906160341.9140-1-linuxtestproject.agent@gmail.com>
 X-Mailer: git-send-email 2.55.0
-In-Reply-To: <20260906135650.52112-1-mmenashe@redhat.com>
-References: <20260906135650.52112-1-mmenashe@redhat.com>
+In-Reply-To: <20260906150634.1032407-1-pavrampu@linux.ibm.com>
+References: <20260906150634.1032407-1-pavrampu@linux.ibm.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] read_all: Fix buffer too small for long paths
+Subject: Re: [LTP] hugetlb/hugemmap: add hugemmap33 to test hugetlbfs quota
+ accounting
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -96,25 +98,26 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Michael,
+Hi Pavithra,
 
-On Sun, 06 Sep 2026 16:56:50 +0300, Michael Menasherov wrote:
-> read_all: Fix buffer too small for long paths
+On 2026-09-06, Pavithra wrote:
+> hugetlb/hugemmap: add hugemmap33 to test hugetlbfs quota accounting
 
-> -#define BUFFER_SIZE 1024
-> +#define BUFFER_SIZE 4096
+> 	TST_EXP_FAIL_PTR_VOID(mmap(NULL, size, PROT_READ | PROT_WRITE, mmap_flags, fd, 0),
+> 			       ENOMEM, "mmap over quota");
+> 	if (!TST_PASS)
+> 		SAFE_MUNMAP(TST_RET_PTR, size);
 
-queue_pop() still aborts for a 4095-byte pathname: after copying its final
-byte, ++j is 4095, which satisfies BUFFER_SIZE - 1. Use PATH_MAX for popped
-and compare j against PATH_MAX so every pathname that fits dent_path also
-fits the queue buffer.
+An unexpected errno also leaves TST_PASS false but TST_RET_PTR equal to
+MAP_FAILED, so SAFE_MUNMAP() reports TBROK and obscures the original failure.
+Only unmap a successful mapping; the same pattern below needs the same fix.
+
+> 		{"linux-git", "a1e78772d72b"},
+
+Use the full commit ID:
+a1e78772d72b2616ed20e54896e68e0e7044854e.
 
 Verdict - Needs revision
-
-Pre-existing issue:
-
-read_all.c:218 has an unnecessary blank line before a closing brace, as
-reported by make check.
 
 ---
 Note:
