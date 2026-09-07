@@ -4,60 +4,163 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 667E1C79F9E
-	for <ltp@archiver.kernel.org>; Mon,  7 Sep 2026 12:12:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BA398C79F89
+	for <ltp@archiver.kernel.org>; Mon,  7 Sep 2026 12:12:46 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6DD0E3E950C
-	for <ltp@archiver.kernel.org>; Mon,  7 Sep 2026 14:12:25 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 4EC503E86DB
+	for <ltp@archiver.kernel.org>; Mon,  7 Sep 2026 14:12:45 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B18213E9508
- for <ltp@lists.linux.it>; Mon,  7 Sep 2026 14:11:44 +0200 (CEST)
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+ by picard.linux.it (Postfix) with ESMTPS id A4DA03E86D9
+ for <ltp@lists.linux.it>; Mon,  7 Sep 2026 14:12:17 +0200 (CEST)
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 645E060007B
- for <ltp@lists.linux.it>; Mon,  7 Sep 2026 14:11:43 +0200 (CEST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id E50C41A00813
+ for <ltp@lists.linux.it>; Mon,  7 Sep 2026 14:12:13 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1788783104; x=1820319104;
- h=from:to:cc:subject:date:message-id:in-reply-to:
- references:mime-version:content-transfer-encoding;
- bh=Rk4EPDeoCgZgRKzJwXGrS0Rjf0zYHE0wVouLh9ng1Gs=;
- b=jM1T+PoB3hZhOVIDmxXLmi03Vmy6lyFTcOaEuoGJXaWp2euIL3qVaQAs
- rAcun9x9glnatlFqIGIN/ZwjQnFWlPxgpzqq3GVu1Sx+GplffCkc7+564
- f9LKDn92Qx2Z8aILp8w9YPRx5bwj04AB14Z59HPL+cSBhUNPsa9V1Jx6R
- +kS1as2/F8e5wJpk/L4e5QI5mVJQzkz08r0VMl6fE98WmsqHFikWswhMi
- E7RNz2eOOZPUHYu+Jjr0S47JUSktbnpWcmdEDfat1wfrY3MwSI9vqjgU/
- PwhOiQHBBoAM2o5jzxQXLOJyDms1Smr9zmGT5SdwfLjKNNh/RL736T8ZL A==;
-X-CSE-ConnectionGUID: QC8hdQslQ1Gzjs1gsCBwDQ==
-X-CSE-MsgGUID: jyTD34YXQIaNwRX6eaxiBQ==
-X-IronPort-AV: E=McAfee;i="6800,10657,11898"; a="99519158"
-X-IronPort-AV: E=Sophos;i="6.25,267,1779174000"; d="scan'208";a="99519158"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
- by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Sep 2026 05:11:43 -0700
-X-CSE-ConnectionGUID: 8puuYmMJTNGs39TroMSnOQ==
-X-CSE-MsgGUID: XC1mvQ7ZSkyNhERcnj0HUw==
+ t=1788783136; x=1820319136;
+ h=from:to:cc:subject:date:message-id:references:
+ in-reply-to:content-id:mime-version: content-transfer-encoding;
+ bh=4OvhV7DCcUY8mBv+lCBMp5KgkphcYERXspl4ZZINJS4=;
+ b=D5PK+mR5qBEOKPEdHzBQsTMf5YEio66gh9jmMTw3FaNGiFol+vb38IIi
+ MPjpCOcpcK+xE7oL3YtCZSiBW7WM4vfi89lVmvAAUmx1w3SJmfCWYgGdt
+ 7NNroU2oTfgrnuQF2QW6jrq66Jof2ir1ve5OzAUMMI841fcJewnKuV6RA
+ EiOL/cpYhfTyE4lSAdDAxUS8d0vomqHRKTzn+tiAaFesm44IMWOBVbdeo
+ Ftlvn1uPwOXBkQs7vYN797KHQleBliYhCNgMjADgx6jJryhJibbtoQNJP
+ LiGbdQyLJ7ootHk+IzvZXeFhzxxlxX2cq4rKdoopMfunSPyD7xL5slrJm w==;
+X-CSE-ConnectionGUID: crbghg4mQR+hyQx327Gecg==
+X-CSE-MsgGUID: eiunCeEGQnmXB+3vxfAUUw==
+X-IronPort-AV: E=McAfee;i="6800,10657,11898"; a="89029644"
+X-IronPort-AV: E=Sophos;i="6.25,267,1779174000"; d="scan'208";a="89029644"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+ by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 07 Sep 2026 05:12:11 -0700
+X-CSE-ConnectionGUID: U+vdxW9URvmJnArf/SBPgA==
+X-CSE-MsgGUID: NT6yDYhTTGG9+dJBS/j+9A==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.25,267,1779174000"; d="scan'208";a="268116367"
-Received: from pkubaj-desk.igk.intel.com (HELO intel.com) ([10.237.142.111])
- by fmviesa008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Sep 2026 05:11:41 -0700
-From: Piotr Kubaj <piotr.kubaj@intel.com>
-To: ltp@lists.linux.it
-Date: Mon,  7 Sep 2026 14:10:49 +0200
-Message-ID: <20260907121045.357509-8-piotr.kubaj@intel.com>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <20260907121045.357509-2-piotr.kubaj@intel.com>
-References: <20260907121045.357509-2-piotr.kubaj@intel.com>
+X-IronPort-AV: E=Sophos;i="6.25,267,1779174000"; d="scan'208";a="272624135"
+Received: from fmsmsx901.amr.corp.intel.com ([10.18.126.90])
+ by fmviesa004.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 07 Sep 2026 05:12:11 -0700
+Received: from FMSMSX901.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx901.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.46; Mon, 7 Sep 2026 05:12:11 -0700
+Received: from fmsedg902.ED.cps.intel.com (10.1.192.144) by
+ FMSMSX901.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.46 via Frontend Transport; Mon, 7 Sep 2026 05:12:11 -0700
+Received: from BN8PR05CU002.outbound.protection.outlook.com (52.101.57.20) by
+ edgegateway.intel.com (192.55.55.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.46; Mon, 7 Sep 2026 05:12:11 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=rfdCYqqO1cDJ4MsDEbQAlmoAuVeiybtuBXd3Bev9j1s9+XAd8sBMn5sDFAobbmbcasbzBAdZKAPNGxu3O0fHJLQBo16It3yJh0vXN9DhEeiSQ5POekCMhI/ym7gUybHGkdoTLy20t8eWMfuhkUDPqc78FqPlhDoDFjuGRef/UoIPDgb3pqlxvSUip//FV8OLh7RuDZQqF5EoG+VRVhpbvMjJzGDsodROws3Izq9CLXiFT/xt2AXCqRGhv+XaQScve1b/nfnmIz63hZAxNs4SoJFSecfyK2/6YMsiZRkp91FJOhtc6fcnwUnprF9y4pyxXX7EqoHM5U15g1fmLF0APw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=+zXGvMG1e0EuL/Kl9nuT/7pW34PVkQFaGQbJAvcLqbw=;
+ b=vxq5NfP3i+X/7fmF8VpLTEmTpMm+sczW9cVpGTn+VAvQI47lcllkXGUTEzCMdb3a1ueIL/bmeTaTvEes4hECECcWLjdOIVtB6Rk6KVBcnDk+NyEiWdMmYpie+7AH4Aknb4zg6itwypmFzU3Lba5697CGYFOjBDJohTNGxTutYkS/ETcxnXUcdUXvbVBCV4OXKP95he56CMo/UJVXINtWiQRLFyt5valxZvwUp3s9xpSZKY4lO6dLxIk8ieb9Y5oBV+APwy9ZmKXfUpzSi2p0B2lReoCwVwNjEFczRxjS/ySapkzFi60ovJlfCV6LcvD5STY+Ec25+3gnpOXLMtBjLQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from PH8PR11MB7024.namprd11.prod.outlook.com (2603:10b6:510:220::19)
+ by SA3PR11MB890013.namprd11.prod.outlook.com (2603:10b6:806:592::23)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.382.15; Mon, 7 Sep
+ 2026 12:12:09 +0000
+Received: from PH8PR11MB7024.namprd11.prod.outlook.com
+ ([fe80::be73:dcff:d32:6d13]) by PH8PR11MB7024.namprd11.prod.outlook.com
+ ([fe80::be73:dcff:d32:6d13%6]) with mapi id 15.21.0382.014; Mon, 7 Sep 2026
+ 12:12:08 +0000
+From: "Kubaj, Piotr" <piotr.kubaj@intel.com>
+To: "andrea.cervesato@suse.com" <andrea.cervesato@suse.com>
+Thread-Topic: [LTP] [PATCH 0/3] pmc_core: cover the PkgC LTR blocker counters
+Thread-Index: AQHdPGqmDJGjoTkHdEuBncM82wSWZLbCq32AgABf4YA=
+Date: Mon, 7 Sep 2026 12:12:08 +0000
+Message-ID: <428ef70bf7ae17da9e77256329e056e96d432f40.camel@intel.com>
+References: <6a9e59aa.39f355fa.13d8c8.1eed@mx.google.com>
+In-Reply-To: <6a9e59aa.39f355fa.13d8c8.1eed@mx.google.com>
+Accept-Language: ja-JP, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PH8PR11MB7024:EE_|SA3PR11MB890013:EE_
+x-ms-office365-filtering-correlation-id: 889dbcba-30cf-4e8b-63c7-08df0cd93d81
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+ ARA:13230040|366016|23010399003|376014|1800799024|10067099003|6133799003|56012099006|22082099003|18002099003|11063799006|38070700021;
+x-microsoft-antispam-message-info: osm24SuH/1JYBG/LBAh7RfIQGJ36yK2MjFrh73cqUCwhzmlS1CeOZfVIs10UoetiIZEMKvwUzu1qMkdTpK7fm59CCaLaFHShMNpPQEeTPOnd7Y6sAEe4etcbkpfiifODZHQEujJqDJBwPLkuVZxmXYloNvJSlxeG1CxaKk3Au9mt6sGtIaux1bAy/vnj4I40TVcz/39CiWjY5AtAnW91zrR2FeZxRsMqAYF8vBtvjc06SqD8XHM/3KmgGjm4247twWzhCfE/9lkgm5r1CEliQ0zLaXsglDsU/9GgrHlsNydTqV1w7Cqnfc+KUIv57CeKLv8ItTFqk99XJW55oeOOD4gmblSbjHdXWNbFrcnCdvoljklOVEjpTaF713asPKzRsbI/Cuvy5HlMDSrGCBR6LZr9xAjvi3P86qwBefc9srmAXZ2EcMHfaeDON28QKy9aBhcMs0t5h8IxWMfQikppFNHwpFfGUJ0S6hwW0GEc9otu0h6jsbLbKtLpzsJjN4Vvvj74SiOWyypi1WF664M0hUAa/VdEUP/O8BeqLSG1McIEWPMiIoD5Ae3NNC+nqC9WSq71n7ZU4Z0s5w634VE/uDQ1Qosijlt7QdTcLHCSxhmx1xe4Xc3/U3au8ZKyFnEBTnSHeFZK3g91Zgq8ModLBm8ONFOgYafBzjTVEsUsUh+5wRuBdwfnxHaeQ7J3xAQIgxRerkJzRjVPx86+4d6dpUIpUF7UfAlXLwyR1QnRli8=
+x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:PH8PR11MB7024.namprd11.prod.outlook.com; PTR:; CAT:NONE;
+ SFS:(13230040)(366016)(23010399003)(376014)(1800799024)(10067099003)(6133799003)(56012099006)(22082099003)(18002099003)(11063799006)(38070700021);
+ DIR:OUT; SFP:1101; 
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?alZTQTNiNFFuaDlyR1NQSnFyenczcnFzc25KcHF4aTFmaDlXRWRkUFBLL2gv?=
+ =?utf-8?B?RjB5czY4N295K3VYdDJROXJSbXZLYmJWb3FNVFpvZGh6TUdHc0t2bllaQUNh?=
+ =?utf-8?B?L1Mzbm5JSUhvVEpYL1ZLN3dRWHZPb2c3RURwVExTNmlGaFFGVUZWVmJZVDAx?=
+ =?utf-8?B?Zk1ITjY5eUxBdWgwQlhNQzRCeGN6OVZaSVR0LzIzZ3V3UTJQQVVCUitwRWUr?=
+ =?utf-8?B?NU1RWnJBVUxLNzFaUjZQS3hRZ21mcVZBWXFCbG1kMmxUWjIyclNvMWFnWmU0?=
+ =?utf-8?B?VWJFNXlnM3dTNG9kUXg2bWhFb1YwTHhYaHI5b0xtVmVtZVNNb3o5c212a3Jr?=
+ =?utf-8?B?V3FyUys1YTFHQzhuU3QzYkx0U3dwR0Z5Q0hkSk8zNEhPOW4ySkVybE0xeElp?=
+ =?utf-8?B?T0tSNkJDZVNJYS9ieWdBMUpTcmtxcHBMVVNiRC9zTmdISUJmTkpmdlRKSGQ5?=
+ =?utf-8?B?UHZMV2R3cGxlcEp3THRxNHdIWWY0dVhrKzlyalBFYTMzNFhVT2lvbnhnejh2?=
+ =?utf-8?B?R3o2STlhUjE1aG1RaXc5Q3dGdXhkU2pONjQ2MHBuanJBVTJZUUppNDR2UklI?=
+ =?utf-8?B?YjBVM0JLT25iL0RzRDRnSGd0aG12NGtYczJITStKeEpTWStWS0RDdTcyNUZS?=
+ =?utf-8?B?c3VaeDY5UVpGMnFQUEk2d0lhRDhNTXNkczZtMFA5ZERNZHZKNmYxWTluVmhT?=
+ =?utf-8?B?aEU2elByMjBWZVRnQmZYaFdXQWo0UTkzbjkxcTZHUjBSNjhabGhlUVpodUpv?=
+ =?utf-8?B?UUJXQ29jMXVZOXd6S2Y5dGlaU3U5dC9LU2FUMnkxd0VwL25Xa0hGRmJrZUU5?=
+ =?utf-8?B?d3FIb21NZFFUVjVjcHlCRk9JbXE4T2U5Yk82VTRuc3Q4SlI4RDdySWY0ZXRj?=
+ =?utf-8?B?SUswcllNUTNKZEl6VGo3aWU5T3NpSFZMUmgwaFI4LzBwNGxWTzgxL0prVUtR?=
+ =?utf-8?B?R0gwV3psRXhhenFTYStsVSt2blRPR3YrVHVRdDN6WXQwMzJ3ejRDa1crdkc5?=
+ =?utf-8?B?K0c4Mzd4K0tSWXpmUDFKQ2lnMXlEdnR2YUtVd3d5ci9lb2hnNWJIZUtBV053?=
+ =?utf-8?B?aVd3T21ldVVBOSsrY25kR1JzNUtteXlMYWxYcHVQZGF2RXI2VUpRUnZUOVNn?=
+ =?utf-8?B?M1orVm1wa25oTUNLeFpyODhKZFF5aUd1dkUwZFA5blpSUTl6WFRKTGRCVmhv?=
+ =?utf-8?B?ZFh3dWRXaFlRNXlUSFBrSmMzUmw3UzNldGFVM3I2ZkcydlFqYW5vdFIybVZq?=
+ =?utf-8?B?WkozQlg5dDYxVUNYRldDenZWY3p0a2lVc1FpQXF2Ung3Z3RjeXVtdml5L3JY?=
+ =?utf-8?B?Z1kzT3gyK0F1TEZQK1g1ZEh2S0VNSmhySXk1Tktta1dMMkZTaXFta255YXcx?=
+ =?utf-8?B?bGN3U1FvRUNyWEZhc0V1Y2ZicVVqUGNxdFR4OGJTRWY5UkUxdXJNUEI2c3Av?=
+ =?utf-8?B?TFpBVW43RXNJaDB0NkNGUFN6VVNHQ005NzFWaS9jM2xNb3FOVDBZRnJyc3lX?=
+ =?utf-8?B?d09Pc0ZETEZacStQa2dHaG5XV0NsSURZVlNhZnlIMzlVeFprTk5FRkFPOUU5?=
+ =?utf-8?B?SmNZUDNJVDN3MHFydldISDVYaWs3K2p1VzVoblIrRWlZblB5dG5Vb24yUGdX?=
+ =?utf-8?B?bm82N1V1bi9hMzN6ODluUGFWT3IxNFpvR01KMm9RVGJZRDNGNitvVUlYVHI1?=
+ =?utf-8?B?alJCL1hUajZBRko5TGNEMXBkQmxYZEJYeDhmOG13SVVtSWlPYkFSMkNxbDNC?=
+ =?utf-8?B?WENQODc5WEQvenk4VkR4WEMvNzV2VkJjMGcyamUveTBXc3VrL3p6SHkxQmIy?=
+ =?utf-8?B?N1ZnVjRqWW5PMTV4WVVUcjFUOXBPc0p3bVJDRWhMQzRWbXE4Z00yUEprSzJa?=
+ =?utf-8?B?VnV4MWRKNjVVOUl5dGNFRlZZRTliRzRHUEM3a2NhNmFnbWk0SWwrWWVITUsy?=
+ =?utf-8?B?K24zREJVU3lrMEFQMjRXSlg3c2VCNW01Qm55Ums0SW9XalVtUHZ6UEczT3cw?=
+ =?utf-8?B?WldzcklOTFViTFJVWDFrVkozK2FWRWRlWDJSelF2amxxb2NoNHBuNlhhd3pi?=
+ =?utf-8?B?ZWZXdE8rS3VCY1RjY3BPb2dhWm1RaURJeGpsUzRCNkt6eTdVL0JETHJnMkNs?=
+ =?utf-8?B?NUZ1K0w0SWg4ODJvcFY5anJzaFQ4QkxmK1pmNysxSVpSK2pyb2w0cTBGc3Fj?=
+ =?utf-8?B?R1BQbmMwTGFGOC9rWXlLZWUzOWF3Zm5ySWk4WHZJV1N0Z1UvUlloVlZWRUtv?=
+ =?utf-8?B?S3Zmb0FQRFNFRkZNUUhSc2I4TUJkdmJ3QTUzQUNLR0xkYlJ3dEZ3dU45SDRH?=
+ =?utf-8?B?d0JuQ25jaGRaMHFMU1pYNFd1NjhpNE5NN29UcEZNKzZlbmFqZnhpYktuSlNN?=
+ =?utf-8?Q?DmJLos241ZE2ZZDs=3D?=
+Content-ID: <7A251102EF45534DAD2BB1E6B0AA26E8@namprd11.prod.outlook.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+X-Exchange-RoutingPolicyChecked: BfHF8jFN6s6aoIGnkG/usQUGmOhSHV4Qoe5BX59cOuOwhwKMAuOE5ZejlX+S+8HsgSYRxvJFHEmhTvtij8jsv6CVsMvOHF+Dcuq4rx6wayjrJBUBM6mk3cL9537UF4zj8k6Le8AEmxinhyZjsmZGjtQW9Miu6A0S9eQKoH3U8LHVBV2CTJyefDbPaDwGZ+KHvTG+i9F+yJrQuN7mcPx/khSulMrjJe3xGyB17tB/V7Qo7m0XGs+f4dfyzZtfk+Tj/nPlzj4GvQln9HL8ZiPZk61FmBHm12KjU4V626cOF5cM5oJT/jxrnc1TH3Wa7tIFibnIYsLHL2aWIYCFzgN+HA==
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH8PR11MB7024.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 889dbcba-30cf-4e8b-63c7-08df0cd93d81
+X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Sep 2026 12:12:08.9026 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: gj81vlzg9QuDvt8OXPBldvnzJsiJ2LZRAR6Rprqbcg+SP1AJOvKNnHQEUspQ4oUO3v0jcG/5rpNmP7++ItMCbA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA3PR11MB890013
+X-OriginatorOrg: intel.com
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 3/3] pmc_core: add ltr_counter test
+Subject: Re: [LTP] [PATCH 0/3] pmc_core: cover the PkgC LTR blocker counters
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -69,437 +172,40 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: helena.anna.dubel@intel.com, tomasz.ossowski@intel.com,
- rafael.j.wysocki@intel.com, daniel.niestepski@intel.com
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>, "Ossowski,
+ Tomasz" <tomasz.ossowski@intel.com>, "Dubel,
+ Helena Anna" <helena.anna.dubel@intel.com>, "Niestepski,
+ Daniel" <daniel.niestepski@intel.com>,
+ "ltp@lists.linux.it" <ltp@lists.linux.it>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Add a test for the invariant behind the pkgc_ltr_blocker_show counters:
-they only advance while a package C-state entry can be attempted, which
-needs every CPU in the package to be idle. A counter that keeps advancing
-with every CPU busy is not counting blocked package C-state entries,
-which is what a telemetry region read at the wrong offset looks like.
-
-The test first lets the system idle until it sees a counter advance, so
-that a counter stuck at a constant value cannot pass the load phase for
-free, and then pins a busy loop to every CPU it may run on and requires
-the counters to hold still.
-
-The counters are backed by a PMT telemetry region that the PMC refreshes
-asynchronously and in bursts - roughly six seconds apart on Nova Lake -
-so the load phase waits for the counters to go quiet rather than sampling
-them after a fixed delay. Entries blocked before the load took hold
-surface in a later refresh, while a counter that is not tracking blocked
-entries never goes quiet at all and runs the window out.
-
-Tested on Nova Lake running 7.3.0-rc1.
-
-Signed-off-by: Piotr Kubaj <piotr.kubaj@intel.com>
----
- runtest/power_management_tests                |   1 +
- testcases/kernel/power_management/.gitignore  |   1 +
- .../kernel/power_management/ltr_counter.c     | 358 ++++++++++++++++++
- 3 files changed, 360 insertions(+)
- create mode 100644 testcases/kernel/power_management/ltr_counter.c
-
-diff --git a/runtest/power_management_tests b/runtest/power_management_tests
-index 7708d3fd4..c4f661257 100644
---- a/runtest/power_management_tests
-+++ b/runtest/power_management_tests
-@@ -3,6 +3,7 @@ cpufreq_intel cpufreq_intel
- rfim01 rfim01
- high_freq_hwp_cap_cppc high_freq_hwp_cap_cppc
- pkgc_ltr_blocker_show pkgc_ltr_blocker_show
-+ltr_counter ltr_counter
- runpwtests03 runpwtests03.sh
- runpwtests04 runpwtests04.sh
- runpwtests06 runpwtests06.sh
-diff --git a/testcases/kernel/power_management/.gitignore b/testcases/kernel/power_management/.gitignore
-index b96084eca..f54cec368 100644
---- a/testcases/kernel/power_management/.gitignore
-+++ b/testcases/kernel/power_management/.gitignore
-@@ -2,3 +2,4 @@ high_freq_hwp_cap_cppc
- cpufreq_intel
- rfim01
- pkgc_ltr_blocker_show
-+ltr_counter
-diff --git a/testcases/kernel/power_management/ltr_counter.c b/testcases/kernel/power_management/ltr_counter.c
-new file mode 100644
-index 000000000..d6a2cb1e0
---- /dev/null
-+++ b/testcases/kernel/power_management/ltr_counter.c
-@@ -0,0 +1,358 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+
-+/*
-+ * Copyright (C) 2026 Intel - http://www.intel.com/
-+ */
-+
-+/*\
-+ * Verify that the package C-state LTR blocker counters only advance while a
-+ * package C-state entry can be attempted.
-+ *
-+ * The pkgc_ltr_blocker_show debugfs file reports, per source, how many times an
-+ * LTR posted by that source blocked a package C-state entry. Such an entry is
-+ * only attempted once every CPU in the package has gone idle, so a workload
-+ * that keeps every CPU busy has to stop the counters. A counter that keeps
-+ * advancing under full load is not counting blocked package C-state entries,
-+ * which is what a telemetry region read at the wrong offset looks like.
-+ *
-+ * The test first lets the system idle until it sees a counter advance, so that
-+ * a counter stuck at a constant value cannot pass the load phase for free. It
-+ * then pins a busy loop to every CPU and requires the counters to hold still.
-+ *
-+ * The counters are backed by a PMT telemetry region that the PMC refreshes
-+ * asynchronously and in bursts - roughly six seconds apart on Nova Lake - so
-+ * the load phase waits for the counters to go quiet rather than sampling them
-+ * after a fixed delay. Entries blocked before the load took hold surface in a
-+ * later refresh, while a counter that is not tracking blocked entries never
-+ * goes quiet at all and runs the window out.
-+ *
-+ * The test needs root because /sys/kernel/debug is mode 0700 and owned by
-+ * root, so the counter file cannot be opened otherwise, and because the test
-+ * library mounts debugfs if it is not mounted already.
-+ */
-+
-+#define _GNU_SOURCE
-+
-+#include <sched.h>
-+#include <signal.h>
-+#include <time.h>
-+#include "tst_clocks.h"
-+#include "tst_safe_stdio.h"
-+#include "tst_test.h"
-+#include "tst_timer.h"
-+
-+#define PATH TST_DEBUGFS_PATH "/pmc_core/pkgc_ltr_blocker_show"
-+
-+/* Nova Lake reports 5 counters, leave room for future platforms */
-+#define MAX_COUNTERS 64
-+#define NAME_LEN 64
-+
-+#define POLL_MS 500
-+
-+/*
-+ * Seconds to wait for a counter to advance while the system idles. The bursts
-+ * are about six seconds apart on Nova Lake, so this leaves room for two of
-+ * them before giving up on the platform blocking a package C-state entry at
-+ * all.
-+ */
-+#define IDLE_WINDOW 15
-+
-+/*
-+ * How long, in seconds, the counters have to hold still under load, and the cap
-+ * on how long to wait for that. One burst period of silence is what tells a
-+ * stopped counter from one that is merely between refreshes, and the cap has to
-+ * be long enough on top of that for a burst counted before the load took hold
-+ * to arrive and drain.
-+ */
-+#define QUIET_WINDOW 6
-+#define LOAD_WINDOW 20
-+
-+static char names[MAX_COUNTERS][NAME_LEN];
-+static int cnt;
-+static pid_t *spinners;
-+static int nr_spinners;
-+static volatile unsigned long long burn;
-+
-+/*
-+ * Read the counter values, checking that the counter set itself has not changed
-+ * since setup(). Only the values are of interest here - the format of the file
-+ * is what the pkgc_ltr_blocker_show test covers - so anything unexpected about
-+ * the lines makes this test unable to run rather than failing it.
-+ */
-+static void read_counters(uint32_t *values)
-+{
-+	char line[256];
-+	FILE *fp;
-+	int n = 0;
-+
-+	fp = SAFE_FOPEN(PATH, "r");
-+
-+	while (fgets(line, sizeof(line), fp)) {
-+		char name[NAME_LEN];
-+		unsigned int value;
-+
-+		line[strcspn(line, "\n")] = '\0';
-+
-+		if (n == MAX_COUNTERS)
-+			tst_brk(TBROK, "more than %d counters reported", MAX_COUNTERS);
-+
-+		if (sscanf(line, "%63s %u", name, &value) != 2)
-+			tst_brk(TBROK, "unexpected line format: '%s'", line);
-+
-+		values[n] = value;
-+
-+		if (cnt && strcmp(name, names[n])) {
-+			tst_brk(TBROK, "counter %d renamed during the test: %s -> %s",
-+				n, names[n], name);
-+		}
-+
-+		if (!cnt)
-+			strcpy(names[n], name);
-+
-+		n++;
-+	}
-+
-+	/*
-+	 * A telemetry read that fails in the driver aborts the seq_file read
-+	 * instead of ending it at EOF, so without this the counters lost to the
-+	 * error would look like counters that stopped advancing.
-+	 */
-+	if (ferror(fp))
-+		tst_brk(TBROK, "reading " PATH " failed after %d counters", n);
-+
-+	SAFE_FCLOSE(fp);
-+
-+	if (cnt && n != cnt)
-+		tst_brk(TBROK, "counter count changed during the test: %d -> %d", cnt, n);
-+
-+	cnt = n;
-+}
-+
-+static void spin(void)
-+{
-+	/* volatile so that the loop survives optimization */
-+	for (;;)
-+		burn++;
-+}
-+
-+/*
-+ * Keep every CPU the test may run on busy, so that the package cannot go idle
-+ * and no package C-state entry can be attempted.
-+ *
-+ * The spinners are pinned one per CPU taken from the test's own affinity mask,
-+ * rather than left to the load balancer, so that a CPU is not left idle by a
-+ * scheduling decision. Offline CPUs and a restricted mask are handled by
-+ * construction.
-+ */
-+static void start_load(void)
-+{
-+	cpu_set_t mask;
-+	int cpu = 0;
-+
-+	if (sched_getaffinity(0, sizeof(mask), &mask))
-+		tst_brk(TBROK | TERRNO, "sched_getaffinity() failed");
-+
-+	nr_spinners = CPU_COUNT(&mask);
-+	spinners = SAFE_MALLOC(nr_spinners * sizeof(*spinners));
-+
-+	for (int i = 0; i < nr_spinners; i++) {
-+		pid_t pid;
-+
-+		while (!CPU_ISSET(cpu, &mask))
-+			cpu++;
-+
-+		pid = SAFE_FORK();
-+
-+		if (!pid) {
-+			cpu_set_t one;
-+
-+			CPU_ZERO(&one);
-+			CPU_SET(cpu, &one);
-+
-+			if (sched_setaffinity(0, sizeof(one), &one)) {
-+				tst_brk(TBROK | TERRNO,
-+					"sched_setaffinity(CPU %d) failed", cpu);
-+			}
-+
-+			spin();
-+		}
-+
-+		spinners[i] = pid;
-+		cpu++;
-+	}
-+
-+	tst_res(TINFO, "keeping %d CPUs busy", nr_spinners);
-+}
-+
-+static void stop_load(void)
-+{
-+	if (!spinners)
-+		return;
-+
-+	for (int i = 0; i < nr_spinners; i++) {
-+		SAFE_KILL(spinners[i], SIGKILL);
-+		SAFE_WAITPID(spinners[i], NULL, 0);
-+	}
-+
-+	free(spinners);
-+	spinners = NULL;
-+}
-+
-+/*
-+ * Wait for a counter to advance while the system idles, reporting how many did.
-+ *
-+ * This is what tells a counter that stops under load from one that never moves.
-+ * On an idle system most counters read 0 permanently, because nothing posts an
-+ * LTR that would block a package C-state entry, so a single counter advancing
-+ * is enough.
-+ */
-+static int wait_for_advance(const uint32_t *baseline)
-+{
-+	uint32_t values[MAX_COUNTERS];
-+	struct timespec start, now;
-+	int advanced = 0;
-+
-+	tst_clock_gettime(CLOCK_MONOTONIC, &start);
-+
-+	for (;;) {
-+		read_counters(values);
-+
-+		for (int i = 0; i < cnt; i++) {
-+			if (values[i] == baseline[i])
-+				continue;
-+
-+			tst_res(TINFO, "%s advanced by %u while idle", names[i],
-+				values[i] - baseline[i]);
-+			advanced++;
-+		}
-+
-+		if (advanced)
-+			return advanced;
-+
-+		tst_clock_gettime(CLOCK_MONOTONIC, &now);
-+
-+		if (tst_timespec_diff_ms(now, start) >= IDLE_WINDOW * 1000)
-+			return 0;
-+
-+		usleep(POLL_MS * 1000);
-+	}
-+}
-+
-+/*
-+ * Require the counters to hold still for QUIET_WINDOW seconds of full load.
-+ */
-+static void check_counters_stop(void)
-+{
-+	uint32_t first[MAX_COUNTERS], prev[MAX_COUNTERS], values[MAX_COUNTERS];
-+	bool moved[MAX_COUNTERS] = {};
-+	struct timespec start, last_change, now;
-+
-+	read_counters(first);
-+	memcpy(prev, first, sizeof(prev));
-+
-+	tst_clock_gettime(CLOCK_MONOTONIC, &start);
-+	last_change = start;
-+
-+	for (;;) {
-+		usleep(POLL_MS * 1000);
-+
-+		read_counters(values);
-+		tst_clock_gettime(CLOCK_MONOTONIC, &now);
-+
-+		for (int i = 0; i < cnt; i++) {
-+			if (values[i] == prev[i])
-+				continue;
-+
-+			moved[i] = true;
-+			last_change = now;
-+		}
-+
-+		memcpy(prev, values, sizeof(prev));
-+
-+		if (tst_timespec_diff_ms(now, last_change) >= QUIET_WINDOW * 1000) {
-+			tst_res(TPASS,
-+				"%d counters held still over %ds with every CPU busy",
-+				cnt, QUIET_WINDOW);
-+			return;
-+		}
-+
-+		if (tst_timespec_diff_ms(now, start) < LOAD_WINDOW * 1000)
-+			continue;
-+
-+		for (int i = 0; i < cnt; i++) {
-+			if (!moved[i])
-+				continue;
-+
-+			tst_res(TFAIL,
-+				"%s kept advancing over %ds with every CPU busy: %u -> %u",
-+				names[i], LOAD_WINDOW, first[i], values[i]);
-+		}
-+
-+		return;
-+	}
-+}
-+
-+static void setup(void)
-+{
-+	uint32_t values[MAX_COUNTERS];
-+
-+	if (access(PATH, R_OK))
-+		tst_brk(TCONF | TERRNO, "%s not available", PATH);
-+
-+	/* Learns the counter set the rest of the test compares against */
-+	read_counters(values);
-+
-+	if (!cnt)
-+		tst_brk(TBROK, "no LTR blocker counters reported");
-+}
-+
-+static void cleanup(void)
-+{
-+	stop_load();
-+}
-+
-+static void run(void)
-+{
-+	uint32_t baseline[MAX_COUNTERS];
-+
-+	read_counters(baseline);
-+
-+	/*
-+	 * Without a counter that moves while idle there is nothing to stop
-+	 * under load, a stuck counter would look exactly the same.
-+	 */
-+	if (!wait_for_advance(baseline)) {
-+		tst_brk(TCONF,
-+			"no LTR blocked a package C-state entry over %ds of idling",
-+			IDLE_WINDOW);
-+	}
-+
-+	start_load();
-+	check_counters_stop();
-+	stop_load();
-+}
-+
-+static struct tst_test test = {
-+	.min_kver = "7.2",
-+	.timeout = 90,
-+	.needs_root = 1,
-+	.needs_debugfs = 1,
-+	.forks_child = 1,
-+	.needs_kconfigs = (const char *const []) {
-+		"CONFIG_DEBUG_FS",
-+		"CONFIG_INTEL_PMC_CORE",
-+		NULL
-+	},
-+	.supported_archs = (const char *const []) {
-+		"x86",
-+		"x86_64",
-+		NULL
-+	},
-+	.tags = (const struct tst_tag[]) {
-+		{"linux-git", "38c79dd63b72e36919ef097d4e5025ca0fa17f34"},
-+		{}
-+	},
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.test_all = run
-+};
--- 
-2.47.3
-
----------------------------------------------------------------------
-Intel Technology Poland sp. z o.o.
-ul. Slowackiego 173 | 80-298 Gdansk | Sad Rejonowy Gdansk Polnoc | VII Wydzial Gospodarczy Krajowego Rejestru Sadowego - KRS 101882 | NIP 957-07-52-316 | Kapital zakladowy 200.000 PLN.
-Spolka oswiadcza, ze posiada status duzego przedsiebiorcy w rozumieniu ustawy z dnia 8 marca 2013 r. o przeciwdzialaniu nadmiernym opoznieniom w transakcjach handlowych.
-
-Ta wiadomosc wraz z zalacznikami jest przeznaczona dla okreslonego adresata i moze zawierac informacje poufne. W razie przypadkowego otrzymania tej wiadomosci, prosimy o powiadomienie nadawcy oraz trwale jej usuniecie; jakiekolwiek przegladanie lub rozpowszechnianie jest zabronione.
-This e-mail and any attachments may contain confidential material for the sole use of the intended recipient(s). If you are not the intended recipient, please contact the sender and delete all copies; any review or distribution by others is strictly prohibited.
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+V8KgZG5pdSBwb24sIDA3LjA5LjIwMjYgb8KgZ29kemluaWUgMDbiiLYyOOKAiSswMDAwLCB1xbx5
+dGtvd25payBBbmRyZWENCkNlcnZlc2F0byBuYXBpc2HFgjoNCj4gSGkgUGlvdHIsDQo+IA0KPiBj
+YW4geW91IHBsZWFzZSBzZW5kIGEgcGF0Y2ggdmVyc2lvbiB0aGF0IGFwcGxpZXM/DQo+IEFsbCBD
+SSBpcyBmYWlsaW5nIGF0IHRoZSBtb21lbnQ6DQo+IA0KPiBodHRwczovL3BhdGNod29yay5rZXJu
+ZWwub3JnL3Byb2plY3QvbHRwL3BhdGNoLzIwMjYwOTA0MTI0MDQyLjIxMjA2NS0yLXBpb3RyLmt1
+YmFqQGludGVsLmNvbS8NCj4gDQo+IC0tDQo+IEFuZHJlYSBDZXJ2ZXNhdG8NCj4gU1VTRSBRRSBB
+dXRvbWF0aW9uIEVuZ2luZWVyIExpbnV4DQo+IGFuZHJlYS5jZXJ2ZXNhdG9Ac3VzZS5jb20NCkhp
+LA0KDQpyZXN1Ym1pdHRlZCBhZnRlciByZWJhc2luZy4NCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpJbnRlbCBUZWNo
+bm9sb2d5IFBvbGFuZCBzcC4geiBvLm8uCnVsLiBTbG93YWNraWVnbyAxNzMgfCA4MC0yOTggR2Rh
+bnNrIHwgU2FkIFJlam9ub3d5IEdkYW5zayBQb2xub2MgfCBWSUkgV3lkemlhbCBHb3Nwb2RhcmN6
+eSBLcmFqb3dlZ28gUmVqZXN0cnUgU2Fkb3dlZ28gLSBLUlMgMTAxODgyIHwgTklQIDk1Ny0wNy01
+Mi0zMTYgfCBLYXBpdGFsIHpha2xhZG93eSAyMDAuMDAwIFBMTi4KU3BvbGthIG9zd2lhZGN6YSwg
+emUgcG9zaWFkYSBzdGF0dXMgZHV6ZWdvIHByemVkc2llYmlvcmN5IHcgcm96dW1pZW5pdSB1c3Rh
+d3kgeiBkbmlhIDggbWFyY2EgMjAxMyByLiBvIHByemVjaXdkemlhbGFuaXUgbmFkbWllcm55bSBv
+cG96bmllbmlvbSB3IHRyYW5zYWtjamFjaCBoYW5kbG93eWNoLgoKVGEgd2lhZG9tb3NjIHdyYXog
+eiB6YWxhY3puaWthbWkgamVzdCBwcnplem5hY3pvbmEgZGxhIG9rcmVzbG9uZWdvIGFkcmVzYXRh
+IGkgbW96ZSB6YXdpZXJhYyBpbmZvcm1hY2plIHBvdWZuZS4gVyByYXppZSBwcnp5cGFka293ZWdv
+IG90cnp5bWFuaWEgdGVqIHdpYWRvbW9zY2ksIHByb3NpbXkgbyBwb3dpYWRvbWllbmllIG5hZGF3
+Y3kgb3JheiB0cndhbGUgamVqIHVzdW5pZWNpZTsgamFraWVrb2x3aWVrIHByemVnbGFkYW5pZSBs
+dWIgcm96cG93c3plY2huaWFuaWUgamVzdCB6YWJyb25pb25lLgpUaGlzIGUtbWFpbCBhbmQgYW55
+IGF0dGFjaG1lbnRzIG1heSBjb250YWluIGNvbmZpZGVudGlhbCBtYXRlcmlhbCBmb3IgdGhlIHNv
+bGUgdXNlIG9mIHRoZSBpbnRlbmRlZCByZWNpcGllbnQocykuIElmIHlvdSBhcmUgbm90IHRoZSBp
+bnRlbmRlZCByZWNpcGllbnQsIHBsZWFzZSBjb250YWN0IHRoZSBzZW5kZXIgYW5kIGRlbGV0ZSBh
+bGwgY29waWVzOyBhbnkgcmV2aWV3IG9yIGRpc3RyaWJ1dGlvbiBieSBvdGhlcnMgaXMgc3RyaWN0
+bHkgcHJvaGliaXRlZC4KCi0tIApNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5saW51
+eC5pdC9saXN0aW5mby9sdHAK
