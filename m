@@ -4,57 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8AA3CC79F89
-	for <ltp@archiver.kernel.org>; Mon,  7 Sep 2026 12:11:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 54FB1C79F89
+	for <ltp@archiver.kernel.org>; Mon,  7 Sep 2026 12:11:52 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 10E343E950E
-	for <ltp@archiver.kernel.org>; Mon,  7 Sep 2026 14:11:36 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id AC8EB3E86D9
+	for <ltp@archiver.kernel.org>; Mon,  7 Sep 2026 14:11:50 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C56DD3C6135
- for <ltp@lists.linux.it>; Mon,  7 Sep 2026 14:11:19 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id EADBA3E9516
+ for <ltp@lists.linux.it>; Mon,  7 Sep 2026 14:11:27 +0200 (CEST)
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 3E430200968
- for <ltp@lists.linux.it>; Mon,  7 Sep 2026 14:11:17 +0200 (CEST)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id B54B71000920
+ for <ltp@lists.linux.it>; Mon,  7 Sep 2026 14:11:26 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1788783079; x=1820319079;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=NnwoRigdOwOoDBaiBF+MeY4mfNDvt8Y8VQIGeitwPQ4=;
- b=jfsjtMAN2XhV7da6/F/bsyN6CCfZbtYhMHnHv6OonaLXovFf/LQvNQTk
- op99Hsh8nYinfRa4jMVFhRb11jF/9wFDk33V25UoXNHw1q9iER2aH4Q/Z
- CUQw2dYvucT3SKHWKypjVe2Xyoi6V50zfUJPAhPCoMBK4vgnWQhbbg7Gu
- M3R+RlO88wC476+vH1/q4sPYwRyMfzZyTKISAJGfelkmuEXKPwkG0sdCS
- ipN3NdDkKEctxabOt2EN7Uw6ydDndojfcbGV70sS2ayJ5fnZDnphbAJ4b
- QViKata3Qs1Rouar2/VGrlMKt66oeFzmOccVMaUEGWF9T1LmPTBPPRnE2 g==;
-X-CSE-ConnectionGUID: JtFsskHBTSWoKFBiVuXVtQ==
-X-CSE-MsgGUID: fg25a9woS36OP1AfQWIDHw==
-X-IronPort-AV: E=McAfee;i="6800,10657,11898"; a="99519134"
-X-IronPort-AV: E=Sophos;i="6.25,267,1779174000"; d="scan'208";a="99519134"
+ t=1788783088; x=1820319088;
+ h=from:to:cc:subject:date:message-id:in-reply-to:
+ references:mime-version:content-transfer-encoding;
+ bh=0SfyhH82XmwMClbfnqD+fsKvoq+Ospb8jJeMxrTtL3k=;
+ b=ZoGTTOMYBSnSbX0Fnn9LJAaSyjHiw5pdZKfZghetAuzKveRmDAh3d28Y
+ KVF1/gBrLIWN6/OlKqMCUzgk1G4sUlWPs38syFU1A4wc8uDX5ZsVVfn7A
+ dQMMpa0LbHt2tk66lENlYgAYCdjeilkdo0xB8hkAC+Sw1x+RyDe0v0n1J
+ NuHTqb4Ivgw9/mQ/NNbwMnClWC/kz1rmRBuvPputANQRzs2tCJP3mGGkq
+ AJAKE6Nl03xui9ybo660JkQMx0jKnxHrYXg+wYKy+B60EJbhGV8OST0RD
+ d3UBIa0VqPjWCLbagdbenB9mcOsKnauzyXW3ShO49mN5lyIE7h5ApYPGh Q==;
+X-CSE-ConnectionGUID: xWrUZZaxTN69BZipG3+9lQ==
+X-CSE-MsgGUID: hXktjyK3RNGc4XkvdiQlrw==
+X-IronPort-AV: E=McAfee;i="6800,10657,11898"; a="99519141"
+X-IronPort-AV: E=Sophos;i="6.25,267,1779174000"; d="scan'208";a="99519141"
 Received: from fmviesa008.fm.intel.com ([10.60.135.148])
  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Sep 2026 05:11:17 -0700
-X-CSE-ConnectionGUID: U1VQjLM6SsSwRyqQZunLcA==
-X-CSE-MsgGUID: fa6oTrpLQKeOSBVvTTDFvw==
+ 07 Sep 2026 05:11:25 -0700
+X-CSE-ConnectionGUID: FKy+ZbZaTT2Az6/0Qkq4hQ==
+X-CSE-MsgGUID: A/5OKd+wRNCqb5ec51lnMw==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.25,267,1779174000"; d="scan'208";a="268116300"
+X-IronPort-AV: E=Sophos;i="6.25,267,1779174000"; d="scan'208";a="268116324"
 Received: from pkubaj-desk.igk.intel.com (HELO intel.com) ([10.237.142.111])
  by fmviesa008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Sep 2026 05:11:14 -0700
+ 07 Sep 2026 05:11:23 -0700
 From: Piotr Kubaj <piotr.kubaj@intel.com>
 To: ltp@lists.linux.it
-Date: Mon,  7 Sep 2026 14:10:43 +0200
-Message-ID: <20260907121045.357509-2-piotr.kubaj@intel.com>
+Date: Mon,  7 Sep 2026 14:10:45 +0200
+Message-ID: <20260907121045.357509-4-piotr.kubaj@intel.com>
 X-Mailer: git-send-email 2.47.3
+In-Reply-To: <20260907121045.357509-2-piotr.kubaj@intel.com>
+References: <20260907121045.357509-2-piotr.kubaj@intel.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 0/3] pmc_core: cover the PkgC LTR blocker counters
+Subject: [LTP] [PATCH v2 1/3] lib: add tst_test.needs_debugfs flag
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -73,67 +75,250 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-The intel_pmc_core driver gained a pkgc_ltr_blocker_show debugfs file in
-kernel commit 38c79dd63b72 ("platform/x86/intel/pmc: Enable PkgC LTR
-blocking counter"), first released in v7.2, and nothing covers it yet.
-It reports, per source, how many times an LTR posted by that source
-blocked a package C-state entry.
+Tests that read debugfs files have to check that debugfs is mounted at
+/sys/kernel/debug and mount it when it is not. The mount point exists as
+a plain sysfs directory whenever CONFIG_DEBUG_FS is enabled, whether or
+not debugfs is mounted on it, so a test that only checks that the path is
+there reports the platform as unsupported when debugfs simply is not
+mounted, and each test ends up carrying the same statfs() and mount()
+dance.
 
-Both tests added here need debugfs mounted, so the first patch moves the
-mount handling into the test library instead of open coding it twice.
+Move it into the library: with tst_test.needs_debugfs set the library
+mounts debugfs during setup, exits with TCONF if it cannot, and unmounts
+it at the end of the test if it was the one that mounted it. Add
+TST_DEBUGFS_PATH so that tests build their paths from the library
+constant, register the flag in the metadata parser, and add a
+lib/newlib_tests self-test that covers both the mounted and the unmounted
+case.
 
-1/3 adds tst_test.needs_debugfs: the library mounts debugfs at
-    /sys/kernel/debug during setup unless it is mounted there already,
-    reports TCONF if it cannot, and unmounts it afterwards only if it did
-    the mount. A lib/newlib_tests self-test covers both cases. Tests
-    reading any other debugfs file can use it as well.
-
-2/3 checks what the file says: every line is a PKGC_PREVENT_LTR_<SOURCE>
-    token followed by one u32 value, the file reads to EOF rather than
-    erroring out mid-way, the counter set is stable across two reads, and
-    no counter advances by more entries than the package could have
-    attempted over the interval.
-
-3/3 checks the invariant behind the counters: a package C-state entry is
-    only attempted once every CPU in the package is idle, so counters
-    that keep advancing with every CPU busy are not counting blocked
-    entries. The test proves the counters are alive while idling first,
-    so that a counter stuck at a constant value cannot pass for free.
-
-Both tests bound what they accept in time rather than against a hardcoded
-counter list, because the counter set is platform specific. That is what
-catches a telemetry region read at the wrong offset, which overshoots the
-bounds by orders of magnitude.
-
-Tested on Nova Lake running 7.3.0-rc1, with debugfs both mounted and
-unmounted beforehand, and in the latter case the mount state is restored
-after the run. The TFAIL and TCONF paths were exercised against fake
-counter files.
-
-Piotr Kubaj (3):
-  lib: add tst_test.needs_debugfs flag
-  pmc_core: add test for pkgc_ltr_blocker_show
-  pmc_core: add ltr_counter test
-
- doc/developers/writing_tests.rst              |   3 +
- include/tst_fs.h                              |   4 +
- include/tst_test.h                            |   8 +
- lib/newlib_tests/.gitignore                   |   1 +
- lib/newlib_tests/runtest.sh                   |   1 +
- lib/newlib_tests/tst_needs_debugfs.c          |  37 ++
- lib/tst_test.c                                |  35 ++
- metadata/metaparse.c                          |   1 +
- runtest/power_management_tests                |   2 +
- testcases/kernel/power_management/.gitignore  |   2 +
- .../kernel/power_management/ltr_counter.c     | 358 ++++++++++++++++++
- .../power_management/pkgc_ltr_blocker_show.c  | 294 ++++++++++++++
- 12 files changed, 746 insertions(+)
+Signed-off-by: Piotr Kubaj <piotr.kubaj@intel.com>
+---
+ doc/developers/writing_tests.rst     |  3 +++
+ include/tst_fs.h                     |  4 +++
+ include/tst_test.h                   |  8 ++++++
+ lib/newlib_tests/.gitignore          |  1 +
+ lib/newlib_tests/runtest.sh          |  1 +
+ lib/newlib_tests/tst_needs_debugfs.c | 37 ++++++++++++++++++++++++++++
+ lib/tst_test.c                       | 35 ++++++++++++++++++++++++++
+ metadata/metaparse.c                 |  1 +
+ 8 files changed, 90 insertions(+)
  create mode 100644 lib/newlib_tests/tst_needs_debugfs.c
- create mode 100644 testcases/kernel/power_management/ltr_counter.c
- create mode 100644 testcases/kernel/power_management/pkgc_ltr_blocker_show.c
 
-
-base-commit: 463b33ad464b6840d0a1df5d41939e50d55d542c
+diff --git a/doc/developers/writing_tests.rst b/doc/developers/writing_tests.rst
+index 0edf101ff..80a654e9b 100644
+--- a/doc/developers/writing_tests.rst
++++ b/doc/developers/writing_tests.rst
+@@ -440,6 +440,9 @@ LTP C And Shell Test API Comparison
+     * - .needs_cmds
+       - TST_NEEDS_CMDS
+ 
++    * - .needs_debugfs
++      - \-
++
+     * - .needs_devfs
+       - \-
+ 
+diff --git a/include/tst_fs.h b/include/tst_fs.h
+index c55f8a646..68176297b 100644
+--- a/include/tst_fs.h
++++ b/include/tst_fs.h
+@@ -8,6 +8,7 @@
+ 
+ /* man 2 statfs or kernel-source/include/uapi/linux/magic.h */
+ #define TST_BTRFS_MAGIC    0x9123683E
++#define TST_DEBUGFS_MAGIC  0x64626720
+ #define TST_NFS_MAGIC      0x6969
+ #define TST_RAMFS_MAGIC    0x858458f6
+ #define TST_TMPFS_MAGIC    0x01021994
+@@ -58,6 +59,9 @@ enum {
+ #define OVL_WORK	OVL_BASE_MNTPOINT"/work"
+ #define OVL_MNT		OVL_BASE_MNTPOINT"/ovl"
+ 
++/* Where debugfs is mounted by the tst_test.needs_debugfs flag */
++#define TST_DEBUGFS_PATH "/sys/kernel/debug"
++
+ /*
+  * @path: path is the pathname of any file within the mounted file system
+  * @mult: mult should be TST_KB, TST_MB or TST_GB
+diff --git a/include/tst_test.h b/include/tst_test.h
+index 7d03014d4..d3a49776c 100644
+--- a/include/tst_test.h
++++ b/include/tst_test.h
+@@ -358,6 +358,13 @@ struct tst_fs {
+  *               needed for tests that need to create device files since tmpfs
+  *               at /tmp is usually mounted with 'nodev' option.
+  *
++ * @needs_debugfs: If set debugfs is mounted at TST_DEBUGFS_PATH i.e.
++ *                 /sys/kernel/debug, unless it is mounted there already, and
++ *                 the test exits with TCONF if it cannot be. The library
++ *                 unmounts it at the end of the test if it mounted it. Note
++ *                 that both mounting debugfs and reading its content require
++ *                 root, so tests using this also set tst_test.needs_root.
++ *
+  * @restore_wallclock: Saves wall clock at the start of the test and restores
+  *                     it at the end with the help of monotonic timers.
+  *                     Testcases that modify system wallclock use this to
+@@ -573,6 +580,7 @@ struct tst_fs {
+ 	unsigned int child_needs_reinit:1;
+ 	unsigned int runs_script:1;
+ 	unsigned int needs_devfs:1;
++	unsigned int needs_debugfs:1;
+ 	unsigned int restore_wallclock:1;
+ 
+ 	unsigned int all_filesystems:1;
+diff --git a/lib/newlib_tests/.gitignore b/lib/newlib_tests/.gitignore
+index b85163824..7237723bf 100644
+--- a/lib/newlib_tests/.gitignore
++++ b/lib/newlib_tests/.gitignore
+@@ -60,6 +60,7 @@ tst_needs_cmds05
+ tst_needs_cmds06
+ tst_needs_cmds07
+ tst_needs_cmds08
++tst_needs_debugfs
+ test_runtime01
+ test_runtime02
+ test_children_cleanup
+diff --git a/lib/newlib_tests/runtest.sh b/lib/newlib_tests/runtest.sh
+index 71808ef8b..1a51d8b7a 100755
+--- a/lib/newlib_tests/runtest.sh
++++ b/lib/newlib_tests/runtest.sh
+@@ -27,6 +27,7 @@ tst_expiration_timer
+ tst_filesystems01
+ tst_fuzzy_sync0[1-3]
+ tst_needs_cmds0[1-36-8]
++tst_needs_debugfs
+ tst_res_hexd
+ tst_safe_sscanf
+ tst_strstatus}"
+diff --git a/lib/newlib_tests/tst_needs_debugfs.c b/lib/newlib_tests/tst_needs_debugfs.c
+new file mode 100644
+index 000000000..fd6adf7a5
+--- /dev/null
++++ b/lib/newlib_tests/tst_needs_debugfs.c
+@@ -0,0 +1,37 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (C) 2026 Piotr Kubaj <piotr.kubaj@intel.com>
++ */
++
++/*
++ * Test that tst_test.needs_debugfs gets debugfs mounted for the test.
++ *
++ * Run it both with debugfs mounted and with it unmounted, it has to pass either
++ * way. In the latter case the library reports mounting debugfs and has to leave
++ * it unmounted once the test is over.
++ */
++
++#include <sys/vfs.h>
++#include "tst_test.h"
++
++static void run(void)
++{
++	struct statfs sfs;
++
++	SAFE_STATFS(TST_DEBUGFS_PATH, &sfs);
++
++	if (sfs.f_type == TST_DEBUGFS_MAGIC)
++		tst_res(TPASS, "debugfs is mounted at %s", TST_DEBUGFS_PATH);
++	else
++		tst_res(TFAIL, "debugfs is not mounted at %s", TST_DEBUGFS_PATH);
++}
++
++static struct tst_test test = {
++	.needs_root = 1,
++	.needs_debugfs = 1,
++	.needs_kconfigs = (const char *const []) {
++		"CONFIG_DEBUG_FS",
++		NULL
++	},
++	.test_all = run,
++};
+diff --git a/lib/tst_test.c b/lib/tst_test.c
+index 166e0f672..d21eb382a 100644
+--- a/lib/tst_test.c
++++ b/lib/tst_test.c
+@@ -15,6 +15,7 @@
+ #include <errno.h>
+ #include <sys/mount.h>
+ #include <sys/types.h>
++#include <sys/vfs.h>
+ #include <sys/utsname.h>
+ #include <sys/wait.h>
+ #include <math.h>
+@@ -82,6 +83,7 @@ struct context {
+ 	tst_atomic_t abort_flag;
+ 	uint32_t mntpoint_mounted:1;
+ 	uint32_t ovl_mounted:1;
++	uint32_t debugfs_mounted:1;
+ 	uint32_t tdebug;
+ };
+ 
+@@ -1210,6 +1212,31 @@ static void prepare_and_mount_dev_fs(const char *mntpoint)
+ 	}
+ }
+ 
++static void mount_debugfs(void)
++{
++	struct statfs sfs;
++
++	/*
++	 * TST_DEBUGFS_PATH exists as a plain sysfs directory whenever
++	 * CONFIG_DEBUG_FS is enabled, whether or not debugfs is mounted on it,
++	 * so the filesystem type has to be checked rather than the directory
++	 * being present.
++	 */
++	if (statfs(TST_DEBUGFS_PATH, &sfs))
++		tst_brk(TCONF | TERRNO, "Can't statfs %s", TST_DEBUGFS_PATH);
++
++	if (sfs.f_type == TST_DEBUGFS_MAGIC)
++		return;
++
++	if (mount("debugfs", TST_DEBUGFS_PATH, "debugfs", 0, NULL)) {
++		tst_brk(TCONF | TERRNO, "Can't mount debugfs at %s",
++			TST_DEBUGFS_PATH);
++	}
++
++	tst_res(TINFO, "Mounted debugfs at %s", TST_DEBUGFS_PATH);
++	context->debugfs_mounted = 1;
++}
++
+ static void prepare_and_mount_hugetlb_fs(void)
+ {
+ 	if (access(PATH_MM_HUGEPAGES, F_OK))
+@@ -1546,6 +1573,9 @@ static void do_setup(int argc, char *argv[])
+ 			"Two or more of needs_{rofs, devfs, device, hugetlbfs} are set");
+ 	}
+ 
++	if (tst_test->needs_debugfs)
++		mount_debugfs();
++
+ 	if (tst_test->needs_devfs)
+ 		prepare_and_mount_dev_fs(tst_test->mntpoint);
+ 
+@@ -1657,6 +1687,11 @@ static void do_cleanup(void)
+ 	if (context->mntpoint_mounted)
+ 		tst_umount(tst_test->mntpoint);
+ 
++	if (context->debugfs_mounted) {
++		tst_umount(TST_DEBUGFS_PATH);
++		context->debugfs_mounted = 0;
++	}
++
+ 	if (tst_test->needs_device && tdev.dev)
+ 		tst_release_device(tdev.dev);
+ 
+diff --git a/metadata/metaparse.c b/metadata/metaparse.c
+index cb141c383..7f2c09037 100644
+--- a/metadata/metaparse.c
++++ b/metadata/metaparse.c
+@@ -1169,6 +1169,7 @@ static struct typemap tst_test_typemap[] = {
+ 	{.id = "child_needs_reinit", .type = DATA_BOOL},
+ 	{.id = "runs_script", .type = DATA_BOOL},
+ 	{.id = "needs_devfs", .type = DATA_BOOL},
++	{.id = "needs_debugfs", .type = DATA_BOOL},
+ 	{.id = "restore_wallclock", .type = DATA_BOOL},
+ 	{.id = "all_filesystems", .type = DATA_BOOL},
+ 	{.id = "skip_in_lockdown", .type = DATA_BOOL},
 -- 
 2.47.3
 
