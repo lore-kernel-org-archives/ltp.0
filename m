@@ -4,83 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5DE1AC79F85
-	for <ltp@archiver.kernel.org>; Sun,  6 Sep 2026 16:04:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AD84FC79F9F
+	for <ltp@archiver.kernel.org>; Mon,  7 Sep 2026 01:46:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1788745610; h=to : date :
+ message-id : mime-version : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : content-type : content-transfer-encoding : sender : from;
+ bh=fecB621cfE1Prw+kDsbHQSMW9zGmDDygqHomYsilGI0=;
+ b=GZvUjMp7xrMz9t9RJjfHZ/i6hA3CQEcrmPvd5LXQKzzWlXD0U/Ok0Iv01mJpjFQqT80ro
+ xBlxnxBylI+5fDFUFQVtVIFks4YFUgwNIvmTfEcPPjoUf74p0tVyTHy+x59m5VdtMygHGgI
+ w7fXadhHWV6hRc8ifoj9PlhBkexEcRc=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 98A933E54E7
-	for <ltp@archiver.kernel.org>; Sun,  6 Sep 2026 18:03:59 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 55E6B3E49F7
+	for <ltp@archiver.kernel.org>; Mon,  7 Sep 2026 03:46:50 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C93E73C325D
- for <ltp@lists.linux.it>; Sun,  6 Sep 2026 18:03:44 +0200 (CEST)
-Received: from mail-oa2-x0a.google.com (mail-oa2-x0a.google.com
- [IPv6:2607:f8b0:4864:30::a])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id ED2973C83A9
+ for <ltp@lists.linux.it>; Mon,  7 Sep 2026 03:46:23 +0200 (CEST)
+Received: from Atcsqr.andestech.com (atcsqr.andestech.com [220.128.198.184])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 3497F600078
- for <ltp@lists.linux.it>; Sun,  6 Sep 2026 18:03:44 +0200 (CEST)
-Received: by mail-oa2-x0a.google.com with SMTP id
- 586e51a60fabf-476ed83b7f6so577183fac.0
- for <ltp@lists.linux.it>; Sun, 06 Sep 2026 09:03:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1788710623; x=1789315423; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to:content-type;
- bh=FhMU/GYo8YCOtOQxvfmYpFC8FoMkiBWazuD/oDIqOLg=;
- b=P2Gp6RUwS4pSznQ375bdWeTF1H8ZR5nHhOcHdMvSpLA0vJ2Ht9PCmXvBjstZvM2G2E
- 4oZWqnt77WvGCyDNREEZG7o922cFLFZJSBACC/axvXLjA805ny0mPbdHkG9ROCYvXvli
- WWBA5qTvtylCE+OQAD1u29pF84DSikUM7y4owj9dNA5+HKrj2PB4LVgnStul/QB5P6rS
- 51S4ELkQj0WC1rmDsfu70TaGOge9sclCfy8d47AJxG/WO1xW5bXiqh92iu7cByl4D86r
- RMOYT3as9Vn3q2VrhLiC3hHkur05CWPsSIvdo8WF61gqm69sDjurjf+fEKCvV12D+5tm
- y+4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1788710623; x=1789315423;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to:content-type;
- bh=FhMU/GYo8YCOtOQxvfmYpFC8FoMkiBWazuD/oDIqOLg=;
- b=FThpipHW14iCNkAV5HQUhMIaqiypCmcijUpG2/MwmVVQs5iD0H70JgxMetbMaIOrI1
- ZOMhcdXRgzYOWe2ko5eQkM4Fb2MC5B21sJEJ+qrFClCJNGQkhhLK6f1U6R3DN/8X1da6
- ZHnnXoEnVYqOvls6gDseY+cgI3SEfM+ztBhAbDHpINuGq1LXyXECHeBbrg3pKmSVPZGy
- 57ilUvqENVfaKjocT3FXWxmOd9B/ZdWjQufW6qZiHtRmqw5zNaLV05u/7YJ2M4M7lsmX
- xUDGu5lTEBBA5TwgacDdJYFXF5zjgZFXswq28pqbVtVaO01SHBF73MRZvjQs4Lx8T/Be
- 99tQ==
-X-Gm-Message-State: AFuF++l2+GF66X67GMyCTZ992CUvnG30whv8jKcosK/qaX+HBW64ZJpk
- 6cvlspbn2ckxJkeQ4z764YMcVlzkmR+vxjgpHN9rmaFwKeiYHxVxsKin
-X-Gm-Gg: AYBFou3uHd4jYkoYDInW41daPOCBxQHUAC70e+JUEkLn3QhNc35jHnouZFiwxa5Rw9Q
- LD/dUgWSyys9xoUku7EQTT6ziYFWtDrTRBdFvMG93sCuyRVC/JoVz7g0UziFplKwjrknJmr6OcM
- UvLD2dRmW4ovIOFoniBBYq3tUi86vKr5i2FNBV9/1J6iR/GIbp77YBdzBdJ4eFpiyF6oR0PPEzO
- XK5O/sc+TM/j8B/fw3MdFomOjCp0MnQhID7lRWBD1JsVMLDq/qP4uZebTXPvbyeAXxMW065Mah7
- kY2oS+pri4o/3X9sTqMBbfTux2+nUoON8qp/kV4iXOV4nU5l/guVZWzdhwVSkCYtPf0IW5dN2sR
- Rwrjq/hCjWkTFtrXUkFOCWx1cqymJfiW9ymWaHFkjXShNCspivum7hes64bMGv3fnZS/MYS6uu7
- pN+m+M38aDMzaIGO/5fjvXKKAyBEKQttsgkaUOwKdaoCPIaNN2CajbTbYvK8dEPyBRf3wH5NnPS
- hOEupJW+unpgM5qqvLXXFXckqVe9SwWolOAqJp3gBYYkLTEnArnx3+lwkc0wvAum/UztHwW0d6p
- jw==
-X-Received: by 2002:a05:6870:9111:b0:471:3325:80ca with SMTP id
- 586e51a60fabf-4754fd0e32emr19222782fac.5.1788710622777; 
- Sun, 06 Sep 2026 09:03:42 -0700 (PDT)
-Received: from
- runnervmejwal.5j2jo0nuqkhuzhctjlm4uo4bda.gx.internal.cloudapp.net
- ([172.212.164.17]) by smtp.gmail.com with ESMTPSA id
- 586e51a60fabf-475543f5ac5sm8101136fac.8.2026.09.06.09.03.41
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sun, 06 Sep 2026 09:03:42 -0700 (PDT)
-From: linuxtestproject.agent@gmail.com
-To: Pavithra <pavrampu@linux.ibm.com>
-Date: Sun,  6 Sep 2026 16:03:41 +0000
-Message-ID: <20260906160341.9140-1-linuxtestproject.agent@gmail.com>
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id AED1B140010B
+ for <ltp@lists.linux.it>; Mon,  7 Sep 2026 03:46:20 +0200 (CEST)
+Received: from mail.andestech.com (atcpcs54.andestech.com [10.0.1.154])
+ by Atcsqr.andestech.com with ESMTPS id 6871kBbO021691
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Mon, 7 Sep 2026 09:46:11 +0800 (+08)
+ (envelope-from cyyang772@andestech.com)
+Received: from ATCPCS34.andestech.com (10.0.1.134) by atcpcs54.andestech.com
+ (10.0.1.154) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.2.2562.43; Mon, 7 Sep
+ 2026 09:46:11 +0800
+Received: from swlinux02.andestech.com (10.0.15.183) by ATCPCS34.andestech.com
+ (10.0.1.134) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.39; Mon, 7 Sep
+ 2026 09:46:11 +0800
+To: <ltp@lists.linux.it>
+Date: Mon, 7 Sep 2026 09:45:17 +0800
+Message-ID: <20260907014516.450196-2-cyyang772@andestech.com>
 X-Mailer: git-send-email 2.55.0
-In-Reply-To: <20260906150634.1032407-1-pavrampu@linux.ibm.com>
-References: <20260906150634.1032407-1-pavrampu@linux.ibm.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+X-Originating-IP: [10.0.15.183]
+X-ClientProxiedBy: ATCPCS33.andestech.com (10.0.1.100) To
+ ATCPCS34.andestech.com (10.0.1.134)
+X-DKIM-Results: atcpcs54.andestech.com; dkim=none;
+X-DNSRBL: 
+X-MAIL: Atcsqr.andestech.com 6871kBbO021691
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] hugetlb/hugemmap: add hugemmap33 to test hugetlbfs quota
- accounting
+Subject: [LTP] [PATCH v2] hugemmap24: Restrict the 1TB slice layout to
+ 64-bit powerpc
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -92,42 +70,64 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+From: Victor Cheng-Yen Yang via ltp <ltp@lists.linux.it>
+Reply-To: Victor Cheng-Yen Yang <cyyang772@andestech.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Pavithra,
+The 1TB-slice branch of init_slice_boundary() is guarded by __LP64__
+minus a blocklist of architectures that do not have powerpc slices.
+Every new 64-bit architecture has to be added to that blocklist, and rv64
+is the next one to trip over it.
 
-On 2026-09-06, Pavithra wrote:
-> hugetlb/hugemmap: add hugemmap33 to test hugetlbfs quota accounting
+The virtual address space of an rv64 kernel in Sv39 MMU mode is split in
+half between user and kernel, leaving TASK_SIZE = 0x4000000000 (256 GB).
+Every candidate boundary from 1 TB up is above the end of the user
+address space, so the MAP_FIXED mmap() fails with ENOMEM on all
+iterations and the test reports a bogus failure:
 
-> 	TST_EXP_FAIL_PTR_VOID(mmap(NULL, size, PROT_READ | PROT_WRITE, mmap_flags, fd, 0),
-> 			       ENOMEM, "mmap over quota");
-> 	if (!TST_PASS)
-> 		SAFE_MUNMAP(TST_RET_PTR, size);
+  hugemmap24.c:62: TINFO: can't use slice_boundary: 0x100000000000: ENOMEM (12)
+  hugemmap24.c:71: TFAIL: couldn't find 2 free neighbour slices: ENOMEM (12)
 
-An unexpected errno also leaves TST_PASS false but TST_RET_PTR equal to
-MAP_FAILED, so SAFE_MUNMAP() reports TBROK and obscures the original failure.
-Only unmap a successful mapping; the same pattern below needs the same fix.
+Invert the check instead of extending the blocklist. 1 TB slices only
+exist on 64-bit powerpc. Every other architecture falls back to the
+256 MB layout at low addresses. Sv48 and Sv57 do provide a large enough
+user range, but the test must also pass on Sv39, so RISC-V takes the
+fallback unconditionally.
 
-> 		{"linux-git", "a1e78772d72b"},
-
-Use the full commit ID:
-a1e78772d72b2616ed20e54896e68e0e7044854e.
-
-Verdict - Needs revision
-
+Suggested-by: Andrea Cervesato <andrea.cervesato@suse.com>
+Signed-off-by: Victor Cheng-Yen Yang <cyyang772@andestech.com>
 ---
-Note:
+v2: Invert the exclusion into a 64-bit powerpc allowlist, per Andrea.
+Link to v1: https://lore.kernel.org/ltp/20260824082350.70245-1-cyyang772@andestech.com/
+---
+ testcases/kernel/mem/hugetlb/hugemmap/hugemmap24.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-The agent can sometimes produce false positives although often its
-findings are genuine. If you find issues with the review, please
-comment this email or ignore the suggestions.
+diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap24.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap24.c
+index 0de44d58a..9e23c253f 100644
+--- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap24.c
++++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap24.c
+@@ -28,12 +28,12 @@ static int init_slice_boundary(int fd)
+ 	unsigned long slice_size;
+ 	void *p, *heap;
+ 	int i;
+-#if defined(__LP64__) && !defined(__aarch64__) && !defined(__loongarch__)
++#if defined(__powerpc64__) || (defined(__powerpc__) && defined(__LP64__))
+ 	/* powerpc: 1TB slices starting at 1 TB */
+ 	slice_boundary = 0x10000000000;
+ 	slice_size = 0x10000000000;
+ #else
+-	/* powerpc: 256MB slices up to 4GB */
++	/* powerpc (32-bit) and other arches: 256MB slices up to 4GB */
+ 	slice_boundary = 0x00000000;
+ 	slice_size = 0x10000000;
+ #endif
+-- 
+2.55.0
 
-Regards,
-LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
