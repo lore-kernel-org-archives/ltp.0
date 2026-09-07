@@ -4,83 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 30781C79F99
-	for <ltp@archiver.kernel.org>; Mon,  7 Sep 2026 14:58:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6A1C3C79FA0
+	for <ltp@archiver.kernel.org>; Mon,  7 Sep 2026 14:58:51 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 18FA33E950E
-	for <ltp@archiver.kernel.org>; Mon,  7 Sep 2026 16:58:01 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id D44193E950D
+	for <ltp@archiver.kernel.org>; Mon,  7 Sep 2026 16:58:49 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1EE6B3C6135
- for <ltp@lists.linux.it>; Mon,  7 Sep 2026 16:57:45 +0200 (CEST)
-Received: from mail-pj2-x06.google.com (mail-pj2-x06.google.com
- [IPv6:2607:f8b0:4864:39::6])
+ by picard.linux.it (Postfix) with ESMTPS id 4DE983C6135
+ for <ltp@lists.linux.it>; Mon,  7 Sep 2026 16:58:34 +0200 (CEST)
+Received: from mail-pj2-x0b.google.com (mail-pj2-x0b.google.com
+ [IPv6:2607:f8b0:4864:39::b])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id A1F2B1A007E8
- for <ltp@lists.linux.it>; Mon,  7 Sep 2026 16:57:44 +0200 (CEST)
-Received: by mail-pj2-x06.google.com with SMTP id
- 98e67ed59e1d1-3964e7720afso2243885a91.1
- for <ltp@lists.linux.it>; Mon, 07 Sep 2026 07:57:44 -0700 (PDT)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 17512600712
+ for <ltp@lists.linux.it>; Mon,  7 Sep 2026 16:58:33 +0200 (CEST)
+Received: by mail-pj2-x0b.google.com with SMTP id
+ 98e67ed59e1d1-398a0a87595so3204264a91.1
+ for <ltp@lists.linux.it>; Mon, 07 Sep 2026 07:58:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1788793063; x=1789397863; darn=lists.linux.it;
+ d=gmail.com; s=20251104; t=1788793111; x=1789397911; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to:content-type;
- bh=VeTESQ0l8LBuFrYF9H60XX2l/mJICvHJwRa7yjshIzE=;
- b=r6z160ShcmljSETCIrwoD4USzvEAzg/zUsRH2pa66KrTWD+LXGJ+V+ZaJ5qSQ8FDth
- Ju0Rx/fVTsaqNfgL0MIA0H5l/76jM9T3vKic5ZaLwViJAlQveEGSonHtqg7Si5g0W74w
- s/jExSv4wp21WyirkDXhnOE4FQybOD6+02S1wM+MJd3D9tBBIccI7kgwSSSXTItZxCql
- x/lUJaYhnI2eJcr/8BRD2Vog+6WyqfZXuWcwrVJN3PdJUbVP4DP9ENR24hXJx63Svb7p
- R1c7zZLTlnxnrNNKHy6rBG+4Zf2yLEszFdetnOfy1I+O1Q++UTZevFFsFgqhFAHuiGzv
- 5d+Q==
+ bh=FBGWSljYMp54s8Y6h0dS7W7A0gnkA6PFPTuwfUq+ttk=;
+ b=oiyNEN6rSX2iC36mEUbq5iH6dLsu870npiYEIqsmz98R66xYGztZqZl/IHOie+SQQ8
+ tAaGKgjJoKo3LbSGoWPUXdJox6leKsoTe3BSlmudaQUAUMZAh5EkNw7KbMEEoN4tMz0E
+ 8Ty27gqoZA1sZuOAetqcCw0ZRWqaO7TC9W6p1Nqn8OAsHst1YUjAwbruS+j9E/qJ/XCf
+ xVF0jJaZJ5JLEFRAXCc3tha/Vv96UhzdP1Te9KywqzTCZTFp/6X77Bi55LReqacl1VtG
+ skFa1Y8ukU3QbRlkVN069qFB19Z3ff7e5RRW2CvB8wDLCCPg7BVMIRfpL/imiVLQupCP
+ Pu5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1788793063; x=1789397863;
+ d=1e100.net; s=20251104; t=1788793111; x=1789397911;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to:content-type;
- bh=VeTESQ0l8LBuFrYF9H60XX2l/mJICvHJwRa7yjshIzE=;
- b=fwihsgDef/Y6cAsAskNW5z9uIEd0LstYQqonGoSYAdInVG4iAiKp5nnRvR94pIsuss
- bUQW4XcgH1uSnfEumWXYXKPeGD8W2B5/GqAZ6tb9PVbjXS0IRB88s7tsdzV9kMSuWhAd
- tKNyZ1j8/AFZ9xOJlXXhrWaXSCumZEZ1DmjfbSxlGsgTPeRa91+zB2SkzgnhQBycPUpZ
- 17vSvm6YS6c3Qwnn1A8AqiRqNQWi+1WS/E1wQTqtEzAAhO6NunZyhCjlLlHNFxnk509z
- 3P/DjkLshfUlmV0rjnmWMx99KDLDS8Mtt/R2I7LMyodkPWxEfkXg01d7S0l+5V0tqDV8
- Jngg==
-X-Gm-Message-State: AFuF++nGMdI88ZQekLy7NyQC+Q9pVhROKU/TPfSfpNEl0SEAf9qPWORw
- t6+7/5mnd0k8/sQgKlEhQZ2IX9/nK5S6TayxGdezMSLODN6HPOyzKUwsQ41Xvst0
-X-Gm-Gg: AYBFou3gNSA5lCQ6tccBuGR7FqMdOwpqHYaC4Ls8PxsX/wtbbr4izkUYxGBRDgzkwFH
- Az6thnHWs6cs3RjvMXgDbnK8xdgojONJ9iiLBeCFLFQTXGvTLdI7RRFkXqGn6eesPDV1gCHa4uE
- PkRLsM52wf6FKNXqy1E2FyWpC1pDSPadM2pG+9FtByEf1Ty6uaaHg07NKyQKPKFzkEEFrVQUkKN
- nYWnOom4X+5Syze8kHE2qn4FJC4hGGxixT+TjmgogpcnZ+tCsKM86+aAOFhMgD5/l9zv0DKUewu
- sdvT2LJQgxZWMfHo4QuJjhPvTwGywR3Q2/tGMIHiLZkWxIXL8Nw4NgOhSGSf0mRkJQZ14PrK3fX
- 9m6Om9KeYbgxeCmnh6m+XT0bI/NiWFMVvyvD8Dl0iTUgNFRaq6MW/0Pp0DCjxWO8FwLo3qGi2Oh
- YQOwPL7QJ5XDaCauf7LR6CHNv42zN9EXwMVCxfrDtF4zILX+BlrTpe/jWyN6IIc7LJPEHPZJuav
- cRTrYnGNKei/nMt8gX4i63hYXsXS9YgZYkdD8Uh0/vBhSMN/7hWEAsIniGb6otf/HykaPKUkoTT
- jg==
-X-Received: by 2002:a17:90b:2f87:b0:38e:9045:bac0 with SMTP id
- 98e67ed59e1d1-39b260fe42amr34248128a91.5.1788793062805; 
- Mon, 07 Sep 2026 07:57:42 -0700 (PDT)
+ bh=FBGWSljYMp54s8Y6h0dS7W7A0gnkA6PFPTuwfUq+ttk=;
+ b=bCYjYCXMxucZBEFKhz66uyQePLE3ZgZgS5ArbnNJzquB0SwDXZVpIJkfh0+tO6xD4t
+ qj51b2QG0c0BI5ALkvJjuXvQ/fNOR1Z/bgKfsdwmMKWBYGu+MzqH9P8OyURkCXNHSHq3
+ vAmbZ+TI3syEmABEQ+VNfZr/EAvjgtie/3UN4YA/1W7YZSy5MXRqsS+q05mMfzMxFP6w
+ /NUzTxueyuewWI32mbu0OOivNNu9lCVd7BYd7/qj40UuCI6UuETGrXfIDmwzctF+f0R2
+ NM6x8e+d0P6xzsoPVlOiVTXWCkL17hs3EFe5yJKASLH8c3b7w8ZU+0qGKsmS5dATwH+k
+ BAbg==
+X-Gm-Message-State: AFuF++kbB+9y3ElGWFYUkuVh6ExqnPi6HUVfNU2bBtqeJjTjZMG+8cbZ
+ dz7r9nO5rAQd/UK6Sk5WBi3Y6SA6o+w/v741AgkK3Gn62LO+0no9DZ1m
+X-Gm-Gg: AYBFou1kjN3tbw3r6LBnSgCg1cIWkMfDdPLJffpxG0L5/xwXpaYn8zk1ttcEkk7s2Ly
+ zzGehGogkkX0eI76ZcWk17jWS+JG7Sbws9uIu0JeR12RVHrZ8jtzWKGd9eV8wzIVamp7BTGKueq
+ AqsK4phdrCSl3hMdWAGFGTGsd5QBrSC9N2vrl2MuHSWCmvqsdQDrLKfX42D9qSIN0qGof6cHcij
+ 2sOlyz9IJqCYqOL+BcD7sQb7QFAm9zHK2zLfv2cyeCnw3pN4wBbedbyO3DCzOcV5m6A/SGkCqmJ
+ UePHiGIU4QSSOfWtuPu6wYTqhfP18DOlyFlwcfYzsrrLP1G6g+blJr7h6/y0q7cgqzTwra4HC+1
+ 87ZwIbClmcs8rYw5SgRANOf3VzTIN4xjJBdh30PVRZQu+IIKMQb5G2iVjXjJSvhWo2SkL7FOd4l
+ a0zo/WB5bylsLXthU8xxXlEdQ9KLHxNxXtwfGuWIqckZo64gKh97kqnbjARIbaS0WtXlJkuWYbc
+ T74a1z1G1kAWP+CChdbYsjpBvRFdZv6YYsjr+R7Rti4AC6M7P1sMH+xaVVA/WeY/KRV+MHnPhsr
+ n3k=
+X-Received: by 2002:a17:90b:570b:b0:398:deed:6e1d with SMTP id
+ 98e67ed59e1d1-39b260de5bbmr36582966a91.5.1788793111336; 
+ Mon, 07 Sep 2026 07:58:31 -0700 (PDT)
 Received: from
- runnervmejwal.tpeq4opckxkudcgvnjlaud5nje.xx.internal.cloudapp.net
- ([20.120.230.197]) by smtp.gmail.com with ESMTPSA id
- 98e67ed59e1d1-39b26155324sm20700206a91.17.2026.09.07.07.57.42
+ runnervmejwal.ujbej0qg0ive3kvrwq5foysb5c.yx.internal.cloudapp.net
+ ([172.215.217.201]) by smtp.gmail.com with ESMTPSA id
+ a92af1059eb24-1432437d0f4sm25507282c88.7.2026.09.07.07.58.30
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 07 Sep 2026 07:57:42 -0700 (PDT)
+ Mon, 07 Sep 2026 07:58:31 -0700 (PDT)
 From: linuxtestproject.agent@gmail.com
-To: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Mon,  7 Sep 2026 14:57:41 +0000
-Message-ID: <20260907145741.4178-1-linuxtestproject.agent@gmail.com>
+To: Michael Menasherov <mmenashe@redhat.com>
+Date: Mon,  7 Sep 2026 14:58:29 +0000
+Message-ID: <20260907145829.9000-1-linuxtestproject.agent@gmail.com>
 X-Mailer: git-send-email 2.55.0
-In-Reply-To: <20260907-ci_patchwork_apply-v1-1-95d71dbacc5e@suse.com>
-References: <20260907-ci_patchwork_apply-v1-1-95d71dbacc5e@suse.com>
+In-Reply-To: <20260907120308.32898-1-mmenashe@redhat.com>
+References: <20260907120308.32898-1-mmenashe@redhat.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] ci: apply Patchwork series via REST API
+Subject: Re: [LTP] read_all: Fix buffer too small for long paths
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -98,12 +97,19 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Andrea,
+Hi Michael,
 
-On Mon, 7 Sep 2026, Andrea Cervesato wrote:
-> [PATCH] ci: apply Patchwork series via REST API
+On Sep 7, 2026, Michael Menasherov wrote:
+> read_all: Fix buffer too small for long paths
 
-Verdict - Reviewed
+> +#define BUFFER_SIZE PATH_MAX
+
+With the existing `if (++j >= BUFFER_SIZE - 1)` check, this still rejects a
+valid PATH_MAX - 1-character pathname and reports TBROK before writing its
+terminating NUL. A 4095-byte pathname reproduces this on PATH_MAX=4096; change
+the queue_pop() bound so PATH_MAX - 1 characters fit.
+
+Verdict - Needs revision
 
 ---
 Note:
