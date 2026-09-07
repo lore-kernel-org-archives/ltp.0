@@ -4,74 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1A5A3C79F9E
-	for <ltp@archiver.kernel.org>; Mon,  7 Sep 2026 12:03:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1788782618; h=to : date :
- message-id : mime-version : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : content-type : content-transfer-encoding : sender : from;
- bh=tj7GRHPt3Z5GFUPNbwxR44GaEtey+4ccxbnDN2MbuyI=;
- b=Iu/A2NjJTF9IIcBw7KJA47Mp3qSqDNiCOvEJXC7SaJz2WKcpLCzH4KiL/uVVlc0TdO2F2
- PFCGOg2HurOg4TRtyAuLMsGqMGx3U56WogIkLVsCSIporsGWw7yBLirDWayflaF60/qA0C6
- iRj6sVX7vJszvh3sLbxYSZBV+KzWsag=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9DF6DC79F9E
+	for <ltp@archiver.kernel.org>; Mon,  7 Sep 2026 12:06:49 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 281713E88DA
-	for <ltp@archiver.kernel.org>; Mon,  7 Sep 2026 14:03:38 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 01EF13C6135
+	for <ltp@archiver.kernel.org>; Mon,  7 Sep 2026 14:06:48 +0200 (CEST)
 Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D66143C2C00
- for <ltp@lists.linux.it>; Mon,  7 Sep 2026 14:03:18 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id DA3B93C6135
+ for <ltp@lists.linux.it>; Mon,  7 Sep 2026 14:06:33 +0200 (CEST)
+Received: from mail-oo2-x00.google.com (mail-oo2-x00.google.com
+ [IPv6:2607:f8b0:4864:31::])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 53406200968
- for <ltp@lists.linux.it>; Mon,  7 Sep 2026 14:03:17 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1788782596;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=MDVavgB6/OWntnBQqO2aQbzwFoYhuaLL+HOs9IJIQZg=;
- b=SiespVzlrXaUovoeX1lgizxh7SrmaoU8C5jlFH93slqV9V5tf3q9R2gMfYwyapqTTO6Sw0
- ewoitOhNcuQ9mkEzGv/xCJvQZSXQGugHu03OIAMHNL3CF9aN5vIPojH1y90BbgjLM3mEeo
- 2rpNBnVUlLymMs+yyN/vYJETRC3bfks=
-Received: from mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-664-5wvSuf-ZMO6AXLbPVvCtmw-1; Mon,
- 07 Sep 2026 08:03:14 -0400
-X-MC-Unique: 5wvSuf-ZMO6AXLbPVvCtmw-1
-X-Mimecast-MFC-AGG-ID: 5wvSuf-ZMO6AXLbPVvCtmw_1788782594
-Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com
- (mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.17])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
- id A66B719539A7
- for <ltp@lists.linux.it>; Mon,  7 Sep 2026 12:03:13 +0000 (UTC)
-Received: from mmenashe-thinkpadp16vgen1.redhat.corp
- (headnet03.pony-001.prod.iad2.dc.redhat.com [10.2.32.114])
- by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
- id AAC2D1956042
- for <ltp@lists.linux.it>; Mon,  7 Sep 2026 12:03:12 +0000 (UTC)
-To: ltp@lists.linux.it
-Date: Mon,  7 Sep 2026 15:03:08 +0300
-Message-ID: <20260907120308.32898-1-mmenashe@redhat.com>
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 7687D20075C
+ for <ltp@lists.linux.it>; Mon,  7 Sep 2026 14:06:33 +0200 (CEST)
+Received: by mail-oo2-x00.google.com with SMTP id
+ 006d021491bc7-6a3900cb2b5so1426313eaf.0
+ for <ltp@lists.linux.it>; Mon, 07 Sep 2026 05:06:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20251104; t=1788782792; x=1789387592; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to:content-type;
+ bh=dcfX65ejRIL+4vBYxT/CTrE0AaMvOpq4QrcRyZdZ+Fw=;
+ b=HYfYZfkY7ZZl0eE+IiNuC1N6wE2U5qgyhFxMC2y4r8mQzA3pOkXLjRwcHl+pA+hasU
+ DFvImZAjjAEZcjcdtNVcvQvczjN2rffiGrWqbeTRovLSmIioKbefDPYQCkqkI51BmIVm
+ NAb6sxO4v+aTGYfUr8YjVDoHEngXwBYj8hkBrhGUYXO6GzRdacivgHYxpGMK6sj8f+8z
+ ZH6zpQnZen1r6Pi600xER3RPdUppV7WZP8cQhI84wXJBRhzoCJd1IzrUjKG3L1k7Gqgn
+ QqvMbDjXAb27afZGZPlytE8FgSXAt0dp6Z/jfGZd0b33Dfpg49UNNKiDIiPk0RmpmRWD
+ icCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1788782792; x=1789387592;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to:content-type;
+ bh=dcfX65ejRIL+4vBYxT/CTrE0AaMvOpq4QrcRyZdZ+Fw=;
+ b=GJPDuuWIAyR35XbWldnsoT9qOoZtBwwJjQ+RmfyIEDkEX5P0UQn0K2rjp/aAuNs8sB
+ yAmfI2vJ20KnQy9l0bfLvstcspuGWOHvgGuT1Iy1AfGbvehIdrSWH4tZizxLDG46gqOu
+ IGp+zjU1XT1JnyNRZBOCY7xfE9VOywWK1sb+Ub0F17nyzml3D4cez79WIPuhHMxH04kg
+ lkPXlIQF5nKq+eMwadqZ1k5SiGu5HkFZLGXzf562IyCCKo/Fv34mwK3+kY4hrt3dR1uh
+ x4YpTK/j1CllEDOxSdLxGtgo6SZOd7aoU/sH9prlp0YVEWYw1iOPtoopA/Vne31yvYwr
+ 12pA==
+X-Gm-Message-State: AFuF++kybx2k33NyxKGkRm/q9iGmJGL0WwZcBJqlZCo9F2gkZpUpoVMu
+ HKlj2lDOJ3RM+yXvH5C8A7Zt/rqf21E77vMy1R0pDy91zjIS0+a2gO2n
+X-Gm-Gg: AYBFou3tRKYBSjyQYDirYB9EEn4xHz6QeCdsQVQnMoCSyslh+2+bojVUWrpOiL5KcqA
+ VpNDUdIHFs5oX8weGBh2ShjpkDLTrvwnM+09yGljC1OZ/FMOX9ViS2rHTKTcxAkbgsOylsK94eh
+ nj42OGSSaXCfwJfLyQzxB01S3qqMVyK6p0tCUw4LkMXfM7Gh23ImX3XgGLUc1cjukYT0wYHTbrm
+ h/lPgyLzNXfdugvQ0wxLcZSNLHGubF+G1uAgr41Suzwm0tu83hb5mYUcDlTXO9L6By8O04CzNxe
+ xCupYPumRYioilzhibYTScw613C7hlQcvTorJ8WtMZ2ZojbWs/kwAGn9so/jD213uCURCe2I/uQ
+ veyhnxu2td1CXWugo3cGO3jm3hd1ZkCi/tyd0xA7PI3pPO1R/BDyT39auAtkzfFa1Rtq++5Ia/D
+ KgGBFJClhi7mHPE983kt8p2is5b5kwCWfwP8JwaVjlyQBZgB8vtZIUGOzPGHZWKIkG80kPUQcVG
+ ivRujey01Cuw/qOmyr7HbkdqB2AgA9rQ52Q8lyA5grNGlCP+YTffnK86T6N3Higvco1sdOuD7H5
+X-Received: by 2002:a05:6820:c2d2:20b0:6b7:b4b0:8915 with SMTP id
+ 006d021491bc7-6b7b4b08d9cmr7222557eaf.15.1788782792041; 
+ Mon, 07 Sep 2026 05:06:32 -0700 (PDT)
+Received: from
+ runnervmejwal.cuahjxprzsyevh2onn3h2zuybf.phxx.internal.cloudapp.net
+ ([20.25.153.61]) by smtp.gmail.com with ESMTPSA id
+ 5a478bee46e88-3339aa37dbdsm23653797eec.11.2026.09.07.05.06.31
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 07 Sep 2026 05:06:31 -0700 (PDT)
+From: linuxtestproject.agent@gmail.com
+To: Andrea Cervesato <andrea.cervesato@suse.de>
+Date: Mon,  7 Sep 2026 12:06:30 +0000
+Message-ID: <20260907120630.9097-1-linuxtestproject.agent@gmail.com>
+X-Mailer: git-send-email 2.55.0
+In-Reply-To: <20260907-process_mrelease-v3-1-03bde3e5d77c@suse.com>
+References: <20260907-process_mrelease-v3-1-03bde3e5d77c@suse.com>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.17
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: 2I0k26LhDIj4QQiWW5ykx3RBduzeV9-n1zE74JgBUME_1788782594
-X-Mimecast-Originator: redhat.com
 X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2] read_all: Fix buffer too small for long paths
+Subject: Re: [LTP] Add process_mrelease01 test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -83,48 +91,28 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Michael Menasherov via ltp <ltp@lists.linux.it>
-Reply-To: Michael Menasherov <mmenashe@redhat.com>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-queue_pop() copies each path into popped[BUFFER_SIZE], but BUFFER_SIZE
-was 1024 while visit_dir() builds paths up to MAX_PATH (4096). Any path
-longer than 1023 bytes aborted the test with TBROK "Buffer is too small
-for path".
+Hi Andrea,
 
-Set BUFFER_SIZE and MAX_PATH to PATH_MAX so all path buffers and size
-limits use the standard constant consistently.
+On Mon, Sep 7, 2026, Andrea Cervesato wrote:
+> Add process_mrelease01 test
 
-Tested on smaller boards and then on local machines with deeply nested
-directories under /sys; read_all_sys now passes instead of aborting.
+Verdict - Reviewed
 
-Fixes: 67c95fbbfc3a ("Add read_all file systems test")
-Signed-off-by: Michael Menasherov <mmenashe@redhat.com>
 ---
- testcases/kernel/fs/read_all/read_all.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Note:
 
-diff --git a/testcases/kernel/fs/read_all/read_all.c b/testcases/kernel/fs/read_all/read_all.c
-index 5720ffb99..bf5f613a3 100644
---- a/testcases/kernel/fs/read_all/read_all.c
-+++ b/testcases/kernel/fs/read_all/read_all.c
-@@ -51,8 +51,8 @@
- #include "tst_timer.h"
- 
- #define QUEUE_SIZE 16384
--#define BUFFER_SIZE 1024
--#define MAX_PATH 4096
-+#define BUFFER_SIZE PATH_MAX
-+#define MAX_PATH PATH_MAX
- #define MAX_DISPLAY 40
- 
- struct queue {
--- 
-2.55.0
+The agent can sometimes produce false positives although often its
+findings are genuine. If you find issues with the review, please
+comment this email or ignore the suggestions.
 
+Regards,
+LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
