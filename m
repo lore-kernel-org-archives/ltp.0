@@ -4,102 +4,101 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6AB55C79F82
-	for <ltp@archiver.kernel.org>; Tue,  8 Sep 2026 16:55:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0BF29C79F99
+	for <ltp@archiver.kernel.org>; Tue,  8 Sep 2026 16:56:12 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9B9953E949D
-	for <ltp@archiver.kernel.org>; Tue,  8 Sep 2026 18:55:57 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 882693E94B0
+	for <ltp@archiver.kernel.org>; Tue,  8 Sep 2026 18:56:10 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 00DA43C0032
+ by picard.linux.it (Postfix) with ESMTPS id 39B6E3E94A6
  for <ltp@lists.linux.it>; Tue,  8 Sep 2026 18:55:06 +0200 (CEST)
 Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
  [148.163.156.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id ECA4A1A00616
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id C9E9B6008FB
  for <ltp@lists.linux.it>; Tue,  8 Sep 2026 18:55:04 +0200 (CEST)
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
+Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
  by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id
- 688F1QTX1232787; Tue, 8 Sep 2026 16:55:02 GMT
+ 688F1frY1228027; Tue, 8 Sep 2026 16:55:02 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
- :content-transfer-encoding:date:from:in-reply-to:message-id
- :mime-version:references:subject:to; s=pp1; bh=+DtNwBAOIcysd+CW1
- wN4UptURfmB7JZ8ACrJg8T/icw=; b=tF3mG9zXqoCEnUCwyag3isU7G69AI3i9i
- v6X+I9G//7NHYeQ/5whiFVViXrFCO7XL6YeKONVhzCM1VqDShXix9iGgnYmzlTCE
- tlGxo2lYojZDulo383AopujqH1hirX9g2G6QUv0WbWefReabOgtX1wr/rgSPUiNw
- 7Dg+finOPn4Wb1daST572CxVI9tkgiwdE+1MLKwp1F+BTD+f4pNBdCFtCcyQ3dKW
- uF7oy8vM869BXo24hZid1Ug7WocKux5ojhSl9hMxkuJemazH9MXnNym9+eehJRO6
- mwdA9o2PGSqUcAhhCaXFBV+uWv7HjpQOoG3FjqI/8KD/GGClBZsCA==
-Received: from ppma12.dal12v.mail.ibm.com
- (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4ggbf40k3g-1
+ :content-transfer-encoding:date:from:message-id:mime-version
+ :subject:to; s=pp1; bh=0uDc1jFbpCuryTtCokgccCm0Cj2faoaMLNIGUm3y7
+ vA=; b=UdA6rJxNPbUweDDC56GjAZZIdZtitWqNBfpJxV6u5NUgViWtTMSqmycey
+ M9A6HO62pbnAuC6LbbiMRgiwQno6hOU/SpGhi6hFcRnpXH0+F0A0/2uUgowGfh0j
+ JOPNgENX+wLhJx4LmXHoqoBOoTYIJvrk2KCl+a/QfuYfWyc44ijzZyhlQJd6h3U9
+ NHRNVpCdX1lF4/JMj7azYP/9Vgi4FgnmD378xTq9MbvmiairdhEhaGOOEXrl9MoE
+ BPyyVX8etIidIFn0soY8KobpWwO6mSrzfVG1f5+ESQ9IhYvOV32fxMszNDn2+2g/
+ hjgeHU1UFCCsxCxnQU/LyuKz2fhcA==
+Received: from ppma21.wdc07v.mail.ibm.com
+ (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4ggbhkrkx2-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Tue, 08 Sep 2026 16:55:02 +0000 (GMT)
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+ by ppma21.wdc07v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 688GfEgo027382;
+ Tue, 8 Sep 2026 16:55:01 GMT
+Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
+ by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4ggxdjw6x0-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
  Tue, 08 Sep 2026 16:55:01 +0000 (GMT)
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
- by ppma12.dal12v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 688GfIRO009571;
- Tue, 8 Sep 2026 16:55:01 GMT
-Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
- by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 4ggwdqdb9r-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Tue, 08 Sep 2026 16:55:00 +0000 (GMT)
 Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com
  [10.20.54.101])
- by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 688GsvSl50069828
+ by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 688GsuE747513946
  (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
  Tue, 8 Sep 2026 16:54:57 GMT
 Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 2E62B20040;
- Tue,  8 Sep 2026 16:54:57 +0000 (GMT)
+ by IMSVA (Postfix) with ESMTP id C6A1A2004B;
+ Tue,  8 Sep 2026 16:54:56 +0000 (GMT)
 Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 1830B2005A;
- Tue,  8 Sep 2026 16:54:57 +0000 (GMT)
+ by IMSVA (Postfix) with ESMTP id B0B7C20040;
+ Tue,  8 Sep 2026 16:54:56 +0000 (GMT)
 Received: from li-276bd24c-2dcc-11b2-a85c-945b6f05615c.ehn-de.ibm.com (unknown
  [9.224.74.129]) by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
- Tue,  8 Sep 2026 16:54:57 +0000 (GMT)
+ Tue,  8 Sep 2026 16:54:56 +0000 (GMT)
 From: Jan Polensky <japo@linux.ibm.com>
 To: ltp@lists.linux.it
-Date: Tue,  8 Sep 2026 18:54:30 +0200
-Message-ID: <20260908165430.251897-4-japo@linux.ibm.com>
+Date: Tue,  8 Sep 2026 18:54:27 +0200
+Message-ID: <20260908165430.251897-1-japo@linux.ibm.com>
 X-Mailer: git-send-email 2.55.0
-In-Reply-To: <20260908165430.251897-1-japo@linux.ibm.com>
-References: <20260908165430.251897-1-japo@linux.ibm.com>
 MIME-Version: 1.0
 X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: mRFsjW-rChVzDcZsw7na0uTCE7qHMMhK
-X-Proofpoint-GUID: mRFsjW-rChVzDcZsw7na0uTCE7qHMMhK
-X-Authority-Analysis: v=2.4 cv=DbEnbPtW c=1 sm=1 tr=0 ts=6aa03de6 cx=c_pps
- a=bLidbwmWQ0KltjZqbj+ezA==:117 a=bLidbwmWQ0KltjZqbj+ezA==:17
+X-Proofpoint-Spam-Info: AW1haW4tMjYwOTA4MDE3OCBTYWx0ZWRfX28hjN95FY1Ly
+ kgCWsegYPUTvaMqrn8wSB99T07WOGR0vuWKFVyCK+OcDS7jsc6ZZOBuGyA6wNaLyITdgcVYRnzW
+ 6HYrq2xRk1Ks75oOJjkF8oUD04RDeyk=
+X-Proofpoint-ORIG-GUID: DYUdV_iAW8W8bP42WLxPlNBZFZBlJYxl
+X-Authority-Analysis: v=2.4 cv=NMDlPU6g c=1 sm=1 tr=0 ts=6aa03de6 cx=c_pps
+ a=GFwsV6G8L6GxiO2Y/PsHdQ==:117 a=GFwsV6G8L6GxiO2Y/PsHdQ==:17
  a=VdqzKS8jKosA:10 a=VkNPw1HP01LnGYTKEx00:22 a=RnoormkPH1_aCDwRdu11:22
- a=iQ6ETzBq9ecOQQE5vZCe:22 a=VnNF1IyMAAAA:8 a=nokWTcY8dlmwlvixofwA:9
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwOTA4MDE3OCBTYWx0ZWRfX0czUc7d2ZBj9
- vHED7J0WbaXq6cKCc/t5yJWdpyTQjxZj6LNgCMSUMRClHIJ8rbum6iByQ1JxIjiKCEFxTWpZfpS
- qAoqoQYZUfu91tVGMMw3Wp4V0Yz2saJnVrbMtUNj+aq77mf9+lGzZqcqL1UX+qa9BFy2QjjOENR
- 8TJRb7esCAyteBBtMeJS8ms95z09XqT+e8j/l7OLLRBHIhMYzDzPDAItCzdxrMUNqOwv2RWHUvW
- EyoRqheyRLP30qIKuQH/gMDHBWAt1aK3EpM1pXe5K5z0EolUTuVY+TNvhdRIQR7SCJzsuP8j4cy
- GgxLpd/ZWaizizMLgPxGTJ84oxm9iN5gSxyiAE1lGsxIIk40jeSC/ZmgjjR7CZeMtiRCATMpAbn
- HC2HhbtSTB+4XmF4bnXYDVNoi9gZ58lpfr0ChyiG9nF0EbnB54sHJGvYSqzqCl5SDovqBX4FnEi
- KPodpHoM+0TUzfY/rlQ==
-X-Proofpoint-Spam-Info: AW1haW4tMjYwOTA4MDE3OCBTYWx0ZWRfX+gUZzdlwkpJF
- +UhW9rbP10RdX9DB520Jlxo5f5dJr7PpcPHisSGm+uBy46DitDqZdF5otjdFn7npVtAvlDqpZPX
- scZF82t4c0O25R9AVGHnf0aNS4bg5Ps=
+ a=U7nrCbtTmkRpXpFmAIza:22 a=VwQbUJbxAAAA:8 a=VnNF1IyMAAAA:8
+ a=-UpwcQOxWNG_FBFHVQUA:9
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwOTA4MDE3OCBTYWx0ZWRfX8ahIfQ+JyE3B
+ L3yEjKfXf9tD9Wj625sI2CsWwLms3Hd4JQP06D6BKNIGi5aWESXFJa8fnggBw1XWp0JFU3NHBaR
+ T3tvZ2nM7mcnYDHJUnu6EdNjVNJzNJwHngEASP957/rlwN06JIxqvOXk4HTcjbNJeYwAqUM8qJT
+ iZapp3D9qwX9uB3I2ST9FGbd/Xu9Ei4R0E3Q2Om3iBASl/iptZMyPlBkWQdHg9CfxTw3nnmwho+
+ /PUjf8upvgmXgREogTKrBBzwOuL3dFK9G+681na1mGylBInRVyBQFws6O69B0j7k7nt0/oC1Vfe
+ Fu4mrTtTLfwcJ25lLmiAeqIOkGcNKLfyHOF92TdI1xoR4kdPxaOOr31nLVI1Kz0UXliLLs3u+Yk
+ 2VHpKCY6TYwlgHRGgVXNo9kuF8kiZ1Rc//1j+9i5kAEFw1HWDw0KNryr4iWs/5iEsBu6kqcGXMc
+ bGz8wBTKFqhqKlLz/pg==
+X-Proofpoint-GUID: DYUdV_iAW8W8bP42WLxPlNBZFZBlJYxl
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1176,Hydra:6.1.134,FMLib:17.12.100.49
  definitions=2026-09-08_03,2026-09-08_02,2025-10-01_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- phishscore=0 priorityscore=1501 impostorscore=0 adultscore=0 spamscore=0
- clxscore=1015 suspectscore=0 bulkscore=0 malwarescore=0 lowpriorityscore=0
+ phishscore=0 spamscore=0 lowpriorityscore=0 clxscore=1015 adultscore=0
+ impostorscore=0 bulkscore=0 malwarescore=0 priorityscore=1501 suspectscore=0
  classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
  reason=mlx scancount=1 engine=8.22.0-2606150000 definitions=main-2609080178
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v6 3/3] ptrace: add test for /proc/pid/mem writes
- under ptrace
+Subject: [LTP] [PATCH v6 0/3] Handle FORCE_PTRACE in thp04 and add ptrace
+ coverage
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -116,272 +115,80 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Add ptrace13 to verify that a tracer can write to a tracee through
-/proc/pid/mem when CONFIG_PROC_MEM_FORCE_PTRACE requires ptrace access
-checks.
+thp04 is a CVE-2017-1000405 regression test. If direct
+/proc/self/mem writes are blocked by CONFIG_PROC_MEM_FORCE_PTRACE=y,
+the CVE cannot be triggered and thp04 should report TCONF.
 
-The test forks a child, attaches to it with PTRACE_SEIZE, waits for the
-child to stop, then repeatedly writes a value to the child's read-only
-mapping via /proc/pid/mem and resumes it. The child verifies each write
-after it is continued, covering the write-stop-continue cycle needed
-for ptrace-mediated memory writes.
+Add separate ptrace tests for the CONFIG_PROC_MEM_FORCE_PTRACE behavior
+instead:
 
-Signed-off-by: Jan Polensky <japo@linux.ibm.com>
----
- runtest/syscalls                            |   1 +
- testcases/kernel/syscalls/ptrace/.gitignore |   1 +
+- ptrace12 checks that writing to /proc/self/mem is rejected with EIO.
+- ptrace13 checks that a parent can write to a traced child's memory via
+  /proc/pid/mem.
+
+Both ptrace tests use read-only mappings, so the writes require
+FOLL_FORCE and exercise the CONFIG_PROC_MEM_FORCE_PTRACE enforcement.
+
+Tested on s390x with CONFIG_PROC_MEM_FORCE_PTRACE=y:
+
+- thp04: TCONF (direct /proc/self/mem writes blocked)
+- ptrace12: TPASS
+- ptrace13: TPASS, 100 iterations
+
+Follow-up to the previous thp04 ptrace mode discussion:
+https://lore.kernel.org/all/20260709175927.268677-1-japo@linux.ibm.com/
+
+Changes in v6:
+- thp04: probe /proc/self/mem on a separate anonymous mapping to avoid
+  COW-polluting the huge zero page before the race test starts
+- thp04/ptrace12/ptrace13: fix SPLIT_STRING checkpatch warnings
+- ptrace12/ptrace13: move runtest entries before the pwrite blank line
+- ptrace13: skip raise(SIGSTOP) on last iteration so child exits via exit(0)
+
+Changes in v5:
+- thp04: use != -1 instead of >= 0 for fd validity checks in thp_cleanup()
+- thp04: cast TST_RET to (ssize_t) before comparing with sizeof()
+- ptrace12: use != -1 instead of >= 0 for memfd validity check in cleanup()
+- ptrace12: cast TST_RET to (ssize_t) before comparing with sizeof()
+- ptrace13: fix race between PTRACE_INTERRUPT and child's first raise(SIGSTOP);
+  replace PTRACE_INTERRUPT with an explicit initial raise(SIGSTOP) in the child
+- ptrace13: cast TST_RET to (ssize_t) before comparing with sizeof()
+- ptrace13: remove redundant #include "tst_checkpoint.h" (already in tst_test.h)
+- ptrace13: update doc-comment to reflect the new stop flow
+
+Changes in v4:
+- thp04: prove the /proc/self/mem probe changes memory before running the race
+- thp04: tighten direct-write result handling and document blocked-write behavior
+- ptrace12: gate the test on CONFIG_PROC_MEM_FORCE_PTRACE=y
+- ptrace12: treat successful /proc/self/mem writes as TFAIL under the required config
+- ptrace13: use a tracer-controlled PTRACE_INTERRUPT initial stop
+- ptrace13: fix the iteration diagnostic and clean up wait-status handling
+- ptrace13: use PTRACE_KILL for normal termination
+
+v5: https://lore.kernel.org/all/20260908111332.150323-1-japo@linux.ibm.com/
+v4: https://lore.kernel.org/all/20260722135926.359462-1-japo@linux.ibm.com/
+v3: https://lore.kernel.org/all/20260721202452.315581-1-japo@linux.ibm.com/
+v2: https://lore.kernel.org/all/20260716095004.92793-1-japo@linux.ibm.com/
+v1: https://lore.kernel.org/all/20260714150631.250972-1-japo@linux.ibm.com/
+
+Jan Polensky (3):
+  thp04: group runtime state and skip when /proc/self/mem writes are
+    blocked
+  ptrace: add test for /proc/self/mem write rejection
+  ptrace: add test for /proc/pid/mem writes under ptrace
+
+ runtest/syscalls                            |   2 +
+ testcases/kernel/mem/thp/thp04.c            | 172 ++++++++++-----
+ testcases/kernel/syscalls/ptrace/.gitignore |   2 +
+ testcases/kernel/syscalls/ptrace/ptrace12.c |  95 +++++++++
  testcases/kernel/syscalls/ptrace/ptrace13.c | 220 ++++++++++++++++++++
- 3 files changed, 222 insertions(+)
+ 5 files changed, 439 insertions(+), 52 deletions(-)
+ create mode 100644 testcases/kernel/syscalls/ptrace/ptrace12.c
  create mode 100644 testcases/kernel/syscalls/ptrace/ptrace13.c
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 6afcfdeeb1cd..ce212c264bff 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -1183,6 +1183,7 @@ ptrace09 ptrace09
- ptrace10 ptrace10
- ptrace11 ptrace11
- ptrace12 ptrace12
-+ptrace13 ptrace13
- 
- pwrite01 pwrite01
- pwrite02 pwrite02
-diff --git a/testcases/kernel/syscalls/ptrace/.gitignore b/testcases/kernel/syscalls/ptrace/.gitignore
-index 8631219312d5..72f9cef98e22 100644
---- a/testcases/kernel/syscalls/ptrace/.gitignore
-+++ b/testcases/kernel/syscalls/ptrace/.gitignore
-@@ -10,3 +10,4 @@
- /ptrace10
- /ptrace11
- /ptrace12
-+/ptrace13
-diff --git a/testcases/kernel/syscalls/ptrace/ptrace13.c b/testcases/kernel/syscalls/ptrace/ptrace13.c
-new file mode 100644
-index 000000000000..d14600e3fbb9
---- /dev/null
-+++ b/testcases/kernel/syscalls/ptrace/ptrace13.c
-@@ -0,0 +1,220 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2026 IBM Corporation
-+ */
-+
-+/*\
-+ * Verify that a parent process can write to a traced child's memory
-+ * via /proc/pid/mem when the child is in a stopped state.
-+ *
-+ * This test validates the ptrace-based memory write mechanism that
-+ * becomes mandatory when CONFIG_PROC_MEM_FORCE_PTRACE=y is active.
-+ *
-+ * Test flow:
-+ *
-+ * 1. Parent forks a child process
-+ * 2. Child signals readiness via checkpoint and issues raise(SIGSTOP)
-+ * 3. Parent attaches with PTRACE_SEIZE and waits for the initial SIGSTOP
-+ * 4. Parent writes to child's memory via /proc/pid/mem
-+ * 5. Parent continues child with PTRACE_CONT
-+ * 6. Child verifies the write took effect
-+ * 7. Child self-stops with raise(SIGSTOP) for the next iteration
-+ * 8. Repeat for multiple iterations
-+ */
-+
-+#include <errno.h>
-+#include <fcntl.h>
-+#include <signal.h>
-+#include <string.h>
-+#include <sys/mman.h>
-+#include <sys/ptrace.h>
-+#include <sys/wait.h>
-+#include <unistd.h>
-+
-+#include "tst_test.h"
-+
-+#define TEST_ITERATIONS 100
-+
-+struct shared_state {
-+	int *test_ptr;
-+	int expected_val;
-+};
-+
-+static struct shared_state *shared;
-+static pid_t tracee_pid;
-+
-+static void tracee_main(void)
-+{
-+	int i;
-+
-+	shared->test_ptr = SAFE_MMAP(NULL, sizeof(int), PROT_READ | PROT_WRITE,
-+				     MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-+	*shared->test_ptr = 0;
-+
-+	/* Force parent write through /proc/pid/mem to require FOLL_FORCE */
-+	SAFE_MPROTECT((void *)shared->test_ptr, sizeof(int), PROT_READ);
-+
-+	TST_CHECKPOINT_WAKE(0);
-+	TST_CHECKPOINT_WAIT(1);
-+
-+	raise(SIGSTOP);
-+
-+	for (i = 0; i < TEST_ITERATIONS; i++) {
-+		if (*shared->test_ptr != shared->expected_val) {
-+			tst_res(TFAIL,
-+				"Iteration %d: expected 0x%x, got 0x%x",
-+				i, shared->expected_val, *shared->test_ptr);
-+			exit(1);
-+		}
-+
-+		if (i < TEST_ITERATIONS - 1)
-+			raise(SIGSTOP);
-+	}
-+
-+	exit(0);
-+}
-+
-+static void setup(void)
-+{
-+	/* Allocate shared memory for parent-child communication */
-+	shared = SAFE_MMAP(NULL, sizeof(*shared), PROT_READ | PROT_WRITE,
-+			   MAP_SHARED | MAP_ANONYMOUS, -1, 0);
-+}
-+
-+static void run(void)
-+{
-+	char path[64];
-+	int memfd;
-+	int status;
-+	int i;
-+
-+	tracee_pid = SAFE_FORK();
-+	if (!tracee_pid) {
-+		tracee_main();
-+		exit(0);
-+	}
-+
-+	TST_CHECKPOINT_WAIT(0);
-+	SAFE_PTRACE(PTRACE_SEIZE, tracee_pid, NULL, NULL);
-+	TST_CHECKPOINT_WAKE(1);
-+	SAFE_WAITPID(tracee_pid, &status, 0);
-+
-+	if (WIFEXITED(status)) {
-+		tst_brk(TBROK,
-+			"Tracee exited unexpectedly at initial stop: %s",
-+			tst_strstatus(status));
-+	} else if (WIFSIGNALED(status)) {
-+		tst_brk(TBROK,
-+			"Tracee was killed at initial stop: %s",
-+			tst_strstatus(status));
-+	} else if (!WIFSTOPPED(status) || WSTOPSIG(status) != SIGSTOP) {
-+		tst_brk(TBROK,
-+			"Tracee not stopped at initial stop: %s",
-+			tst_strstatus(status));
-+	}
-+
-+	snprintf(path, sizeof(path), "/proc/%d/mem", tracee_pid);
-+	memfd = SAFE_OPEN(path, O_RDWR);
-+
-+	for (i = 0; i < TEST_ITERATIONS; i++) {
-+		int write_val = 0xdead0000 | i;
-+
-+		shared->expected_val = write_val;
-+		SAFE_LSEEK(memfd, (off_t)shared->test_ptr, SEEK_SET);
-+		TEST(write(memfd, &write_val, sizeof(write_val)));
-+
-+		if (TST_RET == -1 && TST_ERR == EIO) {
-+			SAFE_CLOSE(memfd);
-+			SAFE_PTRACE(PTRACE_DETACH, tracee_pid, NULL, NULL);
-+			SAFE_KILL(tracee_pid, SIGTERM);
-+			tst_reap_children();
-+			tracee_pid = 0;
-+			tst_brk(TCONF,
-+				"Write to /proc/pid/mem failed with EIO - proc_mem.force_override=never disables FOLL_FORCE");
-+		}
-+
-+		if (TST_RET == -1) {
-+			tst_brk(TBROK | TTERRNO,
-+				"Write to /proc/pid/mem failed unexpectedly at iteration %d",
-+				i);
-+		}
-+
-+		if (TST_RET != (ssize_t)sizeof(write_val)) {
-+			tst_brk(TBROK,
-+				"Short write to /proc/pid/mem at iteration %d: %ld bytes (expected %zu)",
-+				i, TST_RET, sizeof(write_val));
-+		}
-+
-+		SAFE_PTRACE(PTRACE_CONT, tracee_pid, NULL, NULL);
-+		SAFE_WAITPID(tracee_pid, &status, 0);
-+
-+		if (WIFEXITED(status)) {
-+			SAFE_CLOSE(memfd);
-+			tracee_pid = 0;
-+
-+			if (WEXITSTATUS(status) == 0) {
-+				tst_brk(TBROK,
-+					"Tracee exited unexpectedly at iteration %d: %s",
-+					i, tst_strstatus(status));
-+			} else {
-+				return;
-+			}
-+		} else if (WIFSIGNALED(status)) {
-+			tst_brk(TBROK,
-+				"Tracee was killed at iteration %d: %s",
-+				i, tst_strstatus(status));
-+		} else if (!WIFSTOPPED(status) || WSTOPSIG(status) != SIGSTOP) {
-+			tst_brk(TBROK,
-+				"Tracee did not stop correctly at iteration %d: %s",
-+				i, tst_strstatus(status));
-+		}
-+	}
-+
-+	SAFE_CLOSE(memfd);
-+
-+	tst_res(TPASS,
-+		"Successfully wrote to tracee memory via /proc/pid/mem for %d iterations",
-+		TEST_ITERATIONS);
-+
-+	SAFE_PTRACE(PTRACE_DETACH, tracee_pid, NULL, NULL);
-+	SAFE_KILL(tracee_pid, SIGTERM);
-+	SAFE_WAITPID(tracee_pid, &status, 0);
-+
-+	if (!WIFSIGNALED(status) || WTERMSIG(status) != SIGTERM) {
-+		tst_res(TWARN, "Unexpected final wait status: %s",
-+			tst_strstatus(status));
-+	}
-+
-+	tracee_pid = 0;
-+}
-+
-+static void cleanup(void)
-+{
-+	if (tracee_pid > 0) {
-+		/* Kill tracee if still alive (e.g., test aborted) */
-+		if (kill(tracee_pid, 0) == 0) {
-+			SAFE_KILL(tracee_pid, SIGKILL);
-+			tst_reap_children();
-+		}
-+		tracee_pid = 0;
-+	}
-+
-+	if (shared)
-+		SAFE_MUNMAP(shared, sizeof(*shared));
-+}
-+
-+static struct tst_test test = {
-+	.test_all = run,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.forks_child = 1,
-+	.needs_checkpoints = 1,
-+	.needs_kconfigs = (const char *[]) {
-+		"CONFIG_PROC_MEM_FORCE_PTRACE=y",
-+		NULL
-+	},
-+	.tags = (const struct tst_tag[]) {
-+		{"linux-git", "41e8149c8892"},
-+		{}
-+	}
-+};
--- 
+
+base-commit: 352f9134942933efcfa608b87ae814db603b3228
+--
 2.55.0
 
 
