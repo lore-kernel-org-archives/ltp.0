@@ -4,83 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6E1EAC79F82
-	for <ltp@archiver.kernel.org>; Tue,  8 Sep 2026 15:34:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2AD91C79F99
+	for <ltp@archiver.kernel.org>; Tue,  8 Sep 2026 15:59:31 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6AC523E94B5
-	for <ltp@archiver.kernel.org>; Tue,  8 Sep 2026 17:34:22 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 5C7583E94B0
+	for <ltp@archiver.kernel.org>; Tue,  8 Sep 2026 17:59:29 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 578A63C7449
- for <ltp@lists.linux.it>; Tue,  8 Sep 2026 17:34:06 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+ by picard.linux.it (Postfix) with ESMTPS id 807F03C7449
+ for <ltp@lists.linux.it>; Tue,  8 Sep 2026 17:59:12 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 05E3F1400C7A
- for <ltp@lists.linux.it>; Tue,  8 Sep 2026 17:34:05 +0200 (CEST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 160331A00A27
+ for <ltp@lists.linux.it>; Tue,  8 Sep 2026 17:59:11 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 3C14E1F81C;
- Tue,  8 Sep 2026 15:33:58 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 7261B1F833;
+ Tue,  8 Sep 2026 15:59:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1788881639; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1788883146; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=PmCxqVTDX+BE5d7x4aOq5nGhy5zkURdZepfF5JqxYBw=;
- b=O6EGYOR+G0oIZNGXtqcPfFrQTp4RbupX24irlVA0HlhtDxV7LbnCznAooF1G4iqlmba9SB
- eOn6/l6vnI9XUuHc7qhxh7sMwneGPoV0SqmV7eNY/SiwjJqkw6ydiWMsWGPVC6b2Zwnhh3
- JUNgTq7vIIcIMY7b/+iBe3noMf/oDiw=
+ bh=ye97qGZpydKNqLtm/hxQF24WIwOXDUbun6on9QYMasM=;
+ b=ZnxfiTyAvSGyfxXDwaVNzuM9zEP+ZwhjilLym5p8UK022dWSpxJf1XaRTqwxEvMQXzG8bI
+ TsqV9GDlRh2AYMdjNeyIiUQV77eDSK6uZcvKn5V2LlKQipz9QKUoAgXW16rVk7rlZfeWaG
+ 2rSf/v+J1wO0pjzFos1tQTN8uHADdAc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1788881639;
+ s=susede2_ed25519; t=1788883146;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=PmCxqVTDX+BE5d7x4aOq5nGhy5zkURdZepfF5JqxYBw=;
- b=v44/M5WoIHbo18NV1icTAhYmFCB04SfTXeDaDJU+MD7qPFnMZ5OYWKSZILnJ1tG5a8xvtr
- Q3zNED0JdrNaouAg==
+ bh=ye97qGZpydKNqLtm/hxQF24WIwOXDUbun6on9QYMasM=;
+ b=eZOD8IRDvJANXz1m6V5BgEvvPUGWiSWTZls1AOgJnvSqzJy54AO02VQ9PyMCzO8o9qMtWp
+ f8aN7lnQxj8KxYCw==
 Authentication-Results: smtp-out2.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1788881638; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1788883142; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=PmCxqVTDX+BE5d7x4aOq5nGhy5zkURdZepfF5JqxYBw=;
- b=ByGA8aE8/rpBMjaR2MEkfJ13RQsNKvqesRx/OIkT+VFHQOmro2ITTrvKpHF93R6OfQ5Raz
- Sm9BfHMDqcBO5bBvimP83wZKghnTysN+4o+0nCTskOTI5NQadvxzNr2AcwmrAJRMcfRFLw
- tQxPpjGoH0REN44v2bl9FGyPDZ+C3Vg=
+ bh=ye97qGZpydKNqLtm/hxQF24WIwOXDUbun6on9QYMasM=;
+ b=dil4DI3oKo6f1GHod0D+QnszwFZUAgVq5MHf4qwQXGJIOwCL1fg8AmaFrM/KaRp0XU01qB
+ EtN5KmyG+Ipr4g34O0LjjmnhUk2Qp4gLPTPD9D3mGI+CR08Fbl3nG6tAGaJDV8r46pcwMJ
+ c0zSTNFSnah9uGqOezkZg+sp5aAOta4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1788881638;
+ s=susede2_ed25519; t=1788883142;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=PmCxqVTDX+BE5d7x4aOq5nGhy5zkURdZepfF5JqxYBw=;
- b=Mc21FESR64Mz7wnHjURyVCmTR5F80apLuOUFQVMiJPn/vKz9CNNkz35LLP8GUvg2qXobsb
- TpK1ZqvUYuL6jwBg==
+ bh=ye97qGZpydKNqLtm/hxQF24WIwOXDUbun6on9QYMasM=;
+ b=fZD7h19Bax/QyUh9I6Z4OzcHmaaExrJHJsBSOHdgvK515LvXqi9DywTw3zLOriz3XUkrAA
+ uTpPsJs600pZVUCw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 12AF713332;
- Tue,  8 Sep 2026 15:33:58 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4A15F13332;
+ Tue,  8 Sep 2026 15:59:02 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id UQWMBOYqoGodTAAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Tue, 08 Sep 2026 15:33:58 +0000
-Date: Tue, 8 Sep 2026 17:34:07 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id dgkVEsYwoGodZAAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Tue, 08 Sep 2026 15:59:02 +0000
+Date: Tue, 8 Sep 2026 17:59:07 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
 To: Andrea Cervesato <andrea.cervesato@suse.de>
-Message-ID: <aqAq70zXDbhPv6_w@yuki.lan>
+Message-ID: <aqAwyxICYrC487_p@yuki.lan>
 References: <20260908-coredump-v8-0-591f96004543@suse.com>
- <20260908-coredump-v8-1-591f96004543@suse.com>
+ <20260908-coredump-v8-2-591f96004543@suse.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20260908-coredump-v8-1-591f96004543@suse.com>
+In-Reply-To: <20260908-coredump-v8-2-591f96004543@suse.com>
 X-Spamd-Result: default: False [-8.30 / 50.00]; REPLY(-4.00)[];
  BAYES_HAM(-3.00)[100.00%]; NEURAL_HAM_LONG(-1.00)[-1.000];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
@@ -91,12 +89,11 @@ X-Spamd-Result: default: False [-8.30 / 50.00]; REPLY(-4.00)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  FROM_EQ_ENVFROM(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
  TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[yuki.lan:mid, imap1.dmz-prg2.suse.org:helo,
- suse.cz:email]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email, yuki.lan:mid,
+ imap1.dmz-prg2.suse.org:helo]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v8 1/2] coredump01: New core_pattern specifiers
- test
+Subject: Re: [LTP] [PATCH v8 2/2] coredump02: Verify ELF structure and notes
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -115,63 +112,44 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> +static void set_pattern(const char *fmt, ...)
+> +static const void *core_at(size_t off, size_t need)
 > +{
-> +	char pattern[PATTERN_MAX];
-> +	char readback[PATTERN_MAX];
-> +	va_list va;
-> +	int len;
+> +	if (off > core_len || need > core_len - off)
+> +		tst_brk(TFAIL, "core file truncated at %zu (need %zu, have %zu)",
+> +			off, need, core_len);
 > +
-> +	va_start(va, fmt);
-> +	len = vsnprintf(pattern, sizeof(pattern), fmt, va);
-> +	va_end(va);
+> +	return core_buf + off;
+> +}
 > +
-> +	if (len >= PATTERN_MAX)
-> +		tst_brk(TCONF, "core_pattern does not fit into %i bytes", PATTERN_MAX - 1);
+> +static void handle_note(uint32_t type, const void *desc, size_t descsz, pid_t pid)
+> +{
+> +	if (type == NT_PRPSINFO && descsz >= sizeof(struct elf_prpsinfo)) {
+> +		struct elf_prpsinfo info;
+> +		char name[sizeof(info.pr_fname) + 1] = {0};
 > +
-> +	SAFE_FILE_PRINTF(PATH_KERN_CORE_PATTERN, "%s", pattern);
+> +		memcpy(&info, desc, sizeof(info));
+> +		memcpy(name, info.pr_fname, sizeof(info.pr_fname));
+> +
+> +		TST_EXP_EQ_STR(name, "coredump02");
 
-We actually have safe_file_vprintf() it's not just exposed, we can
-easily expose the API with:
+We do have TST_EXP_EQ_STRN() there is no need for the memcpy.
 
-diff --git a/include/tst_safe_file_ops.h b/include/tst_safe_file_ops.h
-index 73ebd2ab8..f3b322072 100644
---- a/include/tst_safe_file_ops.h
-+++ b/include/tst_safe_file_ops.h
-@@ -65,6 +65,10 @@ void safe_file_read_str(const char *file, const int lineno,
-        safe_file_printf(__FILE__, __LINE__, NULL, \
-                         (path), (fmt), ## __VA_ARGS__)
+Also as long as the alignment is proper there is no need for the first
+memcpy() either.
 
-+#define SAFE_FILE_VPRINTF(path, fmt, va) \
-+       safe_file_vprintf(__FILE__, __LINE__, NULL, \
-+                        (path), (fmt), va)
-+
- /* Same as SAFE_FILE_PRINTF() but returns quietly if the path doesn't exist */
- #define SAFE_TRY_FILE_PRINTF(path, fmt, ...) \
-        safe_try_file_printf(__FILE__, __LINE__, NULL, \
-diff --git a/lib/safe_file_ops.c b/lib/safe_file_ops.c
-index 19da1fd97..1069a017f 100644
---- a/lib/safe_file_ops.c
-+++ b/lib/safe_file_ops.c
-@@ -280,7 +280,7 @@ err:
-        return 1;
- }
+I would have expected that the elf headers are aligned properly and
+since we loaded the whole file into aligned buffer (malloc() aligns
+properly), it should be safe to just cast the desc pointer into the
+strcut elf_prpsinfo *info = desc;  and acces info.pr_name directly from
+the buffer.
 
--static void safe_file_vprintf(const char *file, const int lineno,
-+void safe_file_vprintf(const char *file, const int lineno,
-        void (*cleanup_fn)(void), const char *path, const char *fmt,
-        va_list va)
- {
+> +		prpsinfo_seen = 1;
+> +	} else if (type == NT_PRSTATUS && descsz >= sizeof(struct elf_prstatus)) {
+> +		struct elf_prstatus st;
+> +
+> +		memcpy(&st, desc, sizeof(st));
 
-
-
-And then we can do SAFE_FILE_VPRINTF() here directly instead of the
-double printf().
-
-
-The rest looks fine:
-
-Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+Here as well.
 
 -- 
 Cyril Hrubis
