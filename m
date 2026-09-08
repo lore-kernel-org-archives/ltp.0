@@ -4,83 +4,96 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7EF12C79F82
-	for <ltp@archiver.kernel.org>; Tue,  8 Sep 2026 10:43:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8AC0CC79FA1
+	for <ltp@archiver.kernel.org>; Tue,  8 Sep 2026 10:48:00 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6DCAC3E4E3F
-	for <ltp@archiver.kernel.org>; Tue,  8 Sep 2026 12:43:14 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 087F93E7359
+	for <ltp@archiver.kernel.org>; Tue,  8 Sep 2026 12:47:59 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 40F3A3E1895
- for <ltp@lists.linux.it>; Tue,  8 Sep 2026 12:42:58 +0200 (CEST)
-Received: from mail-qk2-x09.google.com (mail-qk2-x09.google.com
- [IPv6:2607:f8b0:4864:34::9])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 006AD3E1895
+ for <ltp@lists.linux.it>; Tue,  8 Sep 2026 12:47:42 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 610B160065B
- for <ltp@lists.linux.it>; Tue,  8 Sep 2026 12:42:58 +0200 (CEST)
-Received: by mail-qk2-x09.google.com with SMTP id
- af79cd13be357-930f7b1eb68so313745685a.0
- for <ltp@lists.linux.it>; Tue, 08 Sep 2026 03:42:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1788864177; x=1789468977; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to:content-type;
- bh=6L0+OHXB+R3qKP6TtcZEtQcCpBGCDd32x9GlezkC3CA=;
- b=EmOdPf807IaHF/zURompP3qx1NhSGwzlKr1/vtQ04/2L09V29HjM8GEjRPi7LoFgGM
- VbFtmmkT9obiLAeySnjtHlWg/0/CsecRktQBhQ1lfDWveauOna0FYFovodijgIsUiFOd
- 5dW31w5EXQX8gPsykw6r5/Fr8a6vHrEPeisSdYuIZaVuRcwICr7//hFXE1IO/CmnA8f5
- HLTZgJLGEeh3vfHWcIo9j8grSHfRR11OwymayEkNa1sZviEoP02yMQTOL8GrcNroLgtV
- KY/RiqWVe+qOCZSJrhhyaoR/ahXAK5wlbrW0Y0f8sJoV7iQUFU7yAuYbyU+61cefZUr5
- Zv/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1788864177; x=1789468977;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to:content-type;
- bh=6L0+OHXB+R3qKP6TtcZEtQcCpBGCDd32x9GlezkC3CA=;
- b=Y2BjpR63fJd2BxO0hfH7fmzaRYX7oSUlb3sZguBJ4JgnA2tL9BX3garC3QjlGLAeS2
- U6T3crdqhE/kgmC2wb1gjGdMluf7Feq0CizEEY1x9Q8kHzH6s5UWF2gxqc6KS947uOW3
- qfRrOkDWMDYFoOsRO4Rx+MWAgY5wFknpPxcXmkgW0aQ5FBUfctxS6x7QQo2d1YSLHHhA
- 32hpPSl87aszdzy3zxo5uUyuK3dNl8YahMatMdBivVYkNWRVcPEvbLYmQlzsXuieLWP3
- tx33ON4HKiOJoGEl+sey+Itz6FUiISPEtH4XEfE3bO2HkRhSE+yGF4UZn8Y40Q0yQfG3
- 60nQ==
-X-Gm-Message-State: AFuF++nTuKCm+4WdtjF/Pkn/+Z7hEPzfnLxqgoUfQSgrei9CoYps+aVW
- yT89b5XOFCuYYrrWKGs26sKrjZonvYQlMZUYoiUrPxZ3UeA1KISwIeFm
-X-Gm-Gg: AYBFou1lWZEjTQbZLAq9S8tU7E+wbxknR49B5FG0RFq1b7Qft4661y9hKHBgZhkSFRB
- fxZNQIoB6m1MmS+l72AsChTPJW/4F+1fyGUQ9QdbmpB3Uj+N/kU5Ki7jVPWs32CQ+q6wFsRu4nS
- SGNktEtxEwIWi5DW8/Rg7C3iTFjtgLNUxFr+xVgySaE8TFb6cXeG1HoVZ/6ReRfjpelNFMqHHuf
- H+D3pvc2pF4CFVXnczKECXx4Rbd3xUuxHTokMLGX+wXUmaSBQ/EPnSyOBvN608S84obRGePvrLR
- mbT9bIAQERmVpBQWWo7b7ZXhSapCGXPoMA8gxo5rBZf9L+nkzRDRE3aEQ7U0RxvWgZSS1P1XCeW
- RJX69Gf4wuN9jlagd3ReAsrERYgxFPTRt5MXJ2Ivhm15DJgx6h79lZju2d6kDg3Ygi8SsuS+aNb
- mI0CV7INvMqND8wIorIYBcpWlEJvwrA3opvKisVz7x5wumsB1wdikXzdskcZR9iPG+qfk33UvOi
- fPleaf2Xh3ASbybU0f3HTyYoUdpDKq9cDvSnqaqlfZY3K8mKhgeRfi/Itf9YChhgI4J0OSOgqaN
- VQ==
-X-Received: by 2002:a05:620a:bd3:b0:939:3f4f:324d with SMTP id
- af79cd13be357-939c2fe61a1mr192823585a.43.1788864177152; 
- Tue, 08 Sep 2026 03:42:57 -0700 (PDT)
-Received: from
- runnervmejwal.jes55jykdhaenadivdr5v5tmaf.ex.internal.cloudapp.net
- ([64.236.176.232]) by smtp.gmail.com with ESMTPSA id
- af79cd13be357-9397fb678b8sm1128080485a.30.2026.09.08.03.42.56
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 08 Sep 2026 03:42:56 -0700 (PDT)
-From: linuxtestproject.agent@gmail.com
-To: Michael Menasherov <mmenashe@redhat.com>
-Date: Tue,  8 Sep 2026 10:42:55 +0000
-Message-ID: <20260908104255.8624-1-linuxtestproject.agent@gmail.com>
-X-Mailer: git-send-email 2.55.0
-In-Reply-To: <20260908092248.15774-1-mmenashe@redhat.com>
-References: <20260908092248.15774-1-mmenashe@redhat.com>
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 245546008CC
+ for <ltp@lists.linux.it>; Tue,  8 Sep 2026 12:47:37 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id BFBE71F449;
+ Tue,  8 Sep 2026 10:47:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1788864450; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=2q5vT9cVyP4ebHIP2dsDfmcy8o6BSke1Keh0BHcnMoY=;
+ b=ARI9utPwUGaN2oqDxoyI7bhuLYWC/XBjmyzFUx/mJgnZhNyTfAhou3C3JXCNf9C23Xabqs
+ rXdILLz87puUxwL7xa4XsNHdC3qoP07rUJ0jxH78x4UkSnxuIG6xljmCdZuQdeHLvS6XkZ
+ uYEVA7uQmkFhRPP/zdoncbJ7IgzVgYM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1788864450;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=2q5vT9cVyP4ebHIP2dsDfmcy8o6BSke1Keh0BHcnMoY=;
+ b=bN6MXqkeDQLbMt4E3lSBrsU37ecwRrsZ+uASxuF7k8IPpHjeSZwLVhv/WjOpqWst8Xog1y
+ KYx6DXjdBhc5HtBA==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1788864446; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=2q5vT9cVyP4ebHIP2dsDfmcy8o6BSke1Keh0BHcnMoY=;
+ b=vGl952c9P4c0MWqcgMURWtuIuthWTEHnu6VfzzqTuSU+Jf1Lcea2aY3gg3+PTxs9dEvXII
+ 2fjdMaeshBvVmnXG7vNnA0K4BTATZ0i7BzaennXVWKaHdnGcGPgdiyQltOIK8HcXyq5tqq
+ znNZ1itZX9t4PJEQU1+oMOGitQspfT0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1788864446;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=2q5vT9cVyP4ebHIP2dsDfmcy8o6BSke1Keh0BHcnMoY=;
+ b=6HFNb0JNKXQe7v56aww6UCOmrieZZX8LtQZ8pGU1Qbp4k/3MMLHzHirGVzNinXi+SbJPKp
+ lmNBpVkdN8lNx7Dw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9D31A1364A;
+ Tue,  8 Sep 2026 10:47:26 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id cj9YJr7nn2pzKgAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Tue, 08 Sep 2026 10:47:26 +0000
+Date: Tue, 8 Sep 2026 12:47:35 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Victor Cheng-Yen Yang <cyyang772@andestech.com>
+Message-ID: <ap_nx7AZvluXzW-i@yuki.lan>
+References: <20260908023121.1895897-1-cyyang772@andestech.com>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20260908023121.1895897-1-cyyang772@andestech.com>
+X-Spamd-Result: default: False [-8.30 / 50.00]; REPLY(-4.00)[];
+ BAYES_HAM(-3.00)[99.99%]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
+ RCVD_TLS_ALL(0.00)[]; MIME_TRACE(0.00)[0:+];
+ MISSING_XM_UA(0.00)[]; RCPT_COUNT_TWO(0.00)[2];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ RCVD_COUNT_TWO(0.00)[2]; FROM_HAS_DN(0.00)[];
+ TO_DN_SOME(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:email]
 X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] read_all: Fix buffer too small for long paths
+Subject: Re: [LTP] [PATCH] mmap21: Check for free space before mapping the
+ file
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -98,22 +111,30 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Michael,
+Hi!
+> The test creates a sparse file with lseek() and a one byte write, so
+> mmap() allocates no blocks. The child then touches every byte and ext4
+> fills the holes inside ext4_page_mkwrite(). A store instruction has no
+> error return, so an ENOSPC there becomes VM_FAULT_SIGBUS and the test
+> reports only
+> 
+>   tst_test.c:536: TBROK: Child (13042) killed by signal SIGBUS
+> 
+> which says nothing about the full filesystem. The information is
+> available before the mapping and gone after it, so check it in setup
+> and report TCONF earlier as convention.
 
-On Tue Sep 8 12:22:48 2026 +0300, Michael Menasherov via ltp wrote:
-> read_all: Fix buffer too small for long paths
+Depending on the page size this is either 4MB or 64MB, I would say that
+if you run LTP on a machine with less than 4MB of free space many tests
+would fail.
 
-Verdict - Reviewed
+Maybe it would make sense to print a warning from the test library for
+any tests that has needs_tmpdir == 1 and the free space at the test
+temporary directory is less than a few megabytes.
 
----
-Note:
-
-The agent can sometimes produce false positives although often its
-findings are genuine. If you find issues with the review, please
-comment this email or ignore the suggestions.
-
-Regards,
-LTP AI Reviewer
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
