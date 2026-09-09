@@ -4,115 +4,115 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ECA21C79FAD
-	for <ltp@archiver.kernel.org>; Wed,  9 Sep 2026 10:05:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7C0CDC79F8C
+	for <ltp@archiver.kernel.org>; Wed,  9 Sep 2026 10:06:15 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6FC0A3E72E7
-	for <ltp@archiver.kernel.org>; Wed,  9 Sep 2026 12:05:54 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 9CEAE3E57E9
+	for <ltp@archiver.kernel.org>; Wed,  9 Sep 2026 12:06:13 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 22E0F3E72F0
- for <ltp@lists.linux.it>; Wed,  9 Sep 2026 12:05:01 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ by picard.linux.it (Postfix) with ESMTPS id 51F283E732F
+ for <ltp@lists.linux.it>; Wed,  9 Sep 2026 12:05:00 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 65A96200DAC
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 9EF931A0080C
  for <ltp@lists.linux.it>; Wed,  9 Sep 2026 12:04:59 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 667FE1FB1F;
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 8D9EE21B3C;
  Wed,  9 Sep 2026 10:04:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1788948294; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=sLXwsdDkE9vR17zO8bWKFWa1EwDb8EL3/wAWuZQ1OvU=;
- b=1dbwv/kXMfzju6S8Dcf33e8enF//g6bf+WfFF+3Q3kRmj/SEfEKfdUUDogPSsNRWorisEP
- 54i5O71xRHVfGT759Zm/pOc8UpvG4DyiKPdE7w/Azk0H/ZTmCdEyhWHUpxrTwqjFC6Pga9
- DymmeYhilPReYYhg0pEcrgu7zy6P7iQ=
+ bh=ZFZzdzT54OTOvO6mbpIW4LrCyOXcDcbuCcNtWotuVXg=;
+ b=wzXUBrRkf9eyzDPMZfX5Tho1zj7rFA8yhBKh4vHZWCF9ABKusV6rii1OE/JCRA0mQzdCsc
+ EoRxj8TIfQv+l8r5S9W+vf/EzAqYHDDdv+ehYJb7YEoNGqZiGqTLdOJnS2xWIpgDYe4/n6
+ PUbRboOuiqphF8A3naW1noZzwsAcSjE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1788948294;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=sLXwsdDkE9vR17zO8bWKFWa1EwDb8EL3/wAWuZQ1OvU=;
- b=OfON3yslE7dWzwRmhfAf1tz1bbG396iIKgTTeMS+BuGO1XdRJkf2sbeiyEEYyCWke6ZL8O
- oFUCnz8SvUZFBxCg==
-Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.de header.s=susede2_rsa header.b=PlU8zF4t;
- dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=UtdNQFcm
+ bh=ZFZzdzT54OTOvO6mbpIW4LrCyOXcDcbuCcNtWotuVXg=;
+ b=XHa5cBAm7dC/kNitD622eabsYJb07F0atJHWHtaf5cupbQAbwTl1xlOMXhKzEwQE4yD19l
+ PiMCp138OdSMnOCQ==
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.de header.s=susede2_rsa header.b=kqRC2UdZ;
+ dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=5cVJZfLf
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1788948290; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=sLXwsdDkE9vR17zO8bWKFWa1EwDb8EL3/wAWuZQ1OvU=;
- b=PlU8zF4t7IUmUDjDKBRTHlABswMqdplqnhSxpf/+G0mhdDWTitEG0LEoaGscwCPH2ZKJLa
- PEXtUx8HsP5dX8UUYjjOoI1buTcBEJhJPdaEDrwSp1ZM+DeiGgPO55Xp14OClz40dq+L+m
- FHqdaQpagNFsJ4MMJD6fzhVXy5BaZOk=
+ bh=ZFZzdzT54OTOvO6mbpIW4LrCyOXcDcbuCcNtWotuVXg=;
+ b=kqRC2UdZcWSiKUWxbNKrK7ZQMhrjRUFvWnC966M66aXknz2iQh0z5IIZIT4+7ukhVDwjQW
+ vG4//eo1gU5pmk0Q7dbYQ+OtXyWbg1PVv+9qxiXLzoiyb4sq9qBg5k67YKLMt3LXdpbIyC
+ PNkSttolikV8kNzMOx5ULyfR2z5+sOc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1788948290;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=sLXwsdDkE9vR17zO8bWKFWa1EwDb8EL3/wAWuZQ1OvU=;
- b=UtdNQFcm8JlWYlDWCezdE6rM3Lj+3Nxh2xG5wRKeAIKTmMTHvbJEonsg8NETy/dBrcWKDP
- o2GwcIoZJAuRu1AQ==
+ bh=ZFZzdzT54OTOvO6mbpIW4LrCyOXcDcbuCcNtWotuVXg=;
+ b=5cVJZfLfmTojmkBEctlIJONs1tKmiLIrA22T0yRr1eX+zUqOEorXFh1Laz++iYIIn2cVZ+
+ Sq5eUx4RCpEB1vDg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 04C131365E;
- Wed,  9 Sep 2026 10:04:49 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3886913668;
+ Wed,  9 Sep 2026 10:04:50 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id mKfuOkEvoWpSFAAAD6G6ig
- (envelope-from <andrea.cervesato@suse.de>); Wed, 09 Sep 2026 10:04:49 +0000
+ by imap1.dmz-prg2.suse.org with ESMTPSA id AEDXC0IvoWpSFAAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>); Wed, 09 Sep 2026 10:04:50 +0000
 From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Wed, 09 Sep 2026 12:04:49 +0200
+Date: Wed, 09 Sep 2026 12:04:50 +0200
 MIME-Version: 1.0
-Message-Id: <20260909-coredump-v9-2-6b0ee752f57e@suse.com>
+Message-Id: <20260909-coredump-v9-3-6b0ee752f57e@suse.com>
 References: <20260909-coredump-v9-0-6b0ee752f57e@suse.com>
 In-Reply-To: <20260909-coredump-v9-0-6b0ee752f57e@suse.com>
 To: Linux Test Project <ltp@lists.linux.it>
 X-Mailer: b4 0.16.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1788948289; l=10636;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1788948289; l=6836;
  i=andrea.cervesato@suse.com; s=20251210; h=from:subject:message-id;
- bh=bk3/cJYg6j1qDTWONuWNuIGkoSGfdeOidiODR6b2zSY=;
- b=uhL3MwCGuJct7JEyAGzTaKqwqLa/Kg4wCx8scBw9n+esH0Usf4TZ1YjbQtlRrLghgtEWyz2yC
- tl1K5UU6nz/BarnBUh8ZSz/92hsr7k1XK+bTVqW/PtHeM228ATMYug9
+ bh=DqHhx5EzjsnQMBe8RriXUxLv437WKPrUz6V+rFkIH4k=;
+ b=yn5P4SloXJJlmXlXGe9MALfqYW/N/6mRGWEPl/6IH4d70FHlqSc5SPE2SutXKruzxhEIsAxd3
+ TezFTybCUrwBzCGtDITgq7VIlDf2+7xno4won/GQYxfNSyD+ny6L/Od
 X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
  pk=zKY+6GCauOiuHNZ//d8PQ/UL4jFCTKbXrzXAOQSLevI=
 X-Rspamd-Action: no action
 X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: 667FE1FB1F
+X-Rspamd-Queue-Id: 8D9EE21B3C
 X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  NEURAL_HAM_LONG(-1.00)[-1.000];
  R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-0.999]; MIME_GOOD(-0.10)[text/plain];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
  MX_GOOD(-0.01)[];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- ARC_NA(0.00)[]; MIME_TRACE(0.00)[0:+];
  RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- RCVD_VIA_SMTP_AUTH(0.00)[]; RCVD_TLS_ALL(0.00)[];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ ARC_NA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ RCPT_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
  DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
  FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- RCPT_COUNT_THREE(0.00)[4]; RCVD_COUNT_TWO(0.00)[2];
+ MIME_TRACE(0.00)[0:+]; RCVD_COUNT_TWO(0.00)[2];
  TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.com:email,suse.com:mid,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.de:dkim,zram02.sh:url,linux.dev:email];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:mid,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.de:dkim];
  TO_DN_ALL(0.00)[]; DKIM_TRACE(0.00)[suse.de:+]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v9 2/3] coredump01: New core_pattern specifiers test
+Subject: [LTP] [PATCH v9 3/3] coredump02: Verify ELF structure and notes
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -131,97 +131,75 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-LTP has no coverage for the core_pattern specifiers expansion, neither
-for the pipe flavor of core_pattern, where the kernel spawns a user
-space helper and writes the core dump into its standard input.
+LTP currently only tests core_pattern specifier expansion and basic
+ELF magic in coredump01, leaving the internal ELF structure and notes
+generated by the kernel unverified.
 
-The new test verifies that %e, %p and %s are expanded both in the core
-file name and in the arguments of a piped helper, checking also that
-the helper really receives an ELF core dump.
+Add a test to verify that the kernel produces a valid ET_CORE ELF file
+with the expected PT_NOTE and PT_LOAD segments, and that the
+NT_PRPSINFO and NT_PRSTATUS notes contain the expected process name,
+PID, and terminating signal.
 
-Root is required to rewrite the system wide core_pattern, which is
-restored by the test library on all exit paths.
+Root is required to set the system-wide core_pattern into the test's
+temporary directory.
 
-Reviewed-by: Li Wang <li.wang@linux.dev>
-Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
 Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
- runtest/kernel_misc                           |   1 +
- testcases/kernel/Makefile                     |   1 +
- testcases/kernel/coredump/.gitignore          |   2 +
- testcases/kernel/coredump/Makefile            |   7 ++
- testcases/kernel/coredump/coredump01.c        | 162 ++++++++++++++++++++++++++
- testcases/kernel/coredump/coredump01_helper.c |  73 ++++++++++++
- testcases/kernel/coredump/coredump_common.h   |  52 +++++++++
- 7 files changed, 298 insertions(+)
+ runtest/kernel_misc                    |   1 +
+ testcases/kernel/coredump/.gitignore   |   1 +
+ testcases/kernel/coredump/coredump02.c | 196 +++++++++++++++++++++++++++++++++
+ 3 files changed, 198 insertions(+)
 
 diff --git a/runtest/kernel_misc b/runtest/kernel_misc
-index cc3562cb7..ecf9ee2a2 100644
+index ecf9ee2a2..3311e1929 100644
 --- a/runtest/kernel_misc
 +++ b/runtest/kernel_misc
-@@ -17,3 +17,4 @@ zram02 zram02.sh
- zram03 zram03
+@@ -18,3 +18,4 @@ zram03 zram03
  umip_basic_test umip_basic_test
  aslr01 aslr01
-+coredump01 coredump01
-diff --git a/testcases/kernel/Makefile b/testcases/kernel/Makefile
-index ac816e4e8..6b303c14b 100644
---- a/testcases/kernel/Makefile
-+++ b/testcases/kernel/Makefile
-@@ -19,6 +19,7 @@ SUBDIRS			+= lib
- SUBDIRS			+= connectors \
- 			   containers \
- 			   controllers \
-+			   coredump \
- 			   crypto \
- 			   device-drivers \
- 			   firmware \
+ coredump01 coredump01
++coredump02 coredump02
 diff --git a/testcases/kernel/coredump/.gitignore b/testcases/kernel/coredump/.gitignore
-new file mode 100644
-index 000000000..cd0b51700
---- /dev/null
+index cd0b51700..e241a112e 100644
+--- a/testcases/kernel/coredump/.gitignore
 +++ b/testcases/kernel/coredump/.gitignore
-@@ -0,0 +1,2 @@
-+/coredump01
-+/coredump01_helper
-diff --git a/testcases/kernel/coredump/Makefile b/testcases/kernel/coredump/Makefile
+@@ -1,2 +1,3 @@
+ /coredump01
+ /coredump01_helper
++/coredump02
+diff --git a/testcases/kernel/coredump/coredump02.c b/testcases/kernel/coredump/coredump02.c
 new file mode 100644
-index 000000000..951a3e976
+index 000000000..56c3e28bb
 --- /dev/null
-+++ b/testcases/kernel/coredump/Makefile
-@@ -0,0 +1,7 @@
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (c) 2026 Linux Test Project
-+
-+top_srcdir		?= ../../..
-+
-+include $(top_srcdir)/include/mk/testcases.mk
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/coredump/coredump01.c b/testcases/kernel/coredump/coredump01.c
-new file mode 100644
-index 000000000..c4fb92e4d
---- /dev/null
-+++ b/testcases/kernel/coredump/coredump01.c
-@@ -0,0 +1,162 @@
++++ b/testcases/kernel/coredump/coredump02.c
+@@ -0,0 +1,196 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
 + * Copyright (C) 2026 Linux Test Project
 + */
 +
 +/*\
-+ * Verify that the kernel expands the :manpage:`core(5)` specifiers %e
-+ * (executable name), %p (PID) and %s (signal number) when it creates a
-+ * core dump.
++ * Verify the ELF structure and note content of a kernel-generated core
++ * dump.
 + *
-+ * Both flavors of ``/proc/sys/kernel/core_pattern`` are tested:
++ * A core dump written by the kernel is an ELF file of type ET_CORE. It
++ * contains:
 + *
-+ * - a plain file name, where the specifiers become part of the core file
-+ *   name
-+ * - a pipe to a user space helper, where the specifiers are expanded in
-+ *   the helper arguments and the core dump is written to the helper
-+ *   standard input
++ * - one PT_NOTE program header holding process metadata
++ * - one or more PT_LOAD program headers for the mapped memory segments
 + *
-+ * The test needs root because it rewrites the system wide core_pattern.
++ * The PT_NOTE segment carries a stream of notes. Two of them describe
++ * the crashed process:
++ *
++ * - NT_PRPSINFO, whose descriptor is a struct elf_prpsinfo. The pr_fname
++ *   field holds the executable name.
++ * - NT_PRSTATUS, whose descriptor is a struct elf_prstatus. The pr_pid
++ *   field holds the PID and pr_cursig holds the terminating signal.
++ *
++ * The crashed child is a fork of the test binary, so the core dump has
++ * the same ELF class as the test. ElfW() is therefore safe here.
++ *
++ * The test needs root because it rewrites the system-wide core_pattern.
 + * The original value is saved and restored by the test library on all
 + * exit paths.
 + *
@@ -229,134 +207,160 @@ index 000000000..c4fb92e4d
 + *
 + * - Point core_pattern into the test temporary directory
 + * - Fork a child which aborts itself to produce a core dump
-+ * - For the file pattern check that ``core.<exe>.<pid>.<signal>`` was created
-+ * - For the pipe pattern check the arguments the helper was called with
-+ *   and that it received an ELF core dump on its standard input
++ * - Read the core file into memory and parse the ELF header
++ * - Walk the program headers and verify PT_NOTE and PT_LOAD are present
++ * - Walk the notes in every PT_NOTE segment
++ * - Check that NT_PRPSINFO carries the expected executable name
++ * - Check that NT_PRSTATUS carries the expected PID and signal
 + */
++
++#include <link.h>
++#include <sys/procfs.h>
 +
 +#include "coredump_common.h"
-+#include "tst_kconfig.h"
 +
-+#define HELPER "coredump01_helper"
-+#define HELPER_TIMEOUT 10
++#define NOTE_ALIGN(x) (((x) + 3) & ~3U)
 +
-+static char helper_path[PATH_MAX];
-+static int static_usermodehelper;
++static char *core_buf;
++static size_t core_len;
++static int prpsinfo_seen, prstatus_seen;
 +
-+/*
-+ * e_ident[] and e_type live at the same file offset in ELF32 and ELF64,
-+ * so we can validate both without picking a class.
-+ */
-+static void verify_elf_core(const char *path)
++static void load_core(const char *path)
 +{
-+	unsigned char hdr[EI_NIDENT + sizeof(Elf32_Half)];
-+	Elf32_Half e_type;
++	struct stat st;
 +	int fd;
 +
++	SAFE_STAT(path, &st);
++	if (st.st_size <= 0)
++		tst_brk(TFAIL, "core file %s is empty", path);
++
++	core_len = st.st_size;
++	core_buf = SAFE_MALLOC(core_len);
++
 +	fd = SAFE_OPEN(path, O_RDONLY);
-+	SAFE_READ(1, fd, hdr, sizeof(hdr));
++	SAFE_READ(1, fd, core_buf, core_len);
 +	SAFE_CLOSE(fd);
-+
-+	memcpy(&e_type, hdr + EI_NIDENT, sizeof(e_type));
-+
-+	TST_EXP_EXPR(!memcmp(hdr, ELFMAG, SELFMAG), "%s starts with ELF magic", path);
-+	TST_EXP_EQ_LI(e_type, ET_CORE);
 +}
 +
-+static void verify_file_pattern(void)
++static void unload_core(void)
++{
++	free(core_buf);
++	core_buf = NULL;
++	core_len = 0;
++}
++
++static const void *core_at(size_t off, size_t need)
++{
++	if (off > core_len || need > core_len - off)
++		tst_brk(TFAIL, "core file truncated at %zu (need %zu, have %zu)",
++			off, need, core_len);
++
++	return core_buf + off;
++}
++
++static void handle_note(uint32_t type, const void *desc, size_t descsz, pid_t pid)
++{
++	if (type == NT_PRPSINFO && descsz >= sizeof(struct elf_prpsinfo)) {
++		struct elf_prpsinfo info;
++
++		memcpy(&info, desc, sizeof(info));
++		TST_EXP_EQ_STRN(info.pr_fname, "coredump02", sizeof("coredump02"));
++
++		prpsinfo_seen = 1;
++	} else if (type == NT_PRSTATUS && descsz >= sizeof(struct elf_prstatus)) {
++		struct elf_prstatus st;
++
++		memcpy(&st, desc, sizeof(st));
++
++		TST_EXP_EQ_LI(st.pr_pid, pid);
++		TST_EXP_EQ_LI(st.pr_cursig, SIGABRT);
++
++		prstatus_seen = 1;
++	}
++}
++
++static void walk_notes(size_t off, size_t size, pid_t pid)
++{
++	size_t pos = 0;
++
++	while (pos + sizeof(ElfW(Nhdr)) <= size) {
++		const ElfW(Nhdr) *nh = core_at(off + pos, sizeof(*nh));
++		size_t np = NOTE_ALIGN(nh->n_namesz);
++		size_t dp = NOTE_ALIGN(nh->n_descsz);
++		size_t total = sizeof(*nh) + np + dp;
++
++		if (pos + total > size)
++			tst_brk(TFAIL, "note extends past PT_NOTE (pos=%zu total=%zu size=%zu)",
++				pos, total, size);
++
++		handle_note(nh->n_type,
++			    core_at(off + pos + sizeof(*nh) + np, nh->n_descsz),
++			    nh->n_descsz, pid);
++
++		pos += total;
++	}
++}
++
++static void run(void)
 +{
 +	char dump[PATH_MAX + 32];
++	int pt_note_cnt = 0, have_load = 0;
++	const ElfW(Ehdr) *eh;
++	const ElfW(Phdr) *ph;
 +	pid_t pid;
++	size_t i;
 +
-+	set_pattern("%s/core.%%e.%%p.%%s", cwd);
++	prpsinfo_seen = prstatus_seen = 0;
++
++	set_pattern("%s/core.%%p", cwd);
 +
 +	pid = crash_child();
 +
-+	snprintf(dump, sizeof(dump), "%s/core.coredump01.%d.%d", cwd, pid, SIGABRT);
++	snprintf(dump, sizeof(dump), "%s/core.%d", cwd, pid);
++	load_core(dump);
 +
-+	TST_EXP_PASS(access(dump, F_OK), "core.%%e.%%p.%%s expanded to core.coredump01.%d.%d",
-+		     pid, SIGABRT);
-+	if (!TST_PASS)
-+		return;
++	eh = core_at(0, sizeof(*eh));
 +
-+	verify_elf_core(dump);
-+}
++	TST_EXP_EXPR(!memcmp(eh->e_ident, ELFMAG, SELFMAG), "core has ELF magic");
++	TST_EXP_EQ_LI(eh->e_type, ET_CORE);
 +
-+static void verify_pipe_pattern(void)
-+{
-+	char res[PATH_MAX + 32], exe[PATH_MAX];
-+	int pid_seen, sig_seen, elf, et_core;
-+	long long bytes;
-+	pid_t pid;
++	if (!eh->e_phnum)
++		tst_brk(TFAIL, "core has no program headers");
 +
-+	if (static_usermodehelper) {
-+		tst_res(TCONF, "CONFIG_STATIC_USERMODEHELPER is enabled, skipping pipe core_pattern");
-+		return;
++	ph = core_at(eh->e_phoff, (size_t)eh->e_phnum * sizeof(*ph));
++
++	for (i = 0; i < eh->e_phnum; i++) {
++		if (ph[i].p_type == PT_NOTE) {
++			pt_note_cnt++;
++			walk_notes(ph[i].p_offset, ph[i].p_filesz, pid);
++		} else if (ph[i].p_type == PT_LOAD) {
++			have_load = 1;
++			core_at(ph[i].p_offset, ph[i].p_filesz);
++		}
 +	}
 +
-+	set_pattern("|%s %%e %%p %%s %s/res.%%p", helper_path, cwd);
++	TST_EXP_EQ_LI(pt_note_cnt, 1);
++	TST_EXP_EQ_LI(have_load, 1);
++	TST_EXP_EQ_LI(prpsinfo_seen, 1);
++	TST_EXP_EQ_LI(prstatus_seen, 1);
 +
-+	pid = crash_child();
-+
-+	snprintf(res, sizeof(res), "%s/res.%d", cwd, pid);
-+
-+	/* the kernel spawns the helper asynchronously */
-+	if (TST_RETRY_FN_EXP_BACKOFF(access(res, F_OK), TST_RETVAL_EQ0, HELPER_TIMEOUT)) {
-+		tst_res(TFAIL, "%s did not report any core dump", HELPER);
-+		return;
-+	}
-+
-+	SAFE_FILE_SCANF(res, "exe=%15s pid=%d sig=%d bytes=%lld elf=%d et_core=%d",
-+			exe, &pid_seen, &sig_seen, &bytes, &elf, &et_core);
-+
-+	TST_EXP_EQ_STR(exe, "coredump01");
-+	TST_EXP_EQ_LI(pid_seen, pid);
-+	TST_EXP_EQ_LI(sig_seen, SIGABRT);
-+	TST_EXP_EXPR(elf && bytes > 0, "%s read %lli bytes of ELF core dump", HELPER, bytes);
-+	TST_EXP_EQ_LI(et_core, 1);
++	SAFE_UNLINK(dump);
++	unload_core();
 +}
 +
-+static struct tcase {
-+	void (*verify_fn)(void);
-+	const char *desc;
-+} tcases[] = {
-+	{verify_file_pattern, "file core_pattern"},
-+	{verify_pipe_pattern, "pipe core_pattern"},
-+};
-+
-+static void run(unsigned int n)
++static void cleanup(void)
 +{
-+	struct tcase *tc = &tcases[n];
-+
-+	tst_res(TINFO, "Testing %s", tc->desc);
-+	tc->verify_fn();
-+}
-+
-+static void setup(void)
-+{
-+	char path[PATH_MAX];
-+	struct tst_kconfig_var kconfig = TST_KCONFIG_INIT("CONFIG_STATIC_USERMODEHELPER");
-+
-+	coredump_setup();
-+
-+	tst_kconfig_read(&kconfig, 1);
-+	static_usermodehelper = (kconfig.choice == 'y');
-+
-+	if (tst_get_path(HELPER, path, sizeof(path)))
-+		tst_brk(TCONF, "'%s' not found in $PATH", HELPER);
-+
-+	if (!realpath(path, helper_path))
-+		tst_brk(TBROK | TERRNO, "realpath(%s) failed", path);
++	unload_core();
 +}
 +
 +static struct tst_test test = {
-+	.test = run,
-+	.tcnt = ARRAY_SIZE(tcases),
-+	.setup = setup,
++	.test_all = run,
++	.setup = coredump_setup,
++	.cleanup = cleanup,
 +	.needs_root = 1,
 +	.needs_tmpdir = 1,
 +	.forks_child = 1,
-+	.needs_kconfigs = (const char* []) {
++	.needs_kconfigs = (const char *[]) {
 +		"CONFIG_COREDUMP=y",
 +		NULL,
 +	},
@@ -365,143 +369,6 @@ index 000000000..c4fb92e4d
 +		{}
 +	},
 +};
-diff --git a/testcases/kernel/coredump/coredump01_helper.c b/testcases/kernel/coredump/coredump01_helper.c
-new file mode 100644
-index 000000000..b454de476
---- /dev/null
-+++ b/testcases/kernel/coredump/coredump01_helper.c
-@@ -0,0 +1,73 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (C) 2026 Linux Test Project
-+ */
-+
-+/*
-+ * Core dump collector for the piped core_pattern tested by coredump01.
-+ *
-+ * Avoiding the LTP API here is correct, since the kernel spawns the helper
-+ * through ``call_usermodehelper()`` without the LTP IPC environment.
-+ *
-+ * The helper is called as:
-+ *
-+ *	coredump01_helper <exe> <pid> <signal> <result file>
-+ *
-+ * and stores what it received in the result file, which is published with
-+ * :manpage:`rename()` so that the polling test never reads a partial line.
-+ */
-+
-+#include <elf.h>
-+#include <fcntl.h>
-+#include <limits.h>
-+#include <stdio.h>
-+#include <string.h>
-+#include <unistd.h>
-+
-+int main(int argc, char *argv[])
-+{
-+	unsigned char buf[4096], hdr[EI_NIDENT + sizeof(Elf32_Half)];
-+	char tmp[PATH_MAX];
-+	unsigned int hdr_len = 0;
-+	long long bytes = 0;
-+	ssize_t rval, i;
-+	int fd, elf = 0, et_core = 0;
-+	Elf32_Half e_type;
-+
-+	if (argc < 5)
-+		return 1;
-+
-+	/*
-+	 * The ELF header is only meaningful at the very beginning of the
-+	 * stream. Collect enough bytes to read e_ident and e_type.
-+	 */
-+	while ((rval = read(STDIN_FILENO, buf, sizeof(buf))) > 0) {
-+		for (i = 0; i < rval && hdr_len < sizeof(hdr); i++)
-+			hdr[hdr_len++] = buf[i];
-+
-+		bytes += rval;
-+	}
-+
-+	if (rval < 0)
-+		return 1;
-+
-+	if (hdr_len >= sizeof(hdr)) {
-+		if (!memcmp(hdr, ELFMAG, SELFMAG))
-+			elf = 1;
-+		memcpy(&e_type, hdr + EI_NIDENT, sizeof(e_type));
-+		et_core = (e_type == ET_CORE);
-+	}
-+
-+	snprintf(tmp, sizeof(tmp), "%s.tmp", argv[4]);
-+
-+	fd = open(tmp, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-+	if (fd < 0)
-+		return 1;
-+
-+	dprintf(fd, "exe=%s pid=%s sig=%s bytes=%lld elf=%d et_core=%d\n",
-+		argv[1], argv[2], argv[3], bytes, elf, et_core);
-+
-+	close(fd);
-+
-+	return rename(tmp, argv[4]) ? 1 : 0;
-+}
-diff --git a/testcases/kernel/coredump/coredump_common.h b/testcases/kernel/coredump/coredump_common.h
-new file mode 100644
-index 000000000..bccb4bcaa
---- /dev/null
-+++ b/testcases/kernel/coredump/coredump_common.h
-@@ -0,0 +1,52 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (C) 2026 Linux Test Project
-+ */
-+
-+#ifndef COREDUMP_COMMON_H
-+#define COREDUMP_COMMON_H
-+
-+#include <elf.h>
-+#include <sys/wait.h>
-+
-+#include "tst_test.h"
-+#include "lapi/prctl.h"
-+
-+static char cwd[PATH_MAX];
-+
-+static void set_pattern(const char *fmt, ...)
-+{
-+	va_list va;
-+
-+	va_start(va, fmt);
-+	SAFE_FILE_VPRINTF(PATH_KERN_CORE_PATTERN, fmt, va);
-+	va_end(va);
-+}
-+
-+static pid_t crash_child(void)
-+{
-+	int status;
-+	pid_t pid;
-+
-+	pid = SAFE_FORK();
-+	if (!pid)
-+		abort();
-+
-+	SAFE_WAITPID(pid, &status, 0);
-+
-+	if (!WIFSIGNALED(status) || !WCOREDUMP(status))
-+		tst_brk(TFAIL, "Child did not dump core");
-+
-+	return pid;
-+}
-+
-+static void coredump_setup(void)
-+{
-+	struct rlimit rl = {RLIM_INFINITY, RLIM_INFINITY};
-+
-+	SAFE_SETRLIMIT(RLIMIT_CORE, &rl);
-+	SAFE_PRCTL(PR_SET_DUMPABLE, 1, 0, 0, 0);
-+	SAFE_GETCWD(cwd, sizeof(cwd));
-+}
-+
-+#endif /* COREDUMP_COMMON_H */
 
 -- 
 2.51.0
