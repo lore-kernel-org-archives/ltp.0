@@ -4,90 +4,115 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0769EC79FAD
-	for <ltp@archiver.kernel.org>; Wed,  9 Sep 2026 10:05:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1788948309; h=to : date :
- message-id : in-reply-to : references : mime-version : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : content-type :
- content-transfer-encoding : sender : from;
- bh=p3qVBPmzZae93smZnw/6mwkbaXIn0TFnZc+hJX6Rhys=;
- b=MqmtmuqIwsxBsxfIj06Yhrb7Pcy62glX7hN30ozR+ljyp5X+F0pq3YZxpAQeqH3ohSuaa
- JYWlN0vYWPYEtoJcvL50Ar5VrnwEnJpdt2CJb9wwY8Qi/7FHecR2OXpP1e22NBNjGMVxpy6
- cAkof1cxwSTTk7DRe0FawNH/xh+da2Q=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CC1E0C79FAD
+	for <ltp@archiver.kernel.org>; Wed,  9 Sep 2026 10:05:26 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D80A63E9319
-	for <ltp@archiver.kernel.org>; Wed,  9 Sep 2026 12:05:09 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 096CF3E72F1
+	for <ltp@archiver.kernel.org>; Wed,  9 Sep 2026 12:05:25 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 8B14F3C99F4
- for <ltp@lists.linux.it>; Wed,  9 Sep 2026 12:04:48 +0200 (CEST)
-Received: from mail-wr2-x10.google.com (mail-wr2-x10.google.com
- [IPv6:2a00:1450:4864:30::10])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 17F8D3E733C
+ for <ltp@lists.linux.it>; Wed,  9 Sep 2026 12:05:00 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 9E450140015E
- for <ltp@lists.linux.it>; Wed,  9 Sep 2026 12:04:47 +0200 (CEST)
-Received: by mail-wr2-x10.google.com with SMTP id
- ffacd0b85a97d-485b1d2874fso37944f8f.0
- for <ltp@lists.linux.it>; Wed, 09 Sep 2026 03:04:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1788948287; x=1789553087; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to:content-type;
- bh=+p1UvSKfkiCN7j0Y79DIjARZWKj8xbR/XqZOeYWnkqI=;
- b=fpfrvglhqg0yCq35i0Bk1tlE/2JEKgK0VmLUnLQUTD9HEzgmZefLncISrETsV788zX
- hv+yW3V6DRywDsZStl5s0Mn7MK7uYGqgqxbcpEHdoeRI3xIYHU838ul9F5F15OwqWI46
- BMNlFSPoHiPNTjZJSVrxdK0vcUqx0sQgiAMnnkRoF97UeZ0do6vHwfx5EGSwX+1Xco/j
- IEYihTSx+mJ4J6VvPhZY6+ROCEva6OEYG/chjtg6LHPwGr7CRod8OdWRAylivMPEzCo6
- 2zB0aHrOi3bWFUIZfVyTEYjKKDfJX00Vz5aapVuk8jM9xAq5TzFZqFPQyOdzqgk5QHuS
- V99Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1788948287; x=1789553087;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to:content-type;
- bh=+p1UvSKfkiCN7j0Y79DIjARZWKj8xbR/XqZOeYWnkqI=;
- b=l4gvOc1Hc9Eyak1r2cxD5qktQAVJqMPnDyI0v5pSPQhPA02y59KPL992BTZEqSNURi
- /tSxRwsbXQ8T/E268/G9/UFUyHs9oNsJty+ogWJmtHqwLl8FO57XF/SzXQzyUdD+hZz6
- zNfkONFFwbCpIlfeIe/k1Zsp5XIbv4DSXqjL87+lyU4le5l+sWQdHPo2C50fO/V6wPK2
- aypgwzU8lJ0nyH9WyR4QOiYpxq3Pm4G8hC45YEWp0CS+POEEoWCuSQP1V1Iu6xaH2cYA
- VdJk6EG/eo/p9JRI4CPw0vwFVRPWjFG4JeHfHTf7w6e505v0PYjyfNS/WXPvY7PpBcJq
- ERMQ==
-X-Gm-Message-State: AFuF++nljufKKuwY7CcZsjQ/QUbpQTTN20cORB/WCAh2rbKHyudSpVlG
- WRxA28ihMiDaBramai6USexeo1bO9bSPWU40CI9/QWi/gL/dHIpf2xoTfyrTCraBs6QAOQouVib
- KpYc=
-X-Gm-Gg: AYBFou3msf16b/uVzK84CC8DC1occTKGfHGhqHahk6cVJTfh8C34Uh0zAAXSKakryyi
- 0epd8/kU9dc1nJK7CNyX0PABoWIdllvK4v1Hgc5u9rDDez/VDW9teBpqs7ZHX16HqA6Ag2O5yPo
- AQxB0+gQnuOxJf8eERj0yBdY2cvtPajaKpD+MocXQ7qsSsCsjvWp/l+i+I95x/Dude9K9wetUqC
- BaktwoFXJ03XUaChrCqp60b2FzxcBXDsSenxJ+r3es6LEluzM4Jej5Rc2bHjKEZvD4nARFjCMMT
- +hL15/PlMt+oOfBo6hkRrcl4fbjuHse94OgQAxKbMr3I9r7nRRKcRk3VmYBh3CbuWf/QWAww2hS
- P3o7uFZWyEruP4bnNA3yUng2fx2hUZ05/xe/BEFZNJRsCrL1bAuzfx6/F1dVEz0IDRmB8DGECJ/
- pMpCr/ESMiAQvUf44jYhYkwxo81hlZKqOLJ+ayAYhNTCBY6c1d3SYRB/+jU49D8rRCmHlWvLUPD
- RFyXy34aMO7cnmhucbhs07ndO5sePt1peEM41CfhnA=
-X-Received: by 2002:a05:600c:4ece:b0:49c:eded:44e with SMTP id
- 5b1f17b1804b1-49d175561bbmr117553845e9.7.1788948286704; 
- Wed, 09 Sep 2026 03:04:46 -0700 (PDT)
-Received: from localhost ([2a07:de40:b240:0:2ad6:ed42:2ad6:ed42])
- by smtp.gmail.com with UTF8SMTPSA id
- 5b1f17b1804b1-49cee6158e9sm546962385e9.12.2026.09.09.03.04.46
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 09 Sep 2026 03:04:46 -0700 (PDT)
-To: ltp@lists.linux.it
-Date: Wed,  9 Sep 2026 10:03:45 +0000
-Message-ID: <20260909100414.14473-1-wegao@suse.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20260909033447.14302-1-wegao@suse.com>
-References: <20260909033447.14302-1-wegao@suse.com>
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 63116200D10
+ for <ltp@lists.linux.it>; Wed,  9 Sep 2026 12:04:59 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id D970E21AAB;
+ Wed,  9 Sep 2026 10:04:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1788948294; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=XX7PkAdkrA/U1D5RKzp2AlC2d4soNRdoN8y9T9Sj2N4=;
+ b=Os6rEWxY51KHsdd8BFCMhDzx8REnj4co4GM/083DRWp1Rn1jVrmzXdaeqSxtBuJkyOXKVu
+ WG0IpHbB4rYdr04CS+ae7wbxQsmmrxvmlukx0LWMMFakRV8A4Lz15q9MQl+ysJhu1n1erI
+ B7WUTmlZJrkeQi7MYdTfCn96tccMvHI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1788948294;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=XX7PkAdkrA/U1D5RKzp2AlC2d4soNRdoN8y9T9Sj2N4=;
+ b=Gf2D4wQJ5W/AGju9x68/+4CFvr6nPCtkzMMvlqBcoJy3irdGXOxrE2BQhxFOVGZi+1aSiW
+ XgMR2VS50KzjAwAg==
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.de header.s=susede2_rsa header.b=Qomnyvok;
+ dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=GRH1tnsv
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1788948289; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=XX7PkAdkrA/U1D5RKzp2AlC2d4soNRdoN8y9T9Sj2N4=;
+ b=QomnyvokQk/OaMvzZmrmw6v9zbW22wK9b1XmThCODO5xdYKh3p14ohgSJpNyXVYzJCdMHj
+ HOayIhra+ZCNfOsUNNhzTl8+avb8gkXAjndfxmtqt+CftVObFhLmWLmQWYDc4cHbWS0eQQ
+ 5WtgZW4MRByC6+gaxgGgdKA02LKSJCk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1788948289;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=XX7PkAdkrA/U1D5RKzp2AlC2d4soNRdoN8y9T9Sj2N4=;
+ b=GRH1tnsvm9AmacMsqQff7Ypia3MFTO0nLfsBnOPDHd4zjW8R2dCdiid8UWbIqTpGs78CLw
+ pOJf8eOlP/huP4Aw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 39D471352C;
+ Wed,  9 Sep 2026 10:04:49 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id +yNqDEEvoWpSFAAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>); Wed, 09 Sep 2026 10:04:49 +0000
+From: Andrea Cervesato <andrea.cervesato@suse.de>
+Date: Wed, 09 Sep 2026 12:04:47 +0200
+Message-Id: <20260909-coredump-v9-0-6b0ee752f57e@suse.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+X-B4-Tracking: v=1; b=H4sIAD8voWoC/3XPTU7DMBAF4KtUXmPkGf+z4h6IhTMZ0yC1qeImA
+ lW5O05ZYEV0+aT3PY9vovA0cBEvh5uYeBnKMJ5riE8HQcd0/mA59DULVOhUQCVpnLifTxeJmMl
+ r6HpWQdT6ZeI8fN2n3t5/c5m7T6br5rfGcSjXcfq+v7XA1vtndgEJ0hNbcEoT5+61zIWfaTyJb
+ XXB1pnGYXUGDYZE2SK4ndOPnK7OGYx9ct54CDtn/lxU2DhTnc4WgBNQdGnnbOt042x1yCm4nDC
+ C8jvnWtfe6aSSXWAdjSdyZv8//8j56pLGzlOCRLy/M7QuNC5UZyPk6JQy1ujGrev6A9NslJc5A
+ gAA
+X-Change-ID: 20260820-coredump-22fc731bde08
+To: Linux Test Project <ltp@lists.linux.it>
+X-Mailer: b4 0.16.0
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1788948289; l=3447;
+ i=andrea.cervesato@suse.com; s=20251210; h=from:subject:message-id;
+ bh=XB1sG/vwjy1J1nf13aRcqPzHcjdz1edXyqnf6kJf0eo=;
+ b=e2AUGb+a303rnjjZ1wyFtNxNRGSpNlvnBepVpr/XIxas70NqRVHuIGpy2dX8Ms253IGp/t1Tp
+ TTumt8Fm6d8BO7ktXWj8qHehU2fB/1jwV6DO/XQ/VCvvcSfxHRBoo50
+X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
+ pk=zKY+6GCauOiuHNZ//d8PQ/UL4jFCTKbXrzXAOQSLevI=
+X-Rspamd-Queue-Id: D970E21AAB
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[]; RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ MIME_TRACE(0.00)[0:+]; RCVD_TLS_ALL(0.00)[];
+ DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ TO_DN_ALL(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
+ FROM_HAS_DN(0.00)[]; RCPT_COUNT_THREE(0.00)[4];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:email,suse.de:dkim,linux.it:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
+ DKIM_TRACE(0.00)[suse.de:+]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v15] fsconfig04: Check FSCONFIG_SET_PATH
+Subject: [LTP] [PATCH v9 0/3] coredump testing suite
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -99,229 +124,92 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Wei Gao via ltp <ltp@lists.linux.it>
-Reply-To: Wei Gao <wegao@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-The fsconfig01.c does not test if FSCONFIG_SET_PATH has any effect;
-most of the calls there just set a dummy "sync" parameter. This test
-case aims to verify if the FSCONFIG_SET_PATH operation can be used
-to dynamically change the external journal device of an ext3 or ext4
-filesystem.
+Add a simple coredump01 test that simulate a coredump and verify that it
+actually works. This is a small coverage that is missing inside LTP
+testing suite.
 
-Closes: https://github.com/linux-test-project/ltp/issues/1169
-Signed-off-by: Wei Gao <wegao@suse.com>
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
+Add a coredump02 test that verifies ELF data after a coredump.
+
+Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
-v14->v15:
-- Remove .mntpoint and MNTPOINT
- runtest/syscalls                              |   1 +
- testcases/kernel/syscalls/fsconfig/.gitignore |   1 +
- .../kernel/syscalls/fsconfig/fsconfig04.c     | 169 ++++++++++++++++++
- 3 files changed, 171 insertions(+)
- create mode 100644 testcases/kernel/syscalls/fsconfig/fsconfig04.c
+Changes in v9:
+- add SAFE_FILE_VPRINTF() helper in the test library
+- factor out shared test logic into coredump_common.h
+- use SAFE_FILE_VPRINTF() in set_pattern() to avoid intermediate buffers
+- use struct tcase array for test case dispatch in coredump01
+- return early in coredump01 if core file is missing before parsing ELF
+- document root requirement in coredump02 description
+- assert exactly one PT_NOTE segment in coredump02
+- validate file bounds for PT_LOAD segments in coredump02
+- use TST_EXP_EQ_STRN() to compare executable name in coredump02
+- copy unaligned note descriptors to local stack structs to ensure 8-byte alignment
+- Link to v8: https://lore.kernel.org/20260908-coredump-v8-0-591f96004543@suse.com
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 65fb4d1ce..13bb59cde 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -437,6 +437,7 @@ fremovexattr02 fremovexattr02
- fsconfig01 fsconfig01
- fsconfig02 fsconfig02
- fsconfig03 fsconfig03
-+fsconfig04 fsconfig04
- 
- fsmount01 fsmount01
- fsmount02 fsmount02
-diff --git a/testcases/kernel/syscalls/fsconfig/.gitignore b/testcases/kernel/syscalls/fsconfig/.gitignore
-index cfedae5f7..bd3754c34 100644
---- a/testcases/kernel/syscalls/fsconfig/.gitignore
-+++ b/testcases/kernel/syscalls/fsconfig/.gitignore
-@@ -1,3 +1,4 @@
- /fsconfig01
- /fsconfig02
- /fsconfig03
-+/fsconfig04
-diff --git a/testcases/kernel/syscalls/fsconfig/fsconfig04.c b/testcases/kernel/syscalls/fsconfig/fsconfig04.c
-new file mode 100644
-index 000000000..edbdc55c6
---- /dev/null
-+++ b/testcases/kernel/syscalls/fsconfig/fsconfig04.c
-@@ -0,0 +1,169 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2026 Wei Gao <wegao@suse.com>
-+ */
-+
-+/*\
-+ * This test aims to validate :manpage:`fsconfig(2)` with the
-+ * ``FSCONFIG_SET_PATH`` operation in dynamically altering the external
-+ * journal device of an ext3 or ext4 filesystem.
-+ *
-+ * Root privileges are required because the test creates and formats loop
-+ * devices, and configures filesystems.
-+ *
-+ * [Algorithm]
-+ *
-+ * - Acquire three loop devices (``tst_device->dev`` from framework, ``dev1``, ``dev2``).
-+ * - Format ``dev1`` and ``dev2`` as external journal devices with the same UUID
-+ *   (``-O journal_dev -U <uuid>``).
-+ * - Format ``tst_device->dev`` three times to cycle journal associations:
-+ *   ``dev1`` -> ``dev2`` -> ``dev1``, so both journal superblocks are consistent.
-+ * - Open ``tst_device->dev`` via :manpage:`fsopen(2)` and set the source and journal_path using
-+ *   :manpage:`fsconfig(2)` (``FSCONFIG_SET_STRING``) and
-+ *   :manpage:`fsconfig(2)` (``FSCONFIG_SET_PATH``).
-+ * - Apply ``FSCONFIG_CMD_CREATE`` and verify with ``tune2fs`` that ``tst_device->dev``'s
-+ *   journal device is now ``dev2``.
-+ *
-+ * Implementation notes:
-+ *
-+ * - To avoid ``journal UUID does not match`` error when switching external
-+ *   journal device, we have to assign the same UUID to ``dev1``/``dev2``.
-+ * - Before the :manpage:`fsconfig(2)` test, we have to format ``tst_device->dev`` associating to
-+ *   ``dev1`` -> ``dev2`` -> ``dev1``. This ensures that both ``dev1``/``dev2`` superblocks contain
-+ *   correct content. Otherwise, you will encounter errors such as
-+ *   ``EXT4-fs (loop0): External journal has more than one user (unsupported)``
-+ *   when switching the external journal device using :manpage:`fsconfig(2)`.
-+ */
-+
-+#include <stdbool.h>
-+#include <sys/stat.h>
-+#include <sys/sysmacros.h>
-+#include "tst_test.h"
-+#include "tst_safe_stdio.h"
-+#include "lapi/fsmount.h"
-+
-+#define LOOP_DEV_SIZE 10
-+#define UUID "d73c9e5e-97e4-4a9c-b17e-75a931b02660"
-+
-+static int fd = -1;
-+static char dev1[PATH_MAX];
-+static char dev2[PATH_MAX];
-+
-+static const char *const mkfs_opts_set_UUID[] = {"-F", "-U", UUID, "-O", "journal_dev", NULL};
-+
-+static void cleanup(void)
-+{
-+	if (fd != -1)
-+		SAFE_CLOSE(fd);
-+
-+	if (dev1[0])
-+		tst_detach_device(dev1);
-+
-+	if (dev2[0])
-+		tst_detach_device(dev2);
-+}
-+
-+static void create_and_attach_loopdev(const char *filename, char *dev_path, size_t dev_path_len)
-+{
-+	if (tst_prealloc_file(filename, 1024 * 1024, LOOP_DEV_SIZE))
-+		tst_brk(TBROK, "Failed to create %s", filename);
-+
-+	if (tst_find_free_loopdev(dev_path, dev_path_len) == -1)
-+		tst_brk(TBROK, "No free loop device found for %s", filename);
-+
-+	if (tst_attach_device(dev_path, filename))
-+		tst_brk(TBROK, "Failed to attach %s to %s", filename, dev_path);
-+}
-+
-+static void format_journal_device(const char *dev, const char *journal)
-+{
-+	char journal_opt[PATH_MAX + 16];
-+	const char *const opts[] = {"-F", "-J", journal_opt, NULL};
-+
-+	snprintf(journal_opt, sizeof(journal_opt), "device=%s", journal);
-+	SAFE_MKFS(dev, tst_device->fs_type, opts, NULL);
-+}
-+
-+static void setup(void)
-+{
-+	fsopen_supported_by_kernel();
-+
-+	create_and_attach_loopdev("dev1_file", dev1, sizeof(dev1));
-+	create_and_attach_loopdev("dev2_file", dev2, sizeof(dev2));
-+}
-+
-+static void run(void)
-+{
-+	/* Reset dev1, dev2 and tst_device->dev superblocks before each test run iteration */
-+	SAFE_MKFS(dev1, tst_device->fs_type, mkfs_opts_set_UUID, NULL);
-+	SAFE_MKFS(dev2, tst_device->fs_type, mkfs_opts_set_UUID, NULL);
-+	format_journal_device(tst_device->dev, dev1);
-+	format_journal_device(tst_device->dev, dev2);
-+	format_journal_device(tst_device->dev, dev1);
-+
-+	TEST(fd = fsopen(tst_device->fs_type, 0));
-+	if (fd == -1)
-+		tst_brk(TBROK | TTERRNO, "fsopen() failed");
-+
-+	TEST(fsconfig(fd, FSCONFIG_SET_STRING, "source", tst_device->dev, 0));
-+	if (TST_RET == -1)
-+		tst_brk(TBROK | TTERRNO, "fsconfig(FSCONFIG_SET_STRING) failed");
-+
-+	TEST(fsconfig(fd, FSCONFIG_SET_PATH, "journal_path", dev2, 0));
-+	if (TST_RET == -1) {
-+		if (TST_ERR == EOPNOTSUPP)
-+			tst_brk(TCONF, "fsconfig(FSCONFIG_SET_PATH) not supported");
-+		else
-+			tst_brk(TFAIL | TTERRNO, "fsconfig(FSCONFIG_SET_PATH) failed");
-+	}
-+
-+	TEST(fsconfig(fd, FSCONFIG_CMD_CREATE, NULL, NULL, 0));
-+	if (TST_RET == -1)
-+		tst_brk(TFAIL | TTERRNO, "fsconfig(FSCONFIG_CMD_CREATE) failed");
-+
-+	SAFE_CLOSE(fd);
-+
-+	char path[PATH_MAX + 32];
-+	char device_str[NAME_MAX];
-+	bool found = false;
-+	struct stat st;
-+
-+	SAFE_STAT(dev2, &st);
-+	unsigned int device_num = (minor(st.st_rdev) & 0xff) | (major(st.st_rdev) << 8) |
-+				  ((minor(st.st_rdev) & ~0xff) << 12);
-+	snprintf(device_str, sizeof(device_str), "0x%04x", device_num);
-+
-+	char line[PATH_MAX];
-+	FILE *tune2fs;
-+
-+	snprintf(path, sizeof(path), "tune2fs -l %s 2>&1", tst_device->dev);
-+	tune2fs = SAFE_POPEN(path, "r");
-+
-+	while (fgets(line, PATH_MAX, tune2fs)) {
-+		if (*line && strstr(line, "Journal device:") && strstr(line, device_str)) {
-+			found = true;
-+			break;
-+		}
-+	}
-+
-+	TST_EXP_EXPR(found, "Device found in journal");
-+
-+	pclose(tune2fs);
-+}
-+
-+static struct tst_test test = {
-+	.test_all = run,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.needs_root = 1,
-+	.needs_device = 1,
-+	.needs_cmds = (struct tst_cmd []) {
-+		{.cmd = "tune2fs"},
-+		{}
-+	},
-+	.filesystems = (struct tst_fs []) {
-+		{.type = "ext3"},
-+		{.type = "ext4"},
-+		{}
-+	},
-+};
--- 
-2.55.0
+Changes in v8:
+- check PT_LOAD data
+- Link to v7: https://lore.kernel.org/20260904-coredump-v7-0-a32b7ca1acea@suse.com
+
+Changes in v7:
+- define a common header for the testing suite
+- update commit message for coredump02
+- Link to v6: https://lore.kernel.org/20260904-coredump-v6-0-b8e3947cc646@suse.com
+
+Changes in v6:
+- coredump01 check Elf
+- add coredump02 test for Elf validation
+- Link to v5: https://lore.kernel.org/20260903-coredump-v5-1-2ea86fa29107@suse.com
+
+Changes in v5:
+- resolve path from root for helper
+- Link to v4: https://lore.kernel.org/20260902-coredump-v4-1-3f511ea1c96a@suse.com
+
+Changes in v4:
+- read back core_pattern after writing and abort with TBROK on mismatch
+- read CONFIG_STATIC_USERMODEHELPER once in setup() and cache the result
+- remove namespace visibility scaffolding and skip logic from verify_pipe_pattern()
+- resolve helper path with tst_get_path() instead of /proc/self/exe readlink
+- Link to v3: https://lore.kernel.org/20260824-coredump-v3-1-6429da674718@suse.com
+
+Changes in v3:
+- check for CONFIG_COREDUMP=y
+- Link to v2: https://lore.kernel.org/20260824-coredump-v2-1-42428acf5216@suse.com
+
+Changes in v2:
+- fix CI agent spotted errors
+- Link to v1: https://lore.kernel.org/20260820-coredump-v1-1-7ce51603cefb@suse.com
+
+To: Linux Test Project <ltp@lists.linux.it>
+
+---
+Andrea Cervesato (3):
+      lib: Add SAFE_FILE_VPRINTF()
+      coredump01: New core_pattern specifiers test
+      coredump02: Verify ELF structure and notes
+
+ include/safe_file_ops_fn.h                    |   6 +
+ include/tst_safe_file_ops.h                   |   4 +
+ lib/safe_file_ops.c                           |   2 +-
+ runtest/kernel_misc                           |   2 +
+ testcases/kernel/Makefile                     |   1 +
+ testcases/kernel/coredump/.gitignore          |   3 +
+ testcases/kernel/coredump/Makefile            |   7 +
+ testcases/kernel/coredump/coredump01.c        | 162 +++++++++++++++++++++
+ testcases/kernel/coredump/coredump01_helper.c |  73 ++++++++++
+ testcases/kernel/coredump/coredump02.c        | 196 ++++++++++++++++++++++++++
+ testcases/kernel/coredump/coredump_common.h   |  52 +++++++
+ 11 files changed, 507 insertions(+), 1 deletion(-)
+---
+base-commit: 043bdc49af410f55ece6f61abcdaba7d9580f86a
+change-id: 20260820-coredump-22fc731bde08
+
+Best regards,
+--  
+Andrea Cervesato <andrea.cervesato@suse.com>
 
 
 -- 
