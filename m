@@ -4,115 +4,116 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CC1E0C79FAD
-	for <ltp@archiver.kernel.org>; Wed,  9 Sep 2026 10:05:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 20D4AC79FAD
+	for <ltp@archiver.kernel.org>; Wed,  9 Sep 2026 10:05:40 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 096CF3E72F1
-	for <ltp@archiver.kernel.org>; Wed,  9 Sep 2026 12:05:25 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id BE8BF3C56D8
+	for <ltp@archiver.kernel.org>; Wed,  9 Sep 2026 12:05:38 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 17F8D3E733C
+ by picard.linux.it (Postfix) with ESMTPS id D402F3C56D8
  for <ltp@lists.linux.it>; Wed,  9 Sep 2026 12:05:00 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 63116200D10
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 632FE10001A7
  for <ltp@lists.linux.it>; Wed,  9 Sep 2026 12:04:59 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id D970E21AAB;
- Wed,  9 Sep 2026 10:04:49 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 13AF71FB19;
+ Wed,  9 Sep 2026 10:04:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1788948294; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=XX7PkAdkrA/U1D5RKzp2AlC2d4soNRdoN8y9T9Sj2N4=;
- b=Os6rEWxY51KHsdd8BFCMhDzx8REnj4co4GM/083DRWp1Rn1jVrmzXdaeqSxtBuJkyOXKVu
- WG0IpHbB4rYdr04CS+ae7wbxQsmmrxvmlukx0LWMMFakRV8A4Lz15q9MQl+ysJhu1n1erI
- B7WUTmlZJrkeQi7MYdTfCn96tccMvHI=
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=0zkN0QfyN7urQKhkqjrxbaqFqu45LOkHh5ijSaXNn+Q=;
+ b=quycuAl2v44qxij2ikMKsElhVVw4vnZY84F1UkfEwbNyK0DGCWoK3cCI6DvtAJO5i8jqEX
+ Sf4iYFC5H5tdQstiprr+vY6qwGfABhlKwIcnGuv497ZZ9aaehQqWGUE/Nix1gMBIn0I+cb
+ XRoatxts12CB7bR9gC+r61M5ZUd10bE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1788948294;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=XX7PkAdkrA/U1D5RKzp2AlC2d4soNRdoN8y9T9Sj2N4=;
- b=Gf2D4wQJ5W/AGju9x68/+4CFvr6nPCtkzMMvlqBcoJy3irdGXOxrE2BQhxFOVGZi+1aSiW
- XgMR2VS50KzjAwAg==
-Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.de header.s=susede2_rsa header.b=Qomnyvok;
- dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=GRH1tnsv
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=0zkN0QfyN7urQKhkqjrxbaqFqu45LOkHh5ijSaXNn+Q=;
+ b=q9FOsYfXfh+V+A1aEfVs3DeIMu8dQ0L5oxYBzzM+dFpllvvwrnrHqJq77loqgdOYbST1Ft
+ OqjyScXSrbt8mGBw==
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.de header.s=susede2_rsa header.b=0MoYLTXY;
+ dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=ITHYy5hN
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1788948289; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1788948290; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=XX7PkAdkrA/U1D5RKzp2AlC2d4soNRdoN8y9T9Sj2N4=;
- b=QomnyvokQk/OaMvzZmrmw6v9zbW22wK9b1XmThCODO5xdYKh3p14ohgSJpNyXVYzJCdMHj
- HOayIhra+ZCNfOsUNNhzTl8+avb8gkXAjndfxmtqt+CftVObFhLmWLmQWYDc4cHbWS0eQQ
- 5WtgZW4MRByC6+gaxgGgdKA02LKSJCk=
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=0zkN0QfyN7urQKhkqjrxbaqFqu45LOkHh5ijSaXNn+Q=;
+ b=0MoYLTXYEyIc4poPl/upHUZi0AdPMpf1Z0Ml3HuQtd21JkBaeLFnMyfKva0i3s9v7mGr9R
+ pDvCbKr5TQhKG04QM7iVqLA7wFlmiMmFG6NDwY57gu3uS7IrKR960Dz5BaPSIYAU6eV7an
+ Bmn19vHPRfT2pc+/NGmcSj6yy+Ir7X4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1788948289;
+ s=susede2_ed25519; t=1788948290;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=XX7PkAdkrA/U1D5RKzp2AlC2d4soNRdoN8y9T9Sj2N4=;
- b=GRH1tnsvm9AmacMsqQff7Ypia3MFTO0nLfsBnOPDHd4zjW8R2dCdiid8UWbIqTpGs78CLw
- pOJf8eOlP/huP4Aw==
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=0zkN0QfyN7urQKhkqjrxbaqFqu45LOkHh5ijSaXNn+Q=;
+ b=ITHYy5hNFUJ6mg4wappXD73fj2G0e+DLDKPgcSGlV6aBTcRAa3F8ZUly+yi5RM2ySeMXln
+ cIQ0/YPFcFbvGvDQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 39D471352C;
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id CC97E1365D;
  Wed,  9 Sep 2026 10:04:49 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id +yNqDEEvoWpSFAAAD6G6ig
+ by imap1.dmz-prg2.suse.org with ESMTPSA id SD02MEEvoWpSFAAAD6G6ig
  (envelope-from <andrea.cervesato@suse.de>); Wed, 09 Sep 2026 10:04:49 +0000
 From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Wed, 09 Sep 2026 12:04:47 +0200
-Message-Id: <20260909-coredump-v9-0-6b0ee752f57e@suse.com>
+Date: Wed, 09 Sep 2026 12:04:48 +0200
 MIME-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAD8voWoC/3XPTU7DMBAF4KtUXmPkGf+z4h6IhTMZ0yC1qeImA
- lW5O05ZYEV0+aT3PY9vovA0cBEvh5uYeBnKMJ5riE8HQcd0/mA59DULVOhUQCVpnLifTxeJmMl
- r6HpWQdT6ZeI8fN2n3t5/c5m7T6br5rfGcSjXcfq+v7XA1vtndgEJ0hNbcEoT5+61zIWfaTyJb
- XXB1pnGYXUGDYZE2SK4ndOPnK7OGYx9ct54CDtn/lxU2DhTnc4WgBNQdGnnbOt042x1yCm4nDC
- C8jvnWtfe6aSSXWAdjSdyZv8//8j56pLGzlOCRLy/M7QuNC5UZyPk6JQy1ujGrev6A9NslJc5A
- gAA
-X-Change-ID: 20260820-coredump-22fc731bde08
+Message-Id: <20260909-coredump-v9-1-6b0ee752f57e@suse.com>
+References: <20260909-coredump-v9-0-6b0ee752f57e@suse.com>
+In-Reply-To: <20260909-coredump-v9-0-6b0ee752f57e@suse.com>
 To: Linux Test Project <ltp@lists.linux.it>
 X-Mailer: b4 0.16.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1788948289; l=3447;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1788948289; l=2406;
  i=andrea.cervesato@suse.com; s=20251210; h=from:subject:message-id;
- bh=XB1sG/vwjy1J1nf13aRcqPzHcjdz1edXyqnf6kJf0eo=;
- b=e2AUGb+a303rnjjZ1wyFtNxNRGSpNlvnBepVpr/XIxas70NqRVHuIGpy2dX8Ms253IGp/t1Tp
- TTumt8Fm6d8BO7ktXWj8qHehU2fB/1jwV6DO/XQ/VCvvcSfxHRBoo50
+ bh=FyxbI43Nidvbgo7rwbQK4NztdZWMtNXJBOwo34HxQXY=;
+ b=2tBOBnQFB9ySC/hfupwGEwXHGfTssrMhYzujV/Kj9lANfMATdzWN5NfxMeb+/PyK8TVI2d5Rm
+ tGpzktzGbxqDeSLyG+Qdo1WFsMOvVUihACyE7ylVa6Dves5J3NOZf/h
 X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
  pk=zKY+6GCauOiuHNZ//d8PQ/UL4jFCTKbXrzXAOQSLevI=
-X-Rspamd-Queue-Id: D970E21AAB
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: 13AF71FB19
 X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  NEURAL_HAM_LONG(-1.00)[-1.000];
  R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- MIME_TRACE(0.00)[0:+]; RCVD_TLS_ALL(0.00)[];
+ MX_GOOD(-0.01)[];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ ARC_NA(0.00)[]; MIME_TRACE(0.00)[0:+];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; RCVD_TLS_ALL(0.00)[];
  DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- TO_DN_ALL(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[]; RCPT_COUNT_THREE(0.00)[4];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:email,suse.de:dkim,linux.it:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
- DKIM_TRACE(0.00)[suse.de:+]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ RCPT_COUNT_THREE(0.00)[3]; RCVD_COUNT_TWO(0.00)[2];
+ TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.cz:email,suse.com:email,suse.com:mid];
+ TO_DN_ALL(0.00)[]; DKIM_TRACE(0.00)[suse.de:+]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v9 0/3] coredump testing suite
+Subject: [LTP] [PATCH v9 1/3] lib: Add SAFE_FILE_VPRINTF()
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -129,87 +130,75 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Add a simple coredump01 test that simulate a coredump and verify that it
-actually works. This is a small coverage that is missing inside LTP
-testing suite.
+From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-Add a coredump02 test that verifies ELF data after a coredump.
+Expose safe_file_vprintf() as SAFE_FILE_VPRINTF() macro to allow
+formatting directly into files with a va_list without requiring
+an intermediate buffer.
 
+Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
 Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
-Changes in v9:
-- add SAFE_FILE_VPRINTF() helper in the test library
-- factor out shared test logic into coredump_common.h
-- use SAFE_FILE_VPRINTF() in set_pattern() to avoid intermediate buffers
-- use struct tcase array for test case dispatch in coredump01
-- return early in coredump01 if core file is missing before parsing ELF
-- document root requirement in coredump02 description
-- assert exactly one PT_NOTE segment in coredump02
-- validate file bounds for PT_LOAD segments in coredump02
-- use TST_EXP_EQ_STRN() to compare executable name in coredump02
-- copy unaligned note descriptors to local stack structs to ensure 8-byte alignment
-- Link to v8: https://lore.kernel.org/20260908-coredump-v8-0-591f96004543@suse.com
+ include/safe_file_ops_fn.h  | 6 ++++++
+ include/tst_safe_file_ops.h | 4 ++++
+ lib/safe_file_ops.c         | 2 +-
+ 3 files changed, 11 insertions(+), 1 deletion(-)
 
-Changes in v8:
-- check PT_LOAD data
-- Link to v7: https://lore.kernel.org/20260904-coredump-v7-0-a32b7ca1acea@suse.com
+diff --git a/include/safe_file_ops_fn.h b/include/safe_file_ops_fn.h
+index 223fb0d68..1edaac794 100644
+--- a/include/safe_file_ops_fn.h
++++ b/include/safe_file_ops_fn.h
+@@ -20,6 +20,7 @@
+ 
+ #include <sys/stat.h>
+ #include <time.h>
++#include <stdarg.h>
+ 
+ #include "lapi/utime.h"
+ 
+@@ -62,6 +63,11 @@ void safe_file_printf(const char *file, const int lineno,
+                       const char *path, const char *fmt, ...)
+                       __attribute__ ((format (printf, 5, 6)));
+ 
++void safe_file_vprintf(const char *file, const int lineno,
++		       void (*cleanup_fn)(void),
++		       const char *path, const char *fmt, va_list va)
++	__attribute__ ((format (printf, 5, 0)));
++
+ void safe_try_file_printf(const char *file, const int lineno,
+ 	void (*cleanup_fn)(void), const char *path, const char *fmt, ...)
+ 	__attribute__ ((format (printf, 5, 6)));
+diff --git a/include/tst_safe_file_ops.h b/include/tst_safe_file_ops.h
+index 73ebd2ab8..b2b760b33 100644
+--- a/include/tst_safe_file_ops.h
++++ b/include/tst_safe_file_ops.h
+@@ -65,6 +65,10 @@ void safe_file_read_str(const char *file, const int lineno,
+ 	safe_file_printf(__FILE__, __LINE__, NULL, \
+ 	                 (path), (fmt), ## __VA_ARGS__)
+ 
++#define SAFE_FILE_VPRINTF(path, fmt, va) \
++	safe_file_vprintf(__FILE__, __LINE__, NULL, \
++			  (path), (fmt), (va))
++
+ /* Same as SAFE_FILE_PRINTF() but returns quietly if the path doesn't exist */
+ #define SAFE_TRY_FILE_PRINTF(path, fmt, ...) \
+ 	safe_try_file_printf(__FILE__, __LINE__, NULL, \
+diff --git a/lib/safe_file_ops.c b/lib/safe_file_ops.c
+index 19da1fd97..1069a017f 100644
+--- a/lib/safe_file_ops.c
++++ b/lib/safe_file_ops.c
+@@ -280,7 +280,7 @@ err:
+ 	return 1;
+ }
+ 
+-static void safe_file_vprintf(const char *file, const int lineno,
++void safe_file_vprintf(const char *file, const int lineno,
+ 	void (*cleanup_fn)(void), const char *path, const char *fmt,
+ 	va_list va)
+ {
 
-Changes in v7:
-- define a common header for the testing suite
-- update commit message for coredump02
-- Link to v6: https://lore.kernel.org/20260904-coredump-v6-0-b8e3947cc646@suse.com
-
-Changes in v6:
-- coredump01 check Elf
-- add coredump02 test for Elf validation
-- Link to v5: https://lore.kernel.org/20260903-coredump-v5-1-2ea86fa29107@suse.com
-
-Changes in v5:
-- resolve path from root for helper
-- Link to v4: https://lore.kernel.org/20260902-coredump-v4-1-3f511ea1c96a@suse.com
-
-Changes in v4:
-- read back core_pattern after writing and abort with TBROK on mismatch
-- read CONFIG_STATIC_USERMODEHELPER once in setup() and cache the result
-- remove namespace visibility scaffolding and skip logic from verify_pipe_pattern()
-- resolve helper path with tst_get_path() instead of /proc/self/exe readlink
-- Link to v3: https://lore.kernel.org/20260824-coredump-v3-1-6429da674718@suse.com
-
-Changes in v3:
-- check for CONFIG_COREDUMP=y
-- Link to v2: https://lore.kernel.org/20260824-coredump-v2-1-42428acf5216@suse.com
-
-Changes in v2:
-- fix CI agent spotted errors
-- Link to v1: https://lore.kernel.org/20260820-coredump-v1-1-7ce51603cefb@suse.com
-
-To: Linux Test Project <ltp@lists.linux.it>
-
----
-Andrea Cervesato (3):
-      lib: Add SAFE_FILE_VPRINTF()
-      coredump01: New core_pattern specifiers test
-      coredump02: Verify ELF structure and notes
-
- include/safe_file_ops_fn.h                    |   6 +
- include/tst_safe_file_ops.h                   |   4 +
- lib/safe_file_ops.c                           |   2 +-
- runtest/kernel_misc                           |   2 +
- testcases/kernel/Makefile                     |   1 +
- testcases/kernel/coredump/.gitignore          |   3 +
- testcases/kernel/coredump/Makefile            |   7 +
- testcases/kernel/coredump/coredump01.c        | 162 +++++++++++++++++++++
- testcases/kernel/coredump/coredump01_helper.c |  73 ++++++++++
- testcases/kernel/coredump/coredump02.c        | 196 ++++++++++++++++++++++++++
- testcases/kernel/coredump/coredump_common.h   |  52 +++++++
- 11 files changed, 507 insertions(+), 1 deletion(-)
----
-base-commit: 043bdc49af410f55ece6f61abcdaba7d9580f86a
-change-id: 20260820-coredump-22fc731bde08
-
-Best regards,
---  
-Andrea Cervesato <andrea.cervesato@suse.com>
+-- 
+2.51.0
 
 
 -- 
