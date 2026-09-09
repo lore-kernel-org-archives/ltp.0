@@ -4,91 +4,107 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6CC15C79FAD
-	for <ltp@archiver.kernel.org>; Wed,  9 Sep 2026 12:05:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1788955540; h=message-id :
- to : in-reply-to : date : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : cc : mime-version : content-type :
- content-transfer-encoding : sender : from;
- bh=U5cgI1dNj/S53uW95vqV6SZUDLhxJ5v7gyaONFPcAnc=;
- b=qKREjBw6Pngto18FitL6YhvfberXVoESlTISFYH2r1MtSrdiytbcAAK5pv+PZ3b3+wb/X
- dfwRHX+8JJDvwgoTyzUHz8guuxvQXugfXoZPCH5U6dkGX0sByIbHCCyxPiH4FXxfTZYnwBQ
- 1uvYgFcNyNIdGAkkLvGinIywGCLiREo=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3F9DCC79FB6
+	for <ltp@archiver.kernel.org>; Wed,  9 Sep 2026 12:07:43 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B912F3E7309
-	for <ltp@archiver.kernel.org>; Wed,  9 Sep 2026 14:05:40 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 876C33E8612
+	for <ltp@archiver.kernel.org>; Wed,  9 Sep 2026 14:07:41 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C8E003C2BBF
- for <ltp@lists.linux.it>; Wed,  9 Sep 2026 14:05:20 +0200 (CEST)
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com
- [IPv6:2a00:1450:4864:20::32d])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 4D3703CC9B1
+ for <ltp@lists.linux.it>; Wed,  9 Sep 2026 14:07:26 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id E15691A0115A
- for <ltp@lists.linux.it>; Wed,  9 Sep 2026 14:05:19 +0200 (CEST)
-Received: by mail-wm1-x32d.google.com with SMTP id
- 5b1f17b1804b1-49cca4ffdcfso47290555e9.0
- for <ltp@lists.linux.it>; Wed, 09 Sep 2026 05:05:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1788955519; x=1789560319; darn=lists.linux.it;
- h=date:content-transfer-encoding:content-type:subject:in-reply-to:cc
- :to:from:message-id:from:to:cc:subject:date:message-id:reply-to
- :content-type; bh=NbtRtCloL+cMBeUjsLQJrydbGkcLnuEAsJX2aIEevBE=;
- b=aKp2Zw5wafr5ECOWYco3G1h4pcoyEGTnyPUWKBT6rkdctXH+7u3GT3ke1gQyJTjXP2
- lyzz+EPthtyoq8aj5RsxH5hMkLtB1wWll9ypNP0SsoaBrM4Qp9w61JoyKDvX9Y6DcYr5
- 2DjVA6QEC5VvtscHJxauKLOx4gIasjQY7nTJGNOHLRnzx9c4+n244fueH0I8gpaEHEyG
- vAtlK9pz9yDdmD5tOydvv65D5hd8PZvMbiIuDbXMCbNLsZ0StM+vnpfhj/81cTHn3Udm
- JrNsSsZEsml/JNHHgWFC3SBfIB6OgA/2EfNRfNDF4P55GWoPK9H0Xjl+DvJEeUK//um5
- 9rgQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1788955519; x=1789560319;
- h=date:content-transfer-encoding:content-type:subject:in-reply-to:cc
- :to:from:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject
- :date:message-id:reply-to:content-type;
- bh=NbtRtCloL+cMBeUjsLQJrydbGkcLnuEAsJX2aIEevBE=;
- b=siREtPvU5AuMIHtZj1S5gX1MmMFTUT3Z6LyNiZsOQCZ0YBnf5ZFjdrJbtu4e4HK0jE
- LXpCZ5riw14DxSUBTW14Mi+HoIqslpllvC2FvpwNNQ5aeHF1slFGCeT7HtkWx1VFIReT
- YwYyQOebAbgpwRNbtgW4m6KOLUvDDZ877vcGisnRNmm0SjwWjtzsu11yAdnSNwoOjXVX
- hmKiUn4ZWS0SL/1pR8T7V01NXmuPiCJXq4/LTToK2EZrwEwW0U4PT9hg49F4MhGQVptl
- dlc9YIgOer2IzqNea4fFjKs8wdWw8DnkRFewvCiaFHVghRBrx0BL/2MtVCp4HytI+mvU
- THjw==
-X-Forwarded-Encrypted: i=1;
- AKwUvBwrxDee/38xx7yvoGqvc1jXlkBmHeqlZu3BZYM8U52xbdXWPmMYzzHIJe5ky67OrVuApw8=@lists.linux.it
-X-Gm-Message-State: AFuF++nXHwyVcFurcWuuYDenNx0KdQFMYad0/QnNF0hHpiAkfoz+pA7b
- EnMW96T4oUg8mAk9K8AT1heUnd/vL2KZvDLgMCdFLUJu6dgcJVeHgwOhhi1EA2nXehE=
-X-Gm-Gg: AYBFou1vdajVc1+v6uuoCajq7TTw4O5Fm1X78h50OD8PT8weXmHYSeMnpPNnTNcuagI
- bUkgPOIv+Zy/okmFCT5QBQVp+hqCYJjzqQTjcqcB7i3X9o2zq8HJOFrQEdZ2Stbt52zHvP35m1K
- XrHhuf4SwG6d2lVmS0qX3a/0BhdRsQRi6L328B1OPw8CmGKfp+cSxvlZOw6CnHcz0tWdCX7Fflm
- sXa5gcQ8KYMQ3RYXlDmy1usR0HzDQ+dNa9/ax+7wg4dficIUFQQRggQ8uVXsNi2zAcmJ982UR9u
- O+cO+NT4jtXYI4vRUrt+eZdxHIc1rekbFWPEPLJrul1e/Nx23BSEXI94leT1WFyO1w1untTcq6W
- xmZ7xWJnDQSip3k1+m1ONVCpoCLXe1Y1jgY3lYR/syi8+JXBvcydUK27tMHIohyi44WhaXz0EXj
- i1oD67UtcZvnaeRTvY1gU5W5kanto4SnJ0Uy5lfM+WVE+YHuTKneeYEWcbSFwslViaOM06JNYWp
- wi6cQbcDVGSa52RGD6IsLI6B6CmGH/HpCmwaBq2WhugR6M1EbegUpEsfbp5Z0A+g1agqjT7gAdW
- Wx7rGA==
-X-Received: by 2002:a05:600c:8706:b0:49d:191b:88be with SMTP id
- 5b1f17b1804b1-49d191b88e2mr129430695e9.0.1788955519116; 
- Wed, 09 Sep 2026 05:05:19 -0700 (PDT)
-Received: from localhost.localdomain
- (p200300ef2f066800c8b8b5e69b9f6a3a.dip0.t-ipconnect.de.
- [2003:ef:2f06:6800:c8b8:b5e6:9b9f:6a3a])
- by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-49d20dae82csm36456175e9.3.2026.09.09.05.05.18
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 09 Sep 2026 05:05:18 -0700 (PDT)
-Message-ID: <6aa14b7e.6ab4d193.68f0d.aae4@mx.google.com>
-To: linuxtestproject.agent@gmail.com
-In-Reply-To: <20260909103552.9380-1-linuxtestproject.agent@gmail.com>
-Date: Wed, 09 Sep 2026 12:05:18 +0000
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 867E91000379
+ for <ltp@lists.linux.it>; Wed,  9 Sep 2026 14:07:25 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 911741FD90;
+ Wed,  9 Sep 2026 12:07:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1788955640; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=/SfShsC7crCMfC4r2RrUUpHOHtg0gKH2BZ/Cg5zqCXw=;
+ b=onuiNBnUvsB4h0kcxpTYrQj8MT0MoYrf2qoF6LJU+nv+ClPzg5I1FTSrjoUyJb4duUzA43
+ +V3pVFU+/tHIbL4icoDTAlVTvlPpRrbmGINL90DYGLmLPNNVwoOHQiKDB6RZPwfp6ukpGI
+ 5VB7zi5y9ia1c02CbipMo91jbxcbrbY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1788955640;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=/SfShsC7crCMfC4r2RrUUpHOHtg0gKH2BZ/Cg5zqCXw=;
+ b=zoX/5gYCo3mK0WDOwokaadO0JjHMrG97+5dh3izXNN8U8nKnWE0SKNjBi53J8XOtz4AJsx
+ HLbWAPVqSq3HSxAQ==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1788955636; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=/SfShsC7crCMfC4r2RrUUpHOHtg0gKH2BZ/Cg5zqCXw=;
+ b=n2t1pYWpucOSFsqFaSVgIrbtT3lg1NxDN/+oJvfqmvNnzyywc2hMjA/sEw5Xvh5F0r/PJ5
+ 8agzV28sGBcpCZl/6Zk9KD8A8mjXXUljKkWmpB97zrxkB4/15UCYrPixJM8LJWkmL5r1xg
+ Fcw3QEuoeLq/RIbQTQqfcARVy/Q0SPs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1788955636;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=/SfShsC7crCMfC4r2RrUUpHOHtg0gKH2BZ/Cg5zqCXw=;
+ b=I6k53IDkwZ0ktwUOQBjSw8IKLd36AeVdABFqD+cPwOOsPlS4f2k7AI3bwna844ENS7VxW4
+ nmWnINtzM0JFFOCw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4DFCE13974;
+ Wed,  9 Sep 2026 12:07:16 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id U5dCEfRLoWrOHQAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>); Wed, 09 Sep 2026 12:07:16 +0000
+From: Andrea Cervesato <andrea.cervesato@suse.de>
+Date: Wed, 09 Sep 2026 14:07:14 +0200
+Message-Id: <20260909-coredump-v10-0-0a25762cac77@suse.com>
+MIME-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIAPJLoWoC/3XPTU4DMQwF4KtUWRMUO/+suAdikfE4dJDaqSbtC
+ FT17mTKgiiiS0fve7GvovAycREvu6tYeJ3KNB/rAOppJ2ifjh8sp7E+CFToVEAlaV54vBxOEjG
+ T1zCMrIKo8dPCefq6d729/87lMnwynTe/JfZTOc/L9/2zFbbcP7UrSJCe2IJTmjgPr+VS+Jnmg
+ 9haV2ydaRxWZ9BgSJQtguucfuR0dc5gHJPzxkPonPlzUWHjTHU6WwBOQNGlztnW6cbZ6pBTcDl
+ hBOU751rX7umkkkNgHY0ncqa/zz9yvrqkcfCUIBH3e4bWhcaF6myEHJ1Sxhrdudi62LhYnRsUs
+ 7eYrefG3W63H6ZJkm1yAgAA
+X-Change-ID: 20260820-coredump-22fc731bde08
+To: Linux Test Project <ltp@lists.linux.it>
+X-Mailer: b4 0.16.0
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1788955636; l=3741;
+ i=andrea.cervesato@suse.com; s=20251210; h=from:subject:message-id;
+ bh=lAMMt1bhelxTIyKIFHyWQPEBB0B2sKpWLLSL8fOSSBI=;
+ b=urUjj5sdcTpVh7e5ziT4S6yWhrRZMr0ZiOPeyLgd29nZEjIFblFaFvjhJhNiWqohqcmugVXQq
+ oeKwX2tXupYBvo8Ti4gimM/v0E2YGe+5eCEcp5mqXHc+H3pUpepRpKh
+X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
+ pk=zKY+6GCauOiuHNZ//d8PQ/UL4jFCTKbXrzXAOQSLevI=
+X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ NEURAL_HAM_SHORT(-0.20)[-0.996]; MIME_GOOD(-0.10)[text/plain];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; RCVD_TLS_ALL(0.00)[];
+ ARC_NA(0.00)[]; MIME_TRACE(0.00)[0:+];
+ DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ TO_DN_ALL(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ FROM_HAS_DN(0.00)[]; RCPT_COUNT_THREE(0.00)[4];
+ FROM_EQ_ENVFROM(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo, linux.it:email,
+ suse.com:mid, suse.com:email]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] lib: Add SAFE_FILE_VPRINTF()
+Subject: [LTP] [PATCH v10 0/3] coredump testing suite
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -100,51 +116,99 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Cc: ltp@lists.linux.it
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> Hi Andrea,
-> 
-> On Wed, 9 Sep 2026 12:04:48 +0200, Andrea Cervesato <andrea.cervesato@suse.com> wrote:
-> > [PATCH 1/3] lib: Add SAFE_FILE_VPRINTF()
-> 
-> --- [PATCH 1/3] ---
-> 
-> > +#define SAFE_FILE_VPRINTF(path, fmt, va) \
-> > +	safe_file_vprintf(__FILE__, __LINE__, NULL, \
-> > +			  (path), (fmt), (va))
-> 
-> Missing kernel-doc comment for SAFE_FILE_VPRINTF(). Public macros added to
-> include/tst_safe_file_ops.h must be documented with kernel-doc syntax
-> recognized by linuxdoc.
-> 
-> --- [PATCH 3/3] ---
-> 
-> > +	if (type == NT_PRPSINFO && descsz >= sizeof(struct elf_prpsinfo)) {
-> > +		struct elf_prpsinfo info;
-> > +
-> > +		memcpy(&info, desc, sizeof(info));
-> > +		TST_EXP_EQ_STRN(info.pr_fname, "coredump02", sizeof("coredump02"));
-> > +
-> > +		prpsinfo_seen = 1;
-> 
-> Using sizeof("coredump02") as the length argument triggers a
-> -Wsizeof-pointer-memaccess compiler warning from TST_EXP_EQ_STRN(). Use
-> TST_EXP_EQ_STR(info.pr_fname, "coredump02") since pr_fname is
-> null-terminated, or pass sizeof(info.pr_fname).
+Add a simple coredump01 test that simulate a coredump and verify that it
+actually works. This is a small coverage that is missing inside LTP
+testing suite.
 
-both correct, im gonna send a patch
+Add a coredump02 test that verifies ELF data after a coredump.
 
---
-Andrea Cervesato
-SUSE QE Automation Engineer Linux
-andrea.cervesato@suse.com
+Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+---
+Changes in v10:
+- add kernel-doc documentation for SAFE_FILE_VPRINTF()
+- fix checkpatch formatting warnings in SAFE_FILE_VPRINTF() headers
+- use TST_EXP_EQ_STR() to compare executable name in coredump02
+- Link to v9: https://lore.kernel.org/20260909-coredump-v9-0-6b0ee752f57e@suse.com
+
+Changes in v9:
+- add SAFE_FILE_VPRINTF() helper in the test library
+- factor out shared test logic into coredump_common.h
+- use SAFE_FILE_VPRINTF() in set_pattern() to avoid intermediate buffers
+- use struct tcase array for test case dispatch in coredump01
+- return early in coredump01 if core file is missing before parsing ELF
+- document root requirement in coredump02 description
+- assert exactly one PT_NOTE segment in coredump02
+- validate file bounds for PT_LOAD segments in coredump02
+- use TST_EXP_EQ_STRN() to compare executable name in coredump02
+- copy unaligned note descriptors to local stack structs to ensure 8-byte alignment
+- Link to v8: https://lore.kernel.org/20260908-coredump-v8-0-591f96004543@suse.com
+
+Changes in v8:
+- check PT_LOAD data
+- Link to v7: https://lore.kernel.org/20260904-coredump-v7-0-a32b7ca1acea@suse.com
+
+Changes in v7:
+- define a common header for the testing suite
+- update commit message for coredump02
+- Link to v6: https://lore.kernel.org/20260904-coredump-v6-0-b8e3947cc646@suse.com
+
+Changes in v6:
+- coredump01 check Elf
+- add coredump02 test for Elf validation
+- Link to v5: https://lore.kernel.org/20260903-coredump-v5-1-2ea86fa29107@suse.com
+
+Changes in v5:
+- resolve path from root for helper
+- Link to v4: https://lore.kernel.org/20260902-coredump-v4-1-3f511ea1c96a@suse.com
+
+Changes in v4:
+- read back core_pattern after writing and abort with TBROK on mismatch
+- read CONFIG_STATIC_USERMODEHELPER once in setup() and cache the result
+- remove namespace visibility scaffolding and skip logic from verify_pipe_pattern()
+- resolve helper path with tst_get_path() instead of /proc/self/exe readlink
+- Link to v3: https://lore.kernel.org/20260824-coredump-v3-1-6429da674718@suse.com
+
+Changes in v3:
+- check for CONFIG_COREDUMP=y
+- Link to v2: https://lore.kernel.org/20260824-coredump-v2-1-42428acf5216@suse.com
+
+Changes in v2:
+- fix CI agent spotted errors
+- Link to v1: https://lore.kernel.org/20260820-coredump-v1-1-7ce51603cefb@suse.com
+
+To: Linux Test Project <ltp@lists.linux.it>
+
+---
+Andrea Cervesato (3):
+      lib: Add SAFE_FILE_VPRINTF()
+      coredump01: New core_pattern specifiers test
+      coredump02: Verify ELF structure and notes
+
+ include/safe_file_ops_fn.h                    |   6 +
+ include/tst_safe_file_ops.h                   |  14 ++
+ lib/safe_file_ops.c                           |   2 +-
+ runtest/kernel_misc                           |   2 +
+ testcases/kernel/Makefile                     |   1 +
+ testcases/kernel/coredump/.gitignore          |   3 +
+ testcases/kernel/coredump/Makefile            |   7 +
+ testcases/kernel/coredump/coredump01.c        | 162 +++++++++++++++++++++
+ testcases/kernel/coredump/coredump01_helper.c |  73 ++++++++++
+ testcases/kernel/coredump/coredump02.c        | 196 ++++++++++++++++++++++++++
+ testcases/kernel/coredump/coredump_common.h   |  52 +++++++
+ 11 files changed, 517 insertions(+), 1 deletion(-)
+---
+base-commit: 043bdc49af410f55ece6f61abcdaba7d9580f86a
+change-id: 20260820-coredump-22fc731bde08
+
+Best regards,
+--  
+Andrea Cervesato <andrea.cervesato@suse.com>
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
