@@ -4,113 +4,106 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D1FCCC79FB9
-	for <ltp@archiver.kernel.org>; Thu, 10 Sep 2026 08:35:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BC597C88E41
+	for <ltp@archiver.kernel.org>; Thu, 10 Sep 2026 08:35:44 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 65E633D00A3
-	for <ltp@archiver.kernel.org>; Thu, 10 Sep 2026 10:35:29 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 1E3363E72BA
+	for <ltp@archiver.kernel.org>; Thu, 10 Sep 2026 10:35:43 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id CA1013E72D1
+ by picard.linux.it (Postfix) with ESMTPS id D9D1E3E836D
  for <ltp@lists.linux.it>; Thu, 10 Sep 2026 10:34:01 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 26EC220075C
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 5749A601C50
  for <ltp@lists.linux.it>; Thu, 10 Sep 2026 10:34:01 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 4B87F1FDFB;
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 863DB21C66;
  Thu, 10 Sep 2026 08:33:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1789029236; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=cJX0A4zrfObP1u0uj5Ls5bUmmabNzPutVkr8zMP+ats=;
- b=KxF3KVfIXWVnMFz3G3MJlOgFfq6wdQG0fJOptAvaOxLrhD6Xy/4F3jo+aETbjX8o8k7kjF
- mIf1dZ9dqalAFF7M2/TQZgQd21SbH6PetANpRpmufqqZ4t6XqyHL90Znja9eVJRMhkhzZZ
- vh4rzTA61QFafCNH32U8shSEgYwsqPw=
+ bh=CGExHoqBw8I2PYfade8P1WUYokStnJsvbwvE7ng8PQc=;
+ b=Axm5E0FEhX84PgyOex7UpvYOzAnKhUy1Jl+9cLWL70wNIVxpVsvwl6JyhITOXRgsjyVmLQ
+ e6nXuN1lBzsgwlngUZIMdVKuXJpAI9onsr4IRUc3uQD5wtqjgaDg6621VGhkcBO8TwvfDe
+ LFUBSkIzLCLYvD1fyQrgr88ZsOL59BE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1789029236;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=cJX0A4zrfObP1u0uj5Ls5bUmmabNzPutVkr8zMP+ats=;
- b=ZEdIdoIVy76K6NMFh06TuChWibJjats38uNbvqEPbvcLVmolOf8ULPsVZVkTfF5+WUtEgk
- fczOS6YlIhGzwxBQ==
-Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.de header.s=susede2_rsa header.b="iZTZVp/h";
- dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=rHL7GmVq
+ bh=CGExHoqBw8I2PYfade8P1WUYokStnJsvbwvE7ng8PQc=;
+ b=Q7UbSGWXbuigtFnt/yZdLPX4rzAhnVLDKuNJUsiGmjlXbohH2682tTqzui51Iuq9GKfd3G
+ vwxr3ltRAVocJVBQ==
+Authentication-Results: smtp-out1.suse.de;
+	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1789029232; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=cJX0A4zrfObP1u0uj5Ls5bUmmabNzPutVkr8zMP+ats=;
- b=iZTZVp/hvZjyf0i4BGc45f94l2V59xAPfRanREzebxfyepz8pOK4trasF2K6NJgY0UBupc
- Ig8MVXxPDxYShQhTwg89wTj0UfS7v8JM8+vufxUJKL9Btb4+KHlvENAwQh0UTWWxfcRjla
- z/lD2n09175EOyxRDV5tWqWI/87w/ZM=
+ bh=CGExHoqBw8I2PYfade8P1WUYokStnJsvbwvE7ng8PQc=;
+ b=qfs5j/Mde++mfkPFWbKbs6NwNEsMYjtRYPgF2xNKCLBPXraY6ifkk2EorhyXbfKW1h/rB3
+ ftCjZwHnW49WjA2dVHwOX5hgpRJOnN3EO7aOVql6Qns5bsJ39xi67hveZtdNfzLDg9kbQH
+ F9z0WX9HVLP9ktpV1WauNpT8wLhvL1k=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1789029232;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=cJX0A4zrfObP1u0uj5Ls5bUmmabNzPutVkr8zMP+ats=;
- b=rHL7GmVqDhgYpTQE+JxcflnZ9MxXScluHIWWOUvPn/CaChjABHU4pKWfarQeknFWmfYsIp
- sC6HU0QuvYXcOJDg==
+ bh=CGExHoqBw8I2PYfade8P1WUYokStnJsvbwvE7ng8PQc=;
+ b=+JmT11+zQghe/KkqqgGMqMzCNBfJAceLzrVbxOMDaCp90zCnrhKVm2zrda6D7gCgNsSkC/
+ ZxvWQcX8xrKFAYCw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 688F613A5E;
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B18AE13A60;
  Thu, 10 Sep 2026 08:33:44 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 6EzMF2hromqoWgAAD6G6ig
+ by imap1.dmz-prg2.suse.org with ESMTPSA id CFypKWhromqoWgAAD6G6ig
  (envelope-from <andrea.cervesato@suse.de>); Thu, 10 Sep 2026 08:33:44 +0000
 From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Thu, 10 Sep 2026 10:33:46 +0200
+Date: Thu, 10 Sep 2026 10:33:48 +0200
 MIME-Version: 1.0
-Message-Id: <20260910-fix_documentation-v1-6-44313069bbe8@suse.com>
+Message-Id: <20260910-fix_documentation-v1-8-44313069bbe8@suse.com>
 References: <20260910-fix_documentation-v1-0-44313069bbe8@suse.com>
 In-Reply-To: <20260910-fix_documentation-v1-0-44313069bbe8@suse.com>
 To: Linux Test Project <ltp@lists.linux.it>
 X-Mailer: b4 0.16.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1789029223; l=4488;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1789029223; l=2367;
  i=andrea.cervesato@suse.com; s=20251210; h=from:subject:message-id;
- bh=URs7GDqkPZkIxU1xlpINbEcy0XxE8Xa6Wb0XQk/cQ0U=;
- b=6uSCCGpX12wRSbmeDH6n9i/k6fr4RUAZ6ZADAJzBaG1h4Dhj5tSba5wlR7X+g/Bs190x1FuaW
- xjQga1v+9qPCSCC03TNMkQURCn4foLMYIfMX9GUsibqBcrUtwA+4TeU
+ bh=bd0PLbpyuI3nMHOcg503HYuTvf8LKPRDxLQMqPHFjJo=;
+ b=ww9/ovDplI9lL3vM239DMHAR+lahUtPTTTS52wiw6+iW9V69uSjk57CIL6EeviMQFd5wvqN7+
+ JUBWuxi4F52AvOYMmK4vNkVzGuVBirDZXJzsDKFNXuMCjKmNndRA+AK
 X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
  pk=zKY+6GCauOiuHNZ//d8PQ/UL4jFCTKbXrzXAOQSLevI=
-X-Rspamd-Queue-Id: 4B87F1FDFB
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  NEURAL_HAM_LONG(-1.00)[-1.000];
- R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
- RCPT_COUNT_TWO(0.00)[2]; MIME_TRACE(0.00)[0:+];
- RCVD_TLS_ALL(0.00)[];
+ NEURAL_HAM_SHORT(-0.20)[-0.997]; MIME_GOOD(-0.10)[text/plain];
+ RCPT_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
  DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- TO_DN_ALL(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:mid,suse.com:email,suse.de:dkim];
- DKIM_TRACE(0.00)[suse.de:+]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+ TO_DN_ALL(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ FROM_HAS_DN(0.00)[]; MIME_TRACE(0.00)[0:+];
+ FROM_EQ_ENVFROM(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid, suse.com:email,
+ imap1.dmz-prg2.suse.org:helo]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 6/9] include: Document memory test utilities
+Subject: [LTP] [PATCH 8/9] doc: Document CPU and common test helpers
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -129,118 +122,64 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-Add kernel-doc comments for memory pollution, available memory/swap
-queries, and OOM protection helpers in include/tst_memutils.h.
+Fix the kernel-doc formatting in include/tst_common.h and include
+both tst_common.h and tst_cpu.h in the C API reference documentation.
 
 Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
- include/tst_memutils.h | 70 ++++++++++++++++++++++++--------------------------
- 1 file changed, 33 insertions(+), 37 deletions(-)
+ doc/developers/api_c_tests.rst |  5 +++++
+ include/tst_common.h           | 18 ++++++++++--------
+ 2 files changed, 15 insertions(+), 8 deletions(-)
 
-diff --git a/include/tst_memutils.h b/include/tst_memutils.h
-index 57c90c4a9..e3f18c45e 100644
---- a/include/tst_memutils.h
-+++ b/include/tst_memutils.h
-@@ -6,55 +6,51 @@
- #ifndef TST_MEMUTILS_H__
- #define TST_MEMUTILS_H__
+diff --git a/doc/developers/api_c_tests.rst b/doc/developers/api_c_tests.rst
+index d4d06df0a..af7d84ce1 100644
+--- a/doc/developers/api_c_tests.rst
++++ b/doc/developers/api_c_tests.rst
+@@ -29,9 +29,14 @@ Commands
  
--/*
-- * Fill up to maxsize physical memory with fillchar, then free it for reuse.
-- * If maxsize is zero, fill as much memory as possible. This function is
-- * intended for data disclosure vulnerability tests to reduce the probability
-- * that a vulnerable kernel will leak a block of memory that was full of
-- * zeroes by chance.
-+/**
-+ * tst_pollute_memory() - Fills physical memory with a byte pattern.
-+ *
-+ * @maxsize: Maximum memory size in bytes to fill (0 for maximum possible).
-+ * @fillchar: Byte value to write into allocated memory.
-  *
-- * The function keeps a safety margin to avoid invoking OOM killer and
-- * respects the limitations of available address space. (Less than 3GB can be
-- * polluted on a 32bit system regardless of available physical RAM.)
-+ * Fills up to maxsize physical memory with fillchar, then frees it for reuse.
-+ * Keeps a safety margin to avoid invoking the OOM killer and respects address
-+ * space limits.
-  */
- void tst_pollute_memory(size_t maxsize, int fillchar);
+ Core LTP API
+ ------------
++.. kernel-doc:: ../../include/tst_common.h
+ .. kernel-doc:: ../../include/tst_res_flags.h
+ .. kernel-doc:: ../../include/tst_test.h
  
--/*
-- * Read the value of MemAvailable from /proc/meminfo, if no support on
-- * older kernels, return 'MemFree + Cached' for instead.
-+/**
-+ * tst_available_mem() - Reads available memory from /proc/meminfo.
-+ *
-+ * Reads MemAvailable from /proc/meminfo. On older kernels without MemAvailable,
-+ * falls back to MemFree + Cached.
-+ *
-+ * Return: Available memory in KiB.
-  */
- long long tst_available_mem(void);
++CPU
++---
++.. kernel-doc:: ../../include/tst_cpu.h
++
+ Crypto
+ ------
+ .. kernel-doc:: ../../include/tst_crypto.h
+diff --git a/include/tst_common.h b/include/tst_common.h
+index d09edbbbe..b7a0e6734 100644
+--- a/include/tst_common.h
++++ b/include/tst_common.h
+@@ -30,15 +30,17 @@ unsigned int tst_multiply_timeout(unsigned int timeout);
  
--/*
-- * Read the value of SwapFree from /proc/meminfo.
-+/**
-+ * tst_available_swap() - Reads free swap from /proc/meminfo.
-+ *
-+ * Return: Available swap space in KiB.
-  */
- long long tst_available_swap(void);
- 
--/*
-- * Enable OOM protection to prevent process($PID) being killed by OOM Killer.
-- *   echo -1000 >/proc/$PID/oom_score_adj
-- *
-- * If the pid is 0 which means it will set on current(self) process.
-- *
-- * Unless the process has CAP_SYS_RESOURCE this call will be no-op because
-- * setting adj value < 0 requires it.
-+/**
-+ * tst_enable_oom_protection() - Protects process from OOM killer.
-  *
-- * CAP_SYS_RESOURCE:
-- *   set /proc/[pid]/oom_score_adj to a value lower than the value last set
-- *   by a process with CAP_SYS_RESOURCE.
-+ * @pid: Process PID to protect, or 0 for the calling process.
-  *
-- * Note:
-- *  This exported tst_enable_oom_protection function can be used at anywhere
-- *  you want to protect, but please remember that if you do enable protection
-- *  on a process($PID) that all the children will inherit its score and be
-- *  ignored by OOM Killer as well. So that's why tst_disable_oom_protection()
-- *  to be used in combination.
-+ * Sets /proc/[pid]/oom_score_adj to -1000. Requires CAP_SYS_RESOURCE; no-op
-+ * without this capability. Child processes inherit the OOM score.
-  */
- void tst_enable_oom_protection(pid_t pid);
- 
--/*
-- * Disable the OOM protection for the process($PID).
-- *   echo 0 >/proc/$PID/oom_score_adj
-+/**
-+ * tst_disable_oom_protection() - Disables OOM protection for process.
-+ *
-+ * @pid: Process PID, or 0 for the calling process.
-+ *
-+ * Sets /proc/[pid]/oom_score_adj to 0.
-  */
- void tst_disable_oom_protection(pid_t pid);
- 
-@@ -63,10 +59,10 @@ void tst_disable_oom_protection(pid_t pid);
  /**
-  * tst_mapping_in_range() - Returns true if there is a mapping provided range.
+  * TST_RETRY_FUNC() - Repeatedly retry a function with an increasing delay.
+- * @FUNC - The function which will be retried
+- * @ECHCK - Function/macro for validating @FUNC return value
   *
-- * @low: A lower address inside of the processe address space.
-- * @high: A higher address inside of the processe address space.
-+ * @low: A lower address inside of the process address space.
-+ * @high: A higher address inside of the process address space.
-  *
-- * return: Returns true if there is a mapping between low and high addresses in
-+ * Return: Returns true if there is a mapping between low and high addresses in
-  *         the process address space.
+- * This macro will call @FUNC in a loop with a delay between retries.
+- * If ECHCK(ret) evaluates to non-zero, the loop ends. The delay between
+- * retries starts at one microsecond and is then doubled each iteration until
+- * it exceeds one second (the total time sleeping will be approximately one
+- * second as well). When the delay exceeds one second, the loop will end.
+- * The TST_RETRY_FUNC() macro returns the last value returned by @FUNC.
++ * @FUNC: The function which will be retried.
++ * @ECHCK: Function or macro for validating @FUNC return value.
++ *
++ * This macro will call @FUNC in a loop with an exponential delay between
++ * retries. If ECHCK(ret) evaluates to non-zero, the loop ends. The delay
++ * starts at one microsecond and doubles each iteration until it exceeds
++ * one second (scaled by tst_multiply_timeout()). When the maximum delay
++ * is exceeded, the loop ends.
++ *
++ * Return: The last value returned by @FUNC.
   */
- int tst_mapping_in_range(unsigned long low, unsigned long high);
+ #define TST_RETRY_FUNC(FUNC, ECHCK) \
+ 	TST_RETRY_FN_EXP_BACKOFF(FUNC, ECHCK, 1)
 
 -- 
 2.51.0
