@@ -4,97 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A3D26C79FB9
-	for <ltp@archiver.kernel.org>; Thu, 10 Sep 2026 10:41:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4BD97C79FB9
+	for <ltp@archiver.kernel.org>; Thu, 10 Sep 2026 10:47:31 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id DD2173E926F
-	for <ltp@archiver.kernel.org>; Thu, 10 Sep 2026 12:41:17 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 6102A3DEDC8
+	for <ltp@archiver.kernel.org>; Thu, 10 Sep 2026 12:47:29 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 02A0E3C198F
- for <ltp@lists.linux.it>; Thu, 10 Sep 2026 12:41:02 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id A6DA63C198F
+ for <ltp@lists.linux.it>; Thu, 10 Sep 2026 12:47:12 +0200 (CEST)
+Received: from mail-pj2-x0b.google.com (mail-pj2-x0b.google.com
+ [IPv6:2607:f8b0:4864:39::b])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 16309140043D
- for <ltp@lists.linux.it>; Thu, 10 Sep 2026 12:41:00 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 49F3B21C38;
- Thu, 10 Sep 2026 10:40:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1789036855; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=ZWeaay6iAlZKKMXkwIRb8cquFg6Pj9RtJ4j9r1X08hk=;
- b=gQrbIoKxjR/QlkaXx0t2uwZNHfdIz5RObGXcbr+4wZwyYT7Z0DoFHSGftqeQaorDSVLKW/
- Ya2AwYrZmY/+1yFeAuusr8cbKjllU3BGuENn6zNGv/WdTOed9Yzt+ff/LSNwd9KpPIffiT
- Nvdz8FmQBuAGqDTZE5vq8f2pzSac0hI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1789036855;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=ZWeaay6iAlZKKMXkwIRb8cquFg6Pj9RtJ4j9r1X08hk=;
- b=pnIu5uCEcatKN20VBdk982M6EoARKzt3d0ZvBFUEJYKPCQWW/T2N51lu0zoMH8RlLGvcSX
- pA2eV8DDvO/TG/DA==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1789036851; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=ZWeaay6iAlZKKMXkwIRb8cquFg6Pj9RtJ4j9r1X08hk=;
- b=Tq22jRhZ+6PVlBFPz5W5Vm6jOn9X8PQ3pSAvduXHP1IsgBJi2VRtYDjRLaHpXjPPlmGxNa
- +hHdw6DebWs74Zc8EzqLoR1kR9VoKvum7bIFc6n2XI01GRoG1o2CpbXn3pviPaWsHPx2BV
- /Qix2nFjdOIMD/CC4oWsNstZECjcmDw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1789036851;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=ZWeaay6iAlZKKMXkwIRb8cquFg6Pj9RtJ4j9r1X08hk=;
- b=x0KCGO9Dfjoci9EmK4zT5Dd3e1L1OCNjviCVo012v+1D9mmz2JCQE6ZQZ0DGrIhYld5ruW
- YVFg1RSfAc6cyADg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1254D13180;
- Thu, 10 Sep 2026 10:40:51 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id m3R2BDOJomo9XAAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Thu, 10 Sep 2026 10:40:51 +0000
-Date: Thu, 10 Sep 2026 12:40:56 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 73CA61A0091A
+ for <ltp@lists.linux.it>; Thu, 10 Sep 2026 12:47:12 +0200 (CEST)
+Received: by mail-pj2-x0b.google.com with SMTP id
+ 98e67ed59e1d1-398a384b5f7so3462321a91.0
+ for <ltp@lists.linux.it>; Thu, 10 Sep 2026 03:47:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20251104; t=1789037230; x=1789642030; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to:content-type;
+ bh=I2qBHKlMELyKx6QqdSaidYQ4fWQaQ+akI2yfnRY1cIo=;
+ b=SBVpJokDJmCI2zYrGmbHc8LtK8vMYtf8cjENy24+z/5+HIEGOqrRHRtud8iE4wxi7S
+ 2EJvMOeWXCsNKWmm8WWW/41huXS7ghLCl1fie70mievh62Jiq1FsqKeyp5ROexyMqoNf
+ KLimy0r9AjpEnBgZFAGMdopNfZZT2FjcQdXUQXlWwaqqvBWRar0RhgjD/oU4fe0D1Q38
+ Lz4kWetLyMKiOij5KuCsCcqhtFZNt30m/SUj2mfwNII7Bp65MTavHZAmsNE+2ZOW3rqZ
+ eyf9pUccQV7KBKbb/ba+uZzg2qNmsCdPWPk4Jt/935c7VO0ooiw2JferyzIiAP3LaJS8
+ hhMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20251104; t=1789037230; x=1789642030;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to:content-type;
+ bh=I2qBHKlMELyKx6QqdSaidYQ4fWQaQ+akI2yfnRY1cIo=;
+ b=liaQtOJAdzDW6btiT48wWMmCUhMW4u/+Dkc8oqk7aQKM07PIy1jOR5KcdGc9nTvUuc
+ ffNa/Vw38w7ILirN9bIk4NqVJw99cfyftOCxu33RdZhracesD5g6bNCAu6Gn6/GjfT1i
+ E07BkMHLK2ic/iADZ0MtB843RrZ/jl71jRL/1nX8jWXDrlw0Vqh1RT93SimmkIHnvO/C
+ fM7KUTIPw7HZWzCWZeyS6gPmy8LfQVXkvxoc8qbHCdHPtQ1GIGTJnXi2tMrHBLXppfVQ
+ dw8pwI3Woc4BQ9o7sfXWxGFL1KcYdqUm2mmg7a4r4wpR8ODqNSMx/2yxuwx3+/dKY7mh
+ svgQ==
+X-Gm-Message-State: AFuF++kXQj4vEHOatRUBqbC2RYZkV0V4QUKKwAhGIkOa9fLUJbvADk3R
+ QKlGLHe2vUPjLovSPtDz9zTE1v0ASNQiaKxA84/l4JRgbeB6Y2rNPtaE
+X-Gm-Gg: AYBFou1URo6JPVO0x5O+9lHN+IeoCFhva5LeWvJvfltY+2HcmkIajI116sCDgJS2/en
+ u1ecCoPvu+AqFKOagl+JsIDkumzv5xtYqDac6NvhreVOy6RLCG+sHVMRj9SGqcpelZu5j3vIMME
+ fX/OupCzBCl8eEeMDgzjlHgULH1eYWhLFVYmi9RCRQuC5CbwwEtx/dqOYs/crbalre8/NxL8038
+ 4nZ6fU/waHqIb/zgJU8Uur3IugrHFGm1EaftveZ6A0Ti76vJ5MEa8nFLF1WBs6dQVksL5VPeK6u
+ TywXAeIZZ80VxTPtnw8myXTouOwsH+elaJcyxxFk8WlNFYH3U/kIeu41xbJlW8NGua7iJgLhrc/
+ w5Z33EOxo7KR7llnCSwzOeWaiHfzF7bf1lQI7CizjnnvV8R0XPtwVCqJxqxI+xxfuWJxUFd6Is1
+ 3QHdtPNh7JcMqG6QZDzXJlDgwpvDM+Zfiom2184d9q3JvtIaYbPDBTXkcJw8BR+jros7D23w00y
+ /7EZQdSky36sqo62i3uyNYi3r1xCGg6GFySkxLKX1pFErjb0gHbRj9B+5hYWQa8h35kNhYe3dB9
+ PJTdFrD6KGr3ILXtZSsp
+X-Received: by 2002:a17:90b:2787:b0:38e:9eb2:9d43 with SMTP id
+ 98e67ed59e1d1-39bac34331amr18948330a91.16.1789037230545; 
+ Thu, 10 Sep 2026 03:47:10 -0700 (PDT)
+Received: from
+ runnervmlun5p.nf314jw1w1befhwsxly1t1jp0b.xx.internal.cloudapp.net
+ ([4.155.134.48]) by smtp.gmail.com with ESMTPSA id
+ 98e67ed59e1d1-39d776184fesm5260040a91.17.2026.09.10.03.47.09
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Thu, 10 Sep 2026 03:47:10 -0700 (PDT)
+From: linuxtestproject.agent@gmail.com
 To: Andrea Cervesato <andrea.cervesato@suse.de>
-Message-ID: <aqKJODHqRsBDsSi4@yuki.lan>
-References: <20260904-cve-ghostlock-v8-0-bd999083c7fb@suse.com>
- <20260904-cve-ghostlock-v8-1-bd999083c7fb@suse.com>
+Date: Thu, 10 Sep 2026 10:47:08 +0000
+Message-ID: <20260910104708.4480-1-linuxtestproject.agent@gmail.com>
+X-Mailer: git-send-email 2.55.0
+In-Reply-To: <20260910-fix_documentation-v1-1-44313069bbe8@suse.com>
+References: <20260910-fix_documentation-v1-1-44313069bbe8@suse.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20260904-cve-ghostlock-v8-1-bd999083c7fb@suse.com>
-X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
- MISSING_XM_UA(0.00)[]; RCPT_COUNT_TWO(0.00)[2];
- RCVD_TLS_ALL(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- TO_DN_ALL(0.00)[]; FROM_HAS_DN(0.00)[]; MIME_TRACE(0.00)[0:+];
- FROM_EQ_ENVFROM(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- RCVD_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:email]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v8 1/5] sched_setattr01: Convert to new API
+Subject: Re: [LTP] doc: Fix examples and generated links
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -106,90 +91,40 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Linux Test Project <ltp@lists.linux.it>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> +static void verify_sched_setattr(unsigned int n)
->  {
-> -	TEST(sched_setattr(*(test->pid), test->a, test->flags));
-> -
-> -	if (TEST_RETURN != test->exp_return) {
-> -		tst_resm(TFAIL | TTERRNO, "sched_setattr(%i,attr,%u) "
-> -		         "returned: %ld expected: %d",
-> -		         *(test->pid), test->flags,
-> -		         TEST_RETURN, test->exp_return);
-> +	struct tcase *tc = &tcases[n];
-> +	pid_t pid = tc->pid ? *tc->pid : 0;
-> +	struct sched_attr *target_attr = tc->bad_attr ? bad_addr : tc->attr;
-> +	struct sched_attr read_attr = { .size = sizeof(read_attr) };
-> +
-> +	/*
-> +	 * The kernel writes sizeof(struct sched_attr) back to uattr->size
-> +	 * on the -E2BIG error path, clobbering our test input. Refresh
-> +	 * before each call so re-runs (e.g. -i N) still exercise the
-> +	 * intended size.
-> +	 */
-> +	attr_small.size = SCHED_ATTR_SIZE_VER0 - 1;
-> +
-> +	if (tc->exp_errno) {
-> +		TST_EXP_FAIL(sched_setattr(pid, target_attr, tc->flags),
-> +			     tc->exp_errno, "%s", tc->desc);
->  		return;
->  	}
->  
-> -	if (TEST_ERRNO == test->exp_errno) {
-> -		tst_resm(TPASS | TTERRNO,
-> -			"sched_setattr() works as expected");
-> +	TST_EXP_PASS(sched_setattr(pid, target_attr, tc->flags),
-> +		     "%s", tc->desc);
-> +	if (!TST_PASS)
->  		return;
-> -	}
-> -
-> -	tst_resm(TFAIL | TTERRNO, "sched_setattr(%i,attr,%u): "
-> -		"expected: %d - %s",
-> -		*(test->pid), test->flags,
-> -		test->exp_errno, tst_strerrno(test->exp_errno));
-> -}
-> -
-> -int main(int argc, char **argv)
-> -{
-> -	pthread_t thread;
-> -	int lc;
->  
-> -	tst_parse_opts(argc, argv, NULL, NULL);
-> -
-> -	setup();
-> -
-> -	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> -		pthread_create(&thread, NULL, do_test, NULL);
-> -		pthread_join(thread, NULL);
-> +	if (sched_getattr(pid, &read_attr, sizeof(read_attr), 0) == -1) {
-> +		tst_res(TFAIL | TERRNO, "sched_getattr() failed");
-> +		return;
->  	}
->  
-> -	tst_exit();
-> +	TST_EXP_EQ_LU(read_attr.sched_policy, SCHED_DEADLINE);
-> +	TST_EXP_EQ_LU(read_attr.sched_runtime, RUNTIME_VAL);
-> +	TST_EXP_EQ_LU(read_attr.sched_deadline, DEADLINE_VAL);
-> +	TST_EXP_EQ_LU(read_attr.sched_period, PERIOD_VAL);
-> +
-> +	reset_sched();
->  }
+Hi Andrea,
 
-Can we please split the passing test into a separate testcase?
+On Thu Sep 10 10:33:41 2026 +0200, Andrea Cervesato wrote:
+> doc: Fix examples and generated links
 
-Mixing possitive and negative tests into single source makes things
-more complex for no good reason...
+--- [PATCH 7/9] ---
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> +#define SAFE_FILE_VPRINTF(path, fmt, va) \
+> +	safe_file_vprintf(__FILE__, __LINE__, NULL, \
+> +			  (path), (fmt), (va))
+> +
+
+safe_file_vprintf() is static in lib/safe_file_ops.c and not declared in
+include/tst_safe_file_ops.h, causing build failure on any call.
+Remove SAFE_FILE_VPRINTF or export and document safe_file_vprintf()
+in a separate patch.
+
+Verdict - Needs revision
+
+---
+Note:
+
+The agent can sometimes produce false positives although often its
+findings are genuine. If you find issues with the review, please
+comment this email or ignore the suggestions.
+
+Regards,
+LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
