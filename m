@@ -4,106 +4,113 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5BC98C88E50
-	for <ltp@archiver.kernel.org>; Fri, 11 Sep 2026 15:30:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1B4ADC88E50
+	for <ltp@archiver.kernel.org>; Fri, 11 Sep 2026 15:31:04 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 82BE53E9237
-	for <ltp@archiver.kernel.org>; Fri, 11 Sep 2026 17:30:49 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 320253E9211
+	for <ltp@archiver.kernel.org>; Fri, 11 Sep 2026 17:31:03 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id BE6163E5494
+ by picard.linux.it (Postfix) with ESMTPS id 5142C3E9219
  for <ltp@lists.linux.it>; Fri, 11 Sep 2026 17:30:05 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 44E2B600B24
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 2D8622002C7
  for <ltp@lists.linux.it>; Fri, 11 Sep 2026 17:30:05 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 718C81FEF2;
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 4885721BF7;
  Fri, 11 Sep 2026 15:29:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1789140600; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=rnsIIKISKMtrZkCJmdP4fKQkddvAx/Dg753x82K02LE=;
- b=i2RVQ0DiqyDIfNG4jDPsLPshCDkXQEM686+2oY3nDJqNGwaBwQuaPJSnAYr9+vrNloBFfN
- SUU4XDec7JOllpFRU/pNUhQaUQ7k2kLesMblZi2DT47XXuR28U0eAwvvd3hK3vmQs9iTs9
- /6/zPLDPZnltm7v5f7tpqgYv5JP5sZc=
+ bh=R/lv5krkxYgPIHwRmX3t4gxCN3cIFnZSrYr7DjyR8fM=;
+ b=rb5tTTcAmBpjGc86RD2ORMkHJPG4d3I6l01DJOqsEdonMmHCZHKm4y1TfYQ2vu4npayli/
+ mWcuQEJ7g8kS56gUwuVBmRIi7FZlGvcufZiVP6pfbkQ2kfFoJUTv3YtpRs/o7qeH47oGdS
+ 3p1xXLp+Xtv5ObQgDKgXsGF83dua0tE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1789140600;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=rnsIIKISKMtrZkCJmdP4fKQkddvAx/Dg753x82K02LE=;
- b=5bUABy00/8Cg1A64mT8eeV266LW+N7SjM5SPxpzvZr8+eUsuuP68Z1N76UD38fdLfqaYg3
- AKSsqvMB9i8ODOAw==
-Authentication-Results: smtp-out2.suse.de;
-	none
+ bh=R/lv5krkxYgPIHwRmX3t4gxCN3cIFnZSrYr7DjyR8fM=;
+ b=LniCFhxUdwX00T9AbG3NH4CqqSHWK/6zWWCJDfCjh8J8MY53w4DTkl8r911aaxu6vE7yVw
+ OGolQg35J2muT6Aw==
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.de header.s=susede2_rsa header.b=Ov50lvHC;
+ dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=6VNzg+wU
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1789140596; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=rnsIIKISKMtrZkCJmdP4fKQkddvAx/Dg753x82K02LE=;
- b=zwDFPKZcXV5bnKGhERu5WIFGJ+Flu3OXmKAtjEySmIWT94PpfNPuZ+lT+HPrtVlRbb17bX
- xMd5c0z/tN83MfHN64loSmaOja8vjsC49igHCbd+cC9C1VggV2fkKce3LOgZA3F8P++tEM
- 0yc8sJuv94qI1ddK54/3uzsjeQXOdJg=
+ bh=R/lv5krkxYgPIHwRmX3t4gxCN3cIFnZSrYr7DjyR8fM=;
+ b=Ov50lvHCBvd1o2WG6dS5iewTs3dzvMaB7q7+J8EvitQ4glA+KIZOgh9sOdQh4Patq15zxi
+ 2ixFleK64cHtJy1X/fVonhoEWpB629CEwZMFdlYVhbZFkG2RmOyQ1cTIGB7unFNzCwx0m+
+ klPaJ2Gh/Va3mX1sVaZv//Bhow7VPV8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1789140596;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=rnsIIKISKMtrZkCJmdP4fKQkddvAx/Dg753x82K02LE=;
- b=kXJANx5wL+wX3aEcWDRHIXmEAqbwIIqbf2yPAUSzYdCOdFHXEbG5dbxxKcbhIE/uFGhgjJ
- INdNQwTaBf+cT/Bg==
+ bh=R/lv5krkxYgPIHwRmX3t4gxCN3cIFnZSrYr7DjyR8fM=;
+ b=6VNzg+wU1L1+HH4+YLIQ18gzWLRQHeu3aEmBjOFO8aHskxPzRNLzh+wuwcHoi34fws/3CA
+ cX4xnvOeKiAyOECA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3121413770;
- Fri, 11 Sep 2026 15:29:56 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 053B713715;
+ Fri, 11 Sep 2026 15:29:55 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id SIk9CnQepGoNOAAAD6G6ig
- (envelope-from <andrea.cervesato@suse.de>); Fri, 11 Sep 2026 15:29:56 +0000
+ by imap1.dmz-prg2.suse.org with ESMTPSA id yOQhO3MepGoNOAAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>); Fri, 11 Sep 2026 15:29:55 +0000
 From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Fri, 11 Sep 2026 17:29:54 +0200
+Date: Fri, 11 Sep 2026 17:29:53 +0200
 MIME-Version: 1.0
-Message-Id: <20260911-mmap_32bit_coverage-v3-2-b0608349556d@suse.com>
+Message-Id: <20260911-mmap_32bit_coverage-v3-1-b0608349556d@suse.com>
 References: <20260911-mmap_32bit_coverage-v3-0-b0608349556d@suse.com>
 In-Reply-To: <20260911-mmap_32bit_coverage-v3-0-b0608349556d@suse.com>
 To: Linux Test Project <ltp@lists.linux.it>
 X-Mailer: b4 0.16.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1789140595; l=2273;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1789140595; l=521;
  i=andrea.cervesato@suse.com; s=20251210; h=from:subject:message-id;
- bh=8/9nf6OhxD2ULrVckBydbhpM4PhM4AnT4Sqjdl0WTOQ=;
- b=vv9S+DuiRYZAtOVD8I9LeNyF6hUFmAytUorylmQitVswxlcdMo2oSV6WD+CZF+x8z02rlOD9A
- tu9mQ4GZKngBgj+THXpBgw7fzHsalNGRyy0Kl2lCxNi5I549gfDSyUM
+ bh=1ZYJGk6v6bX4bg4E4zCa1T/wtQKlecGjJtahQZotoaw=;
+ b=fyJCyB/D2u/KP8IRkxr8j4DrtLV5u7fSRysqGKgONTQgNlNj0IMqcOEWexstc3xkaeWGZujjd
+ tc44Aj+/cpVA6kriTTdVqfXYm/UcLnzRzdCK+ubOPmwcwxu4RxwX+Ts
 X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
  pk=zKY+6GCauOiuHNZ//d8PQ/UL4jFCTKbXrzXAOQSLevI=
-X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+X-Rspamd-Queue-Id: 4885721BF7
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-0.997]; MIME_GOOD(-0.10)[text/plain];
- RCVD_VIA_SMTP_AUTH(0.00)[]; RCVD_TLS_ALL(0.00)[];
- ARC_NA(0.00)[]; MIME_TRACE(0.00)[0:+];
+ R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[]; RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ MIME_TRACE(0.00)[0:+]; RCVD_TLS_ALL(0.00)[];
  DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- TO_DN_ALL(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ TO_DN_ALL(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
  FROM_HAS_DN(0.00)[]; RCPT_COUNT_THREE(0.00)[3];
- FROM_EQ_ENVFROM(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo, suse.com:email,
- suse.com:mid, suse.cz:email]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:email,suse.cz:email,suse.de:dkim,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
+ DKIM_TRACE(0.00)[suse.de:+]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3 2/3] mmap23: add test for MAP_32BIT oversized
- mapping
+Subject: [LTP] [PATCH v3 1/3] lapi/mmap: add MAP_32BIT fallback
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -122,81 +129,27 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-Add a test verifying that mmap() with the MAP_32BIT flag fails
-with ENOMEM when requesting a mapping of size >= 2GB, since it
-cannot fit within the first 2GB of address space.
-
 Reviewed-by: Petr Vorel <pvorel@suse.cz>
 Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
- runtest/syscalls                          |  1 +
- testcases/kernel/syscalls/mmap/.gitignore |  1 +
- testcases/kernel/syscalls/mmap/mmap23.c   | 36 +++++++++++++++++++++++++++++++
- 3 files changed, 38 insertions(+)
+ include/lapi/mmap.h | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index ca190dd97..56f88c0b6 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -890,6 +890,7 @@ mmap20 mmap20
- mmap21_01 mmap21 -m 1
- mmap21_02 mmap21
- mmap22 mmap22
-+mmap23 mmap23
+diff --git a/include/lapi/mmap.h b/include/lapi/mmap.h
+index 3908310f4..f20eb3bd5 100644
+--- a/include/lapi/mmap.h
++++ b/include/lapi/mmap.h
+@@ -91,6 +91,10 @@
+ # define MAP_DROPPABLE 0x08
+ #endif
  
- modify_ldt01 modify_ldt01
- modify_ldt02 modify_ldt02
-diff --git a/testcases/kernel/syscalls/mmap/.gitignore b/testcases/kernel/syscalls/mmap/.gitignore
-index 075be933d..dd332e9a1 100644
---- a/testcases/kernel/syscalls/mmap/.gitignore
-+++ b/testcases/kernel/syscalls/mmap/.gitignore
-@@ -19,3 +19,4 @@
- /mmap20
- /mmap21
- /mmap22
-+/mmap23
-diff --git a/testcases/kernel/syscalls/mmap/mmap23.c b/testcases/kernel/syscalls/mmap/mmap23.c
-new file mode 100644
-index 000000000..4eb7bf6e9
---- /dev/null
-+++ b/testcases/kernel/syscalls/mmap/mmap23.c
-@@ -0,0 +1,36 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (C) 2026 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
-+ */
++#ifndef MAP_32BIT
++# define MAP_32BIT 0x40
++#endif
 +
-+/*\
-+ * Verify that :manpage:`mmap(2)` with the MAP_32BIT flag fails with ENOMEM
-+ * when requesting a mapping of size >= 2GB, since it cannot fit within the
-+ * first 2GB of address space.
-+ *
-+ * MAP_32BIT is supported only on x86-64 for 64-bit programs.
-+ */
-+
-+#include "tst_test.h"
-+#include "lapi/mmap.h"
-+
-+#define MAP_SZ (2UL * TST_GB)
-+
-+static void run(void)
-+{
-+	TST_EXP_FAIL_PTR_VOID(mmap(NULL, MAP_SZ, PROT_READ | PROT_WRITE,
-+				   MAP_PRIVATE | MAP_ANONYMOUS | MAP_32BIT, -1, 0),
-+			      ENOMEM,
-+			      "mmap(2GB) with MAP_32BIT");
-+
-+	if (TST_RET_PTR != MAP_FAILED)
-+		SAFE_MUNMAP(TST_RET_PTR, MAP_SZ);
-+}
-+
-+static struct tst_test test = {
-+	.test_all = run,
-+	.supported_archs = (const char *const []){
-+		"x86_64",
-+		NULL
-+	},
-+};
+ #ifndef MREMAP_DONTUNMAP
+ # define MREMAP_DONTUNMAP 4
+ #endif
 
 -- 
 2.51.0
