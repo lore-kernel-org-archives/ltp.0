@@ -4,113 +4,102 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0E0F4C88E45
-	for <ltp@archiver.kernel.org>; Fri, 11 Sep 2026 13:59:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 406FAC88E45
+	for <ltp@archiver.kernel.org>; Fri, 11 Sep 2026 14:09:13 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 45B593E72B3
-	for <ltp@archiver.kernel.org>; Fri, 11 Sep 2026 15:59:38 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 967D93E921F
+	for <ltp@archiver.kernel.org>; Fri, 11 Sep 2026 16:09:11 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E272F3D227C
- for <ltp@lists.linux.it>; Fri, 11 Sep 2026 15:59:20 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+ by picard.linux.it (Postfix) with ESMTPS id C7CA23C66CF
+ for <ltp@lists.linux.it>; Fri, 11 Sep 2026 16:08:54 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id F2FCB600B22
- for <ltp@lists.linux.it>; Fri, 11 Sep 2026 15:59:19 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id EE9E21400E12
+ for <ltp@lists.linux.it>; Fri, 11 Sep 2026 16:08:53 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 2702C21CD3;
- Fri, 11 Sep 2026 13:59:10 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 9D44421BE3;
+ Fri, 11 Sep 2026 14:08:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1789135154;
+ t=1789135728;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=nKB3Om5WRzBwCkNvEJ0v08Ag/b1F6enpTvUdq5cdpgk=;
- b=sL5klSdJ9rgVzrogwr9tL5AfZqj0UdYlq75/Vetyh22si01wLnXl87CkNudXzTNjnJ589C
- XtHuChfmK3J4xPnHfLhF0Ixfjz6SRrYjJXJojdBWLwAAoC26nIixIUXjQGMJI6+7Yf3Ovb
- GrirVZNwr1AxaLkRtZfSaQNYBpGN0o8=
+ bh=1ALpnGBDnaTrdwEmbum4TjCgiKZcUGrph3tQIHn2jyM=;
+ b=aeHKblr46xrM/6ZG3a69EGBHSfkf668G2bD9KOjegBJSrirI8yD50sWE4lqY9A5tu66Mer
+ 82B70kDdP+ewHBuyFz7vMHR3IuZDPGfBoPLQ9Zvj5gUD+lslrxTwwObcPo8KPm+QdrCt+T
+ lB8+EBCJOGvhqt338AfH7QSLYY4LRII=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1789135154;
+ s=susede2_ed25519; t=1789135728;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=nKB3Om5WRzBwCkNvEJ0v08Ag/b1F6enpTvUdq5cdpgk=;
- b=zK5uJxaAxor/JJFS3lkK1S41oGgQvAy4Qgc0sc2wKPMLhTRHbEuM8RRykyXjwY+uLhnanv
- SFSy3gVMIP9BpZAQ==
+ bh=1ALpnGBDnaTrdwEmbum4TjCgiKZcUGrph3tQIHn2jyM=;
+ b=JpM+8SiAF6GpE6vDcata6JcokpxDZ0TKMlmpwucMW6s//+r6HSDRnHokRqkJrVBwKHYk5O
+ tQilhP9ozAKUMECg==
 Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=ykjF0Qxw;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="a7gN9/q7"
+	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1789135150;
+ t=1789135724;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=nKB3Om5WRzBwCkNvEJ0v08Ag/b1F6enpTvUdq5cdpgk=;
- b=ykjF0QxwsqXxMGbBE7SZzC6pBSMslIRf1JsmvECqVN7TGtton3zkHiNePMbezykLdKLCwp
- xsXqmxLg7rslHamawzgf2E9kIXp84Lq6jpNii5c0xi6+jpSzSjsKMvXINEgcpSxuehYb5u
- qbvEzyK7xAce/Ojj31lneTDbw9xT0y4=
+ bh=1ALpnGBDnaTrdwEmbum4TjCgiKZcUGrph3tQIHn2jyM=;
+ b=GoR+87nDYht8kHpt4iR2r5ouWNqujV4HzoyMhtHiUXTnHM51uR5+l/5ZO9Clwi/7P1JmhC
+ t16NI9M5pLV3XvcdyOPpNs2hCcGEC+7xRz/Yvdif08BnErYfdy6NryShL7NAT2BetApNtM
+ Fbj4KGYkIEa6jAYbmc+D/P8PUjw+BJI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1789135150;
+ s=susede2_ed25519; t=1789135724;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=nKB3Om5WRzBwCkNvEJ0v08Ag/b1F6enpTvUdq5cdpgk=;
- b=a7gN9/q76PYQoN6b1vlogeT7G2CKdaPE5jQ/gGCRoVtNDtCYQl6pM8Zzpnrd/wUeZMLklv
- 2bcYzZccf7WmqMBQ==
+ bh=1ALpnGBDnaTrdwEmbum4TjCgiKZcUGrph3tQIHn2jyM=;
+ b=A59XG7hDvqymW5MuQtqXlm+iGEgCLEp4urM50irG0PjoC2ILUg2AqAaldMNJ/eHoVStMz6
+ rm6xXkRXKMGorOAQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C545013715;
- Fri, 11 Sep 2026 13:59:09 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1BB8F132D3;
+ Fri, 11 Sep 2026 14:08:44 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id pumELS0JpGoGWwAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Fri, 11 Sep 2026 13:59:09 +0000
-Date: Fri, 11 Sep 2026 15:59:07 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id kaQ3BGwLpGrnZAAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Fri, 11 Sep 2026 14:08:44 +0000
+Date: Fri, 11 Sep 2026 16:08:38 +0200
 From: Petr Vorel <pvorel@suse.cz>
 To: Andrea Cervesato <andrea.cervesato@suse.de>
-Message-ID: <20260911135907.GC1488703@pevik>
+Message-ID: <20260911140838.GD1488703@pevik>
 References: <20260828-mmap_32bit_coverage-v1-0-7f0b8b589773@suse.com>
- <20260828-mmap_32bit_coverage-v1-3-7f0b8b589773@suse.com>
+ <20260828-mmap_32bit_coverage-v1-2-7f0b8b589773@suse.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20260828-mmap_32bit_coverage-v1-3-7f0b8b589773@suse.com>
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: 2702C21CD3
-X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+In-Reply-To: <20260828-mmap_32bit_coverage-v1-2-7f0b8b589773@suse.com>
+X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
  HAS_REPLYTO(0.30)[pvorel@suse.cz];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; RCVD_TLS_ALL(0.00)[];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- ARC_NA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- MIME_TRACE(0.00)[0:+]; MISSING_XM_UA(0.00)[];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- RCPT_COUNT_TWO(0.00)[2];
+ URIBL_BLOCKED(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:replyto,suse.cz:email];
+ ARC_NA(0.00)[]; MISSING_XM_UA(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; MIME_TRACE(0.00)[0:+];
+ RCPT_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
+ TO_DN_ALL(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
+ FROM_HAS_DN(0.00)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
  RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DKIM_TRACE(0.00)[suse.cz:+]; TO_DN_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,suse.cz:email,imap1.dmz-prg2.suse.org:helo];
  REPLYTO_EQ_FROM(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 3/3] mmap24: add test for MAP_32BIT address limit
+Subject: Re: [LTP] [PATCH 2/3] mmap23: add test for MAP_32BIT oversized
+ mapping
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -124,61 +113,40 @@ List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Reply-To: Petr Vorel <pvorel@suse.cz>
 Cc: Linux Test Project <ltp@lists.linux.it>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-SGkgQW5kcmVhLAoKPiBBZGQgYSB0ZXN0IHZlcmlmeWluZyB0aGF0IG1tYXAoKSB3aXRoIHRoZSBN
-QVBfMzJCSVQgZmxhZyByZXN0cmljdHMKPiBtYXBwaW5ncyB0byB0aGUgZmlyc3QgMkdCIG9mIGFk
-ZHJlc3Mgc3BhY2UgYW5kIGZhaWxzIHdpdGggRU5PTUVNCj4gd2hlbiB0aGUgMzItYml0IGFkZHJl
-c3Mgc3BhY2UgaXMgZXhoYXVzdGVkIHdpdGhvdXQgZmFsbGluZyBiYWNrIHRvCj4gaGlnaGVyIGFk
-ZHJlc3Nlcy4KClRoYW5rcyEKCi4uLgo+ICsrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMv
-bW1hcC9tbWFwMjQuYwouLi4KPiArCj4gKwkJaWYgKCh1bnNpZ25lZCBsb25nKWFkZHIgKyBDSFVO
-S19TWiA+IEFERFJfTElNSVQpIHsKPiArCQkJdHN0X3JlcyhURkFJTCwgIm1hcHBpbmcgYXQgJXAg
-KyAlenUgZXhjZWVkcyAyR0IgbGltaXQiLAolenUgaXMgd3Jvbmcgb24gMzIgYml0LgoKLi4vLi4v
-Li4vLi4vaW5jbHVkZS90c3RfdGVzdC5oOjc1OjU1OiB3YXJuaW5nOiBmb3JtYXQg4oCYJXp14oCZ
-IGV4cGVjdHMgYXJndW1lbnQgb2YgdHlwZSDigJhzaXplX3TigJksIGJ1dCBhcmd1bWVudCA2IGhh
-cyB0eXBlIOKAmGxvbmcgdW5zaWduZWQgaW504oCZIFstV2Zvcm1hdD1dCiAgIDc1IHwgICAgICAg
-ICAgICAgICAgIHRzdF9yZXNfKF9fRklMRV9fLCBfX0xJTkVfXywgKHR0eXBlKSwgKGFyZ19mbXQp
-LCAjI19fVkFfQVJHU19fKTtcCiAgICAgIHwgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgXn5+fn5+fn5+Cm1tYXAyNC5jOjYzOjI1OiBub3RlOiBp
-biBleHBhbnNpb24gb2YgbWFjcm8g4oCYdHN0X3Jlc+KAmQogICA2MyB8ICAgICAgICAgICAgICAg
-ICAgICAgICAgIHRzdF9yZXMoVEZBSUwsICJtYXBwaW5nIGF0ICVwICsgJXp1IGV4Y2VlZHMgMkdC
-IGxpbWl0IiwKICAgICAgfCAgICAgICAgICAgICAgICAgICAgICAgICBefn5+fn5+Cgo+ICsJCQkJ
-YWRkciwgQ0hVTktfU1opOwo+ICsJCQlhZGRyc1tudW1fY2h1bmtzKytdID0gYWRkcjsKPiArCQkJ
-Y2xlYW51cCgpOwo+ICsJCQlyZXR1cm47Cj4gKwkJfQo+ICsKPiArCQkoKGNoYXIgKilhZGRyKVsw
-XSA9ICdhJzsKPiArCQkoKGNoYXIgKilhZGRyKVtDSFVOS19TWiAtIDFdID0gJ3onOwo+ICsKPiAr
-CQlhZGRyc1tudW1fY2h1bmtzKytdID0gYWRkcjsKPiArCX0KPiArCj4gKwlpZiAoIWZhaWxlZF93
-aXRoX2Vub21lbSkgewo+ICsJCXRzdF9yZXMoVEZBSUwsICIzMi1iaXQgYWRkcmVzcyBzcGFjZSB3
-YXMgbm90IGV4aGF1c3RlZCIpOwo+ICsJfSBlbHNlIGlmICghbnVtX2NodW5rcykgewo+ICsJCXRz
-dF9yZXMoVEZBSUwsICJmYWlsZWQgdG8gbWFwIGFueSBjaHVuayB3aXRoIE1BUF8zMkJJVCIpOwo+
-ICsJfSBlbHNlIHsKPiArCQl0c3RfcmVzKFRQQVNTLAo+ICsJCQkiTWFwcGVkICV6dSBNQiBhY3Jv
-c3MgJXp1IGNodW5rcyB3aXRoaW4gMkdCIGJlZm9yZSBFTk9NRU0iLApBbmQgaGVyZSBhcyB3ZWxs
-Lgo+ICsJCQkobnVtX2NodW5rcyAqIENIVU5LX1NaKSAvIFRTVF9NQiwgbnVtX2NodW5rcyk7Cj4g
-Kwl9Cj4gKwo+ICsJY2xlYW51cCgpOwo+ICt9Cj4gKwo+ICtzdGF0aWMgc3RydWN0IHRzdF90ZXN0
-IHRlc3QgPSB7Cj4gKwkuY2xlYW51cCA9IGNsZWFudXAsCj4gKwkudGVzdF9hbGwgPSBydW4sCj4g
-Kwkuc3VwcG9ydGVkX2FyY2hzID0gKGNvbnN0IGNoYXIgKmNvbnN0IFtdKXsKPiArCQkieDg2XzY0
-IiwKPiArCQlOVUxMCj4gKwl9LAo+ICt9OwoKCkJUVyBJIHdhcyB3b25kZXJpbmcgaWYgSSBjYW4g
-Z2V0IHRoaXMgZmFpbGluZyB3aGVuIHJ1bm5pbmcgb24gVk0gd2l0aCByZWFsbHkKc21hbGwgUkFN
-LCBidXQgZXZlbiB3aXRoIDI0OSBNQiBJIGdldCBnZXQgbWFwcGVkIDkyOCBNQiAob3IgOTYwIE1C
-IHdoZW4gSSBydW4Kd2l0aCAtaSk6CgptbWFwMjQuYzo4MTogVFBBU1M6IE1hcHBlZCA5MjggTUIg
-YWNyb3NzIDI5IGNodW5rcyB3aXRoaW4gMkdCIGJlZm9yZSBFTk9NRU0KCldoYXQgYW0gSSBtaXNz
-aW5nPwoKQW55d2F5LCBMR1RNLgpSZXZpZXdlZC1ieTogUGV0ciBWb3JlbCA8cHZvcmVsQHN1c2Uu
-Y3o+CgpLaW5kIHJlZ2FyZHMsClBldHIKCkJlZm9yZSBtZXJnZSBwbGVhc2U6CgpkaWZmIC0tZ2l0
-IHRlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvbW1hcC9tbWFwMjQuYyB0ZXN0Y2FzZXMva2VybmVs
-L3N5c2NhbGxzL21tYXAvbW1hcDI0LmMKaW5kZXggNTBkZTYyMGY0Mi4uOTRkMDkyYjgwOSAxMDA2
-NDQKLS0tIHRlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvbW1hcC9tbWFwMjQuYworKysgdGVzdGNh
-c2VzL2tlcm5lbC9zeXNjYWxscy9tbWFwL21tYXAyNC5jCkBAIC02MCw3ICs2MCw3IEBAIHN0YXRp
-YyB2b2lkIHJ1bih2b2lkKQogCQl9CiAKIAkJaWYgKCh1bnNpZ25lZCBsb25nKWFkZHIgKyBDSFVO
-S19TWiA+IEFERFJfTElNSVQpIHsKLQkJCXRzdF9yZXMoVEZBSUwsICJtYXBwaW5nIGF0ICVwICsg
-JXp1IGV4Y2VlZHMgMkdCIGxpbWl0IiwKKwkJCXRzdF9yZXMoVEZBSUwsICJtYXBwaW5nIGF0ICVw
-ICsgJWx1IGV4Y2VlZHMgMkdCIGxpbWl0IiwKIAkJCQlhZGRyLCBDSFVOS19TWik7CiAJCQlhZGRy
-c1tudW1fY2h1bmtzKytdID0gYWRkcjsKIAkJCWNsZWFudXAoKTsKQEAgLTc5LDcgKzc5LDcgQEAg
-c3RhdGljIHZvaWQgcnVuKHZvaWQpCiAJCXRzdF9yZXMoVEZBSUwsICJmYWlsZWQgdG8gbWFwIGFu
-eSBjaHVuayB3aXRoIE1BUF8zMkJJVCIpOwogCX0gZWxzZSB7CiAJCXRzdF9yZXMoVFBBU1MsCi0J
-CQkiTWFwcGVkICV6dSBNQiBhY3Jvc3MgJXp1IGNodW5rcyB3aXRoaW4gMkdCIGJlZm9yZSBFTk9N
-RU0iLAorCQkJIk1hcHBlZCAlbHUgTUIgYWNyb3NzICV6dSBjaHVua3Mgd2l0aGluIDJHQiBiZWZv
-cmUgRU5PTUVNIiwKIAkJCShudW1fY2h1bmtzICogQ0hVTktfU1opIC8gVFNUX01CLCBudW1fY2h1
-bmtzKTsKIAl9CiAKCi0tIApNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5saW51eC5p
-dC9saXN0aW5mby9sdHAK
+Hi Andrea,
+
+Obviously correct.
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
+
+...
+> +++ b/testcases/kernel/syscalls/mmap/mmap23.c
+...
+> +/*\
+> + * Verify that :manpage:`mmap(2)` with the MAP_32BIT flag fails with ENOMEM
+> + * when requesting a mapping of size >= 2GB, since it cannot fit within the
+> + * first 2GB of address space.
+> + *
+> + * MAP_32BIT is supported only on x86-64 for 64-bit programs.
+> + */
+> +
+> +#include "tst_test.h"
+> +#include "lapi/mmap.h"
+> +
+> +#define MAP_SZ (2UL * TST_GB)
+
+Interesting enough, it works on 1GB as well:
+
+#define MAP_SZ (1UL * TST_GB)
+
+Actually the minimum working memory on my system is 1001 MB (1001UL * TST_MB)
+
+Kind regards,
+Petr
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
