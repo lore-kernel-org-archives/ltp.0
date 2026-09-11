@@ -4,97 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BF9AEC88E4D
-	for <ltp@archiver.kernel.org>; Fri, 11 Sep 2026 12:13:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A0DFFC88E4D
+	for <ltp@archiver.kernel.org>; Fri, 11 Sep 2026 12:21:39 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 278323E921C
-	for <ltp@archiver.kernel.org>; Fri, 11 Sep 2026 14:13:58 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 139A03E921B
+	for <ltp@archiver.kernel.org>; Fri, 11 Sep 2026 14:21:38 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 11C793C876A
- for <ltp@lists.linux.it>; Fri, 11 Sep 2026 14:13:40 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id E8A3F3E2F38
+ for <ltp@lists.linux.it>; Fri, 11 Sep 2026 14:21:21 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id D8283200AC7
- for <ltp@lists.linux.it>; Fri, 11 Sep 2026 14:13:39 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 793201000A50
+ for <ltp@lists.linux.it>; Fri, 11 Sep 2026 14:21:21 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id E7F9621A64;
- Fri, 11 Sep 2026 12:13:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1789128815; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=a4TJfwJxNtPdC5Ig9j+XpMvCgf0V4CXUyx70eOZ9Gdc=;
- b=lMebOlz46XASopFkiDgXJyUz2F3XxfomTaM/WmiTDuiPRqvujSRWZZvxx8Qyf6nz1f/Q7G
- kUMlD4ByRLLwAEQJA0sKfelQZoeNbhdX3ZBmxuY3glSrQo92y4pweNy6+ljDv4eWFyTAbP
- HqLNdYp/LPgJx02qhcj+KGhwVSPg5OI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1789128815;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=a4TJfwJxNtPdC5Ig9j+XpMvCgf0V4CXUyx70eOZ9Gdc=;
- b=aynq4ypt5w2OEu8rEUgboqsTlMqLzBK+cXUxIT/yGkY3dBDm8zJD+2Z4LeqiUK+V4F76YZ
- Y4mC5tE4XlUWynDg==
+ by smtp-out1.suse.de (Postfix) with ESMTPS id DA78821BE2;
+ Fri, 11 Sep 2026 12:21:20 +0000 (UTC)
 Authentication-Results: smtp-out1.suse.de;
 	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1789128810; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=a4TJfwJxNtPdC5Ig9j+XpMvCgf0V4CXUyx70eOZ9Gdc=;
- b=R5gpMCHexp+HOemJeMTQsJ/BLhybHoWxWEWm1Ykk4AvD2oyO1v5+iAtrdgGx2FIdh+RZdQ
- inCuC1gv+k3A1sRkeY+qmYZaX8F8p188wrO+2x0iRp1ljMEs59m2lEIQShAx5woHG9pjVS
- 4qPSOEVZP8INwzIQTW7wakSJYQqktFc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1789128810;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=a4TJfwJxNtPdC5Ig9j+XpMvCgf0V4CXUyx70eOZ9Gdc=;
- b=XsWKmV6HEl7udj3g6LYZTwWzY3fECnrbso8L5YsNUi7EUqo76o5Xiod0vw70KsTszEIJPB
- 2wVszzybg2eKpsAQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1DA5913715;
- Fri, 11 Sep 2026 12:13:30 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9406413715;
+ Fri, 11 Sep 2026 12:21:20 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id UAA6B2rwo2ovbgAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Fri, 11 Sep 2026 12:13:30 +0000
-Date: Fri, 11 Sep 2026 14:13:40 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
+ by imap1.dmz-prg2.suse.org with ESMTPSA id S4LqIkDyo2rPdgAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Fri, 11 Sep 2026 12:21:20 +0000
+Date: Fri, 11 Sep 2026 14:21:15 +0200
+From: Petr Vorel <pvorel@suse.cz>
 To: Andrea Cervesato <andrea.cervesato@suse.de>
-Message-ID: <aqPwdOKgL7CFPM5l@yuki.lan>
-References: <20260904-keyctl_coverage-v2-0-43b78b15ef9f@suse.com>
- <20260904-keyctl_coverage-v2-14-43b78b15ef9f@suse.com>
+Message-ID: <20260911122115.GF1454430@pevik>
+References: <20260911-fix_documentation-v2-0-716b2613c477@suse.com>
+ <20260911-fix_documentation-v2-9-716b2613c477@suse.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20260904-keyctl_coverage-v2-14-43b78b15ef9f@suse.com>
-X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[99.99%];
- NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
- MISSING_XM_UA(0.00)[]; RCPT_COUNT_TWO(0.00)[2];
- RCVD_TLS_ALL(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- TO_DN_ALL(0.00)[]; FROM_HAS_DN(0.00)[]; MIME_TRACE(0.00)[0:+];
- FROM_EQ_ENVFROM(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- RCVD_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email, imap1.dmz-prg2.suse.org:helo,
- yuki.lan:mid]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+In-Reply-To: <20260911-fix_documentation-v2-9-716b2613c477@suse.com>
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: DA78821BE2
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	REPLY(-4.00)[]
+X-Rspamd-Action: no action
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 14/33] keyctl22: Test KEYCTL_RESTRICT_KEYRING
- reject-all
+Subject: Re: [LTP] [PATCH v2 9/9] include: Fix API comment spelling and style
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -106,45 +71,58 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Reply-To: Petr Vorel <pvorel@suse.cz>
 Cc: Linux Test Project <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> +/*\
-> + * Test ``KEYCTL_RESTRICT_KEYRING`` reject-all of :manpage:`keyctl(2)`,
-> + * added in Linux 4.12.
-> + *
-> + * [Algorithm]
-> + *
-> + * - restrict a keyring with ``NULL`` type and ``NULL`` restriction (reject all links),
-> + *   verify subsequent links and add_key fail with ``EPERM``
-> + */
-> +
-> +#include "keyctl_common.h"
-> +
-> +#define PAYLOAD		"payload"
-> +
-> +static key_serial_t ring_reject;
-> +static key_serial_t user_key;
-> +
-> +static void setup(void)
-> +{
-> +	SAFE_KEYCTL(KEYCTL_JOIN_SESSION_KEYRING, 0, 0, 0, 0);
-> +
-> +	ring_reject = new_ring("ltpkeyctl22_reject");
-> +	user_key = new_user_key("k", PAYLOAD, sizeof(PAYLOAD),
-> +				KEY_SPEC_PROCESS_KEYRING);
+Hi Andrea,
 
-Here as well.
+>  /**
+> - * tse_nodemap_count_pages() - Check which numa node resides each page.
+> + * tse_nodemap_count_pages() - Check on which NUMA node each page resides.
+>   *
+>   * Check on which numa node resides each page of the mapping starting at ptr
+>   * and continuing pages long and increases nodemap counters accordingly.
+> @@ -114,7 +114,7 @@ enum tse_numa_types {
+>   *             requested amount of free+buffers memory it's not included in
+>   *             the resulting list of nodes.
+>   *
+> - * return: On success returns allocated and initialized struct tse_nodemap which contains
+> + * Return: On success returns allocated and initialized struct tse_nodemap which contains
+>   *         array of numa node ids that contains desired resources.
 
-Otherwise it looks good.
+Although lowercase 'r' on return also works as expected (but it's indeed better
+to unify), again: whitespace on the second line breaks formatting (first line is
+bold, second line is shifted.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Unfortunately Return: does not work like struct members, which allow shifting
+without any formatting (OTOH other formating e.g. lists does not work on them).
+
+The rest hopefully LGTM.
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
+Thanks for whole patchset.
+
+Kind regards,
+Petr
+
+diff --git include/tse_numa.h include/tse_numa.h
+index add048eb4c..ac6aab41b8 100644
+--- include/tse_numa.h
++++ include/tse_numa.h
+@@ -114,8 +114,8 @@ enum tse_numa_types {
+  *             requested amount of free+buffers memory it's not included in
+  *             the resulting list of nodes.
+  *
+- * Return: On success returns allocated and initialized struct tse_nodemap which contains
+- *         array of numa node ids that contains desired resources.
++ * Return: On success returns allocated and initialized struct tse_nodemap which
++ * contains array of numa node ids that contains desired resources.
+  */
+ struct tse_nodemap *tse_get_nodemap(int type, size_t min_mem_kb);
+ 
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
