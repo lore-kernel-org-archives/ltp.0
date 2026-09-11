@@ -4,102 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 406FAC88E45
-	for <ltp@archiver.kernel.org>; Fri, 11 Sep 2026 14:09:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D0CC0C88E50
+	for <ltp@archiver.kernel.org>; Fri, 11 Sep 2026 14:36:34 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 967D93E921F
-	for <ltp@archiver.kernel.org>; Fri, 11 Sep 2026 16:09:11 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 380CD3E921B
+	for <ltp@archiver.kernel.org>; Fri, 11 Sep 2026 16:36:32 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C7CA23C66CF
- for <ltp@lists.linux.it>; Fri, 11 Sep 2026 16:08:54 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ by picard.linux.it (Postfix) with ESMTPS id 312943C062E
+ for <ltp@lists.linux.it>; Fri, 11 Sep 2026 16:36:16 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id EE9E21400E12
- for <ltp@lists.linux.it>; Fri, 11 Sep 2026 16:08:53 +0200 (CEST)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 7E662600B2A
+ for <ltp@lists.linux.it>; Fri, 11 Sep 2026 16:36:15 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 9D44421BE3;
- Fri, 11 Sep 2026 14:08:44 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id C57B521BB3;
+ Fri, 11 Sep 2026 14:36:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1789135728;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ t=1789137369; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=1ALpnGBDnaTrdwEmbum4TjCgiKZcUGrph3tQIHn2jyM=;
- b=aeHKblr46xrM/6ZG3a69EGBHSfkf668G2bD9KOjegBJSrirI8yD50sWE4lqY9A5tu66Mer
- 82B70kDdP+ewHBuyFz7vMHR3IuZDPGfBoPLQ9Zvj5gUD+lslrxTwwObcPo8KPm+QdrCt+T
- lB8+EBCJOGvhqt338AfH7QSLYY4LRII=
+ bh=kAqtoYHcoV1MouBq2fzx5sNwNnI2B50lw8hfmxZpOvE=;
+ b=WbtxqjXS6qF9mMzMyjYgb8fBDFSmLXomHKIJNSl8iGH6cNnUkZu+m5Pe6XREYEBNLgXvrh
+ iLsXk8Jo+AqwMOwkX7PJQVBmY0+oJu583adPtuhmOkxYVVLYg6wKV5OGKrDLKEVyCAoPw+
+ Fz6p4LvAWITEI1bcn4ZnSK4lG+RTah4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1789135728;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ s=susede2_ed25519; t=1789137369;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=1ALpnGBDnaTrdwEmbum4TjCgiKZcUGrph3tQIHn2jyM=;
- b=JpM+8SiAF6GpE6vDcata6JcokpxDZ0TKMlmpwucMW6s//+r6HSDRnHokRqkJrVBwKHYk5O
- tQilhP9ozAKUMECg==
+ bh=kAqtoYHcoV1MouBq2fzx5sNwNnI2B50lw8hfmxZpOvE=;
+ b=sEXyjslAed8WWddTnMzlENyXcKN2lcGeiGvtoDv83/iiC66xF0zh7xicKdY6oVcZyLxXHt
+ NQz/ITP8M2N0SNCw==
 Authentication-Results: smtp-out1.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1789135724;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ t=1789137365; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=1ALpnGBDnaTrdwEmbum4TjCgiKZcUGrph3tQIHn2jyM=;
- b=GoR+87nDYht8kHpt4iR2r5ouWNqujV4HzoyMhtHiUXTnHM51uR5+l/5ZO9Clwi/7P1JmhC
- t16NI9M5pLV3XvcdyOPpNs2hCcGEC+7xRz/Yvdif08BnErYfdy6NryShL7NAT2BetApNtM
- Fbj4KGYkIEa6jAYbmc+D/P8PUjw+BJI=
+ bh=kAqtoYHcoV1MouBq2fzx5sNwNnI2B50lw8hfmxZpOvE=;
+ b=v3UI6ROpkF702/gJVxBaAWdH9HDA04pxT31Ay6eUj2KqjQRpHYYU88aDKrwZWJL+wpH+wH
+ xyJsYvyhM9k1O9i9XBnEdOzo+rYl1HO0aFuQqIty+cJTuzFSNiXutSodoDXqoDj+1FZPnZ
+ TRKY60vr8KyrJ20yORMLDLsO2U+NS4M=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1789135724;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ s=susede2_ed25519; t=1789137365;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=1ALpnGBDnaTrdwEmbum4TjCgiKZcUGrph3tQIHn2jyM=;
- b=A59XG7hDvqymW5MuQtqXlm+iGEgCLEp4urM50irG0PjoC2ILUg2AqAaldMNJ/eHoVStMz6
- rm6xXkRXKMGorOAQ==
+ bh=kAqtoYHcoV1MouBq2fzx5sNwNnI2B50lw8hfmxZpOvE=;
+ b=To+A8G8fzgKIENq0UyspTSNNHpJLw+HpIk+qLZOV9l+dOf0kuHbwOhCphOZZ/cyv9jU1yD
+ in+LjM/ZwIxiGxBw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1BB8F132D3;
- Fri, 11 Sep 2026 14:08:44 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 940F5132D3;
+ Fri, 11 Sep 2026 14:36:05 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id kaQ3BGwLpGrnZAAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Fri, 11 Sep 2026 14:08:44 +0000
-Date: Fri, 11 Sep 2026 16:08:38 +0200
-From: Petr Vorel <pvorel@suse.cz>
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 8kMiJNURpGrgfwAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Fri, 11 Sep 2026 14:36:05 +0000
+Date: Fri, 11 Sep 2026 16:36:07 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
 To: Andrea Cervesato <andrea.cervesato@suse.de>
-Message-ID: <20260911140838.GD1488703@pevik>
-References: <20260828-mmap_32bit_coverage-v1-0-7f0b8b589773@suse.com>
- <20260828-mmap_32bit_coverage-v1-2-7f0b8b589773@suse.com>
+Message-ID: <aqQR19a4HTcHxPXs@yuki.lan>
+References: <20260904-keyctl_coverage-v2-0-43b78b15ef9f@suse.com>
+ <20260904-keyctl_coverage-v2-16-43b78b15ef9f@suse.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20260828-mmap_32bit_coverage-v1-2-7f0b8b589773@suse.com>
-X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- URIBL_BLOCKED(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:replyto,suse.cz:email];
- ARC_NA(0.00)[]; MISSING_XM_UA(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[]; MIME_TRACE(0.00)[0:+];
- RCPT_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
- TO_DN_ALL(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[];
+In-Reply-To: <20260904-keyctl_coverage-v2-16-43b78b15ef9f@suse.com>
+X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ NEURAL_HAM_SHORT(-0.20)[-0.999]; MIME_GOOD(-0.10)[text/plain];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; ARC_NA(0.00)[];
+ RCPT_COUNT_TWO(0.00)[2]; TO_DN_ALL(0.00)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,suse.cz:email,imap1.dmz-prg2.suse.org:helo];
- REPLYTO_EQ_FROM(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+ FROM_HAS_DN(0.00)[]; RCVD_TLS_ALL(0.00)[];
+ MISSING_XM_UA(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
+ MIME_TRACE(0.00)[0:+]; RCVD_COUNT_TWO(0.00)[2];
+ RCVD_VIA_SMTP_AUTH(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[yuki.lan:mid,suse.cz:email,linux.it:url]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 2/3] mmap23: add test for MAP_32BIT oversized
- mapping
+Subject: Re: [LTP] [PATCH v2 16/33] keyctl24: Negative tests for
+ KEYCTL_RESTRICT_KEYRING
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -111,42 +106,169 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
 Cc: Linux Test Project <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Andrea,
-
-Obviously correct.
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
-
-...
-> +++ b/testcases/kernel/syscalls/mmap/mmap23.c
-...
-> +/*\
-> + * Verify that :manpage:`mmap(2)` with the MAP_32BIT flag fails with ENOMEM
-> + * when requesting a mapping of size >= 2GB, since it cannot fit within the
-> + * first 2GB of address space.
-> + *
-> + * MAP_32BIT is supported only on x86-64 for 64-bit programs.
+> +/*
+> + * A tcase with .id = NULL asks verify_negative() to allocate a fresh
+> + * unrestricted keyring for the case and unlink it afterwards, so that a
+> + * false-positive result cannot restrict a ring shared with later cases.
+> + * .self_cycle asks for a "key_or_keyring:<fresh>:chain" restriction string
+> + * pointing back at that fresh ring, needed for the EDEADLK check.
 > + */
+> +static struct tcase {
+> +	key_serial_t *id;
+> +	int self_cycle;
+> +	const char *type;
+> +	const char *restriction;
+> +	int exp_errno;
+> +	int needs_asym;
+> +	const char *desc;
+> +} tcases[] = {
+> +	{
+> +		.restriction = "builtin_trusted",
+> +		.exp_errno = EINVAL,
+> +		.desc = "NULL type and non-NULL restriction",
+> +	},
+> +	{
+> +		.type = "asymmetric",
+> +		.exp_errno = EINVAL,
+> +		.desc = "non-NULL type and NULL restriction",
+> +	},
+> +	{
+> +		.id = &user_key,
+> +		.exp_errno = ENOTDIR,
+> +		.desc = "non-keyring key",
+> +	},
+> +	{
+> +		.type = "nosuchtype",
+> +		.restriction = "builtin_trusted",
+> +		.exp_errno = ENOKEY,
+> +		.desc = "unknown key type",
+> +	},
+> +	{
+> +		.type = "user",
+> +		.restriction = "builtin_trusted",
+> +		.exp_errno = ENOENT,
+> +		.desc = "key type having no lookup_restriction",
+> +	},
+> +	{
+> +		.type = "asymmetric",
+> +		.restriction = "bogus",
+> +		.exp_errno = EINVAL,
+> +		.needs_asym = 1,
+> +		.desc = "asymmetric with invalid restriction string",
+> +	},
+> +	{
+> +		.type = "asymmetric",
+> +		.restriction = "key_or_keyring:2147483647",
+> +		.exp_errno = ENOKEY,
+> +		.needs_asym = 1,
+> +		.desc = "asymmetric with bogus key serial",
+> +	},
+> +	{
+> +		.id = &ring_reject,
+> +		.exp_errno = EEXIST,
+> +		.desc = "already restricted keyring",
+> +	},
+> +	{
+> +		.self_cycle = 1,
+> +		.type = "asymmetric",
+> +		.exp_errno = EDEADLK,
+> +		.needs_asym = 1,
+> +		.desc = "self-referencing key_or_keyring chain",
+> +	},
+> +	{
+> +		.id = &ring_no_setattr,
+> +		.exp_errno = EACCES,
+> +		.desc = "keyring without Setattr permission",
+> +	},
+> +};
 > +
-> +#include "tst_test.h"
-> +#include "lapi/mmap.h"
+> +static void setup(void)
+> +{
+> +	key_serial_t probe_ring;
 > +
-> +#define MAP_SZ (2UL * TST_GB)
+> +	SAFE_KEYCTL(KEYCTL_JOIN_SESSION_KEYRING, 0, 0, 0, 0);
+> +
+> +	ring_reject = new_ring("ltpkeyctl24_reject");
+> +	ring_no_setattr = new_ring("ltpkeyctl24_no_setattr");
+> +	SAFE_KEYCTL(KEYCTL_SETPERM, ring_no_setattr, KEY_PERM_NO_SETATTR, 0, 0);
+> +
+> +	/* Permanently restrict ring_reject with reject-all for EEXIST test */
+> +	SAFE_KEYCTL(KEYCTL_RESTRICT_KEYRING, ring_reject, 0, 0, 0);
+> +
+> +	user_key = new_user_key("k", "payload", 7, KEY_SPEC_PROCESS_KEYRING);
+> +
+> +	/* Probe asymmetric support on a throwaway ring so we cannot poison
+> +	 * any ring reused later by the tcase table.
+> +	 */
+> +	probe_ring = new_ring("ltpkeyctl24_probe");
+> +	TEST(keyctl(KEYCTL_RESTRICT_KEYRING, probe_ring,
+> +		    (unsigned long)"asymmetric", (unsigned long)"bogus", 0));
+> +	asym_supported = (TST_RET != -1 || TST_ERR != ENODEV);
+> +	keyctl(KEYCTL_UNLINK, probe_ring, KEY_SPEC_PROCESS_KEYRING, 0, 0);
+> +}
+> +
+> +static void verify_negative(unsigned int n)
+> +{
+> +	struct tcase *tc = &tcases[n];
+> +	key_serial_t id, fresh_ring = 0;
+> +	const char *restriction = tc->restriction;
+> +	char cycle_buf[64];
+> +
+> +	if (tc->needs_asym && !asym_supported) {
+> +		tst_res(TCONF, "asymmetric key type not supported");
+> +		return;
+> +	}
+> +
+> +	if (tc->id) {
+> +		id = *tc->id;
+> +	} else {
+> +		fresh_ring = new_ring("ltpkeyctl24_fresh");
+> +		id = fresh_ring;
+> +		if (tc->self_cycle) {
+> +			snprintf(cycle_buf, sizeof(cycle_buf),
+> +				 "key_or_keyring:%d:chain", fresh_ring);
+> +			restriction = cycle_buf;
+> +		}
 
-Interesting enough, it works on 1GB as well:
+Maybe it would have been better if we moved the self cycle test to a
+seprate testcase, instead of adding special cases to this test...
 
-#define MAP_SZ (1UL * TST_GB)
+> +	}
+> +
+> +	TST_EXP_FAIL(keyctl(KEYCTL_RESTRICT_KEYRING, (unsigned long)id,
+> +			    (unsigned long)tc->type,
+> +			    (unsigned long)restriction, 0),
+> +		     tc->exp_errno,
+> +		     "KEYCTL_RESTRICT_KEYRING with %s", tc->desc);
+> +
+> +	if (fresh_ring)
+> +		keyctl(KEYCTL_UNLINK, fresh_ring, KEY_SPEC_PROCESS_KEYRING,
+> +		       0, 0);
+> +}
+> +
+> +static struct tst_test test = {
+> +	.setup = setup,
+> +	.test = verify_negative,
+> +	.tcnt = ARRAY_SIZE(tcases),
+> +	.min_kver = "4.12",
+> +};
+> 
+> -- 
+> 2.51.0
+> 
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
 
-Actually the minimum working memory on my system is 1001 MB (1001UL * TST_MB)
-
-Kind regards,
-Petr
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
