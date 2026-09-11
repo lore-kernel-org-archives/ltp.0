@@ -4,83 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A40EEC88E4D
-	for <ltp@archiver.kernel.org>; Fri, 11 Sep 2026 17:42:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 80D69C88E53
+	for <ltp@archiver.kernel.org>; Fri, 11 Sep 2026 17:51:32 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 75AF93E9489
-	for <ltp@archiver.kernel.org>; Fri, 11 Sep 2026 19:42:31 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id B7FBC3E926B
+	for <ltp@archiver.kernel.org>; Fri, 11 Sep 2026 19:51:30 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 3CE1C3E920B
- for <ltp@lists.linux.it>; Fri, 11 Sep 2026 19:42:13 +0200 (CEST)
-Received: from mail-qk2-x08.google.com (mail-qk2-x08.google.com
- [IPv6:2607:f8b0:4864:34::8])
+ by picard.linux.it (Postfix) with ESMTPS id 4B7083E9251
+ for <ltp@lists.linux.it>; Fri, 11 Sep 2026 19:51:15 +0200 (CEST)
+Received: from mail-pz2-x01.google.com (mail-pz2-x01.google.com
+ [IPv6:2607:f8b0:4864:3b::1])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id AA2851000237
- for <ltp@lists.linux.it>; Fri, 11 Sep 2026 19:42:12 +0200 (CEST)
-Received: by mail-qk2-x08.google.com with SMTP id
- d75a77b69052e-530e0062c97so2256841cf.1
- for <ltp@lists.linux.it>; Fri, 11 Sep 2026 10:42:12 -0700 (PDT)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 8809C14002C2
+ for <ltp@lists.linux.it>; Fri, 11 Sep 2026 19:51:14 +0200 (CEST)
+Received: by mail-pz2-x01.google.com with SMTP id
+ 41be03b00d2f7-ca696c4b152so236562a12.1
+ for <ltp@lists.linux.it>; Fri, 11 Sep 2026 10:51:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1789148531; x=1789753331; darn=lists.linux.it;
+ d=gmail.com; s=20251104; t=1789149073; x=1789753873; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to:content-type;
- bh=edKrU1dNClNd4yg7va7ABgRzSnwrXMGyQ+6gYJrhDDA=;
- b=qA3e2JwXtHDmNu5JftTyZnStuvJq2+i8EeT8HCLY4t5exYA9MaNLJbncTyF3XEAV4t
- /IQeVfN58scKcKz4+bsk6NDUkOr5Ir2O110a3RAMSHp4ZzD2qUFnkKJyE4Ph586RxnuN
- CTl9DViaotF5QgxaBVdx4VbzmU+NRGdlpcpkv4djwKRTmEV7DAA3rcgArfHvy7zJKlqW
- 6u4+pPI7oDwmaXWyZNs5+aqUb0qTGgsmr4uiRfjLzQhiva7ckwzsQDChQr0I/WJWWxIN
- AyxdCqqNqQettrg2fFJAz2dV5YVmxjm1WptmKqRkIEdwiCn69hfKgFFskMBZk3evBdEb
- uG6A==
+ bh=YrxBv1cye/zmcEBOo7cHlxZWfDvCOcbb0qmLAjiDDk8=;
+ b=Z8fQyu1bVVSiScKMP5BAcvvJKNAILBvTxn4wa+U8APnJBjtBbv7wl65UkUVrZSyTIY
+ xF4bcLoHv8onIO05nFkEJtPnSp9ZdcETs99UmlppS2mXs00IMNX52kfbrYrpme9fWC0S
+ 2O7lTavM+E5UEx5uBtOLhtQcT/z88C45WpFP/AJuNymMTnd4llNQBh5+DAXyF5oSKY4G
+ o2VBgmb1yK0F4tHfRQsDt9XcK/thmDlY1/WkUC23l/UnGcMkinXjQXJFeF+1Xcymm2YZ
+ XXndshHvVWtkqXTRHjdZdufQ7apl5GdiXz2OMSkOgCt2APl78/r55HFWZuf7SBA/zyh8
+ mrCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1789148531; x=1789753331;
+ d=1e100.net; s=20251104; t=1789149073; x=1789753873;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to:content-type;
- bh=edKrU1dNClNd4yg7va7ABgRzSnwrXMGyQ+6gYJrhDDA=;
- b=Gl9Gb9zWcUM9dIwaGuuLaRlYerng6fX/0CiTaVqZKNpXAMuLhGaj7AC5cGBnVNgGnq
- ZXnZ4uZCzlwMyqOPpqd9GJYE9fqHXv/PLTB0u5kNl4uHJXJA3zR/qeh6HQ0mj0G0Z9JH
- /mkdHhBQFRy3fnBWpRrZMqYG5OUE4TnOrm8/5ggt6K6UxH/zWxyb7+8rXJ2sJSef4jAn
- JMfLgkgWotF8W2m5pP2x2wOA0q9feVanxiP/n1E5PpP0cogVvuCOq1S5lm/fbPs+gTFc
- E12adWzenzq9VkVdWoQ3LhKLVFXucIgHXuiwzCEAcBrMtcR4f8PRkS4XGfW9U7mXJ0RI
- eVsw==
-X-Gm-Message-State: AFuF++k8sr1GxS9fHsdZGbNU0VW8VVw3+SKRUW8SA47Iv9iMHjUIWzj7
- Kpc0VKZCrtfEx5rxtVxnAVZ0ZPckdRlbu5GaCai9792p3UUMC1HSt39e
-X-Gm-Gg: AYBFou11MIL6sI74Ln3tMTuRpQwy4s+RNcPQuXu1WfB+8jTW1oXaVNl/HbEO58rOJk8
- 69qltTWNlqSptGaULOxw5fuY/EhLYPcWXwAzmTH97/73bDf6lf6GvB5HIZR5mwfbw0iXiAqRzkp
- GjD2ZpeO4fb18vjaeHUHf60Kjx+wjfoieOf9rELI+aTqZJgNBEdN40QlmG9AW9Gxsp6uuQvw8mn
- 7EZ5dM5f+38ekHZ+cy14pqXmn7zYazSOeqXllOxx86j2u/4S0IBeqQd9veDpxuMK/H3YtQ11SLu
- jphTyFWg9Z1+wHVCbOmGyZab9bGOGFG9bDbuZ2xg0BMCJj2T32tFsbNrCEX5Pwn612yV+SbNfvW
- x70EKhfmCc83KcyP3+ljeds79hu3+U0rbVQ7CuFA1W2Gp2YpS7lmujSRx+WD0sNP+FMtgjZ+Mib
- hcgrJx6IMoFJpLo+r4UAGqbLrzLPJyxDpnxslIPVe8MUlIOUBNZ3CTJi68RqFeH2Eht3EqzKM5P
- c17+NhptZ4UEqAWBWqwuQ0e3GKP8MetsH5nnZBWesvR8ctkhdELTtJQvcJMQ1VnJNxnXS1nfFnf
- iHKd9ZmxOmWFAnhAiBLhGtI=
-X-Received: by 2002:a05:622a:351:b0:51e:e5a2:ac82 with SMTP id
- d75a77b69052e-530c85cdd26mr86612561cf.23.1789148531245; 
- Fri, 11 Sep 2026 10:42:11 -0700 (PDT)
+ bh=YrxBv1cye/zmcEBOo7cHlxZWfDvCOcbb0qmLAjiDDk8=;
+ b=hKtuOKDrrfvDsLh3IzQbNNBKWrSskTphWXJtvjVXLeInhpgQNsReyF5xv7tORO83sN
+ sZAk6yVZEiwKDJt6u67gvL8ETQrTHxU2bWmMQ3ccR4rvB/P/5BaN4Ayqq2ApCBfVj2D1
+ SvWJrDhnqq7TxNxf1B2MaPeVJdnNXwu8LbxmHtZHw0Gt6yQr27LJhOCdOtmXmDeygZaj
+ QSJW2HkHYLsvR9Ryd1H14sFMJP+HugEykYu9HuRBOIbG+LJ0cpZQzQvpYCOJSxrQR9Tl
+ Q5+rCfjbrLbW/DUwEH2Ftvlhrbr5YiXiWaSXksHKNzix3MJ6OXJMsZM55vJO93pBH7ih
+ ckrA==
+X-Gm-Message-State: AFuF++lcWH06thZ6oPheXjq6BzO4u7ZT9weeLyGyQFxcK6Vf1ZkRBEgZ
+ 33XWqahKqMxLZs7jYCKSYxw6/dGyC+R44phdj92GHeW7wYMllqSeaaE+
+X-Gm-Gg: AYBFou3fd8ApnRz4U6xXtvsMozqLcPoeBSfmXEgtDa+EqikxZeA6t5Bg2G/3nqW9+L4
+ 9n37OwUdSQUnod3VWaGDNN6//ek6npGOKrUQTAeb8pEdXr3mgYoEHhyAiMkdcqSbyCNoffNXfgy
+ Ex1eiQAelzWh/37BDUaZlPPGjY13uO+F2i1vJVevbSASfmO6VJ+PWW9MklEWYu1EVgen45QhNmP
+ A6XIiOco05Vz+lb/NBgH2UquZ02XD/7EtOnHrWC1cQzWy0gpuB8ggRfF/y60egcAkpK7Weq9hE5
+ ULJgP5MNdIpHga/RxP68pmUvr2YkCto4K+wn5v0ee2OxfQBtSFnkn2dKcu51uVOBhZKOMiTdOul
+ YxOzEKLoxubHAguxpIFzwuYKIarc7nabd5Dfa7j1ySATuL56Wd/7D5XSnzBbyWTeF6dCtu6h9RE
+ ae1lpyAAqBvER+/u4TZ9uGqjeESQfqOpMnUuJkCHMAK5vqFYgOzvTkwKdT2H4csuIdY48svyAzA
+ /4QcQCx1reYRSaUr8RcjStvNee3SO+CEGDPMu1ozdqpHbJn/0lCIy+utMsrB8SSXo+4lYOr9qzA
+ SgxYUA6YUEAZcaUEjh8dDQ==
+X-Received: by 2002:a05:6a20:7347:b0:3d1:39e9:b269 with SMTP id
+ adf61e73a8af0-3daed15388dmr9271426637.4.1789149072719; 
+ Fri, 11 Sep 2026 10:51:12 -0700 (PDT)
 Received: from
- runnervmlun5p.uija1hs0nz2uxaixrrhkeiq2kh.bx.internal.cloudapp.net
- ([172.190.102.83]) by smtp.gmail.com with ESMTPSA id
- d75a77b69052e-530dfa7e000sm8706461cf.21.2026.09.11.10.42.10
+ runnervmlun5p.2egbwc2figsurhoyketqa1qpfb.dx.internal.cloudapp.net
+ ([104.209.7.217]) by smtp.gmail.com with ESMTPSA id
+ 5a478bee46e88-33ba4f739b5sm8099516eec.25.2026.09.11.10.51.12
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 11 Sep 2026 10:42:10 -0700 (PDT)
+ Fri, 11 Sep 2026 10:51:12 -0700 (PDT)
 From: linuxtestproject.agent@gmail.com
 To: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Fri, 11 Sep 2026 17:42:10 +0000
-Message-ID: <20260911174210.11289-1-linuxtestproject.agent@gmail.com>
+Date: Fri, 11 Sep 2026 17:51:11 +0000
+Message-ID: <20260911175111.9972-1-linuxtestproject.agent@gmail.com>
 X-Mailer: git-send-email 2.55.0
-In-Reply-To: <20260911-mmap_32bit_coverage-v3-1-b0608349556d@suse.com>
-References: <20260911-mmap_32bit_coverage-v3-1-b0608349556d@suse.com>
+In-Reply-To: <20260911-cve-ghostlock-v10-1-817cfb0187eb@suse.com>
+References: <20260911-cve-ghostlock-v10-1-817cfb0187eb@suse.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] lapi/mmap: add MAP_32BIT fallback
+Subject: Re: [LTP] sched_setattr: Convert to new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -100,10 +99,39 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi Andrea,
 
-On Fri Sep 11 17:29:53 2026 +0200, Andrea Cervesato wrote:
-> lapi/mmap: add MAP_32BIT fallback
+On Fri, 11 Sep 2026 15:14:34 +0200, Andrea Cervesato wrote:
+> sched_setattr: Convert to new API
 
-Verdict - Reviewed
+--- [PATCH 1/5] ---
+
+> +	if (sched_getattr(0, &read_attr, sizeof(read_attr), 0) == -1) {
+> +		tst_res(TFAIL | TERRNO, "sched_getattr() failed");
+> +		return;
+> +	}
+
+Returning early with tst_res() skips reset_sched(), leaving the process in
+SCHED_DEADLINE for subsequent iterations (-i). Use tst_brk(TBROK | TERRNO,
+"sched_getattr() failed") so that cleanup is triggered on failure.
+
+--- [PATCH 2/5] ---
+
+> +	TST_EXP_PASS(sched_getattr(0, read_attr, sizeof(*read_attr), 0),
+> +		     "sched_getattr() with valid parameters");
+> +	if (!TST_PASS)
+> +		return;
+
+Returning early on failure skips reset_sched() at the end of run(),
+leaving the process in SCHED_DEADLINE for subsequent iterations (-i).
+Call reset_sched() before returning.
+
+--- [PATCH 3/5] ---
+
+> diff --git a/include/lapi/sched.h b/include/lapi/sched.h
+
+This commit should be placed before patches 1 and 2 in the series so
+that those tests can use SAFE_SCHED_SETATTR() directly upon conversion.
+
+Verdict - Needs revision
 
 ---
 Note:
