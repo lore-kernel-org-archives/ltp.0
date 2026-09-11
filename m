@@ -4,111 +4,108 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 34E53C88E4A
-	for <ltp@archiver.kernel.org>; Fri, 11 Sep 2026 11:40:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DBF0CC88E4D
+	for <ltp@archiver.kernel.org>; Fri, 11 Sep 2026 11:48:35 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D31123E2EA5
-	for <ltp@archiver.kernel.org>; Fri, 11 Sep 2026 13:40:22 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id E7FE33E9224
+	for <ltp@archiver.kernel.org>; Fri, 11 Sep 2026 13:48:33 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 22EEF3C06B9
- for <ltp@lists.linux.it>; Fri, 11 Sep 2026 13:40:05 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id C9F563CD382
+ for <ltp@lists.linux.it>; Fri, 11 Sep 2026 13:48:16 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de
  [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 01F1B1400DEB
- for <ltp@lists.linux.it>; Fri, 11 Sep 2026 13:40:04 +0200 (CEST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 3D1411400DEF
+ for <ltp@lists.linux.it>; Fri, 11 Sep 2026 13:48:15 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 2154F1FE77;
- Fri, 11 Sep 2026 11:39:55 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 668F91FEEE;
+ Fri, 11 Sep 2026 11:48:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1789126799;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ t=1789127290; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=BoXzvfg9o+a3D8SuWXSOFmZd+17GA1v6eZ6sW5BN5gA=;
- b=TLYeOoqNbh6Q4i2CGxCtDs+eIOKCkfJ2TL8Qh29qJG0RbpLgh6i62XZSg7MWsJlz7R9YbP
- Hn6i55VLbHs3dfefuewBYN5I9XV3844E9JtL5X+siQhrZHuOC2SWw+w8GAvHwCbk04KDnS
- VN8RZ4BnV4l1VA6yZ7XFSNfGtmaPQAI=
+ bh=BUnU45xwptz0ziZb621aTaV2Che6XX5IVHgtR7v7mKM=;
+ b=MXxS9MGW+wbir426A1GdOJxFtCnA3C/pfXEBzCpY/q5/rfOjvT9WwYbQ7MkEozr8r7Qxfm
+ jGNwm90uz3AShNN3Aoe+hfINWONWGswEfL4ZjeBkBVbyLeknsq4aEWWZgM6FhgKftibsXr
+ ff6gnjHAGGp1D52nmqFUq53DCKdt/DA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1789126799;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ s=susede2_ed25519; t=1789127290;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=BoXzvfg9o+a3D8SuWXSOFmZd+17GA1v6eZ6sW5BN5gA=;
- b=qt6HcvzHY8DYXCSCiEiTtv9zJWR294x9WDKVaPRyoU5qAsvW3BbjXTedHQC490uXaPLrLN
- UaWrlF5Qtot8LkCQ==
+ bh=BUnU45xwptz0ziZb621aTaV2Che6XX5IVHgtR7v7mKM=;
+ b=Tq3WFmynSXjK6a+CtKw8XPH/UPJV4KKe0g8APqbaau/seE+ZSe6AXz0NlqrpnZa405Mrf9
+ 7Vt/l3sat/QZV4CQ==
 Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=ULagbywk;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=72njDxWu
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=NhPoc8vT;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=arhqVYlP
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1789126795;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ t=1789127286; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=BoXzvfg9o+a3D8SuWXSOFmZd+17GA1v6eZ6sW5BN5gA=;
- b=ULagbywkXbFmacCB2oBFPepHHePWvYiLxuEa1HJNCzESgbXjZfg3mlt3aKB+6B7RdkXy6M
- uZqeYOvKHJVoe1RMEaPCc5kGhHSwIpd0y2U6AJuFjRALBZhRwl/ZowP58QsCpB1/nQ8Wxh
- +XHVpklSf6o2yr22Jziw/4wQtlQJ7tk=
+ bh=BUnU45xwptz0ziZb621aTaV2Che6XX5IVHgtR7v7mKM=;
+ b=NhPoc8vTpmP3csa5pWDJZOIOvmw4W2AyAOKLw7rSbXkplInGOGeRJO/1mvHDIFBB3qdSM9
+ uNqZ/XnRpi8bLJEerzSzUQ6oL/pUXY+M3//sdp8sL7kM4N9ANxwAYdkLoAJX+e5ZpucnRN
+ 0y6eH4sEoiY+6NkXoCeBcHeHbVrT7+8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1789126795;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ s=susede2_ed25519; t=1789127286;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=BoXzvfg9o+a3D8SuWXSOFmZd+17GA1v6eZ6sW5BN5gA=;
- b=72njDxWu/opzXq84lmaJID4cggqlo2BfTe2JNjJMCC5EHg2attr10slxn1y1VAcwYQsuCn
- ob4XcrSl1ixFbXBg==
+ bh=BUnU45xwptz0ziZb621aTaV2Che6XX5IVHgtR7v7mKM=;
+ b=arhqVYlP2HcZn1jwIxatpahQ5B59xiEl+jsTZrq6yvRWRkrxucQv/m3QN1siv3PUPIQLgy
+ mY0yTVmhUzm6RNCw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D69A013770;
- Fri, 11 Sep 2026 11:39:54 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 302B413715;
+ Fri, 11 Sep 2026 11:48:06 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id xpHcMoroo2oOTAAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Fri, 11 Sep 2026 11:39:54 +0000
-Date: Fri, 11 Sep 2026 13:39:49 +0200
-From: Petr Vorel <pvorel@suse.cz>
+ by imap1.dmz-prg2.suse.org with ESMTPSA id w4a+C3bqo2oLVAAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Fri, 11 Sep 2026 11:48:06 +0000
+Date: Fri, 11 Sep 2026 13:48:16 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
 To: Andrea Cervesato <andrea.cervesato@suse.de>
-Message-ID: <20260911113949.GD1454430@pevik>
-References: <20260911-fix_documentation-v2-0-716b2613c477@suse.com>
- <20260911-fix_documentation-v2-6-716b2613c477@suse.com>
+Message-ID: <aqPqgBuvcjZE4F6g@yuki.lan>
+References: <20260904-keyctl_coverage-v2-0-43b78b15ef9f@suse.com>
+ <20260904-keyctl_coverage-v2-10-43b78b15ef9f@suse.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20260911-fix_documentation-v2-6-716b2613c477@suse.com>
+In-Reply-To: <20260904-keyctl_coverage-v2-10-43b78b15ef9f@suse.com>
 X-Rspamd-Action: no action
 X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: 2154F1FE77
-X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz];
+X-Rspamd-Queue-Id: 668F91FEEE
+X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
  R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; TO_DN_ALL(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ MX_GOOD(-0.01)[];
  RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- TO_MATCH_ENVRCPT_ALL(0.00)[]; MIME_TRACE(0.00)[0:+];
- ARC_NA(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.cz:dkim,suse.cz:email,suse.cz:replyto];
- DKIM_TRACE(0.00)[suse.cz:+]; RCPT_COUNT_THREE(0.00)[3];
- RCVD_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[]; RCVD_TLS_ALL(0.00)[];
- DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received,2a07:de40:b281:104:10:150:64:97:from];
+ RCVD_TLS_ALL(0.00)[]; ARC_NA(0.00)[]; MISSING_XM_UA(0.00)[];
  RCVD_VIA_SMTP_AUTH(0.00)[];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ MIME_TRACE(0.00)[0:+];
+ DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from,2a07:de40:b281:106:10:150:64:167:received];
+ RCPT_COUNT_TWO(0.00)[2];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
  RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- MISSING_XM_UA(0.00)[]; REPLYTO_EQ_FROM(0.00)[]
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[linux.it:url,suse.cz:dkim,suse.cz:email,yuki.lan:mid,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
+ TO_DN_ALL(0.00)[]; DKIM_TRACE(0.00)[suse.cz:+]
 X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 6/9] include: Document memory test utilities
+Subject: Re: [LTP] [PATCH v2 10/33] keyctl18: Test basic KEYCTL_MOVE
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -120,65 +117,71 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
 Cc: Linux Test Project <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Andrea,
+Hi!
+> +static key_serial_t ring_a, ring_b;
+> +static key_serial_t key;
+> +
+> +static void setup(void)
+> +{
+> +	SAFE_KEYCTL(KEYCTL_JOIN_SESSION_KEYRING, 0, 0, 0, 0);
+> +
+> +	ring_a = new_ring(RING_A_DESC);
+> +	ring_b = new_ring(RING_B_DESC);
+> +	key = new_user_key(KEY_DESC, PAYLOAD, sizeof(PAYLOAD), ring_a);
+> +}
+> +
+> +static void reset_state(void)
+> +{
+> +	SAFE_KEYCTL(KEYCTL_LINK, key, ring_a, 0, 0);
+> +	TEST(keyctl(KEYCTL_UNLINK, key, ring_b, 0, 0));
+> +	if (TST_RET == -1 && TST_ERR != ENOENT)
+> +		tst_brk(TBROK | TTERRNO, "failed to unlink key from ring_b");
 
-> +++ b/include/tst_memutils.h
-...
-> -/*
-> - * Read the value of SwapFree from /proc/meminfo.
-> +/**
-> + * tst_available_swap() - Reads free swap from /proc/meminfo.
-Maybe worth tho note SwapFree:
+We are trying to avoid hypotetical TBROK here in the case that the MOVE
+didn't work right? I'm not sure it's worth the trouble.
 
-* tst_available_swap() - Reads free swap from /proc/meminfo using SwapFree.
+> +}
+> +
+> +static void run(void)
+> +{
+> +	reset_state();
+> +
+> +	TST_EXP_PASS(keyctl(KEYCTL_MOVE, key, ring_a, ring_b, 0));
+> +	if (!TST_PASS)
+> +		return;
+> +
+> +	TST_EXP_EQ_LI(search_ring(ring_b, "user", KEY_DESC), key);
+> +
+> +	TST_EXP_FAIL2(search_ring(ring_a, "user", KEY_DESC), ENOKEY,
+> +		      "key no longer found in the source keyring");
 
-> + *
-> + * Return: Available swap space in KiB.
->   */
->  long long tst_available_swap(void);
+Here the search_string() function actually hides the syscall being
+used. I would prefer having the keyctl() call in these two.
 
-...
-> @@ -63,10 +59,10 @@ void tst_disable_oom_protection(pid_t pid);
->  /**
->   * tst_mapping_in_range() - Returns true if there is a mapping provided range.
->   *
-> - * @low: A lower address inside of the processe address space.
-> - * @high: A higher address inside of the processe address space.
-> + * @low: A lower address inside of the process address space.
-> + * @high: A higher address inside of the process address space.
->   *
-> - * return: Returns true if there is a mapping between low and high addresses in
-> + * Return: Returns true if there is a mapping between low and high addresses in
->   *         the process address space.
+> +}
+> +
+> +static struct tst_test test = {
+> +	.setup = setup,
+> +	.test_all = run,
+> +	.min_kver = "5.3",
+> +};
+> 
+> -- 
+> 2.51.0
+> 
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
 
-This is causes wrong formatting: "Returns true if there is a mapping between low
-and high addresses in" being bold. Please adjust before merge.
-
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
-
-Kind regards,
-Petr
-
-diff --git include/tst_memutils.h include/tst_memutils.h
-index e3f18c45ef..2be476191f 100644
---- include/tst_memutils.h
-+++ include/tst_memutils.h
-@@ -63,7 +63,7 @@ void tst_disable_oom_protection(pid_t pid);
-  * @high: A higher address inside of the process address space.
-  *
-  * Return: Returns true if there is a mapping between low and high addresses in
-- *         the process address space.
-+ * the process address space.
-  */
- int tst_mapping_in_range(unsigned long low, unsigned long high);
- 
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
