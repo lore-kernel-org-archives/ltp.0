@@ -4,104 +4,107 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9E68CC88E50
-	for <ltp@archiver.kernel.org>; Fri, 11 Sep 2026 15:36:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BBE9AC88E45
+	for <ltp@archiver.kernel.org>; Fri, 11 Sep 2026 15:38:20 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 1E5073E922E
-	for <ltp@archiver.kernel.org>; Fri, 11 Sep 2026 17:36:25 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 41C293E9219
+	for <ltp@archiver.kernel.org>; Fri, 11 Sep 2026 17:38:19 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 323763E920E
- for <ltp@lists.linux.it>; Fri, 11 Sep 2026 17:36:10 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+ by picard.linux.it (Postfix) with ESMTPS id AF2163E920F
+ for <ltp@lists.linux.it>; Fri, 11 Sep 2026 17:38:03 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 728E51A00CBB
- for <ltp@lists.linux.it>; Fri, 11 Sep 2026 17:36:08 +0200 (CEST)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 5086F1000D2B
+ for <ltp@lists.linux.it>; Fri, 11 Sep 2026 17:38:03 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 939001FB5D;
- Fri, 11 Sep 2026 15:35:54 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 6CEBC21BBF;
+ Fri, 11 Sep 2026 15:37:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1789140958; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1789141078; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=qijgygguwsglmkmGsPXR+g9Y7geOkF2laW0SId9JEY4=;
- b=T5qP4pOp1Ajn5ZGNgG8+OI3UYYAj7sfnTcaPlqzWmrTyGNBuY/h5OwwWXzgGYfKLflH42U
- lU5Rtxf0v00kqqk4y0QVGRZvVFPlVnRXkznL+WbpkjczhdaWOOXfjQ0pQvNOieyJKbcqNk
- E/Ms/ddWBrv858Oz/XSagDWXCRvVEkQ=
+ bh=1jXiuKIsd7L5qSziN2xL3fr7UJmiKu2hYRsUxal98Wk=;
+ b=citf5sPVa71apc/OWH9TXi/RxHwII7LoNeqNYVNFDWTecM2jxw3Gg3epPV5+xHh1CKaik9
+ vEGhXeLOkBjfdcDxs3Qy9t8AaM/CJcpT6zARHQyowqmSCgZmv6+4r8a1IA3llFWn6Uk9oc
+ oCqxsWboow9sNV+KIRfcMUc+oFCHB5E=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1789140958;
+ s=susede2_ed25519; t=1789141078;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=qijgygguwsglmkmGsPXR+g9Y7geOkF2laW0SId9JEY4=;
- b=EM8xt99IbUkNPOGWWSVz0gOSX/ldL84I9gwQ4kYHz3XpjP6aFBjXsI+e+VemkrZK5n+Wya
- n/lu2qUOmf2jkbCA==
-Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=UxkZnjmx;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=A924lt6k
+ bh=1jXiuKIsd7L5qSziN2xL3fr7UJmiKu2hYRsUxal98Wk=;
+ b=ZaMasb506V4wfkcXrwQgP13CvuDESbvweQegtd8qq5rsjbkLUNN3g18j6GacFH1SZboaxS
+ OuyRxi08sSb7LgDA==
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=qb58riji;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=d8iu7TvD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1789140954; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1789141074; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=qijgygguwsglmkmGsPXR+g9Y7geOkF2laW0SId9JEY4=;
- b=UxkZnjmx3EtAV+tmb1eEbUqYIewBUsGpIE9M34WIlyw/88mvjBOtT1JWcdaJG+xwL7KiHQ
- pGUwy4DYhaqZtjdXl/9Is5Vilz02B/ayA147up9r50QX5peBpPomEczq+UgDOS2yak3Dz7
- r4cM9NwRFogTrBgihkvKdq5RHi2qIGk=
+ bh=1jXiuKIsd7L5qSziN2xL3fr7UJmiKu2hYRsUxal98Wk=;
+ b=qb58rijiZ4AQAdeKqOfIs9NrnLfHm7ulmAm6JK7Hl1nvIBDvae4Ydt3sh4sjo16lzgYDIs
+ p4vs8PSGLNT5DbnSRJ1K2GXTLD3OLrSFjjLipWX7JQKXt1rJdzAwRiFEHvhqCm3Mu2OC0S
+ 06CxbhjOc9QdG7YLp++N91cYwWt3KUM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1789140954;
+ s=susede2_ed25519; t=1789141074;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=qijgygguwsglmkmGsPXR+g9Y7geOkF2laW0SId9JEY4=;
- b=A924lt6kOvYZaBsgvljCrEJbGTLqmRqNtZY3LbYBCEcHDwUmUTdPjaB3+D3Py1X5wk07Nn
- GZA35LHXklk6NVCw==
+ bh=1jXiuKIsd7L5qSziN2xL3fr7UJmiKu2hYRsUxal98Wk=;
+ b=d8iu7TvD5czem1P0snq8TrfkonOREv5kcJeSpYZnYuYh5uX3gD5YbtHngYHY7NcfRQ8r49
+ WcHIAZMQi0VZHRCw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5285A136ED;
- Fri, 11 Sep 2026 15:35:54 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3D67013715;
+ Fri, 11 Sep 2026 15:37:54 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id T1kdFNofpGpWPgAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Fri, 11 Sep 2026 15:35:54 +0000
-Date: Fri, 11 Sep 2026 17:35:58 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id zy77DlIgpGprQAAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Fri, 11 Sep 2026 15:37:54 +0000
+Date: Fri, 11 Sep 2026 17:37:56 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
 To: Andrea Cervesato <andrea.cervesato@suse.de>
-Message-ID: <aqQf3pyEeS4q-y-K@yuki.lan>
+Message-ID: <aqQgVN30vD0C1Pjq@yuki.lan>
 References: <20260904-keyctl_coverage-v2-0-43b78b15ef9f@suse.com>
- <20260904-keyctl_coverage-v2-22-43b78b15ef9f@suse.com>
+ <20260904-keyctl_coverage-v2-23-43b78b15ef9f@suse.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20260904-keyctl_coverage-v2-22-43b78b15ef9f@suse.com>
-X-Rspamd-Queue-Id: 939001FB5D
+In-Reply-To: <20260904-keyctl_coverage-v2-23-43b78b15ef9f@suse.com>
+X-Rspamd-Queue-Id: 6CEBC21BBF
 X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[99.99%];
  NEURAL_HAM_LONG(-1.00)[-1.000];
  R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
+ MX_GOOD(-0.01)[];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
  MIME_TRACE(0.00)[0:+]; MISSING_XM_UA(0.00)[];
- RCPT_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
+ RCVD_TLS_ALL(0.00)[]; RCPT_COUNT_TWO(0.00)[2];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
  SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
  RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[yuki.lan:mid,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:dkim,suse.cz:email];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,yuki.lan:mid];
  TO_DN_ALL(0.00)[]; DKIM_TRACE(0.00)[suse.cz:+]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 22/33] keyctl29: Test KEYCTL_PKEY_QUERY on
- public key
+Subject: Re: [LTP] [PATCH v2 23/33] keyctl30: Test KEYCTL_PKEY_QUERY on
+ private key
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -120,36 +123,18 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> diff --git a/testcases/kernel/syscalls/keyctl/keyctl_common.h b/testcases/kernel/syscalls/keyctl/keyctl_common.h
-> index c7290cc6e..723fe228b 100644
-> --- a/testcases/kernel/syscalls/keyctl/keyctl_common.h
-> +++ b/testcases/kernel/syscalls/keyctl/keyctl_common.h
-> @@ -50,4 +50,24 @@ static inline key_serial_t search_ring(key_serial_t ring, const char *type,
->  		      (unsigned long)desc, 0);
->  }
->  
-> +static inline key_serial_t add_asymmetric_key_or_tconf(const char *desc,
-> +						       const void *payload,
-> +						       size_t plen,
-> +						       const char *parser_kconfig)
+> +static void setup(void)
 > +{
-> +	TEST(add_key("asymmetric", desc, payload, plen, KEY_SPEC_PROCESS_KEYRING));
-> +	if (TST_RET >= 0)
-> +		return TST_RET;
+> +	SAFE_KEYCTL(KEYCTL_JOIN_SESSION_KEYRING, 0, 0, 0, 0);
 > +
-> +	if (TST_ERR == ENODEV)
-> +		tst_brk(TCONF, "kernel does not support asymmetric keys");
-> +	if (TST_ERR == EBADMSG)
-> +		tst_brk(TCONF, "missing asymmetric parser (%s)", parser_kconfig);
-> +	if (TST_ERR == ENOENT)
-> +		tst_brk(TCONF, "missing crypto RSA / SHA256 algorithms");
+> +	tst_modprobe("pkcs8_key_parser", NULL);
 > +
-> +	tst_brk(TBROK | TTERRNO, "failed to add asymmetric key '%s'", desc);
-> +	return -1;
-> +}
+> +	priv_key = add_asymmetric_key_or_tconf("priv", rsa2048_pkcs8,
+> +					       sizeof(rsa2048_pkcs8),
+> +					       "CONFIG_PKCS8_PRIVATE_KEY_PARSER");
 
-Shall we turn this into a SAFE_MACRO() as well? Safe macros exitting the
-test with TCONF are estabilished pattern as well.
+Aparat from this that should have been SAFE_ADD_KEY() the test looks
+good.
 
 -- 
 Cyril Hrubis
