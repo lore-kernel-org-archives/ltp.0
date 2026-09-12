@@ -4,84 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CAF72C79FB6
-	for <ltp@archiver.kernel.org>; Sat, 12 Sep 2026 11:44:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C62C0C88E56
+	for <ltp@archiver.kernel.org>; Sat, 12 Sep 2026 16:05:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1789229152; h=mime-version :
+ references : in-reply-to : date : message-id : to : subject : list-id
+ : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-type :
+ content-transfer-encoding : sender : from;
+ bh=mQ3Y1R25IMBVFEUASPV+I7tsG2AokM0dZlzpwhRMxq4=;
+ b=XzXn9C52NKGybqZjTfmTRsvpgbwV7Y7CXbbnLYjdkHWN4yV5GQJFJnvv4+sK+wZB7Gc4p
+ 9WzggYkpFzqzGS6BL2cVLstLurQ6WXEh9mun2Pwp/i3ZJCLd/UKMG+blLkaAuHUhEzpy+RO
+ Da70E0Cj2T9HQ9px9SZKyGeTumhvNPY=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 84AB83E6CD9
-	for <ltp@archiver.kernel.org>; Sat, 12 Sep 2026 13:44:11 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 8ACEA3E9177
+	for <ltp@archiver.kernel.org>; Sat, 12 Sep 2026 18:05:52 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0B4E53C5493
- for <ltp@lists.linux.it>; Sat, 12 Sep 2026 13:43:52 +0200 (CEST)
-Received: from mail-oi2-x02.google.com (mail-oi2-x02.google.com
- [IPv6:2607:f8b0:4864:32::2])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 4CA853C0E10
+ for <ltp@lists.linux.it>; Sat, 12 Sep 2026 18:05:33 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 8EAA42003AF
- for <ltp@lists.linux.it>; Sat, 12 Sep 2026 13:43:52 +0200 (CEST)
-Received: by mail-oi2-x02.google.com with SMTP id
- 5614622812f47-4ab2d72ff13so655298b6e.0
- for <ltp@lists.linux.it>; Sat, 12 Sep 2026 04:43:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1789213431; x=1789818231; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to:content-type;
- bh=x+x0hudqTwLTcAQDWwjAknDNVE8G0OV2pOH2mhF763Q=;
- b=mJfPfTdMPffJHlvkV2FcJKe0Vg6yv/nsIUSS7gfBnqgefaDAmlZThdyhPggntqdo16
- APpIv2wIjMNZyiG0hXWUZ0RHyo24EG8o6yXZgU/zbgD+blwX7HfiW6V4ZvjjMdA9XfBV
- my/U0prNkupYNQgsV4t2urWax91gxuc0fHakzSAf77Al6TCa3GpvsOMLFhEvEx2CiScF
- /o/9P0DhJH1ZMMtfeTseGJ6dFx0924rUdJ9z73SfrYCP605QAMtAV7rdqpR+irOB08MG
- 7dU9l3oGOgnQjMxfjJN44jqSjKD8bhB4Q2sbg4MyA5SSiUk/jhkqd+IupDstOgTuJoRH
- 1wig==
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 401B6600041
+ for <ltp@lists.linux.it>; Sat, 12 Sep 2026 18:05:31 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1789229129;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=mgOCulKK8WJPYgKqSDOvIjmc8owKJyrHjxv0j1C/k40=;
+ b=cIVMsqpdMcchdqirTRb7mWiz0LWmxY4q5zAEGHv++ovYbUoTPTbttuFPj2bweXaE3IBisl
+ WuExRssVC8tZnS6U5mslq6eRIRsDgVMei0lgDBOg6etTlA611IMYm1PPrHR/VIPRIPjgHS
+ xjopePfWJQc+r5x2Bs2xEW8muaod9dQ=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-660-dUBkuzIVObSE82lE-TRARQ-1; Sat, 12 Sep 2026 12:05:27 -0400
+X-MC-Unique: dUBkuzIVObSE82lE-TRARQ-1
+X-Mimecast-MFC-AGG-ID: dUBkuzIVObSE82lE-TRARQ_1789229126
+Received: by mail-wm1-f69.google.com with SMTP id
+ 5b1f17b1804b1-49b8c651ac0so25188175e9.2
+ for <ltp@lists.linux.it>; Sat, 12 Sep 2026 09:05:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20251104; t=1789213431; x=1789818231;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to:content-type;
- bh=x+x0hudqTwLTcAQDWwjAknDNVE8G0OV2pOH2mhF763Q=;
- b=ErsK1Moa1SqHPc6hD2BaH6mfMdw3Y/T19hnpOQV2+sHv7VZTSsmfguRYssidm9YGnd
- XoKafu6LPgv7aZjUMOofDfk+Mgt9dRmUgHbaklI1bwu33fESUEJF7XE/PhVBj0aeSt0M
- AwaWhPTLxH4Os8Fd84M+/CeFCAV+HiZUsuvSxg8VhqJx82UNA1vllfI6NanEoQXJtMld
- yyM0K66gG55dVHqaST/cUWcQPJME6irnLye1kTa2+dvDEwsN64Wjnpg5NkyikwU+iS6C
- D6+QqJk1jE1w0QEJX6nI0Nme92yPDgw0zuI4SdZOa/Mv2E9CUaOBLFsXcLv0qR47IXCQ
- 17xQ==
-X-Gm-Message-State: AFuF++lsCc/sfBrXwsNYgQxWnz5eD/kvt8M3v9qh4a+CfBofkzBLdr8J
- UzzOtfAYZ4C+ziQAvTG8szZdwC6KD7sAmGYQQUr7lUOO7KUSMX+FO+ms
-X-Gm-Gg: AYBFou0I/lcKJHZpehL5AtofN1L1J9d5JQ7FjBnDUEQ7C+XXk9cm1RxQg2BlrTg9LGb
- fXfrVcWjrPrkSgiQWqynT1HeLJyDxeToeGYwFLdesDpL5RjDY3myMFOoR8KlsDwB2jnQvisMyWb
- SRsphAkptYEv2wl953BmcI0t8jJMaOnF2pLlFsn/ZMtu92i+XofuSnNKQ4e04kpHArwrMx1G73b
- DiiroUVWO4eemDoRgPjoW9Lnz/KOXzBT62K2HzQWc8LGQTEsrPFQFMmyS1RAGJ9wBUBAGZh79Pn
- 35sj/52JV1s7oSCvh2yR+E5TSp+gRfkZrziRrICP0Z0hT4ZUu9iEdbYs6cFmGWsBzsdMpvyOnfY
- n05if3KTkJwaDstqbrrwcYpzie2w/ee+JMZg5BsJKxPiNIZaRqJthRo2mF2vkPs8tfT8XoDcTnt
- DDAS2jkh+iQQR5sz9zqR0ziwSLHc2M86Jzih5uC+P7+SxIimu4Inn8hO3tyduyr+Bq+zWyRprjY
- oG4JOgGgFSESjf7553Iryh3R+Mp+GlZrGik0PSR2CEBJDj/11EC3nkl42+fvOovYP6KsPcjfIeU
- zsdrEZrLHg==
-X-Received: by 2002:a05:6808:50a5:b0:4b9:e65b:8c36 with SMTP id
- 5614622812f47-4c31c72c208mr7308684b6e.36.1789213431101; 
- Sat, 12 Sep 2026 04:43:51 -0700 (PDT)
-Received: from
- runnervmlun5p.d2zfokrtz4tetnlfa0ddzqpawd.gx.internal.cloudapp.net
- ([20.29.31.195]) by smtp.gmail.com with ESMTPSA id
- 5614622812f47-4c32bde3858sm4666848b6e.0.2026.09.12.04.43.50
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sat, 12 Sep 2026 04:43:50 -0700 (PDT)
-From: linuxtestproject.agent@gmail.com
-To: Pavithra <pavrampu@linux.ibm.com>
-Date: Sat, 12 Sep 2026 11:43:49 +0000
-Message-ID: <20260912114349.9109-1-linuxtestproject.agent@gmail.com>
-X-Mailer: git-send-email 2.55.0
-In-Reply-To: <20260912082235.2164616-1-pavrampu@linux.ibm.com>
-References: <20260912082235.2164616-1-pavrampu@linux.ibm.com>
+ d=1e100.net; s=20251104; t=1789229126; x=1789833926;
+ h=content-type:cc:to:subject:message-id:date:from:in-reply-to
+ :references:mime-version:x-gm-gg:x-gm-message-state:from:to:cc
+ :subject:date:message-id:reply-to:content-type;
+ bh=mgOCulKK8WJPYgKqSDOvIjmc8owKJyrHjxv0j1C/k40=;
+ b=Bnn2knhrMG1hzl+f872pWsHbKhF8pRtttcFWB5jpaP2l0u7YvLA1u8SvDxNtxYVMOA
+ UYy1J5MHN0+zyW0QM5b3IrkaT+NgIqJ5NxrHDJywLLLDv7uMSm63RDwAqNMK/Quac2W3
+ 3Pff7CbKYOzxpZPomukc7sJJJYg6cjQhr0khV0rhWhP0FSxGPykl2s0e6j6wIkI3wfLC
+ AIGvp1YJ/63LG8f3Ey/DYZSNvFwwDqEaibfIdTW/eS+ddpsm+blc3EaMXWlDrKHkRCK5
+ nAolAGLyL3WVJNWE2/NUhb6wbFzeh27iy3eF6uio/iXa5KPHKLYMSPkHV5duh2iGkwfX
+ ET1A==
+X-Gm-Message-State: AFuF++mQ/XfVLgMZfABubSnyudZyWJthxYq0lX6UuZ09q+5rM7Gt5ufU
+ 9mRmTCyGDGQuHhvscgL3qEKS+VEintFfZEcpo6NewK75nW23adr5h3UgLq2N88ovNTNb16Q69Sc
+ GXareqaZCHAZ5bTInLuV8S8aXPNQV/DQerq7ENFhqEgfmcvKt6xSGe6OQDN21BQZo2hk/OTJZeW
+ w/2n3eXj9XcfNd1w1ooDUZHWemSuA=
+X-Gm-Gg: AYBFou3yFtiA6XKFXwD0sstfd/b3iq3vOqcyRtbSip1sGn2iAl9EufehwlI0x7f/yLb
+ msSRKOFIX8/D/8Mxz7GfxdPgfZkexzRUOXYLdT+4+z5CyNqJM1Gh0/vbK/8/tdVxzD2ko3Fd+V1
+ DUuvFG8CaPVRXb4vuIiZ1dcq8mhif9THzAgjXni8XEuvqZ1OeKIJE7g8x2oA==
+X-Received: by 2002:a05:600c:3b90:b0:49d:16df:8521 with SMTP id
+ 5b1f17b1804b1-49e619805f1mr101265435e9.4.1789229125974; 
+ Sat, 12 Sep 2026 09:05:25 -0700 (PDT)
+X-Received: by 2002:a05:600c:3b90:b0:49d:16df:8521 with SMTP id
+ 5b1f17b1804b1-49e619805f1mr101265145e9.4.1789229125541; Sat, 12 Sep 2026
+ 09:05:25 -0700 (PDT)
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+References: <a308e12198ce96305761a009858fa4a80c91f932.1788518850.git.jstancek@redhat.com>
+ <6a9ab385.aefdde3a.ed129.d0ca@mx.google.com>
+In-Reply-To: <6a9ab385.aefdde3a.ed129.d0ca@mx.google.com>
+Date: Sat, 12 Sep 2026 19:05:13 +0300
+X-Gm-Features: AcwNN1XGgRUYWRDVV6pRRKNQEts3puV_3h0sCjymPnjoMwvWNDZ_vr6OuP2G5fw
+Message-ID: <CAASaF6xRAGdWOaLKYO634DrjKP2vqKH9pFp1EfeJYVQMq6feaw@mail.gmail.com>
+To: Andrea Cervesato <andrea.cervesato@suse.com>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-MFC-PROC-ID: XznbbHOSxdfR85zB2LGb1dqctuwlapHuI-3ItqGB-e0_1789229126
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] hugetlb/hugemmap: add hugemmap33 to test hugetlbfs quota
- accounting
+X-Content-Filtered-By: Mailman/MimeDel 2.1.29
+Subject: Re: [LTP] [PATCH] getrusage03: Pin the test to a single CPU
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -93,28 +101,34 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+From: Jan Stancek via ltp <ltp@lists.linux.it>
+Reply-To: Jan Stancek <jstancek@redhat.com>
+Cc: LTP List <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Pavithra,
+Thanks, I missed that one. It looks like that thread is also reaching same
+patch - pinning to single cpu. I'll have a closer look next week.
 
-On Sat Sep 12 13:52:35 2026 +0530, Pavithra <pavrampu@linux.ibm.com> wrote:
-> hugetlb/hugemmap: add hugemmap33 to test hugetlbfs quota accounting
+On Fri, Sep 4, 2026, 15:03 Andrea Cervesato <andrea.cervesato@suse.com>
+wrote:
 
-Verdict - Reviewed
-
----
-Note:
-
-The agent can sometimes produce false positives although often its
-findings are genuine. If you find issues with the review, please
-comment this email or ignore the suggestions.
-
-Regards,
-LTP AI Reviewer
+> Hi Jan,
+>
+> is this patch taken into account? should we reject it and consider this
+> one only?
+>
+>
+> https://patchwork.kernel.org/project/ltp/patch/20260902160113.1207205-1-nirmoyd@nvidia.com/
+>
+> --
+> Andrea Cervesato
+> SUSE QE Automation Engineer Linux
+> andrea.cervesato@suse.com
+>
+>
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
