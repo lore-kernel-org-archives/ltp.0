@@ -4,66 +4,101 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A463BC88E5C
-	for <ltp@archiver.kernel.org>; Mon, 14 Sep 2026 02:14:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1789352050; h=date : to :
- message-id : references : mime-version : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=LYsNKEzXjpj4HPqUcyq7dYyU6gR+lRVf6FCaeDrA9Pw=;
- b=IzmQarp5UFeRDhwKSnnMVGd5qGPz+bzmv8DyaV9gEuXpvDBdOd/iupjHIcwHcRB9xr7+3
- 5Gvj++3UATavudNozJWAm9IbMAdfzNzWBDCo+OuAvbFDafK8CurVjhJscHogOaMhDKIMLdb
- uEygOwcndRCgxDP2zOvUN5xaUhFrkv8=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5FB59C88E64
+	for <ltp@archiver.kernel.org>; Mon, 14 Sep 2026 08:32:09 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 4F4003E20E9
-	for <ltp@archiver.kernel.org>; Mon, 14 Sep 2026 04:14:10 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 535FD3E90B2
+	for <ltp@archiver.kernel.org>; Mon, 14 Sep 2026 10:32:07 +0200 (CEST)
 Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 5236B3CD382
- for <ltp@lists.linux.it>; Mon, 14 Sep 2026 04:13:47 +0200 (CEST)
-Received: from Atcsqr.andestech.com (atcsqr.andestech.com [220.128.198.184])
+ by picard.linux.it (Postfix) with ESMTPS id 7FC413E196B
+ for <ltp@lists.linux.it>; Mon, 14 Sep 2026 10:31:53 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 5AD9F200927
- for <ltp@lists.linux.it>; Mon, 14 Sep 2026 04:13:40 +0200 (CEST)
-Received: from mail.andestech.com (atcpcs54.andestech.com [10.0.1.154])
- by Atcsqr.andestech.com with ESMTPS id 68E2DXOM007487
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Mon, 14 Sep 2026 10:13:33 +0800 (+08)
- (envelope-from cyyang772@andestech.com)
-Received: from ATCPCS34.andestech.com (10.0.1.134) by atcpcs54.andestech.com
- (10.0.1.154) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.2.2562.43; Mon, 14 Sep
- 2026 10:13:33 +0800
-Received: from swlinux02.andestech.com (10.0.15.183) by ATCPCS34.andestech.com
- (10.0.1.134) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.39; Mon, 14 Sep
- 2026 10:13:33 +0800
-Date: Mon, 14 Sep 2026 10:13:27 +0800
-To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <aqdYRyvoyE8X_mM1@swlinux02.andestech.com>
-References: <20260908023121.1895897-1-cyyang772@andestech.com>
- <ap_nx7AZvluXzW-i@yuki.lan>
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id E76C0200988
+ for <ltp@lists.linux.it>; Mon, 14 Sep 2026 10:31:52 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 4EE3F1FEE6;
+ Mon, 14 Sep 2026 08:31:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1789374711;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=dMVHj36ZxkcMuc2cJrtuUlbJ7XDlq7pg0CwahWlpMAE=;
+ b=bXrTMBFe4ix++zs4Qa1g+9fknKT1L37JnicDZKSydvRlOU4u+RL8/QVpUS3O+G8SD54jU3
+ RQHgN7nv2w6y4yRnAXw6UQlH7l0tWTjcJaEXr5vNefah6pO+Y0kFSF0Ykvh+PA4UhP0czh
+ xJeaU8DPkbkLushNJG/+s85YyFrEtNg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1789374711;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=dMVHj36ZxkcMuc2cJrtuUlbJ7XDlq7pg0CwahWlpMAE=;
+ b=ev1UKOCYbDXi4q1fjvnznmr0zPg7UfrStNadRYSt5Y+f/46zIuthKhVtqKXJqHGm6spe/j
+ F40jrcldHZ+02lDA==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1789374711;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=dMVHj36ZxkcMuc2cJrtuUlbJ7XDlq7pg0CwahWlpMAE=;
+ b=bXrTMBFe4ix++zs4Qa1g+9fknKT1L37JnicDZKSydvRlOU4u+RL8/QVpUS3O+G8SD54jU3
+ RQHgN7nv2w6y4yRnAXw6UQlH7l0tWTjcJaEXr5vNefah6pO+Y0kFSF0Ykvh+PA4UhP0czh
+ xJeaU8DPkbkLushNJG/+s85YyFrEtNg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1789374711;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=dMVHj36ZxkcMuc2cJrtuUlbJ7XDlq7pg0CwahWlpMAE=;
+ b=ev1UKOCYbDXi4q1fjvnznmr0zPg7UfrStNadRYSt5Y+f/46zIuthKhVtqKXJqHGm6spe/j
+ F40jrcldHZ+02lDA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0450613515;
+ Mon, 14 Sep 2026 08:31:50 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id pb59O/awp2qbGAAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Mon, 14 Sep 2026 08:31:50 +0000
+Date: Mon, 14 Sep 2026 10:31:41 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Andrea Cervesato <andrea.cervesato@suse.de>
+Message-ID: <20260914083141.GB1564244@pevik>
+References: <20260911-mmap_32bit_coverage-v3-0-b0608349556d@suse.com>
+ <20260911-mmap_32bit_coverage-v3-3-b0608349556d@suse.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <ap_nx7AZvluXzW-i@yuki.lan>
-User-Agent: Mutt/2.4.1+37 (70449fe) (2026-08-09)
-X-Originating-IP: [10.0.15.183]
-X-ClientProxiedBy: ATCPCS33.andestech.com (10.0.1.100) To
- ATCPCS34.andestech.com (10.0.1.134)
-X-DKIM-Results: atcpcs54.andestech.com; dkim=none;
-X-DNSRBL: 
-X-MAIL: Atcsqr.andestech.com 68E2DXOM007487
+In-Reply-To: <20260911-mmap_32bit_coverage-v3-3-b0608349556d@suse.com>
+X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ NEURAL_HAM_SHORT(-0.20)[-0.999]; MIME_GOOD(-0.10)[text/plain];
+ RCVD_TLS_ALL(0.00)[]; ARC_NA(0.00)[]; MISSING_XM_UA(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; MIME_TRACE(0.00)[0:+];
+ RCPT_COUNT_TWO(0.00)[2];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; FROM_HAS_DN(0.00)[];
+ TO_DN_ALL(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:replyto,suse.cz:email];
+ RCVD_COUNT_TWO(0.00)[2]; REPLYTO_EQ_FROM(0.00)[]
 X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] mmap21: Check for free space before mapping the
- file
+Subject: Re: [LTP] [PATCH v3 3/3] mmap24: add test for MAP_32BIT address
+ limit
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -75,34 +110,20 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Victor Cheng-Yen Yang via ltp <ltp@lists.linux.it>
-Reply-To: Victor Cheng-Yen Yang <cyyang772@andestech.com>
-Cc: ltp@lists.linux.it
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: Linux Test Project <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Cyril,
+Hi Andrea,
 
-> Depending on the page size this is either 4MB or 64MB, I would say that
-> if you run LTP on a machine with less than 4MB of free space many tests
-> would fail.
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
+Thanks!
 
-I agree with you. In our test environment, we did provide mmap21 with
-sufficient space. mmap21 was the victim because certain shell test did
-not clean up properly and filled up the disk.
-
-> Maybe it would make sense to print a warning from the test library for
-> any tests that has needs_tmpdir == 1 and the free space at the test
-> temporary directory is less than a few megabytes.
-
-I'll work on this in the near future. Printing warning messages from the
-test library is indeed an elegant way. Thanks for your idea!
-
-
-Best Regards,
-Victor
+Kind regards,
+Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
