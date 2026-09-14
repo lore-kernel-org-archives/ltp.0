@@ -4,58 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 301D2C88E6A
-	for <ltp@archiver.kernel.org>; Mon, 14 Sep 2026 09:26:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 201CAC88E6A
+	for <ltp@archiver.kernel.org>; Mon, 14 Sep 2026 09:26:23 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A6E2E3E907F
-	for <ltp@archiver.kernel.org>; Mon, 14 Sep 2026 11:26:06 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id DDF303E90A0
+	for <ltp@archiver.kernel.org>; Mon, 14 Sep 2026 11:26:20 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 5A4D93E239C
- for <ltp@lists.linux.it>; Mon, 14 Sep 2026 11:25:35 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 2320A3E239C
+ for <ltp@lists.linux.it>; Mon, 14 Sep 2026 11:25:37 +0200 (CEST)
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id BC5731400990
- for <ltp@lists.linux.it>; Mon, 14 Sep 2026 11:25:31 +0200 (CEST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 9660C1400BC2
+ for <ltp@lists.linux.it>; Mon, 14 Sep 2026 11:25:35 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1789377934; x=1820913934;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=bZnXY8B0Ci7oCw7clpSeE5zE9OiL+8aXf5JBZquJpz4=;
- b=TixjFxvTFUaPPzjeZPty+YogI7tVKMB6RUe9FdlEZCTkqdhfpyZSDXle
- symJ3DyPRGkVz7Ut2TShFe7koFtTJe4ISgWrY+k3N0CGRJBrtCkFnInAd
- mqDNMZb9+Kow+sIfrqysZ7gbAI88t4dDML9nJXE/zth/a0TZXTBODW6Eg
- CsrTs5Ce94rw1DqPOC0+woCtyECS5l2Clr1p02ejnL5N2ZgavZT2tCNED
- iiQzYPePEF0N9UndIasSSHmccXRM9Tn+fTLDyHjhXRs3jQMHy0JK52fpt
- 4MiupKC0DwsONLhBOshPMreqsWqxjmT6G5qcbcJUk5qmX4CPu4lOg6kT8 Q==;
-X-CSE-ConnectionGUID: f79kFVFJS6683VTE/74ymg==
-X-CSE-MsgGUID: zWuq2Zu/TOydf0grmqknfg==
-X-IronPort-AV: E=McAfee;i="6800,10657,11904"; a="89769796"
-X-IronPort-AV: E=Sophos;i="6.27,102,1787036400"; d="scan'208";a="89769796"
+ t=1789377936; x=1820913936;
+ h=from:to:cc:subject:date:message-id:in-reply-to:
+ references:mime-version:content-transfer-encoding;
+ bh=IcFqADyerwDMutIqelxiAfPnP7uGvtWRukEeoHS6Z90=;
+ b=dlQdFYOfTNfYlVKyL6ngK5zDByckZbs8X5M0eFUNptVPJ+ADLaa8IxoA
+ UakUm7Ig1QHr+Yvz5xraHv/N9s4hnTOECTVKQSi/ISLkGeJ9G3VScX9XO
+ woBQC/JQ+uLPBOQibly9bakH/rB80w/Rt2xmEqjZeJiwm9iJLWHvjoU+b
+ lacyLpchIVIU2B/vd6ynC4qVo9lH/HgJD6CpGQJWUPChbca6VkzEfqQ/D
+ 5kBnc8C9I6D68i97PZpt7+rZSEfsGxgCeEbWUL8axXnda+XuoGqFsSMcO
+ VV8txu7GO04464QbgN5A1dm2m5DaHfjyejp+akg7UVkbNLLp0mmIWMpLa Q==;
+X-CSE-ConnectionGUID: WPyKK8PmRqicGA9ApEiV/A==
+X-CSE-MsgGUID: oxMvwK/DQmWrfGXB1kDzBA==
+X-IronPort-AV: E=McAfee;i="6800,10657,11904"; a="89769800"
+X-IronPort-AV: E=Sophos;i="6.27,102,1787036400"; d="scan'208";a="89769800"
 Received: from orviesa005.jf.intel.com ([10.64.159.145])
  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 14 Sep 2026 02:25:30 -0700
-X-CSE-ConnectionGUID: 0BR5NCn9SGKMlt3XdDJk+w==
-X-CSE-MsgGUID: 4EA/ZvVTSZyiqV0cYwFPxg==
+ 14 Sep 2026 02:25:33 -0700
+X-CSE-ConnectionGUID: 5X5i+aIsT2Gd/6u/lXfhyQ==
+X-CSE-MsgGUID: dUAoayl3QXOL5y2iiJCCQA==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.27,102,1787036400"; d="scan'208";a="276750134"
+X-IronPort-AV: E=Sophos;i="6.27,102,1787036400"; d="scan'208";a="276750141"
 Received: from pkubaj-desk.igk.intel.com (HELO intel.com) ([10.237.142.111])
  by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 14 Sep 2026 02:25:27 -0700
+ 14 Sep 2026 02:25:31 -0700
 From: Piotr Kubaj <piotr.kubaj@intel.com>
 To: ltp@lists.linux.it
-Date: Mon, 14 Sep 2026 11:25:13 +0200
-Message-ID: <20260914092517.879141-1-piotr.kubaj@intel.com>
+Date: Mon, 14 Sep 2026 11:25:15 +0200
+Message-ID: <20260914092517.879141-3-piotr.kubaj@intel.com>
 X-Mailer: git-send-email 2.47.3
+In-Reply-To: <20260914092517.879141-1-piotr.kubaj@intel.com>
+References: <20260914092517.879141-1-piotr.kubaj@intel.com>
 MIME-Version: 1.0
 X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3 0/3] pmc_core: cover the PkgC LTR blocker counters
+Subject: [LTP] [PATCH v3 2/3] pmc_core: add test for pkgc_ltr_blocker_show
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -74,77 +75,357 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-The intel_pmc_core driver gained a pkgc_ltr_blocker_show debugfs file in
-kernel commit 38c79dd63b72 ("platform/x86/intel/pmc: Enable PkgC LTR
-blocking counter"), first released in v7.2, and nothing covers it yet.
-It reports, per source, how many times an LTR posted by that source
-blocked a package C-state entry.
+Add coverage for the pkgc_ltr_blocker_show debugfs file added in kernel
+commit 38c79dd63b72 ("platform/x86/intel/pmc: Enable PkgC LTR blocking
+counter") and first released in v7.2. The counters report how many times
+an LTR posted by each source blocked a package C-state entry, and so far
+nothing checked that the driver exports them correctly.
 
-Both tests added here need debugfs mounted, so the first patch moves the
-mount handling into the test library instead of open coding it twice.
+The counter set is platform specific, so instead of a hardcoded list of
+names the test samples the file twice and checks that it can be read in
+full, that every line is a PKGC_PREVENT_LTR_<SOURCE> token followed by
+exactly one value that fits in u32, that the counter set does not change
+between the reads, and that no counter advances by more entries than the
+package could have attempted over the interval.
 
-1/3 adds tst_test.needs_debugfs: the library mounts debugfs at
-    /sys/kernel/debug during setup unless it is mounted there already,
-    reports TCONF if it cannot, and unmounts it afterwards only if it did
-    the mount. A lib/newlib_tests self-test covers both cases. Tests
-    reading any other debugfs file can use it as well.
+The last check is the one that catches a telemetry region read at the
+wrong offset. The values wrap, so the advance is evaluated modulo 2^32
+and bounded by the time the counter had to advance over, widened by how
+stale the first sample can be, because the PMC refreshes the telemetry
+region behind the counters asynchronously. An arbitrary u32 read out of
+the wrong offset overshoots that bound by orders of magnitude.
 
-2/3 checks what the file says: every line is a PKGC_PREVENT_LTR_<SOURCE>
-    token followed by one u32 value, the file reads to EOF rather than
-    erroring out mid-way, the counter set is stable across two reads, and
-    no counter advances by more entries than the package could have
-    attempted over the interval.
+Tested on Nova Lake running 7.3.0-rc1.
 
-3/3 checks the invariant behind the counters: a package C-state entry is
-    only attempted once every CPU in the package is idle, so counters
-    that keep advancing with every CPU busy are not counting blocked
-    entries. The test proves the counters are alive while idling first,
-    so that a counter stuck at a constant value cannot pass for free.
-
-Both tests bound what they accept in time rather than against a hardcoded
-counter list, because the counter set is platform specific. That is what
-catches a telemetry region read at the wrong offset, which overshoots the
-bounds by orders of magnitude.
-
-Tested on Nova Lake running 7.3.0-rc1, with debugfs both mounted and
-unmounted beforehand, and in the latter case the mount state is restored
-after the run. The TFAIL and TCONF paths were exercised against fake
-counter files.
-
-v2 -> v3:
-- Rebased onto current master. The only thing that moved is the
-  .needs_debugfs row in the C and shell API comparison table, next to the
-  .needs_cpu_vendor row added meanwhile.
-- ltr_counter.c: dropped the <sched.h> and <signal.h> includes, the test
-  API headers already pull both in.
-- v2 was never built by the CI: every job failed while downloading the
-  series mbox from patchwork, which answered with an HTML page, so git am
-  reported an empty patch.
-
-Piotr Kubaj (3):
-  lib: add tst_test.needs_debugfs flag
-  pmc_core: add test for pkgc_ltr_blocker_show
-  pmc_core: add ltr_counter test
-
- doc/developers/writing_tests.rst              |   3 +
- include/tst_fs.h                              |   4 +
- include/tst_test.h                            |   8 +
- lib/newlib_tests/.gitignore                   |   1 +
- lib/newlib_tests/runtest.sh                   |   1 +
- lib/newlib_tests/tst_needs_debugfs.c          |  37 ++
- lib/tst_test.c                                |  35 ++
- metadata/metaparse.c                          |   1 +
- runtest/power_management_tests                |   2 +
- testcases/kernel/power_management/.gitignore  |   2 +
- .../kernel/power_management/ltr_counter.c     | 356 ++++++++++++++++++
- .../power_management/pkgc_ltr_blocker_show.c  | 294 +++++++++++++++
- 12 files changed, 744 insertions(+)
- create mode 100644 lib/newlib_tests/tst_needs_debugfs.c
- create mode 100644 testcases/kernel/power_management/ltr_counter.c
+Signed-off-by: Piotr Kubaj <piotr.kubaj@intel.com>
+---
+ runtest/power_management_tests                |   1 +
+ testcases/kernel/power_management/.gitignore  |   1 +
+ .../power_management/pkgc_ltr_blocker_show.c  | 294 ++++++++++++++++++
+ 3 files changed, 296 insertions(+)
  create mode 100644 testcases/kernel/power_management/pkgc_ltr_blocker_show.c
 
-
-base-commit: 13231aa22ca4572a4d949bfc78d9304524f131a7
+diff --git a/runtest/power_management_tests b/runtest/power_management_tests
+index 5a22283d6..7708d3fd4 100644
+--- a/runtest/power_management_tests
++++ b/runtest/power_management_tests
+@@ -2,6 +2,7 @@
+ cpufreq_intel cpufreq_intel
+ rfim01 rfim01
+ high_freq_hwp_cap_cppc high_freq_hwp_cap_cppc
++pkgc_ltr_blocker_show pkgc_ltr_blocker_show
+ runpwtests03 runpwtests03.sh
+ runpwtests04 runpwtests04.sh
+ runpwtests06 runpwtests06.sh
+diff --git a/testcases/kernel/power_management/.gitignore b/testcases/kernel/power_management/.gitignore
+index 766f07901..b96084eca 100644
+--- a/testcases/kernel/power_management/.gitignore
++++ b/testcases/kernel/power_management/.gitignore
+@@ -1,3 +1,4 @@
+ high_freq_hwp_cap_cppc
+ cpufreq_intel
+ rfim01
++pkgc_ltr_blocker_show
+diff --git a/testcases/kernel/power_management/pkgc_ltr_blocker_show.c b/testcases/kernel/power_management/pkgc_ltr_blocker_show.c
+new file mode 100644
+index 000000000..ef6b2110c
+--- /dev/null
++++ b/testcases/kernel/power_management/pkgc_ltr_blocker_show.c
+@@ -0,0 +1,294 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++
++/*
++ * Copyright (C) 2026 Piotr Kubaj <piotr.kubaj@intel.com>
++ */
++
++/*\
++ * Verify that pkgc_ltr_blocker_show reports well-formed package C-state LTR
++ * blocker counters that advance at a plausible rate.
++ *
++ * The intel_pmc_core driver prints one line per counter as "%-30s %-30u",
++ * where the name is a PKGC_PREVENT_LTR_<SOURCE> token and the value counts how
++ * many times an LTR posted by <SOURCE> blocked a package C-state entry.
++ *
++ * The counter set is platform specific, so instead of checking a hardcoded
++ * list the test samples the file twice and verifies that
++ *
++ * - the file can be read in full, so that a failing telemetry read in the
++ *   driver is not mistaken for a short counter list,
++ * - every line is a PKGC_PREVENT_LTR_<SOURCE> token followed by exactly one
++ *   unsigned value that fits in u32,
++ * - the set of counters does not change between the two reads,
++ * - no counter advances by more entries than the package could have attempted
++ *   over the interval.
++ *
++ * The last check is the one that catches a telemetry region read at the wrong
++ * offset. The values are u32 and wrap, so the advance has to be evaluated
++ * modulo 2^32, and a wrap is then indistinguishable from a bogus read unless
++ * the delta is bounded by the time the counter had to advance over. An
++ * arbitrary u32 read out of the wrong offset averages 2^31, orders of
++ * magnitude past what the bound allows.
++ *
++ * The debugfs file is only created for a PMC that exposes a package C-state
++ * telemetry endpoint (pc_guid in the driver's pmc_dev_info), so on platforms
++ * without one the test is not applicable.
++ *
++ * The test needs root because /sys/kernel/debug is mode 0700 and owned by
++ * root, so the counter file cannot be opened otherwise, and because the test
++ * library mounts debugfs if it is not mounted already.
++ */
++
++#include <time.h>
++#include "tst_clocks.h"
++#include "tst_safe_stdio.h"
++#include "tst_test.h"
++#include "tst_timer.h"
++
++#define PATH TST_DEBUGFS_PATH "/pmc_core/pkgc_ltr_blocker_show"
++#define PREFIX "PKGC_PREVENT_LTR_"
++
++/* Nova Lake reports 5 counters, leave room for future platforms */
++#define MAX_COUNTERS 64
++#define NAME_LEN 64
++
++/*
++ * Cap, in seconds, on how long to poll for a second sample that differs from
++ * the first one. On an idle Nova Lake the counters advance in bursts a few
++ * seconds apart, because a blocked entry needs the package to attempt a C-state
++ * entry in the first place, so a window of a few seconds is what it takes for
++ * the delta check to have anything to look at. TST_RETRY_FN_EXP_BACKOFF() ends
++ * up sleeping about twice the cap in total, hence the modest value here.
++ */
++#define MAX_SAMPLE_DELAY 4
++
++/*
++ * Allowance for how stale the first sample can be. The PMC refreshes the
++ * telemetry region behind these counters asynchronously, so the first read can
++ * land just before a refresh and return a snapshot that is almost a whole
++ * refresh period old. The retry then observes a period worth of blocked entries
++ * after only microseconds of measured time, which the measured interval on its
++ * own does not account for.
++ *
++ * The allowance is the same window the test is willing to poll a refresh out
++ * of, which on Nova Lake is several times the observed refresh period.
++ */
++#define REFRESH_AGE_US (MAX_SAMPLE_DELAY * 1000000ULL)
++
++/*
++ * Blocked entries per microsecond the bound allows. Each count stands for one
++ * package C-state entry that was blocked, and entries can only be attempted as
++ * fast as the package can cycle between idle and running, which takes
++ * microseconds. Ten per microsecond is therefore already past what the hardware
++ * can produce - the counters were observed advancing by about 6 per second on
++ * an idle Nova Lake - and the headroom costs the check nothing, because the
++ * bogus read it exists to catch overshoots it by orders of magnitude anyway.
++ */
++#define MAX_BLOCKS_PER_US 10
++
++struct snapshot {
++	char names[MAX_COUNTERS][NAME_LEN];
++	uint32_t values[MAX_COUNTERS];
++	int cnt;
++};
++
++static struct snapshot first, second;
++
++/*
++ * Largest advance a counter can plausibly show over two samples taken
++ * @elapsed_us microseconds apart.
++ *
++ * The interval the counter had to advance over is the measured one widened by
++ * REFRESH_AGE_US, because the sampled values come from a telemetry snapshot
++ * that is already up to a refresh period old, not from the instants the file
++ * was read.
++ */
++static unsigned long long max_plausible_delta(unsigned long long elapsed_us)
++{
++	return (elapsed_us + REFRESH_AGE_US) * MAX_BLOCKS_PER_US;
++}
++
++static void read_snapshot(struct snapshot *snap)
++{
++	char line[256];
++	FILE *fp;
++
++	snap->cnt = 0;
++	fp = SAFE_FOPEN(PATH, "r");
++
++	while (fgets(line, sizeof(line), fp)) {
++		char name[NAME_LEN], value[NAME_LEN], extra;
++		unsigned long long parsed;
++
++		line[strcspn(line, "\n")] = '\0';
++
++		/*
++		 * The value is scanned as a string rather than with %u so that
++		 * a signed or out of range value is rejected instead of being
++		 * quietly converted. The trailing %c rejects a third token; the
++		 * space in front of it skips the padding the driver emits.
++		 */
++		if (sscanf(line, "%63s %63s %c", name, value, &extra) != 2) {
++			tst_res(TFAIL, "malformed counter line: '%s'", line);
++			continue;
++		}
++
++		if (strncmp(name, PREFIX, sizeof(PREFIX) - 1) ||
++		    !name[sizeof(PREFIX) - 1]) {
++			tst_res(TFAIL, "counter '%s' is not a " PREFIX "<SOURCE> token",
++				name);
++			continue;
++		}
++
++		if (value[strspn(value, "0123456789")]) {
++			tst_res(TFAIL, "counter '%s' has a non-numeric value '%s'",
++				name, value);
++			continue;
++		}
++
++		parsed = strtoull(value, NULL, 10);
++
++		if (parsed > UINT32_MAX) {
++			tst_res(TFAIL, "counter '%s' value '%s' does not fit in u32",
++				name, value);
++			continue;
++		}
++
++		if (snap->cnt == MAX_COUNTERS)
++			tst_brk(TBROK, "more than %d counters reported", MAX_COUNTERS);
++
++		strcpy(snap->names[snap->cnt], name);
++		snap->values[snap->cnt] = parsed;
++		snap->cnt++;
++	}
++
++	/*
++	 * A telemetry read that fails in the driver aborts the seq_file read
++	 * instead of ending it at EOF, so without this the counters lost to the
++	 * error would look like a platform reporting fewer of them.
++	 */
++	if (ferror(fp))
++		tst_brk(TFAIL, "reading " PATH " failed after %d counters", snap->cnt);
++
++	SAFE_FCLOSE(fp);
++}
++
++static void setup(void)
++{
++	if (access(PATH, R_OK))
++		tst_brk(TCONF | TERRNO, "%s not available", PATH);
++}
++
++/*
++ * Take the second sample, reporting whether it differs from the first one.
++ *
++ * A blocked entry is a sporadic event and the counters are backed by a PMT
++ * telemetry region that the PMC refreshes asynchronously, so the second sample
++ * is retried until it observes a change instead of being taken after a fixed
++ * delay. A differing counter count also counts as a difference, so that the
++ * mismatch is reported rather than polled over.
++ */
++static int second_sample_differs(void)
++{
++	read_snapshot(&second);
++
++	if (first.cnt != second.cnt)
++		return 1;
++
++	for (int i = 0; i < first.cnt; i++) {
++		if (first.values[i] != second.values[i])
++			return 1;
++	}
++
++	return 0;
++}
++
++static void run(void)
++{
++	struct timespec start, end;
++	unsigned long long elapsed_us, max_delta;
++	int differs, fails = 0;
++
++	tst_clock_gettime(CLOCK_MONOTONIC, &start);
++	read_snapshot(&first);
++
++	if (!first.cnt)
++		tst_brk(TFAIL, "no LTR blocker counters reported");
++
++	differs = TST_RETRY_FN_EXP_BACKOFF(second_sample_differs(),
++					   TST_RETVAL_NOTNULL, MAX_SAMPLE_DELAY);
++
++	tst_clock_gettime(CLOCK_MONOTONIC, &end);
++
++	elapsed_us = tst_timespec_diff_us(end, start);
++	max_delta = max_plausible_delta(elapsed_us);
++
++	if (!differs) {
++		tst_res(TINFO, "no counter changed over %lluus, no entry was blocked",
++			elapsed_us);
++	}
++
++	if (first.cnt != second.cnt) {
++		tst_brk(TFAIL, "counter count changed between reads: %d -> %d",
++			first.cnt, second.cnt);
++	}
++
++	for (int i = 0; i < first.cnt; i++) {
++		uint32_t delta;
++
++		if (strcmp(first.names[i], second.names[i])) {
++			tst_res(TFAIL, "counter %d renamed between reads: %s -> %s",
++				i, first.names[i], second.names[i]);
++			fails++;
++			continue;
++		}
++
++		tst_res(TDEBUG, "%s: %u -> %u", first.names[i],
++			first.values[i], second.values[i]);
++
++		/*
++		 * The values are u32 and wrap, so the advance has to be
++		 * computed with modular arithmetic rather than by comparing the
++		 * second value against the first one. A delta of 0 is normal:
++		 * it means no entry was blocked by that source over the
++		 * interval, and most counters on an idle system read 0
++		 * permanently.
++		 */
++		delta = second.values[i] - first.values[i];
++
++		if (delta > max_delta) {
++			tst_res(TFAIL,
++				"%s advanced by %u over %lluus, at most %llu plausible: %u -> %u",
++				first.names[i], delta, elapsed_us, max_delta,
++				first.values[i], second.values[i]);
++			fails++;
++		}
++	}
++
++	if (!fails) {
++		tst_res(TPASS, "%d LTR blocker counters well-formed, advancing plausibly",
++			first.cnt);
++	}
++}
++
++static struct tst_test test = {
++	.min_kver = "7.2",
++	.needs_root = 1,
++	.needs_debugfs = 1,
++	.needs_kconfigs = (const char *const []) {
++		"CONFIG_DEBUG_FS",
++		"CONFIG_INTEL_PMC_CORE",
++		NULL
++	},
++	.supported_archs = (const char *const []) {
++		"x86",
++		"x86_64",
++		NULL
++	},
++	.tags = (const struct tst_tag[]) {
++		{"linux-git", "38c79dd63b72e36919ef097d4e5025ca0fa17f34"},
++		{}
++	},
++	.setup = setup,
++	.test_all = run
++};
 -- 
 2.47.3
 
