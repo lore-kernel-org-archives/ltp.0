@@ -4,53 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A85A1C88E56
-	for <ltp@archiver.kernel.org>; Sun, 13 Sep 2026 04:18:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A463BC88E5C
+	for <ltp@archiver.kernel.org>; Mon, 14 Sep 2026 02:14:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1789352050; h=date : to :
+ message-id : references : mime-version : in-reply-to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-type :
+ content-transfer-encoding : sender : from;
+ bh=LYsNKEzXjpj4HPqUcyq7dYyU6gR+lRVf6FCaeDrA9Pw=;
+ b=IzmQarp5UFeRDhwKSnnMVGd5qGPz+bzmv8DyaV9gEuXpvDBdOd/iupjHIcwHcRB9xr7+3
+ 5Gvj++3UATavudNozJWAm9IbMAdfzNzWBDCo+OuAvbFDafK8CurVjhJscHogOaMhDKIMLdb
+ uEygOwcndRCgxDP2zOvUN5xaUhFrkv8=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D276A3E71F3
-	for <ltp@archiver.kernel.org>; Sun, 13 Sep 2026 06:18:33 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 4F4003E20E9
+	for <ltp@archiver.kernel.org>; Mon, 14 Sep 2026 04:14:10 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 99DB23C9A1C
- for <ltp@lists.linux.it>; Sun, 13 Sep 2026 06:18:16 +0200 (CEST)
-Received: from mta0.migadu.com (out-75.mta0.migadu.com
- [IPv6:2001:41d0:1004:224b::4b])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 5236B3CD382
+ for <ltp@lists.linux.it>; Mon, 14 Sep 2026 04:13:47 +0200 (CEST)
+Received: from Atcsqr.andestech.com (atcsqr.andestech.com [220.128.198.184])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 25003600101
- for <ltp@lists.linux.it>; Sun, 13 Sep 2026 06:18:15 +0200 (CEST)
-X-Envelope-To: ltp@lists.linux.it
-DKIM-Signature: a=rsa-sha256; bh=IgjTQP5pYgPLEkQDZM+nbBqxZgVzDtY/I9eNzJCx8Q0=; 
- c=simple/simple; d=linux.dev;
- h=from:to:subject:date:message-id:mime-version:content-type; s=key1;
- t=1789273095; v=1; x=1789877895;
- b=uPXPlhui3P4vKcEGPtSyNYt1tsZkxeepP6OwxfrMfU5cy73VmIPt718EHxlo2/pJkSJyStJ/
- nkaC/YqGua+1UxfYEJ+QBpj4hfx8kPEB4bRrTWutGo5gL1twPmKCuN4pv1KXoWM9938XSiM4c1o
- QY49mbDKKEiTzNcHcI1b8jow=
-X-Envelope-To: ltp@lists.linux.it
-Received: by smtp.migadu.com with ESMTPS id e2ff4ac453f5707e;
- Sun, 13 Sep 2026 04:18:05 +0000
-X-Mizu-Trace-ID: e2ff4ac453f5707e
-X-Migadu-Flow: FLOW_OUT
-Date: Sun, 13 Sep 2026 12:18:01 +0800
-From: Li Wang <li.wang@linux.dev>
-To: Andrea Cervesato <andrea.cervesato@suse.de>
-Message-ID: <aqYj-Qytv7dq1bl8@linux.dev>
-Mail-Followup-To: Andrea Cervesato <andrea.cervesato@suse.de>,
- Linux Test Project <ltp@lists.linux.it>
-References: <20260911-mmap_32bit_coverage-v3-0-b0608349556d@suse.com>
- <20260911-mmap_32bit_coverage-v3-3-b0608349556d@suse.com>
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 5AD9F200927
+ for <ltp@lists.linux.it>; Mon, 14 Sep 2026 04:13:40 +0200 (CEST)
+Received: from mail.andestech.com (atcpcs54.andestech.com [10.0.1.154])
+ by Atcsqr.andestech.com with ESMTPS id 68E2DXOM007487
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Mon, 14 Sep 2026 10:13:33 +0800 (+08)
+ (envelope-from cyyang772@andestech.com)
+Received: from ATCPCS34.andestech.com (10.0.1.134) by atcpcs54.andestech.com
+ (10.0.1.154) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.2.2562.43; Mon, 14 Sep
+ 2026 10:13:33 +0800
+Received: from swlinux02.andestech.com (10.0.15.183) by ATCPCS34.andestech.com
+ (10.0.1.134) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.39; Mon, 14 Sep
+ 2026 10:13:33 +0800
+Date: Mon, 14 Sep 2026 10:13:27 +0800
+To: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <aqdYRyvoyE8X_mM1@swlinux02.andestech.com>
+References: <20260908023121.1895897-1-cyyang772@andestech.com>
+ <ap_nx7AZvluXzW-i@yuki.lan>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20260911-mmap_32bit_coverage-v3-3-b0608349556d@suse.com>
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+In-Reply-To: <ap_nx7AZvluXzW-i@yuki.lan>
+User-Agent: Mutt/2.4.1+37 (70449fe) (2026-08-09)
+X-Originating-IP: [10.0.15.183]
+X-ClientProxiedBy: ATCPCS33.andestech.com (10.0.1.100) To
+ ATCPCS34.andestech.com (10.0.1.134)
+X-DKIM-Results: atcpcs54.andestech.com; dkim=none;
+X-DNSRBL: 
+X-MAIL: Atcsqr.andestech.com 68E2DXOM007487
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3 3/3] mmap24: add test for MAP_32BIT address
- limit
+Subject: Re: [LTP] [PATCH] mmap21: Check for free space before mapping the
+ file
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -62,32 +75,34 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Linux Test Project <ltp@lists.linux.it>
+From: Victor Cheng-Yen Yang via ltp <ltp@lists.linux.it>
+Reply-To: Victor Cheng-Yen Yang <cyyang772@andestech.com>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> +/*\
-> + * Verify that :manpage:`mmap(2)` with the MAP_32BIT flag restricts all mappings
-> + * to the first 2GB of the process address space (< 0x80000000).
-> + *
-> + * MAP_32BIT is supported only on x86-64 for 64-bit programs.
-> + *
-> + * Use PROT_NONE to test address placement without allocating data pages
-> + * or charging private writable memory against the commit limit.
+Hi Cyril,
 
-Reviewed-by: Li Wang <li.wang@linux.dev>
+> Depending on the page size this is either 4MB or 64MB, I would say that
+> if you run LTP on a machine with less than 4MB of free space many tests
+> would fail.
 
-This test itself looks good, but unlike the address placement way, maybe we
-can create a new test (mmap25.c) that allocates real read-write anonymous memory,
-writes a pattern, reads it back, and checks the result.
+I agree with you. In our test environment, we did provide mmap21 with
+sufficient space. mmap21 was the victim because certain shell test did
+not clean up properly and filled up the disk.
 
-This verifies that read-write memory mapped with MAP_32BIT functions correctly.
+> Maybe it would make sense to print a warning from the test library for
+> any tests that has needs_tmpdir == 1 and the free space at the test
+> temporary directory is less than a few megabytes.
 
--- 
-Regards,
-Li Wang
+I'll work on this in the near future. Printing warning messages from the
+test library is indeed an elegant way. Thanks for your idea!
+
+
+Best Regards,
+Victor
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
