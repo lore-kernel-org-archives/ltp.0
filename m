@@ -4,46 +4,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 30567C88E50
-	for <ltp@archiver.kernel.org>; Mon, 14 Sep 2026 08:55:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A0943C88E64
+	for <ltp@archiver.kernel.org>; Mon, 14 Sep 2026 09:02:43 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0A7753E9087
-	for <ltp@archiver.kernel.org>; Mon, 14 Sep 2026 10:55:46 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id D1CB93E908D
+	for <ltp@archiver.kernel.org>; Mon, 14 Sep 2026 11:02:41 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id F1F7E3CD382
- for <ltp@lists.linux.it>; Mon, 14 Sep 2026 05:25:28 +0200 (CEST)
-Received: from out28-74.mail.aliyun.com (out28-74.mail.aliyun.com
- [115.124.28.74])
+ by picard.linux.it (Postfix) with ESMTPS id 94B4D3E196B
+ for <ltp@lists.linux.it>; Mon, 14 Sep 2026 11:02:24 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id C290B600211
- for <ltp@lists.linux.it>; Mon, 14 Sep 2026 05:25:24 +0200 (CEST)
-X-Alimail-AntiSpam: AC=CONTINUE; BC=0.07436259|-1; CH=green;
- DM=|CONTINUE|false|;
- DS=CONTINUE|ham_system_inform|0.0139902-0.0120513-0.973958;
- FP=7427135987251500537|1|1|1|0|-1|-1|-1; HT=maildocker-contentspam033037006180;
- MF=yehuaisheng@open-hieco.net; NM=1; PH=DS; RN=5; RT=5; SR=0;
- TI=SMTPD_---.jCpK9tL_1789356286; 
-Received: from centos9p-03(mailfrom:yehuaisheng@open-hieco.net
- fp:SMTPD_---.jCpK9tL_1789356286 cluster:ay29) by smtp.aliyun-inc.com;
- Mon, 14 Sep 2026 11:25:21 +0800
-From: Huaisheng Ye <yehuaisheng@open-hieco.net>
-To: tsahu@linux.ibm.com,
-	pvorel@suse.cz,
-	li.wang@linux.dev
-Date: Mon, 14 Sep 2026 11:23:59 +0800
-Message-ID: <20260914032359.9956-1-yehuaisheng@open-hieco.net>
-X-Mailer: git-send-email 2.52.0
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 3B9241A00143
+ for <ltp@lists.linux.it>; Mon, 14 Sep 2026 11:02:23 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 2AA80219B6;
+ Mon, 14 Sep 2026 09:02:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1789376538;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=IyqwaKkMSSNcU9P9j3xr186fmzLYxOvouFxR0zxhRpE=;
+ b=H2BlM7Rb4sIAvpg19g3Yo332ZIx7pkV2Wucivf0wuybhO+v1eaCLBiXxNTqucnzP4hgTpI
+ mtYln0Mp8elWgwrU5+TRn1/XQygQGNggqCcTai6Hi8W5eucj9siUPDB+yELZnkADLT6xbd
+ x7X0XhewOMUYLAFh+0ZOZjqJUNz9tTI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1789376538;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=IyqwaKkMSSNcU9P9j3xr186fmzLYxOvouFxR0zxhRpE=;
+ b=21dToZGoKYiDTYb3xxqqpOkLH5LyGrxrUxb9hLHimSS3E2/LLMcneS7XKSu5fUJuvVce5U
+ g9eIrn4Z+hfacXBA==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1789376534;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=IyqwaKkMSSNcU9P9j3xr186fmzLYxOvouFxR0zxhRpE=;
+ b=Q1PMhNiR7okMCE/xpaTt5DZXdfUPbxqSfcJwRRD9wXMfvzDtxoDh3mQ2sJ+71ZZwyeI5VW
+ VTjhxK9f9M1rUUcvf+CjXiwhX05tEh8pafQQ8D1K/Jrv6UYbZyVnCZajlLQjzVA2UzpxTf
+ iVpsQ9lh3HiKqAdYRSjaPZD8Ml3jlVs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1789376534;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=IyqwaKkMSSNcU9P9j3xr186fmzLYxOvouFxR0zxhRpE=;
+ b=yBPz6v3ul7+kY2JKIqNXrYeOa6E8UKQjklmvDv5etIV1lVPllmNdauQITs3xG+qAZAiQ2f
+ oCiES0WnVm3ju+Dg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E04181368C;
+ Mon, 14 Sep 2026 09:02:13 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id b09BNRW4p2qgNwAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Mon, 14 Sep 2026 09:02:13 +0000
+Date: Mon, 14 Sep 2026 11:02:07 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Andrea Cervesato <andrea.cervesato@suse.de>
+Message-ID: <20260914090207.GC1564244@pevik>
+References: <20260904-keyctl_coverage-v2-0-43b78b15ef9f@suse.com>
+ <20260904-keyctl_coverage-v2-18-43b78b15ef9f@suse.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20260904-keyctl_coverage-v2-18-43b78b15ef9f@suse.com>
+X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ RCVD_TLS_ALL(0.00)[]; ARC_NA(0.00)[]; MISSING_XM_UA(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; MIME_TRACE(0.00)[0:+];
+ RCPT_COUNT_TWO(0.00)[2];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; FROM_HAS_DN(0.00)[];
+ TO_DN_ALL(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,imap1.dmz-prg2.suse.org:helo]; 
+ RCVD_COUNT_TWO(0.00)[2]; REPLYTO_EQ_FROM(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Mailman-Approved-At: Mon, 14 Sep 2026 10:55:30 +0200
-Subject: [LTP] [PATCH] hugemmap10: Account for memory policy in counter
- checks
+Subject: Re: [LTP] [PATCH v2 18/33] keyctl26: Test KEYCTL_DH_COMPUTE size
+ query
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -55,215 +109,48 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: Linux Test Project <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-The expected surplus calculation only considers the global free and
-reserved hugepage counters. This is insufficient when the task has an
-MPOL_BIND policy and some or all globally free hugepages reside outside
-the nodes allowed by that policy.
+Hi Andrea,
 
-Policy-aware hugetlb reservation accounting allocates surplus pages on
-the allowed nodes in this case. For example, with one globally free page
-outside the policy and no free pages inside it, reserving one page grows
-HugePages_Total, HugePages_Free and HugePages_Surp by one. The current test
-expects all three counters to remain unchanged and reports false failures.
+> Test KEYCTL_DH_COMPUTE buffer size query: verify that calling
+> with buflen 0 returns the required output buffer size (256)
+> without writing to userspace.
 
-Read the current memory policy and cpuset allowed mask with
-get_mempolicy(). For MPOL_BIND, intersect both masks; for other policy
-modes, use the cpuset mask because they do not impose a hard allocation
-constraint. Sum free_hugepages for the resulting nodes before mmap(), and
-calculate the expected surplus count as the maximum of the global and
-allowed-node shortfalls.
-
-Note that a kernel patch has already been posted for solving Hugetlb
-reservations defect. Without that, hugemmap10 would fail when mapping .
-https://lore.kernel.org/all/20260909074642.7308-1-yehuaisheng@open-hieco.net/
-
-For example, reproduce it with an eight-node system running 7.3.0-rc1:
-
-# numactl  --membind=0-3   ./hugemmap10
-tst_hugepage.c:84: TINFO: 3 hugepage(s) reserved
-tst_tmpdir.c:308: TINFO: Using /tmp/LTP_hugwmfnRD as tmpdir (xfs filesystem)
-tst_test.c:1218: TINFO: Mounting none to /tmp/LTP_hugwmfnRD/hugetlbfs fstyp=hugetlbfs flags=0
-tst_test.c:2048: TINFO: LTP version: 20260529-234-g6e966054b
-tst_test.c:2051: TINFO: Tested kernel: 7.3.0-rc1+ #33 SMP PREEMPT Mon Sep  7 11:50:02 CST 2026 x86_64
-tst_kconfig.c:90: TINFO: Parsing kernel config '/proc/config.gz'
-tst_test.c:1876: TINFO: Overall timeout per run is 0h 00m 30s
-hugemmap10.c:386: TINFO: Base pool size: 0
-hugemmap10.c:313: TINFO: Clean...
-hugemmap10.c:364: TINFO: OK
-hugemmap10.c:313: TINFO: Untouched, shared...
-hugemmap10.c:364: TINFO: OK
-hugemmap10.c:313: TINFO: Untouched, private...
-hugemmap10.c:364: TINFO: OK
-hugemmap10.c:313: TINFO: Touched, shared...
-hugemmap10.c:364: TINFO: OK
-hugemmap10.c:313: TINFO: Touched, private...
-hugemmap10.c:364: TINFO: OK
-hugemmap10.c:386: TINFO: Base pool size: 1
-hugemmap10.c:313: TINFO: Clean...
-hugemmap10.c:319: TFAIL: While doing mmap shared with no touch: Bad HugePages_Total: expected 1, actual 2
-hugemmap10.c:319: TFAIL: While doing mmap shared with no touch: Bad HugePages_Free: expected 1, actual 2
-hugemmap10.c:319: TFAIL: While doing mmap shared with no touch: Bad HugePages_Surp: expected 0, actual 1
-
-Summary:
-passed   0
-failed   3
-broken   0
-skipped  0
-warnings 0
-
-# numactl  --membind=4-7   ./hugemmap10
-tst_hugepage.c:84: TINFO: 3 hugepage(s) reserved
 ...
-hugemmap10.c:364: TINFO: OK
-hugemmap10.c:429: TPASS: Hugepages Counters works as expected.
+> +static void setup(void)
+> +{
+> +	SAFE_KEYCTL(KEYCTL_JOIN_SESSION_KEYRING, 0, 0, 0, 0);
+> +
+> +	dh_params->priv = new_user_key("dh_priv", dh_priv, sizeof(dh_priv),
+> +				       KEY_SPEC_PROCESS_KEYRING);
 
-Summary:
-passed   1
-failed   0
-broken   0
-skipped  0
-warnings 0
+Unfortunately Leap 42.2 (which we still support) does not have struct
+keyctl_dh_params priv support - added in v4.20-rc1 in
+2ecefa0a15fd0 ("keys: Fix the use of the C++ keyword "private" in uapi/linux/keyctl.h")
 
-In this example, if the free global huge pages are located on Nodes 4-7 while
-the memory policy restricts hugemap10 to allocating memory from Nodes 0-3,
-the discrepancy in the counters can be observed.
+keyctl26.c:24:11: error: dereferencing pointer to incomplete type
+  dh_params->priv = new_user_key("dh_priv", dh_priv, sizeof(dh_priv),
+           ^
+keyctl26.c:26:11: error: dereferencing pointer to incomplete type
+  dh_params->prime = new_user_key("dh_prime", dh_prime, sizeof(dh_prime),
+           ^
+keyctl26.c:28:11: error: dereferencing pointer to incomplete type
+  dh_params->base = new_user_key("dh_base", dh_base, sizeof(dh_base),
+           ^
+keyctl26.c: At top level:
+keyctl26.c:50:31: error: dereferencing pointer to incomplete type
+   {&dh_params, .size = sizeof(*dh_params)},
+                               ^
+We need AC_CHECK_MEMBERS check.
 
-Signed-off-by: Huaisheng Ye <yehuaisheng@open-hieco.net>
----
- .../kernel/mem/hugetlb/hugemmap/hugemmap10.c  | 73 ++++++++++++++++++-
- 1 file changed, 72 insertions(+), 1 deletion(-)
-
-diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap10.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap10.c
-index 5b5577a0e..6d1cd6241 100644
---- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap10.c
-+++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap10.c
-@@ -13,6 +13,9 @@
-  */
-
- #define _GNU_SOURCE
-+#include <errno.h>
-+#include <linux/mempolicy.h>
-+#include <stdlib.h>
- #include <unistd.h>
- #include <stdio.h>
- #include <sys/mount.h>
-@@ -21,8 +24,10 @@
- #include <sys/types.h>
-
- #include "hugetlb.h"
-+#include "lapi/syscalls.h"
-
- #define MNTPOINT "hugetlbfs/"
-+#define ULONG_BITS (sizeof(unsigned long) * CHAR_BIT)
-
- static long hpage_size;
- static int private_resv;
-@@ -48,6 +53,63 @@ static void read_meminfo_huge(long *total, long *free, long *resv, long *surp)
- 	*surp = SAFE_READ_MEMINFO(MEMINFO_HPAGE_SURP);
- }
-
-+static int node_isset(unsigned long node, const unsigned long *nodemask)
-+{
-+	return nodemask[node / ULONG_BITS] & (1UL << (node % ULONG_BITS));
-+}
-+
-+static unsigned long read_allowed_free_hugepages(void)
-+{
-+	char path[PATH_MAX];
-+	size_t mask_size = getpagesize();
-+	unsigned long allowed_free = 0;
-+	unsigned long maxnode = mask_size * CHAR_BIT;
-+	unsigned long *policy_nodemask;
-+	unsigned long *cpuset_nodemask;
-+	unsigned long node, node_free;
-+	int mode;
-+
-+	policy_nodemask = SAFE_CALLOC(1, mask_size);
-+	cpuset_nodemask = SAFE_CALLOC(1, mask_size);
-+
-+	if (syscall(__NR_get_mempolicy, &mode, policy_nodemask,
-+		    maxnode, NULL, 0)) {
-+		if (errno == ENOSYS) {
-+			allowed_free = prev_free;
-+			goto out;
-+		}
-+		tst_brk(TBROK | TERRNO, "get_mempolicy() failed");
-+	}
-+
-+	if (syscall(__NR_get_mempolicy, NULL, cpuset_nodemask,
-+		    maxnode, NULL, MPOL_F_MEMS_ALLOWED))
-+		tst_brk(TBROK | TERRNO,
-+			"get_mempolicy(MPOL_F_MEMS_ALLOWED) failed");
-+
-+	mode &= ~MPOL_MODE_FLAGS;
-+	for (node = 0; node < maxnode; node++) {
-+		if (!node_isset(node, cpuset_nodemask))
-+			continue;
-+		if (mode == MPOL_BIND && !node_isset(node, policy_nodemask))
-+			continue;
-+
-+		snprintf(path, sizeof(path),
-+			 "/sys/devices/system/node/node%lu/hugepages/"
-+			 "hugepages-%ldkB/free_hugepages",
-+			 node, hpage_size / 1024);
-+		if (access(path, R_OK))
-+			continue;
-+
-+		SAFE_FILE_SCANF(path, "%lu", &node_free);
-+		allowed_free += node_free;
-+	}
-+
-+out:
-+	free(policy_nodemask);
-+	free(cpuset_nodemask);
-+	return allowed_free;
-+}
-+
- static int kernel_has_private_reservations(void)
- {
- 	int fd;
-@@ -178,10 +240,14 @@ out:
-
- static int map_(int s, int hpages, int flags, char *desc, int line)
- {
-+	unsigned long allowed_free = 0;
- 	long et, ef, er, es;
-+	int creates_reservation = (flags & MAP_SHARED) || private_resv;
-
- 	map_fd[s] = tst_creat_unlinked(MNTPOINT, 0, 0600);
- 	map_size[s] = hpages * hpage_size;
-+	if (creates_reservation)
-+		allowed_free = read_allowed_free_hugepages();
- 	map_addr[s] = SAFE_MMAP(NULL, map_size[s], PROT_READ|PROT_WRITE, flags,
- 				map_fd[s], 0);
- 	touched[s] = 0;
-@@ -201,11 +267,16 @@ static int map_(int s, int hpages, int flags, char *desc, int line)
- 	 * mappings behave like MAP_SHARED at mmap time.  Otherwise,
- 	 * no counter updates will occur.
- 	 */
--	if ((flags & MAP_SHARED) || private_resv) {
-+	if (creates_reservation) {
- 		unsigned long shortfall = 0;
-
- 		if (hpages + prev_resv > prev_free)
- 			shortfall = hpages - prev_free + prev_resv;
-+
-+		if ((unsigned long)hpages > allowed_free)
-+			shortfall = MAX(shortfall,
-+					(unsigned long)hpages - allowed_free);
-+
- 		et += shortfall;
- 		ef += shortfall;
- 		er += hpages;
---
-2.52.0
-
+Kind regards,
+Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
