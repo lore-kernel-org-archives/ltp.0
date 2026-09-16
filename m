@@ -4,110 +4,111 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 39E61C88E5C
-	for <ltp@archiver.kernel.org>; Wed, 16 Sep 2026 14:05:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0B181C88E5C
+	for <ltp@archiver.kernel.org>; Wed, 16 Sep 2026 14:05:45 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 78EFB3E8C4D
-	for <ltp@archiver.kernel.org>; Wed, 16 Sep 2026 16:05:30 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 315943E8C45
+	for <ltp@archiver.kernel.org>; Wed, 16 Sep 2026 16:05:44 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D014E3C72EC
- for <ltp@lists.linux.it>; Wed, 16 Sep 2026 16:04:20 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 0C9B53E7FAA
+ for <ltp@lists.linux.it>; Wed, 16 Sep 2026 16:04:22 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de
  [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 6A25610002BF
- for <ltp@lists.linux.it>; Wed, 16 Sep 2026 16:04:20 +0200 (CEST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 64EE51A000A2
+ for <ltp@lists.linux.it>; Wed, 16 Sep 2026 16:04:22 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 762AA1FEEF;
- Wed, 16 Sep 2026 14:04:10 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 389491F394;
+ Wed, 16 Sep 2026 14:04:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1789567454; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1789567455; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=oAnIlHagQE+8JRL9cSuMr4jLvXDwNZx14R54AS1RR80=;
- b=illpdm+lMDRXUtGG3R5SqzwATzeGRPkeONtiLZ9zx0gFK6F781D1oig+v41NLvTSVksupS
- hCA62ZPKcOHVlgJ957QOI3HzA4JaoyllUwZ6uCoikPVVY07V7b3JVB3RgmHQ+bQm6bvFRF
- sC/uOujKFrd3VN94lW6rnqIuRuV0Bwc=
+ bh=AWF4YxrRtoFwUJDL53/wPKWTF3jFs04lIUU+/P/S5iw=;
+ b=WATZ/Z601s7Ce42jz9VLYb/zoo4x1v1wKx7YADiCUlkzB/ie8T1+Gn6O45YCIZDPeI2Yi7
+ 4tzNa89dXwL9h2VyA33bbwyes6cnGUGY/c9TSqnVLBQWsy/lkxTlEWpKuLBMHniSJIky4j
+ CgBOXuq8zo+pxI4TnZATvfhPUCNhEHM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1789567454;
+ s=susede2_ed25519; t=1789567455;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=oAnIlHagQE+8JRL9cSuMr4jLvXDwNZx14R54AS1RR80=;
- b=m0L8NFIQIRBwWPVX7DyDs4Ag9gIJ/GUiyyaqX7NHcIMMX03fz7Z/CROyYUSqb0TPZrWK0r
- ws1zRHv+LsW//PAA==
+ bh=AWF4YxrRtoFwUJDL53/wPKWTF3jFs04lIUU+/P/S5iw=;
+ b=U4ORoNavombqMlL6YzXZAep7JKsZJM8TC+0kqlCQAUCiE2nhquic4tkh9UkGRZWesfi+Z9
+ SJUKKHNsUVz9zPBg==
 Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="BL/XVQ5f";
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=fvT7TIsi
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=VurOSz2U;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=VNPJRhDF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1789567450; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1789567451; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=oAnIlHagQE+8JRL9cSuMr4jLvXDwNZx14R54AS1RR80=;
- b=BL/XVQ5f96CWDKSwUZVMNw0lajYeants3z6ythH98VqcFRrqxf58VpWJgD0eIJ2pMiX2Co
- wSoOp9zYZhwYHjGK2DWLbw/8V0zcxbOV2Ddu3XyRGw5YMX79ZxhMg4qM+FFcaD8LxNBQmC
- OXgl304SgtOonZ+iwVSNFT4LkH16iyw=
+ bh=AWF4YxrRtoFwUJDL53/wPKWTF3jFs04lIUU+/P/S5iw=;
+ b=VurOSz2UfwaMPS+epWs8R4kLwen+1VDTCTd8g6udqIiJZUbmRfG6tj3whLk+Pwm5YEkoEM
+ HAEj3X84YA2Q1jFQlo7RZ9hAY3x2iJ5jjB+89QAFtH1NXtgHdz5ldNIFCv4KKCaL8WsGMS
+ MWYMAyY+IT0KxuvQ+LoHMyDf97Kkehc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1789567450;
+ s=susede2_ed25519; t=1789567451;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=oAnIlHagQE+8JRL9cSuMr4jLvXDwNZx14R54AS1RR80=;
- b=fvT7TIsi+7t0Ua49bFMeo1qVuKSM2Dn4IzP8O1eQsNmVOLI4rPLlObHFzybyFOnJf8LLoz
- HFQL+8fhNwazRZCA==
+ bh=AWF4YxrRtoFwUJDL53/wPKWTF3jFs04lIUU+/P/S5iw=;
+ b=VNPJRhDFzUWiaSMhOOMpbWzP1tccdK+SB+8zcDR5JMIDOM8iUqKfM98xWzTF/2hsici4go
+ zILs4dA/HB7qiXCQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2BD50136DB;
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id AAD4E1374A;
  Wed, 16 Sep 2026 14:04:10 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 1xhOO9ihqmqNRQAAD6G6ig:T2
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 1xhOO9ihqmqNRQAAD6G6ig:T4
  (envelope-from <pvorel@suse.cz>); Wed, 16 Sep 2026 14:04:10 +0000
 From: Petr Vorel <pvorel@suse.cz>
 To: ltp@lists.linux.it
-Date: Wed, 16 Sep 2026 16:03:27 +0200
-Message-ID: <20260916140402.1797325-2-pvorel@suse.cz>
+Date: Wed, 16 Sep 2026 16:03:29 +0200
+Message-ID: <20260916140402.1797325-4-pvorel@suse.cz>
 X-Mailer: git-send-email 2.55.0
 In-Reply-To: <20260916140402.1797325-1-pvorel@suse.cz>
 References: <20260916140402.1797325-1-pvorel@suse.cz>
 MIME-Version: 1.0
-X-Rspamd-Queue-Id: 762AA1FEEF
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: 389491F394
 X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
  R_MISSING_CHARSET(0.50)[];
  R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
  MX_GOOD(-0.01)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.cz:dkim,suse.cz:email,suse.cz:mid,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,fujitsu.com:email];
- FROM_HAS_DN(0.00)[]; ARC_NA(0.00)[]; MIME_TRACE(0.00)[0:+];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- TO_DN_SOME(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ ARC_NA(0.00)[]; MIME_TRACE(0.00)[0:+]; TO_DN_SOME(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
  DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- RCVD_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
- RCPT_COUNT_FIVE(0.00)[5]; DKIM_TRACE(0.00)[suse.cz:+]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ RCPT_COUNT_FIVE(0.00)[5]; RCVD_TLS_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.cz:dkim,suse.cz:email,suse.cz:mid];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DKIM_TRACE(0.00)[suse.cz:+]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3 01/36] lapi/keyctl.h: Add fallback definitions for
- extended ops
+Subject: [LTP] [PATCH v3 03/36] tree: keyctl: Use SAFE_ADD_KEY()
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -124,121 +125,186 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Andrea Cervesato <andrea.cervesato@suse.com>
-
-Add fallback definitions for KEYCTL_LINK, KEYCTL_RESTRICT_KEYRING,
-KEYCTL_MOVE, and KEYCTL_MOVE_EXCL, as well as fallback definitions
-for struct keyctl_dh_params and struct keyctl_kdf_params when built
-without linux/keyctl.h.
-
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
-Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
-[ pvorel
-* Remove <keyutils.h> usage - use only <linux/keyctl.h>
-* Add check for struct keyctl_dh_params.priv for Leap 42.2 ]
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- include/lapi/keyctl.h | 36 +++++++++++++++++++++++++++++++++++-
- m4/ltp-keyutils.m4    |  7 +++++++
- 2 files changed, 42 insertions(+), 1 deletion(-)
+ testcases/cve/cve-2016-7042.c                      |  4 +---
+ testcases/kernel/syscalls/add_key/add_key03.c      |  9 ++-------
+ testcases/kernel/syscalls/add_key/add_key04.c      | 14 ++++----------
+ testcases/kernel/syscalls/keyctl/keyctl02.c        |  8 ++------
+ testcases/kernel/syscalls/keyctl/keyctl03.c        |  4 +---
+ testcases/kernel/syscalls/keyctl/keyctl06.c        |  6 ++----
+ .../kernel/syscalls/request_key/request_key01.c    |  4 +---
+ .../kernel/syscalls/request_key/request_key02.c    |  4 +---
+ testcases/kernel/watchqueue/common.h               |  4 +---
+ 9 files changed, 15 insertions(+), 42 deletions(-)
 
-diff --git a/include/lapi/keyctl.h b/include/lapi/keyctl.h
-index 83fa09303c..1c6627f555 100644
---- a/include/lapi/keyctl.h
-+++ b/include/lapi/keyctl.h
-@@ -8,6 +8,8 @@
+diff --git a/testcases/cve/cve-2016-7042.c b/testcases/cve/cve-2016-7042.c
+index 24915ad441..0556789d61 100644
+--- a/testcases/cve/cve-2016-7042.c
++++ b/testcases/cve/cve-2016-7042.c
+@@ -25,9 +25,7 @@ static void do_test(void)
+ {
+ 	char buf[BUFSIZ];
  
- #include "config.h"
+-	key = add_key("user", "ltptestkey", "a", 1, KEY_SPEC_SESSION_KEYRING);
+-	if (key == -1)
+-		tst_brk(TBROK, "Failed to add key");
++	key = SAFE_ADD_KEY("user", "ltptestkey", "a", 1, KEY_SPEC_SESSION_KEYRING);
  
-+#include <stdint.h>
-+
- #if defined(HAVE_KEYUTILS_H) && defined(HAVE_LIBKEYUTILS)
- # include <keyutils.h>
- #else
-@@ -16,7 +18,6 @@
- # endif /* HAVE_LINUX_KEYCTL_H */
+ 	if (keyctl(KEYCTL_UPDATE, key, "b", 1))
+ 		tst_brk(TBROK, "Failed to update key");
+diff --git a/testcases/kernel/syscalls/add_key/add_key03.c b/testcases/kernel/syscalls/add_key/add_key03.c
+index fe2406fcc2..4b0e49127e 100644
+--- a/testcases/kernel/syscalls/add_key/add_key03.c
++++ b/testcases/kernel/syscalls/add_key/add_key03.c
+@@ -24,13 +24,8 @@
  
- # include <stdarg.h>
--# include <stdint.h>
- # include "lapi/syscalls.h"
- typedef int32_t key_serial_t;
+ static key_serial_t create_keyring(const char *description)
+ {
+-	TEST(add_key("keyring", description, NULL, 0,
+-		     KEY_SPEC_PROCESS_KEYRING));
+-	if (TST_RET < 0) {
+-		tst_brk(TBROK | TTERRNO,
+-			"unable to create keyring '%s'", description);
+-	}
+-	return TST_RET;
++	return SAFE_ADD_KEY("keyring", description, NULL, 0,
++		     KEY_SPEC_PROCESS_KEYRING);
+ }
  
-@@ -60,6 +61,23 @@ static inline key_serial_t keyctl_join_session_keyring(const char *name) {
+ static key_serial_t get_keyring_id(key_serial_t special_id)
+diff --git a/testcases/kernel/syscalls/add_key/add_key04.c b/testcases/kernel/syscalls/add_key/add_key04.c
+index 3fbb52479b..ff0895efd1 100644
+--- a/testcases/kernel/syscalls/add_key/add_key04.c
++++ b/testcases/kernel/syscalls/add_key/add_key04.c
+@@ -50,18 +50,12 @@ static void do_test(void)
  
- #endif /* defined(HAVE_KEYUTILS_H) && defined(HAVE_LIBKEYUTILS) */
+ 		for (i = 0; i < ASSOC_ARRAY_FAN_OUT; i++) {
+ 			sprintf(description, "keyring%d", i);
+-			TEST(add_key("keyring", description, NULL, 0,
+-				     KEY_SPEC_SESSION_KEYRING));
+-			if (TST_RET < 0) {
+-				tst_brk(TBROK | TTERRNO,
+-					"unable to create keyring %d", i);
+-			}
++			SAFE_ADD_KEY("keyring", description, NULL, 0,
++				     KEY_SPEC_SESSION_KEYRING);
+ 		}
  
-+#ifndef HAVE_STRUCT_KEYCTL_DH_PARAMS
-+struct keyctl_dh_params {
-+	int32_t priv;
-+	int32_t prime;
-+	int32_t base;
-+};
-+#endif
-+
-+#ifndef HAVE_STRUCT_KEYCTL_KDF_PARAMS
-+struct keyctl_kdf_params {
-+	char *hashname;
-+	char *otherinfo;
-+	uint32_t otherinfolen;
-+	uint32_t __spare[8];
-+};
-+#endif
-+
- /* special process keyring shortcut IDs */
- #ifndef KEY_SPEC_THREAD_KEYRING
- # define KEY_SPEC_THREAD_KEYRING -1
-@@ -124,6 +142,10 @@ static inline key_serial_t keyctl_join_session_keyring(const char *name) {
- # define KEYCTL_CLEAR 7
- #endif
+-		TEST(add_key("user", "userkey", payload, sizeof(PAYLOAD),
+-			     KEY_SPEC_SESSION_KEYRING));
+-		if (TST_RET < 0)
+-			tst_brk(TBROK | TTERRNO, "unable to create user key");
++		SAFE_ADD_KEY("user", "userkey", payload, sizeof(PAYLOAD),
++			     KEY_SPEC_SESSION_KEYRING);
  
-+#ifndef KEYCTL_LINK
-+# define KEYCTL_LINK 8
-+#endif
-+
- #ifndef KEYCTL_UNLINK
- # define KEYCTL_UNLINK 9
- #endif
-@@ -168,6 +190,18 @@ static inline key_serial_t keyctl_join_session_keyring(const char *name) {
- # define KEYCTL_WATCH_KEY 32
- #endif
+ 		exit(0);
+ 	}
+diff --git a/testcases/kernel/syscalls/keyctl/keyctl02.c b/testcases/kernel/syscalls/keyctl/keyctl02.c
+index 306181c44a..964dfad316 100644
+--- a/testcases/kernel/syscalls/keyctl/keyctl02.c
++++ b/testcases/kernel/syscalls/keyctl/keyctl02.c
+@@ -61,10 +61,8 @@ static void do_test(void)
+ 	pthread_t pth[4];
  
-+#ifndef KEYCTL_RESTRICT_KEYRING
-+# define KEYCTL_RESTRICT_KEYRING 29
-+#endif
-+
-+#ifndef KEYCTL_MOVE
-+# define KEYCTL_MOVE 30
-+#endif
-+
-+#ifndef KEYCTL_MOVE_EXCL
-+# define KEYCTL_MOVE_EXCL 0x00000001 /* do not displace from the to-keyring */
-+#endif
-+
- /* key permissions */
- #ifndef KEY_POS_VIEW
- # define KEY_POS_VIEW    0x01000000
-diff --git a/m4/ltp-keyutils.m4 b/m4/ltp-keyutils.m4
-index 451c549f38..35bad783e5 100644
---- a/m4/ltp-keyutils.m4
-+++ b/m4/ltp-keyutils.m4
-@@ -1,10 +1,17 @@
- dnl SPDX-License-Identifier: GPL-2.0-or-later
- dnl Copyright (c) 2016 Fujitsu Ltd.
- dnl Copyright (c) 2017 Petr Vorel <pvorel@suse.cz>
-+dnl Copyright (c) Linux Test Project, 2019-2026
- dnl Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
+ 	for (i = 0; i < LOOPS; i++) {
+-		key = add_key("user", "ltptestkey", "foo", 3,
++		key = SAFE_ADD_KEY("user", "ltptestkey", "foo", 3,
+ 			KEY_SPEC_PROCESS_KEYRING);
+-		if (key == -1)
+-			tst_brk(TBROK | TERRNO, "Failed to add key");
  
- AC_DEFUN([LTP_CHECK_KEYUTILS_SUPPORT], [
- 	AC_CHECK_LIB([keyutils], [add_key],
- 	[AC_DEFINE(HAVE_LIBKEYUTILS, 1, [Define to 1 if you have libkeyutils installed.])
- 	      AC_SUBST(KEYUTILS_LIBS, "-lkeyutils")])
-+
-+	AC_CHECK_TYPES([struct keyctl_dh_params, struct keyctl_kdf_params,
-+			struct keyctl_pkey_query, struct keyctl_pkey_params],,,
-+			[#include <linux/keyctl.h>])
-+
-+	AC_CHECK_MEMBERS([struct keyctl_dh_params.priv],,,[#include <linux/keyctl.h>])
- ])
+ 		SAFE_PTHREAD_CREATE(&pth[0], NULL, do_read,
+ 			(void *)(unsigned long)key);
+@@ -103,10 +101,8 @@ static void do_test(void)
+ 	 *
+ 	 * We create extra key here, to remove reference to last revoked key.
+ 	 */
+-	key_inv = add_key("user", "ltptestkey", "foo", 3,
++	key_inv = SAFE_ADD_KEY("user", "ltptestkey", "foo", 3,
+ 		KEY_SPEC_PROCESS_KEYRING);
+-	if (key_inv == -1)
+-		tst_brk(TBROK | TERRNO, "Failed to add key");
+ 
+ 	/*
+ 	 * If we have invalidate, we can drop extra key immediately as well,
+diff --git a/testcases/kernel/syscalls/keyctl/keyctl03.c b/testcases/kernel/syscalls/keyctl/keyctl03.c
+index 676dddcd0b..d5339cb43d 100644
+--- a/testcases/kernel/syscalls/keyctl/keyctl03.c
++++ b/testcases/kernel/syscalls/keyctl/keyctl03.c
+@@ -20,9 +20,7 @@ static void do_test(void)
+ {
+ 	key_serial_t key;
+ 
+-	key = add_key("user", "ltptestkey", "a", 1, KEY_SPEC_SESSION_KEYRING);
+-	if (key == -1)
+-		tst_brk(TBROK, "Failed to add key");
++	key = SAFE_ADD_KEY("user", "ltptestkey", "a", 1, KEY_SPEC_SESSION_KEYRING);
+ 
+ 	request_key("keyring", "foo", "bar", KEY_SPEC_THREAD_KEYRING);
+ 
+diff --git a/testcases/kernel/syscalls/keyctl/keyctl06.c b/testcases/kernel/syscalls/keyctl/keyctl06.c
+index b3c61b9d15..e3fdbcb841 100644
+--- a/testcases/kernel/syscalls/keyctl/keyctl06.c
++++ b/testcases/kernel/syscalls/keyctl/keyctl06.c
+@@ -21,10 +21,8 @@
+ 
+ static void add_test_key(const char *description)
+ {
+-	TEST(add_key("user", description, "payload", 7,
+-		     KEY_SPEC_PROCESS_KEYRING));
+-	if (TST_RET < 0)
+-		tst_brk(TBROK | TTERRNO, "Failed to add test key");
++	SAFE_ADD_KEY("user", description, "payload", 7,
++		     KEY_SPEC_PROCESS_KEYRING);
+ }
+ 
+ static void do_test(void)
+diff --git a/testcases/kernel/syscalls/request_key/request_key01.c b/testcases/kernel/syscalls/request_key/request_key01.c
+index 97121533da..0aa5fd85f7 100644
+--- a/testcases/kernel/syscalls/request_key/request_key01.c
++++ b/testcases/kernel/syscalls/request_key/request_key01.c
+@@ -35,9 +35,7 @@ static void verify_request_key(void)
+ 
+ static void setup(void)
+ {
+-	key = add_key("keyring", "ltp", NULL, 0, KEY_SPEC_THREAD_KEYRING);
+-	if (key == -1)
+-		tst_brk(TBROK | TERRNO, "add_key() failed");
++	key = SAFE_ADD_KEY("keyring", "ltp", NULL, 0, KEY_SPEC_THREAD_KEYRING);
+ }
+ 
+ static struct tst_test test = {
+diff --git a/testcases/kernel/syscalls/request_key/request_key02.c b/testcases/kernel/syscalls/request_key/request_key02.c
+index 2d35aceeee..d7e0664e68 100644
+--- a/testcases/kernel/syscalls/request_key/request_key02.c
++++ b/testcases/kernel/syscalls/request_key/request_key02.c
+@@ -48,9 +48,7 @@ static int init_key(char *name, int cmd)
+ 	int n;
+ 	int sec = 1;
+ 
+-	n = add_key("keyring", name, NULL, 0, KEY_SPEC_THREAD_KEYRING);
+-	if (n == -1)
+-		tst_brk(TBROK | TERRNO, "add_key() failed");
++	n = SAFE_ADD_KEY("keyring", name, NULL, 0, KEY_SPEC_THREAD_KEYRING);
+ 
+ 	if (cmd == KEYCTL_REVOKE) {
+ 		if (keyctl(cmd, n) == -1)
+diff --git a/testcases/kernel/watchqueue/common.h b/testcases/kernel/watchqueue/common.h
+index 0921dce9a6..639dd4a7cd 100644
+--- a/testcases/kernel/watchqueue/common.h
++++ b/testcases/kernel/watchqueue/common.h
+@@ -81,9 +81,7 @@ static inline key_serial_t wqueue_add_key(int fd)
+ {
+ 	key_serial_t key;
+ 
+-	key = add_key("user", "ltptestkey", "a", 1, KEY_SPEC_SESSION_KEYRING);
+-	if (key == -1)
+-		tst_brk(TBROK, "add_key error: %s", tst_strerrno(errno));
++	key = SAFE_ADD_KEY("user", "ltptestkey", "a", 1, KEY_SPEC_SESSION_KEYRING);
+ 
+ 	SAFE_KEYCTL(KEYCTL_WATCH_KEY, key, fd, 0x01, 0);
+ 	SAFE_KEYCTL(KEYCTL_WATCH_KEY, KEY_SPEC_SESSION_KEYRING, fd, 0x02, 0);
 -- 
 2.55.0
 
