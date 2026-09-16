@@ -4,113 +4,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F095BC88E77
-	for <ltp@archiver.kernel.org>; Wed, 16 Sep 2026 14:11:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 18ECFC88E5C
+	for <ltp@archiver.kernel.org>; Wed, 16 Sep 2026 14:12:01 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9AAE73E7A02
-	for <ltp@archiver.kernel.org>; Wed, 16 Sep 2026 16:11:45 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 22DEC3E7AD6
+	for <ltp@archiver.kernel.org>; Wed, 16 Sep 2026 16:11:59 +0200 (CEST)
 Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id F03D03E8C4C
- for <ltp@lists.linux.it>; Wed, 16 Sep 2026 16:04:37 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+ by picard.linux.it (Postfix) with ESMTPS id 127623E8C4E
+ for <ltp@lists.linux.it>; Wed, 16 Sep 2026 16:04:38 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 84C4F2009B3
- for <ltp@lists.linux.it>; Wed, 16 Sep 2026 16:04:36 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id BF9172009A2
+ for <ltp@lists.linux.it>; Wed, 16 Sep 2026 16:04:37 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 5525D1FDA8;
- Wed, 16 Sep 2026 14:04:27 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 3D6251FEF1;
+ Wed, 16 Sep 2026 14:04:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1789567471; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1789567473; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=38mYUgkxswxGdI24G8ngRM89wtAstG2Y1YJy7wPqcU4=;
- b=JKV5F5714iPxrKlxKAlQ378R7D/Bg+uxxAGlStsWe9cFiOKl2xArw3nYau+ZpSJSbKif4f
- toqHkPeR0pLoslxZJPwkqsDdyXFQSXdzqiktlIsbSXgpYxaSL4RBhpfMCwejHNlQYQzz0a
- 1MUj1p2kHQ8kTuh+V8aM86IbDAw3lik=
+ bh=lsR2TXq6ub6tlNhNbzrzX/67yvzBYg8yWDvgawMy8Kg=;
+ b=MjtXUIu4+WQqPwvbSCHZcIR6xeKuAEF+qCHe3lVlRr6CQ3bFvqKP7HEvu+7OlqAcl2U7Le
+ v5QxI59tUqqHt2e2oFOZMQWIh0YN2AZkwMoXOPwzPifzRW7ITF9/jotQ5nydJUb+E76S+f
+ fBFswTBZYo8BIPvAwiH/tbRHESpRB/w=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1789567471;
+ s=susede2_ed25519; t=1789567473;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=38mYUgkxswxGdI24G8ngRM89wtAstG2Y1YJy7wPqcU4=;
- b=aLwjkZ7hjkM8xEtj20ahIfQXd3xuMoEByHTcV/RI7ozcm0uIdePOQKWeuXGfYORYlXr9Jr
- 5zREC1zjoG53zvDQ==
+ bh=lsR2TXq6ub6tlNhNbzrzX/67yvzBYg8yWDvgawMy8Kg=;
+ b=WJ++90kIeMFthtRuPptjz56Hu/C1Ld8MXZ4XrJ7xMQ3XNBNtVAabJk/5fdO4EMY+pXHeBv
+ VT4igJdQLGUVHeDw==
 Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=y98YipM3;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=ze6Jp3Ik
+	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1789567467; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1789567469; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=38mYUgkxswxGdI24G8ngRM89wtAstG2Y1YJy7wPqcU4=;
- b=y98YipM3j2MKayQfA/c3MmFJU0PJtvg/r+GZReyjrkjBvygTEnXQWoOi7HZrLEKJxawUUA
- WO3VaaaSMXWedOWSPgxeLPtufD9oE9UOpy5IlzfaE4xueH/JFg7toxFO8UpKFrQ8Mgy/EM
- jaluIbIRfkXiQmFDDlO6ABCNl4od8f0=
+ bh=lsR2TXq6ub6tlNhNbzrzX/67yvzBYg8yWDvgawMy8Kg=;
+ b=1GqWLGfpGR6qoo3RXLV9IOB4YLmleEU7IRyL7jeAUN0jZTkyvOuNlWpPwJwKUqNLzq7f+m
+ yWDn07C9xve2hl61Wv1icBnLKpVaE6SQGTVUv9epqtlUol56YT3rmR9QgvNQ1yJ2DPKpw9
+ 798IUaaTeUp8WA7W3AQRF8WVTQSAWas=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1789567467;
+ s=susede2_ed25519; t=1789567469;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=38mYUgkxswxGdI24G8ngRM89wtAstG2Y1YJy7wPqcU4=;
- b=ze6Jp3IkgKJNPIMH5mZN8kSQV6w95FOkua3OJjwKzl/QFDB4AgOW3ORYQfFI5HYMIbCW/Z
- JaXnIAVpOf1VPeBA==
+ bh=lsR2TXq6ub6tlNhNbzrzX/67yvzBYg8yWDvgawMy8Kg=;
+ b=0dh9oQkNSTRuXadHFyPQevNhyKnaLI/u6R0AkJYqpx7GOEO5HJi8oS4+3IWRNxPa2Blmis
+ XbGUI9ZVdxcplvAA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D36DE139B6;
- Wed, 16 Sep 2026 14:04:16 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 02A88139D0;
+ Wed, 16 Sep 2026 14:04:24 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 1xhOO9ihqmqNRQAAD6G6ig:T21
- (envelope-from <pvorel@suse.cz>); Wed, 16 Sep 2026 14:04:16 +0000
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 1xhOO9ihqmqNRQAAD6G6ig:T35
+ (envelope-from <pvorel@suse.cz>); Wed, 16 Sep 2026 14:04:24 +0000
 From: Petr Vorel <pvorel@suse.cz>
 To: ltp@lists.linux.it
-Date: Wed, 16 Sep 2026 16:03:46 +0200
-Message-ID: <20260916140402.1797325-21-pvorel@suse.cz>
+Date: Wed, 16 Sep 2026 16:04:00 +0200
+Message-ID: <20260916140402.1797325-35-pvorel@suse.cz>
 X-Mailer: git-send-email 2.55.0
 In-Reply-To: <20260916140402.1797325-1-pvorel@suse.cz>
 References: <20260916140402.1797325-1-pvorel@suse.cz>
 MIME-Version: 1.0
-X-Rspamd-Queue-Id: 5525D1FDA8
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
- R_MISSING_CHARSET(0.50)[];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- MIME_TRACE(0.00)[0:+];
- R_RATELIMIT(0.00)[to_ip_from(RL47ebk195wksjxkdm8ez9hex8)];
- TO_DN_SOME(0.00)[];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- ARC_NA(0.00)[];
- DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-0.997];
+ MIME_GOOD(-0.10)[text/plain]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ MIME_TRACE(0.00)[0:+]; FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
+ R_RATELIMIT(0.00)[to_ip_from(RLtzdurrd6usbijy4f5nozqpqy)];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email,suse.cz:email,suse.cz:mid];
+ ARC_NA(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
+ RCVD_COUNT_TWO(0.00)[2]; RCVD_VIA_SMTP_AUTH(0.00)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- RCPT_COUNT_FIVE(0.00)[5]; RCVD_TLS_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:email,suse.cz:dkim,suse.cz:email,suse.cz:mid];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DKIM_TRACE(0.00)[suse.cz:+]
+ RCPT_COUNT_FIVE(0.00)[5]; RCVD_TLS_ALL(0.00)[]
 X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3 20/36] keyctl25: Test KEYCTL_DH_COMPUTE shared
- secret computation
+Subject: [LTP] [PATCH v3 34/36] keyctl37: Negative tests for
+ KEYCTL_CAPABILITIES
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -129,196 +116,110 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-Test KEYCTL_DH_COMPUTE shared secret computation: verify that
-computing a 256-byte DH shared secret with RFC 7919 FFDHE-2048
-parameters matches the precomputed mathematical value.
+Add negative test cases for KEYCTL_CAPABILITIES verifying that
+passing a NULL buffer with a non-zero length or an invalid buffer
+pointer fails with EFAULT.
 
 Reviewed-by: Petr Vorel <pvorel@suse.cz>
 Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
-[ pvorel: use SAFE_NEW_USER_KEY() ]
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- runtest/syscalls                              |  1 +
- testcases/kernel/syscalls/keyctl/.gitignore   |  1 +
- testcases/kernel/syscalls/keyctl/keyctl25.c   | 66 +++++++++++++++++
- .../kernel/syscalls/keyctl/keyctl_dh_data.h   | 74 +++++++++++++++++++
- 4 files changed, 142 insertions(+)
- create mode 100644 testcases/kernel/syscalls/keyctl/keyctl25.c
- create mode 100644 testcases/kernel/syscalls/keyctl/keyctl_dh_data.h
+ runtest/syscalls                            |  1 +
+ testcases/kernel/syscalls/keyctl/.gitignore |  1 +
+ testcases/kernel/syscalls/keyctl/keyctl37.c | 63 +++++++++++++++++++++
+ 3 files changed, 65 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/keyctl/keyctl37.c
 
 diff --git a/runtest/syscalls b/runtest/syscalls
-index 6ee6ec56a8..dfe01c8e0e 100644
+index f42303345e..e9a31a1947 100644
 --- a/runtest/syscalls
 +++ b/runtest/syscalls
-@@ -742,6 +742,7 @@ keyctl21 keyctl21
- keyctl22 keyctl22
- keyctl23 keyctl23
- keyctl24 keyctl24
-+keyctl25 keyctl25
+@@ -754,6 +754,7 @@ keyctl33 keyctl33
+ keyctl34 keyctl34
+ keyctl35 keyctl35
+ keyctl36 keyctl36
++keyctl37 keyctl37
  
  kcmp01 kcmp01
  kcmp02 kcmp02
 diff --git a/testcases/kernel/syscalls/keyctl/.gitignore b/testcases/kernel/syscalls/keyctl/.gitignore
-index 767ccf61ac..4cf7725587 100644
+index a4da8ae805..7ee6b90989 100644
 --- a/testcases/kernel/syscalls/keyctl/.gitignore
 +++ b/testcases/kernel/syscalls/keyctl/.gitignore
-@@ -22,3 +22,4 @@
- /keyctl22
- /keyctl23
- /keyctl24
-+/keyctl25
-diff --git a/testcases/kernel/syscalls/keyctl/keyctl25.c b/testcases/kernel/syscalls/keyctl/keyctl25.c
+@@ -34,3 +34,4 @@
+ /keyctl34
+ /keyctl35
+ /keyctl36
++/keyctl37
+diff --git a/testcases/kernel/syscalls/keyctl/keyctl37.c b/testcases/kernel/syscalls/keyctl/keyctl37.c
 new file mode 100644
-index 0000000000..59b9bf9c1d
+index 0000000000..08d1db03b8
 --- /dev/null
-+++ b/testcases/kernel/syscalls/keyctl/keyctl25.c
-@@ -0,0 +1,66 @@
++++ b/testcases/kernel/syscalls/keyctl/keyctl37.c
+@@ -0,0 +1,63 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
 + * Copyright (c) 2026 Andrea Cervesato <andrea.cervesato@suse.com>
 + */
 +
 +/*\
-+ * Test ``KEYCTL_DH_COMPUTE`` shared secret computation of :manpage:`keyctl(2)`.
++ * Negative test cases for ``KEYCTL_CAPABILITIES`` of :manpage:`keyctl(2)`.
 + *
 + * [Algorithm]
 + *
-+ * - compute DH shared secret using RFC 7919 FFDHE-2048 parameters and
-+ *   verify the 256-byte result matches the expected secret
++ * - verify ``KEYCTL_CAPABILITIES`` with NULL buffer and ``buflen > 0`` fails with ``EFAULT``
++ * - verify ``KEYCTL_CAPABILITIES`` with invalid pointer fails with ``EFAULT``
 + */
 +
 +#include "keyctl_common.h"
-+#include "keyctl_dh_data.h"
 +
-+static struct keyctl_dh_params *dh_params;
-+static unsigned char out_buf[256];
++static void *bad_addr;
++
++static struct tcase {
++	void **buf;
++	size_t buflen;
++	int exp_errno;
++	const char *desc;
++} tcases[] = {
++	{
++		.buf = NULL,
++		.buflen = 1,
++		.exp_errno = EFAULT,
++		.desc = "NULL buffer with non-zero buflen",
++	},
++	{
++		.buf = &bad_addr,
++		.buflen = 1,
++		.exp_errno = EFAULT,
++		.desc = "invalid buffer pointer",
++	},
++};
 +
 +static void setup(void)
 +{
-+	SAFE_KEYCTL(KEYCTL_JOIN_SESSION_KEYRING, 0, 0, 0, 0);
-+
-+	dh_params->priv = SAFE_NEW_USER_KEY("dh_priv", dh_priv, sizeof(dh_priv),
-+				       KEY_SPEC_PROCESS_KEYRING);
-+	dh_params->prime = SAFE_NEW_USER_KEY("dh_prime", dh_prime, sizeof(dh_prime),
-+					KEY_SPEC_PROCESS_KEYRING);
-+	dh_params->base = SAFE_NEW_USER_KEY("dh_base", dh_base, sizeof(dh_base),
-+				       KEY_SPEC_PROCESS_KEYRING);
++	bad_addr = tst_get_bad_addr(NULL);
 +}
 +
-+static void run(void)
++static void run(unsigned int n)
 +{
-+	memset(out_buf, 0, sizeof(out_buf));
++	struct tcase *tc = &tcases[n];
++	void *p = tc->buf ? *tc->buf : NULL;
 +
-+	TST_EXP_EQ_LI_SILENT(keyctl(KEYCTL_DH_COMPUTE, (unsigned long)dh_params,
-+				    (unsigned long)out_buf,
-+				    sizeof(dh_expected_secret), 0),
-+			     (long)sizeof(dh_expected_secret));
-+	if (!TST_PASS)
-+		return;
-+
-+	if (memcmp(out_buf, dh_expected_secret, sizeof(dh_expected_secret))) {
-+		tst_res(TFAIL, "computed secret does not match expected value");
-+		return;
-+	}
-+
-+	tst_res(TPASS, "KEYCTL_DH_COMPUTE computed expected shared secret");
++	TST_EXP_FAIL2(keyctl(KEYCTL_CAPABILITIES, (unsigned long)p, tc->buflen, 0, 0),
++		      tc->exp_errno,
++		      "%s", tc->desc);
 +}
 +
 +static struct tst_test test = {
 +	.setup = setup,
-+	.test_all = run,
-+	.min_kver = "4.7",
++	.test = run,
++	.tcnt = ARRAY_SIZE(tcases),
++	.min_kver = "5.3",
 +	.needs_kconfigs = (const char *[]) {
 +		"CONFIG_KEYS=y",
-+		"CONFIG_KEY_DH_OPERATIONS=y",
-+		"CONFIG_CRYPTO_DH",
 +		NULL
 +	},
-+	.bufs = (struct tst_buffers []) {
-+		{&dh_params, .size = sizeof(*dh_params)},
-+		{},
-+	},
 +};
-diff --git a/testcases/kernel/syscalls/keyctl/keyctl_dh_data.h b/testcases/kernel/syscalls/keyctl/keyctl_dh_data.h
-new file mode 100644
-index 0000000000..bc1432dc30
---- /dev/null
-+++ b/testcases/kernel/syscalls/keyctl/keyctl_dh_data.h
-@@ -0,0 +1,74 @@
-+/* SPDX-License-Identifier: GPL-2.0-or-later */
-+/*
-+ * Copyright (c) 2026 Andrea Cervesato <andrea.cervesato@suse.com>
-+ *
-+ * Static test vectors for KEYCTL_DH_COMPUTE tests (keyctl25..keyctl28).
-+ */
-+
-+#ifndef KEYCTL_DH_DATA_H__
-+#define KEYCTL_DH_DATA_H__
-+
-+/* RFC 7919 2048-bit FFDHE Group parameters (ffdhe2048) */
-+static const unsigned char dh_prime[] = {
-+	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xc9, 0x0f, 0xda, 0xa2, 0x21, 0x68, 0xc2, 0x34,
-+	0xc4, 0xc6, 0x62, 0x8b, 0x80, 0xdc, 0x1c, 0xd1, 0x29, 0x02, 0x4e, 0x08, 0x8a, 0x67, 0xcc, 0x74,
-+	0x02, 0x0b, 0xbe, 0xa6, 0x3b, 0x13, 0x9b, 0x22, 0x51, 0x4a, 0x08, 0x79, 0x8e, 0x34, 0x04, 0xdd,
-+	0xef, 0x95, 0x19, 0xb3, 0xcd, 0x3a, 0x43, 0x1b, 0x30, 0x2b, 0x0a, 0x6d, 0xf2, 0x5f, 0x14, 0x37,
-+	0x4f, 0xe1, 0x35, 0x6d, 0x6d, 0x51, 0xc2, 0x45, 0xe4, 0x85, 0xb5, 0x76, 0x62, 0x5e, 0x7e, 0xc6,
-+	0xf4, 0x4c, 0x42, 0xe9, 0xa6, 0x37, 0xed, 0x6b, 0x0b, 0xff, 0x5c, 0xb6, 0xf4, 0x06, 0xb7, 0xed,
-+	0xee, 0x38, 0x6b, 0xfb, 0x5a, 0x89, 0x9f, 0xa5, 0xae, 0x9f, 0x24, 0x11, 0x7c, 0x4b, 0x1f, 0xe6,
-+	0x49, 0x28, 0x66, 0x51, 0xec, 0xe4, 0x5b, 0x3d, 0xc2, 0x00, 0x7c, 0xb8, 0xa1, 0x63, 0xbf, 0x05,
-+	0x98, 0xda, 0x48, 0x36, 0x1c, 0x55, 0xd3, 0x9a, 0x69, 0x16, 0x3f, 0xa8, 0xfd, 0x24, 0xcf, 0x5f,
-+	0x83, 0x65, 0x5d, 0x23, 0xdc, 0xa3, 0xad, 0x96, 0x1c, 0x62, 0xf3, 0x56, 0x20, 0x85, 0x52, 0xbb,
-+	0x9e, 0xd5, 0x29, 0x07, 0x70, 0x96, 0x96, 0x6d, 0x67, 0x0c, 0x35, 0x4e, 0x4a, 0xbc, 0x98, 0x04,
-+	0xf1, 0x74, 0x6c, 0x08, 0xca, 0x18, 0x21, 0x7c, 0x32, 0x90, 0x5e, 0x46, 0x2e, 0x36, 0xce, 0x3b,
-+	0xe3, 0x9e, 0x77, 0x2c, 0x18, 0x0e, 0x86, 0x03, 0x9b, 0x27, 0x83, 0xa2, 0xec, 0x07, 0xa2, 0x8f,
-+	0xb5, 0xc5, 0x5d, 0xf0, 0x6f, 0x4c, 0x52, 0xc9, 0xde, 0x2b, 0xcb, 0xf6, 0x95, 0x58, 0x17, 0x18,
-+	0x39, 0x95, 0x49, 0x7c, 0xea, 0x95, 0x6a, 0xe5, 0x15, 0xd2, 0x26, 0x18, 0x98, 0xfa, 0x05, 0x10,
-+	0x15, 0x72, 0x8e, 0x5a, 0x8a, 0xac, 0xaa, 0x68, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
-+};
-+
-+static const unsigned char dh_priv[] = {
-+	0x01, 0x23, 0x45, 0x67, 0x89, 0xab, 0xcd, 0xef, 0x01, 0x23, 0x45, 0x67, 0x89, 0xab, 0xcd, 0xef,
-+	0x01, 0x23, 0x45, 0x67, 0x89, 0xab, 0xcd, 0xef, 0x01, 0x23, 0x45, 0x67, 0x89, 0xab, 0xcd, 0xef,
-+};
-+
-+static const unsigned char dh_base[] = {
-+	0xdd, 0x5d, 0x87, 0xa6, 0xf9, 0xdf, 0x57, 0xf1, 0x3d, 0xf2, 0xc6, 0x58, 0xe5, 0x01, 0xab, 0xd7,
-+	0x2a, 0xdb, 0xa3, 0x48, 0x63, 0x61, 0x3b, 0xd1, 0x67, 0x69, 0xee, 0xf9, 0x55, 0x25, 0x8e, 0x36,
-+	0x11, 0xee, 0x8e, 0xc5, 0x42, 0xa4, 0x26, 0xe3, 0x75, 0xc6, 0xb4, 0xd8, 0x3b, 0x71, 0x7c, 0x97,
-+	0xf8, 0x85, 0x04, 0xb4, 0x3a, 0xcc, 0x5d, 0xf0, 0x3a, 0x49, 0x04, 0xe8, 0x8d, 0x26, 0x19, 0xdf,
-+	0xb7, 0xfb, 0x3c, 0xda, 0x68, 0xbc, 0x13, 0x6c, 0x46, 0x8d, 0xfe, 0xdf, 0x1c, 0x5a, 0x5b, 0x73,
-+	0x04, 0x64, 0x08, 0x86, 0x6f, 0xec, 0x89, 0x49, 0xbe, 0xb5, 0x87, 0xa0, 0xa4, 0xb6, 0xe6, 0xc0,
-+	0xde, 0xf5, 0xf2, 0x44, 0x05, 0x38, 0x51, 0x84, 0xa6, 0x9e, 0x9d, 0xce, 0x42, 0x08, 0xf3, 0x63,
-+	0xad, 0xb0, 0xe1, 0xce, 0x88, 0x18, 0x63, 0xeb, 0x8d, 0x82, 0xd4, 0xae, 0xad, 0x5e, 0x1c, 0x19,
-+	0x50, 0x47, 0xd7, 0x0d, 0x9b, 0xdc, 0x44, 0x7b, 0xda, 0x02, 0x76, 0x84, 0xb4, 0x35, 0x1d, 0x98,
-+	0x50, 0x3f, 0xee, 0x1b, 0xcf, 0x82, 0x7f, 0xfd, 0x07, 0x50, 0x17, 0x01, 0xc7, 0xf3, 0x91, 0x24,
-+	0x22, 0xdd, 0x2f, 0x42, 0xb2, 0x6c, 0xf4, 0x0a, 0xdd, 0xe0, 0x7d, 0x63, 0xe2, 0x35, 0xf4, 0x2f,
-+	0x65, 0x21, 0x40, 0x2a, 0x90, 0xdd, 0x2c, 0xea, 0x4a, 0x2e, 0x17, 0x76, 0x40, 0x74, 0x2d, 0x3c,
-+	0xac, 0x85, 0x3e, 0x96, 0xfa, 0x49, 0x44, 0x13, 0xfe, 0xe9, 0x45, 0x97, 0x2b, 0x24, 0x23, 0xa0,
-+	0xf5, 0x1b, 0xec, 0xf2, 0x85, 0x28, 0xc9, 0xdb, 0x92, 0x60, 0x02, 0xc5, 0x0f, 0xfe, 0x2b, 0x1a,
-+	0x97, 0xc9, 0x78, 0xcf, 0x48, 0x8b, 0xa2, 0x9b, 0xbb, 0x47, 0x2e, 0x7e, 0x63, 0x28, 0x2d, 0xdd,
-+	0x32, 0x0a, 0x15, 0xa0, 0x72, 0xd8, 0x17, 0x60, 0x75, 0x20, 0x4f, 0x7d, 0xed, 0x29, 0x35, 0x61,
-+};
-+
-+static const unsigned char dh_expected_secret[] = {
-+	0x61, 0xfc, 0x0d, 0x4d, 0x01, 0xce, 0xe1, 0x52, 0x34, 0x0f, 0x52, 0xb4, 0x53, 0x28, 0xaa, 0x11,
-+	0xd8, 0x6e, 0x92, 0xce, 0x8e, 0x8f, 0x7b, 0xa2, 0x91, 0x80, 0xf6, 0x2d, 0x99, 0x9b, 0xc7, 0x71,
-+	0x4c, 0xbb, 0x05, 0xef, 0xde, 0x22, 0xbd, 0xdf, 0x6f, 0x8d, 0xbb, 0x00, 0xdf, 0x4e, 0xfa, 0x1c,
-+	0x14, 0xea, 0x54, 0x20, 0xac, 0xec, 0x51, 0xcd, 0xbd, 0xd0, 0x63, 0xfc, 0x35, 0x7b, 0xd9, 0xab,
-+	0x36, 0x7f, 0x1b, 0x67, 0xc3, 0xb1, 0x51, 0x4e, 0x2d, 0x19, 0x05, 0x50, 0xbe, 0x1d, 0x44, 0x51,
-+	0x5f, 0xfe, 0x65, 0xf8, 0xf6, 0x12, 0xad, 0x6c, 0xc5, 0x84, 0x96, 0xd9, 0xc3, 0xc9, 0x39, 0x7d,
-+	0x87, 0x98, 0xa7, 0x8e, 0x52, 0x4d, 0x1f, 0x26, 0xbe, 0x62, 0x14, 0xf4, 0x66, 0xcf, 0x9a, 0x90,
-+	0x4d, 0x28, 0xdd, 0x29, 0x11, 0x6e, 0x51, 0x0c, 0x7b, 0x18, 0x1e, 0xac, 0x55, 0x49, 0xce, 0x1d,
-+	0xef, 0xcc, 0x6c, 0xa2, 0x0e, 0x80, 0xd3, 0x0d, 0x24, 0xc0, 0x77, 0x68, 0x87, 0xf8, 0xa3, 0x05,
-+	0x0f, 0x8d, 0xaa, 0x58, 0x6b, 0xbb, 0x6b, 0xd0, 0x76, 0xea, 0x87, 0x5c, 0xc3, 0x3e, 0xef, 0x19,
-+	0x66, 0x9e, 0xc7, 0xd4, 0x4e, 0x85, 0xdf, 0x06, 0x61, 0x0b, 0x94, 0x9c, 0xd3, 0x58, 0x23, 0xa7,
-+	0xb1, 0xf6, 0x36, 0xaf, 0x6b, 0x4c, 0xf1, 0x88, 0x40, 0xd4, 0x5f, 0x6e, 0x9d, 0x1f, 0xa7, 0x3c,
-+	0x8b, 0xc2, 0x71, 0xba, 0x87, 0xcd, 0xc2, 0x9b, 0x33, 0xcf, 0x18, 0xee, 0x59, 0x8e, 0xf6, 0x6c,
-+	0x76, 0xcc, 0xed, 0xcc, 0x09, 0xfe, 0xe1, 0xf8, 0xce, 0x5c, 0x78, 0xb3, 0xb9, 0xe3, 0xf5, 0x29,
-+	0x14, 0xaa, 0x67, 0xd0, 0xb5, 0xcb, 0x7a, 0x7e, 0xd1, 0x2e, 0x83, 0x97, 0xf1, 0x6b, 0xfb, 0xe4,
-+	0xfb, 0xeb, 0xdd, 0x18, 0x54, 0x0d, 0x4c, 0xa7, 0x65, 0xc1, 0x0c, 0x11, 0xad, 0xea, 0x83, 0x9f,
-+};
-+
-+#endif /* KEYCTL_DH_DATA_H__ */
 -- 
 2.55.0
 
