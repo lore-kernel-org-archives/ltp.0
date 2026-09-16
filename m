@@ -4,53 +4,101 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BCE84C88E77
-	for <ltp@archiver.kernel.org>; Wed, 16 Sep 2026 09:38:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5A138C88E77
+	for <ltp@archiver.kernel.org>; Wed, 16 Sep 2026 11:34:09 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 467FC3E694F
-	for <ltp@archiver.kernel.org>; Wed, 16 Sep 2026 11:38:16 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 68C8C3E7B87
+	for <ltp@archiver.kernel.org>; Wed, 16 Sep 2026 13:34:07 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C54963C98AB
- for <ltp@lists.linux.it>; Wed, 16 Sep 2026 11:38:01 +0200 (CEST)
-Received: from mta0.migadu.com (out-150.mta0.migadu.com
- [IPv6:2001:41d0:1004:224b::96])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 9939D3E68E4
+ for <ltp@lists.linux.it>; Wed, 16 Sep 2026 13:33:50 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 167A36006F1
- for <ltp@lists.linux.it>; Wed, 16 Sep 2026 11:37:59 +0200 (CEST)
-X-Envelope-To: ltp@lists.linux.it
-DKIM-Signature: a=rsa-sha256; bh=db/PJf4mIwldmQkdAa2BkgtrS+MzbdZPUceXjxFa4ak=; 
- c=simple/simple; d=linux.dev;
- h=from:to:subject:date:message-id:mime-version:content-type; s=key1;
- t=1789551479; v=1; x=1790156279;
- b=Z9GN6J3Q/dvXJuPTo0KpbPeZnMkz7q/G8XBxwzeuC11mgiinbZI9pAcXZ0YjAB+HdCgMqxAW
- Ti5avGEIrqbFj57r3u5lVfqYvMKD9jfb9nOPDjzg7JGYRiH4N82uJpAIhJJLQ7u5gqW6cNzpEy6
- Yl4jcHjkec+85svl9fz+KVjE=
-X-Envelope-To: ltp@lists.linux.it
-Received: by smtp.migadu.com with ESMTPS id 34bd29999afaa648;
- Wed, 16 Sep 2026 09:37:49 +0000
-X-Mizu-Trace-ID: 34bd29999afaa648
-X-Migadu-Flow: FLOW_OUT
-Date: Wed, 16 Sep 2026 17:37:42 +0800
-From: Li Wang <li.wang@linux.dev>
-To: Huaisheng Ye <yehuaisheng@open-hieco.net>, tsahu@linux.ibm.com,
- pvorel@suse.cz, ltp@lists.linux.it
-Message-ID: <aqpjZsOCq-jDfks_@linux.dev>
-Mail-Followup-To: Huaisheng Ye <yehuaisheng@open-hieco.net>,
- tsahu@linux.ibm.com, pvorel@suse.cz, ltp@lists.linux.it
-References: <20260914032359.9956-1-yehuaisheng@open-hieco.net>
- <aqpX1P1bNIEol4yt@linux.dev>
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id F1852200215
+ for <ltp@lists.linux.it>; Wed, 16 Sep 2026 13:33:49 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id EE03E21C72;
+ Wed, 16 Sep 2026 11:33:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1789558425;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=qOVqqv2rKELqt2R8DxOmSYPzqT0Y3ZsJBoIKj0MC5Iw=;
+ b=odMdhDYc3jBQSEHfAqfjo5wJxnFpdZo9Iqnu9LeodSRkAXsHHt5qpwemgNMv2GJSqfLnmC
+ Vx1OT83qZBteFPMiETzCe+hp9L6610pUUZ9Vy1AjhRgNAWK9Tk+K7GTCtH3hRvWUNg3bcV
+ 7KxCWAji762ufZvbMbpKHRLnM0t11K8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1789558425;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=qOVqqv2rKELqt2R8DxOmSYPzqT0Y3ZsJBoIKj0MC5Iw=;
+ b=YTn3FIZFZazpM++jlVgQ+GbRbHqB6cu9SJYt/2LRxC45pRR9hxsKkEczGSXAAasUF+cCbo
+ sPms7d78vDmI+5CA==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1789558420;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=qOVqqv2rKELqt2R8DxOmSYPzqT0Y3ZsJBoIKj0MC5Iw=;
+ b=VBYqfghcXxe2Y8pxxMB9M4esrs47E/Kmcz3ogPYSaaxMy6nf4Tkls87effSE52Lb6ql2Jp
+ D6MbUAZfS9KjSVYxCjM3H1iUZeBgMEBCp8cLpXXnxKOA+JsBm5HskEOS4G+kArhUPYUZRj
+ iXxPBhtWdVpUsS8D25LebAZ/ZfrLO34=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1789558420;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=qOVqqv2rKELqt2R8DxOmSYPzqT0Y3ZsJBoIKj0MC5Iw=;
+ b=QDo4ETD01Y5bcnvJxDsBAiz+UYJRmN4IXURL3oBgCqb0H4dRH/3fhZ6rsbYDnsQpf3pFu5
+ QR/N8oydmMKkJdAg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9BC231348F;
+ Wed, 16 Sep 2026 11:33:40 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id TwbJGpR+qmqcIQAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Wed, 16 Sep 2026 11:33:40 +0000
+Date: Wed, 16 Sep 2026 13:33:39 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Wei Gao <wegao@suse.com>
+Message-ID: <20260916113339.GA1756857@pevik>
+References: <20260903095255.4925-2-wegao@suse.com>
+ <6a9a867b.de81f790.219d91.7092@mx.google.com>
+ <ap5n5QV5xneoAFYm@autotest-wegao.qe.prg2.suse.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <aqpX1P1bNIEol4yt@linux.dev>
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+In-Reply-To: <ap5n5QV5xneoAFYm@autotest-wegao.qe.prg2.suse.org>
+X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; MISSING_XM_UA(0.00)[];
+ MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
+ RCVD_TLS_ALL(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; FROM_HAS_DN(0.00)[];
+ RCPT_COUNT_FIVE(0.00)[5]; FROM_EQ_ENVFROM(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email,suse.cz:replyto];
+ RCVD_COUNT_TWO(0.00)[2]; REPLYTO_EQ_FROM(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] hugemmap10: Account for memory policy in counter
- checks
+Subject: Re: [LTP] [PATCH v11 1/2] lib: Extend tst_assert_ulong() with enum
+ flags
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -62,159 +110,127 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> 
-> Aside from this patch, my test encountered new failures on a four-node system.
-> Without your patch, the surplus failure can be reproduced consistently, so I
-> suspect it's a different issue.
-> 
-> ...
-> hugemmap10.c:402: TFAIL: While doing munmap shared after touch: Bad HugePages_Total: expected 1, actual 2
-> hugemmap10.c:402: TFAIL: While doing munmap shared after touch: Bad HugePages_Free: expected 1, actual 2
-> hugemmap10.c:402: TFAIL: While doing munmap shared after touch: Bad HugePages_Surp: expected 0, actual 1
+> On Fri, Sep 04, 2026 at 08:51:06AM +0000, Andrea Cervesato wrote:
+> > H Wei,
 
-The test system has four nodes, and only nodes 0 and 2 have memory.
-I guess that's what caused the failure when running hugemmap10 during
-hugepage allocation.
+> > I was re-checking the whole patch-set and it looks a bit overengineered
+> > from my point of view. A few points below.
 
-Something like this:
+> > > +enum tst_assert_flags {
+> > > +	TST_ASSERT_SATURATED_INT = 1,
+> > > +	TST_ASSERT_TRUNC_32BIT   = 2,
+> > > +};
 
-1. The test pre-allocates 1 hugepage, which defaults to Node 0.
+> > Adding new flags for the whole LTP core library trying to fix a single
+> > test is not a good idea in general. Also, TST_ASSERT_TRUNC_32BIT is
+> > probably not needed.
 
-2. When the test runs on Node 2, the kernel dynamically creates a surplus
-   hugepage on Node 2 to ensure local memory performance.
+> But this is follow Cyril's suggestion:
+> https://lore.kernel.org/ltp/aJm5SBOaRoe1e0PB@yuki.lan/
 
-3. The global hugepage count becomes 2 (1 on Node 0 + 1 surplus on Node 2).
+FYI the informal rule Cyril announced few weeks ago "at least two tests needs
+it" (we talked about .max_kver member of struct tst_test, I guess this would
+more or less applied to library API code.
 
-4. The test expects exactly 1 global hugepage, so it reports a failure.
+When I acked this in v9 [1] (after suggesting to use enum instead of #define in
+v8 [2]) I expected it'd be actually needed in more tests, based on Cyril's
+suggestion.
 
-Below are the test results from patched-hugemmap10 on patched-kernel-6.6.
-I'll do more investigation tomorrow.
+Anyway, Dan Carpenter mentioned [3] kernel commit af7c693f1460
+("Cap shmmax at INT_MAX in compat shminfo") which does 
 
-[root@SL26GA ~]# numactl -H
-available: 4 nodes (0-3)
-node 0 cpus: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79
-node 0 size: 31729 MB
-node 0 free: 30582 MB
-node 1 cpus: 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95
-node 1 size: 0 MB
-node 1 free: 0 MB
-node 2 cpus: 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 96 97 98 99 100 101 102 103 104 105 106 107 108 109 110 111
-node 2 size: 31896 MB
-node 2 free: 30627 MB
-node 3 cpus: 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 112 113 114 115 116 117 118 119 120 121 122 123 124 125 126 127
-node 3 size: 0 MB
-node 3 free: 0 MB
-node distances:
-node   0   1   2   3
-  0:  10  15  42  38
-  1:  15  10  38  33
-  2:  42  38  10  15
-  3:  38  33  15  10
++       if (smi->shmmax > INT_MAX)
++               smi->shmmax = INT_MAX;
 
-[root@SL26GA hugemmap]# numactl --cpunodebind=0 ./hugemmap10
-tst_hugepage.c:84: TINFO: 6 hugepage(s) reserved
-tst_tmpdir.c:308: TINFO: Using /tmp/LTP_hug9CXa7r as tmpdir (tmpfs filesystem)
-tst_test.c:1233: TINFO: Mounting none to /tmp/LTP_hug9CXa7r/hugetlbfs fstyp=hugetlbfs flags=0
-tst_test.c:2065: TINFO: LTP version: 20260529
-tst_test.c:2068: TINFO: Tested kernel: 6.6.145-9.sl26.x86_64 #1 SMP Thu Sep  3 11:08:39 CST 2026 x86_64
-tst_kconfig.c:90: TINFO: Parsing kernel config '/proc/config.gz'
-tst_test.c:1893: TINFO: Overall timeout per run is 0h 00m 30s
-hugemmap10.c:457: TINFO: Base pool size: 0
-hugemmap10.c:384: TINFO: Clean...
-hugemmap10.c:435: TINFO: OK
-hugemmap10.c:384: TINFO: Untouched, shared...
-hugemmap10.c:435: TINFO: OK
-hugemmap10.c:384: TINFO: Untouched, private...
-hugemmap10.c:435: TINFO: OK
-hugemmap10.c:384: TINFO: Touched, shared...
-hugemmap10.c:435: TINFO: OK
-hugemmap10.c:384: TINFO: Touched, private...
-hugemmap10.c:435: TINFO: OK
-hugemmap10.c:457: TINFO: Base pool size: 1
-hugemmap10.c:384: TINFO: Clean...
-hugemmap10.c:435: TINFO: OK
-hugemmap10.c:384: TINFO: Untouched, shared...
-hugemmap10.c:435: TINFO: OK
-hugemmap10.c:384: TINFO: Untouched, private...
-hugemmap10.c:435: TINFO: OK
-hugemmap10.c:384: TINFO: Touched, shared...
-hugemmap10.c:435: TINFO: OK
-hugemmap10.c:384: TINFO: Touched, private...
-hugemmap10.c:435: TINFO: OK
-hugemmap10.c:457: TINFO: Base pool size: 2
-hugemmap10.c:384: TINFO: Clean...
-hugemmap10.c:435: TINFO: OK
-hugemmap10.c:384: TINFO: Untouched, shared...
-hugemmap10.c:435: TINFO: OK
-hugemmap10.c:384: TINFO: Untouched, private...
-hugemmap10.c:435: TINFO: OK
-hugemmap10.c:384: TINFO: Touched, shared...
-hugemmap10.c:435: TINFO: OK
-hugemmap10.c:384: TINFO: Touched, private...
-hugemmap10.c:435: TINFO: OK
-hugemmap10.c:457: TINFO: Base pool size: 3
-hugemmap10.c:384: TINFO: Clean...
-hugemmap10.c:435: TINFO: OK
-hugemmap10.c:384: TINFO: Untouched, shared...
-hugemmap10.c:435: TINFO: OK
-hugemmap10.c:384: TINFO: Untouched, private...
-hugemmap10.c:435: TINFO: OK
-hugemmap10.c:384: TINFO: Touched, shared...
-hugemmap10.c:435: TINFO: OK
-hugemmap10.c:384: TINFO: Touched, private...
-hugemmap10.c:435: TINFO: OK
-hugemmap10.c:500: TPASS: Hugepages Counters works as expected.
+[1] https://lore.kernel.org/ltp/20260902090418.GA910767@pevik/
+[2] https://lore.kernel.org/ltp/20260828092602.GA715959@pevik/
+[3] https://lore.kernel.org/ltp/aJYBSmcQpbHUvOqW@stanley.mountain/
 
-Summary:
-passed   1
-failed   0
-broken   0
-skipped  0
-warnings 0
+Searching in kernel git
 
-[root@SL26GA hugemmap]# numactl --cpunodebind=2 ./hugemmap10
-tst_hugepage.c:84: TINFO: 6 hugepage(s) reserved
-tst_tmpdir.c:308: TINFO: Using /tmp/LTP_hugVJVuKk as tmpdir (tmpfs filesystem)
-tst_test.c:1233: TINFO: Mounting none to /tmp/LTP_hugVJVuKk/hugetlbfs fstyp=hugetlbfs flags=0
-tst_test.c:2065: TINFO: LTP version: 20260529
-tst_test.c:2068: TINFO: Tested kernel: 6.6.145-9.sl26.x86_64 #1 SMP Thu Sep  3 11:08:39 CST 2026 x86_64
-tst_kconfig.c:90: TINFO: Parsing kernel config '/proc/config.gz'
-tst_test.c:1893: TINFO: Overall timeout per run is 0h 00m 30s
-hugemmap10.c:457: TINFO: Base pool size: 0
-hugemmap10.c:384: TINFO: Clean...
-hugemmap10.c:435: TINFO: OK
-hugemmap10.c:384: TINFO: Untouched, shared...
-hugemmap10.c:435: TINFO: OK
-hugemmap10.c:384: TINFO: Untouched, private...
-hugemmap10.c:435: TINFO: OK
-hugemmap10.c:384: TINFO: Touched, shared...
-hugemmap10.c:435: TINFO: OK
-hugemmap10.c:384: TINFO: Touched, private...
-hugemmap10.c:435: TINFO: OK
-hugemmap10.c:457: TINFO: Base pool size: 1
-hugemmap10.c:384: TINFO: Clean...
-hugemmap10.c:435: TINFO: OK
-hugemmap10.c:384: TINFO: Untouched, shared...
-hugemmap10.c:402: TFAIL: While doing munmap shared after touch: Bad HugePages_Total: expected 1, actual 2
-hugemmap10.c:402: TFAIL: While doing munmap shared after touch: Bad HugePages_Free: expected 1, actual 2
-hugemmap10.c:402: TFAIL: While doing munmap shared after touch: Bad HugePages_Surp: expected 0, actual 1
+$ git grep -A2 'if.* > INT_MAX' |grep ' = INT_MAX' 
 
-Summary:
-passed   0
-failed   3
-broken   0
-skipped  0
-warnings 0
+I found only:
 
+block/bfq-iosched.c
+drivers/usb/class/usbtmc.c
+drivers/xen/pvcalls-front.c
+fs/ext4/inode.c
+include/net/netfilter/nf_conntrack_core.h
+ipc/shm.c
+kernel/time/itimer.c
+lib/vsprintf.c
+net/mptcp/protocol.c
+sound/core/oss/pcm_oss.c
+tools/lib/bpf/ringbuf.c
 
--- 
-Regards,
-Li Wang
+IMHO none of them uses export data truncated by INT_MAX to sysfs.
+
+> > > +	safe_file_scanf(file, lineno, NULL, path, "%llu", &sys_val_64);
+
+> > This is the real fix. Read below.
+
+> > > +
+> > > +	if (flags & TST_ASSERT_SATURATED_INT) {
+> > > +		if (sys_val_64 > (unsigned long long)INT_MAX)
+> > > +			expected_val = (unsigned long)INT_MAX;
+> > > +		else
+> > > +			expected_val = (unsigned long)sys_val_64;
+> > > +	} else if (flags & TST_ASSERT_TRUNC_32BIT) {
+
+> > In 32bit compat mode `unsigned long` becomes 32bit, so we can simply do:
+
+> > void tst_assert_ulong(const char *file, const int lineno, const char *path, unsigned long val)
+> > {
+> > 	unsigned long long sys_val;
+
+> > 	safe_file_scanf(file, lineno, NULL, path, "%llu", &sys_val);
+
+> > 	if (val == (unsigned long)sys_val) {
+> > 		tst_res_(file, lineno, TPASS, "%s = %lu", path, val);
+> > 	}
+
+> > 	tst_res_(file, lineno, TFAIL, "%s != %lu got %lu",
+> > 		path, val, (unsigned long)sys_val);
+> > }
+
+> > And then, inside the test:
+
+> > 	if (tst_is_compat_mode() && info.shmmax == INT_MAX)
+> > 		tst_res(TPASS, "shmmax clamped to INT_MAX in compat mode");
+> > 	else
+> > 		TST_ASSERT_ULONG(PATH_KERN_SHMMAX, info.shmmax);
+
+> > 	TST_ASSERT_ULONG(PATH_KERN_SHMMNI, info.shmmni);
+> > 	TST_ASSERT_ULONG(PATH_KERN_SHMALL, info.shmall);
+
+Looks like quite elegant solution, give we really need it just for a single
+test.
+
+> > Please verify if this is working anyway. We can probably fix the
+> > whole patch-set with a couple of lines instead of defining
+> > redundant flags and specific code for a single test.
+
+Yes it works.
+
+=> I vote to merge Andrea's solution instead.
+@Cyril @Li WDYT?
+
+Kind regards,
+Petr
+
+> > Regards,
+> > --
+> > Andrea Cervesato
+> > SUSE QE Automation Engineer Linux
+> > andrea.cervesato@suse.com
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
