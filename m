@@ -4,112 +4,111 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EB20FC88E77
-	for <ltp@archiver.kernel.org>; Wed, 16 Sep 2026 14:13:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2756AC88E77
+	for <ltp@archiver.kernel.org>; Wed, 16 Sep 2026 14:13:52 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 3DFAC3E8B97
-	for <ltp@archiver.kernel.org>; Wed, 16 Sep 2026 16:13:17 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 70AB33E7FA7
+	for <ltp@archiver.kernel.org>; Wed, 16 Sep 2026 16:13:50 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id BFAE63E8C4C
- for <ltp@lists.linux.it>; Wed, 16 Sep 2026 16:04:39 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+ by picard.linux.it (Postfix) with ESMTPS id 402A93E7AD0
+ for <ltp@lists.linux.it>; Wed, 16 Sep 2026 16:04:43 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id CCB681A000A2
- for <ltp@lists.linux.it>; Wed, 16 Sep 2026 16:04:38 +0200 (CEST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id C49881400779
+ for <ltp@lists.linux.it>; Wed, 16 Sep 2026 16:04:37 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 3095421D79;
- Wed, 16 Sep 2026 14:04:29 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 4BCF91FE57;
+ Wed, 16 Sep 2026 14:04:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1789567473; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1789567472; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=388JDcrdct3464pG2AENLKVm8svrjO0VJKOycNS8/kw=;
- b=Y4pfBNzrQGewuq7Lej8MkGfkcSzThMb2HoUUhuqIS8M2hvVP6SbHlqQXTM+8Ygh2q9lcQx
- oYhbiSjxCHPc/6EyNj7hwWzK8cmxLE29w/hQrcigpsGH0vtjcwnOHnMjxdjtfCNuoZepKu
- 8FhimT6jYxtCZ4/LONjWd5taL/esh6M=
+ bh=x2CZNO0nI4Z+KQjSmr7B7hpnEWdH6uWR55vECAUDjNg=;
+ b=RwguS+X5tSG9gvNDy7Y/xaST+jrBJ9c0OKV7FQkZftKY4efRBbfXdz4po8GIUAEPfBEYc0
+ mU76h0eY9L+Nhz6Onh1Rk5EevyHm8kGYCF9xh6GacJhI6kziHVEHKLaED8jo9nvl4IDHZA
+ YXS3S3N82J9Pd3X3xZlqb+3fEw6LjHc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1789567473;
+ s=susede2_ed25519; t=1789567472;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=388JDcrdct3464pG2AENLKVm8svrjO0VJKOycNS8/kw=;
- b=gyy4aA2PmbHfb/E/WLK7ejAOTIPOie+WNwH9VLKCrf7dPP5a2S6kbJbDvBmN+4har57ag2
- FJcjYcEAoJxJA5CA==
-Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="nl/t4pM8";
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=HyAKv1qm
+ bh=x2CZNO0nI4Z+KQjSmr7B7hpnEWdH6uWR55vECAUDjNg=;
+ b=YgGgBiEO5/K57zjb0/Wd9FnQuZ1HOykLKkl9+o/kMgYmduC1XJO4kSLjCFoCdeQoz4WjFc
+ Jyiti0cv3tNtKUAw==
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="AVI7/Efj";
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=PitEDggJ
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1789567469; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1789567468; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=388JDcrdct3464pG2AENLKVm8svrjO0VJKOycNS8/kw=;
- b=nl/t4pM83LVKM4ZYZR9HGXvpPpbv1SnnDubz8adQj2NBq+e3bWQkmo/h21cuT2nMPWY4wX
- RXYzMtdiEgIWMrdNV+sPnFt+iklMvk8issqcE4+2W3I4RDIdnzzlHkUrZ9bvrIRHLMtwCB
- cEXMAFkMbbG7kDZl21IorCx8IkcIFqA=
+ bh=x2CZNO0nI4Z+KQjSmr7B7hpnEWdH6uWR55vECAUDjNg=;
+ b=AVI7/Efjm8lafLQqdX4Kx2lBEuzrmHY1VxVNnfsHfr7b38XqMPoLhmuFJHzNfT248KWK4I
+ 5n9XC8FMPy7RvHJMn+K0m+aKNtHzYumbeCehK83u7Rt4/CmFVvClcSoO8esud+LrKjGkud
+ PXiP0BWvQvGalcxj41mqoxk4qXJ2+k8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1789567469;
+ s=susede2_ed25519; t=1789567468;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=388JDcrdct3464pG2AENLKVm8svrjO0VJKOycNS8/kw=;
- b=HyAKv1qm/YtoFxqvRpS1tlbLHXU+FiixuN7HnQ+fE4k72z1CRtFsxURB5NYxtSRO/L4juF
- 5tc5CD7aWKDW7kCw==
+ bh=x2CZNO0nI4Z+KQjSmr7B7hpnEWdH6uWR55vECAUDjNg=;
+ b=PitEDggJe1yYi4DQpv70R0JIGwKZ12GPhgX9dd58G58Y6sesv6FqhE2PpgRZc2/KQhSTjt
+ 5w0dqGlJNf4JNICw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 43E7B139CE;
- Wed, 16 Sep 2026 14:04:24 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2DD9E139BB;
+ Wed, 16 Sep 2026 14:04:18 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 1xhOO9ihqmqNRQAAD6G6ig:T34
- (envelope-from <pvorel@suse.cz>); Wed, 16 Sep 2026 14:04:24 +0000
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 1xhOO9ihqmqNRQAAD6G6ig:T24
+ (envelope-from <pvorel@suse.cz>); Wed, 16 Sep 2026 14:04:18 +0000
 From: Petr Vorel <pvorel@suse.cz>
 To: ltp@lists.linux.it
-Date: Wed, 16 Sep 2026 16:03:59 +0200
-Message-ID: <20260916140402.1797325-34-pvorel@suse.cz>
+Date: Wed, 16 Sep 2026 16:03:49 +0200
+Message-ID: <20260916140402.1797325-24-pvorel@suse.cz>
 X-Mailer: git-send-email 2.55.0
 In-Reply-To: <20260916140402.1797325-1-pvorel@suse.cz>
 References: <20260916140402.1797325-1-pvorel@suse.cz>
 MIME-Version: 1.0
-X-Rspamd-Queue-Id: 3095421D79
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: 4BCF91FE57
 X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
  R_MISSING_CHARSET(0.50)[];
  R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- MIME_TRACE(0.00)[0:+];
- R_RATELIMIT(0.00)[to_ip_from(RL47ebk195wksjxkdm8ez9hex8)];
- TO_DN_SOME(0.00)[];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- ARC_NA(0.00)[];
+ MX_GOOD(-0.01)[];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ ARC_NA(0.00)[]; MIME_TRACE(0.00)[0:+]; TO_DN_SOME(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
  DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
  RCPT_COUNT_FIVE(0.00)[5]; RCVD_TLS_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:email,suse.cz:mid,suse.com:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:email,suse.cz:mid,suse.com:email,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
  RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
  DKIM_TRACE(0.00)[suse.cz:+]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3 33/36] keyctl36: Test KEYCTL_CAPABILITIES buffer
- sizing
+Subject: [LTP] [PATCH v3 23/36] keyctl28: Negative and boundary tests for
+ KEYCTL_DH_COMPUTE
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -128,130 +127,188 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-Test KEYCTL_CAPABILITIES with short buffer (verifying partial copy
-without overrun) and oversized buffer (verifying trailing space is
-zero-filled while returning the full capability length).
+Test error and boundary conditions of KEYCTL_DH_COMPUTE using a
+parameterized tcase table: buffer smaller than secret (EOVERFLOW),
+bogus prime key (ENOKEY), non-user key (EOPNOTSUPP), NULL buffer
+(EINVAL), non-zero __spare (EINVAL), buflen > 1024 (EMSGSIZE),
+otherinfolen > 64 (EMSGSIZE), and unknown KDF hash name (ENOENT).
 
 Reviewed-by: Petr Vorel <pvorel@suse.cz>
 Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
-[ pvorel: use SAFE_KEYCTL() ]
+[ pvorel: use SAFE_NEW_USER_KEY() ]
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- runtest/syscalls                            |  1 +
- testcases/kernel/syscalls/keyctl/.gitignore |  1 +
- testcases/kernel/syscalls/keyctl/keyctl36.c | 84 +++++++++++++++++++++
- 3 files changed, 86 insertions(+)
- create mode 100644 testcases/kernel/syscalls/keyctl/keyctl36.c
+ runtest/syscalls                            |   1 +
+ testcases/kernel/syscalls/keyctl/.gitignore |   1 +
+ testcases/kernel/syscalls/keyctl/keyctl28.c | 140 ++++++++++++++++++++
+ 3 files changed, 142 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/keyctl/keyctl28.c
 
 diff --git a/runtest/syscalls b/runtest/syscalls
-index 55299bd7c0..f42303345e 100644
+index a90138137f..6594dccb2d 100644
 --- a/runtest/syscalls
 +++ b/runtest/syscalls
-@@ -753,6 +753,7 @@ keyctl32 keyctl32
- keyctl33 keyctl33
- keyctl34 keyctl34
- keyctl35 keyctl35
-+keyctl36 keyctl36
+@@ -745,6 +745,7 @@ keyctl24 keyctl24
+ keyctl25 keyctl25
+ keyctl26 keyctl26
+ keyctl27 keyctl27
++keyctl28 keyctl28
  
  kcmp01 kcmp01
  kcmp02 kcmp02
 diff --git a/testcases/kernel/syscalls/keyctl/.gitignore b/testcases/kernel/syscalls/keyctl/.gitignore
-index 58ebb452fa..a4da8ae805 100644
+index 720ba1de65..139e480b39 100644
 --- a/testcases/kernel/syscalls/keyctl/.gitignore
 +++ b/testcases/kernel/syscalls/keyctl/.gitignore
-@@ -33,3 +33,4 @@
- /keyctl33
- /keyctl34
- /keyctl35
-+/keyctl36
-diff --git a/testcases/kernel/syscalls/keyctl/keyctl36.c b/testcases/kernel/syscalls/keyctl/keyctl36.c
+@@ -25,3 +25,4 @@
+ /keyctl25
+ /keyctl26
+ /keyctl27
++/keyctl28
+diff --git a/testcases/kernel/syscalls/keyctl/keyctl28.c b/testcases/kernel/syscalls/keyctl/keyctl28.c
 new file mode 100644
-index 0000000000..4f0cb70378
+index 0000000000..4c7f6be17e
 --- /dev/null
-+++ b/testcases/kernel/syscalls/keyctl/keyctl36.c
-@@ -0,0 +1,84 @@
++++ b/testcases/kernel/syscalls/keyctl/keyctl28.c
+@@ -0,0 +1,140 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
 + * Copyright (c) 2026 Andrea Cervesato <andrea.cervesato@suse.com>
 + */
 +
 +/*\
-+ * Test ``KEYCTL_CAPABILITIES`` buffer sizing and padding of :manpage:`keyctl(2)`.
++ * Negative and boundary test cases for ``KEYCTL_DH_COMPUTE`` of :manpage:`keyctl(2)`.
 + *
 + * [Algorithm]
 + *
-+ * - verify a 1-byte buffer receives 1 byte while the full size is returned
-+ *   and canary bytes beyond 1 byte remain untouched
-+ * - verify an oversized buffer is zero-filled beyond the capability size
++ * - verify ``EOVERFLOW`` when buffer is smaller than secret size (255 < 256)
++ * - verify ``ENOKEY`` when prime key id does not exist
++ * - verify ``EOPNOTSUPP`` when prime key is not of "user" type
++ * - verify ``EINVAL`` when buffer is ``NULL`` with non-zero buflen
++ * - verify ``EINVAL`` when KDF ``__spare`` field contains non-zero data
++ * - verify ``EMSGSIZE`` when KDF requested output length exceeds 1024
++ * - verify ``EMSGSIZE`` when KDF otherinfo length exceeds 64
++ * - verify ``ENOENT`` when KDF hash algorithm name is unknown
 + */
 +
 +#include "keyctl_common.h"
++#include "keyctl_dh_data.h"
 +
-+#define CANARY		0xaa
-+#define OVERSIZE	16
++static struct keyctl_dh_params *dh_params;
++static struct keyctl_dh_params *dh_bogus_prime;
++static struct keyctl_dh_params *dh_nonuser_prime;
 +
-+static long caps_len;
-+static unsigned char short_buf[4];
-+static unsigned char large_buf[OVERSIZE];
++static struct keyctl_kdf_params *kdf_valid;
++static struct keyctl_kdf_params *kdf_spare_nonzero;
++static struct keyctl_kdf_params *kdf_oi_toolarge;
++static struct keyctl_kdf_params *kdf_unknown_hash;
++
++static unsigned char out_buf[1025];
++
++static struct tcase {
++	struct keyctl_dh_params **params;
++	void *buffer;
++	size_t buflen;
++	struct keyctl_kdf_params **kdf;
++	int exp_errno;
++	const char *desc;
++} tcases[] = {
++	{ &dh_params, out_buf, 255, NULL,
++	  EOVERFLOW, "buffer smaller than secret size (255 < 256)" },
++
++	{ &dh_bogus_prime, out_buf, 256, NULL,
++	  ENOKEY, "bogus prime key ID" },
++
++	{ &dh_nonuser_prime, out_buf, 256, NULL,
++	  EOPNOTSUPP, "non-user key as prime parameter" },
++
++	{ &dh_params, NULL, 256, NULL,
++	  EINVAL, "NULL buffer with non-zero buflen" },
++
++	{ &dh_params, out_buf, 32, &kdf_spare_nonzero,
++	  EINVAL, "KDF non-zero __spare field" },
++
++	{ &dh_params, out_buf, 1025, &kdf_valid,
++	  EMSGSIZE, "KDF output length > 1024" },
++
++	{ &dh_params, out_buf, 32, &kdf_oi_toolarge,
++	  EMSGSIZE, "KDF otherinfolen > 64" },
++
++	{ &dh_params, out_buf, 32, &kdf_unknown_hash,
++	  ENOENT, "unknown KDF hash algorithm name" },
++};
 +
 +static void setup(void)
 +{
-+	caps_len = SAFE_KEYCTL(KEYCTL_CAPABILITIES, (unsigned long)NULL, 0, 0, 0);
++	key_serial_t key_priv, key_prime, key_base;
++
++	SAFE_KEYCTL(KEYCTL_JOIN_SESSION_KEYRING, 0, 0, 0, 0);
++
++	key_priv = SAFE_NEW_USER_KEY("dh_priv", dh_priv, sizeof(dh_priv),
++				KEY_SPEC_PROCESS_KEYRING);
++	key_prime = SAFE_NEW_USER_KEY("dh_prime", dh_prime, sizeof(dh_prime),
++				 KEY_SPEC_PROCESS_KEYRING);
++	key_base = SAFE_NEW_USER_KEY("dh_base", dh_base, sizeof(dh_base),
++				KEY_SPEC_PROCESS_KEYRING);
++
++	dh_params->priv = key_priv;
++	dh_params->prime = key_prime;
++	dh_params->base = key_base;
++
++	*dh_bogus_prime = *dh_params;
++	dh_bogus_prime->prime = INT32_MAX;
++
++	*dh_nonuser_prime = *dh_params;
++	dh_nonuser_prime->prime = KEY_SPEC_PROCESS_KEYRING;
++
++	kdf_valid->hashname = "sha256";
++	kdf_valid->otherinfo = "info";
++	kdf_valid->otherinfolen = 4;
++
++	*kdf_spare_nonzero = *kdf_valid;
++	kdf_spare_nonzero->__spare[0] = 1;
++
++	*kdf_oi_toolarge = *kdf_valid;
++	kdf_oi_toolarge->otherinfolen = 65;
++
++	*kdf_unknown_hash = *kdf_valid;
++	kdf_unknown_hash->hashname = "sha9000";
 +}
 +
-+static void run(void)
++static void verify_negative(unsigned int n)
 +{
-+	size_t i;
-+	int zero_padded = 1;
++	struct tcase *tc = &tcases[n];
++	struct keyctl_dh_params *p = *tc->params;
++	struct keyctl_kdf_params *kdf = tc->kdf ? *tc->kdf : NULL;
 +
-+	memset(short_buf, CANARY, sizeof(short_buf));
-+	TST_EXP_EQ_LI_SILENT(keyctl(KEYCTL_CAPABILITIES,
-+				    (unsigned long)short_buf, 1, 0, 0),
-+			     caps_len);
-+	if (!TST_PASS)
-+		return;
-+
-+	if (short_buf[0] == CANARY) {
-+		tst_res(TFAIL, "short buffer was not populated");
-+		return;
-+	}
-+
-+	for (i = 1; i < sizeof(short_buf); i++) {
-+		if (short_buf[i] != CANARY) {
-+			tst_res(TFAIL, "copy overran short buffer at offset %zu", i);
-+			return;
-+		}
-+	}
-+
-+	tst_res(TPASS, "short buffer copied 1 byte without overrun");
-+
-+	memset(large_buf, CANARY, sizeof(large_buf));
-+	TST_EXP_EQ_LI_SILENT(keyctl(KEYCTL_CAPABILITIES,
-+				    (unsigned long)large_buf, sizeof(large_buf), 0, 0),
-+			     caps_len);
-+	if (!TST_PASS)
-+		return;
-+
-+	for (i = caps_len; i < sizeof(large_buf); i++) {
-+		if (large_buf[i] != 0) {
-+			zero_padded = 0;
-+			break;
-+		}
-+	}
-+
-+	if (!zero_padded)
-+		tst_res(TFAIL, "oversized buffer was not zero-filled at offset %zu", i);
-+	else
-+		tst_res(TPASS, "oversized buffer zero-filled trailing space");
++	TST_EXP_FAIL2(keyctl(KEYCTL_DH_COMPUTE, (unsigned long)p,
++			     (unsigned long)tc->buffer, tc->buflen,
++			     (unsigned long)kdf),
++		      tc->exp_errno,
++		      "KEYCTL_DH_COMPUTE with %s", tc->desc);
 +}
 +
 +static struct tst_test test = {
 +	.setup = setup,
-+	.test_all = run,
-+	.min_kver = "5.3",
++	.test = verify_negative,
++	.tcnt = ARRAY_SIZE(tcases),
++	.min_kver = "4.12",
 +	.needs_kconfigs = (const char *[]) {
 +		"CONFIG_KEYS=y",
++		"CONFIG_KEY_DH_OPERATIONS=y",
++		"CONFIG_CRYPTO_DH",
++		"CONFIG_CRYPTO_SHA256",
 +		NULL
++	},
++	.bufs = (struct tst_buffers []) {
++		{&dh_params, .size = sizeof(*dh_params)},
++		{&dh_bogus_prime, .size = sizeof(*dh_bogus_prime)},
++		{&dh_nonuser_prime, .size = sizeof(*dh_nonuser_prime)},
++		{&kdf_valid, .size = sizeof(*kdf_valid)},
++		{&kdf_spare_nonzero, .size = sizeof(*kdf_spare_nonzero)},
++		{&kdf_oi_toolarge, .size = sizeof(*kdf_oi_toolarge)},
++		{&kdf_unknown_hash, .size = sizeof(*kdf_unknown_hash)},
++		{},
 +	},
 +};
 -- 
