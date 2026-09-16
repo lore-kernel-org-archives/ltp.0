@@ -4,85 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5A138C88E77
-	for <ltp@archiver.kernel.org>; Wed, 16 Sep 2026 11:34:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0077BC88E5C
+	for <ltp@archiver.kernel.org>; Wed, 16 Sep 2026 13:02:14 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 68C8C3E7B87
-	for <ltp@archiver.kernel.org>; Wed, 16 Sep 2026 13:34:07 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id F24BB3E806D
+	for <ltp@archiver.kernel.org>; Wed, 16 Sep 2026 15:02:12 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9939D3E68E4
- for <ltp@lists.linux.it>; Wed, 16 Sep 2026 13:33:50 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ by picard.linux.it (Postfix) with ESMTPS id F38513E18C3
+ for <ltp@lists.linux.it>; Wed, 16 Sep 2026 15:01:55 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id F1852200215
- for <ltp@lists.linux.it>; Wed, 16 Sep 2026 13:33:49 +0200 (CEST)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id CE37C1000931
+ for <ltp@lists.linux.it>; Wed, 16 Sep 2026 15:01:54 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id EE03E21C72;
- Wed, 16 Sep 2026 11:33:40 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id B2C7B1FE5D;
+ Wed, 16 Sep 2026 13:01:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1789558425;
+ t=1789563709;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=qOVqqv2rKELqt2R8DxOmSYPzqT0Y3ZsJBoIKj0MC5Iw=;
- b=odMdhDYc3jBQSEHfAqfjo5wJxnFpdZo9Iqnu9LeodSRkAXsHHt5qpwemgNMv2GJSqfLnmC
- Vx1OT83qZBteFPMiETzCe+hp9L6610pUUZ9Vy1AjhRgNAWK9Tk+K7GTCtH3hRvWUNg3bcV
- 7KxCWAji762ufZvbMbpKHRLnM0t11K8=
+ bh=3qdhDmB8FZbRHB/YP1I06PC+0gP0JrLJRRquEJzGdbM=;
+ b=DIVfbYpd29ztq6IlbLQ72uAOWKTEb1o/Wt6lRE8ohlnyOhYclxhrH8dGU+cR1wBa8A6/wt
+ VVIbzKw63tpAtepKlItIZd9gslnLCrTd033eRaxwawKShkoBKmEyEdIE3+V3Y1WXAkCVw/
+ N6tG/WLlCcXLjbIDEgnaXLjat5R/tD0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1789558425;
+ s=susede2_ed25519; t=1789563709;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=qOVqqv2rKELqt2R8DxOmSYPzqT0Y3ZsJBoIKj0MC5Iw=;
- b=YTn3FIZFZazpM++jlVgQ+GbRbHqB6cu9SJYt/2LRxC45pRR9hxsKkEczGSXAAasUF+cCbo
- sPms7d78vDmI+5CA==
-Authentication-Results: smtp-out1.suse.de;
+ bh=3qdhDmB8FZbRHB/YP1I06PC+0gP0JrLJRRquEJzGdbM=;
+ b=taO6Q9t3NMHDS4tznJp5u3dRTbTJV69hs7zlMWZpCI5BxPfF99k1/kIkKgQfMau9x1fNdW
+ bc/K56aFtYvlZSAA==
+Authentication-Results: smtp-out2.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1789558420;
+ t=1789563705;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=qOVqqv2rKELqt2R8DxOmSYPzqT0Y3ZsJBoIKj0MC5Iw=;
- b=VBYqfghcXxe2Y8pxxMB9M4esrs47E/Kmcz3ogPYSaaxMy6nf4Tkls87effSE52Lb6ql2Jp
- D6MbUAZfS9KjSVYxCjM3H1iUZeBgMEBCp8cLpXXnxKOA+JsBm5HskEOS4G+kArhUPYUZRj
- iXxPBhtWdVpUsS8D25LebAZ/ZfrLO34=
+ bh=3qdhDmB8FZbRHB/YP1I06PC+0gP0JrLJRRquEJzGdbM=;
+ b=E2F9nr2d/1mqF3f5efGbxRCZRXj7HwwVdbpAk9RFAs4eRRGj4ssfQ2YZZbpCIaSH+r/k33
+ c7kfmdyX9c8Wa33fPnhPuFFKaQilzc+qaP8AeAtXMxlzbc5HQJlJeuzQDIkyxPnSRaGk0u
+ fm2e2zC/WR7WXagTZ8LgKhxDzPlVvXk=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1789558420;
+ s=susede2_ed25519; t=1789563705;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=qOVqqv2rKELqt2R8DxOmSYPzqT0Y3ZsJBoIKj0MC5Iw=;
- b=QDo4ETD01Y5bcnvJxDsBAiz+UYJRmN4IXURL3oBgCqb0H4dRH/3fhZ6rsbYDnsQpf3pFu5
- QR/N8oydmMKkJdAg==
+ bh=3qdhDmB8FZbRHB/YP1I06PC+0gP0JrLJRRquEJzGdbM=;
+ b=JTrJHqIoh74uI1vMSfyFFgFgmRYqJ4eyF5EZFRdZa1wnRgIIbeWnyEGiNZAdl1/ZXJLEl8
+ wl6ZkejhWxv+evDA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9BC231348F;
- Wed, 16 Sep 2026 11:33:40 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id EC630136A5;
+ Wed, 16 Sep 2026 13:01:44 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id TwbJGpR+qmqcIQAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Wed, 16 Sep 2026 11:33:40 +0000
-Date: Wed, 16 Sep 2026 13:33:39 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id P+F3KjiTqmpwAgAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Wed, 16 Sep 2026 13:01:44 +0000
+Date: Wed, 16 Sep 2026 15:01:39 +0200
 From: Petr Vorel <pvorel@suse.cz>
 To: Wei Gao <wegao@suse.com>
-Message-ID: <20260916113339.GA1756857@pevik>
-References: <20260903095255.4925-2-wegao@suse.com>
- <6a9a867b.de81f790.219d91.7092@mx.google.com>
- <ap5n5QV5xneoAFYm@autotest-wegao.qe.prg2.suse.org>
+Message-ID: <20260916130139.GA1763942@pevik>
+References: <20260831020028.19193-1-wegao@suse.com>
+ <20260831020028.19193-4-wegao@suse.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <ap5n5QV5xneoAFYm@autotest-wegao.qe.prg2.suse.org>
+In-Reply-To: <20260831020028.19193-4-wegao@suse.com>
 X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
  HAS_REPLYTO(0.30)[pvorel@suse.cz];
@@ -92,13 +91,13 @@ X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  RCVD_TLS_ALL(0.00)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  TO_MATCH_ENVRCPT_ALL(0.00)[]; FROM_HAS_DN(0.00)[];
- RCPT_COUNT_FIVE(0.00)[5]; FROM_EQ_ENVFROM(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email,suse.cz:replyto];
+ RCPT_COUNT_THREE(0.00)[4]; FROM_EQ_ENVFROM(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,imap1.dmz-prg2.suse.org:helo,suse.cz:replyto];
  RCVD_COUNT_TWO(0.00)[2]; REPLYTO_EQ_FROM(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v11 1/2] lib: Extend tst_assert_ulong() with enum
- flags
+Subject: Re: [LTP] [PATCH v13 3/3] open16: allow restricted O_CREAT of FIFOs
+ and regular files
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -117,120 +116,270 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> On Fri, Sep 04, 2026 at 08:51:06AM +0000, Andrea Cervesato wrote:
-> > H Wei,
+Hi Wei,
 
-> > I was re-checking the whole patch-set and it looks a bit overengineered
-> > from my point of view. A few points below.
+> Add LTP coverage for kernel commit 30aba6656f61 (Linux 4.19), which
+> introduced protection against spoofing attacks via O_CREAT of FIFOs
+> and regular files in world-writable or group-writable sticky
+> directories.
 
-> > > +enum tst_assert_flags {
-> > > +	TST_ASSERT_SATURATED_INT = 1,
-> > > +	TST_ASSERT_TRUNC_32BIT   = 2,
-> > > +};
+> This commit adds test cases to verify these security restrictions
+> (Level 1 and Level 2 protections) for opening FIFOs and regular
+> files in world-writable or group-writable sticky directories when the
+> file is not owned by the opener.
 
-> > Adding new flags for the whole LTP core library trying to fix a single
-> > test is not a good idea in general. Also, TST_ASSERT_TRUNC_32BIT is
-> > probably not needed.
+I was thinking what level you're talking about.
+...
+> diff --git a/testcases/kernel/syscalls/open/open16.c b/testcases/kernel/syscalls/open/open16.c
+> new file mode 100644
+> index 000000000..3d29a56ca
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/open/open16.c
+> @@ -0,0 +1,133 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Copyright (c) 2026 Wei Gao <wegao@suse.com>
+> + */
+> +
+> +/*\
+> + * Verify restricted opening (:manpage:`open(2)` and :manpage:`openat(2)`) of
+> + * FIFOs and regular files in sticky directories. This test covers the positive
+> + * case where access is allowed when protection is disabled (level 0), and the
+> + * negative cases where access is disallowed (EACCES) in world-writable (level
+> + * 1) or group-writable (level 2) sticky directories when the file is not owned
+> + * by the opener.
 
-> But this is follow Cyril's suggestion:
-> https://lore.kernel.org/ltp/aJm5SBOaRoe1e0PB@yuki.lan/
+Even here it's not clear. Could you just mention that these are
+/proc/sys/fs/protected_fifos values? man proc_sys_fs(5) which document it does
+not talk about levels at all.
 
-FYI the informal rule Cyril announced few weeks ago "at least two tests needs
-it" (we talked about .max_kver member of struct tst_test, I guess this would
-more or less applied to library API code.
+> + *
+> + * This test requires root to modify /proc/sys/fs/protected_* sysctls and
+> + * to manage file ownership and permissions in sticky directories.
+> + */
+> +
+...
+> +#define PROTECTED_REGULAR "/proc/sys/fs/protected_regular"
+> +#define PROTECTED_FIFOS "/proc/sys/fs/protected_fifos"
 
-When I acked this in v9 [1] (after suggesting to use enum instead of #define in
-v8 [2]) I expected it'd be actually needed in more tests, based on Cyril's
-suggestion.
+Could you please add these 2 into include/tst_path_defs.h?
 
-Anyway, Dan Carpenter mentioned [3] kernel commit af7c693f1460
-("Cap shmmax at INT_MAX in compat shminfo") which does 
+> +#define TEST_FIFO_PATH DIR "/" TEST_FIFO
+> +
+> +static int dir_fd = -1;
+> +static uid_t uid1, uid2;
+> +static gid_t gid1;
+> +
+> +static struct tcase {
+> +	char *level;
+How about define level as int?
 
-+       if (smi->shmmax > INT_MAX)
-+               smi->shmmax = INT_MAX;
+I would even not define it and use unsigned int n in verify_open() since the
+values are the same, but up to you.
 
-[1] https://lore.kernel.org/ltp/20260902090418.GA910767@pevik/
-[2] https://lore.kernel.org/ltp/20260828092602.GA715959@pevik/
-[3] https://lore.kernel.org/ltp/aJYBSmcQpbHUvOqW@stanley.mountain/
+> +	int exp_errno;
+> +	uid_t owner_uid;
+> +	int use_nobody_gid;
+> +	mode_t dir_mode;
+> +} tcases[] = {
+> +	{"0", 0,      0,  0, 0777 | S_ISVTX},
+> +	{"1", EACCES, 0,  0, 0777 | S_ISVTX},
+> +	{"2", EACCES, -1, 1, 0030 | S_ISVTX},
+> +};
 
-Searching in kernel git
+I usually prefer using designated initializers to
+1) not having to specify 0
+2) 
 
-$ git grep -A2 'if.* > INT_MAX' |grep ' = INT_MAX' 
+> +
+> +static void verify_open(unsigned int n)
+> +{
+> +	struct tcase *tc = &tcases[n];
+> +	pid_t pid;
+> +
+> +	SAFE_FILE_PRINTF(PROTECTED_REGULAR, "%s", tc->level);
+> +	SAFE_FILE_PRINTF(PROTECTED_FIFOS, "%s", tc->level);
+> +
+> +	if (tc->owner_uid != (uid_t)-1 || tc->use_nobody_gid) {
+> +		gid_t gid = tc->use_nobody_gid ? gid1 : 0;
+> +
+> +		SAFE_CHOWN(DIR, tc->owner_uid, gid);
+> +	}
+> +
+> +	if (tc->dir_mode)
+> +		SAFE_CHMOD(DIR, tc->dir_mode);
+> +
+> +	pid = SAFE_FORK();
+> +	if (!pid) {
 
-I found only:
+How about:
+1) using SAFE_FORK() directly
+2) return for parent to save indent (readability)
 
-block/bfq-iosched.c
-drivers/usb/class/usbtmc.c
-drivers/xen/pvcalls-front.c
-fs/ext4/inode.c
-include/net/netfilter/nf_conntrack_core.h
-ipc/shm.c
-kernel/time/itimer.c
-lib/vsprintf.c
-net/mptcp/protocol.c
-sound/core/oss/pcm_oss.c
-tools/lib/bpf/ringbuf.c
+	if (SAFE_FORK())
+		return;
 
-IMHO none of them uses export data truncated by INT_MAX to sysfs.
+	SAFE_SETGID(gid1);
+	SAFE_SETUID(uid2);
+	...
 
-> > > +	safe_file_scanf(file, lineno, NULL, path, "%llu", &sys_val_64);
+> +		SAFE_SETGID(gid1);
+> +		SAFE_SETUID(uid2);
+> +
+> +		if (tc->exp_errno) {
+> +			TST_EXP_FAIL2(openat(dir_fd, TEST_FILE, O_RDWR | O_CREAT, 0777),
+> +				      tc->exp_errno, "openat %s (Level %s)", TEST_FILE, tc->level);
+> +			TST_EXP_FAIL2(open(TEST_FIFO_PATH, O_RDWR | O_CREAT, 0777),
+> +				      tc->exp_errno, "open %s (Level %s)", TEST_FIFO, tc->level);
+> +		} else {
+> +			int fd = TST_EXP_FD(openat(dir_fd, TEST_FILE, O_CREAT | O_RDWR, 0777));
+nit: we don't have to define fd when it's not used, we can use TST_RET.
+> +
+> +			if (TST_PASS)
+> +				SAFE_CLOSE(fd);
+> +
+> +			fd = TST_EXP_FD(open(TEST_FIFO_PATH, O_RDWR | O_CREAT, 0777));
+> +			if (TST_PASS)
+> +				SAFE_CLOSE(fd);
+> +		}
 
-> > This is the real fix. Read below.
+This else branch use the same code, how about to use TST_EXP_FD_OR_FAIL()?
 
-> > > +
-> > > +	if (flags & TST_ASSERT_SATURATED_INT) {
-> > > +		if (sys_val_64 > (unsigned long long)INT_MAX)
-> > > +			expected_val = (unsigned long)INT_MAX;
-> > > +		else
-> > > +			expected_val = (unsigned long)sys_val_64;
-> > > +	} else if (flags & TST_ASSERT_TRUNC_32BIT) {
+	TST_EXP_FD_OR_FAIL(openat(dir_fd, TEST_FILE, O_RDWR | O_CREAT, 0777),
+			  tc->exp_errno, "openat %s (Level %s)", TEST_FILE, tc->level);
+	if (TST_RET != -1)
+		SAFE_CLOSE(TST_RET);
 
-> > In 32bit compat mode `unsigned long` becomes 32bit, so we can simply do:
+	TST_EXP_FD_OR_FAIL(open(TEST_FIFO_PATH, O_RDWR | O_CREAT, 0777),
+			  tc->exp_errno, "open %s (Level %s)", TEST_FIFO, tc->level);
+	if (TST_RET != -1)
+		SAFE_CLOSE(TST_RET);
 
-> > void tst_assert_ulong(const char *file, const int lineno, const char *path, unsigned long val)
-> > {
-> > 	unsigned long long sys_val;
+@Cyril @Li: I always wondered if TST_EXP_FD_OR_FAIL() should use TST_EXP_FAIL2().
 
-> > 	safe_file_scanf(file, lineno, NULL, path, "%llu", &sys_val);
+> +
+> +		exit(0);
+I guess we need to bother with exit(0) at this point, right?
 
-> > 	if (val == (unsigned long)sys_val) {
-> > 		tst_res_(file, lineno, TPASS, "%s = %lu", path, val);
-> > 	}
+> +	}
+> +}
+> +
+> +static void setup(void)
+> +{
+> +	struct passwd *pw;
+> +
+> +	pw = SAFE_GETPWNAM("nobody");
+> +	uid1 = pw->pw_uid;
+> +	gid1 = pw->pw_gid;
+> +	uid2 = tst_get_free_uid(uid1);
+> +
+> +	umask(0);
+> +	SAFE_MKDIR(DIR, 0777 | S_ISVTX);
+> +	dir_fd = SAFE_OPEN(DIR, O_DIRECTORY);
+> +
+> +	int fd = SAFE_OPENAT(dir_fd, TEST_FILE, O_CREAT | O_RDWR, 0777);
+> +
+> +	SAFE_CLOSE(fd);
+> +	SAFE_MKFIFO(TEST_FIFO_PATH, 0777);
+> +	SAFE_CHOWN(TEST_FIFO_PATH, uid1, gid1);
+> +	SAFE_CHOWN(DIR "/" TEST_FILE, uid1, gid1);
+> +}
+> +
+> +static void cleanup(void)
+> +{
+> +	if (dir_fd != -1)
+> +		SAFE_CLOSE(dir_fd);
+> +}
+> +
+> +static struct tst_test test = {
+> +	.setup = setup,
+> +	.cleanup = cleanup,
+> +	.needs_root = 1,
+> +	.tcnt = ARRAY_SIZE(tcases),
+> +	.test = verify_open,
+> +	.needs_tmpdir = 1,
+> +	.forks_child = 1,
+> +	.save_restore = (const struct tst_path_val[]) {
+> +		{PROTECTED_REGULAR, NULL, TST_SR_TCONF},
+> +		{PROTECTED_FIFOS, NULL, TST_SR_TCONF},
+> +		{}
+> +	},
+> +	.tags = (const struct tst_tag[]) {
+> +		{"linux-git", "30aba6656f61"},
+30aba6656f61 notes many CVEs, IMHO we should add them as well:
 
-> > 	tst_res_(file, lineno, TFAIL, "%s != %lu got %lu",
-> > 		path, val, (unsigned long)sys_val);
-> > }
+    CVE-2000-1134
+    CVE-2007-3852
+    CVE-2008-0525
+    CVE-2009-0416
+    CVE-2011-4834
+    CVE-2015-1838
+    CVE-2015-7442
+    CVE-2016-7489
 
-> > And then, inside the test:
+> +		{}
+> +	}
+> +};
 
-> > 	if (tst_is_compat_mode() && info.shmmax == INT_MAX)
-> > 		tst_res(TPASS, "shmmax clamped to INT_MAX in compat mode");
-> > 	else
-> > 		TST_ASSERT_ULONG(PATH_KERN_SHMMAX, info.shmmax);
-
-> > 	TST_ASSERT_ULONG(PATH_KERN_SHMMNI, info.shmmni);
-> > 	TST_ASSERT_ULONG(PATH_KERN_SHMALL, info.shmall);
-
-Looks like quite elegant solution, give we really need it just for a single
-test.
-
-> > Please verify if this is working anyway. We can probably fix the
-> > whole patch-set with a couple of lines instead of defining
-> > redundant flags and specific code for a single test.
-
-Yes it works.
-
-=> I vote to merge Andrea's solution instead.
-@Cyril @Li WDYT?
+Feel free to speedup with this (still TODO CVE and using int for "level").
 
 Kind regards,
 Petr
 
-> > Regards,
-> > --
-> > Andrea Cervesato
-> > SUSE QE Automation Engineer Linux
-> > andrea.cervesato@suse.com
+diff --git testcases/kernel/syscalls/open/open16.c testcases/kernel/syscalls/open/open16.c
+index 3d29a56ca7..0741102103 100644
+--- testcases/kernel/syscalls/open/open16.c
++++ testcases/kernel/syscalls/open/open16.c
+@@ -47,7 +47,6 @@ static struct tcase {
+ static void verify_open(unsigned int n)
+ {
+ 	struct tcase *tc = &tcases[n];
+-	pid_t pid;
+ 
+ 	SAFE_FILE_PRINTF(PROTECTED_REGULAR, "%s", tc->level);
+ 	SAFE_FILE_PRINTF(PROTECTED_FIFOS, "%s", tc->level);
+@@ -61,29 +60,21 @@ static void verify_open(unsigned int n)
+ 	if (tc->dir_mode)
+ 		SAFE_CHMOD(DIR, tc->dir_mode);
+ 
+-	pid = SAFE_FORK();
+-	if (!pid) {
+-		SAFE_SETGID(gid1);
+-		SAFE_SETUID(uid2);
++	if (SAFE_FORK())
++		return;
+ 
+-		if (tc->exp_errno) {
+-			TST_EXP_FAIL2(openat(dir_fd, TEST_FILE, O_RDWR | O_CREAT, 0777),
+-				      tc->exp_errno, "openat %s (Level %s)", TEST_FILE, tc->level);
+-			TST_EXP_FAIL2(open(TEST_FIFO_PATH, O_RDWR | O_CREAT, 0777),
+-				      tc->exp_errno, "open %s (Level %s)", TEST_FIFO, tc->level);
+-		} else {
+-			int fd = TST_EXP_FD(openat(dir_fd, TEST_FILE, O_CREAT | O_RDWR, 0777));
++	SAFE_SETGID(gid1);
++	SAFE_SETUID(uid2);
+ 
+-			if (TST_PASS)
+-				SAFE_CLOSE(fd);
++	TST_EXP_FD_OR_FAIL(openat(dir_fd, TEST_FILE, O_RDWR | O_CREAT, 0777),
++			  tc->exp_errno, "openat %s (Level %s)", TEST_FILE, tc->level);
++	if (TST_RET != -1)
++		SAFE_CLOSE(TST_RET);
+ 
+-			fd = TST_EXP_FD(open(TEST_FIFO_PATH, O_RDWR | O_CREAT, 0777));
+-			if (TST_PASS)
+-				SAFE_CLOSE(fd);
+-		}
+-
+-		exit(0);
+-	}
++	TST_EXP_FD_OR_FAIL(open(TEST_FIFO_PATH, O_RDWR | O_CREAT, 0777),
++			  tc->exp_errno, "open %s (Level %s)", TEST_FIFO, tc->level);
++	if (TST_RET != -1)
++		SAFE_CLOSE(TST_RET);
+ }
+ 
+ static void setup(void)
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
