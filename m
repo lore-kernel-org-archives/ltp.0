@@ -4,106 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0EB8CC982D0
-	for <ltp@archiver.kernel.org>; Thu, 17 Sep 2026 09:43:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6176FC88E72
+	for <ltp@archiver.kernel.org>; Thu, 17 Sep 2026 09:51:30 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 270653E7530
-	for <ltp@archiver.kernel.org>; Thu, 17 Sep 2026 11:43:32 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id D98183E74FF
+	for <ltp@archiver.kernel.org>; Thu, 17 Sep 2026 11:51:28 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 863AD3C062E
- for <ltp@lists.linux.it>; Thu, 17 Sep 2026 11:43:17 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 45D3D3C062E
+ for <ltp@lists.linux.it>; Thu, 17 Sep 2026 11:51:11 +0200 (CEST)
+Received: from mta0.migadu.com (out-238.mta0.migadu.com
+ [IPv6:2001:41d0:1004:224b::ee])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id EDFC3200A00
- for <ltp@lists.linux.it>; Thu, 17 Sep 2026 11:43:16 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 468951F78E;
- Thu, 17 Sep 2026 09:43:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1789638196; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=deJH9wHMg7x894P6rTcb31wIRxm1RTI2OLT2p/7++0k=;
- b=2QCr6F1FiD+NsGeuMTT06iEdfrrCLgFaJSVbTz/8Xa9WTcpQMOpU+ZUmtNLnfekUnFBOaK
- GCmZCeBiVg4845xfG4GZRLv2a1K+nYttIaCehKl2dVFWCa+X0/iHCpmsKVEZE2p2WM9Zva
- l1ooiRIdJnWRJOigJvuKL8HjdjO5aAU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1789638196;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=deJH9wHMg7x894P6rTcb31wIRxm1RTI2OLT2p/7++0k=;
- b=O2RuT8i+zOQDrmVAxPTZvb2gBujj4sJUTUlOEFd14oySu0rElVX8gL/yB4dcQoFVuuMpus
- rMfqmY1KsLE4FXBA==
-Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=2QCr6F1F;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=O2RuT8i+
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1789638196; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=deJH9wHMg7x894P6rTcb31wIRxm1RTI2OLT2p/7++0k=;
- b=2QCr6F1FiD+NsGeuMTT06iEdfrrCLgFaJSVbTz/8Xa9WTcpQMOpU+ZUmtNLnfekUnFBOaK
- GCmZCeBiVg4845xfG4GZRLv2a1K+nYttIaCehKl2dVFWCa+X0/iHCpmsKVEZE2p2WM9Zva
- l1ooiRIdJnWRJOigJvuKL8HjdjO5aAU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1789638196;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=deJH9wHMg7x894P6rTcb31wIRxm1RTI2OLT2p/7++0k=;
- b=O2RuT8i+zOQDrmVAxPTZvb2gBujj4sJUTUlOEFd14oySu0rElVX8gL/yB4dcQoFVuuMpus
- rMfqmY1KsLE4FXBA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 16DB713918;
- Thu, 17 Sep 2026 09:43:16 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 9tX5ODO2q2qEPgAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Thu, 17 Sep 2026 09:43:16 +0000
-Date: Thu, 17 Sep 2026 11:43:23 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 8EBE3600728
+ for <ltp@lists.linux.it>; Thu, 17 Sep 2026 11:51:09 +0200 (CEST)
+X-Envelope-To: ltp@lists.linux.it
+DKIM-Signature: a=rsa-sha256; bh=NrQGV2zmRR3KJKRdOkuCN4UBeO3mYbmXcamKo6Np0gE=; 
+ c=simple/simple; d=linux.dev;
+ h=from:to:subject:date:message-id:mime-version:content-type; s=key1;
+ t=1789638669; v=1; x=1790243469;
+ b=uwQPiOo5YIcLRhTj0tinFsUizve7VqRm5p586z/wzIBsHVQJMXoJCvSeJy9uYHzUOVrbF5CE
+ H+2NNrCRrsyA9T4ZaEOnKRVBrAsy+pJdTB8uqzXiKtYCsRbd3XXWXqFGlKFVNX8TLTLH3lDMlmw
+ V1mk45mPW/sSwqrJ3Yu1hB7M=
+X-Envelope-To: ltp@lists.linux.it
+Received: by smtp.migadu.com with ESMTPS id 39b91acbb4810739;
+ Thu, 17 Sep 2026 09:51:09 +0000
+X-Mizu-Trace-ID: 39b91acbb4810739
+X-Migadu-Flow: FLOW_OUT
+Date: Thu, 17 Sep 2026 17:51:01 +0800
+From: Li Wang <li.wang@linux.dev>
 To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <aqu2O2FnaOO-xq32@yuki.lan>
+Message-ID: <aqu4BVO2kNQN9oQJ@linux.dev>
+Mail-Followup-To: Petr Vorel <pvorel@suse.cz>, ltp@lists.linux.it,
+ Andrea Cervesato <andrea.cervesato@suse.com>,
+ Cyril Hrubis <chrubis@suse.cz>
 References: <20260916140402.1797325-1-pvorel@suse.cz>
- <20260916140402.1797325-4-pvorel@suse.cz>
+ <20260916140402.1797325-13-pvorel@suse.cz>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20260916140402.1797325-4-pvorel@suse.cz>
-X-Rspamd-Queue-Id: 468951F78E
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[99.99%];
- NEURAL_HAM_LONG(-1.00)[-1.000];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; TO_MATCH_ENVRCPT_ALL(0.00)[]; ARC_NA(0.00)[];
- TO_DN_SOME(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- MIME_TRACE(0.00)[0:+]; FROM_HAS_DN(0.00)[];
- DKIM_TRACE(0.00)[suse.cz:+];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- RCVD_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
- RCVD_TLS_ALL(0.00)[];
- DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received,2a07:de40:b281:104:10:150:64:97:from];
- MISSING_XM_UA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- RCPT_COUNT_THREE(0.00)[4];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim, suse.cz:email,
- imap1.dmz-prg2.suse.org:helo, imap1.dmz-prg2.suse.org:rdns]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+In-Reply-To: <20260916140402.1797325-13-pvorel@suse.cz>
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3 03/36] tree: keyctl: Use SAFE_ADD_KEY()
+Subject: Re: [LTP] [PATCH v3 12/36] keyctl18: Test basic KEYCTL_MOVE
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -121,14 +68,39 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-Nice cleanup:
+> +static void run(void)
+> +{
+> +	SAFE_KEYCTL(KEYCTL_LINK, key, ring_a, 0, 0);
+> +	TST_EXP_PASS(keyctl(KEYCTL_MOVE, key, ring_a, ring_b, 0));
+> +	if (!TST_PASS)
+> +		return;
+> +
+> +	TST_EXP_EQ_LI(keyctl(KEYCTL_SEARCH, ring_b, "user", KEY_DESC), key);
+> +
+> +	TST_EXP_FAIL2(keyctl(KEYCTL_SEARCH, ring_a, "user", KEY_DESC), ENOKEY,
+> +		      "key no longer found in the source keyring");
+> +}
 
-Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+To fix the KEYCTL_SEARCH args number:
+
+--- a/testcases/kernel/syscalls/keyctl/keyctl18.c
++++ b/testcases/kernel/syscalls/keyctl/keyctl18.c
+@@ -38,9 +38,9 @@ static void run(void)
+        if (!TST_PASS)
+                return;
+
+-       TST_EXP_EQ_LI(keyctl(KEYCTL_SEARCH, ring_b, "user", KEY_DESC), key);
++       TST_EXP_EQ_LI(keyctl(KEYCTL_SEARCH, ring_b, "user", KEY_DESC, 0), key);
+
+-       TST_EXP_FAIL2(keyctl(KEYCTL_SEARCH, ring_a, "user", KEY_DESC), ENOKEY,
++       TST_EXP_FAIL2(keyctl(KEYCTL_SEARCH, ring_a, "user", KEY_DESC, 0), ENOKEY,
+                      "key no longer found in the source keyring");
+ }
+
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+Regards,
+Li Wang
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
