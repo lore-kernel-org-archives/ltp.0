@@ -4,92 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BA1F2C982D2
-	for <ltp@archiver.kernel.org>; Fri, 18 Sep 2026 07:53:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E242BC88E75
+	for <ltp@archiver.kernel.org>; Fri, 18 Sep 2026 07:53:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1789718001; h=to : date :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1789718018; h=to : date :
  message-id : in-reply-to : references : mime-version : subject :
  list-id : list-unsubscribe : list-archive : list-post : list-help :
  list-subscribe : from : reply-to : content-type :
  content-transfer-encoding : sender : from;
- bh=5qtnuKnCQTzr6ShBxN6KMUZj9UxTLkwlk/NJBhohUbw=;
- b=N9qrVa+uzXek6o/LIf8Pi8AKi/nGpG20L2aIzcQB5v73/4RUX30BseHTcTD03igYQEK4X
- B321dqN40z/ui70RgnBsikV+Ot3IYtuMWc0Cb9EbJgUgivUZmimEvsS3MxT6J/2dFVWWRp8
- ByWz51W5iXOLyTs8gWSfb4/iPjzoTn8=
+ bh=Y1v8dJmRIYgstjSiqsd0oAUaaQvrlOANPenlsjuukKk=;
+ b=Jnu/3Jm+F4QGL7rq3Z3i4B+5oBcc1XyX8IwOR8tR20VYCzPNRf99Gl+f4iGI+uRuS3iqe
+ sa/409VJ381iH9ov1JHoPIL0PX7+qMtEv1A6YmJWcRg3903Hekv24Sznom68AXqA4axAP4g
+ ZXXcEVfodgXUum4ApHWQq+vdUb5X9RQ=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id EC6E23E73E7
-	for <ltp@archiver.kernel.org>; Fri, 18 Sep 2026 09:53:20 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 78A423E73E7
+	for <ltp@archiver.kernel.org>; Fri, 18 Sep 2026 09:53:38 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9ADA93E729F
- for <ltp@lists.linux.it>; Fri, 18 Sep 2026 09:52:42 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 0C7AB3E72A1
+ for <ltp@lists.linux.it>; Fri, 18 Sep 2026 09:52:44 +0200 (CEST)
 Received: from mail-wr2-x10.google.com (mail-wr2-x10.google.com
  [IPv6:2a00:1450:4864:30::10])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 34C33600B9C
- for <ltp@lists.linux.it>; Fri, 18 Sep 2026 09:52:42 +0200 (CEST)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 891891000357
+ for <ltp@lists.linux.it>; Fri, 18 Sep 2026 09:52:43 +0200 (CEST)
 Received: by mail-wr2-x10.google.com with SMTP id
- ffacd0b85a97d-48434392b02so269495f8f.3
- for <ltp@lists.linux.it>; Fri, 18 Sep 2026 00:52:42 -0700 (PDT)
+ ffacd0b85a97d-48434392b02so269516f8f.3
+ for <ltp@lists.linux.it>; Fri, 18 Sep 2026 00:52:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1789717961; x=1790322761; darn=lists.linux.it;
+ d=suse.com; s=google; t=1789717963; x=1790322763; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to:content-type;
- bh=9mgGcZIQV7NNvzZOppzgUjpxTwumwRj4EqpZ4Z0ye6U=;
- b=Feftp7AZR4sPBX7hqmf3th2JMwKwf7tMzVRAxRRgZQrM6U1e6mCLTUcMiSpYRuMC/T
- PgOKgueTY/pJaTR7UMyACDg7OYZ3/KeOaipu6geE84RVRW/O1wZ01wMPTqyCjd6B3Cp5
- Io3aF/BvwiPm3Utvxy4hyaPBfX8RhHgKu0qPYhsRYB/MfhUL7/b1lksS5bQy9QSD1NoE
- GjD4nkCbMMmfebILy5MDog4LLsjyk9rpN3nzoqBUoVTil80ErgXZx2boBy9xkDhV+IgE
- 8xtQFRfQYhPpvZ4qnBsUZ9IzZh70AkzulmtBuRSmL9i5YR4Bqw6oME56tVLhOY1LQd3K
- y6Ow==
+ bh=vg4syZwWs7R7NJBbrV2J3WcnUZuLjMGIF8F5j64K/EE=;
+ b=EHfrR0t7pSV6L8VmUfN8kWY1oMsTnl5bFsHoCk6zFDoFt4N+SWdngE+d46cJgYCgcX
+ BQF79iokbUy35GYX4P7u0DuXu/RCdywHF1+LA92WmbIeSMYIZ6xPWVLl6ap+KJf7/2Vf
+ wHJ1GeZuqnmqyzGJ6ArBU6ky6vQMoyi320ReF4AD9zQvbvPlO+jqLwYeBf2IncXYZjWr
+ +ux/L5vWSE0iBeEkRlEE14jxDsBxdKYx5kXgDXp+CAheF8D35ycBhXe9aJFhqfxX1/Ko
+ bt6M/Wm5Q1lJCguqAPwe0oFsnQpNjLH7eOZNaG1zGuuZ8wI1oGRLYg+GXBfe01wR7ZZA
+ kJ6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20260707; t=1789717961; x=1790322761;
+ d=1e100.net; s=20260707; t=1789717963; x=1790322763;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to:content-type;
- bh=9mgGcZIQV7NNvzZOppzgUjpxTwumwRj4EqpZ4Z0ye6U=;
- b=vMWwj4wNvgCdQL5XbaCGBb3Uf9QI94taQhTTWKqBXmPQKFfjmxhvnLvpmE/jBLZ8qT
- jBJbVo9BwQX1UKY2Mt6X4POOMuFY1UMwRwzClKTT1hj3UMVcCITWBXlj5KcMkW8oEbXS
- +6PELTxOm5sHYb6LpxIE0cEguEvNox1DkbXlii3DXHlCrNQKf7RFqrzCKA3UAQDUm59T
- pTEE3uhgAFaW37aguT1nFNndDN8SjR7Ub1aTgcvcbRh1ecrPfD8RLET/sP7qRdpveinr
- iqJoludMLeA29VdpmIVEIP75siYUdaNSBNl9wzVf53KYqcGmNvoNgguZ3I3NJi1mmlg1
- wyGg==
-X-Gm-Message-State: AFuF++nV2hqQHPbqqr+NCgD1Uk4qivvRBfUuR6S4v4MdaJ0q1J5nhJ+O
- e+69JbB2a59oqMXCzMCZEyIlLUNxY2+lBUPlxrsudTBnA7uzctxuXnvW06qbHtdZLFdeRcb0HRs
- 6zkw=
-X-Gm-Gg: AYBFou3TVrWqAfRgSrNCpUueOyAkhYSYYrGNOE7R/qzf3yc8OlVZRKNCYRhflS6Uj4i
- gloAOf6ISc+RSH0NA/E6FCiDcCieQuAH/bQPyqTIIuipWTjzhfpiVhSaytDHdNpNZ1OqebiFykT
- Az/GSArnF07wgBsLFkAg+l5FYjtv39eglnTDIu8+FB+FS33/C2BBV++rXcMVqIoRkBao9CeCjPC
- xz5dMLIc8Tv1DoldCc7At0JtLes82G82/2lpiQDeXyd7hLFIIVCZRb/0J8LIktHvx6UgshbNPlv
- X9vKcswAerHnHPHkC+YazGTfQHv/FNkgObkTUkc4d66untXTDxm3IaJ0N4iuFNxwHCz/10pdas7
- gV8UaLEh/t/eRh/hGOp045MpYxTVnmeT7fSToUr6tiSlLLz26gke5/4oZPXGc/R0Q/7xZx+G9Dh
- rXWEFx1Ht/EeLLbkhY/kvVc5bdXODoElY3y+JmWJCWXH3pdfWBv6LGFfMuv/GdAzXci3l+NGuXq
- C1dGyK3Iz6LAdv++Rj/vt59ti2bkeNR903Rb+CvikM=
-X-Received: by 2002:a05:6000:4021:b0:484:3314:eff6 with SMTP id
- ffacd0b85a97d-4871e3941f5mr3528613f8f.28.1789717961353; 
- Fri, 18 Sep 2026 00:52:41 -0700 (PDT)
+ bh=vg4syZwWs7R7NJBbrV2J3WcnUZuLjMGIF8F5j64K/EE=;
+ b=J9vcTYgXVZsMsqGg72gGLml4lj/jA6I6qiBvX0TBSHy2Sq1bWsYF6dH5WFWRUNxaN0
+ B0VXbb1rmY9KAyKgEcImnfhs9upmLeIy2uncokbaZ9i/nPXGTZvVzJAcpUmH0kdAO/Ht
+ G8xdE2IciVi1OunIBzBpzfCQjRl9RjWKTwGw46xpbb5etG35hQ9sDHMsUbRo/yg8ZcIE
+ mjbLRsX7VmumQ27xas0KhurMlBdTWb9aZBu6jnUBwfi9WctM4l4msAc7kMLta6GlJ1E6
+ ctaDxnc6eQHtCKKowHTuORnLGVCN7D1vqAp25U8gazJ+WHm71u1aPJoK0UctOjfNHCRa
+ +P9g==
+X-Gm-Message-State: AFuF++mb9I640z9fVfn6HgiMDjMR5gpRbZA1/ZLymf4W0QmX7kzM8Gq9
+ WVJjlP9avgwm/kYxd4tYTCOjHjS3UrJ4fulxH1O0PMp9dWRw4gMCTbZ5+nzZMEBQnMvDEwMoesJ
+ 3bjA=
+X-Gm-Gg: AYBFou2AWLym4Ebhev46/3FuYm8350KuyHVfAiMVI5TuoABN2FM3EXCk4DhT8E7i7fl
+ nu1jpkYpVfG1hc3sZst4yHRyrzd71T3Vjok3D/qH9kdGErnjtloVyYELQrNqvhzUHLwNENeCK/D
+ GtCQbJ4iIdENJslwIG92Vddv7M6SIGPse+/T8YZ9yFW9B364eTkNfoq935rfdEM1LO3GR6lZFe1
+ n7uQ9Z1bkswEH+tZ2e8/GEAxz/LrSNL8oV8vUbOCdgl2V6Ef7uQQjvcMmvBaQjqujGsmUVyIJDh
+ wllqp/cU9/r5/m/oh07n0+1neN9jfRFAXDi0kDUKlRq8/7t9EehdXYrbxf0PAlB06gHzgWxuLP8
+ HeGP5gKVSitKEocbCR4DCcJ6VFa0MijGANckjd6tzT7P8Gl/ufWj62tO7pqjJzeARikeqsB9kqe
+ ixCru8irImwIsBb2Ilx1o7CRmbC6GHhRBt0ZyiRW4n/2N2l5h/6nJTxlfOu25rN6y+wMKn9qvZT
+ 1FHkZVtw6k92Y6vQPzXk6Vt0aYAvVUgHAL44T90TeEcy+W8pvdcsw==
+X-Received: by 2002:a05:6000:40c8:b0:487:403:f2eb with SMTP id
+ ffacd0b85a97d-4871e263f5dmr3865725f8f.17.1789717963008; 
+ Fri, 18 Sep 2026 00:52:43 -0700 (PDT)
 Received: from localhost ([2a07:de40:b240:0:2ad6:ed42:2ad6:ed42])
  by smtp.gmail.com with UTF8SMTPSA id
- ffacd0b85a97d-4872008678bsm2206894f8f.35.2026.09.18.00.52.41
+ ffacd0b85a97d-4871ff3a957sm2040375f8f.7.2026.09.18.00.52.42
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 18 Sep 2026 00:52:41 -0700 (PDT)
+ Fri, 18 Sep 2026 00:52:42 -0700 (PDT)
 To: ltp@lists.linux.it
-Date: Fri, 18 Sep 2026 07:52:21 +0000
-Message-ID: <20260918075228.21423-2-wegao@suse.com>
+Date: Fri, 18 Sep 2026 07:52:22 +0000
+Message-ID: <20260918075228.21423-3-wegao@suse.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20260918075228.21423-1-wegao@suse.com>
 References: <20260918075228.21423-1-wegao@suse.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v14 1/3] lib/tst_uid: Remove spurious TERRNO from
- tst_get_free_gid success path
+Subject: [LTP] [PATCH v14 2/3] lib: New library function tst_get_free_uid
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -108,32 +107,90 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-tst_get_free_gid_() prints the found GID when it succeeds, but it
-incorrectly includes TERRNO in tst_res_(). This prints whatever value
-happens to be in errno (often 0 or a stale value) which is confusing in
-a success path.
+Add tst_get_free_uid() to dynamically find unused UIDs for tests.
 
-Remove the spurious TERRNO flag from the tst_res_() success message.
+Some tests need a completely unassigned, unused UID. This is used by
+open16 to verify restricted O_CREAT in sticky directories by running
+as a sandboxed user with no file ownership or privileges.
 
 Signed-off-by: Wei Gao <wegao@suse.com>
 Reviewed-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
- lib/tst_uid.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/tst_uid.h | 14 ++++++++++++++
+ lib/tst_uid.c     | 28 ++++++++++++++++++++++++++++
+ 2 files changed, 42 insertions(+)
 
+diff --git a/include/tst_uid.h b/include/tst_uid.h
+index 2237ddcbf..03f9dc073 100644
+--- a/include/tst_uid.h
++++ b/include/tst_uid.h
+@@ -7,6 +7,20 @@
+ 
+ #include <sys/types.h>
+ 
++uid_t tst_get_free_uid_(const char *file, const int lineno, uid_t skip);
++
++/**
++ * tst_get_free_uid() - Find a UID not assigned to any user.
++ * @skip: UID value to skip (pass 0 to skip none).
++ *
++ * Scans the password database for the first unused UID starting
++ * from 1, skipping @skip. Calls tst_brk(TBROK) if no free UID
++ * is found or a lookup error occurs.
++ *
++ * Return: An unused uid_t value.
++ */
++#define tst_get_free_uid(skip) tst_get_free_uid_(__FILE__, __LINE__, (skip))
++
+ /*
+  * Find unassigned gid. The skip argument can be used to ignore e.g. the main
+  * group of a specific user in case it's not listed in the group file. If you
 diff --git a/lib/tst_uid.c b/lib/tst_uid.c
-index af4ef8cf7..b0b087362 100644
+index b0b087362..47c267bc4 100644
 --- a/lib/tst_uid.c
 +++ b/lib/tst_uid.c
-@@ -24,7 +24,7 @@ gid_t tst_get_free_gid_(const char *file, const int lineno, gid_t skip)
- 			continue;
+@@ -5,6 +5,7 @@
  
- 		if (errno == 0 || errno == ENOENT || errno == ESRCH) {
--			tst_res_(file, lineno, TINFO | TERRNO,
+ #include <sys/types.h>
+ #include <grp.h>
++#include <pwd.h>
+ #include <errno.h>
+ 
+ #define TST_NO_DEFAULT_MAIN
+@@ -12,6 +13,33 @@
+ #include "tst_uid.h"
+ 
+ #define MAX_GID 32767
++#define MAX_UID 32767
++
++uid_t tst_get_free_uid_(const char *file, const int lineno, uid_t skip)
++{
++	uid_t ret;
++
++	for (ret = 1; ret < MAX_UID; ret++) {
++		if (ret == skip)
++			continue;
++
++		errno = 0;
++		if (getpwuid(ret))
++			continue;
++
++		if (errno == 0 || errno == ENOENT || errno == ESRCH) {
 +			tst_res_(file, lineno, TINFO,
- 				"Found unused GID %d", (int)ret);
- 			return ret;
- 		}
++				"Found unused UID %d", (int)ret);
++			return ret;
++		}
++
++		tst_brk_(file, lineno, TBROK | TERRNO, "User ID lookup failed");
++		return (uid_t)-1;
++	}
++
++	tst_brk_(file, lineno, TBROK, "No free user ID found");
++	return (uid_t)-1;
++}
+ 
+ gid_t tst_get_free_gid_(const char *file, const int lineno, gid_t skip)
+ {
 -- 
 2.55.0
 
