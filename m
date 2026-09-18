@@ -4,100 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 79672C982DA
-	for <ltp@archiver.kernel.org>; Fri, 18 Sep 2026 12:52:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1E43AC982D8
+	for <ltp@archiver.kernel.org>; Fri, 18 Sep 2026 12:52:21 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0C1493EA161
-	for <ltp@archiver.kernel.org>; Fri, 18 Sep 2026 14:51:59 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 7625F3EA165
+	for <ltp@archiver.kernel.org>; Fri, 18 Sep 2026 14:52:19 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id BA0053EA34F
- for <ltp@lists.linux.it>; Fri, 18 Sep 2026 14:51:36 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id E51373EA165
+ for <ltp@lists.linux.it>; Fri, 18 Sep 2026 14:51:59 +0200 (CEST)
+Received: from mail-pj2-x08.google.com (mail-pj2-x08.google.com
+ [IPv6:2607:f8b0:4864:39::8])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 39C3710009C7
- for <ltp@lists.linux.it>; Fri, 18 Sep 2026 14:51:36 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 80B3F1F7C8;
- Fri, 18 Sep 2026 12:51:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1789735891; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=E0qbEd1sQ7lFRM6hZgyJutusccUIgF7zcd2uhvAz/QA=;
- b=AkM0fkF0BSBT1dD/Lrpuz0dbXZhL8OWJgrFUz1bRqiqDZPtl7bVpxKDPfo+qA6GMg+Hf8G
- nRSPq8LBZW6uJLXidVuvtIrmiYFz2Okcz9Fk6OngaB0bLk5FnMtVChvoPQiVspXFtUzGPI
- 0a7cfMK5tGI2w5EVUo/dN2rS+0o7KQE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1789735891;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=E0qbEd1sQ7lFRM6hZgyJutusccUIgF7zcd2uhvAz/QA=;
- b=NfbSPgURsaTh8ZakkPhV5+rVtSjCzi1XfS8yCGCK27iwXhPttjYTsrVsGqk018iaUGDZqX
- 9zao4cXNOH7Vp/BQ==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1789735887; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=E0qbEd1sQ7lFRM6hZgyJutusccUIgF7zcd2uhvAz/QA=;
- b=VG4/UkWLMnQBX+QLcu5fMekovwLNAG2/FwEL6vaI/2NlPL9r2HXtlSUGOL/PhNVCC3RKYi
- kGzIGV1m/cf8vnxfI4BqzaOneRLm3r896jlxmYM7crWNbIcqDqVnQn3X1DQjJe8a4W1sGR
- KsNtEa4aW+83MOfgMKarpu6CRfieKDA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1789735887;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=E0qbEd1sQ7lFRM6hZgyJutusccUIgF7zcd2uhvAz/QA=;
- b=t23EWeGvV+rd+N3aezX+s1t/+nns+Ruvc0olf9IU92+nGGC63mDTP42Tw9ptD33tQ+5NQy
- jaao6BZx5YxX45DQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id F2190133CF;
- Fri, 18 Sep 2026 12:51:26 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id ezKRG5EzrWr4FAAAD6G6ig:T2
- (envelope-from <pvorel@suse.cz>); Fri, 18 Sep 2026 12:51:26 +0000
-From: Petr Vorel <pvorel@suse.cz>
-To: ltp@lists.linux.it
-Date: Fri, 18 Sep 2026 14:50:20 +0200
-Message-ID: <20260918125021.1939455-2-pvorel@suse.cz>
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 5B0FF600BA2
+ for <ltp@lists.linux.it>; Fri, 18 Sep 2026 14:51:59 +0200 (CEST)
+Received: by mail-pj2-x08.google.com with SMTP id
+ 98e67ed59e1d1-398b9f722abso362747a91.0
+ for <ltp@lists.linux.it>; Fri, 18 Sep 2026 05:51:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20251104; t=1789735918; x=1790340718; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to:content-type;
+ bh=78OOTEbYt3ANKvHS0VMbSWSmGcT9tI+CmYM1JrAlM00=;
+ b=ZthM14/bbHR7cuhaQQP5+BuXN701p8Kim6I/jp7Y2GdpLb+ISI+xYIz9NbzmqwJg1R
+ oQ6vqIRsKhlRFl28N/pTGNiwiv2Ub+8GFHBpqB5gIXcAeDuuCV34m/B5nfyRDQPk+xau
+ BV6Q0FPS8KGH/5HzmFAZKhew+pPz7wz5R7D8TYjIVmpbSXL9S0lnEam5T6QjnxL4Jrof
+ EQDSKDKfrUjKHHI6jBSthcnVPIgDq7miir2YDO2nlWdPK6BK2nq60YWW7+eSqwiYpFdO
+ REukexS6t0zHMM5TrjVWxvuLZ3UDIMH+C0mK4JX/Mdcef73Bj1zHzLJVuQ/M26F8KGXT
+ Velw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20260707; t=1789735918; x=1790340718;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to:content-type;
+ bh=78OOTEbYt3ANKvHS0VMbSWSmGcT9tI+CmYM1JrAlM00=;
+ b=Ie9GISz77E0ZITjiGqtnGB02foj4SZKQszzdB/UlD5KtAoQuJ2kwx/q/L8oEtckkKM
+ 4kGWjPyyW8lv9lDQTogvEE+wNCJpdATlSkrBIclIEy1DycwmyVFyxqK0PFfVtlJvlGxt
+ SQvRibG5/S36gCwN11K/DwDy3zcKkQFlh3A8l+1b0JTi9o2B4lUGA0oJuP0uPLbzmLi1
+ a/BBm0ktDdPn/LOIN3Cfz3IxzNBuYbHKJDMxbHB0REQPWReFRrge92bTOu/DjeEWs78z
+ J/FFIKwEMZkiu1CBp0yfYD1uWXv97ZBGbA+pjwW7IsQ+yUMvFT8vYR7MUvW+xWe8wuTZ
+ +PdA==
+X-Gm-Message-State: AFuF++lxNRNJvrg/Qib9DKPZyysykMZJ30u41OhS4SLptYt5Qcy+X293
+ Nc903tgzUucypC+Jb/iP3RElxJBAx/ryJZ5WqC3drO32tIbMtDBTp2/c
+X-Gm-Gg: AYBFou1jcSmghtz1jAtHTJGV5D7jVmBg3cwA5FLnGOwMrJKRCbQKE7GOAnNbOw6R9EL
+ 1ygNxRTrlohhiLQMy00ABQgczCmtdQVe2k/InYg/w9fCHfX5oe74eJy7T0BundV4gNlfbonAAxl
+ 7Eok2fxAl8SH+ljktlKkKJiGr3XzJlvgf5ryul4EefbIbL7kUSx1v7bAVP3W7HrmiR0/NqT4/+T
+ NVI2CEncJxBzgqE8iyuZ2DO4EhL2i1cCxnZcTei6wRUHgTPAuu5628oC48jicf736cqmIIEYSSx
+ s8siSVxpRvmE4zWVtPW19aJmBLeYPSQgZTjQmk2po1hNmAj4OWYVa8rZDNpzsEJI1qgs19RY0z7
+ 46eh2uxBSBk7x2cfZm54zG5rmlOqcHMSYdSjk+M6xyEpGMpCaa2QB9fnhUxqIsak1m0kyfL87Lp
+ x/Y/xJqLBEauUZKpKRF11y/R5ptRFVWesYsbGU+lRkiwRotwMs6qldOEmNUVXGdnbvxSolTOwVB
+ VPcdm1b4ROARcR5Axkgt6YQApFA8nFMYDylSK42rnfqZYBg4/595icLwxSxQebfH8c58d1LkpqP
+ Dx6lcD3dwmg=
+X-Received: by 2002:a05:6a20:1eaf:b0:3d0:ba81:79b7 with SMTP id
+ adf61e73a8af0-3dd8c42a411mr5669792637.12.1789735917542; 
+ Fri, 18 Sep 2026 05:51:57 -0700 (PDT)
+Received: from
+ runnervmlun5p.nqmrxwab4rvujcbmygto4uphkh.phxx.internal.cloudapp.net
+ ([51.57.83.103]) by smtp.gmail.com with ESMTPSA id
+ 5a478bee46e88-33c2876ad4dsm4289807eec.21.2026.09.18.05.51.56
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 18 Sep 2026 05:51:57 -0700 (PDT)
+From: linuxtestproject.agent@gmail.com
+To: Gaurav Pathak <gpathak@suse.de>
+Date: Fri, 18 Sep 2026 12:51:56 +0000
+Message-ID: <20260918125156.8501-1-linuxtestproject.agent@gmail.com>
 X-Mailer: git-send-email 2.55.0
-In-Reply-To: <20260918125021.1939455-1-pvorel@suse.cz>
-References: <20260918125021.1939455-1-pvorel@suse.cz>
+In-Reply-To: <20260918111208.116077-1-gpathak@suse.de>
+References: <20260918111208.116077-1-gpathak@suse.de>
 MIME-Version: 1.0
-X-Spamd-Result: default: False [-6.80 / 50.00]; REPLY(-4.00)[];
- BAYES_HAM(-3.00)[100.00%]; MID_CONTAINS_FROM(1.00)[];
- NEURAL_HAM_LONG(-1.00)[-1.000]; R_MISSING_CHARSET(0.50)[];
- NEURAL_HAM_SHORT(-0.20)[-0.997]; MIME_GOOD(-0.10)[text/plain];
- RCVD_COUNT_TWO(0.00)[2]; ARC_NA(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[]; FROM_HAS_DN(0.00)[];
- MIME_TRACE(0.00)[0:+]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- FROM_EQ_ENVFROM(0.00)[]; RCPT_COUNT_SEVEN(0.00)[8];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:mid,suse.com:email,imap1.dmz-prg2.suse.org:helo];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- TO_DN_SOME(0.00)[]; RCVD_TLS_ALL(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 1/2] tst_assert: Use 'long long' to fix 32bit compat
- mode truncation
+Subject: Re: [LTP] syscalls/statx13: Add basic test for STATX_WRITE_ATOMIC
+ on regular file
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -109,58 +93,127 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Andrea Cervesato <andrea.cervesato@suse.com>
+Hi Gaurav,
 
-Using 'long long' in tst_assert_ulong() correctly verifies values on
-32bit compat mode truncation.
+On Thu Sep 17 16:23:04 2026 +0530, Gaurav Pathak wrote:
+> syscalls/statx13: Add basic test for STATX_WRITE_ATOMIC on regular file
 
-This fixes failure of shmctl03.c on /proc/sys/kernel/shmall on 32bit
-(potentially on other sysfs files).
+> Fixes: #1224
+> 
+> Signed-off-by: Gaurav Pathak <gaurav.pathak@suse.com>
+> Closes: #1224 or a Link tag to reference an issue.
 
-Reported-by: Wei Gao <wegao@suse.com>
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
-Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
-[ pvorel: separate into its own commit, write the commit message ]
-Co-developed-by: Petr Vorel <pvorel@suse.cz>
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
+Fixes: tags must reference a commit SHA present in git history, not an issue.
+Use Closes: #1224 to reference the issue. Also remove the unedited template
+instruction "or a Link tag to reference an issue." from the Closes tag.
+
+> diff --git a/configure.ac b/configure.ac
+> index 18bfdb88c..72f423c56 100644
+> --- a/configure.ac
+> +++ b/configure.ac
+> @@ -181,7 +181,7 @@ AC_CHECK_MEMBERS([struct iocb.aio_rw_flags],,,[#include <linux/aio_abi.h>])
+>  AC_CHECK_MEMBERS([struct fanotify_event_info_fid.fsid.__val],,,[#include <sys/fanotify.h>])
+>  AC_CHECK_MEMBERS([struct perf_event_mmap_page.aux_head],,,[#include <linux/perf_event.h>])
+>  AC_CHECK_MEMBERS([struct sigaction.sa_sigaction],[],[],[#include <signal.h>])
+> -AC_CHECK_MEMBERS([struct statx.stx_mnt_id, struct statx.stx_dio_mem_align],,,[
+> +AC_CHECK_MEMBERS([struct statx.stx_mnt_id, struct statx.stx_dio_mem_align, struct statx.stx_atomic_write_unit_max_opt],,,[
+>  #define _GNU_SOURCE
+>  #include <sys/stat.h>
+>  ])
+
+configure.ac checks may only enable fallback API definitions in
+include/lapi/. Fallback definitions for struct statx extensions and atomic
+write flags should be added to include/lapi/stat.h instead.
+
+> diff --git a/testcases/kernel/syscalls/statx/statx13.c b/testcases/kernel/syscalls/statx/statx13.c
+> new file mode 100644
+> index 000000000..ea42a102c
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/statx/statx13.c
+
+Add an entry for statx13 to runtest/syscalls.
+
+> +/*\
+> + * This test validates the STATX_WRITE_ATOMIC feature (introduced in Linux 6.13).
+> + * It ensures that supported filesystems (xfs as of now) correctly report their
+> + * atomic write limits to user space when queried via statx().
+> + *
+> + * The test performs the following validations:
+> + * - Creates a test file using O_DIRECT (a prerequisite for atomic writes).
+
+Insert a blank line before the bulleted list so Sphinx can parse the reST
+block correctly. Also, reference the syscall as :manpage:`statx(2)`.
+
+> +#define TESTFILE MNTPOINT"/testfile"
+
+Add a space between concatenated string literals: MNTPOINT "/testfile".
+
+> +#define _GNU_SOURCE
+> +#include <sys/param.h>
+> +#include "tst_test.h"
+
+Include "lapi/stat.h". Fallback definitions for STATX_WRITE_ATOMIC,
+STATX_ATTR_WRITE_ATOMIC, and atomic write fields in struct statx must be
+provided in include/lapi/stat.h so the test compiles on older C libraries.
+
+> +#ifdef HAVE_STRUCT_STATX_STX_ATOMIC_WRITE_UNIT_MAX_OPT
+> +	if (buff.stx_atomic_write_unit_max_opt == 0) {
+
+Do not place #ifdef guards inside function bodies. Define the fallback
+struct in include/lapi/stat.h so the test code compiles unconditionally.
+
+> +		if (buff.stx_atomic_write_unit_max_opt > buff.stx_atomic_write_unit_max)
+> +			tst_res(TFAIL, "stx_atomic_write_unit_max_opt (%u) exceeds max (%u)",
+> +					buff.stx_atomic_write_unit_max_opt,
+> +					buff.stx_atomic_write_unit_max);
+> +
+> +		else if (buff.stx_atomic_write_unit_max_opt < buff.stx_atomic_write_unit_min)
+
+Remove the blank line between if and else if to follow kernel coding style.
+
+> +static void setup(void)
+> +{
+> +	char *data_buff = SAFE_MEMALIGN(ALIGNMENT, WRITE_SIZE);
+> +
+> +	if (strcmp(tst_device->fs_type, "xfs") && strcmp(tst_device->fs_type, "ext4"))
+> +		tst_brk(TCONF, "This test only supports ext4 and xfs");
+> +
+> +	umask(0);
+> +	memset(data_buff, '@', WRITE_SIZE);
+> +
+> +	file_fd =  SAFE_OPEN(TESTFILE, O_RDWR | O_CREAT | O_DIRECT, MODE);
+> +	SAFE_WRITE(SAFE_WRITE_ALL, file_fd, data_buff, WRITE_SIZE);
+> +}
+
+data_buff is never freed, leaking memory. Move the allocation after the
+filesystem check and call free(data_buff) after SAFE_WRITE(). Also remove
+the double space after '=' in file_fd assignment.
+
+> +static void cleanup(void)
+> +{
+> +	if (file_fd > -1)
+> +		SAFE_CLOSE(file_fd);
+> +}
+
+Use if (file_fd != -1) instead of file_fd > -1 to match the LTP convention.
+
+Verdict - Needs revision
+
 ---
- lib/tst_assert.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+Note:
 
-diff --git a/lib/tst_assert.c b/lib/tst_assert.c
-index b68bd5d397..5a4896ac52 100644
---- a/lib/tst_assert.c
-+++ b/lib/tst_assert.c
-@@ -25,16 +25,17 @@ void tst_assert_int(const char *file, const int lineno, const char *path, int va
- 
- void tst_assert_ulong(const char *file, const int lineno, const char *path, unsigned long val)
- {
--	unsigned long sys_val;
-+	unsigned long long sys_val;
- 
--	safe_file_scanf(file, lineno, NULL, path, "%lu", &sys_val);
-+	safe_file_scanf(file, lineno, NULL, path, "%llu", &sys_val);
- 
--	if (val == sys_val) {
-+	if (val == (unsigned long)sys_val) {
- 		tst_res_(file, lineno, TPASS, "%s = %lu", path, val);
- 		return;
- 	}
- 
--	tst_res_(file, lineno, TFAIL, "%s != %lu got %lu", path, val, sys_val);
-+	tst_res_(file, lineno, TFAIL, "%s != %lu got %lu",
-+		path, val, (unsigned long)sys_val);
- }
- 
- void tst_assert_file_int(const char *file, const int lineno, const char *path, const char *prefix, int val)
--- 
-2.55.0
+The agent can sometimes produce false positives although often its
+findings are genuine. If you find issues with the review, please
+comment this email or ignore the suggestions.
 
+Regards,
+LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
