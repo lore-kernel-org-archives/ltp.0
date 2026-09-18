@@ -4,84 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1E43AC982D8
-	for <ltp@archiver.kernel.org>; Fri, 18 Sep 2026 12:52:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0FF4CC982DA
+	for <ltp@archiver.kernel.org>; Fri, 18 Sep 2026 12:58:07 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7625F3EA165
-	for <ltp@archiver.kernel.org>; Fri, 18 Sep 2026 14:52:19 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 8F80F3EA166
+	for <ltp@archiver.kernel.org>; Fri, 18 Sep 2026 14:58:05 +0200 (CEST)
 Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E51373EA165
- for <ltp@lists.linux.it>; Fri, 18 Sep 2026 14:51:59 +0200 (CEST)
-Received: from mail-pj2-x08.google.com (mail-pj2-x08.google.com
- [IPv6:2607:f8b0:4864:39::8])
+ by picard.linux.it (Postfix) with ESMTPS id 54C653E9201
+ for <ltp@lists.linux.it>; Fri, 18 Sep 2026 14:57:48 +0200 (CEST)
+Received: from mail-pj2-x0b.google.com (mail-pj2-x0b.google.com
+ [IPv6:2607:f8b0:4864:39::b])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 5B0FF600BA2
- for <ltp@lists.linux.it>; Fri, 18 Sep 2026 14:51:59 +0200 (CEST)
-Received: by mail-pj2-x08.google.com with SMTP id
- 98e67ed59e1d1-398b9f722abso362747a91.0
- for <ltp@lists.linux.it>; Fri, 18 Sep 2026 05:51:59 -0700 (PDT)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id C8D3F600BA2
+ for <ltp@lists.linux.it>; Fri, 18 Sep 2026 14:57:47 +0200 (CEST)
+Received: by mail-pj2-x0b.google.com with SMTP id
+ 98e67ed59e1d1-398a384b5f7so418589a91.0
+ for <ltp@lists.linux.it>; Fri, 18 Sep 2026 05:57:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1789735918; x=1790340718; darn=lists.linux.it;
+ d=gmail.com; s=20251104; t=1789736266; x=1790341066; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to:content-type;
- bh=78OOTEbYt3ANKvHS0VMbSWSmGcT9tI+CmYM1JrAlM00=;
- b=ZthM14/bbHR7cuhaQQP5+BuXN701p8Kim6I/jp7Y2GdpLb+ISI+xYIz9NbzmqwJg1R
- oQ6vqIRsKhlRFl28N/pTGNiwiv2Ub+8GFHBpqB5gIXcAeDuuCV34m/B5nfyRDQPk+xau
- BV6Q0FPS8KGH/5HzmFAZKhew+pPz7wz5R7D8TYjIVmpbSXL9S0lnEam5T6QjnxL4Jrof
- EQDSKDKfrUjKHHI6jBSthcnVPIgDq7miir2YDO2nlWdPK6BK2nq60YWW7+eSqwiYpFdO
- REukexS6t0zHMM5TrjVWxvuLZ3UDIMH+C0mK4JX/Mdcef73Bj1zHzLJVuQ/M26F8KGXT
- Velw==
+ bh=/8urQ4gw2oFkoaVfHuXpa/q0+81yjYZ7jcNVNRgshrA=;
+ b=Wq/LdCVjKrjCdFZ9q6GWcUGw4H7GbmULyXwWuetd37cRckHxXU37lTBtEVQgMkYcFq
+ +Qk6Rm9NcJXyWT5Dktxwtpg++wVZzCscuze49kx9LIuN9rSbZjUCP421E4gl1dDacbD1
+ ABylttfQ0gPdUqbz8QdfqrKd54H0AOQuNvABmEnlLGx0PBqYTnV9yHmIiMupJLFU2MVu
+ vNi2abht5dqYDuhxsCHYpO+YkZnJhWO6/K93ic+eYmoviTv05iwTcdvO8WKge3BY0wUA
+ MvHhU1BJeKa+xkswKErkYRYxvvRF+ZCgXlODWDZWwChSue7j09mdDOJMep8F54Da8JDS
+ Tseg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20260707; t=1789735918; x=1790340718;
+ d=1e100.net; s=20260707; t=1789736266; x=1790341066;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to:content-type;
- bh=78OOTEbYt3ANKvHS0VMbSWSmGcT9tI+CmYM1JrAlM00=;
- b=Ie9GISz77E0ZITjiGqtnGB02foj4SZKQszzdB/UlD5KtAoQuJ2kwx/q/L8oEtckkKM
- 4kGWjPyyW8lv9lDQTogvEE+wNCJpdATlSkrBIclIEy1DycwmyVFyxqK0PFfVtlJvlGxt
- SQvRibG5/S36gCwN11K/DwDy3zcKkQFlh3A8l+1b0JTi9o2B4lUGA0oJuP0uPLbzmLi1
- a/BBm0ktDdPn/LOIN3Cfz3IxzNBuYbHKJDMxbHB0REQPWReFRrge92bTOu/DjeEWs78z
- J/FFIKwEMZkiu1CBp0yfYD1uWXv97ZBGbA+pjwW7IsQ+yUMvFT8vYR7MUvW+xWe8wuTZ
- +PdA==
-X-Gm-Message-State: AFuF++lxNRNJvrg/Qib9DKPZyysykMZJ30u41OhS4SLptYt5Qcy+X293
- Nc903tgzUucypC+Jb/iP3RElxJBAx/ryJZ5WqC3drO32tIbMtDBTp2/c
-X-Gm-Gg: AYBFou1jcSmghtz1jAtHTJGV5D7jVmBg3cwA5FLnGOwMrJKRCbQKE7GOAnNbOw6R9EL
- 1ygNxRTrlohhiLQMy00ABQgczCmtdQVe2k/InYg/w9fCHfX5oe74eJy7T0BundV4gNlfbonAAxl
- 7Eok2fxAl8SH+ljktlKkKJiGr3XzJlvgf5ryul4EefbIbL7kUSx1v7bAVP3W7HrmiR0/NqT4/+T
- NVI2CEncJxBzgqE8iyuZ2DO4EhL2i1cCxnZcTei6wRUHgTPAuu5628oC48jicf736cqmIIEYSSx
- s8siSVxpRvmE4zWVtPW19aJmBLeYPSQgZTjQmk2po1hNmAj4OWYVa8rZDNpzsEJI1qgs19RY0z7
- 46eh2uxBSBk7x2cfZm54zG5rmlOqcHMSYdSjk+M6xyEpGMpCaa2QB9fnhUxqIsak1m0kyfL87Lp
- x/Y/xJqLBEauUZKpKRF11y/R5ptRFVWesYsbGU+lRkiwRotwMs6qldOEmNUVXGdnbvxSolTOwVB
- VPcdm1b4ROARcR5Axkgt6YQApFA8nFMYDylSK42rnfqZYBg4/595icLwxSxQebfH8c58d1LkpqP
- Dx6lcD3dwmg=
-X-Received: by 2002:a05:6a20:1eaf:b0:3d0:ba81:79b7 with SMTP id
- adf61e73a8af0-3dd8c42a411mr5669792637.12.1789735917542; 
- Fri, 18 Sep 2026 05:51:57 -0700 (PDT)
+ bh=/8urQ4gw2oFkoaVfHuXpa/q0+81yjYZ7jcNVNRgshrA=;
+ b=aNwdDwRE+1PYjZfIvm/8W+Ijjb+ISzhFW3ydt4S+BtT+UcEUWO+t7mZgQ0DOJOkO52
+ ZcdTmGUK2YYq81bs5b+lS8OE7yEOGQQk9uleVbz6EU2D27ESYHXCICmcnns6uBbx6Mm0
+ P33xywabF5RgKMrOAem+6kJgm1y3X8TTswrqGmi7G7//k4meZevAfijx0NRIBeRXtUxz
+ Vq7sUs7r0oDH4JgP5zw50iTAxQuYZJyHy6EV7z43MyBV7Rs15ldP3dpWjRLOt/ZJcgnd
+ OzEOgKS0gjlnoj6yVMPv2td+v5Ahir1fnel1t5K8SMxY3zGE05tNGk4VwzZ9Ry74ckxK
+ VwBA==
+X-Gm-Message-State: AFuF++kAV4jk/MeUDBdij1eVa0NN+UGPBR71UtgN4+UWrsinGrGCbSu6
+ JUR1bbnhE5eJMql70h4bayrbvZcRdHfj+0EE6p7aSDrIowEVIhyXiso/
+X-Gm-Gg: AYBFou0n9yRwLamTt608NHHd0h6/qr36M7hZQ29eYbVFaSXxO2w1eefDW/Ua5Ibi2Vp
+ N6/4uDCRjf3ZZtl4e9ils+4zRRYj0Ldcf1Uxt6ebu2vvX6EyLBZCGuWL2MhzsKXe9z9RcGplXtA
+ gvJiX90tdiLzdJnnD4SwU+d9zXAag8SqUCxumQfPmwZT6fCWoHKYwOOIg2k9y6JOtgZr5hKD7zr
+ +Lf8kRt91sPiPXgsWEQMRHyVfiOd/NcggOxEbBcPnvxSKrj+viewZOvAYk2S3UoyXBvg6Iq18rL
+ praDJXjSmQla/XZl173jxSI3gOK2uhVuyegk11v80BqHmDfnbH4Ll6YRZSkrMb9tG8yXo9DycfY
+ iJVnumSnR5Q+KlvFMKLKVYYFGCIue5Kmm/J/jhnKvnD+IQyff+u4HzEPfCbQhMON0YqN7eI8i9N
+ s98vAVEYhKLmpMbke6FlsufIbdkQ0pMlDI4J598ims0SKsDUbJblP9qqbYxgipMmRUhJxppzSdo
+ prEzKsUUt4RMhgIc0tG/h6JFlHzHDExUtW8GgpXXtHOgBO8bs/1lzi72LZOOrsPf/qOATNRBUiO
+ O2Pv2pQQCuKn
+X-Received: by 2002:a17:90b:5305:b0:381:6c5:3f63 with SMTP id
+ 98e67ed59e1d1-39e54dcd917mr9460437a91.6.1789736266004; 
+ Fri, 18 Sep 2026 05:57:46 -0700 (PDT)
 Received: from
- runnervmlun5p.nqmrxwab4rvujcbmygto4uphkh.phxx.internal.cloudapp.net
- ([51.57.83.103]) by smtp.gmail.com with ESMTPSA id
- 5a478bee46e88-33c2876ad4dsm4289807eec.21.2026.09.18.05.51.56
+ runnervmlun5p.5qr31r2nspoeljg1erhdaodzzd.phxx.internal.cloudapp.net
+ ([134.33.102.52]) by smtp.gmail.com with ESMTPSA id
+ a92af1059eb24-144ce02b063sm3724087c88.9.2026.09.18.05.57.45
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 18 Sep 2026 05:51:57 -0700 (PDT)
+ Fri, 18 Sep 2026 05:57:45 -0700 (PDT)
 From: linuxtestproject.agent@gmail.com
-To: Gaurav Pathak <gpathak@suse.de>
-Date: Fri, 18 Sep 2026 12:51:56 +0000
-Message-ID: <20260918125156.8501-1-linuxtestproject.agent@gmail.com>
+To: Wei Gao <wegao@suse.com>
+Date: Fri, 18 Sep 2026 12:57:44 +0000
+Message-ID: <20260918125744.9214-1-linuxtestproject.agent@gmail.com>
 X-Mailer: git-send-email 2.55.0
-In-Reply-To: <20260918111208.116077-1-gpathak@suse.de>
-References: <20260918111208.116077-1-gpathak@suse.de>
+In-Reply-To: <20260918075228.21423-2-wegao@suse.com>
+References: <20260918075228.21423-2-wegao@suse.com>
 MIME-Version: 1.0
 X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] syscalls/statx13: Add basic test for STATX_WRITE_ATOMIC
- on regular file
+Subject: Re: [LTP] lib/tst_uid: Remove spurious TERRNO from tst_get_free_gid
+ success path
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -99,109 +99,31 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Gaurav,
+Hi Wei,
 
-On Thu Sep 17 16:23:04 2026 +0530, Gaurav Pathak wrote:
-> syscalls/statx13: Add basic test for STATX_WRITE_ATOMIC on regular file
+On Fri Sep 18 07:52:21 2026 +0000, Wei Gao via ltp <ltp@lists.linux.it> wrote:
+> lib/tst_uid: Remove spurious TERRNO from tst_get_free_gid success path
 
-> Fixes: #1224
-> 
-> Signed-off-by: Gaurav Pathak <gaurav.pathak@suse.com>
-> Closes: #1224 or a Link tag to reference an issue.
-
-Fixes: tags must reference a commit SHA present in git history, not an issue.
-Use Closes: #1224 to reference the issue. Also remove the unedited template
-instruction "or a Link tag to reference an issue." from the Closes tag.
-
-> diff --git a/configure.ac b/configure.ac
-> index 18bfdb88c..72f423c56 100644
-> --- a/configure.ac
-> +++ b/configure.ac
-> @@ -181,7 +181,7 @@ AC_CHECK_MEMBERS([struct iocb.aio_rw_flags],,,[#include <linux/aio_abi.h>])
->  AC_CHECK_MEMBERS([struct fanotify_event_info_fid.fsid.__val],,,[#include <sys/fanotify.h>])
->  AC_CHECK_MEMBERS([struct perf_event_mmap_page.aux_head],,,[#include <linux/perf_event.h>])
->  AC_CHECK_MEMBERS([struct sigaction.sa_sigaction],[],[],[#include <signal.h>])
-> -AC_CHECK_MEMBERS([struct statx.stx_mnt_id, struct statx.stx_dio_mem_align],,,[
-> +AC_CHECK_MEMBERS([struct statx.stx_mnt_id, struct statx.stx_dio_mem_align, struct statx.stx_atomic_write_unit_max_opt],,,[
->  #define _GNU_SOURCE
->  #include <sys/stat.h>
->  ])
-
-configure.ac checks may only enable fallback API definitions in
-include/lapi/. Fallback definitions for struct statx extensions and atomic
-write flags should be added to include/lapi/stat.h instead.
-
-> diff --git a/testcases/kernel/syscalls/statx/statx13.c b/testcases/kernel/syscalls/statx/statx13.c
-> new file mode 100644
-> index 000000000..ea42a102c
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/statx/statx13.c
-
-Add an entry for statx13 to runtest/syscalls.
+--- [PATCH 3/3] ---
 
 > +/*\
-> + * This test validates the STATX_WRITE_ATOMIC feature (introduced in Linux 6.13).
-> + * It ensures that supported filesystems (xfs as of now) correctly report their
-> + * atomic write limits to user space when queried via statx().
+> + * Verify restricted opening (:manpage:`open(2)` and :manpage:`openat(2)`) of
+> + * FIFOs and regular files in sticky directories. This protection is controlled via
+> + * `/proc/sys/fs/protected_fifos` and `/proc/sys/fs/protected_regular` sysctl values:
 > + *
-> + * The test performs the following validations:
-> + * - Creates a test file using O_DIRECT (a prerequisite for atomic writes).
+> + * - When set to "0", writing/opening is unrestricted.
+> + * - When set to "1", O_CREAT open on FIFOs/regular files we don't own in world-writable
+> + *   sticky directories is disallowed, unless they are owned by the owner of the directory.
+> + * - When set to "2", the same restriction also applies to group-writable sticky directories.
+> + *
+> + * This test requires root to modify /proc/sys/fs/protected_* sysctls and
+> + * to manage file ownership and permissions in sticky directories.
+> + */
 
-Insert a blank line before the bulleted list so Sphinx can parse the reST
-block correctly. Also, reference the syscall as :manpage:`statx(2)`.
-
-> +#define TESTFILE MNTPOINT"/testfile"
-
-Add a space between concatenated string literals: MNTPOINT "/testfile".
-
-> +#define _GNU_SOURCE
-> +#include <sys/param.h>
-> +#include "tst_test.h"
-
-Include "lapi/stat.h". Fallback definitions for STATX_WRITE_ATOMIC,
-STATX_ATTR_WRITE_ATOMIC, and atomic write fields in struct statx must be
-provided in include/lapi/stat.h so the test compiles on older C libraries.
-
-> +#ifdef HAVE_STRUCT_STATX_STX_ATOMIC_WRITE_UNIT_MAX_OPT
-> +	if (buff.stx_atomic_write_unit_max_opt == 0) {
-
-Do not place #ifdef guards inside function bodies. Define the fallback
-struct in include/lapi/stat.h so the test code compiles unconditionally.
-
-> +		if (buff.stx_atomic_write_unit_max_opt > buff.stx_atomic_write_unit_max)
-> +			tst_res(TFAIL, "stx_atomic_write_unit_max_opt (%u) exceeds max (%u)",
-> +					buff.stx_atomic_write_unit_max_opt,
-> +					buff.stx_atomic_write_unit_max);
-> +
-> +		else if (buff.stx_atomic_write_unit_max_opt < buff.stx_atomic_write_unit_min)
-
-Remove the blank line between if and else if to follow kernel coding style.
-
-> +static void setup(void)
-> +{
-> +	char *data_buff = SAFE_MEMALIGN(ALIGNMENT, WRITE_SIZE);
-> +
-> +	if (strcmp(tst_device->fs_type, "xfs") && strcmp(tst_device->fs_type, "ext4"))
-> +		tst_brk(TCONF, "This test only supports ext4 and xfs");
-> +
-> +	umask(0);
-> +	memset(data_buff, '@', WRITE_SIZE);
-> +
-> +	file_fd =  SAFE_OPEN(TESTFILE, O_RDWR | O_CREAT | O_DIRECT, MODE);
-> +	SAFE_WRITE(SAFE_WRITE_ALL, file_fd, data_buff, WRITE_SIZE);
-> +}
-
-data_buff is never freed, leaking memory. Move the allocation after the
-filesystem check and call free(data_buff) after SAFE_WRITE(). Also remove
-the double space after '=' in file_fd assignment.
-
-> +static void cleanup(void)
-> +{
-> +	if (file_fd > -1)
-> +		SAFE_CLOSE(file_fd);
-> +}
-
-Use if (file_fd != -1) instead of file_fd > -1 to match the LTP convention.
+Use double backticks (``...``) for inline literals in the reST description
+block instead of single backticks or unquoted text:
+``/proc/sys/fs/protected_fifos``, ``/proc/sys/fs/protected_regular``, and
+``/proc/sys/fs/protected_*``.
 
 Verdict - Needs revision
 
