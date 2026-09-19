@@ -4,83 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 90859C982D8
-	for <ltp@archiver.kernel.org>; Sat, 19 Sep 2026 17:56:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 61E55C982D8
+	for <ltp@archiver.kernel.org>; Sat, 19 Sep 2026 20:14:51 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D7AE93E723D
-	for <ltp@archiver.kernel.org>; Sat, 19 Sep 2026 19:56:41 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 8EF9F3E749E
+	for <ltp@archiver.kernel.org>; Sat, 19 Sep 2026 22:14:49 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E0D463E71F7
- for <ltp@lists.linux.it>; Sat, 19 Sep 2026 19:56:24 +0200 (CEST)
-Received: from mail-pj2-x00.google.com (mail-pj2-x00.google.com
- [IPv6:2607:f8b0:4864:39::])
+ by picard.linux.it (Postfix) with ESMTPS id E16CF3E1E96
+ for <ltp@lists.linux.it>; Sat, 19 Sep 2026 22:14:30 +0200 (CEST)
+Received: from mail-oi2-x0a.google.com (mail-oi2-x0a.google.com
+ [IPv6:2607:f8b0:4864:32::a])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id BE394600A75
- for <ltp@lists.linux.it>; Sat, 19 Sep 2026 19:56:23 +0200 (CEST)
-Received: by mail-pj2-x00.google.com with SMTP id
- d9443c01a7336-2dd9bce707bso7685545ad.1
- for <ltp@lists.linux.it>; Sat, 19 Sep 2026 10:56:23 -0700 (PDT)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 0844A1A0090B
+ for <ltp@lists.linux.it>; Sat, 19 Sep 2026 22:14:30 +0200 (CEST)
+Received: by mail-oi2-x0a.google.com with SMTP id
+ 5614622812f47-4c3bb46aaf0so717439b6e.1
+ for <ltp@lists.linux.it>; Sat, 19 Sep 2026 13:14:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1789840582; x=1790445382; darn=lists.linux.it;
+ d=gmail.com; s=20251104; t=1789848868; x=1790453668; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to:content-type;
- bh=FSQlJsz6mbPyMs59fJmHoQoUSw4caoIFyk5NNfqOm2o=;
- b=C+1fLLc/LQO1Wwb8LYNmR/G2TyE2eiscqGEgSEl/4n/xoVYOV9mZDpzdXhlkQMUSS4
- hYLWt2nhqgwwT55IUTUg3hh949SKeXAUN/rEfsd5tMWT3jNyYB8wK3iz4XqmMOp6cTcq
- Fhewkcq7FpudPpSUrZ3KRFMn0CbDV6HQgiiLfXaeQ3cx/maV0RQZNCa6ZU+s/d3Xu4RL
- Qo7mmpQiVwqGdt31m0tkMNn90QVaYzhHSpq4ipVoVfvoU4UwIIpLmNierFN/19gPBaAf
- +qmEEdniUzVUvosy9xv1Gr1HsTjd2MO9JGL6tHQK/NE+sOY2eUrwlR6XHLvQaCDDDoCN
- m30A==
+ bh=wOM91xD3KtzBwmxXtfN9rlQqq7ZBGP3CUlmRdIeTj1k=;
+ b=XOlhECfTM0EjpgCdxLKE0Ze9IjFHJLFA0ThCLESL8KOhUkLQL8r7TSJH/vMQmLQs/D
+ EVsoI8r0ODnygxhHaAVp8ZSKn00mx/ie3fTrSsA9M2DV5DuGaHALx7fCy9uKS8zFeVOL
+ 6pHKxm6JGb+JIgp8KcGZYio3itcbJX0h60p/hpJIrTyTblXXQc8WyJTtEgRH0sVbA8EA
+ +vtHHbOA689bnOtxXjM+z+2TG24/RGi2iKeSpp8ES6PLS0WxC2sVkHiu1UkFpGawUyV+
+ m3bb4TJX5qlGt9FmLPYD/7XkDkHE+EdXfWGUP5qzJjinAZfLZmIKc7abrlUJaXDVKaEK
+ ZMfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20260707; t=1789840582; x=1790445382;
+ d=1e100.net; s=20260707; t=1789848868; x=1790453668;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to:content-type;
- bh=FSQlJsz6mbPyMs59fJmHoQoUSw4caoIFyk5NNfqOm2o=;
- b=WFnSkr2n1pZYxYWN+x7iaIrjGvaiQcdizZ+lUwnkSG4PVjag3YIdUSJ1Dc0/G1UVN/
- rf0M1JScffJOxAVH5qZDqefz7TSFFElKcpeNZLAWQUX36CxAGYOYkG0jcTGHC+d7TMA8
- +SxuF0OsWTotmBVOodPh7ZcattieKLfjOPd/Bt6tChzWHqL8nMEOk+jYpgu18qy+GiH5
- nsK//H4ZJsheXmD2vBe1EmIwg3vpBp3E/4aD9NxL7orzexL5kjHEGFtJ0WU7rMxlMWuI
- Nzh5RyRwA8IgWERoXLqomSrmSyrocDtbQBR6CSpHAvYLCxqDEIGGByv5wHg+RW42nEOw
- Mrzg==
-X-Gm-Message-State: AFuF++kn+1HNz/WfR9jlBSHHjm6DbDPgkGBmtNybh7ed58L479Z0XLKJ
- MMwgsdc2/7EjinQRaA78go/T2ZNn0rz0fxX8CaB/oNH+YN+Jj1yv3aT5
-X-Gm-Gg: AYBFou3IizbHa8jw92+issE4aSwPq0zXxoDJH7yRgYWDu7FAFhgqD6mkRnbffG2pV4I
- autL70/IfoN9MswwDYh+mmj9psurV5PRsbeXmes7pKRA2D8yInL7sVFBM5221dv3+DbvhhKoe4d
- iUBFoUahnxND5ycAOtbSwWeRwXjF85q5xsWJJD/2LSdDvo3HcOR2PfTQ4pUugTLyMnRRDI8LGTX
- eydKJxWU+moqSv5QX3+Sk/YtPVELBYFed12PSL0fJO6cDFEp4/danLA8yqvZC0M3XLxBoZrhdM9
- 5ltWVPbhHJ/IE4cV5fyDglmJdGlGpdvXELnANhPd33c7VAq+LkyF+gRxRoJKORDFmpQmNZACHmr
- E5OJ29F838pDscUe8oHbD5gvRlyqmk23m7RSU+n/KcSrU/T9Cspwo5Bs71jULpCVF0Iya/8tVu9
- rZHQ5pOAuvR6LsNViVZx/7i9v3nsJvWFX0fY2hnQR4hTNg1O1QNFhSECs3RFnl9ztnSF2/3dG0g
- 34vCg7Tc2wQ2L+iBC8+CQQMeQb2vNpWF6B4XHKb23EgipmlY9ZCVXLtXdzbZcGCiAKPGPElXoSj
- 5TeX5kuQ797u
-X-Received: by 2002:a17:903:4590:b0:2dd:c0ff:e729 with SMTP id
- d9443c01a7336-2ddc0ffe975mr40275875ad.59.1789840581973; 
- Sat, 19 Sep 2026 10:56:21 -0700 (PDT)
+ bh=wOM91xD3KtzBwmxXtfN9rlQqq7ZBGP3CUlmRdIeTj1k=;
+ b=oYedyYmOptBAsR4VwNzr3oVwBC3UAr69dcSljaH3BY1O7O6h9ZqM6nurD2eDLP7/Y9
+ qWhrojIkbK5lkg3r7/ArSNvMq6iWEO5ACyasr82TaJfoUqX58owKOlFiOlRMY7AGSFZo
+ UdGxBKd+DVVXTr/gf7DP1XYITeUJ49d4IFtHmqqfOG46BAp/liL7AF43kAfJIksT9fVN
+ uTLFFj27aeH7N8DX3Ncm0yYYPUguJ1YXzLM45jqK8Xj3U3RqAuZ05aKpJsFYy7punwxO
+ QtWzuBR9bjhgeXfu8azaparIgwbyQzuhRbnHsQ6wgGMDWtasRajTkfuh1uTpzBpfBBk+
+ ZytQ==
+X-Gm-Message-State: AFuF++kXlIQYACVHJY5spcIcbDRoOT/hk6yzSiiiN9l6Pzrgw1TEA73s
+ tlpiZeHgU2tJs+Eed6q7yz7zhmqY6+9yBmA/k9U9G15Aba41wJSS+5Tg
+X-Gm-Gg: AYBFou1P39xYaDL20ZkKqfAM9dx8+j1adE1RG4QcMDUqDaVxHdFVibHpG+JyWs3iz26
+ KwSnF5sIaANN9/nhT2P8zWcdgZePmFCabUzr8Ol1iQI3Mt9piBcM7STqGVwshynkMIC5LS4Gx/t
+ 6dVyhx1bC6peJH5uD4QI9jmaT3nW1N64OMK+J24qdopdS5fJtpu7o/XeswduYOo0LI2coOeQ0G/
+ YaAiqCWwzq8u3r7Monx9fEebkuC6WPXKH15BK7wv0Z/VVle8v+cex9fuw4zv7WbZ41qDIdbZqoP
+ sJdndwMX1AjklrEeuxl9a9/SLZHrbM3siSgnraPHFEyFrgA5z1MRwnpUqIRrWUDjvb5aUi6qjAP
+ Ivckc/g3k7OQZCcGK8km71G0dnaQLdcFFz0a6Vx8SOP1QmLriQy9ECzaDJxQqCOxF1JpqwFq96v
+ +pHFOwleGKzuIy8Z1R6WXWiZPsH9l8QTG+P9VQcGVQuHWNQxPG4A7/yW8qSZ1xfCE4UscYk667K
+ vMM7HKv+vKOU7Cl6HlGv3F/78A49PxO6x25KGd5EQ2umo7XDND/jbM3o5CpX1Z6tUMxe5FdFwxp
+ KC+oGrPEQ/gMMoZGnO9Copk=
+X-Received: by 2002:a05:6808:c1b7:b0:4a3:f4b7:cbdf with SMTP id
+ 5614622812f47-4ccf7192d7dmr6204852b6e.15.1789848868474; 
+ Sat, 19 Sep 2026 13:14:28 -0700 (PDT)
 Received: from
- runnervmlun5p.tfwys50uckle3nqgfeiqwd11rb.dx.internal.cloudapp.net
- ([172.185.55.128]) by smtp.gmail.com with ESMTPSA id
- 5a478bee46e88-33c3318744dsm6803869eec.20.2026.09.19.10.56.21
+ runnervmlun5p.ri1lqpitzxauhf3mmjooawwcth.gx.internal.cloudapp.net
+ ([20.118.221.210]) by smtp.gmail.com with ESMTPSA id
+ 5614622812f47-4cf3f666498sm2763023b6e.15.2026.09.19.13.14.27
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sat, 19 Sep 2026 10:56:21 -0700 (PDT)
+ Sat, 19 Sep 2026 13:14:28 -0700 (PDT)
 From: linuxtestproject.agent@gmail.com
 To: Pavithra <pavrampu@linux.ibm.com>
-Date: Sat, 19 Sep 2026 17:56:19 +0000
-Message-ID: <20260919175620.10016-1-linuxtestproject.agent@gmail.com>
+Date: Sat, 19 Sep 2026 20:14:26 +0000
+Message-ID: <20260919201426.9129-1-linuxtestproject.agent@gmail.com>
 X-Mailer: git-send-email 2.55.0
-In-Reply-To: <20260919151602.1039825-1-pavrampu@linux.ibm.com>
-References: <20260919151602.1039825-1-pavrampu@linux.ibm.com>
+In-Reply-To: <20260919174920.1078796-1-pavrampu@linux.ibm.com>
+References: <20260919174920.1078796-1-pavrampu@linux.ibm.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] syscalls/shmget: Add shmget07 to test SHM_HUGETLB with
- raw device read
+Subject: Re: [LTP] hugetlb/hugefallocate: Add hugefallocate03 to stress test
+ fallocate on hugetlbfs
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -100,50 +101,104 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi Pavithra,
 
-On Sat Sep 19 20:46:02 2026 +0530, Pavithra <pavrampu@linux.ibm.com> wrote:
-> syscalls/shmget: Add shmget07 to test SHM_HUGETLB with raw device read
+On Sat Sep 19 23:19:20 2026 +0530, Pavithra <pavrampu@linux.ibm.com> wrote:
+> hugetlb/hugefallocate: Add hugefallocate03 to stress test fallocate on hugetlbfs
 
-This test exercises hugetlb shared memory functionality rather than the
-shmget syscall itself. Move this test to
-testcases/kernel/mem/hugetlb/hugeshmget/ and rename it (e.g. hugeshmget07).
-Also, replace "raw device" with /dev/zero as /dev/zero is a character
-device, not a raw device.
+> +/*\
+> + * Stress test fallocate. This test starts three threads.
+> + * Thread one will continually punch/fill holes via falloc.
+> + * Thread two will continually fault in those same pages.
+> + * Thread three will continually mmap/munmap that page range.
+> + */
 
-> diff --git a/runtest/syscalls b/runtest/syscalls
-> --- a/runtest/syscalls
-> +++ b/runtest/syscalls
-> @@ -1596,3 +1596,4 @@ shmget06 shmget06
-> +shmget07 shmget07
+Format syscall names using the `:manpage:` role (e.g.
+`:manpage:`fallocate(2)``, `:manpage:`mmap(2)``, `:manpage:`munmap(2)``)
+and avoid abbreviations like "falloc". Document why root privileges are
+required (.needs_root = 1).
 
-Move this entry to runtest/hugetlb alongside the other hugeshmget tests
-instead of runtest/syscalls.
-
-> + * from :file:`/dev/zero` directly into the shared memory region,
-
-Replace :file:`/dev/zero` with ``/dev/zero``. :file: is not a supported
-documentation role in LTP.
-
-> +#include "tst_test.h"
-> +#include "tst_hugepage.h"
-
-Remove "tst_hugepage.h" as it is already included by "tst_test.h".
-
-> +	shmid = SAFE_SHMGET(IPC_PRIVATE, size, SHM_HUGETLB|SHM_R|SHM_W);
-
-Add spaces around the '|' operators to follow kernel coding style.
-
-> +	for (i = 0; i < size; i += hpage_size) {
-> +		TEST(read(raw_fd, shmaddr + i, hpage_size));
-> +		if (TST_RET != hpage_size) {
-> +			tst_res(TFAIL | TERRNO, "Can't read full page from raw device!");
-> +			break;
-> +		}
-> +		tst_res(TPASS, "Read full page from raw device");
+> +	while (1) {
+> +		tpage = ((long long)random()) % (max_hpages);
+> +		pthread_mutex_lock(&fault_addr_lock);
+> +		foo = *((char *)(fault_mmap_addr + (tpage * hpage_size)));
+> +		*((char *)(fault_mmap_addr + (tpage * hpage_size))) = foo;
+> +		pthread_mutex_unlock(&fault_addr_lock);
+> +
+> +		nanosleep(&ts, NULL); /* thread cancellation point */
 > +	}
 
-Replace manual TEST() and if/else reporting with:
-TST_EXP_VAL(read(raw_fd, shmaddr + i, hpage_size), (ssize_t)hpage_size);
-Also, update the message to refer to /dev/zero instead of "raw device".
+fault_addr_lock is not accessed by any other thread and can be removed.
+Cast to volatile char * when writing back to prevent the compiler from
+optimizing out the write. Replace nanosleep(&ts, NULL) with
+pthread_testcancel() for thread cancellation.
+
+> +	while (1) {
+> +		pthread_mutex_lock(&mmap_munmap_lock);
+> +		mmap_munmap_addr = SAFE_MMAP(NULL, max_hpages * hpage_size,
+> +				PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+> +		SAFE_MUNMAP(mmap_munmap_addr, max_hpages * hpage_size);
+> +		mmap_munmap_addr = NULL;
+> +		pthread_mutex_unlock(&mmap_munmap_lock);
+> +
+> +		nanosleep(&ts, NULL);   /* thread cancellation point */
+> +	}
+
+mmap_munmap_lock is unnecessary since no other thread accesses this
+address; mmap_munmap_addr can be a local variable. Replace
+nanosleep(&ts, NULL) with pthread_testcancel().
+
+> +	unsigned int seed = (int)getpid() * time(NULL);
+> +
+> +	srandom(seed);
+> +	tst_res(TINFO, "Seed = %d", seed);
+
+seed is unsigned int; use %u instead of %d.
+
+> +	/* First preallocate file with max_hpages pages */
+> +	err = fallocate(fd, 0, 0, hpage_size * max_hpages);
+> +	if (err) {
+> +		if (errno == EOPNOTSUPP)
+> +			tst_brk(TCONF, "fallocate() Operation is not supported");
+> +		tst_res(TFAIL | TERRNO, "fallocate():");
+> +		goto windup;
+> +	}
+> +
+> +	free_after = SAFE_READ_MEMINFO(MEMINFO_HPAGE_FREE);
+> +	if (free_before - free_after != max_hpages) {
+> +		tst_res(TFAIL, "fallocate did not preallocate %ld huge pages",
+> +				max_hpages);
+> +		goto windup;
+> +	}
+
+If fallocate or preallocation fails, branching to windup causes the test
+to report TPASS in the subsequent check because SAFE_CLOSE(fd) restores
+the free counts and thread_err remains 0. Use tst_brk(TBROK | TERRNO, ...)
+to abort on preallocation failure. Also use %lu instead of %ld for
+max_hpages.
+
+> +windup:
+> +	SAFE_CLOSE(fd);
+> +
+> +	free_after = SAFE_READ_MEMINFO(MEMINFO_HPAGE_FREE);
+> +	rsvd_after = SAFE_READ_MEMINFO(MEMINFO_HPAGE_RSVD);
+> +
+> +	if (thread_err)
+> +		tst_res(TFAIL, "fallocate() failed during stress, see above");
+> +	else if (free_after != free_before || rsvd_after != rsvd_before)
+> +		tst_res(TFAIL, "free or reserve counts incorrect after fallocate stress test");
+> +	else
+> +		tst_res(TPASS, "fallocate stress test passed");
+
+Use TST_EXP_EQ_LU(free_after, free_before) and
+TST_EXP_EQ_LU(rsvd_after, rsvd_before) to report free and reserve count
+comparisons.
+
+> +static void cleanup(void)
+> +{
+> +	if (fd >= 0)
+> +		SAFE_CLOSE(fd);
+> +}
+
+Use if (fd != -1) instead of if (fd >= 0).
 
 Verdict - Needs revision
 
