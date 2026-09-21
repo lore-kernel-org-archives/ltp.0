@@ -4,61 +4,113 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 01111C982ED
-	for <ltp@archiver.kernel.org>; Mon, 21 Sep 2026 13:36:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 31D09C982EE
+	for <ltp@archiver.kernel.org>; Mon, 21 Sep 2026 13:41:41 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0970C3E6E78
-	for <ltp@archiver.kernel.org>; Mon, 21 Sep 2026 15:36:36 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 667813E6E5D
+	for <ltp@archiver.kernel.org>; Mon, 21 Sep 2026 15:41:39 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 5A5263E5E62
- for <ltp@lists.linux.it>; Mon, 21 Sep 2026 15:36:17 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+ by picard.linux.it (Postfix) with ESMTPS id 4C7DF3E5E62
+ for <ltp@lists.linux.it>; Mon, 21 Sep 2026 15:41:23 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id A9FD32005E7
- for <ltp@lists.linux.it>; Mon, 21 Sep 2026 15:36:16 +0200 (CEST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id B0F5E200740
+ for <ltp@lists.linux.it>; Mon, 21 Sep 2026 15:41:22 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 7196721B46;
- Mon, 21 Sep 2026 13:36:15 +0000 (UTC)
-Authentication-Results: smtp-out1.suse.de;
-	none
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 2C1341F7DB;
+ Mon, 21 Sep 2026 13:41:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1789998077;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=jc9EsqPS8KiBiMHWFGvccpOZM4+gA8mVynRt1ERQP+4=;
+ b=MaymGoTmtof9EO4YX/OFlj2H1Qn/klUItdnSLppAbDYYA9H3L51TBOK5nEIjP9f7yId+7Q
+ nJODqq0ywF/+H5LYldMAGRz5v1odcaAV2Asu/iDJ+A8CJW1ZSjURps6CZzDQq6T39f7wc3
+ P7j7vaQ68YnCtQQfWLHH0/xmIYl9wRU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1789998077;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=jc9EsqPS8KiBiMHWFGvccpOZM4+gA8mVynRt1ERQP+4=;
+ b=GXQE8Zre7fsFKk3ev8ELrk7MegujkGtkZ5vs4hoWCIujCA9VFua2Sb8fxEvuvGonQeblQr
+ f0nEw8KnxtCa4lCw==
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=X2wnEO9C;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=yNJ87LEG
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1789998073;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=jc9EsqPS8KiBiMHWFGvccpOZM4+gA8mVynRt1ERQP+4=;
+ b=X2wnEO9CM1gprsFKaDtCnBxPjc6mH5Jp5JGnGyFg8Nfowd0vWIQnAS+j+PQjURYwdz79Dt
+ c72F1MlnRQ4vHC+Ku0Q7aMkMmJMaBYUPCIgOl+6cC5+b3sWgA+kdruU5kNz8FK/sLPHmjD
+ L62XaL4oOB7jIjQ52pFAIHn97Kv0wIE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1789998073;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=jc9EsqPS8KiBiMHWFGvccpOZM4+gA8mVynRt1ERQP+4=;
+ b=yNJ87LEGN5UMyex6+RdTfsn58dIeGp4S/OmkFPErPi0kAF38f9GqNXMqO2VguKni5dcy6u
+ jNo+mrNTy++x5XAA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 151481368D;
- Mon, 21 Sep 2026 13:36:14 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C8B1D1368D;
+ Mon, 21 Sep 2026 13:41:12 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id HCJyMc4ysWrvCAAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Mon, 21 Sep 2026 13:36:14 +0000
-Date: Mon, 21 Sep 2026 15:36:13 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id WzbPKfgzsWpEDgAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Mon, 21 Sep 2026 13:41:12 +0000
+Date: Mon, 21 Sep 2026 15:41:11 +0200
 From: Petr Vorel <pvorel@suse.cz>
-To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20260921133613.GA2143203@pevik>
+To: Cyril Hrubis <chrubis@suse.cz>, ltp@lists.linux.it,
+ Li Wang <li.wang@linux.dev>, Avinesh Kumar <avinesh.kumar@suse.com>,
+ Wei Gao <wegao@suse.com>, Andrea Cervesato <andrea.cervesato@suse.com>,
+ linuxtestproject.agent@gmail.com
+Message-ID: <20260921134111.GB2143203@pevik>
 References: <20260921111407.2137467-1-pvorel@suse.cz>
- <arEagQKsecxyn8dy@yuki.lan>
+ <arEagQKsecxyn8dy@yuki.lan> <20260921133613.GA2143203@pevik>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <arEagQKsecxyn8dy@yuki.lan>
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: 7196721B46
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Spamd-Result: default: False [-4.00 / 50.00]; REPLY(-4.00)[];
- TAGGED_RCPT(0.00)[]
+In-Reply-To: <20260921133613.GA2143203@pevik>
 X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: 2C1341F7DB
+X-Spamd-Result: default: False [-2.21 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ SUSPICIOUS_RECIPS(1.50)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ MID_RHS_NOT_FQDN(0.50)[]; HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ MIME_TRACE(0.00)[0:+]; TO_DN_SOME(0.00)[];
+ FREEMAIL_TO(0.00)[suse.cz,lists.linux.it,linux.dev,suse.com,gmail.com];
+ TO_MATCH_ENVRCPT_ALL(0.00)[];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ ARC_NA(0.00)[]; FREEMAIL_ENVRCPT(0.00)[gmail.com];
+ DKIM_TRACE(0.00)[suse.cz:+]; MISSING_XM_UA(0.00)[];
+ RCVD_COUNT_TWO(0.00)[2];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:replyto,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ RCVD_TLS_ALL(0.00)[];
+ DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ RCPT_COUNT_SEVEN(0.00)[7]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ TAGGED_RCPT(0.00)[]; REPLYTO_EQ_FROM(0.00)[]
 X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH 1/1] lapi/keyctl.h: Fix compilation on old kernel
@@ -74,55 +126,61 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it, linuxtestproject.agent@gmail.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> Hi!
-> > diff --git a/include/lapi/keyctl.h b/include/lapi/keyctl.h
-> > index fdb68d1725..e1e46b7865 100644
-> > --- a/include/lapi/keyctl.h
-> > +++ b/include/lapi/keyctl.h
-> > @@ -69,6 +69,12 @@ struct keyctl_dh_params {
-> >  };
-> >  #endif
+> > Hi!
+> > > diff --git a/include/lapi/keyctl.h b/include/lapi/keyctl.h
+> > > index fdb68d1725..e1e46b7865 100644
+> > > --- a/include/lapi/keyctl.h
+> > > +++ b/include/lapi/keyctl.h
+> > > @@ -69,6 +69,12 @@ struct keyctl_dh_params {
+> > >  };
+> > >  #endif
 
-> > +/* Fix for kernel < v4.20 */
-> > +#if defined(HAVE_STRUCT_KEYCTL_DH_PARAMS) && \
-> > +	!defined(HAVE_STRUCT_KEYCTL_DH_PARAMS_PRIV)
-> > +# define priv private
-> > +#endif
+> > > +/* Fix for kernel < v4.20 */
+> > > +#if defined(HAVE_STRUCT_KEYCTL_DH_PARAMS) && \
+> > > +	!defined(HAVE_STRUCT_KEYCTL_DH_PARAMS_PRIV)
+> > > +# define priv private
+> > > +#endif
 
-> I do not like this one, we may end up redefining wrong priv and break
-> everything.
+> > I do not like this one, we may end up redefining wrong priv and break
+> > everything.
 
-> Given that the private stil exists in the structure for C code:
+> > Given that the private stil exists in the structure for C code:
 
-> (/usr/include/linux/keyctl.h)
-> /* keyctl structures */
-> struct keyctl_dh_params {
->         union {
-> #ifndef __cplusplus
->                 __s32 private;
-> #endif
->                 __s32 priv;
->         };
->         __s32 prime;
->         __s32 base;
-> };
+> > (/usr/include/linux/keyctl.h)
+> > /* keyctl structures */
+> > struct keyctl_dh_params {
+> >         union {
+> > #ifndef __cplusplus
+> >                 __s32 private;
+> > #endif
+> >                 __s32 priv;
+> >         };
+> >         __s32 prime;
+> >         __s32 base;
+> > };
 
-> We may as well use private in the tests consistently and update our
-> fallback with the union as well.
+> > We may as well use private in the tests consistently and update our
+> > fallback with the union as well.
 
-When I looked in the struct in UAPI I considered define better, but indeed
-mirroring UAPI the same way is really better.
+> When I looked in the struct in UAPI I considered define better, but indeed
+> mirroring UAPI the same way is really better.
 
-I'll retest it and send v2.
+> I'll retest it and send v2.
+
+Just the only thing - we will need to have to use our custom struct
+e.g.  ltp_keyctl_dh_params (similarly to ltp_statx), because the problem is on
+the code which defines struct keyctl_dh_params, but without that fallback.
 
 Kind regards,
 Petr
+
+> Kind regards,
+> Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
