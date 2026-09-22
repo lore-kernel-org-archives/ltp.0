@@ -4,65 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 38AC3C982FA
-	for <ltp@archiver.kernel.org>; Tue, 22 Sep 2026 16:42:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 478FBC98302
+	for <ltp@archiver.kernel.org>; Tue, 22 Sep 2026 17:18:21 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7316C3E6D42
-	for <ltp@archiver.kernel.org>; Tue, 22 Sep 2026 18:42:09 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 595593E6D35
+	for <ltp@archiver.kernel.org>; Tue, 22 Sep 2026 19:18:20 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id DFC263E5D6F
- for <ltp@lists.linux.it>; Tue, 22 Sep 2026 18:41:51 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ by picard.linux.it (Postfix) with ESMTPS id E68A13E1628
+ for <ltp@lists.linux.it>; Tue, 22 Sep 2026 19:18:03 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 590401000DB3
- for <ltp@lists.linux.it>; Tue, 22 Sep 2026 18:41:51 +0200 (CEST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 83EBD1400DFD
+ for <ltp@lists.linux.it>; Tue, 22 Sep 2026 19:18:02 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id D66C6219C7;
- Tue, 22 Sep 2026 16:41:50 +0000 (UTC)
-Authentication-Results: smtp-out1.suse.de;
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 474ED1F822;
+ Tue, 22 Sep 2026 17:18:01 +0000 (UTC)
+Authentication-Results: smtp-out2.suse.de;
 	none
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8CD8B1365D;
- Tue, 22 Sep 2026 16:41:50 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D806D1365D;
+ Tue, 22 Sep 2026 17:18:00 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id mGQYGc6vsmrWSQAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Tue, 22 Sep 2026 16:41:50 +0000
-Date: Tue, 22 Sep 2026 18:41:45 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id C/4HJki4smovbwAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Tue, 22 Sep 2026 17:18:00 +0000
+Date: Tue, 22 Sep 2026 19:17:59 +0200
 From: Petr Vorel <pvorel@suse.cz>
-To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20260922164145.GA2272799@pevik>
-References: <20260922105840.2193537-1-pvorel@suse.cz>
- <arJiBgKNC80acBfY@yuki.lan> <20260922112916.GB2191017@pevik>
- <arJ5l2SxNgKMMX-j@yuki.lan> <20260922135031.GA2205904@pevik>
- <arKOByoqSFBfhTtn@yuki.lan>
+To: Avinesh Kumar <avinesh.kumar@suse.com>
+Message-ID: <20260922171759.GA2287170@pevik>
+References: <20260922153803.257734-1-avinesh.kumar@suse.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <arKOByoqSFBfhTtn@yuki.lan>
+In-Reply-To: <20260922153803.257734-1-avinesh.kumar@suse.com>
 X-Rspamd-Pre-Result: action=no action; module=replies;
  Message is reply to one we originated
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: D66C6219C7
+X-Rspamd-Queue-Id: 474ED1F822
 X-Rspamd-Pre-Result: action=no action; module=replies;
  Message is reply to one we originated
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 X-Spamd-Result: default: False [-4.00 / 50.00];
 	REPLY(-4.00)[]
-X-Rspamd-Action: no action
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/1] keyctl30: Check module is presented before
- loading
+Subject: Re: [LTP] [PATCH] bpf_map01: Fix inverted condition for array map
+ lookup pass
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -81,117 +80,39 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> Hi!
-> > > It's more subtle than this, in most cases kernel actually loads the
-> > > module automatically when the functionality is used (e.g. you create a
-> > > socket and kernel loads the module with the particular socket support).
-> > > The cases where the module needs to be loaded are quite rare. It's never
-> > > unloaded though, so maybe we should attempt that too (if it wasn't
-> > > loaded and was loaded because of the test).
+Hi Avinesh,
 
-> > kconfig is more than modules (e.g. module or even kernel core functionality
-> > enabled or disabled). I wonder if it's useful for users to know some module
-> > needs to be presented to be loaded (if not built-in) => bool vs. tristate
-> > kernel config. Maybe not.
+> The check "if (i < VAL_SZ)" after the zero-value scan loop is
+> backwards: it fires TPASS only when the loop broke early (i.e.
+> a non-zero byte was found and TFAIL already reported), and stays
+> silent when the loop completes normally with all zeros as expected.
+> Report TPASS when i == VAL_SZ instead.
 
-> We actually check and only do the module presence if the CONFIG_FOO=m,
-> if the code is build in the branch that checks for the module existence
-> never runs.
-
-Thanks for info, makes sense.
-
-> > Other thing is these few modules which don't support autoloading. (Mostly not
-> > bugs, at least the latest vmw_vsock_virtio_transport not supporting it was meant
-> > to be for testing/debugging [1].). Also the old .needs_drivers documented via
-> > metadata both cases - the modules needed to be loaded manually (e.g. "sctp" in
-> > testcases/cve/sctphantom.c) and autoloaded modules (e.g. "dummy" in
-> > testcases/cve/tcindex01.c or "tun" in testcases/kernel/uevents/uevent02.c or
-> > "quota_v2" in testcases/kernel/syscalls/quotactl/quotactl0*.c).
-
-> I do not see the problem here, autoloading is as simple as:
-
-> diff --git a/lib/tst_kconfig.c b/lib/tst_kconfig.c
-> index 46eeb8ec0..5d4e4d248 100644
-> --- a/lib/tst_kconfig.c
-> +++ b/lib/tst_kconfig.c
-> @@ -147,6 +147,7 @@ static void kconfig_runtime_check(struct tst_kconfig_var *var)
->  static struct config_module_map {
->         const char *config;
->         const char *module_name;
-> +       int autoload;
->  } config_module_maps[] = {
->         {"CONFIG_KVM", "kvm"},
->         {"CONFIG_ZRAM", "zram"},
-> @@ -165,8 +166,8 @@ static struct config_module_map {
->         {"CONFIG_NET_SCH_INGRESS", "sch_ingress"},
->         {"CONFIG_NET_CLS_MATCHALL", "cls_matchall"},
->         {"CONFIG_NET_ACT_PEDIT", "act_pedit"},
-> -       {"CONFIG_PKCS8_PRIVATE_KEY_PARSER", "pcks8_key_parser"},
-> -       {"CONFIG_X509_CERTIFICATE_PARSER", "x509_key_parser"},
-> +       {"CONFIG_PKCS8_PRIVATE_KEY_PARSER", "pcks8_key_parser", 1},
-> +       {"CONFIG_X509_CERTIFICATE_PARSER", "x509_key_parser", 1},
->         {}
->  };
-
-> @@ -186,6 +187,11 @@ static void kconfig_module_check(struct tst_kconfig_var *var)
->                         var->choice = 'n';
->                         return;
->                 }
-> +
-> +               if (config_module_maps[i].autoload) {
-> +                       tst_res(TINFO, "Autoloading '%s'", config_module_maps[i].module_name);
-> +                       tst_modprobe(config_module_maps[i].module_name);
-> +               }
->         }
->  }
-
-+1 (unless autoload is really module specific, not test specific).
-
-
-will you send a patch after the release? Feel free to ask me to finish it
-(find which ones are needed).
-
-> If we want that information to be present in metadata and documentation,
-> we can render that table from a (generated) json that could be parsed by
-> the documentation code as well.
-
-+1
-
-> I think it's better to have that information the the test library once,
-> rather than to keep a copy in each test.
-
-+1, I really hope that this is not test specific (2 tests somehow using a single
-module, one with a way that autoload works on other use case not). It would be
-very rare case, let's ignore it now (again that vmw_vsock_virtio_transport which
-is loaded by vsock only [1] shows that autoloading can fail).
-
-[1] https://github.com/bluca/systemd/commit/7b435741ba7667cc14aa25d22309da703e0cbf33
-
-> > > As long as we have complete list of CONFIG_* variables from the tests,
-> > > which can be easily extracted from the test, we know which modules we
-> > > need mapping for. No need to keep anything that isn't in that set.
-
-> > Again, not all kconfigs means tristate (module), some bool configs are required
-> > to make sure certain functionality is enabled. Unfortunately we need to check
-> > them one by one with kernel sources to see if they are modules (tristate) or bools.
-
-> There should be include/config/tristate.conf in the kernel sources once
-> make defconfig is done in linux kernel sources.
-
-New thing to me, but already removed 6 years ago in v5.6-rc1. I indeed had
-include/config/tristate.conf with old kernel (leftover of debugging 4.4 based
-kernel). And Masahiro Yamada mentioned about false positives in it :).
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=8b41fc4454e36fbfdbb23f940d023d4dece2de29
-
-> The harder part is the
-> CONFIG_ to module name mapping, for that we would have to grep kernel
-> Makefiles.
-
-Exactly.
+Thanks for an obvious fix, merged!
 
 Kind regards,
 Petr
+
+> Fixes: b51732825077 ("BPF: Sanity check creating and updating maps")
+
+> Signed-off-by: Avinesh Kumar <avinesh.kumar@suse.com>
+> ---
+>  testcases/kernel/syscalls/bpf/bpf_map01.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+
+> diff --git a/testcases/kernel/syscalls/bpf/bpf_map01.c b/testcases/kernel/syscalls/bpf/bpf_map01.c
+> index 7fcf8e00fe4e..97cebf6bf6f3 100644
+> --- a/testcases/kernel/syscalls/bpf/bpf_map01.c
+> +++ b/testcases/kernel/syscalls/bpf/bpf_map01.c
+> @@ -82,7 +82,7 @@ void run(unsigned int n)
+>  					break;
+>  				}
+>  			}
+> -			if (i < VAL_SZ)
+> +			if (i == VAL_SZ)
+>  				tst_res(TPASS, "Preallocated array map lookup");
+>  		} else {
+>  			tst_res(TFAIL | TTERRNO, "Prellocated array map lookup");
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
