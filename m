@@ -4,64 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 40392C98302
-	for <ltp@archiver.kernel.org>; Tue, 22 Sep 2026 13:50:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 039BEC982FA
+	for <ltp@archiver.kernel.org>; Tue, 22 Sep 2026 13:55:46 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 72F413E6D40
-	for <ltp@archiver.kernel.org>; Tue, 22 Sep 2026 15:50:51 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 34A5A3E6CD4
+	for <ltp@archiver.kernel.org>; Tue, 22 Sep 2026 15:55:45 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id DA3133E1B18
- for <ltp@lists.linux.it>; Tue, 22 Sep 2026 15:50:34 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ by picard.linux.it (Postfix) with ESMTPS id 9659C3E5DB9
+ for <ltp@lists.linux.it>; Tue, 22 Sep 2026 15:55:29 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 4DD2D1A0116D
- for <ltp@lists.linux.it>; Tue, 22 Sep 2026 15:50:33 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 0F22A1400DF5
+ for <ltp@lists.linux.it>; Tue, 22 Sep 2026 15:55:28 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 8F6391F747;
- Tue, 22 Sep 2026 13:50:33 +0000 (UTC)
-Authentication-Results: smtp-out2.suse.de;
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 5931B21D0B;
+ Tue, 22 Sep 2026 13:55:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1790085323; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=CiarFwrQg+RNcVliPLeiVTZtSNfW8a2dXirnyfAmliU=;
+ b=HYMPp5FO2MNOYdBEtgNkNzUw8tLbGpzsZnJUv3IHiLfvdGnMIvGyOV/j5stNlgz0C6qWL3
+ wpjUcpEJgBqLqy1Vz9h3PY/KPv1DjaaY+wxXxw9a+BU2ZSCd4qwb+WJx0wZ9bfKFtNaBgz
+ kFKnufDXiNNEH2IuezXd5HN6wKIKdk4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1790085323;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=CiarFwrQg+RNcVliPLeiVTZtSNfW8a2dXirnyfAmliU=;
+ b=dVCyuByOrUvOI12J8PzXlVD74DB92LeJAACwtPuHwNndygSgh4D685u5aBYhsTJ0X2RXOo
+ M2tVVNV3NytWefBQ==
+Authentication-Results: smtp-out1.suse.de;
 	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1790085319; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=CiarFwrQg+RNcVliPLeiVTZtSNfW8a2dXirnyfAmliU=;
+ b=aBH91YL2bhqkY11Ji2FeDkcfqlcmxAKtl2P0vqkjqY4IcB2Rdh1brs8LXnG61HgZui50HF
+ hczHmJdR4J+lX/R0YUA7Q2dx0QARpUEOmuCl0RGfQqwXEulhBoFjTtTWc7FaqItC3CA0aj
+ doNuIV61gdu3yljyRcUzehwCryyPzJQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1790085319;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=CiarFwrQg+RNcVliPLeiVTZtSNfW8a2dXirnyfAmliU=;
+ b=FrxYZ4gJZ4KJ+JHi4GulqjvtTawOdo1+5fc8sOgyCVxTIcEAliYYc2XxRHj/fLzZo3Of/w
+ lMVJ3F1HMqIrs6DA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 37C0B13A23;
- Tue, 22 Sep 2026 13:50:33 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2B8BE132D3;
+ Tue, 22 Sep 2026 13:55:19 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 2WgWBamHsmo1DwAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Tue, 22 Sep 2026 13:50:33 +0000
-Date: Tue, 22 Sep 2026 15:50:31 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20260922135031.GA2205904@pevik>
-References: <20260922105840.2193537-1-pvorel@suse.cz>
- <arJiBgKNC80acBfY@yuki.lan> <20260922112916.GB2191017@pevik>
- <arJ5l2SxNgKMMX-j@yuki.lan>
+ by imap1.dmz-prg2.suse.org with ESMTPSA id kXhaAseIsmqoFAAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Tue, 22 Sep 2026 13:55:19 +0000
+Date: Tue, 22 Sep 2026 15:55:27 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Petr Vorel <pvorel@suse.cz>
+Message-ID: <arKIz5Oygb57INup@yuki.lan>
+References: <20260922095126.2169599-1-pvorel@suse.cz>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <arJ5l2SxNgKMMX-j@yuki.lan>
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Rspamd-Queue-Id: 8F6391F747
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	REPLY(-4.00)[]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+In-Reply-To: <20260922095126.2169599-1-pvorel@suse.cz>
+X-Spamd-Result: default: False [-6.80 / 50.00]; REPLY(-4.00)[];
+ BAYES_HAM(-3.00)[100.00%]; SUSPICIOUS_RECIPS(1.50)[];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ ARC_NA(0.00)[]; MIME_TRACE(0.00)[0:+]; TAGGED_RCPT(0.00)[];
+ MISSING_XM_UA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ RCVD_TLS_ALL(0.00)[]; FREEMAIL_ENVRCPT(0.00)[gmail.com];
+ TO_DN_SOME(0.00)[]; FROM_HAS_DN(0.00)[];
+ FREEMAIL_CC(0.00)[lists.linux.it,linux.dev,suse.com,suse.cz,gmail.com];
+ RCPT_COUNT_SEVEN(0.00)[8]; FROM_EQ_ENVFROM(0.00)[];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:email]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/1] keyctl30: Check module is presented before
- loading
+Subject: Re: [LTP] [PATCH v2 1/2] keyctl: Vendor struct keyctl_dh_params
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -73,117 +106,66 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it
+Cc: ltp@lists.linux.it, linuxtestproject.agent@gmail.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> Hi!
-> > > >  	{"CONFIG_NET_SCH_INGRESS", "sch_ingress"},
-> > > >  	{"CONFIG_NET_CLS_MATCHALL", "cls_matchall"},
-> > > >  	{"CONFIG_NET_ACT_PEDIT", "act_pedit"},
-> > > > +	{"CONFIG_PKCS8_PRIVATE_KEY_PARSER", "pcks8_key_parser"},
+Hi!
+I think that we should simplify this by including only
+include/linux/keyctl.h and do not ever include the include/keyutils.h
+from keyutils package.
 
-> > > I think that this is still cleaner, this way we skip the test even
-> > > before we start running it.
+This should do the trick:
 
-> > Yeah, exit early + having it in the metadata is better - feel free to post the
-> > above as a patch and we refuse this patch.
+diff --git a/include/lapi/keyctl.h b/include/lapi/keyctl.h
+index fdb68d172..90ebf88c1 100644
+--- a/include/lapi/keyctl.h
++++ b/include/lapi/keyctl.h
+@@ -10,15 +10,13 @@
 
-> > After release thinking:
-> > Thinking it twice having a separate metadata for "direct" module loading was
-> > good (the functionality we replaced by kconfig). Why? Now we need to
-> > 1) load module manually in the test
-> > 2) manual module loading is hidden in metadata behind kernel config (tester see
-> > that in the test output, but it's not obvious in the metadata).
+ #include <stdint.h>
 
-> It's more subtle than this, in most cases kernel actually loads the
-> module automatically when the functionality is used (e.g. you create a
-> socket and kernel loads the module with the particular socket support).
-> The cases where the module needs to be loaded are quite rare. It's never
-> unloaded though, so maybe we should attempt that too (if it wasn't
-> loaded and was loaded because of the test).
+-#if defined(HAVE_KEYUTILS_H) && defined(HAVE_LIBKEYUTILS)
+-# include <keyutils.h>
+-#else
+-# ifdef HAVE_LINUX_KEYCTL_H
+-#  include <linux/keyctl.h>
+-# endif /* HAVE_LINUX_KEYCTL_H */
+-
+-# include <stdarg.h>
+-# include "lapi/syscalls.h"
++#ifdef HAVE_LINUX_KEYCTL_H
++# include <linux/keyctl.h>
++#endif /* HAVE_LINUX_KEYCTL_H */
++
++#include <stdarg.h>
++#include "lapi/syscalls.h"
++
+ typedef int32_t key_serial_t;
 
-kconfig is more than modules (e.g. module or even kernel core functionality
-enabled or disabled). I wonder if it's useful for users to know some module
-needs to be presented to be loaded (if not built-in) => bool vs. tristate
-kernel config. Maybe not.
+ static inline key_serial_t add_key(const char *type,
+@@ -59,11 +57,12 @@ static inline key_serial_t keyctl_join_session_keyring(const char *name) {
+        return keyctl(KEYCTL_JOIN_SESSION_KEYRING, name);
+ }
 
-Other thing is these few modules which don't support autoloading. (Mostly not
-bugs, at least the latest vmw_vsock_virtio_transport not supporting it was meant
-to be for testing/debugging [1].). Also the old .needs_drivers documented via
-metadata both cases - the modules needed to be loaded manually (e.g. "sctp" in
-testcases/cve/sctphantom.c) and autoloaded modules (e.g. "dummy" in
-testcases/cve/tcindex01.c or "tun" in testcases/kernel/uevents/uevent02.c or
-"quota_v2" in testcases/kernel/syscalls/quotactl/quotactl0*.c).
+-#endif /* defined(HAVE_KEYUTILS_H) && defined(HAVE_LIBKEYUTILS) */
+-
+ #ifndef HAVE_STRUCT_KEYCTL_DH_PARAMS
+ struct keyctl_dh_params {
+-       int32_t priv;
++       union {
++               int32_t priv;
++               int32_t private;
++       };
+        int32_t prime;
+        int32_t base;
+ };
 
-[1] https://lore.kernel.org/virtualization/acqLo6-IQVBzY3UW@sgarzare-redhat/
-
-> > Sure, we don't want to revert that whole big patchset. But maybe we could
-> > consider to
-> > 1) call tst_module_load() based on config_module_map() instead doing it
-> > in the test
-
-> We can do that, but I would only do so if it's actually needed, so that
-> the module autoload is tested as well. For that we would probably need
-> to add a needs_load to the config to module mapping table.
-
-I'd also load only these which need it (without autoloading support). And yes,
-we would have to mark them because it's not obvious from "struct config_module_map"
-which ones needs to be loaded manually.
-
-> > 2) print this mapping in the metadata (that would require struct config_module_map
-> > being accessible also by metadata/metaparse.c.
-
-> > > Maybe we should attempt to auto-generate the
-> > > table for all CONFIG_* variables used in LTP.
-
-> > Sure, that's a good idea. Useful would be some script similar to updating
-> > sycalls numbers. With the only exception: don't delete old modules (modules can
-> > be deleted, but still used by supported kernels).
-
-> As long as we have complete list of CONFIG_* variables from the tests,
-> which can be easily extracted from the test, we know which modules we
-> need mapping for. No need to keep anything that isn't in that set.
-
-Again, not all kconfigs means tristate (module), some bool configs are required
-to make sure certain functionality is enabled. Unfortunately we need to check
-them one by one with kernel sources to see if they are modules (tristate) or bools.
-
-> > > Also keyctl23.c and keyctl29.c have tst_modprobe("x509_key_parser",
-> > > NULL); So we need fix/mappping for x509_key_parser too.
-
-> > Yeah, I also noted that + cve-2026-46331.c (all Andrea's agent based code,
-> > we should teach agent about the differences).
-
-> There are also tests that do tst_cmd("modprobe", ...) these should be
-> fixed as well (git grep '"modprobe"').
-
-$ git grep  '"modprobe"' testcases/
-testcases/kernel/device-drivers/zram/zram03.c:  const char *const cmd_modprobe[] = {"modprobe", "zram", NULL};
-testcases/kernel/device-drivers/zram/zram03.c:          {.cmd = "modprobe"},
-testcases/kernel/syscalls/keyctl/keyctl05.c:    tst_cmd((const char*[]){"modprobe", MODULE, NULL}, NULL, NULL, 0);
-testcases/kernel/syscalls/madvise/madvise11.c:  const char *const cmd_modprobe[] = {"modprobe", HW_MODULE, NULL};
-testcases/kernel/syscalls/madvise/madvise11.c:          {.cmd = "modprobe"},
-testcases/network/can/cve/can_bcm01.c:  tst_cmd((const char*[]){"modprobe", "vcan", NULL}, NULL, NULL, 0);
-testcases/network/can/filter-tests/can_common.h:        CAN_CMD("modprobe", "-r", "vcan");
-testcases/network/can/filter-tests/can_common.h:        CAN_CMD("modprobe", "vcan", "echo=1");
-testcases/network/can/filter-tests/can_common.h:        CAN_CMD("modprobe", "-r", "vcan");
-testcases/network/netstress/netstress.c:                const char * const argv[] = {"modprobe", "dccp_ipv6", NULL};
-
-I remember these. I wanted in the past to add support to tst_modprobe() to pass
-module parameters, but it turn out only few tests used them. From this grep it
-looks like can_common.h uses module parameters (and kvm tests not listed here,
-which use tst_module_reload(), but that's different). But I did not noticed that
-other uses could use tst_modprobe() directly.  I can send a patch but it should
-be probably merged after the release.
-
-=> back to fixes needed for a release.
-
-Kind regards,
-Petr
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
