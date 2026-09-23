@@ -4,98 +4,102 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8E4B5C98302
-	for <ltp@archiver.kernel.org>; Wed, 23 Sep 2026 05:41:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1F0ACC982FA
+	for <ltp@archiver.kernel.org>; Wed, 23 Sep 2026 08:02:23 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id BBFE23E69B1
-	for <ltp@archiver.kernel.org>; Wed, 23 Sep 2026 07:41:47 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 0375C3E6BBC
+	for <ltp@archiver.kernel.org>; Wed, 23 Sep 2026 10:02:22 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 7D4D53E52A5
- for <ltp@lists.linux.it>; Wed, 23 Sep 2026 07:41:31 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ by picard.linux.it (Postfix) with ESMTPS id 09A2D3E24C3
+ for <ltp@lists.linux.it>; Wed, 23 Sep 2026 10:02:05 +0200 (CEST)
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
+ [148.163.158.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id C0E7A200DA8
- for <ltp@lists.linux.it>; Wed, 23 Sep 2026 07:41:30 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id E9D4B21D76;
- Wed, 23 Sep 2026 05:41:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1790142086; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=NHY1pKnaa2OZ9RhTqhonfFtrnk6/k9zCBiNkQGN95Eo=;
- b=q4Qm5+KpmHV46okKb3huU0OWxAeQM5XIifr5V+mkxV7DECVF7WH+mY1cbO1NqbdEwF7N3k
- mdveS/hkN/+55bW65vmSka9+sTIYmUwBziQ46/PVOu3MD2KoQcH0SSRakYXeI9J/2pK6Ta
- Jx2mDmdqZRKix0H7Ruqfxy7Fj4rSw4c=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1790142086;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=NHY1pKnaa2OZ9RhTqhonfFtrnk6/k9zCBiNkQGN95Eo=;
- b=hUq7HJUCpZ0mwn2bZPWPITlr4j8xoQUbyQHNHugGZ6zi6QldlbjgL9TK/VpbI2r/fIB3pg
- b2lVh8eYMXP4PpBA==
-Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=2p1LdPXt;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=FnpYEstD
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1790142081; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=NHY1pKnaa2OZ9RhTqhonfFtrnk6/k9zCBiNkQGN95Eo=;
- b=2p1LdPXtjHWTgX6bYiOe4tPJDXDu7M1uZ3jB1R9829Krq57qA+BPshjosXVHBRB8eSloYF
- 7QRfizbFs3Oqb6LQ1GpBz9KkZA0TnklzKEB2oJqNKy5WD2lLtemzs/jSjU3r2Kb4Nlnkdj
- voU2HmSlzt1ZyD5WS/eSh7Gp3gNbhEQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1790142081;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=NHY1pKnaa2OZ9RhTqhonfFtrnk6/k9zCBiNkQGN95Eo=;
- b=FnpYEstDy7mdntUKHGeqYepkYB6H3gH/dwGl+qMCKAVqhZyrF1n4vXqHgR8ux+Ia3h7JU1
- +CIHDQikpRoenRCw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A7767134E8;
- Wed, 23 Sep 2026 05:41:21 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id ADXkHoFms2o2cgAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Wed, 23 Sep 2026 05:41:21 +0000
-From: Petr Vorel <pvorel@suse.cz>
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id CDAC41A010FB
+ for <ltp@lists.linux.it>; Wed, 23 Sep 2026 10:02:00 +0200 (CEST)
+Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id
+ 68N788bY2566290
+ for <ltp@lists.linux.it>; Wed, 23 Sep 2026 08:01:58 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+ :content-transfer-encoding:date:from:message-id:mime-version
+ :subject:to; s=pp1; bh=6NS59Sr33UE0fQCAM5gxd1MFZ2n46Ara9rSggmvRR
+ 7Y=; b=TFHxsRM7hRG9bcG4fjC5mUDdVAZ3m9S7LlWZtdgQb3SceLAAzPt59i0LY
+ z0F4O7IUu7KkTGi5HNete6noGqT6lOfwtUm5Bopw5fGHQ+mzTiaDYIpu2Yy2CQKS
+ OWAiq/26oiWaJrFthagwsj21UUo3aMFJxniHT8muxxxFa0jMZJjXAWyj7McR2/Ok
+ Yj2lZtDKeHFL2G+Vr9jl8BtQ9jxb8AxQ3tffJjy+2gLPbjrTUh7gZNp5I4b9/FeK
+ VY6LmF5qD0EpxF0rdegCrj0nogSgbrdlhXtiat9tg/56a/Xux/8tru6H3oMP793q
+ tuB0FZo0X5U+BnpMPLYgr7X27FCMg==
+Received: from ppma12.dal12v.mail.ibm.com
+ (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4gske1hjq2-1
+ (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT)
+ for <ltp@lists.linux.it>; Wed, 23 Sep 2026 08:01:58 +0000 (GMT)
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+ by ppma12.dal12v.mail.ibm.com (8.18.1.11/8.18.1.11) with ESMTP id
+ 68N7HWvJ4127419
+ for <ltp@lists.linux.it>; Wed, 23 Sep 2026 08:01:57 GMT
+Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
+ by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 4gt4qqdfkp-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+ for <ltp@lists.linux.it>; Wed, 23 Sep 2026 08:01:57 +0000 (GMT)
+Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com
+ [10.20.54.104])
+ by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 68N81sMI37814758
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Wed, 23 Sep 2026 08:01:54 GMT
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id E725020043;
+ Wed, 23 Sep 2026 08:01:53 +0000 (GMT)
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 1D3372004D;
+ Wed, 23 Sep 2026 08:01:53 +0000 (GMT)
+Received: from li-49acbccc-2994-11b2-a85c-d51b89e344f1.bl1-in.ibm.com (unknown
+ [9.123.11.80]) by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTP;
+ Wed, 23 Sep 2026 08:01:52 +0000 (GMT)
+From: Pavithra <pavrampu@linux.ibm.com>
 To: ltp@lists.linux.it
-Date: Wed, 23 Sep 2026 07:41:14 +0200
-Message-ID: <20260923054114.105891-1-pvorel@suse.cz>
-X-Mailer: git-send-email 2.53.0
+Date: Wed, 23 Sep 2026 13:31:50 +0530
+Message-ID: <20260923080150.44934-1-pavrampu@linux.ibm.com>
+X-Mailer: git-send-email 2.55.0
 MIME-Version: 1.0
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: E9D4B21D76
-X-Spamd-Result: default: False [-3.01 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
- R_MISSING_CHARSET(0.50)[];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.cz:dkim,suse.cz:email,suse.cz:mid,fujitsu.com:email,configure.ac:url];
- ARC_NA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[]; MIME_TRACE(0.00)[0:+];
- TO_MATCH_ENVRCPT_ALL(0.00)[];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- FROM_EQ_ENVFROM(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- RCVD_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
- RCPT_COUNT_THREE(0.00)[4]; DKIM_TRACE(0.00)[suse.cz:+]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: qn0n6fpAORnzSvMXsXl-QYT_nn-ITqyL
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwOTIzMDAzMCBTYWx0ZWRfX8KavWeCiSbZb
+ SjCgJTzkCga3gjf4/F83s6M4ZCocrlJ+ChbM45B+zL3vCR38TqHl9DTKaXc5TOeCz5LUFTLhy0K
+ iEgP3BCjYeQ1EanKiQJ9+2jpzhoYDaTRChpB6xLRh2mSET5TH7Sx5sjxHPqwaDdfyNk9CSD5uYT
+ lZcEOQqgHmEUxZ6nEb+S71kYNAtJ8QnFZoDrGq437uPa6n2i3nRoP0AMEc1sHPt8rb+LyL1TQ6s
+ aQa+d7Nvw8Kp9thuH9Cbqj6C6X1tc70xFmBCtqsjsf9OXPZ+F4oudkKztF1moRxyYPFkUtxUAu2
+ +jDGizggSvLGKThB6l+Uv0F9pj+DyolxCLvk7NOk1kM+lVr6+3pYyhYneIB6CVUmbKh7qEHSNeY
+ dOMK+pjhTYHZklOLOn9PxPd2CFPOlJhkAD5fTkjIG5ZFh2G201/K+oNi6Ee0+F2cxSSkMMMwrqY
+ 1ou3yXto6O7Xivoo/Gg==
+X-Authority-Analysis: v=2.4 cv=O/KsLx9W c=1 sm=1 tr=0 ts=6ab38776 cx=c_pps
+ a=bLidbwmWQ0KltjZqbj+ezA==:117 a=bLidbwmWQ0KltjZqbj+ezA==:17
+ a=VdqzKS8jKosA:10 a=VkNPw1HP01LnGYTKEx00:22 a=RnoormkPH1_aCDwRdu11:22
+ a=Y2IxJ9c9Rs8Kov3niI8_:22 a=VwQbUJbxAAAA:8 a=VnNF1IyMAAAA:8
+ a=5o72t8uOPyOTwoCe14IA:9
+X-Proofpoint-Spam-Info: AW1haW4tMjYwOTIzMDAzMCBTYWx0ZWRfX3CeDYgM1q+DW
+ M0BksBzkP3Xti0wj+6z0HyMCbm7ZAlfih2uIpPjLSJCPKfDmFFhrPyEDQEPZGyj7DAO+pvrZB3s
+ V3Q0wROV0JUoGZxx/6MllHUhdai7EMw=
+X-Proofpoint-GUID: qn0n6fpAORnzSvMXsXl-QYT_nn-ITqyL
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1176,Hydra:6.1.134,FMLib:17.12.100.49
+ definitions=2026-09-23_03,2026-09-21_02,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ clxscore=1015 malwarescore=0 phishscore=0 impostorscore=0 suspectscore=0
+ bulkscore=0 priorityscore=1501 lowpriorityscore=0 adultscore=0 spamscore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.22.0-2609040000 definitions=main-2609230030
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 1/1] Stop using libkeyutils
+Subject: [LTP] [PATCH v9] hugetlb/hugefallocate: Add hugefallocate03 to
+ stress test fallocate on hugetlbfs
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -107,185 +111,281 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: pavrampu@linux.ibm.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Using directly <linux/keyctl.h> is enough. Move the rest of struct
-checks in to configure.ac (together with other struct checks).
+Stress test fallocate() on hugetlbfs with three concurrent threads:
+one continuously punches and fills holes, one faults in hugepages,
+and one continuously mmaps and munmaps the same file range.
+Verify no hugepage leak occurs after the stress run.
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
+Signed-off-by: Pavithra <pavrampu@linux.ibm.com>
 ---
-This is probably too much as a pre-release fix, it should probably wait
-after the release.
+v8 -> v9:
+- Add missing #include <time.h> for time()
+- Remove trailing colons from fallocate() error format strings
+- Remove thread_err flag; return early on fallocate failure to avoid
+  log flooding; tst_res() already marks the test as failed
+- Use SAFE_MUNMAP() instead of plain munmap() in thread_fault_cleanup()
+- Assign free_before = nr_hpages_free to avoid redundant meminfo read
+- Change TST_NEEDS to TST_REQUEST in .hugepages to avoid unnecessary
+  TCONF on systems with large hugepage sizes or limited memory
+Link to v8: https://lore.kernel.org/ltp/20260920113519.1138936-1-pavrampu@linux.ibm.com/
+---
+ runtest/hugetlb                               |   1 +
+ testcases/kernel/mem/.gitignore               |   1 +
+ .../hugetlb/hugefallocate/hugefallocate03.c   | 214 ++++++++++++++++++
+ 3 files changed, 216 insertions(+)
+ create mode 100644 testcases/kernel/mem/hugetlb/hugefallocate/hugefallocate03.c
 
-Changes v1->v2:
-* Remove printing "keyutils: ${have_keyutils:-yes}" in configure.ac (agent)
-* Remove <keyutils.h> in configure.ac (agent)
-* Remove Follow-up: of first commit (I'll add it before merge when we
-  have correct hash) (agent)
-* Reword commit subject
-
-Link to v1:
-https://patchwork.kernel.org/project/ltp/patch/20260922160911.2271754-5-pvorel@suse.cz/
-https://lore.kernel.org/ltp/20260922160911.2271754-5-pvorel@suse.cz/
-
-
- configure.ac                                   |  7 ++++---
- include/mk/config.mk.in                        |  1 -
- m4/ltp-keyutils.m4                             | 15 ---------------
- testcases/cve/Makefile                         |  2 --
- testcases/kernel/syscalls/add_key/Makefile     |  2 --
- testcases/kernel/syscalls/keyctl/Makefile      |  1 -
- testcases/kernel/syscalls/landlock/Makefile    |  2 --
- testcases/kernel/syscalls/request_key/Makefile |  2 --
- testcases/kernel/watchqueue/Makefile           |  2 --
- 9 files changed, 4 insertions(+), 30 deletions(-)
- delete mode 100644 m4/ltp-keyutils.m4
-
-diff --git a/configure.ac b/configure.ac
-index 18bfdb88c7..e979de0e78 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -56,7 +56,6 @@ AC_CHECK_HEADERS_ONCE([ \
-     cpuid.h \
-     emmintrin.h \
-     ifaddrs.h \
--    keyutils.h \
-     linux/blkdev.h \
-     linux/can.h \
-     linux/cgroupstats.h \
-@@ -300,6 +299,10 @@ AC_CHECK_TYPES([struct uffdio_move],,,[#include <linux/userfaultfd.h>])
- AC_CHECK_TYPES([struct uffdio_poison],,,[#include <linux/userfaultfd.h>])
- AC_CHECK_TYPES([struct uffdio_writeprotect],,,[#include <linux/userfaultfd.h>])
+diff --git a/runtest/hugetlb b/runtest/hugetlb
+index 621c9718a..cd1c2794e 100644
+--- a/runtest/hugetlb
++++ b/runtest/hugetlb
+@@ -1,5 +1,6 @@
+ hugefallocate01 hugefallocate01
+ hugefallocate02 hugefallocate02
++hugefallocate03 hugefallocate03
  
-+AC_CHECK_TYPES([struct keyctl_dh_params, struct keyctl_kdf_params,
-+	struct keyctl_pkey_query, struct keyctl_pkey_params],,,
-+	[#include <linux/keyctl.h>])
+ hugefork01 hugefork01
+ hugefork02 hugefork02
+diff --git a/testcases/kernel/mem/.gitignore b/testcases/kernel/mem/.gitignore
+index 9e706e1c8..3086d1ac6 100644
+--- a/testcases/kernel/mem/.gitignore
++++ b/testcases/kernel/mem/.gitignore
+@@ -2,6 +2,7 @@
+ /cpuset/cpuset02
+ /hugetlb/hugefallocate/hugefallocate01
+ /hugetlb/hugefallocate/hugefallocate02
++/hugetlb/hugefallocate/hugefallocate03
+ /hugetlb/hugefork/hugefork01
+ /hugetlb/hugefork/hugefork02
+ /hugetlb/hugemmap/hugemmap01
+diff --git a/testcases/kernel/mem/hugetlb/hugefallocate/hugefallocate03.c b/testcases/kernel/mem/hugetlb/hugefallocate/hugefallocate03.c
+new file mode 100644
+index 000000000..aca60baab
+--- /dev/null
++++ b/testcases/kernel/mem/hugetlb/hugefallocate/hugefallocate03.c
+@@ -0,0 +1,214 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (C) 2015 Oracle Corporation
++ * Author: Mike Kravetz
++ * Copyright (c) 2026 Pavithra <pavrampu@linux.ibm.com>
++ */
 +
- # Tools knobs
- 
- # Bash
-@@ -422,7 +425,6 @@ LTP_CHECK_CLEAR_CACHE
- LTP_CHECK_CRYPTO
- LTP_CHECK_FORTIFY_SOURCE
- LTP_CHECK_KERNEL_DEVEL
--LTP_CHECK_KEYUTILS_SUPPORT
- LTP_CHECK_LIBMNL
- LTP_CHECK_SELINUX
- LTP_CHECK_SYNC_ADD_AND_FETCH
-@@ -478,7 +480,6 @@ open posix testsuite: ${with_open_posix_testsuite:-no}
- TI-RPC testsuite: ${with_tirpc:-yes}
- 
- LIBRARIES
--keyutils: ${have_keyutils:-yes}
- libacl: ${have_libacl:-no}
- libaio: ${have_libaio:-no} (aio: ${have_aio:-no})
- libcap: $cap_libs (newer: ${has_newer_libcap:-no})
-diff --git a/include/mk/config.mk.in b/include/mk/config.mk.in
-index 4c3da304fc..d796306e3a 100644
---- a/include/mk/config.mk.in
-+++ b/include/mk/config.mk.in
-@@ -38,7 +38,6 @@ SELINUX_LIBS		:= @SELINUX_LIBS@
- HAVE_RPC		:= @HAVE_RPC@
- LIBTIRPC_CFLAGS		:= @LIBTIRPC_CFLAGS@
- LIBTIRPC_LIBS		:= @LIBTIRPC_LIBS@
--KEYUTILS_LIBS		:= @KEYUTILS_LIBS@
- HAVE_FTS_H		:= @HAVE_FTS_H@
- LIBMNL_LIBS		:= @LIBMNL_LIBS@
- LIBMNL_CFLAGS		:= @LIBMNL_CFLAGS@
-diff --git a/m4/ltp-keyutils.m4 b/m4/ltp-keyutils.m4
-deleted file mode 100644
-index 4a6b23dbce..0000000000
---- a/m4/ltp-keyutils.m4
-+++ /dev/null
-@@ -1,15 +0,0 @@
--dnl SPDX-License-Identifier: GPL-2.0-or-later
--dnl Copyright (c) 2016 Fujitsu Ltd.
--dnl Copyright (c) 2017 Petr Vorel <pvorel@suse.cz>
--dnl Copyright (c) Linux Test Project, 2019-2026
--dnl Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
--
--AC_DEFUN([LTP_CHECK_KEYUTILS_SUPPORT], [
--	AC_CHECK_LIB([keyutils], [add_key],
--	[AC_DEFINE(HAVE_LIBKEYUTILS, 1, [Define to 1 if you have libkeyutils installed.])
--	      AC_SUBST(KEYUTILS_LIBS, "-lkeyutils")])
--
--	AC_CHECK_TYPES([struct keyctl_dh_params, struct keyctl_kdf_params,
--			struct keyctl_pkey_query, struct keyctl_pkey_params],,,
--			[#include <linux/keyctl.h>])
--])
-diff --git a/testcases/cve/Makefile b/testcases/cve/Makefile
-index b4e4178ebb..c7c160a1b1 100644
---- a/testcases/cve/Makefile
-+++ b/testcases/cve/Makefile
-@@ -9,8 +9,6 @@ CFLAGS			+= -D_GNU_SOURCE
- 
- stack_clash:	CFLAGS += -fno-optimize-sibling-calls -Wno-infinite-recursion
- 
--cve-2016-7042:	LDLIBS += $(KEYUTILS_LIBS)
--
- cve-2014-0196 cve-2016-7117 cve-2017-2671 cve-2017-17052 cve-2017-17053 ghostlock refluxfs:  CFLAGS += -pthread
- cve-2014-0196 cve-2016-7117 cve-2017-2671:  LDLIBS += -lrt
- 
-diff --git a/testcases/kernel/syscalls/add_key/Makefile b/testcases/kernel/syscalls/add_key/Makefile
-index 0f51e0bc2f..1273a4e9cb 100644
---- a/testcases/kernel/syscalls/add_key/Makefile
-+++ b/testcases/kernel/syscalls/add_key/Makefile
-@@ -5,6 +5,4 @@ top_srcdir		?= ../../../..
- 
- include $(top_srcdir)/include/mk/testcases.mk
- 
--LDLIBS  += $(KEYUTILS_LIBS)
--
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/syscalls/keyctl/Makefile b/testcases/kernel/syscalls/keyctl/Makefile
-index 180ece25a2..14d1d20a4e 100644
---- a/testcases/kernel/syscalls/keyctl/Makefile
-+++ b/testcases/kernel/syscalls/keyctl/Makefile
-@@ -5,7 +5,6 @@ top_srcdir		?= ../../../..
- 
- include $(top_srcdir)/include/mk/testcases.mk
- 
--LDLIBS	+= $(KEYUTILS_LIBS)
- keyctl02: LDLIBS	+= -lpthread
- 
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/syscalls/landlock/Makefile b/testcases/kernel/syscalls/landlock/Makefile
-index 3734d10349..02a66be910 100644
---- a/testcases/kernel/syscalls/landlock/Makefile
-+++ b/testcases/kernel/syscalls/landlock/Makefile
-@@ -5,6 +5,4 @@ top_srcdir		?= ../../../..
- 
- include $(top_srcdir)/include/mk/testcases.mk
- 
--landlock07: LDLIBS += $(KEYUTILS_LIBS)
--
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/syscalls/request_key/Makefile b/testcases/kernel/syscalls/request_key/Makefile
-index 58a99875e5..15e07c4ca1 100644
---- a/testcases/kernel/syscalls/request_key/Makefile
-+++ b/testcases/kernel/syscalls/request_key/Makefile
-@@ -6,6 +6,4 @@ top_srcdir		?= ../../../..
- 
- include $(top_srcdir)/include/mk/testcases.mk
- 
--LDLIBS		+= $(KEYUTILS_LIBS)
--
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/watchqueue/Makefile b/testcases/kernel/watchqueue/Makefile
-index 896d66d429..cba769739b 100644
---- a/testcases/kernel/watchqueue/Makefile
-+++ b/testcases/kernel/watchqueue/Makefile
-@@ -4,5 +4,3 @@ top_srcdir			?= ../../..
- 
- include $(top_srcdir)/include/mk/testcases.mk
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
--
--LDLIBS += $(KEYUTILS_LIBS)
++/*\
++ * Stress test :manpage:`fallocate(2)`. This test starts three threads:
++ *
++ * - Thread one will continually punch/fill holes via :manpage:`fallocate(2)`.
++ * - Thread two will continually fault in those same pages.
++ * - Thread three will continually :manpage:`mmap(2)` / :manpage:`munmap(2)` that page range.
++ *
++ * Requires root to mount hugetlbfs.
++ */
++
++#define _GNU_SOURCE
++#include <stdio.h>
++#include <sys/mount.h>
++#include <limits.h>
++#include <sys/param.h>
++#include <sys/types.h>
++#include <pthread.h>
++#include <signal.h>
++#include <setjmp.h>
++#include <time.h>
++
++#include "hugetlb.h"
++#include "lapi/fallocate.h"
++#include "tst_safe_pthread.h"
++
++#define MNTPOINT "hugetlbfs/"
++#define MAX_PAGES_TO_USE 100
++#define FALLOCATE_ITERATIONS 100000
++
++static int fd = -1;
++static unsigned long max_hpages;
++static long hpage_size;
++static void *thread_fallocate(void *arg)
++{
++	int i, err;
++	long tpage;
++
++	(void)arg;
++
++	for (i = 0; i < FALLOCATE_ITERATIONS; i++) {
++		tpage = ((long long)random()) % (max_hpages);
++		err = fallocate(fd,
++				FALLOC_FL_PUNCH_HOLE | FALLOC_FL_KEEP_SIZE,
++				tpage * hpage_size, hpage_size);
++		if (err) {
++			tst_res(TFAIL | TERRNO, "fallocate(PUNCH_HOLE) failed at page %ld", tpage);
++			return NULL;
++		}
++		err = fallocate(fd, 0, tpage * hpage_size, hpage_size);
++		if (err) {
++			tst_res(TFAIL | TERRNO, "fallocate(fill) failed at page %ld", tpage);
++			return NULL;
++		}
++	}
++	return NULL;
++}
++
++static void *fault_mmap_addr;
++static sigjmp_buf fault_jmp;
++
++static void sigbus_handler(int signum LTP_ATTRIBUTE_UNUSED)
++{
++	siglongjmp(fault_jmp, 1);
++}
++
++static void thread_fault_cleanup(void *arg)
++{
++	(void)arg;
++
++	if (fault_mmap_addr) {
++		SAFE_MUNMAP(fault_mmap_addr, max_hpages * hpage_size);
++		fault_mmap_addr = NULL;
++	}
++}
++
++static void *thread_fault(void *arg)
++{
++	long tpage;
++	char foo;
++	struct sigaction sa = {
++		.sa_handler = sigbus_handler,
++	};
++
++	(void)arg;
++
++	SAFE_SIGACTION(SIGBUS, &sa, NULL);
++
++	fault_mmap_addr = SAFE_MMAP(NULL, max_hpages * hpage_size,
++			PROT_READ | PROT_WRITE, MAP_SHARED,
++			fd, 0);
++
++	pthread_cleanup_push(thread_fault_cleanup, NULL);
++
++	while (1) {
++		tpage = ((long long)random()) % (max_hpages);
++
++		if (sigsetjmp(fault_jmp, 1) == 0) {
++			foo = *((char *)(fault_mmap_addr + (tpage * hpage_size)));
++			*((volatile char *)(fault_mmap_addr + (tpage * hpage_size))) = foo;
++		}
++
++		pthread_testcancel();
++	}
++
++	pthread_cleanup_pop(1);
++
++	return NULL;
++}
++
++static void *thread_mmap_munmap(void *arg)
++{
++	void *addr;
++
++	(void)arg;
++
++	while (1) {
++		addr = mmap(NULL, max_hpages * hpage_size,
++				PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
++		if (addr != MAP_FAILED)
++			SAFE_MUNMAP(addr, max_hpages * hpage_size);
++
++		pthread_testcancel();
++	}
++
++	return NULL;
++}
++
++static void run_test(void)
++{
++	int err;
++	long nr_hpages_free;
++	unsigned long free_before, free_after;
++	unsigned long rsvd_before, rsvd_after;
++	pthread_t falloc_th, fault_th, mmap_munmap_th;
++	void *falloc_th_ret, *fault_th_ret, *mmap_munmap_th_ret;
++
++	fd = tst_creat_unlinked(MNTPOINT, 0, 0600);
++
++	unsigned int seed = (unsigned int)getpid() * time(NULL);
++
++	srandom(seed);
++	tst_res(TINFO, "Seed = %u", seed);
++	nr_hpages_free = SAFE_READ_MEMINFO(MEMINFO_HPAGE_FREE);
++	max_hpages = MIN(nr_hpages_free, MAX_PAGES_TO_USE);
++	free_before = nr_hpages_free;
++	rsvd_before = SAFE_READ_MEMINFO(MEMINFO_HPAGE_RSVD);
++
++	/* First preallocate file with max_hpages pages */
++	err = fallocate(fd, 0, 0, hpage_size * max_hpages);
++	if (err) {
++		if (errno == EOPNOTSUPP)
++			tst_brk(TCONF, "fallocate() Operation is not supported");
++		tst_brk(TBROK | TERRNO, "fallocate() failed to preallocate");
++	}
++
++	free_after = SAFE_READ_MEMINFO(MEMINFO_HPAGE_FREE);
++	if (free_before - free_after != max_hpages) {
++		tst_brk(TBROK, "fallocate did not preallocate %lu huge pages",
++				max_hpages);
++	}
++
++	SAFE_PTHREAD_CREATE(&falloc_th, NULL, thread_fallocate, NULL);
++
++	SAFE_PTHREAD_CREATE(&fault_th, NULL, thread_fault, NULL);
++
++	SAFE_PTHREAD_CREATE(&mmap_munmap_th, NULL, thread_mmap_munmap, NULL);
++
++	SAFE_PTHREAD_JOIN(falloc_th, &falloc_th_ret);
++
++	SAFE_PTHREAD_CANCEL(fault_th);
++
++	SAFE_PTHREAD_JOIN(fault_th, &fault_th_ret);
++
++	SAFE_PTHREAD_CANCEL(mmap_munmap_th);
++
++	SAFE_PTHREAD_JOIN(mmap_munmap_th, &mmap_munmap_th_ret);
++
++	SAFE_CLOSE(fd);
++
++	free_after = SAFE_READ_MEMINFO(MEMINFO_HPAGE_FREE);
++	rsvd_after = SAFE_READ_MEMINFO(MEMINFO_HPAGE_RSVD);
++
++	TST_EXP_EQ_LU(free_after, free_before);
++	TST_EXP_EQ_LU(rsvd_after, rsvd_before);
++}
++
++static void setup(void)
++{
++	hpage_size = tst_get_hugepage_size();
++}
++
++static void cleanup(void)
++{
++	if (fd != -1)
++		SAFE_CLOSE(fd);
++}
++
++static struct tst_test test = {
++	.needs_root = 1,
++	.mntpoint = MNTPOINT,
++	.needs_hugetlbfs = 1,
++	.needs_tmpdir = 1,
++	.setup = setup,
++	.cleanup = cleanup,
++	.test_all = run_test,
++	.hugepages = {MAX_PAGES_TO_USE, TST_REQUEST},
++};
 -- 
-2.53.0
+2.55.0
 
 
 -- 
