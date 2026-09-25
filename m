@@ -4,89 +4,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E1C2FC9830D
-	for <ltp@archiver.kernel.org>; Fri, 25 Sep 2026 08:29:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C5C92C9830E
+	for <ltp@archiver.kernel.org>; Fri, 25 Sep 2026 08:29:39 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 076203E61AD
-	for <ltp@archiver.kernel.org>; Fri, 25 Sep 2026 10:29:18 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 0A1C23E615B
+	for <ltp@archiver.kernel.org>; Fri, 25 Sep 2026 10:29:38 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9D4313E619A
- for <ltp@lists.linux.it>; Fri, 25 Sep 2026 10:28:52 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ by picard.linux.it (Postfix) with ESMTPS id 4117C3E61C4
+ for <ltp@lists.linux.it>; Fri, 25 Sep 2026 10:28:55 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id DF29F1400C4C
- for <ltp@lists.linux.it>; Fri, 25 Sep 2026 10:28:51 +0200 (CEST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 3840614004EE
+ for <ltp@lists.linux.it>; Fri, 25 Sep 2026 10:28:53 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id DE4A71FAA0;
- Fri, 25 Sep 2026 08:28:42 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 6DBD71FCCF;
+ Fri, 25 Sep 2026 08:28:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
  t=1790324927; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=zf9lbgq0W8UNzfRl/XxaYAmnAp1uBoWA1YNZe7ZGAgc=;
- b=ulB54YbH1HXyDPEonJxVTQYGulxVDqfR/oi15tEQsYvI+FnZqOgrPblrH7IYm/Xrc+Gvci
- bErZF46pJE1Jgb2gTVNEIGwtR44EB8Gx1PP/Brc/XfuwbVMvLBSi3T1vTysOQJGpW1jLxt
- 5Sxjb3g/Rnr/saXVl6HyRpJ3Oj9z3R4=
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=cT+u9Y3U1r7y7RSFArNo5BIvVXG5o3WivuGs9GmvGwY=;
+ b=wKoHHV0QOwGqsVSjjZumvjaUIYq+4QE5VzoVSAmsIzOORVmuRspGOzMPw0NTenJab2Eq5K
+ lotKV5CVvk6mblrzOgSaGiUur+CUsOz1fI2AYl3p8bceLLp4ofZQ/RouWyxnUrnaH+QW39
+ IXv86JDgYYYTojkdoxCMikQ7o44H84Y=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
  s=susede2_ed25519; t=1790324927;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=zf9lbgq0W8UNzfRl/XxaYAmnAp1uBoWA1YNZe7ZGAgc=;
- b=RzdXc75ZkNrIZwRMi8AnB9U55L0ill1YMOPVWQbbdwmArWvVBjWYLjKrqQJxbC2kT9crrF
- 8eLY96IEos1AeuCw==
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=cT+u9Y3U1r7y7RSFArNo5BIvVXG5o3WivuGs9GmvGwY=;
+ b=OaCXwY0JYCGXf7R0vTN4GDvE9MX+AKr5K7dJUbYtlqGkhus4/5RS2prM46ln1mFEamnUWV
+ KR9VTCusFTJUbLCw==
 Authentication-Results: smtp-out2.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1790324922; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=zf9lbgq0W8UNzfRl/XxaYAmnAp1uBoWA1YNZe7ZGAgc=;
- b=CtaWNcFr8gOf6Fx1T+PnG8021lzD/1qsHm0qs44kF3/EUWq78SMF00pgEHDsvEisVDETgk
- z7w1GcROddt/xCysjMHGxNzNpvaYYMmOCx4UAReFngofu/tkIE/0inTKd0F/I+rkhtfHO+
- dF+ooIYY0RzZwA0JYTNmyAPZKVlkE5o=
+ t=1790324923; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=cT+u9Y3U1r7y7RSFArNo5BIvVXG5o3WivuGs9GmvGwY=;
+ b=Z9WTNLhisg6uSrphCypYH5HstdOjxdhzflB1huhVQZ20sxbnzxmU1Qx06gurQwMurQ35YV
+ 3xUwBZ54iPKXuuiKege1zc2Y0twjYFlKtloO7Abm+UI/s4BFyslH4c4Rrq5JgZUYqyl8qS
+ hHkyvvWDioHBDKXhz/R1lGlV9M5n4L0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1790324922;
+ s=susede2_ed25519; t=1790324923;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=zf9lbgq0W8UNzfRl/XxaYAmnAp1uBoWA1YNZe7ZGAgc=;
- b=nsBDVREi0DokB+0ldUuqBzSNWhLd+Cv1eYutbIGOS7YAzfIn3yJF/mN7WFxb38YI5ouqes
- wBB6Nh4DiiO8wmAw==
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=cT+u9Y3U1r7y7RSFArNo5BIvVXG5o3WivuGs9GmvGwY=;
+ b=ic/Nq9vX+hhCu7SPU2/6beBQPIZORVcR4/LU/SyrrYGxJg3Kv4xQpbbjTSrB+vKy/rhpW5
+ DmLV3qsxwH1MWYAw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8E8AC13432;
- Fri, 25 Sep 2026 08:28:42 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1522A1389C;
+ Fri, 25 Sep 2026 08:28:43 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id HWSGF7owtmohTwAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Fri, 25 Sep 2026 08:28:42 +0000
+ by imap1.dmz-prg2.suse.org with ESMTPSA id HWSGF7owtmohTwAAD6G6ig:T3
+ (envelope-from <pvorel@suse.cz>); Fri, 25 Sep 2026 08:28:43 +0000
 From: Petr Vorel <pvorel@suse.cz>
 To: ltp@lists.linux.it
-Date: Fri, 25 Sep 2026 10:28:38 +0200
-Message-ID: <20260925082840.2408504-1-pvorel@suse.cz>
+Date: Fri, 25 Sep 2026 10:28:40 +0200
+Message-ID: <20260925082840.2408504-3-pvorel@suse.cz>
 X-Mailer: git-send-email 2.55.0
+In-Reply-To: <20260925082840.2408504-1-pvorel@suse.cz>
+References: <20260925082840.2408504-1-pvorel@suse.cz>
 MIME-Version: 1.0
-X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
- R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-0.995];
- MIME_GOOD(-0.10)[text/plain]; RCPT_COUNT_SEVEN(0.00)[7];
- RCVD_VIA_SMTP_AUTH(0.00)[]; MIME_TRACE(0.00)[0:+];
- ARC_NA(0.00)[];
+X-Spamd-Result: default: False [-6.80 / 50.00]; REPLY(-4.00)[];
+ BAYES_HAM(-3.00)[100.00%]; MID_CONTAINS_FROM(1.00)[];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; R_MISSING_CHARSET(0.50)[];
+ NEURAL_HAM_SHORT(-0.20)[-0.997]; MIME_GOOD(-0.10)[text/plain];
+ RCVD_COUNT_TWO(0.00)[2]; ARC_NA(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; FROM_HAS_DN(0.00)[];
+ MIME_TRACE(0.00)[0:+]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ FROM_EQ_ENVFROM(0.00)[]; RCPT_COUNT_SEVEN(0.00)[7];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:mid,imap1.dmz-prg2.suse.org:helo];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; FROM_HAS_DN(0.00)[];
- TO_DN_SOME(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:mid];
- RCVD_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[]
+ TO_DN_SOME(0.00)[]; RCVD_TLS_ALL(0.00)[]
 X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3 0/2] shmctl03: Fix shmmax clamped to INT_MAX in
- 32bit compat mode
+Subject: [LTP] [PATCH v3 2/2] shmctl03: Use test macros
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -103,29 +114,55 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Changes v2->v3:
-* Drop first fix from Andrea:
-  https://lore.kernel.org/ltp/20260924112514.2375626-2-pvorel@suse.cz/
-  I'm no longer confident it's a good idea even if we document changed
-  behavior. See my concern:
-  https://lore.kernel.org/ltp/20260925080154.GC2387785@pevik/
-  Maybe we should either handle this entirely in shmctl03.c as there is
-  no other test which needs it.
-* Use unsigned long instead of unsigned long long (no need for that big
-  variable)
-* Use correct macro TST_EXP_EQ_LU() (agent)
-* Read shmmax only once (agent)
-* TST_EXP_POSITIVE SAFE_SHMCTL() instead of safe_shmctl() (no TBROK
-  instead of TFAIL in case of failure and it's probably slightly more
-  readable)
+Use test macros to shorten the code.
+Link manpage.
 
-Petr Vorel (2):
-  shmctl03: Fix shmmax clamped to INT_MAX in 32bit compat mode
-  shmctl03: Use test macros
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ testcases/kernel/syscalls/shmctl/shmctl03.c | 18 ++++++------------
+ 1 file changed, 6 insertions(+), 12 deletions(-)
 
- testcases/kernel/syscalls/shmctl/shmctl03.c | 24 ++++++++++-----------
- 1 file changed, 12 insertions(+), 12 deletions(-)
-
+diff --git a/testcases/kernel/syscalls/shmctl/shmctl03.c b/testcases/kernel/syscalls/shmctl/shmctl03.c
+index f2b735dc85..bccab5ba37 100644
+--- a/testcases/kernel/syscalls/shmctl/shmctl03.c
++++ b/testcases/kernel/syscalls/shmctl/shmctl03.c
+@@ -1,11 +1,12 @@
+ // SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+  * Copyright (C) 2020 Cyril Hrubis <chrubis@suse.cz>
++ * Copyright (c) Linux Test Project, 2026
+  */
+ 
+ /*\
+- * Call shmctl() with IPC_INFO flag and check that the data are consistent with
+- * /proc/sys/kernel/shm*.
++ * Call :manpage:`shmctl(2)` with IPC_INFO flag and check that the data are
++ * consistent with /proc/sys/kernel/shm*.
+  */
+ 
+ #define _GNU_SOURCE
+@@ -18,18 +19,11 @@ static void verify_ipcinfo(void)
+ 	struct shminfo info;
+ 	unsigned long shmmax;
+ 
+-	TEST(shmctl(0, IPC_INFO, (struct shmid_ds *)&info));
+-
+-	if (TST_RET < 0) {
+-		tst_res(TFAIL | TTERRNO,
+-			"shmctl(0, IPC_INFO, ...) returned %li", TST_RET);
++	TST_EXP_POSITIVE(shmctl(0, IPC_INFO, (struct shmid_ds *)&info));
++	if (!TST_PASS)
+ 		return;
+-	}
+ 
+-	if (info.shmmin != 1)
+-		tst_res(TFAIL, "shmmin = %li, expected 1", info.shmmin);
+-	else
+-		tst_res(TPASS, "shmmin = 1");
++	TST_EXP_EQ_LU(info.shmmin, 1);
+ 
+ 	SAFE_FILE_SCANF(PATH_KERN_SHMMAX, "%lu", &shmmax);
+ 	if (tst_is_compat_mode() && info.shmmax == INT_MAX)
 -- 
 2.55.0
 
