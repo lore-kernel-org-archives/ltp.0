@@ -4,78 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 12404CA5FA3
-	for <ltp@archiver.kernel.org>; Mon, 28 Sep 2026 21:27:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E2069CA5FA1
+	for <ltp@archiver.kernel.org>; Mon, 28 Sep 2026 21:27:52 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E83553CD0B3
-	for <ltp@archiver.kernel.org>; Mon, 28 Sep 2026 23:27:35 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id E78F53CD737
+	for <ltp@archiver.kernel.org>; Mon, 28 Sep 2026 23:27:50 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 854CC3CC64A
- for <ltp@lists.linux.it>; Mon, 28 Sep 2026 23:27:19 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id D8C913CE45A
+ for <ltp@lists.linux.it>; Mon, 28 Sep 2026 23:27:25 +0200 (CEST)
 Received: from mail-ed2-x0d.google.com (mail-ed2-x0d.google.com
  [IPv6:2a00:1450:4864:33::d])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id ECF53200A00
- for <ltp@lists.linux.it>; Mon, 28 Sep 2026 23:27:17 +0200 (CEST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 05DD71A00A21
+ for <ltp@lists.linux.it>; Mon, 28 Sep 2026 23:27:24 +0200 (CEST)
 Received: by mail-ed2-x0d.google.com with SMTP id
- 4fb4d7f45d1cf-6ab02dc629dso456291a12.0
- for <ltp@lists.linux.it>; Mon, 28 Sep 2026 14:27:17 -0700 (PDT)
+ 4fb4d7f45d1cf-6ac8774c8b4so241966a12.1
+ for <ltp@lists.linux.it>; Mon, 28 Sep 2026 14:27:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=linaro.org; s=google; t=1790630837; x=1791235637; darn=lists.linux.it;
+ d=linaro.org; s=google; t=1790630844; x=1791235644; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:message-id:date:subject:cc
  :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
- bh=ZMzfP2NuCrrw8ZDftZtyhRMy82/ezyRJm06DuzoWmVQ=;
- b=W0pwVdbXlmiIvzgPERlgngIfWeT2ukT2fRE/60Lw9AcTGCleO00C3TpSLCIivKzn7X
- e2FQYlXaGP5/WnvfPFvUhNM59Jj2SLEQIiPDIlDgGAuguR6wuyqUag0mMMvwWELFolxU
- ut8pwGZ+uShr8mIGHTMAE69hItznEuYSqPBwbFNqEltR+HwK5kq6dLNaNTxykxQKRgfd
- 9khIg3oajv0AoufD1W7Kgnzii14QdOOZVnQBw6WZTF1v9gBKyb4eyxf6lc56yNra+954
- +92sw4wudsEkLrRqaVvZyKGehFpZPOQ94tVkouV4ht1u78BRUV8nsUWvrmLNp4J8u1TP
- LSQw==
+ bh=iB4bNkX3i6edu4QfMqqzg0DJ5U4IA/v2RlxcApNuvdk=;
+ b=mq2ZbJVskFYQbHbN8g1ixV8hmIx6zESxToGyeIPkR9yHTyPoRQUyKV8TPa8R5LWAuv
+ s+SqOi50eTHXwBtcG6WJCfv3St5sG/jf/FfoO76HbCt9vyU9IVYr6gvL27Fyi9kgfLw4
+ BSJjmxbE8MKsZfck47pGJTmMDL4U3As8tFyU13pWW+7lHxHHwZeFCxz9cnQyGESAj9e9
+ 3E0kEVZg5uCVA/BaJaKxMdnT8rwc8z5l1RA43y1fn7pjfPrY8FSgwd6d0MPJQVtclA1H
+ r3KUTl8cqr1vv/dfKQhA5NoX7KQ2My3Ln2xHeVaNL+2/ernmwS7xKkO019dfO6IWAM9z
+ QxSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20260707; t=1790630837; x=1791235637;
+ d=1e100.net; s=20260707; t=1790630844; x=1791235644;
  h=content-transfer-encoding:mime-version:message-id:date:subject:cc
  :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
  :message-id:reply-to:content-type;
- bh=ZMzfP2NuCrrw8ZDftZtyhRMy82/ezyRJm06DuzoWmVQ=;
- b=VXBmve/dBS/bOj78gMwHrsA1POXVwhMEpPSIuLyik/HMAqEs0pyeQn2cE7W3COhhaB
- LRWD7VeuFH4jG/tf1nUf+ZoVhVf8XZGYZVVYP6XSkiYznSstKtkKGSB3olrP1a7Htm8U
- +WJQ07xn3vBsz9A8qQdvgMLuqNX8j74RPLFooCourl9DWNnAJrPcTPImMQBsWXwojHnc
- nNM+6rbH8HXmfrt1xZOvCw21wGYH3b7VE1RKjSsKbmMd5mDlaZ6wntHwB2jYynQeq6uQ
- eba9VcyHAmK6HN3PcnhJO2YKeEcH1Vv96VrCR3+fLKinBmEKlsHVFV7D5a3OzLiDmuUA
- GOyA==
-X-Gm-Message-State: AFq9FYLF17oor5H279x3MMAk8has7AK3yPBOn4NwK+JNh8bFEg8+dDx3
- PGhrPeka6utZcWNUIzjYAS0DxCfWWFmPgG1lfIf39/vDhsdCo7ZTM1evrH8tanzJaX1tTUoFldB
- TiYCN
-X-Gm-Gg: AYBFou0g8MOqrf93GbWLjaUVSIlFcfPP64RpCmK2talSCeRDiMkQ8dk3CMYIqJ0tFxm
- uSAbv9cZIaYWeFCb0lQHcrlU468b6M+2mYNg6B5Z3LpGjr7gleEv4MhKLmNZqy0+L88+WUJQMOe
- cafCFDWJKX9rTYPMk7jnnLs4H0rq+Z6a2f3KaJ7s1EqqA4heNz/1ggdcvW1FlAjO7zamcWd3OTS
- kTVM8Mdai3WIKZ5fF8jNAeRyTG7eBynYrUh/ZyBc7Qy8V2Yn4Z11TLG3h3Xw2UD28CuPLaFSO2r
- Q3tQEFRDT7xWeOjyn8mFJKLdPeNOe0bMageKLFmzr+yokNjL11CfnnOldosmPKukhn4cUSUjjY9
- byIBYdwU7Hru3xxixM1Px85jPRvaUlyqwWWa4coCgPljZLe3i+dihWWSC84Z+BJDWamJFaI7Kbq
- QBizmC2iqIcBZhEZ+SxX/iRTQMH9fKxx3PCy82SbiqfCOMDWDYSrvJ8cwTWOuQpGqwtbhHYuWV7
- Ifv7euE8HJuyHMc83s94kZrEciDGBtylg==
-X-Received: by 2002:a05:6402:50c6:b0:6aa:f240:241 with SMTP id
- 4fb4d7f45d1cf-6aaf24004c5mr8116509a12.0.1790630837024; 
- Mon, 28 Sep 2026 14:27:17 -0700 (PDT)
+ bh=iB4bNkX3i6edu4QfMqqzg0DJ5U4IA/v2RlxcApNuvdk=;
+ b=PlYPKFSt+EcBjc77Ukl4aAhoQ+sFhCnJhs2jHGpJSaYysRtJBBi8lqCI7LJcynvg2h
+ B94+7QAKrbTl2cFUOepz2+jCLSIW9Z6Jpy/SmeQ8bIcET5ahEkY9RhHYfXIXT3memuoR
+ aiozUfvB+luXTIsz1dT6pdX2qBQ2yAShVqYUYMZShVFyZuqpvh1W8y8UFrTLDT3VIWDe
+ KPdDF4eSjKZ5OzUa3CG4IPeoqe4gPqLMumP/zfBPAsSWAvKwcBeKDoeA9RapfORuIe7K
+ On0EFm6XOyJSx3A2QKVZAEk/1TVv4xGzbrqkjF57OSdpzhmZMPyvZG3t4LtRTBQaYu2c
+ ZylA==
+X-Gm-Message-State: AFq9FYLFBT+e+8cr4EH9HY2C7Ok7vhtQHJiF8HfMwkOWrkPn+KoVVjUg
+ 9dUzr3RuidMgLYedCzzrg7lep2zBvg6Z8iDebGnjh3OspXWDsLD5MBFqiJOoo1A0+XdAEfROTAK
+ l9bQ1
+X-Gm-Gg: AYBFou10GZ2E7iE2BT/QZI7mG5ovTWfe0SjxkV1OqARnz/p/rkrex6V4zXlZh2Z1Hz+
+ C0xurOPDgqdh6GiDeYvU7S7GkNx0st3P9sOL3C8Z/YwWSUyU+5jNh18ZlSk/2y9hXClpXMVpGEb
+ YHfTU0ZUZav6Zwm7/VPFjI13V5uVSmUt9J4KyRawCbh9Z0h2SJuXTusoboIyHpL+9Ou1hLtvDYa
+ QS9Ztm0EAA9CmJDIdgFUDy5uw2PwUvpNesy/LxLNUv07dP9vl7vRiUnJzwVxnnMH/99Hrgc7i/i
+ uNIlN9Yq1hs0zaofYcbMmE+o65FH2GDIeWVnxZMnNSSdlSL2z0/YoHe2fDvHIhWlLwPVVewAGFV
+ 3VhchyD9ddSZd1KlXX0sHwcnEoC1X21CgKK0yWRvpQIdjJB8WYHqSVB56V5wuzm5nMSuxBPdtse
+ k27bKLzPJ9mUnzt/qUR1NevhxsCEmsC0MmOJKxMlmzIeN8BGxEJI98/Z2pUIPJnFVs22bAFecQn
+ c2PSCuX9AENeHhNe3LmtPvO4PMjR8mUcA==
+X-Received: by 2002:a05:6402:13ca:b0:6aa:490e:5518 with SMTP id
+ 4fb4d7f45d1cf-6aae1fcf708mr10171416a12.2.1790630844299; 
+ Mon, 28 Sep 2026 14:27:24 -0700 (PDT)
 Received: from localhost (c-85-229-7-191.bbcust.telenor.se. [85.229.7.191])
  by smtp.gmail.com with ESMTPSA id
- 4fb4d7f45d1cf-6aae5cb98dfsm4557698a12.6.2026.09.28.14.27.16
+ 4fb4d7f45d1cf-6aae5cb98dfsm4557803a12.6.2026.09.28.14.27.23
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 28 Sep 2026 14:27:16 -0700 (PDT)
+ Mon, 28 Sep 2026 14:27:24 -0700 (PDT)
 From: Anders Roxell <anders.roxell@linaro.org>
 To: ltp@lists.linux.it
-Date: Mon, 28 Sep 2026 23:27:13 +0200
-Message-ID: <20260928212713.2832800-1-anders.roxell@linaro.org>
+Date: Mon, 28 Sep 2026 23:27:21 +0200
+Message-ID: <20260928212721.2834101-1-anders.roxell@linaro.org>
 X-Mailer: git-send-email 2.53.0
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] tst_clone: Fix child detection on sparc
+Subject: [LTP] [PATCH] openposix: lib: Use the configured compiler
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -92,51 +92,30 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On sparc the clone syscall does not return 0 in the child. It returns
-the parent pid, so the child thinks it is the parent.
+The lib Makefile does not include env.mk, so it does not get CC from
+config.mk. When we cross compile, libcommon.a gets built with the host
+compiler. Then the linker skips it and most tests fail to build.
 
-Save the pid before the clone and compare it after.
+Include env.mk, like the other Makefiles do.
 
 Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
 ---
- lib/tst_clone.c | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+ testcases/open_posix_testsuite/lib/Makefile | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/lib/tst_clone.c b/lib/tst_clone.c
-index 296cd40ac0a0..2fdd9e163717 100644
---- a/lib/tst_clone.c
-+++ b/lib/tst_clone.c
-@@ -20,6 +20,9 @@ pid_t tst_clone(const struct tst_clone_args *tst_args)
- 	};
- 	int flags;
- 	pid_t pid = -1;
-+#ifdef __sparc__
-+	pid_t parent_pid = getpid();
-+#endif
+diff --git a/testcases/open_posix_testsuite/lib/Makefile b/testcases/open_posix_testsuite/lib/Makefile
+index ad6a9d7e6a1b..e63ee42647ac 100644
+--- a/testcases/open_posix_testsuite/lib/Makefile
++++ b/testcases/open_posix_testsuite/lib/Makefile
+@@ -1,6 +1,8 @@
+ top_srcdir?=		..
+ subdir=			lib
  
- 	tst_flush();
- 
-@@ -31,7 +34,7 @@ pid_t tst_clone(const struct tst_clone_args *tst_args)
- 		return -1;
- 
- 	if (pid != -1)
--		return pid;
-+		goto out;
- 
- 	flags = args.exit_signal | args.flags;
- 
-@@ -44,5 +47,11 @@ pid_t tst_clone(const struct tst_clone_args *tst_args)
- 	if (pid == -1)
- 		return -2;
- 
-+out:
-+#ifdef __sparc__
-+	if (getpid() != parent_pid)
-+		pid = 0;
-+#endif
++include $(top_srcdir)/include/mk/env.mk
 +
- 	return pid;
- }
+ AR?=			ar
+ RANLIB?=		ranlib
+ CFLAGS+=		-I$(top_srcdir)/include
 -- 
 2.53.0
 
