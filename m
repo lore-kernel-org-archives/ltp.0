@@ -4,83 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 24DF6CA5FA3
-	for <ltp@archiver.kernel.org>; Mon, 28 Sep 2026 18:39:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 12404CA5FA3
+	for <ltp@archiver.kernel.org>; Mon, 28 Sep 2026 21:27:37 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B9BC53CC24A
-	for <ltp@archiver.kernel.org>; Mon, 28 Sep 2026 20:39:01 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id E83553CD0B3
+	for <ltp@archiver.kernel.org>; Mon, 28 Sep 2026 23:27:35 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id F27FB3C5E52
- for <ltp@lists.linux.it>; Mon, 28 Sep 2026 20:38:46 +0200 (CEST)
-Received: from mail-oo2-x08.google.com (mail-oo2-x08.google.com
- [IPv6:2607:f8b0:4864:31::8])
+ by picard.linux.it (Postfix) with ESMTPS id 854CC3CC64A
+ for <ltp@lists.linux.it>; Mon, 28 Sep 2026 23:27:19 +0200 (CEST)
+Received: from mail-ed2-x0d.google.com (mail-ed2-x0d.google.com
+ [IPv6:2a00:1450:4864:33::d])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 8D1221000998
- for <ltp@lists.linux.it>; Mon, 28 Sep 2026 20:38:46 +0200 (CEST)
-Received: by mail-oo2-x08.google.com with SMTP id
- 46e09a7af769-81d53a6ca68so741158a34.1
- for <ltp@lists.linux.it>; Mon, 28 Sep 2026 11:38:46 -0700 (PDT)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id ECF53200A00
+ for <ltp@lists.linux.it>; Mon, 28 Sep 2026 23:27:17 +0200 (CEST)
+Received: by mail-ed2-x0d.google.com with SMTP id
+ 4fb4d7f45d1cf-6ab02dc629dso456291a12.0
+ for <ltp@lists.linux.it>; Mon, 28 Sep 2026 14:27:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1790620725; x=1791225525; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to:content-type;
- bh=4R+Yc5+Dy3BDlMpAfvOjN5gJ8b086nUsd3F0AxDgMYs=;
- b=mG3W4yDVGQ9L5Lra13R848wibx2a7fbCuuCypHNFeZI1Re+HHrZRiYQT24oShnVpa8
- WOdQ2qh2vc5FC3IfmhfY5M5a1nsjYegnkSuBtjUSVvzkQ0tULRBMJUQ4JExx9uWo3n5P
- YcEsUcZiWqPxqFU9vIUrwJ3M12LPFUgSEfhwjNZdCW6dUU9jI1msQhGW9FN2qHpR8ZvB
- +/JiUJhQvDGNoHvmVVWmzkdw9GvTtpP0qcFWFwvuVJPb8eG+2RN+vZMJrykEm+EhfePw
- NrkqAG+LtrbwGOGhI6mK3dUN8Hr5UW3C7l+jK6Uir7HospQJi8vpnMLJEFENnu1H5EME
- j5wg==
+ d=linaro.org; s=google; t=1790630837; x=1791235637; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+ bh=ZMzfP2NuCrrw8ZDftZtyhRMy82/ezyRJm06DuzoWmVQ=;
+ b=W0pwVdbXlmiIvzgPERlgngIfWeT2ukT2fRE/60Lw9AcTGCleO00C3TpSLCIivKzn7X
+ e2FQYlXaGP5/WnvfPFvUhNM59Jj2SLEQIiPDIlDgGAuguR6wuyqUag0mMMvwWELFolxU
+ ut8pwGZ+uShr8mIGHTMAE69hItznEuYSqPBwbFNqEltR+HwK5kq6dLNaNTxykxQKRgfd
+ 9khIg3oajv0AoufD1W7Kgnzii14QdOOZVnQBw6WZTF1v9gBKyb4eyxf6lc56yNra+954
+ +92sw4wudsEkLrRqaVvZyKGehFpZPOQ94tVkouV4ht1u78BRUV8nsUWvrmLNp4J8u1TP
+ LSQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20260707; t=1790620725; x=1791225525;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to:content-type;
- bh=4R+Yc5+Dy3BDlMpAfvOjN5gJ8b086nUsd3F0AxDgMYs=;
- b=lCeXGMrvmNEaGtsfz/yIv+mba2E3Dy7ua1dWzsh7BU58dv0nGe+hb1GiPEQ3Lv97c/
- 5MHU09AON+/Cf3DSF9UoTh/e01EA3sVUwrGohOugFdnyszfFAlqNR/UUgmsjHnQWm24D
- yTxNwc6/UnT+mkHYYc2br5tu+F32vCnSuQbaVtVS2muVdEQLVwUi8X3ayQI5nSNVKPlo
- xJY0oEHhX0stZNCm3zM9o74gbGS7vG+5ZJrC9yGAm1a5zIIjek8mEAkKLDOmHDwZp5Gr
- kGUrQM6+38VTSC3dw44wQmScE5d4GCDWy8Ky7p7mkTbNm6GtPMqcNOBcbGMgZcWp2RLl
- P69Q==
-X-Gm-Message-State: AFuF++mnZYcjNa0CqAbJ2L5Qe/orK6tflry6layaMvwqheJTXa3wdALP
- Ku7KHOtMOfC/AqGk6nEpnCloBYNkeVcV/HO9nTzVNaksQOq1gqP2Wale
-X-Gm-Gg: AYBFou2kVpFA70ukInh9p1i0xYGMRaynrH6nBakgy0N1P7bEJq2qaQeZ27dMzV8hY0M
- 6mU3i6zmn/pn6IhdHcyh1tQ3wtY5RKJjq5f/OWlMKitC9W7T8dDvMhClLuGhZarUnF7DmdK5D4t
- uUrj2xkc03aV/gyqdhTMyjao6S3kLc+eOKbiJ6F4JY4yVq5Tl5BI6c5K8SJWQw4w8GXNUSF454J
- RBu6yMRBOEBs4csJBkUBPQ+0Ck3eFK+U23lhRcrx09OBOzvZnAJWYVf+vXmuvXQ1hr0kNX56H9S
- 0aqqKNU1lVfFVcL6hIkOEEo/AXKRippN6aKLBBCyaLFAqKtDhO+oC0JCXcEvCsAmQt2mhm42xeu
- Fi4R/k/OJkRWvl5lMwS14LpkTDu/iPShSU9Y5PMTlIbpji6kRjAgNwm6OtBveVWqni4UG5YEbOV
- N2mTxHtRyq/1veto2v5Ly1iclT43XwMonMbH48ygu+dwzKCNtljENWLYvLwalex4b6WqdPd8RIa
- VJ6KwTj6LCMqVKTYf82lgMkpB/sbG67tv8MJPKRbAk9NDtuBMTv3Wje0zpNyMqutA94+BZDkENn
- Cnq2qGj5FBc=
-X-Received: by 2002:a9d:6b0d:0:b0:81c:6bc8:48d6 with SMTP id
- 46e09a7af769-81c6bc84bc7mr3284337a34.16.1790620725176; 
- Mon, 28 Sep 2026 11:38:45 -0700 (PDT)
-Received: from
- runnervmtr4k5.eqja55c0li0upczbesvay52vqg.ex.internal.cloudapp.net
- ([64.236.135.23]) by smtp.gmail.com with ESMTPSA id
- 46e09a7af769-81d57ef33b1sm2315947a34.5.2026.09.28.11.38.44
+ d=1e100.net; s=20260707; t=1790630837; x=1791235637;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to:content-type;
+ bh=ZMzfP2NuCrrw8ZDftZtyhRMy82/ezyRJm06DuzoWmVQ=;
+ b=VXBmve/dBS/bOj78gMwHrsA1POXVwhMEpPSIuLyik/HMAqEs0pyeQn2cE7W3COhhaB
+ LRWD7VeuFH4jG/tf1nUf+ZoVhVf8XZGYZVVYP6XSkiYznSstKtkKGSB3olrP1a7Htm8U
+ +WJQ07xn3vBsz9A8qQdvgMLuqNX8j74RPLFooCourl9DWNnAJrPcTPImMQBsWXwojHnc
+ nNM+6rbH8HXmfrt1xZOvCw21wGYH3b7VE1RKjSsKbmMd5mDlaZ6wntHwB2jYynQeq6uQ
+ eba9VcyHAmK6HN3PcnhJO2YKeEcH1Vv96VrCR3+fLKinBmEKlsHVFV7D5a3OzLiDmuUA
+ GOyA==
+X-Gm-Message-State: AFq9FYLF17oor5H279x3MMAk8has7AK3yPBOn4NwK+JNh8bFEg8+dDx3
+ PGhrPeka6utZcWNUIzjYAS0DxCfWWFmPgG1lfIf39/vDhsdCo7ZTM1evrH8tanzJaX1tTUoFldB
+ TiYCN
+X-Gm-Gg: AYBFou0g8MOqrf93GbWLjaUVSIlFcfPP64RpCmK2talSCeRDiMkQ8dk3CMYIqJ0tFxm
+ uSAbv9cZIaYWeFCb0lQHcrlU468b6M+2mYNg6B5Z3LpGjr7gleEv4MhKLmNZqy0+L88+WUJQMOe
+ cafCFDWJKX9rTYPMk7jnnLs4H0rq+Z6a2f3KaJ7s1EqqA4heNz/1ggdcvW1FlAjO7zamcWd3OTS
+ kTVM8Mdai3WIKZ5fF8jNAeRyTG7eBynYrUh/ZyBc7Qy8V2Yn4Z11TLG3h3Xw2UD28CuPLaFSO2r
+ Q3tQEFRDT7xWeOjyn8mFJKLdPeNOe0bMageKLFmzr+yokNjL11CfnnOldosmPKukhn4cUSUjjY9
+ byIBYdwU7Hru3xxixM1Px85jPRvaUlyqwWWa4coCgPljZLe3i+dihWWSC84Z+BJDWamJFaI7Kbq
+ QBizmC2iqIcBZhEZ+SxX/iRTQMH9fKxx3PCy82SbiqfCOMDWDYSrvJ8cwTWOuQpGqwtbhHYuWV7
+ Ifv7euE8HJuyHMc83s94kZrEciDGBtylg==
+X-Received: by 2002:a05:6402:50c6:b0:6aa:f240:241 with SMTP id
+ 4fb4d7f45d1cf-6aaf24004c5mr8116509a12.0.1790630837024; 
+ Mon, 28 Sep 2026 14:27:17 -0700 (PDT)
+Received: from localhost (c-85-229-7-191.bbcust.telenor.se. [85.229.7.191])
+ by smtp.gmail.com with ESMTPSA id
+ 4fb4d7f45d1cf-6aae5cb98dfsm4557698a12.6.2026.09.28.14.27.16
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 28 Sep 2026 11:38:44 -0700 (PDT)
-From: linuxtestproject.agent@gmail.com
-To: Florian Schmaus <florian.schmaus@codasip.com>
-Date: Mon, 28 Sep 2026 18:38:43 +0000
-Message-ID: <20260928183843.10947-1-linuxtestproject.agent@gmail.com>
-X-Mailer: git-send-email 2.55.0
-In-Reply-To: <20260928153059.1624905-1-florian.schmaus@codasip.com>
-References: <20260928153059.1624905-1-florian.schmaus@codasip.com>
+ Mon, 28 Sep 2026 14:27:16 -0700 (PDT)
+From: Anders Roxell <anders.roxell@linaro.org>
+To: ltp@lists.linux.it
+Date: Mon, 28 Sep 2026 23:27:13 +0200
+Message-ID: <20260928212713.2832800-1-anders.roxell@linaro.org>
+X-Mailer: git-send-email 2.53.0
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] epoll_wait04: Use tst_multiply_timeout()
+Subject: [LTP] [PATCH] tst_clone: Fix child detection on sparc
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -92,28 +87,59 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Florian,
+On sparc the clone syscall does not return 0 in the child. It returns
+the parent pid, so the child thinks it is the parent.
 
-On Mon Sep 28 17:30:58 2026 +0200, Florian Schmaus wrote:
-> epoll_wait04: Use tst_multiply_timeout()
+Save the pid before the clone and compare it after.
 
-Verdict - Reviewed
-
+Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
 ---
-Note:
+ lib/tst_clone.c | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
-The agent can sometimes produce false positives although often its
-findings are genuine. If you find issues with the review, please
-comment this email or ignore the suggestions.
+diff --git a/lib/tst_clone.c b/lib/tst_clone.c
+index 296cd40ac0a0..2fdd9e163717 100644
+--- a/lib/tst_clone.c
++++ b/lib/tst_clone.c
+@@ -20,6 +20,9 @@ pid_t tst_clone(const struct tst_clone_args *tst_args)
+ 	};
+ 	int flags;
+ 	pid_t pid = -1;
++#ifdef __sparc__
++	pid_t parent_pid = getpid();
++#endif
+ 
+ 	tst_flush();
+ 
+@@ -31,7 +34,7 @@ pid_t tst_clone(const struct tst_clone_args *tst_args)
+ 		return -1;
+ 
+ 	if (pid != -1)
+-		return pid;
++		goto out;
+ 
+ 	flags = args.exit_signal | args.flags;
+ 
+@@ -44,5 +47,11 @@ pid_t tst_clone(const struct tst_clone_args *tst_args)
+ 	if (pid == -1)
+ 		return -2;
+ 
++out:
++#ifdef __sparc__
++	if (getpid() != parent_pid)
++		pid = 0;
++#endif
++
+ 	return pid;
+ }
+-- 
+2.53.0
 
-Regards,
-LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
