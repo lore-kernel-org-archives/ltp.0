@@ -4,82 +4,98 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1A7F3C9832A
-	for <ltp@archiver.kernel.org>; Sat, 26 Sep 2026 20:45:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DC734C9833E
+	for <ltp@archiver.kernel.org>; Mon, 28 Sep 2026 05:19:27 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 429883C5E2C
-	for <ltp@archiver.kernel.org>; Sat, 26 Sep 2026 22:45:46 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 662BF3E58ED
+	for <ltp@archiver.kernel.org>; Mon, 28 Sep 2026 07:19:25 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B52613E9FE0
- for <ltp@lists.linux.it>; Sat, 26 Sep 2026 22:45:05 +0200 (CEST)
-Received: from mail-wm2-x11.google.com (mail-wm2-x11.google.com
- [IPv6:2a00:1450:4864:31::11])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 54D303CB860
+ for <ltp@lists.linux.it>; Mon, 28 Sep 2026 07:19:08 +0200 (CEST)
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
+ [148.163.158.5])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 5747F600666
- for <ltp@lists.linux.it>; Sat, 26 Sep 2026 22:45:05 +0200 (CEST)
-Received: by mail-wm2-x11.google.com with SMTP id
- 5b1f17b1804b1-49e7bcb94d3so13904145e9.2
- for <ltp@lists.linux.it>; Sat, 26 Sep 2026 13:45:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1790455505; x=1791060305; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to:content-type;
- bh=IcQxl45XCypqSqzebURwqki4fhJtSDts8C8Y84zPv8k=;
- b=LNX+VYLVbmOZb3D7kKhaJbJlSd2MVmP3Y5nVa4PzEnVq+2iFAcgIsGSsWccPbCt8Ul
- oBk4YNPmQmMAWYgmhrOYVnw1Vo7tV49VW2UVUOVMQCBYLI4Tjt+dnOeqixCceUlp1r40
- u3goqK32B2TvKJztBFmci8YwUW22jArUPV5nOTm95EfjjhnHD0MsiWLWVTqvqOPwyAnJ
- JGXCdwDvwqnHqHRGVqSA9mUF/YM+2Banj4Iv7h8BU0mM8WGidCLqkHQwxfiEJnQAi1+j
- EAYWSnC0mhoj+c/bTDex6oAbQk/9Yqonuurrme59X7i0lLtejNpbVcetA2pgtGUoNLgN
- 8DgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20260707; t=1790455505; x=1791060305;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to:content-type;
- bh=IcQxl45XCypqSqzebURwqki4fhJtSDts8C8Y84zPv8k=;
- b=wztcXdl8kDJqKQPIo6n+gtxU8DqCRWT5bJZzTEJ+abLCsHxZ/5yNOTcAGIc90XkL22
- 96VKIB9NspsLO5//WhBUa+izrR9XQuILoLvnhhUTz3FfGOsfPlmDw6L1I1xLricPYYm9
- 7joC61cJf02LXTtlHEqFmcBIQqd8LXgAXbbPRuxDz6LsAZJIihz27I4rfqpGA/y0I8C0
- w7B7SCOeIzSxEKXuxJ3RU26tC4MGddaA/RujaeTBvShECU833YZK9S8A9qRbxFBb1+/3
- JQALKFS8tuth9VKfibNcI8RlltKsdaCJghZIPC/B9ORUA4PGNX9RNyDeTBDVmYwkJVNY
- iiPg==
-X-Gm-Message-State: AFuF++m3xF8C2aMb/rcmKH3FsqfF0rGYTn16eN0ace3oDxhtcb4wqxwh
- 0EkpBDpM8iHsBtuCQQVyVuCE06fc3DxAyPuJThlFk8Q9d1vGzpV2XClW/Em6ukRF
-X-Gm-Gg: AYBFou0HXCxlnHzH6AzcOkuIdkcQXTeuuMs2F1HmRLKgidq1IipkDUDmLOxfbt3gfuw
- eGEeuodfLwEWmkCK3UBMKji+aXClk9cziQDIU3iZ/zTotGJ7IuPn+aJNMz6W1tBYUd2YHlTChue
- ItbD6fSJNPEgFr2MbFUMg71Kj9ODifwjkV+HcnhQ96OOit+I25FWyOzRd3jptVh1RjTdLAO0ocx
- m+ankqutT0k20Fiw70xMlRS4BjH8L4kW4uFahMaeRE9VXvMYxqx7NrYysyNYICQ0etC2rY6F+fh
- B3yaTSyQ3dBjZ+PbBCsqXTKuNgVpaMTYzPsb5gsN4iImPZa+231eywf7UvWuNAlUWcYOPKVCcSW
- Oo4QPAlDORmTmXAcsJ/2tlKvesNy8vU2GZu4qpzGLjMiDqi2VdNkrlBPPC6YW0NE3SLA34ozUlL
- A3r/zC8tfU8Iz3rLNW+ndPsx7L+3Y6S5afFTS0sJCgzsPz+9+/to1VN9tNbNcgJv14FZdbNyae1
- 6I6/GDb0IQdqno4ci9r+N/I2Sf6pHMPBuLn17ErAX0q
-X-Received: by 2002:a05:600c:a47:b0:49b:9202:6f80 with SMTP id
- 5b1f17b1804b1-49fe66abc9cmr164883535e9.6.1790455504707; 
- Sat, 26 Sep 2026 13:45:04 -0700 (PDT)
-Received: from localhost.suse.org ([37.109.167.253])
- by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-49ff13b3c59sm18554405e9.0.2026.09.26.13.45.04
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sat, 26 Sep 2026 13:45:04 -0700 (PDT)
-From: Sebastian Chlad <sebastianchlad@gmail.com>
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 6346A1400763
+ for <ltp@lists.linux.it>; Mon, 28 Sep 2026 07:19:06 +0200 (CEST)
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id
+ 68RHajCl216876; Mon, 28 Sep 2026 05:19:05 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+ :content-transfer-encoding:date:from:message-id:mime-version
+ :subject:to; s=pp1; bh=rMDWoXHSNo5FBJUkbJeFFt4fPifU9Z7Dx+gzbw91Q
+ ik=; b=TQNEpYwTWEf1Hkkxww9osq+kkIWFw4QXUe8RXZLDaQgpmESn+qmxQH2N+
+ ifKfLF7Nk6t3FRUJwY3nx9BfOlvVht+8l0fx/uiPkIJSW5uQx2mE0C6sl8OlB9AR
+ 31TdoY17JEm1V91CzvPGWC5Z+duSScSRLjL+BB9zvxi3if9v3WwL1xq/GrEayQly
+ TS807Le/xwY6umLbXvI4tjJmVnBhxpMh/ayeNe7N7SFedLeFKATo65b7jEfFNVJ6
+ R1XsSpUNsNDtw3+dYLV5ITf4KgasTK6hR4SHsqvThOUtD72MKj2OI2iUXiuhWm2u
+ yON4ZMHgeuBRGvycUZKsZJhGcQ9yQ==
+Received: from ppma23.wdc07v.mail.ibm.com
+ (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4gx5psy3sa-1
+ (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+ Mon, 28 Sep 2026 05:19:04 +0000 (GMT)
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+ by ppma23.wdc07v.mail.ibm.com (8.18.1.11/8.18.1.11) with ESMTP id
+ 68S3c15F2157899; Mon, 28 Sep 2026 05:19:04 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+ by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4gxsvhbpwu-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Mon, 28 Sep 2026 05:19:03 +0000 (GMT)
+Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com
+ [10.20.54.105])
+ by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 68S5IxjK39059838
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Mon, 28 Sep 2026 05:19:00 GMT
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id CF9BC2004B;
+ Mon, 28 Sep 2026 05:18:59 +0000 (GMT)
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 00D3E20049;
+ Mon, 28 Sep 2026 05:18:59 +0000 (GMT)
+Received: from ltcden9-lp6.ltc.tadn.ibm.com (unknown [9.5.7.39])
+ by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
+ Mon, 28 Sep 2026 05:18:58 +0000 (GMT)
+From: Samir Mulani <samir@linux.ibm.com>
 To: ltp@lists.linux.it
-Date: Sat, 26 Sep 2026 22:44:54 +0200
-Message-ID: <20260926204459.20699-3-sebastianchlad@gmail.com>
-X-Mailer: git-send-email 2.51.0
-In-Reply-To: <20260926204459.20699-1-sebastianchlad@gmail.com>
-References: <20260926204459.20699-1-sebastianchlad@gmail.com>
+Date: Mon, 28 Sep 2026 07:17:33 +0200
+Message-ID: <20260928051740.591819-1-samir@linux.ibm.com>
+X-Mailer: git-send-email 2.53.0
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: 6815YKboKfRoTNdWLPe7iw3UBqi3ZiKs
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwOTI4MDAyMCBTYWx0ZWRfX6aneB2yhtp2K
+ 691ZjA6FndU4qgB+P88ogs2ahJdgIVl2ISMgPLFV5OP9oUyQqUJjV9Ze5N04Py3fGDltPF/ExGR
+ XakdOggtPpdslyjUyK6ddoqiBUs6Zjm8vep7BNFwjKzxhSQR2rJX2iK5PLE2525o6WIqQThJDfJ
+ N82l0X3BLaeTqwu/FOcs9u4G9rlK8kLtu7PqLSjDoW5PrjVhlExipiGt74xtwV16SffIv/RLQx+
+ eMdhcmZOVszTsW9j6fI++TB92BdIPqLqrSjNYF/Ym/7k+64Kk4GT791EicYsVlCUQtSkDns9LTt
+ 6+OaTLStzwUtdymf2ucH6jmzHhaiQLnxX7n8DkQp2MzCcyIPaQuVb99WzfOORiE7SwSXWwuEVCs
+ NLdksukBOj6kWtyNy3psgAq42Vtc22YIyyTC4lesKDYFORq0f/BkzfPOaAMLrvQsrWSHvBJSGwu
+ vgfkEvuKN22jC5IbwBg==
+X-Proofpoint-Spam-Info: AW1haW4tMjYwOTI4MDAyMCBTYWx0ZWRfX/9kryHF/Q3oU
+ npyBNR0fyo0dyDknef6w3cWeOsLAl0n7fYZ834lbWDZMzoK62L72+tpv3y+Owgp7J1iaunLG+4z
+ W1Nn8C/zVb+1Ly48rkdICXPyVDkavQc=
+X-Authority-Analysis: v=2.4 cv=EY5d0/mC c=1 sm=1 tr=0 ts=6ab9f8c8 cx=c_pps
+ a=3Bg1Hr4SwmMryq2xdFQyZA==:117 a=3Bg1Hr4SwmMryq2xdFQyZA==:17
+ a=VdqzKS8jKosA:10 a=VkNPw1HP01LnGYTKEx00:22 a=RnoormkPH1_aCDwRdu11:22
+ a=RzCfie-kr_QcCd8fBx8p:22 a=jRc_dIdUI1FS3t0HffYA:9
+X-Proofpoint-GUID: 6815YKboKfRoTNdWLPe7iw3UBqi3ZiKs
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1176,Hydra:6.1.134,FMLib:17.12.100.49
+ definitions=2026-09-26_05,2026-09-21_02,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ phishscore=0 priorityscore=1501 suspectscore=0 adultscore=0 clxscore=1015
+ malwarescore=0 impostorscore=0 spamscore=0 lowpriorityscore=0 bulkscore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.22.0-2609040000 definitions=main-2609280020
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 2/2] memcg/memcontrol0[34]: Remove protection from the
- top level group
+Subject: [LTP] [PATCH 0/2] cgroup: Add tests for cgroupv2 cpu.max.burst
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,96 +107,47 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Sebastian Chlad <sebastian.chlad@suse.com>
+Cc: Samir Mulani <samir@linux.ibm.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Sebastian Chlad <sebastian.chlad@suse.com>
+Hi all,
 
-The memory pressure in both tests comes from A/G hitting the
-memory.max of A, so A is the reclaim root. Protection of the reclaim
-root is ignored by the kernel and the direct children of the root
-(A/B and A/G) use their own memory.min/memory.low as is, see
-page_counter_calculate_protection(). The 50M of memory.min
-(memcontrol03) and memory.low (memcontrol04) set on A thus has no
-effect on what the tests check; it would only protect the whole
-hierarchy against reclaim from outside, which the tests don't need.
+This patch series adds two new testcases to test the cgroupv2 cpu.max.burst
+interface:
 
-The kselftest the tests are ported from dropped it for the same reason
-in kernel commit 6a35919005d4 ("selftests: memcg: remove protection
-from top level memcg"). Do the same and correct the descriptions, as
-the pressure is created in A, not in A/G.
+Patch 1 adds cpu_max_burst01 to test the basic functionality of cpu.max.burst.
+It checks default values, read/write boundaries, stat accounting (nr_bursts
+and burst_usec in cpu.stat), dynamic updates, and making sure the burst value
+is preserved when quota is removed or period is changed.
 
-Signed-off-by: Sebastian Chlad <sebastian.chlad@suse.com>
----
- testcases/kernel/controllers/memcg/memcontrol03.c | 5 ++---
- testcases/kernel/controllers/memcg/memcontrol04.c | 5 ++---
- 2 files changed, 4 insertions(+), 6 deletions(-)
+Patch 2 adds cpu_max_burst_invalid01 to test invalid inputs to cpu.max.burst.
+It checks that values like burst > quota, negative values, sum overflow,
+garbage strings, and trailing characters are rejected with EINVAL and do
+not change the saved burst value.
 
-diff --git a/testcases/kernel/controllers/memcg/memcontrol03.c b/testcases/kernel/controllers/memcg/memcontrol03.c
-index aa94f4999..25b84c24e 100644
---- a/testcases/kernel/controllers/memcg/memcontrol03.c
-+++ b/testcases/kernel/controllers/memcg/memcontrol03.c
-@@ -5,7 +5,7 @@
-  *
-  * Original description:
-  * "First, this test creates the following hierarchy:
-- * A       memory.min = 50M,  memory.max = 200M
-+ * A       memory.min = 0,    memory.max = 200M
-  * A/B     memory.min = 50M,  memory.current = 50M
-  * A/B/C   memory.min = 75M,  memory.current = 50M
-  * A/B/D   memory.min = 25M,  memory.current = 50M
-@@ -15,7 +15,7 @@
-  * Usages are pagecache, but the test keeps a running
-  * process in every leaf cgroup.
-  * Then it creates A/G and creates a significant
-- * memory pressure in it.
-+ * memory pressure in A.
-  *
-  * A/B    memory.current ~= 50M
-  * A/B/C  memory.current ~= 29M
-@@ -194,7 +194,6 @@ static void test_memcg_min(void)
- 		alloc_pagecache_in_child(leaf_cg[i], MB(50));
- 	}
- 
--	SAFE_CG_PRINT(trunk_cg[A], "memory.min", "50M");
- 	SAFE_CG_PRINT(trunk_cg[B], "memory.min", "50M");
- 	SAFE_CG_PRINT(leaf_cg[C], "memory.min", "75M");
- 	SAFE_CG_PRINT(leaf_cg[D], "memory.min", "25M");
-diff --git a/testcases/kernel/controllers/memcg/memcontrol04.c b/testcases/kernel/controllers/memcg/memcontrol04.c
-index 92ab53a51..f1e136df4 100644
---- a/testcases/kernel/controllers/memcg/memcontrol04.c
-+++ b/testcases/kernel/controllers/memcg/memcontrol04.c
-@@ -5,7 +5,7 @@
-  *
-  * Original description:
-  * "First, this test creates the following hierarchy:
-- * A       memory.low = 50M,  memory.max = 200M
-+ * A       memory.low = 0,    memory.max = 200M
-  * A/B     memory.low = 50M,  memory.current = 50M
-  * A/B/C   memory.low = 75M,  memory.current = 50M
-  * A/B/D   memory.low = 25M,  memory.current = 50M
-@@ -14,7 +14,7 @@
-  *
-  * Usages are pagecache
-  * Then it creates A/G and creates a significant
-- * memory pressure in it.
-+ * memory pressure in A.
-  *
-  * A/B    memory.current ~= 50M
-  * A/B/C  memory.current ~= 29M
-@@ -167,7 +167,6 @@ static void test_memcg_low(void)
- 		alloc_pagecache_in_child(leaf_cg[i], MB(50));
- 	}
- 
--	SAFE_CG_PRINT(trunk_cg[A], "memory.low", "50M");
- 	SAFE_CG_PRINT(trunk_cg[B], "memory.low", "50M");
- 	SAFE_CG_PRINT(leaf_cg[C], "memory.low", "75M");
- 	SAFE_CG_PRINT(leaf_cg[D], "memory.low", "25M");
+Both tests are written using the new LTP API and require CONFIG_CFS_BANDWIDTH=y
+and the cgroupv2 cpu controller.
+
+Thanks,
+Samir Mulani
+
+Samir Mulani (2):
+  cgroup: Add cgroup_burst01 test
+  cgroup: Add invalid burst test
+
+ runtest/controllers                           |   2 +
+ .../kernel/controllers/cgroup/.gitignore      |   2 +
+ .../controllers/cgroup/cpu_max_burst01.c      | 650 ++++++++++++++++++
+ .../cgroup/cpu_max_burst_invalid01.c          | 417 +++++++++++
+ 4 files changed, 1071 insertions(+)
+ create mode 100644 testcases/kernel/controllers/cgroup/cpu_max_burst01.c
+ create mode 100644 testcases/kernel/controllers/cgroup/cpu_max_burst_invalid01.c
+
 -- 
-2.51.0
+2.53.0
 
 
 -- 
