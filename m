@@ -4,98 +4,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D387DC9832A
-	for <ltp@archiver.kernel.org>; Tue, 29 Sep 2026 14:15:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B88F7CA5FA5
+	for <ltp@archiver.kernel.org>; Tue, 29 Sep 2026 14:15:55 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C51273E5873
-	for <ltp@archiver.kernel.org>; Tue, 29 Sep 2026 16:15:38 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id C92573E5873
+	for <ltp@archiver.kernel.org>; Tue, 29 Sep 2026 16:15:53 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 110BE3C0177
- for <ltp@lists.linux.it>; Tue, 29 Sep 2026 16:15:19 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ by picard.linux.it (Postfix) with ESMTPS id E75D63E57E8
+ for <ltp@lists.linux.it>; Tue, 29 Sep 2026 16:15:29 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 856C51400B78
- for <ltp@lists.linux.it>; Tue, 29 Sep 2026 16:15:19 +0200 (CEST)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 17FA2600BAF
+ for <ltp@lists.linux.it>; Tue, 29 Sep 2026 16:15:28 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 1C8C51F460;
- Tue, 29 Sep 2026 14:15:10 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id AB3331F7FA;
+ Tue, 29 Sep 2026 14:15:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1790691314; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1790691323; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding;
- bh=GHGzYtIvOKydTY8eCQI3a1LinXlNzXUKOWeKYpjTxKA=;
- b=Fda6yhcOnfCe7X/YPd1XV8cxzLr+n4+cxgZ2Zr6O6jCY6XfvyV835Ol+wP5h+9d8gotoAb
- MHq1rOjMQekhUrjUpSURurllJ9S6C2ZDsBdFNAtpsZH43czKISwRaphZUYrwUwqGdPoT+T
- HOcd+i2e2WKtrBFyW0wX3qtkdnYsivY=
+ bh=8t3NT+Z79vXcsFa5DvRXbFpRJc82RrMLqhDtJlVv858=;
+ b=HBzq9HM4LlUmkZSVJbzyac2AxNqNkXW0EX439S7NY7vq9X6ml1Jaxg4bGhvJ+uL0J1922H
+ u47251hwFycEh3wFOWSuN0TZqqKeHwClCGbgW0KZFH4+zdpykIAQFqu6YmUojuhx+Bb1PY
+ LVz+qFkSl2JPIUWtmrQ5de3z8b5UHuc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1790691314;
+ s=susede2_ed25519; t=1790691323;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding;
- bh=GHGzYtIvOKydTY8eCQI3a1LinXlNzXUKOWeKYpjTxKA=;
- b=cIZOPZD64DUyqH2hGYgTlckzlribQ3c3Eq3upZpR7MbHymft4Tkf23l1cFf9vOFaaicZuW
- 4E5ipXP3+Eq6ATBg==
+ bh=8t3NT+Z79vXcsFa5DvRXbFpRJc82RrMLqhDtJlVv858=;
+ b=6fbXKeIgVROyIYzS2kibZ8xH1E9/3kAGBO5jgGuPNqO+x9DWssnXVcB12wNjx5lhjD12S7
+ PUbo4MWAwyvDs8Ag==
 Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.de header.s=susede2_rsa header.b=CpnLlYI+;
- dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=+eQgoXM8
+ dkim=pass header.d=suse.de header.s=susede2_rsa header.b=n6tQr9E5;
+ dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=roVP5tT5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1790691310; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1790691319; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding;
- bh=GHGzYtIvOKydTY8eCQI3a1LinXlNzXUKOWeKYpjTxKA=;
- b=CpnLlYI+OqF5Jc3N8W0dWcY5aevUJTuM7MqoWlDeEaU2F7K3vn8mLasVqjYLF6g4QzjGEA
- cIQRPjljgR99fp0PpiFroJCCqJZlxrU+z8BouCvQ/c5x/uh3Tp9KLJ4e9CVACfDIEpr7Ts
- iVUnkf9sAl7TA+Ep4vFvC+rX9gzeB6Y=
+ bh=8t3NT+Z79vXcsFa5DvRXbFpRJc82RrMLqhDtJlVv858=;
+ b=n6tQr9E5WH9rP33t+GKyp+wq/58EfHGGOmCXhbkuYlIOcWvpN6zP5cUdYRmSnmsocM2yzp
+ iynqxT+1sFxb4Xd2Ts13YR4xmrTTKZWfMl/QvinwgNrtHjZ6aMu2aTrsR5srcEM/JP1vdX
+ ZJXDUTrUrV6AtJe1Y3fAKuN89WMi7yo=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1790691310;
+ s=susede2_ed25519; t=1790691319;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding;
- bh=GHGzYtIvOKydTY8eCQI3a1LinXlNzXUKOWeKYpjTxKA=;
- b=+eQgoXM85aH06qC1UgFcILqtVeJP9zG7h14GSDDac1msvwELXzfWMwfva2AZL3je+RYBRZ
- oJJKi3SQ4HXvL5BQ==
+ bh=8t3NT+Z79vXcsFa5DvRXbFpRJc82RrMLqhDtJlVv858=;
+ b=roVP5tT5q3BP7mSyWn6XolN/Fk4t6iyWubSxcXFuAs+YMXL4IKFNZP5N0ggYdM5lOsoPpj
+ MIdY084r9NxeeEBA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D5219133F1;
- Tue, 29 Sep 2026 14:15:09 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6668E133F1;
+ Tue, 29 Sep 2026 14:15:19 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id oqhcKu3Hu2rfTwAAD6G6ig
- (envelope-from <andrea.cervesato@suse.de>); Tue, 29 Sep 2026 14:15:09 +0000
+ by imap1.dmz-prg2.suse.org with ESMTPSA id TpNnD/fHu2rnTwAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>); Tue, 29 Sep 2026 14:15:19 +0000
 From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Tue, 29 Sep 2026 16:15:01 +0200
+Date: Tue, 29 Sep 2026 16:15:19 +0200
 MIME-Version: 1.0
-Message-Id: <20260929-fix_epoll_bpf-v1-1-39b19ab043c7@suse.com>
-X-B4-Tracking: v=1; b=H4sIAOTHu2oC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDIzMDSyNL3bTMivjUgvycnPikgjRd01QTc6OURItUM+NkJaCegqJUoAKwedG
- xEH5xaVJWanIJyBCl2loAFq3WdnEAAAA=
-X-Change-ID: 20260929-fix_epoll_bpf-5e472da8e63c
+Message-Id: <20260929-fix_fw_load02-v1-1-4cd5f95d172b@suse.com>
+X-B4-Tracking: v=1; b=H4sIAPbHu2oC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDIzMDSyNL3bTMivi08vic/MQUAyNdsyQDYwPTNLOkFPMkJaCegqJUoAKwedG
+ xEH5xaVJWanIJyBCl2loAl7MJUXEAAAA=
+X-Change-ID: 20260929-fix_fw_load02-6b0305f6bd7b
 To: Linux Test Project <ltp@lists.linux.it>
 X-Mailer: b4 0.16.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1790691309; l=4476;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1790691319; l=2900;
  i=andrea.cervesato@suse.com; s=20251210; h=from:subject:message-id;
- bh=KoMFFpkbripVAqV7gpWnk42kudrgfWa/Z5aBnYZKgG8=;
- b=okUk1IDn6HiZXZJFVpJVN9Vlg/8kc3n5evos7WyIZ8GaNpzXxbyoRnDI1KdixB7Ogd1YwSTrZ
- oUAALinPj4/BUFNRhVLpMeofNebkR4TZL57wwxTvXcAaknVDoAqY6q2
+ bh=QrLQDuK2sN6VnVzXWqKoNk3XL1Q+OyfO/BX824wHzFA=;
+ b=1baLegTCHzm333Xdxx9XpYxzR+1MDc6gBooFzAaWPEF5eSX8Ej7x3YgLwFaPjprXRaGjCpb6g
+ aHqLR83uDqRA8K9NOS6AMpHe8TN60seyhHqiOL0AOn/HtDO4HAF8ire
 X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
  pk=zKY+6GCauOiuHNZ//d8PQ/UL4jFCTKbXrzXAOQSLevI=
 X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: 1C8C51F460
+X-Rspamd-Queue-Id: AB3331F7FA
 X-Rspamd-Action: no action
 X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  NEURAL_HAM_LONG(-1.00)[-1.000];
  R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-0.994]; MIME_GOOD(-0.10)[text/plain];
+ NEURAL_HAM_SHORT(-0.20)[-0.993]; MIME_GOOD(-0.10)[text/plain];
  MX_GOOD(-0.01)[];
  DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received,2a07:de40:b281:104:10:150:64:97:from];
  ARC_NA(0.00)[]; MIME_TRACE(0.00)[0:+];
@@ -106,11 +108,11 @@ X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  FROM_HAS_DN(0.00)[];
  DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
  RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.de:dkim,suse.com:email,suse.com:mid];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:email,suse.com:mid];
  DKIM_TRACE(0.00)[suse.de:+]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] epoll_ctl06: Fix BPF map on old kernels
+Subject: [LTP] [PATCH] lib: Handle empty saved configuration values
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -129,116 +131,96 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-BPF map file descriptors gained a poll callback in upstream kernel
-5.8. Without that callback, EPOLL_CTL_ADD fails with EPERM, while the
-test expected it to succeed.
+Empty string module parameters return EOF on older kernels, causing
+fw_load02 to abort with TBROK on v4.4.
 
-Detect BPF map poll support at runtime so that older kernels with
-backported support are handled correctly as well.
+Accept empty values while retaining read-error handling and the original
+errno. Restore empty strings with a NUL byte: an empty write does not
+invoke the sysfs setter, while a newline would change the saved value.
 
-Fixes: c4c0ca4c749e ("syscalls: Add epoll_ctl06")
 Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
-tst_tmpdir.c:309: TINFO: Using /var/tmp/LTP_epoXsyHnT as tmpdir (btrfs filesystem)
-tst_test.c:2067: TINFO: LTP version: 20260529
-tst_test.c:2070: TINFO: Tested kernel: 4.4.140-491.1.TDC.gedc1884-default #1 SMP Wed Sep 23 11:06:41 UTC 2026 (edc1884) x86_64
+Fix the following behaviour on kernel < 4.14 96802e6b1dbf
+
 tst_kconfig.c:90: TINFO: Parsing kernel config '/proc/config.gz'
-tst_kconfig.c:760: TINFO: CONFIG_FAULT_INJECTION kernel option detected which might slow the execution
-tst_test.c:1897: TINFO: Overall timeout per run is 0h 02m 00s
-epoll_ctl06.c:57: TPASS: epoll_ctl() on file : EPERM (1)
-epoll_ctl06.c:57: TPASS: epoll_ctl() on O_PATH file : EBADF (9)
-epoll_ctl06.c:57: TPASS: epoll_ctl() on directory : EPERM (1)
-epoll_ctl06.c:57: TPASS: epoll_ctl() on /dev/zero : EPERM (1)
-epoll_ctl06.c:57: TPASS: epoll_ctl() on /proc/self/maps : EPERM (1)
-epoll_ctl06.c:57: TPASS: epoll_ctl() on pipe read end passed
-epoll_ctl06.c:57: TPASS: epoll_ctl() on pipe write end passed
-epoll_ctl06.c:57: TPASS: epoll_ctl() on unix socket passed
-epoll_ctl06.c:57: TPASS: epoll_ctl() on inet socket passed
-epoll_ctl06.c:57: TPASS: epoll_ctl() on epoll passed
-epoll_ctl06.c:57: TPASS: epoll_ctl() on eventfd passed
-epoll_ctl06.c:57: TPASS: epoll_ctl() on signalfd passed
-epoll_ctl06.c:57: TPASS: epoll_ctl() on timerfd passed
-tst_fd.c:144: TCONF: pidfd_open(): ENOSYS (38)
-epoll_ctl06.c:57: TPASS: epoll_ctl() on fanotify passed
-epoll_ctl06.c:57: TPASS: epoll_ctl() on inotify passed
-epoll_ctl06.c:57: TPASS: epoll_ctl() on userfaultfd passed
-epoll_ctl06.c:57: TPASS: epoll_ctl() on perf event passed
-tst_fd.c:200: TCONF: Skipping io uring: ENOSYS (38)
-epoll_ctl06.c:57: TFAIL: epoll_ctl() on bpf map failed: EPERM (1)
-tst_fd.c:225: TCONF: Skipping fsopen: ENOSYS (38)
-tst_fd.c:234: TCONF: Skipping fspick: ENOSYS (38)
-tst_fd.c:243: TCONF: Skipping open_tree: ENOSYS (38)
-epoll_ctl06.c:57: TPASS: epoll_ctl() on memfd : EPERM (1)
-tst_fd.c:261: TCONF: Skipping memfd secret: ENOSYS (38)
+tst_kconfig.c:90: TINFO: Parsing kernel config '/proc/config.gz'
+tst_kconfig.c:90: TINFO: Parsing kernel config '/proc/config.gz'
+tst_security.c:115: TINFO: SecureBoot sysfs file not available
+tst_security.c:94: TINFO: Unable to determine system lockdown state
+tst_security.c:115: TINFO: SecureBoot sysfs file not available
+tst_tmpdir.c:309: TINFO: Using /tmp/LTP_fw_ZRzLML as tmpdir (btrfs filesystem)
+tst_sys_conf.c:103: TBROK: Failed to read anything from '/sys/module/firmware_class/parameters/path': SUCCESS (0)
 
 Summary:
-passed   18
-failed   1
-broken   0
-skipped  6
+passed   0
+failed   0
+broken   1
+skipped  0
 warnings 0
 ---
- testcases/kernel/syscalls/epoll_ctl/epoll_ctl06.c | 19 +++++++++++++++----
- 1 file changed, 15 insertions(+), 4 deletions(-)
+ lib/tst_sys_conf.c | 27 ++++++++++++++++++++++-----
+ 1 file changed, 22 insertions(+), 5 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/epoll_ctl/epoll_ctl06.c b/testcases/kernel/syscalls/epoll_ctl/epoll_ctl06.c
-index 69321582f..e85e9e259 100644
---- a/testcases/kernel/syscalls/epoll_ctl/epoll_ctl06.c
-+++ b/testcases/kernel/syscalls/epoll_ctl/epoll_ctl06.c
-@@ -12,19 +12,23 @@
-  * poll file operation are expected to succeed. The rest must fail with:
-  *
-  * - EPERM for fds that are valid but lack poll support (regular files,
-- *   directories, /dev/zero, /proc files, memfd).
-+ *   directories, /dev/zero, /proc files, memfd and BPF maps on kernels
-+ *   without BPF map poll support).
-  * - EBADF for fds that are not usable for I/O (O_PATH, open_tree).
-  */
- 
-+#include <poll.h>
- #include <sys/epoll.h>
- 
- #include "tst_test.h"
- #include "tst_epoll.h"
- #include "tst_fd.h"
- 
--static int exp_errno(enum tst_fd_type type)
-+static int exp_errno(struct tst_fd *fd)
+diff --git a/lib/tst_sys_conf.c b/lib/tst_sys_conf.c
+index 80cd83569..a62af4a94 100644
+--- a/lib/tst_sys_conf.c
++++ b/lib/tst_sys_conf.c
+@@ -56,6 +56,7 @@ int tst_sys_conf_save(const struct tst_path_val *conf)
  {
--	switch (type) {
-+	struct pollfd pfd = {.fd = fd->fd, .events = POLLIN};
-+
-+	switch (fd->type) {
- 	case TST_FD_FILE:
- 	case TST_FD_DIR:
- 	case TST_FD_DEV_ZERO:
-@@ -37,6 +41,13 @@ static int exp_errno(enum tst_fd_type type)
- 	case TST_FD_PATH:
- 	case TST_FD_OPEN_TREE:
- 		return EBADF;
-+	case TST_FD_BPF_MAP:
-+		/*
-+		 * The BPF poll callback returns POLLERR for array maps. Without
-+		 * the callback, poll() returns the default readiness mask.
-+		 */
-+		SAFE_POLL(&pfd, 1, 0);
-+		return pfd.revents & POLLERR ? 0 : EPERM;
- 	default:
- 		return 0;
- 	}
-@@ -50,7 +61,7 @@ static void run(void)
- 	TST_FD_FOREACH(fd) {
- 		efd = SAFE_EPOLL_CREATE1(0);
- 		ev.data.fd = fd.fd;
--		err = exp_errno(fd.type);
-+		err = exp_errno(&fd);
+ 	char line[PATH_MAX];
+ 	int ttype, iret;
++	int read_err, saved_errno;
+ 	FILE *fp;
+ 	void *ret;
  
- 		TST_EXP_PASS_OR_FAIL(epoll_ctl(efd, EPOLL_CTL_ADD,
- 				 fd.fd, &ev), err,
+@@ -93,14 +94,23 @@ int tst_sys_conf_save(const struct tst_path_val *conf)
+ 	}
+ 
+ 	ret = fgets(line, sizeof(line), fp);
++	saved_errno = errno;
++	read_err = ferror(fp);
++
+ 	fclose(fp);
+ 
+ 	if (ret == NULL) {
+-		if (conf->flags & TST_SR_IGNORE_ERR)
+-			return 1;
++		if (read_err) {
++			if (conf->flags & TST_SR_IGNORE_ERR)
++				return 1;
++
++			errno = saved_errno;
++			tst_brk(TBROK | TERRNO, "Failed to read anything from '%s'",
++				conf->path);
++		}
+ 
+-		tst_brk(TBROK | TERRNO, "Failed to read anything from '%s'",
+-			conf->path);
++		/* Empty string module parameters can return EOF on older kernels. */
++		line[0] = '\0';
+ 	}
+ 
+ 	tst_sys_conf_save_str(conf->path, line);
+@@ -142,7 +152,14 @@ void tst_sys_conf_restore(int verbose)
+ 			tst_res(TINFO, "Restoring conf.: %s -> %s\n",
+ 				i->path, i->value);
+ 		}
+-		FILE_PRINTF(i->path, "%s", i->value);
++		/*
++		 * A zero-length write does not invoke the sysfs store callback.
++		 * Write a NUL byte to restore an empty string module parameter.
++		 */
++		if (!i->value[0])
++			FILE_PRINTF(i->path, "%c", '\0');
++		else
++			FILE_PRINTF(i->path, "%s", i->value);
+ 	}
+ }
+ 
 
 ---
 base-commit: 0596b09f22f449cb300e8ad2d08d8b186f551a05
-change-id: 20260929-fix_epoll_bpf-5e472da8e63c
+change-id: 20260929-fix_fw_load02-6b0305f6bd7b
 
 Best regards,
 --  
