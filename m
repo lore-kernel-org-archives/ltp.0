@@ -4,82 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 59CB7CA5FA5
-	for <ltp@archiver.kernel.org>; Tue, 29 Sep 2026 17:51:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 713DECA5FA7
+	for <ltp@archiver.kernel.org>; Tue, 29 Sep 2026 19:31:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1790710302; h=to : date :
+ message-id : in-reply-to : references : mime-version : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : content-type :
+ content-transfer-encoding : sender : from;
+ bh=WYVwx/VC3GC277iA71LAk3tMNbiXGJ16w8uxvBwnuVM=;
+ b=OAN97M6oR34fEWNuYuk7qaiAQYX2rEAydNMELtS1HEpFngzgMBkA5xgyCe/e3pwhIiep+
+ Pc5N2GegV/gbGGQ39i7D3D5LLSFt8RFBg2r8LGSsAZn5muIguxur8APHUhopbRbruBZOWcJ
+ U6EICs24vQ1PYjL7UpMqAs91tQqPMSY=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7DC9F3CD51F
-	for <ltp@archiver.kernel.org>; Tue, 29 Sep 2026 19:51:39 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 369723E6C08
+	for <ltp@archiver.kernel.org>; Tue, 29 Sep 2026 21:31:42 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 54C593CD51F
- for <ltp@lists.linux.it>; Tue, 29 Sep 2026 19:51:24 +0200 (CEST)
-Received: from mail-dy2-x09.google.com (mail-dy2-x09.google.com
- [IPv6:2607:f8b0:4864:36::9])
+ by picard.linux.it (Postfix) with ESMTPS id 979743E6BDA
+ for <ltp@lists.linux.it>; Tue, 29 Sep 2026 21:31:22 +0200 (CEST)
+Received: from mail-wm2-x10.google.com (mail-wm2-x10.google.com
+ [IPv6:2a00:1450:4864:31::10])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id C8A9F1000668
- for <ltp@lists.linux.it>; Tue, 29 Sep 2026 19:51:23 +0200 (CEST)
-Received: by mail-dy2-x09.google.com with SMTP id
- 5a478bee46e88-34bd87d789aso184494eec.1
- for <ltp@lists.linux.it>; Tue, 29 Sep 2026 10:51:23 -0700 (PDT)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 52CDF600782
+ for <ltp@lists.linux.it>; Tue, 29 Sep 2026 21:31:21 +0200 (CEST)
+Received: by mail-wm2-x10.google.com with SMTP id
+ 5b1f17b1804b1-49cd5462b69so26058695e9.1
+ for <ltp@lists.linux.it>; Tue, 29 Sep 2026 12:31:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1790704282; x=1791309082; darn=lists.linux.it;
+ d=suse.com; s=google; t=1790710281; x=1791315081; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to:content-type;
- bh=ErcM9kgU4zd/d3JwY0jCX6XdiZqk5VWDSdQm/q8ADI0=;
- b=fczaAqAwI0rHghD3vBgGXguehBY342dBBX/BPT4Q1/fM1mgSBejEIhqSsVCgwSgw0e
- 67VmYY8nUX0EUXEOqafUbOxO0u6PUt7d4wkFO1voDGp0jpH5PJuQLO5J39SzIAa5Pepc
- lSTiTArnVWj1yo1vdWJkvblOkwDrCMSUSK87PRjJMp5D3rGWYBSEg+8BgGNEJ6ixjoRx
- tG26aHX0N96pnKUbnvR5rZvWME0SCSkrC7ZIS23k9GTPJ9JMiBW6jylRbEskrB5hkqKb
- wXCRcnjTSDlObV+aXNG1fHV2vflzRb2xM4adRPl4B7KyzyJZA2RLjlP5Os7qyByR189B
- eBSA==
+ bh=z85WQQm5aPjudjwqBd0px7P6zqLUDWkXb4aK8Cp8M5I=;
+ b=G5FT7S0IEwzFkCRM0ZyzCa9n6vThhyAmLchx7buSpEgxG5+grdXmBcAPaRv9aglokw
+ E45sula5XtfXiWcx0445P0/3Rv9c2pn4X5/LkzSz4njm0qks0oVHYBbjJ05C5YR+2a5A
+ chrPXSN0nfDk0JuS7YnXYcUMIdNexh6PZCA6F7/Al+CfrDw8S0UU63xTXOOQ7XzB3LaZ
+ oN3DmD2FRJP2wiGa0h3hUNklQU1BHs2+6znjDhCbLm0ylSIpvBQo8fzjVq1stouzpVqK
+ V/5sqYsSX25Tm6qVshLD1l1Ye0b665PTKlhtzEITqSNoR35kfPZ6zr37pOArU4KJW1w/
+ 8/Lg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20260707; t=1790704282; x=1791309082;
+ d=1e100.net; s=20260707; t=1790710281; x=1791315081;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to:content-type;
- bh=ErcM9kgU4zd/d3JwY0jCX6XdiZqk5VWDSdQm/q8ADI0=;
- b=BkL042glvc8P6dpZLnj/BXslbSev0woPVAZeBmB3gtbJJ0UANcIuWCVWiDspH1zJrA
- iZ9p2m4dLpq23tLHyZE4fme1udbyXvlywVeUMq2KiRtpOWzWF4oqsCyOLxqLQVVLHuTb
- RADzfxe9XiCX/v+M+hImnm8RPeEwSaxx3Sos0fHgFP8yD4HzKMe6d9W2DNE0IEt2X951
- XZPQ7uXdPnfWucX5/eqRZki4bdRuBxXweMyZV6Kzp9zmQsCSQA9I39R8RmGeEXrBVgou
- GU/qF+SRcn/LWGfZ+k5Oui/MYHVRIWw48bfpBJ4v76Mt8JYkUkY3t4pBLnxZJEdqHopi
- cWcg==
-X-Gm-Message-State: AFuF++lGk8L50HtH8vx407BDwDZxfAJhq0FbnQLx0ANouPkuYZO6fq4d
- O1ApUzjSPjRc7YfIVa/NzYSxW8WhZEsuG6oGCfOWgSqrumrYbtID0AoR
-X-Gm-Gg: AYBFou1JojaDkoF7f4iI7zN65rV2Iydar0wTk4DD5XLRByqP2EcDR2AFfQn+Jl3FWnw
- yZW7gJPUQigMTkBYtABbzVGNnuN1/TqmnXFuR+/4CXPRZGoy3iA6q2Wytq5NXxPJY+pNbnLPqvW
- /ZEfPXrijkt5VkxhIlphG5nA4sLQYr9f2zuRpfZR/riXJO3HMGRd2rHpbN4NfBcDM1Uh2mRgRUo
- M+k/THrNIhkIuJoLnxVRrOJNYc+wOm8NKj1wMqEMemw5zUMP3W8cq6ZRKCDs9wiY6Zd/F/Tk84y
- Z1BVfFjgnCYoBa93GEMQSXEdA0++ErcWgntjEdgIMfnf2TTdCJxBYXH1jZbPfFMGT0FoiB+0Q5D
- 1V+56dnH8jX7Xn0FrLotjXf1YP2yljLMEOgYw1Ni9e0L+2fqvMuerkJtmgraB1j3Wo3KEQRtEez
- 33gNlIPiJDa+Zomkmcv9CyBx0kVeU5PGi6S0o+eIwwzzNvBrzKZQOWlMsHAIYXlOAtuQ/HQD7aZ
- fTzHr0rU3RXQ4lWTeAM7cyQsmnKCKKWsL1ioFCOE80qKTVkYfaJYTlfkSQjnjeQjNg+UmeFdSkM
- QAhBUcKcGqU=
-X-Received: by 2002:a05:7300:a21e:b0:33e:d4ae:e10e with SMTP id
- 5a478bee46e88-34c68570e27mr53629eec.40.1790704281637; 
- Tue, 29 Sep 2026 10:51:21 -0700 (PDT)
-Received: from
- runnervmtr4k5.hxjakfajtdtuxlv55ejn1q2nha.dx.internal.cloudapp.net
- ([52.157.33.139]) by smtp.gmail.com with ESMTPSA id
- 5a478bee46e88-34c378ca8basm629771eec.9.2026.09.29.10.51.21
+ bh=z85WQQm5aPjudjwqBd0px7P6zqLUDWkXb4aK8Cp8M5I=;
+ b=uC3aYQ/EgdiF74NAhHYkMUffCUU1mM4ZhvUFJwnQUDqKu8MNq/mVP0JoB0rVYdndCw
+ Gkeef9tdX51uJ2yPx5PogGZlUFWHnvGhrIWiH0hZ2rm5jwKLmG9FUb94yIfuRZzuqO9g
+ 1wiTpCoP48lyfWa13MX14hGq2yXnGQEO4IX++i5GItymG8xSg0RVtp066YN51los0uyv
+ 0sQE5hfEoYSbeJySSYX6pt7ZhW5T3jig13Rxz4rXVW/dguZPiSnhR3YC8FcQhjm8U3LJ
+ fsi8OMrfEsFzUuUoGL6CcanGSFVCw8BjvO6XE013Iumw4QkrkHZdWJQ9NhUThtpJ3SgA
+ 4rtQ==
+X-Gm-Message-State: AFuF++lFhnu8cqpXCCNmcud42ctn5ScSKU+f045PjAFozoPSBTaXRgwJ
+ L9YSn1XtPKW3e8pAUnkgY7pmXuAG9al8T2Uyj/BB+z7MLggy962UryvoCTpbRBD+Dwqh/FSJpOS
+ 6GydY904=
+X-Gm-Gg: AYBFou3xAJ+rn01GDv1h3AOlImqtI7penvPXa21YeGN5pC3qOWKtLh+fCf2S2nWulr8
+ 20lkNO5VbqyQ0o+vxQCTwyvZmXZ7ICw9HW9CvPjIb/ga4On6x/vW8opa0nWByJDy+fw6BVsjjIJ
+ 1xOPXeaKkp/ygkqeR3xpUHeEQ2WJQ1AIQRkwmXQsaA6MzwcG8fyhvtdS/bXxdkk3XEGW2zlaWgr
+ TopWOP/E8/j5cU4PShmsmsARMxZ9T/DvsVEpPi6aZomqUl6cgDO3blyebJZvqBIzAhvC3vBkCqp
+ /HzQFktEffH+TB5h7KtN8eU3iGX2t9TIPx6b22RADNyUctQmbqaiUDkVoav7Bw/n1Ujf0eMIPmV
+ KxvEhizuPpyCsjnvIgdZSzXBw3ui42KoKQ2p8qZKK2xoBiyT5IkaRpxqI77qyjfck+oks9DicZV
+ TJk396r/etoCnQAEruUOdeVq2+PR/nQS8jTMX5SLRjl3OJ13z2U4kLWoD2
+X-Received: by 2002:a05:600c:c8f:b0:4a0:333:253a with SMTP id
+ 5b1f17b1804b1-4a01501fc64mr1734945e9.14.1790710280517; 
+ Tue, 29 Sep 2026 12:31:20 -0700 (PDT)
+Received: from localhost ([2a07:b241:1004:8300::1000])
+ by smtp.gmail.com with ESMTPSA id
+ 5b1f17b1804b1-4a014f8ed8asm3887215e9.13.2026.09.29.12.31.19
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 29 Sep 2026 10:51:21 -0700 (PDT)
-From: linuxtestproject.agent@gmail.com
-To: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 29 Sep 2026 17:51:19 +0000
-Message-ID: <20260929175119.52267-1-linuxtestproject.agent@gmail.com>
+ Tue, 29 Sep 2026 12:31:20 -0700 (PDT)
+To: ltp@lists.linux.it
+Date: Tue, 29 Sep 2026 21:31:15 +0200
+Message-ID: <20260929193119.912502-1-avinesh.kumar@suse.com>
 X-Mailer: git-send-email 2.55.0
-In-Reply-To: <20260929141659.2513510-1-pvorel@suse.cz>
-References: <20260929141659.2513510-1-pvorel@suse.cz>
+In-Reply-To: <20260929124756.836342-1-avinesh.kumar@suse.com>
+References: <20260929124756.836342-1-avinesh.kumar@suse.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] lapi: Update syscalls numbers to v7.3-rc5
+Subject: [LTP] [PATCH v2] openposix: timer_*/speculative: fork() to isolate
+ the SIGSEGV on old glibc
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,73 +99,345 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+From: Avinesh Kumar via ltp <ltp@lists.linux.it>
+Reply-To: Avinesh Kumar <avinesh.kumar@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Petr,
+From: Avinesh Kumar <avinesh.kumar@suse.com>
 
-On Tue Sep 29 16:16:59 2026 +0200, Petr Vorel wrote:
-> lapi: Update syscalls numbers to v7.3-rc5
+Commit d377d1cff1ec ("openposix: timer_*/speculative: Don't pass a
+stack pointer as timerid") fixed a SIGSEGV on i586, where current
+glibc's sign-bit check (timer_is_sigev_thread()) can misread a stack
+address as a tagged pointer. A small constant avoids that.
 
-> diff --git a/include/lapi/syscalls/arm.in b/include/lapi/syscalls/arm.in
-> index d0238dec5..158350976 100644
-> --- a/include/lapi/syscalls/arm.in
-> +++ b/include/lapi/syscalls/arm.in
-> @@ -109,7 +109,6 @@ readv 145
->  writev 146
->  getsid 147
->  fdatasync 148
-> -_sysctl 149
->  mlock 150
->  munlock 151
->  mlockall 152
+But older glibc (<= 2.31, before this check existed) unconditionally
+dereferences timerid as a pointer, so the same small constant now
+faults instead:
 
-Do not remove _sysctl (and timerfd on mips/s390x). LTP tests such as
-sysctl01 rely on fallback definitions from lapi/syscalls.h when running on
-older kernels where sysctl(2) is available.
+  timer_delete_sp[13131]: segfault at 186a3 ip 00007f15973aed4e sp 00007ffefb52c5a0 error 4 in librt-2.31.so[7f15973aa000+8000]
 
-> diff --git a/include/lapi/syscalls/s390.in b/include/lapi/syscalls/s390.in
-> index a6cb85da8..357b04ceb 100644
-> --- a/include/lapi/syscalls/s390.in
-> +++ b/include/lapi/syscalls/s390.in
-> @@ -10,17 +10,12 @@ link 9
->  unlink 10
->  execve 11
->  chdir 12
-> -time 13
->  mknod 14
->  chmod 15
-> -lchown 16
->  lseek 19
->  getpid 20
->  mount 21
->  umount 22
-> -setuid 23
-> -getuid 24
-> -stime 25
->  ptrace 26
->  alarm 27
->  pause 29
+fork() a child to make the call, then inspect the child's exit status.
+POSIX defines no required behavior for an invalid timer ID (EINVAL is
+only a recommendation), so the child dying from any signal is treated
+as success.
 
-s390.in has been overwritten with 64-bit s390x syscall definitions. This file
-is used for 31-bit s390 (#if defined(__s390__) && !defined(__s390x__)) and
-must retain 31-bit syscall numbers (such as getuid 24, time 13, stat64,
-mmap2, and clock_gettime64) rather than 64-bit s390x definitions.
-
-Verdict - Needs revision
-
+Fixes: d377d1cff1ec ("openposix: timer_*/speculative: Don't pass a stack pointer as timerid")
+Suggested-by: Martin Doucha <mdoucha@suse.cz>
+Signed-off-by: Avinesh Kumar <avinesh.kumar@suse.com>
 ---
-Note:
+ .../interfaces/timer_delete/speculative/5-1.c | 50 +++++++++++-----
+ .../timer_getoverrun/speculative/6-1.c        | 49 ++++++++++-----
+ .../timer_gettime/speculative/6-1.c           | 52 +++++++++++-----
+ .../timer_settime/speculative/12-1.c          | 60 +++++++++++++------
+ 4 files changed, 145 insertions(+), 66 deletions(-)
 
-The agent can sometimes produce false positives although often its
-findings are genuine. If you find issues with the review, please
-comment this email or ignore the suggestions.
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/timer_delete/speculative/5-1.c b/testcases/open_posix_testsuite/conformance/interfaces/timer_delete/speculative/5-1.c
+index dce9277b5d6a..d1857efead18 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/timer_delete/speculative/5-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/timer_delete/speculative/5-1.c
+@@ -5,34 +5,52 @@
+  * of this license, see the COPYING file at the top level of this
+  * source tree.
+ 
+- * Test to see if timer_delete() returns -1 and sets errno==EINVAL if
+- * timerid is not a valid timer ID or not.
+- * Since this is a "may" requirement, either option is a PASS.
++ * Test to see if timer_delete() sets errno==EINVAL for an invalid
++ * timerid. Since this is a "may" requirement, succeeding or crashing
++ * are equally valid outcomes.
+  */
+ 
+ #include <time.h>
+ #include <stdio.h>
+ #include <errno.h>
++#include <unistd.h>
++#include <sys/wait.h>
+ #include "posixtest.h"
+ 
+ #define BOGUSTIMERID 99999
+ 
+ int test_main(int argc PTS_ATTRIBUTE_UNUSED, char **argv PTS_ATTRIBUTE_UNUSED)
+ {
+-	timer_t tid = (timer_t)BOGUSTIMERID;
+-
+-	if (timer_delete(tid) == -1) {
+-		if (errno == EINVAL) {
+-			printf
+-			    ("timer_delete() returned -1 and set errno=EINVAL\n");
+-			return PTS_PASS;
+-		} else {
+-			printf
+-			    ("timer_delete() returned -1, but didn't set errno!=EINVAL\n");
+-			return PTS_FAIL;
++	pid_t pid;
++	int status;
++
++	pid = fork();
++	if (pid == -1) {
++		perror("fork");
++		return PTS_UNRESOLVED;
++	}
++
++	if (pid == 0) {
++		timer_t tid = (timer_t) BOGUSTIMERID;
++
++		if (timer_delete(tid) == -1) {
++			if (errno == EINVAL)
++				_exit(PTS_PASS);
++			_exit(PTS_FAIL);
+ 		}
++		_exit(PTS_PASS);
++	}
++
++	if (waitpid(pid, &status, 0) == -1) {
++		perror("waitpid");
++		return PTS_UNRESOLVED;
++	}
++
++	if (WIFSIGNALED(status) || (WIFEXITED(status) && WEXITSTATUS(status) == 0)) {
++		printf("Test PASSED\n");
++		return PTS_PASS;
+ 	}
+ 
+-	printf("timer_delete() did not return -1\n");
+-	return PTS_PASS;
++	printf("Test FAILED\n");
++	return PTS_FAIL;
+ }
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/timer_getoverrun/speculative/6-1.c b/testcases/open_posix_testsuite/conformance/interfaces/timer_getoverrun/speculative/6-1.c
+index 3a8f1448d4d4..6da435430879 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/timer_getoverrun/speculative/6-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/timer_getoverrun/speculative/6-1.c
+@@ -5,33 +5,52 @@
+  * of this license, see the COPYING file at the top level of this
+  * source tree.
+  *
+- * Test to see if timer_getoverrun() sets errno=EINVAL if no timers have been
+- * created yet or not.  Since this is a "may" assertion, either way is
+- * a pass.
++ * Test to see if timer_getoverrun() sets errno==EINVAL for an invalid
++ * timerid. Since this is a "may" assertion, succeeding or crashing
++ * are equally valid outcomes.
+  */
+ 
+ #include <time.h>
+ #include <stdio.h>
+ #include <errno.h>
++#include <unistd.h>
++#include <sys/wait.h>
+ #include "posixtest.h"
+ 
+ #define BOGUSTID 9999
+ 
+ int test_main(int argc PTS_ATTRIBUTE_UNUSED, char **argv PTS_ATTRIBUTE_UNUSED)
+ {
+-	timer_t tid = (timer_t)BOGUSTID;
+-
+-	if (timer_getoverrun(tid) == -1) {
+-		if (EINVAL == errno) {
+-			printf("fcn returned -1 and errno=EINVAL\n");
+-			return PTS_PASS;
+-		} else {
+-			printf("fcn returned -1, but errno!=EINVAL\n");
+-			printf("Test FAILED\n");
+-			return PTS_FAIL;
++	pid_t pid;
++	int status;
++
++	pid = fork();
++	if (pid == -1) {
++		perror("fork");
++		return PTS_UNRESOLVED;
++	}
++
++	if (pid == 0) {
++		timer_t tid = (timer_t) BOGUSTID;
++
++		if (timer_getoverrun(tid) == -1) {
++			if (errno == EINVAL)
++				_exit(PTS_PASS);
++			_exit(PTS_FAIL);
+ 		}
++		_exit(PTS_PASS);
++	}
++
++	if (waitpid(pid, &status, 0) == -1) {
++		perror("waitpid");
++		return PTS_UNRESOLVED;
++	}
++
++	if (WIFSIGNALED(status) || (WIFEXITED(status) && WEXITSTATUS(status) == 0)) {
++		printf("Test PASSED\n");
++		return PTS_PASS;
+ 	}
+ 
+-	printf("fcn did not return -1\n");
+-	return PTS_PASS;
++	printf("Test FAILED\n");
++	return PTS_FAIL;
+ }
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/timer_gettime/speculative/6-1.c b/testcases/open_posix_testsuite/conformance/interfaces/timer_gettime/speculative/6-1.c
+index 586b0ed3a2b1..ec153e9866da 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/timer_gettime/speculative/6-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/timer_gettime/speculative/6-1.c
+@@ -5,33 +5,53 @@
+  * of this license, see the COPYING file at the top level of this
+  * source tree.
+  *
+- * Test to see if timer_gettime() sets errno = EINVAL if no timers have been
+- * created yet and it is called with a bogus timer ID.  Since this is a "may"
+- * assertion, either way is pass.
++ * Test to see if timer_gettime() sets errno==EINVAL for an invalid
++ * timerid. Since this is a "may" assertion, succeeding or crashing
++ * are equally valid outcomes.
+  */
+ 
+ #include <time.h>
+ #include <stdio.h>
+ #include <errno.h>
++#include <unistd.h>
++#include <sys/wait.h>
+ #include "posixtest.h"
+ 
+ #define BOGUSTID 9999
+ 
+ int test_main(int argc PTS_ATTRIBUTE_UNUSED, char **argv PTS_ATTRIBUTE_UNUSED)
+ {
+-	struct itimerspec its;
+-	timer_t tid = (timer_t)BOGUSTID;
+-
+-	if (timer_gettime(tid, &its) == -1) {
+-		if (EINVAL == errno) {
+-			printf("fcn returned -1 and errno==EINVAL\n");
+-			return PTS_PASS;
+-		} else {
+-			printf("fcn returned -1 but errno!=EINVAL\n");
+-			printf("Test FAILED\n");
+-			return PTS_FAIL;
++	pid_t pid;
++	int status;
++
++	pid = fork();
++	if (pid == -1) {
++		perror("fork");
++		return PTS_UNRESOLVED;
++	}
++
++	if (pid == 0) {
++		struct itimerspec its;
++		timer_t tid = (timer_t) BOGUSTID;
++
++		if (timer_gettime(tid, &its) == -1) {
++			if (errno == EINVAL)
++				_exit(PTS_PASS);
++			_exit(PTS_FAIL);
+ 		}
++		_exit(PTS_PASS);
+ 	}
+-	printf("fcn did not return -1\n");
+-	return PTS_PASS;
++
++	if (waitpid(pid, &status, 0) == -1) {
++		perror("waitpid");
++		return PTS_UNRESOLVED;
++	}
++
++	if (WIFSIGNALED(status) || (WIFEXITED(status) && WEXITSTATUS(status) == 0)) {
++		printf("Test PASSED\n");
++		return PTS_PASS;
++	}
++
++	printf("Test FAILED\n");
++	return PTS_FAIL;
+ }
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/timer_settime/speculative/12-1.c b/testcases/open_posix_testsuite/conformance/interfaces/timer_settime/speculative/12-1.c
+index ac7f7bf24c39..f4400ce0dd64 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/timer_settime/speculative/12-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/timer_settime/speculative/12-1.c
+@@ -5,36 +5,58 @@
+  * of this license, see the COPYING file at the top level of this
+  * source tree.
+  *
+- * Test to see if timer_settime() sets errno = EINVAL if no timers have been
+- * created yet.  Since this is a "may" assertion, either way is a pass.
++ * Test to see if timer_settime() sets errno==EINVAL for an invalid
++ * timerid. Since this is a "may" assertion, succeeding or crashing
++ * are equally valid outcomes.
+  */
+ 
+ #include <time.h>
+ #include <stdio.h>
+ #include <errno.h>
++#include <unistd.h>
++#include <sys/wait.h>
+ #include "posixtest.h"
+ 
+ #define BOGUSTID 9999
+ 
+ int test_main(int argc PTS_ATTRIBUTE_UNUSED, char **argv PTS_ATTRIBUTE_UNUSED)
+ {
+-	struct itimerspec its;
+-	timer_t tid = (timer_t)BOGUSTID;
+-	its.it_interval.tv_sec = 0;
+-	its.it_interval.tv_nsec = 0;
+-	its.it_value.tv_sec = 0;
+-	its.it_value.tv_nsec = 0;
+-
+-	if (timer_settime(tid, 0, &its, NULL) == -1) {
+-		if (EINVAL == errno) {
+-			printf("fcn returned -1 and errno==EINVAL\n");
+-			return PTS_PASS;
+-		} else {
+-			printf("fcn returned -1, but errno!=EINVAL\n");
+-			printf("Test FAILED\n");
+-			return PTS_FAIL;
++	pid_t pid;
++	int status;
++
++	pid = fork();
++	if (pid == -1) {
++		perror("fork");
++		return PTS_UNRESOLVED;
++	}
++
++	if (pid == 0) {
++		struct itimerspec its;
++		timer_t tid = (timer_t) BOGUSTID;
++
++		its.it_interval.tv_sec = 0;
++		its.it_interval.tv_nsec = 0;
++		its.it_value.tv_sec = 0;
++		its.it_value.tv_nsec = 0;
++
++		if (timer_settime(tid, 0, &its, NULL) == -1) {
++			if (errno == EINVAL)
++				_exit(PTS_PASS);
++			_exit(PTS_FAIL);
+ 		}
++		_exit(PTS_PASS);
+ 	}
+-	printf("fcn did not return -1\n");
+-	return PTS_PASS;
++
++	if (waitpid(pid, &status, 0) == -1) {
++		perror("waitpid");
++		return PTS_UNRESOLVED;
++	}
++
++	if (WIFSIGNALED(status) || (WIFEXITED(status) && WEXITSTATUS(status) == 0)) {
++		printf("Test PASSED\n");
++		return PTS_PASS;
++	}
++
++	printf("Test FAILED\n");
++	return PTS_FAIL;
+ }
+-- 
+2.55.0
 
-Regards,
-LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
