@@ -4,84 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0AF9CCA5FA7
-	for <ltp@archiver.kernel.org>; Tue, 29 Sep 2026 16:01:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BD6D2CA5FA7
+	for <ltp@archiver.kernel.org>; Tue, 29 Sep 2026 16:17:07 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 340C93E6D71
-	for <ltp@archiver.kernel.org>; Tue, 29 Sep 2026 18:01:54 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id C475C3E6060
+	for <ltp@archiver.kernel.org>; Tue, 29 Sep 2026 18:17:05 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 852393C24B2
- for <ltp@lists.linux.it>; Tue, 29 Sep 2026 18:01:39 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ by picard.linux.it (Postfix) with ESMTPS id D441D3C2AAD
+ for <ltp@lists.linux.it>; Tue, 29 Sep 2026 18:16:49 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id BCF9A6002E4
- for <ltp@lists.linux.it>; Tue, 29 Sep 2026 18:01:38 +0200 (CEST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 3CDAA1A0093E
+ for <ltp@lists.linux.it>; Tue, 29 Sep 2026 18:16:48 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 0F65C1F397;
- Tue, 29 Sep 2026 16:01:30 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id E468221C31;
+ Tue, 29 Sep 2026 16:16:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1790697694; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1790698604; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
- bh=vWZxEDTP7eaPK99tOPpmm1tDxwGIlackViZlkk9qco8=;
- b=uv9M60fSstrUdOdbOAcQcUu5y5nX0c7+BAQh55a7+ZYiWmrOx70Dob+COJOwXxN2163f7l
- KorQXQk2qptvjap1KMjMLA/2hu8urQ8l3QJmgOUt139meiuI3Py5ht8yhgAt5Sq1fFc6En
- /BCLWzIVCkDH+4ouatfktMHfJXxXhdk=
+ bh=fqsc/8hOotXJIJAbv5YVQEjRhQJXAhZkVEzz5lQT3ik=;
+ b=KIUYEhhH5q/1FlBzSQG6EohThtbr6wj/L3r0FeC+RvRM1UwSey1wLJqxmJ/zSsB4XiycKZ
+ bwpToCIejlcolRZzvVpqvfjoqYWu7IA3ekNhecrKvwSz4yDuBLtTEAUc+S7rw18AoAAmiB
+ L0XZfrh+0MBUItRFfdXFxH6PePhPWHQ=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1790697694;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ s=susede2_ed25519; t=1790698604;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
- bh=vWZxEDTP7eaPK99tOPpmm1tDxwGIlackViZlkk9qco8=;
- b=TOgBShnMZKFLPJdiKJHA0FQHx9yjehm0aTuJt8xysCWiBRVnF2peY6cbzBiIqzRRslVkbu
- 1t3AUJav88i1dvBQ==
-Authentication-Results: smtp-out2.suse.de;
+ bh=fqsc/8hOotXJIJAbv5YVQEjRhQJXAhZkVEzz5lQT3ik=;
+ b=S7+B+RPyb+PKSb4BTmw9ySYOhG/FwswwnLqVveUu3IVzrw2sjKwcjxzX9h8BHBqTBifUcT
+ I5dYVKEJ/ryZKxDg==
+Authentication-Results: smtp-out1.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1790697690; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1790698599; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
- bh=vWZxEDTP7eaPK99tOPpmm1tDxwGIlackViZlkk9qco8=;
- b=C+hR+FCF1C9p7qVwiZFMbo408rZksY32bSS5Sb8EAbVg6AD9mn1EzDw9j/eeqSoigHbz9e
- /RqxsPKH2xbA5aOHvKTkdvJ25Hs4gbYjUF3V0+5HWMo2tEZmKgwEccYMRqomKVjktdVdJF
- TjYKmSk9Ngy+qjDK++OO88PX9q0mAtw=
+ bh=fqsc/8hOotXJIJAbv5YVQEjRhQJXAhZkVEzz5lQT3ik=;
+ b=hoAHgIlAsDEUvh35mfomx7OyrkGNnWAdXNO03iYVxsoB4YWk5z/xmkggd8yM2W81Fr6vfm
+ hkVM6oByEhy21mVs3eyWAJpJ30w9eUygtX96odZ3hwl5XxCWmXPYSkZFWJF4tQdqGk8t5P
+ DFuaflFsadqAO7Kfahs2wE3YlxH/4es=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1790697690;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ s=susede2_ed25519; t=1790698599;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
- bh=vWZxEDTP7eaPK99tOPpmm1tDxwGIlackViZlkk9qco8=;
- b=i/V2SKi0wrmiTFKajxMTCHXFeYWOuktwpnS7oxOULqCppBkRokOw3USfq1msl1QHmCfXnM
- wW/IFWZUI9fEgrDQ==
+ bh=fqsc/8hOotXJIJAbv5YVQEjRhQJXAhZkVEzz5lQT3ik=;
+ b=zaUB5pwqOmxz8iDPBVBabwvPgREwcDTTuEdVIQpSEpESzoU/21qOdTXPglPUJpLl0V0GsM
+ HgmJMVp/4ERZXoBg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D92D1136D1;
- Tue, 29 Sep 2026 16:01:29 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BCFB2136D1;
+ Tue, 29 Sep 2026 16:16:39 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id tTKHK9ngu2o7RAAAD6G6ig
- (envelope-from <mdoucha@suse.cz>); Tue, 29 Sep 2026 16:01:29 +0000
-Message-ID: <a72e4312-24b2-4577-8e44-e5e72eff87b8@suse.cz>
-Date: Tue, 29 Sep 2026 18:01:29 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id xrdgJWfku2oQVAAAD6G6ig
+ (envelope-from <mdoucha@suse.cz>); Tue, 29 Sep 2026 16:16:39 +0000
+Message-ID: <69cc8ae2-402b-47e8-b563-ab046b63d4ec@suse.cz>
+Date: Tue, 29 Sep 2026 18:16:39 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-To: Cyril Hrubis <chrubis@suse.cz>, Petr Vorel <pvorel@suse.cz>
-References: <arvN7MPnBolwnT3z@yuki.lan>
- <6abbce8c.aec4f0e4.fd74d.fe52@mx.google.com> <20260929145817.GD2462033@pevik>
- <arvZYFctU1IBHCml@yuki.lan>
+To: Andrea Cervesato <andrea.cervesato@suse.de>,
+ Linux Test Project <ltp@lists.linux.it>
+References: <20260929-fix_fw_load02-v1-1-4cd5f95d172b@suse.com>
 Content-Language: en-US
 From: Martin Doucha <mdoucha@suse.cz>
 Autocrypt: addr=mdoucha@suse.cz; keydata=
@@ -127,23 +127,23 @@ Autocrypt: addr=mdoucha@suse.cz; keydata=
  sOf6M5s7RKNzreVXkrlArE+x29swkXZbxFoXuahA2iykPyyCAgPz0ikRI+374jXVAtbZAAut
  HD1KfuCahogFT4upYpOUl26KquywYOGciSan4jHuqXIVCQzjYd/zOzsL7hTJiteae/oOg4m5
  i8BUUzanmo3FPwFBcjEn4nDvkw/YEo5gtQZmrxOHQAdSHdyqtFgRxu4+w3JFmnQvkResUgm3 ag==
-In-Reply-To: <arvZYFctU1IBHCml@yuki.lan>
-X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-0.991]; MIME_GOOD(-0.10)[text/plain];
- RCVD_TLS_ALL(0.00)[]; MID_RHS_MATCH_FROM(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
- MIME_TRACE(0.00)[0:+];
+In-Reply-To: <20260929-fix_fw_load02-v1-1-4cd5f95d172b@suse.com>
+X-Spamd-Result: default: False [-8.30 / 50.00]; REPLY(-4.00)[];
+ BAYES_HAM(-3.00)[100.00%]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ NEURAL_HAM_SHORT(-0.20)[-0.990]; MIME_GOOD(-0.10)[text/plain];
+ RCPT_COUNT_TWO(0.00)[2]; MID_RHS_MATCH_FROM(0.00)[];
+ ARC_NA(0.00)[];
+ URIBL_BLOCKED(0.00)[suse.cz:mid,suse.cz:email,suse.com:email,imap1.dmz-prg2.suse.org:helo];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; RCVD_TLS_ALL(0.00)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- URIBL_BLOCKED(0.00)[suse.cz:mid,suse.cz:email,imap1.dmz-prg2.suse.org:helo];
- TO_DN_ALL(0.00)[]; FROM_HAS_DN(0.00)[];
- RCPT_COUNT_THREE(0.00)[3]; FROM_EQ_ENVFROM(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo, suse.cz:mid,
- suse.cz:email]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+ TO_DN_ALL(0.00)[]; FROM_HAS_DN(0.00)[]; MIME_TRACE(0.00)[0:+];
+ FROM_EQ_ENVFROM(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email, imap1.dmz-prg2.suse.org:helo,
+ suse.cz:mid, suse.cz:email]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] epoll_ctl06: Fix BPF map on old kernels
+Subject: Re: [LTP] [PATCH] lib: Handle empty saved configuration values
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -155,18 +155,90 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Linux Test Project <ltp@lists.linux.it>
 Content-Transfer-Encoding: 7bit
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On 9/29/26 17:29, Cyril Hrubis wrote:
-> What i though is that the check should be skipped on kernel newers than
-> 5.8 and we should just return 0 here unconditionally.
-
 Hi,
-I agree with that. Andrea, please send v2.
+one suggestion below.
+
+On 9/29/26 16:15, Andrea Cervesato wrote:
+> From: Andrea Cervesato <andrea.cervesato@suse.com>
+> 
+> Empty string module parameters return EOF on older kernels, causing
+> fw_load02 to abort with TBROK on v4.4.
+> 
+> Accept empty values while retaining read-error handling and the original
+> errno. Restore empty strings with a NUL byte: an empty write does not
+> invoke the sysfs setter, while a newline would change the saved value.
+> 
+> Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+> ---
+> Fix the following behaviour on kernel < 4.14 96802e6b1dbf
+> 
+> tst_kconfig.c:90: TINFO: Parsing kernel config '/proc/config.gz'
+> tst_kconfig.c:90: TINFO: Parsing kernel config '/proc/config.gz'
+> tst_kconfig.c:90: TINFO: Parsing kernel config '/proc/config.gz'
+> tst_security.c:115: TINFO: SecureBoot sysfs file not available
+> tst_security.c:94: TINFO: Unable to determine system lockdown state
+> tst_security.c:115: TINFO: SecureBoot sysfs file not available
+> tst_tmpdir.c:309: TINFO: Using /tmp/LTP_fw_ZRzLML as tmpdir (btrfs filesystem)
+> tst_sys_conf.c:103: TBROK: Failed to read anything from '/sys/module/firmware_class/parameters/path': SUCCESS (0)
+> 
+> Summary:
+> passed   0
+> failed   0
+> broken   1
+> skipped  0
+> warnings 0
+> ---
+>   lib/tst_sys_conf.c | 27 ++++++++++++++++++++++-----
+>   1 file changed, 22 insertions(+), 5 deletions(-)
+> 
+> diff --git a/lib/tst_sys_conf.c b/lib/tst_sys_conf.c
+> index 80cd83569..a62af4a94 100644
+> --- a/lib/tst_sys_conf.c
+> +++ b/lib/tst_sys_conf.c
+> @@ -56,6 +56,7 @@ int tst_sys_conf_save(const struct tst_path_val *conf)
+>   {
+>   	char line[PATH_MAX];
+>   	int ttype, iret;
+> +	int read_err, saved_errno;
+>   	FILE *fp;
+>   	void *ret;
+>   
+> @@ -93,14 +94,23 @@ int tst_sys_conf_save(const struct tst_path_val *conf)
+>   	}
+>   
+>   	ret = fgets(line, sizeof(line), fp);
+> +	saved_errno = errno;
+> +	read_err = ferror(fp);
+> +
+>   	fclose(fp);
+>   
+>   	if (ret == NULL) {
+> -		if (conf->flags & TST_SR_IGNORE_ERR)
+> -			return 1;
+> +		if (read_err) {
+> +			if (conf->flags & TST_SR_IGNORE_ERR)
+> +				return 1;
+> +
+> +			errno = saved_errno;
+> +			tst_brk(TBROK | TERRNO, "Failed to read anything from '%s'",
+> +				conf->path);
+> +		}
+>   
+> -		tst_brk(TBROK | TERRNO, "Failed to read anything from '%s'",
+> -			conf->path);
+> +		/* Empty string module parameters can return EOF on older kernels. */
+> +		line[0] = '\0';
+>   	}
+>   
+
+I think you can drop most of this chunk and do two things instead:
+1) char line[PATH_MAX] = {};
+2) if (ret == NULL) -> if (read_err).
 
 -- 
 Martin Doucha   mdoucha@suse.cz
