@@ -4,83 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CC2DACA5FAC
-	for <ltp@archiver.kernel.org>; Tue, 29 Sep 2026 17:50:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B3726CA5FA5
+	for <ltp@archiver.kernel.org>; Tue, 29 Sep 2026 17:50:25 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 096903EA9D4
-	for <ltp@archiver.kernel.org>; Tue, 29 Sep 2026 19:50:07 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 8DA343EAA88
+	for <ltp@archiver.kernel.org>; Tue, 29 Sep 2026 19:50:23 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9134F3CD51F
- for <ltp@lists.linux.it>; Tue, 29 Sep 2026 19:49:51 +0200 (CEST)
-Received: from mail-dy2-x0b.google.com (mail-dy2-x0b.google.com
- [IPv6:2607:f8b0:4864:36::b])
+ by picard.linux.it (Postfix) with ESMTPS id C6C623EA9D2
+ for <ltp@lists.linux.it>; Tue, 29 Sep 2026 19:50:06 +0200 (CEST)
+Received: from mail-qk2-x02.google.com (mail-qk2-x02.google.com
+ [IPv6:2607:f8b0:4864:34::2])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 31EFB600BC9
- for <ltp@lists.linux.it>; Tue, 29 Sep 2026 19:49:51 +0200 (CEST)
-Received: by mail-dy2-x0b.google.com with SMTP id
- 5a478bee46e88-3468ec30866so2818670eec.1
- for <ltp@lists.linux.it>; Tue, 29 Sep 2026 10:49:51 -0700 (PDT)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 37D14200AC8
+ for <ltp@lists.linux.it>; Tue, 29 Sep 2026 19:50:06 +0200 (CEST)
+Received: by mail-qk2-x02.google.com with SMTP id
+ d75a77b69052e-533257d7704so7790371cf.1
+ for <ltp@lists.linux.it>; Tue, 29 Sep 2026 10:50:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1790704189; x=1791308989; darn=lists.linux.it;
+ d=gmail.com; s=20251104; t=1790704205; x=1791309005; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to:content-type;
- bh=hc7B5TrWw4+oysy01LxjY6PZI4h3yztLs/1MbkAGfKk=;
- b=ULIMnAdz1Zyxg2ByNs2Ku7cfoQUxDvnEb/Xqbo4iBZxBqLeidqjLOZwtYltvuzvWaP
- 2w6zpnWiqHhr45dtGCD7Z23V/rumRjtB3IeSRKOcFzWC4/QSE9X2w9l9mugrPMLVwaB9
- SljTBiFw2ADnwXAbZJt7LgUFN1JvJHm/w7eHVeKFsMl6dEqqwo0AP+81LEAOMXSVjAMu
- TGWBHyE+TQHeB6EhlKi1FRnmeFyepjs3H2kxIhVH5uiMRy9/0lgN1gOajeVMf//lOT1+
- cciShUI0yBq0HPHEuCaM4kVli7p4Nxri3VXtCdKP83izDSdAEiGDUvISWhzEMYySC37v
- Y2ow==
+ bh=xz/SRoAiN0CSxHorsafxQEg227V7Mr9427a7MFL0FnA=;
+ b=XCzpC0mV86p/Hvvq2JkSizwtMrR11jp9LTI0KpRtMcE6zK2xw7hBDLD+4toIOSJgqd
+ ollP9PUAwp8sdFICWFJUUyxRaSVi4PsAjsOb8qogB5L/Ut+O2C7AlFNUS8qpX3zL/pFE
+ zHl7qCghVGTaIdVTU9J48sC4PM5wReIuUQrKZNhf9AZm6b5uHhXN/U3tPRxMIMm4P23s
+ XWFWCcqpkJGOWQF9efV2jhXH/DNzc7J8Clbd0agd2UZq/ZuTXLsJkI2a+42+KrP8RZjM
+ hLvIESSIxL4LzTM5cJbA9rM4ljsq71qYN7xq+tVwHXzv+U/uck5xktOSrhDotFI7UZF6
+ /ojg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20260707; t=1790704189; x=1791308989;
+ d=1e100.net; s=20260707; t=1790704205; x=1791309005;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to:content-type;
- bh=hc7B5TrWw4+oysy01LxjY6PZI4h3yztLs/1MbkAGfKk=;
- b=kVTAtpzqMGDtZLgzW4VqQG2OabtHBCFFfb6BjIsxxoVM3fm8T13yqkCNj9hK3z9qp0
- xW3XZvxHb4T8vgYSGcdpQd8oTz4ePKuWb0CYh5zG3j5kCW0P29mwUK4ThgWRDipEx23k
- cahu6V++DEA1Sfp7PgDgwXcsGvmEoqg1snH0ZdPehJ4D/3MPQ0TvyQJoGl/tYwrN/xn4
- f27ddkAtfUTOrYUOvOIt5N7Y51QK5e9N8Z+iU91QoO+wPJgaPpDPm8sv8jbcIktvSF79
- cttyHsg9n6tiAZnkrAjqLNARF/zAJnDX3pJ8uZ27vFl27pYUBl3/9Ya1e2Qa4fvDMu+8
- 4+Zw==
-X-Gm-Message-State: AFq9FYKpbzhd0rXWZWpX57tZ66VkEBgfMaZsLjBfmp6kmA2edRrRIFFf
- Z4DhCTasOUvVaJNPjyoT6vBJPZVeGZFgoEiIlq75MRBk0P3VeLGKZrXZ
-X-Gm-Gg: AYBFou2LcBmUPB0FDhXDBcDKHbDN4WsNJfAr+aHfk96L8VX1WY/iFMLaowqdltB3OVX
- mDoqKfFmoUeXv37uE1IPKhqU5GjOWtkOvdV9Itb8cSbgr8IJe6nvBo6tjj9RbmSU0Mci2kHWoc8
- cwniJ7ehvKRke3i84MEeMW7UNAVrPIXyWF4R97HK3/J8JYDGq96BXGWOOb30jcEcVGY9uap0ynh
- OAuz3BPXXPuS9pIflp8UgzMfAqnPva5xIJ57L3IHUC0kVHfR1RFA4KvhWhd+YfIi7yF0iNuLIFJ
- y2+Da8+dQGkZ/4Xkl+BAaPAanX6iZVEzKZx3nmT+DwuV8MlPRb4020hzjqzreSSW5ftNppunqB1
- wALRizQPduVmVwWWm/zVoYQU9Dw8v5rENCGL7+G8Bv5Ew4MWY5XwTfZHauZyDUuu5t0aDIPusft
- 2GfMInNTiEd5VIJgD3YXWYXKihDrrsLY7WTmS44nmM9ldGBaOquLt/oMO/5im/YJwAAnhXvhTZ6
- qDiyyyonfKoesYBSsIOFOD9oMqWhuwsKNWwsRWcrVJodbpt+eESNhwCtIqfnOzHNY67vte1kkpe
- +zhNMowgTJmWgA==
-X-Received: by 2002:a05:7301:2396:b0:343:fdea:9a4 with SMTP id
- 5a478bee46e88-34c676c5ba4mr72060eec.28.1790704189113; 
- Tue, 29 Sep 2026 10:49:49 -0700 (PDT)
+ bh=xz/SRoAiN0CSxHorsafxQEg227V7Mr9427a7MFL0FnA=;
+ b=MsYZiVXK8pYTw3OFprcNlTroNhtDbRhtolvLernj+R7PDmRabewA+E0mvoOZf2Fe0z
+ McWBQd+IPXLob0VpdajiCQxnwy25G+FOkq+mNXtkJjc7arSSBEKUremcai4sN5NPlLH/
+ 3mXu06utKNlr60C/inChlWtENASwoemwlXSDd9DZ/upxGufJr/RWC2oqvoAerdalotAq
+ isJmhHyYFLFq0kmhQJEtA7gLOeL2g8rC6vKwlykTSV8Mo6CaYYlwqpTR2Dl8hTcdLiuI
+ dcsA+sJKutQLhC6WmGCbq62HJjU4DdIyQU+t26zdYGahShFpjv7nli+PRgJ9a2j5q8pN
+ xL3w==
+X-Gm-Message-State: AFuF++kdqV2IDQ8noWhaFIIzJCdEA8Z194zPOQSemZxIBCpU1SlUIIB+
+ 4GNwR/SrfXmKtOge1/8QJ1ozSdHzLHhsQ8iFnriexLuOHd58hPAKdvmB
+X-Gm-Gg: AYBFou0cF/nX2kUbX+dqln/IwoSYjmMaRj7obC2G1OUlWEdvBXhNSwgteq0ZrUOz2ox
+ sB9Hq9vNqoIXeLzmjw5CDe+2ho5XKN4u5ZeHyfS/irffCzXX5IcEzz3dYalb/Zzo8fuiMwBxxEK
+ n7iAcR3HNx//LTBzNSm5h0uKgvUWpl+lD5JupXIgC0FzZLM0S4bGEfhWwto6iByCDG6Vi8tkQm9
+ GBF2Ta+t3uuWbsBRtITkaiijvjjTPnpAH745kFJKI+YLjZcEBHyysWOg3iEZBXodqhOFhDzMfBe
+ lQbVrw4LfNqSPch3/etnloJcP7ggmNRjRAc0Q7jNsKBJ2HRlang8yS96S3YW7fmpGcW+foh80Lf
+ i/LQOkPXsignCSyddStfe2kH2FKNX5iZCkq6F6CUge7TEt1dMDB0hS+SEbeKmnd8JVFXFEMdJ68
+ ah3zTHxHxc3ThJwN4Nmu6w1BZK10KwdnqYotUkBAfLVbpJjdCZoFK8V517KM/Ik5qbUX4MT0/Yb
+ c94vTtYyeMUI5C4iRSyOiCJ3SkYJ563TpaJWMfFFzkV7NOlq8eK0Trg8JpLAdzyHXtEihP1dzDo
+ Ojr9mZWFT9rx
+X-Received: by 2002:a05:622a:c8:b0:532:abc9:8f4f with SMTP id
+ d75a77b69052e-5330b67d3e7mr302499241cf.37.1790704204787; 
+ Tue, 29 Sep 2026 10:50:04 -0700 (PDT)
 Received: from
- runnervmtr4k5.tm5rrcrii2xevck4shrvo0jfid.phxx.internal.cloudapp.net
- ([20.168.124.183]) by smtp.gmail.com with ESMTPSA id
- 5a478bee46e88-34c350c0d0fsm660841eec.4.2026.09.29.10.49.48
+ runnervmtr4k5.gvdpdkbpqlwevgifsipgujp5cd.bx.internal.cloudapp.net
+ ([172.174.190.74]) by smtp.gmail.com with ESMTPSA id
+ d75a77b69052e-53369c10a76sm697721cf.27.2026.09.29.10.50.04
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 29 Sep 2026 10:49:48 -0700 (PDT)
+ Tue, 29 Sep 2026 10:50:04 -0700 (PDT)
 From: linuxtestproject.agent@gmail.com
-To: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Tue, 29 Sep 2026 17:49:47 +0000
-Message-ID: <20260929174947.4059-1-linuxtestproject.agent@gmail.com>
+To: Avinesh Kumar <avinesh.kumar@suse.com>
+Date: Tue, 29 Sep 2026 17:50:03 +0000
+Message-ID: <20260929175003.34880-1-linuxtestproject.agent@gmail.com>
 X-Mailer: git-send-email 2.55.0
-In-Reply-To: <20260929-fix_epoll_bpf-v1-1-39b19ab043c7@suse.com>
-References: <20260929-fix_epoll_bpf-v1-1-39b19ab043c7@suse.com>
+In-Reply-To: <20260929124756.836342-1-avinesh.kumar@suse.com>
+References: <20260929124756.836342-1-avinesh.kumar@suse.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] epoll_ctl06: Fix BPF map on old kernels
+Subject: Re: [LTP] openposix: timer_*/speculative: Handle SIGSEGV on old
+ glibc
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -98,12 +98,166 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Andrea,
+Hi Avinesh,
 
-On Tue, 29 Sep 2026 16:15:01 +0200, Andrea Cervesato wrote:
-> epoll_ctl06: Fix BPF map on old kernels
+On Tue Sep 29 14:47:54 2026 +0200, Avinesh Kumar wrote:
+> openposix: timer_*/speculative: Handle SIGSEGV on old glibc
 
-Verdict - Reviewed
+> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/timer_delete/speculative/5-1.c b/testcases/open_posix_testsuite/conformance/interfaces/timer_delete/speculative/5-1.c
+> index dce9277b5..c7a94e144 100644
+> --- a/testcases/open_posix_testsuite/conformance/interfaces/timer_delete/speculative/5-1.c
+> +++ b/testcases/open_posix_testsuite/conformance/interfaces/timer_delete/speculative/5-1.c
+> @@ -13,13 +13,31 @@
+>  #include <time.h>
+>  #include <stdio.h>
+>  #include <errno.h>
+> +#include <signal.h>
+> +#include <unistd.h>
+>  #include "posixtest.h"
+>  
+>  #define BOGUSTIMERID 99999
+>  
+> +/*
+> + * timerid is not a valid timer ID; POSIX defines no required behavior
+> + * here (EINVAL is only a recommendation), so SIGSEGV is an equally
+> + * valid outcome.
+> + */
+> +static void sigsegv_handler(int signum PTS_ATTRIBUTE_UNUSED)
+> +{
+> +	PTS_WRITE_MSG("Got SIGSEGV when calling timer_delete() with an invalid timer ID\n");
+> +	PTS_WRITE_MSG("Test PASSED\n");
+> +	_exit(PTS_PASS);
+> +}
+> +
+>  int test_main(int argc PTS_ATTRIBUTE_UNUSED, char **argv PTS_ATTRIBUTE_UNUSED)
+>  {
+>  	timer_t tid = (timer_t)BOGUSTIMERID;
+> +	struct sigaction sa = { .sa_handler = sigsegv_handler };
+> +
+> +	sigfillset(&sa.sa_mask);
+> +	sigaction(SIGSEGV, &sa, NULL);
+
+Catching SIGSEGV and exiting with PTS_PASS circumvents the check for
+errno=EINVAL and masks faults instead of verifying the interface. Use
+"static int tval = BOGUSTIMERID; timer_t tid = (timer_t)&tval;" without a
+signal handler instead; this provides a readable pointer for older glibc
+(<= 2.31) while keeping the MSB clear so glibc >= 2.34 and musl do not
+treat it as a SIGEV_THREAD timer.
+
+> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/timer_getoverrun/speculative/6-1.c b/testcases/open_posix_testsuite/conformance/interfaces/timer_getoverrun/speculative/6-1.c
+> index 3a8f1448d..7861e99d4 100644
+> --- a/testcases/open_posix_testsuite/conformance/interfaces/timer_getoverrun/speculative/6-1.c
+> +++ b/testcases/open_posix_testsuite/conformance/interfaces/timer_getoverrun/speculative/6-1.c
+> @@ -13,13 +13,31 @@
+>  #include <time.h>
+>  #include <stdio.h>
+>  #include <errno.h>
+> +#include <signal.h>
+> +#include <unistd.h>
+>  #include "posixtest.h"
+>  
+>  #define BOGUSTID 9999
+>  
+> +/*
+> + * timerid is not a valid timer ID; POSIX defines no required behavior
+> + * here (EINVAL is only a recommendation), so SIGSEGV is an equally
+> + * valid outcome.
+> + */
+> +static void sigsegv_handler(int signum PTS_ATTRIBUTE_UNUSED)
+> +{
+> +	PTS_WRITE_MSG("Got SIGSEGV when calling timer_getoverrun() with an invalid timer ID\n");
+> +	PTS_WRITE_MSG("Test PASSED\n");
+> +	_exit(PTS_PASS);
+> +}
+> +
+>  int test_main(int argc PTS_ATTRIBUTE_UNUSED, char **argv PTS_ATTRIBUTE_UNUSED)
+>  {
+>  	timer_t tid = (timer_t)BOGUSTID;
+> +	struct sigaction sa = { .sa_handler = sigsegv_handler };
+> +
+> +	sigfillset(&sa.sa_mask);
+> +	sigaction(SIGSEGV, &sa, NULL);
+
+Same issue here; pass a pointer to a static int variable instead of
+handling SIGSEGV.
+
+> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/timer_gettime/speculative/6-1.c b/testcases/open_posix_testsuite/conformance/interfaces/timer_gettime/speculative/6-1.c
+> index 586b0ed3a..a3a9e080e 100644
+> --- a/testcases/open_posix_testsuite/conformance/interfaces/timer_gettime/speculative/6-1.c
+> +++ b/testcases/open_posix_testsuite/conformance/interfaces/timer_gettime/speculative/6-1.c
+> @@ -13,14 +13,32 @@
+>  #include <time.h>
+>  #include <stdio.h>
+>  #include <errno.h>
+> +#include <signal.h>
+> +#include <unistd.h>
+>  #include "posixtest.h"
+>  
+>  #define BOGUSTID 9999
+>  
+> +/*
+> + * timerid is not a valid timer ID; POSIX defines no required behavior
+> + * here (EINVAL is only a recommendation), so SIGSEGV is an equally
+> + * valid outcome.
+> + */
+> +static void sigsegv_handler(int signum PTS_ATTRIBUTE_UNUSED)
+> +{
+> +	PTS_WRITE_MSG("Got SIGSEGV when calling timer_gettime() with an invalid timer ID\n");
+> +	PTS_WRITE_MSG("Test PASSED\n");
+> +	_exit(PTS_PASS);
+> +}
+> +
+>  int test_main(int argc PTS_ATTRIBUTE_UNUSED, char **argv PTS_ATTRIBUTE_UNUSED)
+>  {
+>  	struct itimerspec its;
+>  	timer_t tid = (timer_t)BOGUSTID;
+> +	struct sigaction sa = { .sa_handler = sigsegv_handler };
+> +
+> +	sigfillset(&sa.sa_mask);
+> +	sigaction(SIGSEGV, &sa, NULL);
+
+Same issue here; pass a pointer to a static int variable instead of
+handling SIGSEGV.
+
+> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/timer_settime/speculative/12-1.c b/testcases/open_posix_testsuite/conformance/interfaces/timer_settime/speculative/12-1.c
+> index ac7f7bf24..953d585b8 100644
+> --- a/testcases/open_posix_testsuite/conformance/interfaces/timer_settime/speculative/12-1.c
+> +++ b/testcases/open_posix_testsuite/conformance/interfaces/timer_settime/speculative/12-1.c
+> @@ -12,14 +12,33 @@
+>  #include <time.h>
+>  #include <stdio.h>
+>  #include <errno.h>
+> +#include <signal.h>
+> +#include <unistd.h>
+>  #include "posixtest.h"
+>  
+>  #define BOGUSTID 9999
+>  
+> +/*
+> + * timerid is not a valid timer ID; POSIX defines no required behavior
+> + * here (EINVAL is only a recommendation), so SIGSEGV is an equally
+> + * valid outcome.
+> + */
+> +static void sigsegv_handler(int signum PTS_ATTRIBUTE_UNUSED)
+> +{
+> +	PTS_WRITE_MSG("Got SIGSEGV when calling timer_settime() with an invalid timer ID\n");
+> +	PTS_WRITE_MSG("Test PASSED\n");
+> +	_exit(PTS_PASS);
+> +}
+> +
+>  int test_main(int argc PTS_ATTRIBUTE_UNUSED, char **argv PTS_ATTRIBUTE_UNUSED)
+>  {
+>  	struct itimerspec its;
+>  	timer_t tid = (timer_t)BOGUSTID;
+> +	struct sigaction sa = { .sa_handler = sigsegv_handler };
+> +
+> +	sigfillset(&sa.sa_mask);
+> +	sigaction(SIGSEGV, &sa, NULL);
+
+Same issue here; pass a pointer to a static int variable instead of
+handling SIGSEGV.
+
+Verdict - Needs revision
 
 ---
 Note:
