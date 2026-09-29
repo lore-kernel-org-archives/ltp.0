@@ -4,82 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9CB8ECA5FAC
-	for <ltp@archiver.kernel.org>; Tue, 29 Sep 2026 17:51:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 59CB7CA5FA5
+	for <ltp@archiver.kernel.org>; Tue, 29 Sep 2026 17:51:41 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 4D8873EA036
-	for <ltp@archiver.kernel.org>; Tue, 29 Sep 2026 19:51:16 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 7DC9F3CD51F
+	for <ltp@archiver.kernel.org>; Tue, 29 Sep 2026 19:51:39 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9F0093CD10F
- for <ltp@lists.linux.it>; Tue, 29 Sep 2026 19:51:01 +0200 (CEST)
-Received: from mail-qk2-x03.google.com (mail-qk2-x03.google.com
- [IPv6:2607:f8b0:4864:34::3])
+ by picard.linux.it (Postfix) with ESMTPS id 54C593CD51F
+ for <ltp@lists.linux.it>; Tue, 29 Sep 2026 19:51:24 +0200 (CEST)
+Received: from mail-dy2-x09.google.com (mail-dy2-x09.google.com
+ [IPv6:2607:f8b0:4864:36::9])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 0FE4060076F
- for <ltp@lists.linux.it>; Tue, 29 Sep 2026 19:51:01 +0200 (CEST)
-Received: by mail-qk2-x03.google.com with SMTP id
- d75a77b69052e-53321db7e06so23546431cf.0
- for <ltp@lists.linux.it>; Tue, 29 Sep 2026 10:51:01 -0700 (PDT)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id C8A9F1000668
+ for <ltp@lists.linux.it>; Tue, 29 Sep 2026 19:51:23 +0200 (CEST)
+Received: by mail-dy2-x09.google.com with SMTP id
+ 5a478bee46e88-34bd87d789aso184494eec.1
+ for <ltp@lists.linux.it>; Tue, 29 Sep 2026 10:51:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1790704260; x=1791309060; darn=lists.linux.it;
+ d=gmail.com; s=20251104; t=1790704282; x=1791309082; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to:content-type;
- bh=/WwjcsT3BDYzZYoeL67E7E7N07auaND0Oc9kswwZWnM=;
- b=GzJB+hll5oQHURHUttO/nEGk5IIK8herI+PBcJ3Q0vw63XXELiYU1UcMeDZlkOtthK
- LR7wGZ2PUC/m2P02EATikAT8cre8v1H7wM9g0p8QGMCqMrNEv7Ibu55TpAE9m5KgOcFs
- I6+wgXmq/M4nTYKVW2UYNDRTad/2GuadYZPNJqcKjjS0ecwaRGk1xa1JsF+5v0co/bSU
- cn8KSR0nr7TbDRhN/EBl/XV4yihNYqSywNfU73hPjPn2KxZJbJxDNIHkoPIKRcutWLwc
- BsMHJUAV3J4u00oO6ev5nb++JlarbSp2QuL3+crmZWQiYWOiz3lh7pgxWi/DTnEKMraF
- Wq6w==
+ bh=ErcM9kgU4zd/d3JwY0jCX6XdiZqk5VWDSdQm/q8ADI0=;
+ b=fczaAqAwI0rHghD3vBgGXguehBY342dBBX/BPT4Q1/fM1mgSBejEIhqSsVCgwSgw0e
+ 67VmYY8nUX0EUXEOqafUbOxO0u6PUt7d4wkFO1voDGp0jpH5PJuQLO5J39SzIAa5Pepc
+ lSTiTArnVWj1yo1vdWJkvblOkwDrCMSUSK87PRjJMp5D3rGWYBSEg+8BgGNEJ6ixjoRx
+ tG26aHX0N96pnKUbnvR5rZvWME0SCSkrC7ZIS23k9GTPJ9JMiBW6jylRbEskrB5hkqKb
+ wXCRcnjTSDlObV+aXNG1fHV2vflzRb2xM4adRPl4B7KyzyJZA2RLjlP5Os7qyByR189B
+ eBSA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20260707; t=1790704260; x=1791309060;
+ d=1e100.net; s=20260707; t=1790704282; x=1791309082;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to:content-type;
- bh=/WwjcsT3BDYzZYoeL67E7E7N07auaND0Oc9kswwZWnM=;
- b=O4HYV5VhmbeWy+01dg5o3hEVj+kZiseR4dhlA6SrQcrA7YxV+qzkPczeTizMHzgadu
- 3gZAvFGp2f0+2v1DKK9O7/g7oSXU2CxbBzZFo1YC1nlEITwA+4Q6+oY7YBY1MAgRm4Bm
- tviy+tckig+WBFiL19gkOH4D7aNkjWd/Zj93NmQZzz/mn7YVNTh52WO2AdjykcJCkkb/
- v65c+Hu30UfPU55UJUHn8HM9UZ4HbB+VScNLlrNmhDyH5tBxwrC+U/e7o+6SfBZn2k+f
- ZNTJIftnc/ohfTOK9QLuZ3lc1tPKmNimJdM5IgBOpllXH4SP/K4A+GFKQdQAAwmJGEXe
- BBzA==
-X-Gm-Message-State: AFuF++lh5cwsoG31MebirImqU8wGcwKti6NzNqlALDbQy68q19Q8d0DM
- z2b/9bUN+gmAnqiEgdN8NNh5yjdo9VCwTS1m3lE2NZktDkVrQAh0Jw1g3DLjSRLM
-X-Gm-Gg: AYBFou0hA786dH2rS3ZO0ZXWYP2kZXcDsrht9xy91uUNZgo3qoqS7KkFfrCTaVqTLPe
- ES7JjTf3N0GZ7eTNtWVJ/MQmDdO76MqEud+ki2cuD8Kck/wwnhprROhRTVH1LWDaJ46hT94YKwj
- +8TsB/0RHlgaSRPVj5KniVNOgVZylT5GzRemAIiURys5kOf4ks06wapxTjhWnoKK3AXkkIkU27/
- r6Ogaez3w1HeuPkZUHKXXUP/ssqyUwpkp04skaWs352t8Uk4JvMfXwJB4wLWjy42WksM3gtttuM
- oNLEjSxWgXOn3WxjTmZWgmlxije8FEF5OrYZiZW7+hurxNiBvReEbqqvYmoC0tu6MzFNPKD0wHA
- LUl4LI/6D2FCKSFoYI9qtEl+dxy8h0FWSVF20+9ylmh94JnpurVufpHajpgln2Bf388L8m+D5/y
- 3kI+jYwQY0U3DIODM+61v/5eMdpuFnOCH9EZPRQ3uzNcoWi2hy66bCk1o/K/j2uc6BQJo5euCC/
- 8FhOvMK1unM9QRjBn9SDqGqsIlc9KdoqUhlwznPPvxTaPUZhQUZtrntMtBvgkfOJg+Nhfk5Fe0I
- WOHb1W7Ym0o5Eg==
-X-Received: by 2002:a05:6214:3d03:b0:913:efc3:6ffc with SMTP id
- 6a1803df08f44-9142f746f61mr279500046d6.22.1790704259516; 
- Tue, 29 Sep 2026 10:50:59 -0700 (PDT)
+ bh=ErcM9kgU4zd/d3JwY0jCX6XdiZqk5VWDSdQm/q8ADI0=;
+ b=BkL042glvc8P6dpZLnj/BXslbSev0woPVAZeBmB3gtbJJ0UANcIuWCVWiDspH1zJrA
+ iZ9p2m4dLpq23tLHyZE4fme1udbyXvlywVeUMq2KiRtpOWzWF4oqsCyOLxqLQVVLHuTb
+ RADzfxe9XiCX/v+M+hImnm8RPeEwSaxx3Sos0fHgFP8yD4HzKMe6d9W2DNE0IEt2X951
+ XZPQ7uXdPnfWucX5/eqRZki4bdRuBxXweMyZV6Kzp9zmQsCSQA9I39R8RmGeEXrBVgou
+ GU/qF+SRcn/LWGfZ+k5Oui/MYHVRIWw48bfpBJ4v76Mt8JYkUkY3t4pBLnxZJEdqHopi
+ cWcg==
+X-Gm-Message-State: AFuF++lGk8L50HtH8vx407BDwDZxfAJhq0FbnQLx0ANouPkuYZO6fq4d
+ O1ApUzjSPjRc7YfIVa/NzYSxW8WhZEsuG6oGCfOWgSqrumrYbtID0AoR
+X-Gm-Gg: AYBFou1JojaDkoF7f4iI7zN65rV2Iydar0wTk4DD5XLRByqP2EcDR2AFfQn+Jl3FWnw
+ yZW7gJPUQigMTkBYtABbzVGNnuN1/TqmnXFuR+/4CXPRZGoy3iA6q2Wytq5NXxPJY+pNbnLPqvW
+ /ZEfPXrijkt5VkxhIlphG5nA4sLQYr9f2zuRpfZR/riXJO3HMGRd2rHpbN4NfBcDM1Uh2mRgRUo
+ M+k/THrNIhkIuJoLnxVRrOJNYc+wOm8NKj1wMqEMemw5zUMP3W8cq6ZRKCDs9wiY6Zd/F/Tk84y
+ Z1BVfFjgnCYoBa93GEMQSXEdA0++ErcWgntjEdgIMfnf2TTdCJxBYXH1jZbPfFMGT0FoiB+0Q5D
+ 1V+56dnH8jX7Xn0FrLotjXf1YP2yljLMEOgYw1Ni9e0L+2fqvMuerkJtmgraB1j3Wo3KEQRtEez
+ 33gNlIPiJDa+Zomkmcv9CyBx0kVeU5PGi6S0o+eIwwzzNvBrzKZQOWlMsHAIYXlOAtuQ/HQD7aZ
+ fTzHr0rU3RXQ4lWTeAM7cyQsmnKCKKWsL1ioFCOE80qKTVkYfaJYTlfkSQjnjeQjNg+UmeFdSkM
+ QAhBUcKcGqU=
+X-Received: by 2002:a05:7300:a21e:b0:33e:d4ae:e10e with SMTP id
+ 5a478bee46e88-34c68570e27mr53629eec.40.1790704281637; 
+ Tue, 29 Sep 2026 10:51:21 -0700 (PDT)
 Received: from
- runnervmtr4k5.pqd2vc5ezuwebdrj0bejnwn4rf.bx.internal.cloudapp.net
- ([172.174.118.102]) by smtp.gmail.com with ESMTPSA id
- 6a1803df08f44-9179864a367sm1081766d6.5.2026.09.29.10.50.59
+ runnervmtr4k5.hxjakfajtdtuxlv55ejn1q2nha.dx.internal.cloudapp.net
+ ([52.157.33.139]) by smtp.gmail.com with ESMTPSA id
+ 5a478bee46e88-34c378ca8basm629771eec.9.2026.09.29.10.51.21
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 29 Sep 2026 10:50:59 -0700 (PDT)
+ Tue, 29 Sep 2026 10:51:21 -0700 (PDT)
 From: linuxtestproject.agent@gmail.com
-To: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Tue, 29 Sep 2026 17:50:58 +0000
-Message-ID: <20260929175058.8697-1-linuxtestproject.agent@gmail.com>
+To: Petr Vorel <pvorel@suse.cz>
+Date: Tue, 29 Sep 2026 17:51:19 +0000
+Message-ID: <20260929175119.52267-1-linuxtestproject.agent@gmail.com>
 X-Mailer: git-send-email 2.55.0
-In-Reply-To: <20260929-fix_fw_load02-v1-1-4cd5f95d172b@suse.com>
-References: <20260929-fix_fw_load02-v1-1-4cd5f95d172b@suse.com>
+In-Reply-To: <20260929141659.2513510-1-pvorel@suse.cz>
+References: <20260929141659.2513510-1-pvorel@suse.cz>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] lib: Handle empty saved configuration values
+Subject: Re: [LTP] lapi: Update syscalls numbers to v7.3-rc5
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -97,12 +97,57 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Andrea,
+Hi Petr,
 
-On Tue Sep 29 16:15:19 2026 +0200, Andrea Cervesato wrote:
-> lib: Handle empty saved configuration values
+On Tue Sep 29 16:16:59 2026 +0200, Petr Vorel wrote:
+> lapi: Update syscalls numbers to v7.3-rc5
 
-Verdict - Reviewed
+> diff --git a/include/lapi/syscalls/arm.in b/include/lapi/syscalls/arm.in
+> index d0238dec5..158350976 100644
+> --- a/include/lapi/syscalls/arm.in
+> +++ b/include/lapi/syscalls/arm.in
+> @@ -109,7 +109,6 @@ readv 145
+>  writev 146
+>  getsid 147
+>  fdatasync 148
+> -_sysctl 149
+>  mlock 150
+>  munlock 151
+>  mlockall 152
+
+Do not remove _sysctl (and timerfd on mips/s390x). LTP tests such as
+sysctl01 rely on fallback definitions from lapi/syscalls.h when running on
+older kernels where sysctl(2) is available.
+
+> diff --git a/include/lapi/syscalls/s390.in b/include/lapi/syscalls/s390.in
+> index a6cb85da8..357b04ceb 100644
+> --- a/include/lapi/syscalls/s390.in
+> +++ b/include/lapi/syscalls/s390.in
+> @@ -10,17 +10,12 @@ link 9
+>  unlink 10
+>  execve 11
+>  chdir 12
+> -time 13
+>  mknod 14
+>  chmod 15
+> -lchown 16
+>  lseek 19
+>  getpid 20
+>  mount 21
+>  umount 22
+> -setuid 23
+> -getuid 24
+> -stime 25
+>  ptrace 26
+>  alarm 27
+>  pause 29
+
+s390.in has been overwritten with 64-bit s390x syscall definitions. This file
+is used for 31-bit s390 (#if defined(__s390__) && !defined(__s390x__)) and
+must retain 31-bit syscall numbers (such as getuid 24, time 13, stat64,
+mmap2, and clock_gettime64) rather than 64-bit s390x definitions.
+
+Verdict - Needs revision
 
 ---
 Note:
