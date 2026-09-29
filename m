@@ -4,92 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 29073CA5FAD
-	for <ltp@archiver.kernel.org>; Tue, 29 Sep 2026 17:02:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1790701320; h=date : to :
- message-id : references : mime-version : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=SLVO+K/FeCftfFmEGrb1TOdOHyOi6hCf4OSpPzhdszs=;
- b=ICDlRJky/BM/sWrj+u5/VaN9OOfuNy2R5UdWPkibWMfrJPwMLXBx0J06lN7XGKT4mXkQ6
- /BieQ6vtVxV5kYDGrgzsQw1CROozYYC+4oQH2DFHDrfi9JURrZY1OUHMdvhjh6GqS83sdXd
- MMkkx0ZAdkaWkrJwI/7YoGadw/Yp0A0=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EA9A3CA5FA5
+	for <ltp@archiver.kernel.org>; Tue, 29 Sep 2026 17:49:19 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 51A133E9F88
-	for <ltp@archiver.kernel.org>; Tue, 29 Sep 2026 19:02:00 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 29B223EA9CB
+	for <ltp@archiver.kernel.org>; Tue, 29 Sep 2026 19:49:18 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A0BF53E2F17
- for <ltp@lists.linux.it>; Tue, 29 Sep 2026 19:01:39 +0200 (CEST)
-Received: from mail-wr2-x0f.google.com (mail-wr2-x0f.google.com
- [IPv6:2a00:1450:4864:30::f])
+ by picard.linux.it (Postfix) with ESMTPS id 3F5363CD51F
+ for <ltp@lists.linux.it>; Tue, 29 Sep 2026 19:49:01 +0200 (CEST)
+Received: from mail-pj2-x01.google.com (mail-pj2-x01.google.com
+ [IPv6:2607:f8b0:4864:39::1])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 3EBD11000A52
- for <ltp@lists.linux.it>; Tue, 29 Sep 2026 19:01:39 +0200 (CEST)
-Received: by mail-wr2-x0f.google.com with SMTP id
- ffacd0b85a97d-488811c9ebaso2179921f8f.2
- for <ltp@lists.linux.it>; Tue, 29 Sep 2026 10:01:39 -0700 (PDT)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 1D9D8600BC9
+ for <ltp@lists.linux.it>; Tue, 29 Sep 2026 19:48:59 +0200 (CEST)
+Received: by mail-pj2-x01.google.com with SMTP id
+ 98e67ed59e1d1-3a4a2517101so470174a91.0
+ for <ltp@lists.linux.it>; Tue, 29 Sep 2026 10:48:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1790701298; x=1791306098; darn=lists.linux.it;
- h=in-reply-to:content-disposition:content-type:mime-version
- :references:message-id:subject:cc:to:from:date:from:to:cc:subject
- :date:message-id:reply-to:content-type;
- bh=4JX2OhxZRTAx5W4yQ70yEuXB/ZmxfY7/c7Hb1OpWeKU=;
- b=XxALT2LuBMHHA6McHMLkKJRjyWRWvb1DBmcA4gU2VtDy3VBolg8Et5eTuFqXkIjPwy
- 0VDW2TIe2QCprnS9sorMgR6Ovj5nFo4x9UU1zP0qOdRZ/4V06XKMQnXfxNM5dl7Cwb1h
- vtS4qJnFQL4kOYnKjhs2zEo9jrvBKekhfYWWd8wr42EEU1uyUhIVpACa8Yb4QLbrrajr
- NIa4EGnyNToPqwDbRUh3OJ1plRvpimQ2xZmun5O20i5qJUGBwJhT3B3vFkwoJpLp5nrf
- jNQaszmGHkLksgcLW5jaOYTmioeHHE4ojfZB6bFhAnEyQbKKh1oyTkNOwKMQAlL90ZRU
- tSQw==
+ d=gmail.com; s=20251104; t=1790704137; x=1791308937; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to:content-type;
+ bh=KLHL7/D6/Z+R01BJa5uFTzQ0KI6CiiDvLjzvCRU+EHU=;
+ b=FW/Q4HTIp02c/d8R+Al9u7tSDHQor5Lw1rtBRoO0riqIvF3b9ivj2fWJQ6FryiHbd6
+ ZyY3ZL9zWYurMhq0HH/o1bHA1a24noD6w9PH4k4bZv0DUEW4uPg6+74pXn31taHbI4uy
+ MF+bo6CcjDXIh+FnGuw1+nqsqQmNRPx96hFHk6gRm0XZ0510PPMoKj/w8PEW6ltxKSSp
+ GQo0fS6kIF9BmMDkRIi7Af2ImnUwhM64SMspjJTgD3AvS/eRTHCYZsZzRrundo55Aq6Q
+ t2vRaDw9YQJei14xjd9zliBHGxKwZan4N6+iM9H66CFcI2bSKnIf1v606HBN8gaqXn9F
+ klYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20260707; t=1790701298; x=1791306098;
- h=in-reply-to:content-disposition:content-type:mime-version
- :references:message-id:subject:cc:to:from:date:x-gm-gg
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
- :content-type;
- bh=4JX2OhxZRTAx5W4yQ70yEuXB/ZmxfY7/c7Hb1OpWeKU=;
- b=HLApi+nCBYEyqhufgpAzomjVuIGHO8WlTj8jE1jmmJ0dLqk6yv9zoAELZhj14cASMl
- L66in/r2fBIjai0NqKphsAl66hj7UXtzAS16tHlHgT4tSDqO4x/stdNH2TDTMPRFOdFS
- qGq9r7hKp77BVDzZm2qjfmZzsxTY2WvvvlnOZ02t5F3IW7vchcTWQ9/DkNBOlyWB7OVP
- An+ABXosf0CJ4Wpl+JYU3wSWOdomI0gnTCrxuBxXv+vFONC3DqxPuCycko/jBSFRPYVf
- Bb8rgaYgRe6ckhf/BH6z/Z1Q47/zfyEtVzp+crqVCnuYMjSA0u0l+ufyBNcn+z/31IhQ
- Jscw==
-X-Gm-Message-State: AFuF++nekAmQBmd1NjU9JCUXEWXZc5YguT7LB5siNuGRdGD19ovaOf/+
- MM2ziXVOykYi4QwrFNcPEQgRpaV9eif48rfMctHfih+lsWujBQKJe5LYwfdL7te0Vo4=
-X-Gm-Gg: AYBFou0TACAh0FbVpgc3+LBSNk9vERnIArm12ZbLPFMtg/BNQMc4H8k6jR6DnxmfvXi
- jLheY/Zk2kKeedKACA5u76UWFTWBnLVW7/wxlbXE8hznRxzDXS7kuHHvu8dqSN+8tnA5BIeVqIm
- 5KsIqkM0BMYvNhAl+l9hvwAq+8QbdT/Z9BpQuVneBU2ZweAqddaQJnI39FcVYDa58r0yVTleaqp
- v0bmpRFki4k4jU3JEBo4muf5cNkZMdHJS/P6zcofQJIQ9itU4ZqEhICAsCVzEPGP+4f3G3Dba7Z
- PP6MhQ5IAVq+pIhU+HpA8hXHp5Mrf89RiMtkELgUc0yld44gPkkXVCbypBkiDUURgjmOIK5m9HK
- VRD2C7v7Aq8HL7gOtOrWnlJbMWEeO1C7f0CJqRgRriDjQJ4h6zgQMhi2UTcC8p8IXUhdY/BviTl
- n61C7ZKbiOhu60SQxWXus52BW4RPOVwbMEsQ/Ea9aCPZNPQHTlEdQmpucX7xaGw7SuzeJTZsy1k
- A==
-X-Received: by 2002:a05:600c:8707:b0:4a0:89:6727 with SMTP id
- 5b1f17b1804b1-4a0008968a1mr154081835e9.16.1790701298489; 
- Tue, 29 Sep 2026 10:01:38 -0700 (PDT)
-Received: from localhost.localdomain ([2001:af0:8000:1409:193:86:92:181])
- by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-4a00cfa57d7sm88288255e9.10.2026.09.29.10.01.37
+ d=1e100.net; s=20260707; t=1790704137; x=1791308937;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to:content-type;
+ bh=KLHL7/D6/Z+R01BJa5uFTzQ0KI6CiiDvLjzvCRU+EHU=;
+ b=Bc089b8Xs02TrD9lrVfG1mwv8dWLag5nPTIA4v5dreFJ7UoAOgYFmCjl3Ai714FmZQ
+ srpby0uAiTFnfc2w4d5W4Y+EBTWi+3kX8RXNjEnHbjwmkOB8f95wmkrJGhCed5DLFwr/
+ U7jMS03FgjtIeG6eqIqfyOSmq9I8aaGLyoDNfWVFE0y00A7opJ1ukgFFqZfk6o1km6Fa
+ Sje5KM34Ns8BnneV9vFk0bjIlhZa2AwgN+vuSXGHf/nfVkG+3OLtwIA+xygOv3d2WJqY
+ H5F7z394CVjXvjRue+Y6bR85GBLwb8bcjFim8CWtdq+3eOHJBId+720QFFyggB9GcLGx
+ 52KQ==
+X-Gm-Message-State: AFq9FYJN1Kvcbf1TdgkOx74MmOEcILZSgwEVT1lewPaNU1wE5TDAbXJR
+ h4BHdJQZYfpScN2ojUx/8hNDyT52dDRSQ4odeifqcurCWwavxLBkeUor
+X-Gm-Gg: AYBFou1V3R0zKpDj3saS5R+ADUarGAW9E0eoKPEye4nuwFeXsRqZv5Usv1WuacRtLxb
+ J9yVty/LnoATqTz0WvqDGYqqppzuBd2IKy+MrubUNuOKeFS929DccNSyJ9QaOH41S4XsoUHq56Y
+ rAgo6/IrHcgfzjZHi1iCs5Kun2gOLMxASPOihEIoFgZ8dtpO5pIhQSCBvJnYMobXpiUQqt4v69U
+ NwJapejAxuKlG1AagYmoZNT2r5Vw6sVqQWuhD3GTC0g7+qBrDYWslJOBEZFR2rvzWtHGGm+dgNw
+ 1pkVJVXVYhMZz6/0J8FBeP2MuCiuNDy7i61mJLm9NAGyVbnvnBAFcXPg2LBzSn+TOOkAMCgQ7mL
+ mUYeMsfbSzmL97nGNwZMqp4+/ZziL2t+pkZ3Hwe0hTF8wh/Lym3/eEvTmWYOa4THpnVPKPW+y0T
+ 8fQAbvJ1LpGJqQ+y2DuEwqwer/A3g736TtyAm5g9HGouZFNSYXAc75WEEA0cW+GDE77B/cg1iI9
+ KGc20HM2H+G6QCGDWxXj2yStv9mJ7/8eWIzk0LHj0ateUAo8Uv8fgSofJUD30mRgjrCDssn0NSV
+ in3X4WN0OAk=
+X-Received: by 2002:a17:90b:5830:b0:3a0:ca1d:b40d with SMTP id
+ 98e67ed59e1d1-3a4c0015fadmr100047a91.55.1790704136903; 
+ Tue, 29 Sep 2026 10:48:56 -0700 (PDT)
+Received: from
+ runnervmtr4k5.3fxghdbni5zetivtyknzag4qyg.xx.internal.cloudapp.net
+ ([4.155.111.103]) by smtp.gmail.com with ESMTPSA id
+ 98e67ed59e1d1-3a4bf24f0ddsm338931a91.0.2026.09.29.10.48.56
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 29 Sep 2026 10:01:37 -0700 (PDT)
-Date: Tue, 29 Sep 2026 19:01:36 +0200
-To: Wei Gao <wegao@suse.com>
-Message-ID: <arvu7cbAv0CmoxFZ@localhost.localdomain>
-References: <20260929022340.524-1-wegao@suse.com>
+ Tue, 29 Sep 2026 10:48:56 -0700 (PDT)
+From: linuxtestproject.agent@gmail.com
+To: Huaisheng Ye <yehuaisheng@open-hieco.net>
+Date: Tue, 29 Sep 2026 17:48:55 +0000
+Message-ID: <20260929174855.9020-1-linuxtestproject.agent@gmail.com>
+X-Mailer: git-send-email 2.55.0
+In-Reply-To: <20260929111527.43833-1-yehuaisheng@open-hieco.net>
+References: <20260929111527.43833-1-yehuaisheng@open-hieco.net>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20260929022340.524-1-wegao@suse.com>
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1] memcontrol03: Bind to single CPU on systems
- with 64KB pagesize
+Subject: Re: [LTP] hugemmap10: Treat fd 0 as valid in cleanup
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -101,47 +92,28 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: =?utf-8?q?Michal_Koutn=C3=BD_via_ltp?= <ltp@lists.linux.it>
-Reply-To: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
 Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi.
+Hi Huaisheng,
 
-On Tue, Sep 29, 2026 at 02:23:32AM +0000, Wei Gao <wegao@suse.com> wrote:
-> On multi-CPU systems with 64KB page size (e.g. ppc64le), memcontrol03
-> intermittently fails with over-reclaim of protected pagecache under
-> trunk_B:
-> 
->   memcontrol03.c:104: TINFO: Child 142113 in trunk_G: Allocating anon: 150994944
->   memcontrol03.c:121: TPASS: Child 142113 exited
->   memcontrol03.c:214: TPASS: Expect: (A/B memory.current=54394880) ~= 52428800
->   ...
->   memcontrol03.c:104: TINFO: Child 142114 in trunk_G: Allocating anon: 174063616
->   memcontrol03.c:116: TPASS: Child 142114 killed by OOM
->   memcontrol03.c:230: TFAIL: Expect: (A/B memory.current=43319296) ~= 52428800
-> 
-> In the kernel, per-CPU charge batching (MEMCG_CHARGE_BATCH = 64 pages)
-> caches up to 64 * 64KB = 4MB per CPU in memcg_stock. On a multi-CPU
-> system, allocating memory across CPUs allows cached stock charges to
-> accumulate in ancestor trunk_A (up to 4MB * nr_cpus, e.g. 16MB on a
-> 4-CPU machine). Because trunk_A has memory.max = 200M, this extra stock
-> pressure forces the reclaimer to evict pagecache in trunk_B down to
-> ~35-43MB instead of the expected ~50MB. Simply enlarging the tolerance
-> rate further is not good idea.
-> 
-> Bind the test process to a single CPU in setup() when page size is
-> >= 64KB. This confines stock batching to a single CPU, preventing
-> multi-CPU stock inflation and ensuring reproducible reclaim behavior.
+On Tue, 29 Sep 2026 19:15:27 +0800, Huaisheng Ye wrote:
+> hugemmap10: Treat fd 0 as valid in cleanup
 
-Should the goal be stability/repeatibility of the test.
-What about pinning to the single CPU regardless of page size?
+Verdict - Reviewed
 
-Thanks,
-Michal
+---
+Note:
+
+The agent can sometimes produce false positives although often its
+findings are genuine. If you find issues with the review, please
+comment this email or ignore the suggestions.
+
+Regards,
+LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
