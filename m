@@ -4,48 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 869D7C9832A
-	for <ltp@archiver.kernel.org>; Tue, 29 Sep 2026 07:25:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7D91CCA5FA7
+	for <ltp@archiver.kernel.org>; Tue, 29 Sep 2026 08:43:16 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id DE1373DE37F
-	for <ltp@archiver.kernel.org>; Tue, 29 Sep 2026 09:25:36 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 88B383E4C15
+	for <ltp@archiver.kernel.org>; Tue, 29 Sep 2026 10:43:14 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2C3323CD737
- for <ltp@lists.linux.it>; Tue, 29 Sep 2026 09:24:36 +0200 (CEST)
-Received: from out28-99.mail.aliyun.com (out28-99.mail.aliyun.com
- [115.124.28.99])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 891823CD737
+ for <ltp@lists.linux.it>; Tue, 29 Sep 2026 10:42:57 +0200 (CEST)
+Received: from mail-ej2-x0e.google.com (mail-ej2-x0e.google.com
+ [IPv6:2a00:1450:4864:34::e])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id D86FA60096B
- for <ltp@lists.linux.it>; Tue, 29 Sep 2026 09:24:33 +0200 (CEST)
-X-Alimail-AntiSpam: AC=CONTINUE; BC=0.07436259|-1; CH=green;
- DM=|CONTINUE|false|;
- DS=CONTINUE|ham_system_inform|0.00470521-3.42876e-05-0.995261;
- FP=8005206424578250235|2|1|1|0|-1|-1|-1; HT=maildocker-contentspam033037022039;
- MF=yehuaisheng@open-hieco.net; NM=1; PH=DS; RN=5; RT=5; SR=0;
- TI=SMTPD_---.jR9cqkH_1790666669; 
-Received: from centos9p-03(mailfrom:yehuaisheng@open-hieco.net
- fp:SMTPD_---.jR9cqkH_1790666669 cluster:ay29) by smtp.aliyun-inc.com;
- Tue, 29 Sep 2026 15:24:30 +0800
-From: Huaisheng Ye <yehuaisheng@open-hieco.net>
-To: li.wang@linux.dev,
-	chrubis@suse.cz,
-	pvorel@suse.cz
-Date: Tue, 29 Sep 2026 15:24:12 +0800
-Message-ID: <20260929072412.20979-4-yehuaisheng@open-hieco.net>
-X-Mailer: git-send-email 2.52.0
-In-Reply-To: <20260929072412.20979-1-yehuaisheng@open-hieco.net>
-References: <20260929072412.20979-1-yehuaisheng@open-hieco.net>
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 451C46007B4
+ for <ltp@lists.linux.it>; Tue, 29 Sep 2026 10:42:57 +0200 (CEST)
+Received: by mail-ej2-x0e.google.com with SMTP id
+ a640c23a62f3a-c2dc2d5dc0fso29419266b.3
+ for <ltp@lists.linux.it>; Tue, 29 Sep 2026 01:42:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=linaro.org; s=google; t=1790671377; x=1791276177; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+ bh=/3qDSIke56NADZYKV/GnoapHDwXPaC8pX67lxqNCKgI=;
+ b=DSt13euuMx7Ccn6mxpy7z18Q6nBUa0XgwH+sdAsKJKRTusWdLPhdUxgC4zZq3rSf7e
+ 0vrrAm8Ni8TafWoacLwD78D9iiI8kU8xvg6eccv0c2uKItploVBXPwlFlYY0/ViZvH/k
+ EG0Kz2BxEP1F21JYGUXf0qxtFmtXAibIVEOLcW2KHCGHIuiITGu5tm3vEKvtdJFxQysS
+ MNA21O4oXm8kRqKt9gGBE25PsvtmslU6mVHoIgomJIrSmbG9EozKn22e2EP+UqRWYGv0
+ /O7xC+JaJAZpHQQvQp5cq1yjSLc54Ld/90azrP+TNiJWXV5ULKOlF8oSW0v02E3sMkXM
+ 5eLg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20260707; t=1790671377; x=1791276177;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to:content-type;
+ bh=/3qDSIke56NADZYKV/GnoapHDwXPaC8pX67lxqNCKgI=;
+ b=p2NV+T9gCUsDplJgu5U++yfhxwJLLgPNrTzcmST2WLg9XfO3V1jQa8XtNHb24jxwCr
+ fcxp8NqwqTz41QXcnPGJrQDA6DLpG1JO7Cx6Uo7iiVEg1Budf47z3F32E5LtThzlklET
+ wjPXd76GlYZaBHSbzC63KemGlqno90KNOHQcwRY9n8AR30UzsDNCCZlZz9EZfuY7ydFK
+ cS6yuyUUm1RKbzuvcW4Qan/On1MLn0+JV0jV9mAGwa/CZKREwN6Gh1TTsOAMC8tZ0UTs
+ N6Q9hpfGDl8OFwiw52lMaX9E50H0lfiStRbHJkcS4MrpEpn9MQnHRTUGj/CbPspM1589
+ 0+rQ==
+X-Gm-Message-State: AFq9FYLaJ5zyJ6ixkZ8nIedSvMKhJQxMX5hZRnieFTFpGxyUstbKKt7a
+ OWJ4OikMPREDMqPcSmasgR4KrgyhF5CvdvBnp1TO3STbBmsjje85CgAhEY59qEdy9peobXBkDzL
+ DA7QM
+X-Gm-Gg: AYBFou25qnNjvjjmM2tinyBHYH+TlAGyNeV7gcnQk13xAD8AGeMyFUqiDBNwWKqsOST
+ v9YmuT5h+swA5+hDy4DTmdoMr9Mgs5z+ZmuDqe482MTDNyxuuVtsFGY5wPYVin53G/UoyFTBLrp
+ LpuyABKb5RX0XXZHlRd0pB0Z4mLBEXfbctELIi+imu7/Dtl0IMYPwprppIRqDNxOBl143qwvhsa
+ bYC0rhKH2ZSjZvzUNSqvM/meXMhgT0em69iajGPGyeNV5HtrZUA/gD4xlibYAKDicnu9A2xRIlf
+ Urz+mQVarVzPejnP3yaK4jSOwq1/ptaKs/C7NAfdCvPjp23ph7EB45U4dSHy7AcfGVs3Hofhymm
+ 9LkkK4ONOPFrtnHWrgfQRf0CHldkm34xhyJf92HdmOAN6uPS4DPyxzmT9YbJGFLR18G909daVh1
+ 81jgqtQvZPAIUFGr0fPUPuIMDb5ZLbJrDL9q+f8LVYjG6gFBr1/9rBb9NK5PSI2gyKpeQL3x1aw
+ 8hDjEKySKD59++KaLY2VjW5X57eP7ndZg==
+X-Received: by 2002:a17:907:da2:b0:c2d:cf71:dd0b with SMTP id
+ a640c23a62f3a-c2dcf722f18mr522581666b.1.1790671376614; 
+ Tue, 29 Sep 2026 01:42:56 -0700 (PDT)
+Received: from localhost (c-85-229-7-191.bbcust.telenor.se. [85.229.7.191])
+ by smtp.gmail.com with ESMTPSA id
+ a640c23a62f3a-c2dd68a6f18sm287948966b.52.2026.09.29.01.42.56
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 29 Sep 2026 01:42:56 -0700 (PDT)
+From: Anders Roxell <anders.roxell@linaro.org>
+To: ltp@lists.linux.it
+Date: Tue, 29 Sep 2026 10:42:53 +0200
+Message-ID: <20260929084253.3093742-1-anders.roxell@linaro.org>
+X-Mailer: git-send-email 2.53.0
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 3/3] hugemmap10: Account for memory policy in
- private fault checks
+Subject: [LTP] [PATCH v2] tst_clone: Fix child detection on sparc
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -57,116 +88,48 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Kernels without private mmap-time reservations or with flags MAP_NORESERVE
-create the reservation when the private VMA first faults. With MPOL_BIND,
-globally free hugepages can be outside the allowed nodes, so this fault
-can create surplus pages even when the global counters appear sufficient.
+On sparc the clone syscall does not return 0 in the child. It returns
+the parent pid, so the child thinks it is the parent.
 
-    $ numactl --cpunodebind=0 --membind=2 ./hugemmap10 -n
-    tst_hugepage.c:84: TINFO: 3 hugepage(s) reserved
-    tst_tmpdir.c:308: TINFO: Using /tmp/LTP_hugdeSTgL as tmpdir (xfs filesystem)
-    tst_test.c:1218: TINFO: Mounting none to /tmp/LTP_hugdeSTgL/hugetlbfs fstyp=hugetlbfs flags=0
-    tst_test.c:2048: TINFO: LTP version: 20260529-237-g132c8b0a8
-    tst_test.c:2051: TINFO: Tested kernel: 7.3.0-rc1-test-32+ #33 SMP PREEMPT Mon Sep  7 11:50:02 CST 2026 x86_64
-    tst_kconfig.c:90: TINFO: Parsing kernel config '/proc/config.gz'
-    tst_test.c:1876: TINFO: Overall timeout per run is 0h 00m 30s
-    hugemmap10.c:498: TINFO: Base pool size: 0
-    hugemmap10.c:425: TINFO: Clean...
-    hugemmap10.c:476: TINFO: OK
-    hugemmap10.c:425: TINFO: Untouched, shared...
-    hugemmap10.c:476: TINFO: OK
-    hugemmap10.c:425: TINFO: Untouched, private...
-    hugemmap10.c:476: TINFO: OK
-    hugemmap10.c:425: TINFO: Touched, shared...
-    hugemmap10.c:476: TINFO: OK
-    hugemmap10.c:425: TINFO: Touched, private...
-    hugemmap10.c:476: TINFO: OK
-    hugemmap10.c:498: TINFO: Base pool size: 1
-    hugemmap10.c:425: TINFO: Clean...
-    hugemmap10.c:448: TFAIL: While touching the addr after mmap private: Bad HugePages_Total: expected 1, actual 2
-    hugemmap10.c:448: TFAIL: While touching the addr after mmap private: Bad HugePages_Free: expected 0, actual 1
-    hugemmap10.c:448: TFAIL: While touching the addr after mmap private: Bad HugePages_Surp: expected 0, actual 1
+Save the pid before the clone and compare it after.
 
-    Summary:
-    passed   0
-    failed   3
-    broken   0
-    skipped  0
-    warnings 0
-
-Get free hugepages on allowed nodes before touching an unreserved
-private mapping and use the maximum of the global and allowed-node
-shortfalls to calculate the expected counters.
-
-Signed-off-by: Huaisheng Ye <yehuaisheng@open-hieco.net>
+Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
 ---
- .../kernel/mem/hugetlb/hugemmap/hugemmap10.c  | 21 ++++++++++++-------
- 1 file changed, 13 insertions(+), 8 deletions(-)
+ lib/tst_clone.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap10.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap10.c
-index 1a5b0fd2f..bbbdc82ae 100644
---- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap10.c
-+++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap10.c
-@@ -363,7 +363,7 @@ static int unmap_(int s, int hpages, int flags, char *desc, int line)
- 	 * reservation.  If those pages were not touched, then they will
- 	 * not have been freed by the code above.  Free them here.
- 	 */
--	if ((flags & MAP_SHARED) || private_resv) {
-+	if (mapping_creates_reservation(flags)) {
- 		int unused_surplus = MIN(hpages - touched[s], es);
+diff --git a/lib/tst_clone.c b/lib/tst_clone.c
+index 296cd40ac0a0..d7f005a2d2a5 100644
+--- a/lib/tst_clone.c
++++ b/lib/tst_clone.c
+@@ -20,6 +20,9 @@ pid_t tst_clone(const struct tst_clone_args *tst_args)
+ 	};
+ 	int flags;
+ 	pid_t pid = -1;
++#ifdef __sparc__
++	pid_t parent_pid = tst_getpid();
++#endif
  
- 		et -= unused_surplus;
-@@ -378,10 +378,16 @@ static int unmap_(int s, int hpages, int flags, char *desc, int line)
+ 	tst_flush();
  
- static int touch_(int s, int hpages, int flags, char *desc, int line)
- {
-+	unsigned long allowed_free = 0;
- 	long et, ef, er, es;
-+	int creates_reservation = mapping_creates_reservation(flags);
- 	int nr;
- 	char *c;
+@@ -44,5 +47,10 @@ pid_t tst_clone(const struct tst_clone_args *tst_args)
+ 	if (pid == -1)
+ 		return -2;
  
-+	/* An unreserved private mapping creates its reservation on fault. */
-+	if (!creates_reservation)
-+		allowed_free = read_allowed_free_hugepages();
++#ifdef __sparc__
++	if (pid == parent_pid)
++		pid = 0;
++#endif
 +
- 	for (c = map_addr[s], nr = hpages;
- 			hpages && c < map_addr[s] + map_size[s];
- 			c += hpage_size, nr--)
-@@ -403,19 +409,18 @@ static int touch_(int s, int hpages, int flags, char *desc, int line)
- 	 * which could elevate total, free, and surplus counts.  resv is
- 	 * unchanged but free must be decreased.
- 	 */
--	if (flags & MAP_SHARED || private_resv) {
-+	if (creates_reservation) {
- 		et = prev_total;
- 		ef = prev_free - hpages;
- 		er = prev_resv - hpages;
- 		es = prev_surp;
- 	} else {
--		if (hpages + prev_resv > prev_free)
--			et = prev_total + (hpages - prev_free + prev_resv);
--		else
--			et = prev_total;
-+		unsigned long shortfall = surplus_pages_needed(hpages, allowed_free);
-+
-+		et = prev_total + shortfall;
- 		er = prev_resv;
--		es = prev_surp + et - prev_total;
--		ef = prev_free - hpages + et - prev_total;
-+		es = prev_surp + shortfall;
-+		ef = prev_free - hpages + shortfall;
- 	}
- 	return verify_counters(line, desc, et, ef, er, es);
+ 	return pid;
  }
 -- 
-2.52.0
+2.53.0
 
 
 -- 
