@@ -4,108 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D6BA5CA5FB1
-	for <ltp@archiver.kernel.org>; Wed, 30 Sep 2026 11:08:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BDD35CA5FBA
+	for <ltp@archiver.kernel.org>; Wed, 30 Sep 2026 11:26:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1790767572; h=date : to :
+ message-id : references : mime-version : in-reply-to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-type :
+ content-transfer-encoding : sender : from;
+ bh=MmqSZewOEbZafkp7iH6aLAlNDvVy1XJaGPpNN7oPoIU=;
+ b=q5KiQmjYAJtRW8pAl0fSxUKIzopv3SfQQu4sGb23EvbdlBOMsQScdNlh/ABWCTynXnkh3
+ JNUG9RL0dOqXSe7vfg9XEx1j9YE1uuiFdNijBsT0adzHkQ5llchF4AddwCV5IpLd4TumKfI
+ V9ddWZCHuiKvimov59NjnbvijJQqAh0=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 5B5603E5591
-	for <ltp@archiver.kernel.org>; Wed, 30 Sep 2026 13:08:07 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id BBDC03E568E
+	for <ltp@archiver.kernel.org>; Wed, 30 Sep 2026 13:26:12 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0D44C3E5591
- for <ltp@lists.linux.it>; Wed, 30 Sep 2026 13:07:51 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id C4D8C3C1CAC
+ for <ltp@lists.linux.it>; Wed, 30 Sep 2026 13:25:52 +0200 (CEST)
+Received: from mail-wr2-x10.google.com (mail-wr2-x10.google.com
+ [IPv6:2a00:1450:4864:30::10])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 59D772001C6
- for <ltp@lists.linux.it>; Wed, 30 Sep 2026 13:07:51 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 580371F7F8;
- Wed, 30 Sep 2026 11:07:50 +0000 (UTC)
-Authentication-Results: smtp-out2.suse.de;
-	none
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 28EE113722;
- Wed, 30 Sep 2026 11:07:50 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id JIHRAYbtvGqkIgAAD6G6ig
- (envelope-from <mdoucha@suse.cz>); Wed, 30 Sep 2026 11:07:50 +0000
-Message-ID: <be8d0bc2-ff14-48dd-822b-427e818f509e@suse.cz>
-Date: Wed, 30 Sep 2026 13:07:49 +0200
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id C145C1A0070E
+ for <ltp@lists.linux.it>; Wed, 30 Sep 2026 13:25:51 +0200 (CEST)
+Received: by mail-wr2-x10.google.com with SMTP id
+ ffacd0b85a97d-485ac898fa4so4166694f8f.0
+ for <ltp@lists.linux.it>; Wed, 30 Sep 2026 04:25:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1790767551; x=1791372351; darn=lists.linux.it;
+ h=in-reply-to:content-disposition:content-type:mime-version
+ :references:message-id:subject:cc:to:from:date:from:to:cc:subject
+ :date:message-id:reply-to:content-type;
+ bh=io9kON6DXJ/5ip82VJlVyQ8JDkSfc+nAACZyjiL3ack=;
+ b=duHu5N+cpVBEzNWbrB7zkznoEodGNvTWBuXSMyovdAL2Hq2awpbYfrM9Qo/vEekOiA
+ VWWJ0XixSVPSnNzeIXcK5jYi4ktWXm2wjjpZJfQoOYea0f57mT083C7rF0WQ0j0wNDuA
+ hDveru7WPybomPNmBIq4M2rozWpPinY6Qfrw96u9rG8VwpzOLiFOOhI+wUNIfAbTaqVy
+ BMYe4JtCGQOLilrlog4iFB6miwCff7hbYg96lf0VDFs0RqMCceAzW7xk0wlfC6FBJKv2
+ TuSbAwoZyMqls6v2l5XA+gE5fKKw78uNGBvbdVeYD5C8LJ2VyJGctXd7eDul9uBtU3aj
+ Gp0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20260707; t=1790767551; x=1791372351;
+ h=in-reply-to:content-disposition:content-type:mime-version
+ :references:message-id:subject:cc:to:from:date:x-gm-gg
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+ :content-type;
+ bh=io9kON6DXJ/5ip82VJlVyQ8JDkSfc+nAACZyjiL3ack=;
+ b=wETr2CDyh942z+S4hP+1yAeiQQv5IRV75gklBIpV81fZbiqQZVOUPJkaCqAWXt11t5
+ LqB5b93NmDDBIvNDiZQTK7yEDkiDk9UduyW7xx7an9AlF8NbRgfTsmsfW8QJYFX3S/eo
+ hyz2hYG0cT3grU3zqBps847MGQXSpKyydoxHY4w8baOjG7B9hGCTt3hZiO7Gc5GtJ4OE
+ NOViQtM/q3mXt16tkVQOsp1LesZMyvRunHbFcLRPEBtvPCHAW4cOMlk1xDo0po8sRqbD
+ SdeBa48Nlk1jyhpU3hJ8xk6r5BS/MRnsVG5Dw5UbgaKQMNmkkSji+XTTHQJ9JdoGZeIH
+ mlGA==
+X-Gm-Message-State: AFq9FYKOg/7qOM+PkpU6FTAXGJWoUb0rsI0CZXS2FcMo2ybxqMzf2kGI
+ CAE7agVplrxqN81m+5k4pJEvbMT4rv3WgzCLReCxdMJapY4sFURk1deBPHtLXSbYEYcd9EIT+mb
+ oUh8=
+X-Gm-Gg: AYBFou138EvbjZWXVoT0o/zS/fARv0JVy1SkZSqu5l/IvNe5/arF2SkwyzxhJrjCAXm
+ 3EMfAvLO5vTaQiCbORM4la7nKSrqyqUM+dEzXJs7mPw68IiF+2BiSDYzcEnurK3jhtPcEq0JC1S
+ vHi4FPHQgPCmMyM5kNDNQCCL2ACU0dgNGdWPPTwV4PSIOh9myisO/kWaGphVswT46rgbzZr5LDs
+ MQTGVwsu5UuSABeU+QwXly9VI+YxbxVcqOjx61nYTEUXmyRpCp+QjM85ATQAHqYgjA8PN17LPVq
+ wB2/FvyzhtGc9ciFbRWZesiyvigeAYHmNa4uaKhgcXbXSYAiDSMHolPH6VfDYhf83B64NjRnI7D
+ lnevu2UD1+Ywcvtaib3b3k05kD0BYGfsd6sCbVjpOEkGvK9ijcWdzmnquzSHNvAFiQUp9o+2yZl
+ g8wn1+7SqYdNy+PVWBxungnVv/1H7rOsJIIDS/QjqazC5rKdyH3qLGN5qsSIwrCnw4dTRN1WOHb
+ +49UhL0RdU8yeegIewHLsAjPz3EFE65at0jfzjMhzkVcOkjue3rBsgKF8IQ56FlJ1jfp5b47A==
+X-Received: by 2002:a05:6000:40ca:b0:48a:f571:7b50 with SMTP id
+ ffacd0b85a97d-48b024d7284mr2157965f8f.27.1790767551098; 
+ Wed, 30 Sep 2026 04:25:51 -0700 (PDT)
+Received: from autotest-wegao.qe.prg2.suse.org
+ ([2a07:de40:b240:0:2ad6:ed42:2ad6:ed42])
+ by smtp.gmail.com with ESMTPSA id
+ ffacd0b85a97d-48b029fc420sm2743928f8f.28.2026.09.30.04.25.50
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 30 Sep 2026 04:25:50 -0700 (PDT)
+Date: Wed, 30 Sep 2026 11:25:49 +0000
+To: linuxtestproject.agent@gmail.com
+Message-ID: <arzxvXvTYIKR0Dly@autotest-wegao.qe.prg2.suse.org>
+References: <20260930035332.3360-2-wegao@suse.com>
+ <20260930081114.8885-1-linuxtestproject.agent@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Cyril Hrubis <chrubis@suse.cz>, Andrea Cervesato <andrea.cervesato@suse.de>
-References: <20260930-fix_fw_load02-v2-1-accf7294475c@suse.com>
- <arzDQSg8_3ZHlvHq@yuki.lan>
-Content-Language: en-US
-From: Martin Doucha <mdoucha@suse.cz>
-Autocrypt: addr=mdoucha@suse.cz; keydata=
- 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 ag==
-In-Reply-To: <arzDQSg8_3ZHlvHq@yuki.lan>
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	REPLY(-4.00)[]
-X-Rspamd-Queue-Id: 580371F7F8
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20260930081114.8885-1-linuxtestproject.agent@gmail.com>
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] lib: Handle empty saved configuration values
+Subject: Re: [LTP] memcontrol: Add bind_to_current_cpu() helper
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -117,28 +103,59 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Linux Test Project <ltp@lists.linux.it>
+From: Wei Gao via ltp <ltp@lists.linux.it>
+Reply-To: Wei Gao <wegao@suse.com>
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On 9/30/26 10:07, Cyril Hrubis wrote:
-> Hi!
-> Looks good to me, but today is release day. Can we get this tested well
-> enough until afternoon so that it can be included in the release?
+On Wed, Sep 30, 2026 at 08:11:14AM +0000, linuxtestproject.agent@gmail.com wrote:
+> Hi Wei,
+> 
+> On Wed Sep 30 03:53:14 2026 +0000, Wei Gao via ltp wrote:
+> > memcontrol: Add bind_to_current_cpu() helper
+> 
+> --- [PATCH 1/2] ---
+> 
+> > Add bind_to_current_cpu() to memcontrol_common.h to allow memcg tests
+> > to bind the test process to a single CPU.
+> 
+> The commit message only restates what changed. Explain why memcg tests
+> need to bind to a single CPU (e.g. to prevent multi-CPU per-CPU memcg stock
+> charge accumulation from causing reclaim variance in hierarchical tests).
+> 
+The reason is in PATCH 2/2.
 
-I've tested this patch (fix for fw_load02) and also the epoll_ctl06 fix 
-on kernel v4.4, both tests now work correctly.
-
--- 
-Martin Doucha   mdoucha@suse.cz
-SW Quality Engineer
-SUSE LINUX, s.r.o.
-CORSO IIa
-Krizikova 148/34
-186 00 Prague 8
-Czech Republic
+> > +static inline void bind_to_current_cpu(void)
+> > +{
+> > +	int cpu = sched_getcpu();
+> > +	size_t mask_size;
+> > +	cpu_set_t *mask;
+> 
+> Include <sched.h> in memcontrol_common.h. The function uses sched_getcpu(),
+> cpu_set_t, CPU_ALLOC(), and sched_setaffinity(), but currently relies on
+> indirect inclusion via tst_test.h.
+@Andrea Maybe we need update AI rules? 
+> 
+> Verdict - Needs revision
+> 
+> Pre-existing issues:
+> - memcontrol03.c:209: sleep(1) is used in a polling loop. Polling loops
+>   should use exponential backoff or checkpoint synchronization.
+> - memcontrol03.c:241, memcontrol04.c:240: fd validity is checked with
+>   fd > -1 instead of the LTP convention fd != -1.
+> 
+> ---
+> Note:
+> 
+> The agent can sometimes produce false positives although often its
+> findings are genuine. If you find issues with the review, please
+> comment this email or ignore the suggestions.
+> 
+> Regards,
+> LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
