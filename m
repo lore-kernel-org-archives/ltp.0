@@ -4,50 +4,50 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8D262CA5FBA
-	for <ltp@archiver.kernel.org>; Wed, 30 Sep 2026 11:05:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D6BA5CA5FB1
+	for <ltp@archiver.kernel.org>; Wed, 30 Sep 2026 11:08:08 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8FB593E5649
-	for <ltp@archiver.kernel.org>; Wed, 30 Sep 2026 13:05:22 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 5B5603E5591
+	for <ltp@archiver.kernel.org>; Wed, 30 Sep 2026 13:08:07 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 52CDE3C0F67
- for <ltp@lists.linux.it>; Wed, 30 Sep 2026 13:05:07 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+ by picard.linux.it (Postfix) with ESMTPS id 0D44C3E5591
+ for <ltp@lists.linux.it>; Wed, 30 Sep 2026 13:07:51 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 81E6310007FB
- for <ltp@lists.linux.it>; Wed, 30 Sep 2026 13:05:06 +0200 (CEST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 59D772001C6
+ for <ltp@lists.linux.it>; Wed, 30 Sep 2026 13:07:51 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 1E43521E81;
- Wed, 30 Sep 2026 11:05:05 +0000 (UTC)
-Authentication-Results: smtp-out1.suse.de;
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 580371F7F8;
+ Wed, 30 Sep 2026 11:07:50 +0000 (UTC)
+Authentication-Results: smtp-out2.suse.de;
 	none
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E560E13722;
- Wed, 30 Sep 2026 11:05:04 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 28EE113722;
+ Wed, 30 Sep 2026 11:07:50 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id SgllL+DsvGq8HwAAD6G6ig
- (envelope-from <mdoucha@suse.cz>); Wed, 30 Sep 2026 11:05:04 +0000
-Message-ID: <32ec1bde-c66d-4594-bd95-6be4c8a32439@suse.cz>
-Date: Wed, 30 Sep 2026 13:05:04 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id JIHRAYbtvGqkIgAAD6G6ig
+ (envelope-from <mdoucha@suse.cz>); Wed, 30 Sep 2026 11:07:50 +0000
+Message-ID: <be8d0bc2-ff14-48dd-822b-427e818f509e@suse.cz>
+Date: Wed, 30 Sep 2026 13:07:49 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-To: Andrea Cervesato <andrea.cervesato@suse.de>,
- Linux Test Project <ltp@lists.linux.it>
+To: Cyril Hrubis <chrubis@suse.cz>, Andrea Cervesato <andrea.cervesato@suse.de>
 References: <20260930-fix_fw_load02-v2-1-accf7294475c@suse.com>
+ <arzDQSg8_3ZHlvHq@yuki.lan>
 Content-Language: en-US
 From: Martin Doucha <mdoucha@suse.cz>
 Autocrypt: addr=mdoucha@suse.cz; keydata=
@@ -93,17 +93,17 @@ Autocrypt: addr=mdoucha@suse.cz; keydata=
  sOf6M5s7RKNzreVXkrlArE+x29swkXZbxFoXuahA2iykPyyCAgPz0ikRI+374jXVAtbZAAut
  HD1KfuCahogFT4upYpOUl26KquywYOGciSan4jHuqXIVCQzjYd/zOzsL7hTJiteae/oOg4m5
  i8BUUzanmo3FPwFBcjEn4nDvkw/YEo5gtQZmrxOHQAdSHdyqtFgRxu4+w3JFmnQvkResUgm3 ag==
-In-Reply-To: <20260930-fix_fw_load02-v2-1-accf7294475c@suse.com>
+In-Reply-To: <arzDQSg8_3ZHlvHq@yuki.lan>
 X-Rspamd-Pre-Result: action=no action; module=replies;
  Message is reply to one we originated
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
 X-Spamd-Result: default: False [-4.00 / 50.00];
 	REPLY(-4.00)[]
-X-Rspamd-Queue-Id: 1E43521E81
-X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: 580371F7F8
 X-Rspamd-Pre-Result: action=no action; module=replies;
  Message is reply to one we originated
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH v2] lib: Handle empty saved configuration values
 X-BeenThere: ltp@lists.linux.it
@@ -117,121 +117,19 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: Linux Test Project <ltp@lists.linux.it>
 Content-Transfer-Encoding: 7bit
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi,
-looks good.
+On 9/30/26 10:07, Cyril Hrubis wrote:
+> Hi!
+> Looks good to me, but today is release day. Can we get this tested well
+> enough until afternoon so that it can be included in the release?
 
-Reviewed-by: Martin Doucha <mdoucha@suse.cz>
-
-On 9/30/26 09:43, Andrea Cervesato wrote:
-> From: Andrea Cervesato <andrea.cervesato@suse.com>
-> 
-> Empty string module parameters return EOF on kernels prior to 4.14
-> commit 96802e6b1dbf ("kernel/params.c: fix an overflow in
-> param_attr_show"), causing fw_load02 to abort with TBROK on v4.4.
-> 
-> Accept empty values while retaining read-error handling and the original
-> errno. Restore empty strings with a NUL byte: an empty write does not
-> invoke the sysfs setter, while a newline would change the saved value.
-> 
-> Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
-> Reviewed-by: Petr Vorel <pvorel@suse.cz>
-> Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
-> ---
-> Fix the following behaviour on kernel < 4.14 96802e6b1dbf
-> 
-> tst_kconfig.c:90: TINFO: Parsing kernel config '/proc/config.gz'
-> tst_kconfig.c:90: TINFO: Parsing kernel config '/proc/config.gz'
-> tst_kconfig.c:90: TINFO: Parsing kernel config '/proc/config.gz'
-> tst_security.c:115: TINFO: SecureBoot sysfs file not available
-> tst_security.c:94: TINFO: Unable to determine system lockdown state
-> tst_security.c:115: TINFO: SecureBoot sysfs file not available
-> tst_tmpdir.c:309: TINFO: Using /tmp/LTP_fw_ZRzLML as tmpdir (btrfs filesystem)
-> tst_sys_conf.c:103: TBROK: Failed to read anything from '/sys/module/firmware_class/parameters/path': SUCCESS (0)
-> 
-> Summary:
-> passed   0
-> failed   0
-> broken   1
-> skipped  0
-> warnings 0
-> ---
-> Changes in v2:
-> - fix commit message
-> - fix according to Martin's suggestion
-> - Link to v1: https://lore.kernel.org/20260929-fix_fw_load02-v1-1-4cd5f95d172b@suse.com
-> ---
->   lib/tst_sys_conf.c | 21 ++++++++++++++++-----
->   1 file changed, 16 insertions(+), 5 deletions(-)
-> 
-> diff --git a/lib/tst_sys_conf.c b/lib/tst_sys_conf.c
-> index 80cd83569..f69eb3c7f 100644
-> --- a/lib/tst_sys_conf.c
-> +++ b/lib/tst_sys_conf.c
-> @@ -54,10 +54,10 @@ void tst_sys_conf_save_str(const char *path, const char *value)
->   
->   int tst_sys_conf_save(const struct tst_path_val *conf)
->   {
-> -	char line[PATH_MAX];
-> +	char line[PATH_MAX] = {};
->   	int ttype, iret;
-> +	int read_err = 0, saved_errno = 0;
->   	FILE *fp;
-> -	void *ret;
->   
->   	if (!conf || !conf->path)
->   		tst_brk(TBROK, "path is empty");
-> @@ -92,13 +92,17 @@ int tst_sys_conf_save(const struct tst_path_val *conf)
->   		return 1;
->   	}
->   
-> -	ret = fgets(line, sizeof(line), fp);
-> +	if (!fgets(line, sizeof(line), fp))
-> +		read_err = ferror(fp);
-> +
-> +	saved_errno = errno;
->   	fclose(fp);
->   
-> -	if (ret == NULL) {
-> +	if (read_err) {
->   		if (conf->flags & TST_SR_IGNORE_ERR)
->   			return 1;
->   
-> +		errno = saved_errno;
->   		tst_brk(TBROK | TERRNO, "Failed to read anything from '%s'",
->   			conf->path);
->   	}
-> @@ -142,7 +146,14 @@ void tst_sys_conf_restore(int verbose)
->   			tst_res(TINFO, "Restoring conf.: %s -> %s\n",
->   				i->path, i->value);
->   		}
-> -		FILE_PRINTF(i->path, "%s", i->value);
-> +		/*
-> +		 * A zero-length write does not invoke the sysfs store callback.
-> +		 * Write a NUL byte to restore an empty string module parameter.
-> +		 */
-> +		if (!i->value[0])
-> +			FILE_PRINTF(i->path, "%c", '\0');
-> +		else
-> +			FILE_PRINTF(i->path, "%s", i->value);
->   	}
->   }
->   
-> 
-> ---
-> base-commit: 1cbe713ca9d55bed7e4d52c6f2216ba3e2089346
-> change-id: 20260929-fix_fw_load02-6b0305f6bd7b
-> 
-> Best regards,
-> --
-> Andrea Cervesato <andrea.cervesato@suse.com>
-> 
-> 
-
+I've tested this patch (fix for fw_load02) and also the epoll_ctl06 fix 
+on kernel v4.4, both tests now work correctly.
 
 -- 
 Martin Doucha   mdoucha@suse.cz
