@@ -4,64 +4,108 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BF4FFCA5FBB
-	for <ltp@archiver.kernel.org>; Wed, 30 Sep 2026 13:53:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 94892CA5FCD
+	for <ltp@archiver.kernel.org>; Wed, 30 Sep 2026 14:08:55 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E2A5B3E56AC
-	for <ltp@archiver.kernel.org>; Wed, 30 Sep 2026 15:53:56 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 9DBAC3E569D
+	for <ltp@archiver.kernel.org>; Wed, 30 Sep 2026 16:08:53 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 7F1BF3C5493
- for <ltp@lists.linux.it>; Wed, 30 Sep 2026 15:53:41 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+ by picard.linux.it (Postfix) with ESMTPS id A07F43E5662
+ for <ltp@lists.linux.it>; Wed, 30 Sep 2026 16:08:37 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id C1C186008F1
- for <ltp@lists.linux.it>; Wed, 30 Sep 2026 15:53:40 +0200 (CEST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id B35A11A00441
+ for <ltp@lists.linux.it>; Wed, 30 Sep 2026 16:08:36 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id B38EA21E26;
- Wed, 30 Sep 2026 13:53:39 +0000 (UTC)
-Authentication-Results: smtp-out1.suse.de;
-	none
+ by smtp-out2.suse.de (Postfix) with ESMTPS id A607C1F871;
+ Wed, 30 Sep 2026 14:08:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1790777314;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=a0TSbb1/AcOeB/KklB9Xr08mRhSVELOblg7ELOF3W1w=;
+ b=OxBovLLhN2f4uuQmgcvYxXbg077BBKIeJfjg33mMw69ZwbQgb666b+hH9Ym9qYwW1YEDTj
+ raqJBT9KTn0CquDcwDoDMh36jyVLedvpYENzz/OyH91jlB/HPLco/gwNIa1mUGGmOMuB4x
+ NN63vfP0KOGpgpZtQpa1hLcEmz9Lk2w=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1790777314;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=a0TSbb1/AcOeB/KklB9Xr08mRhSVELOblg7ELOF3W1w=;
+ b=Etr1ZB3KGp09vDp+WoeopS8lUkLMoOOEjDP5LtqsO69cI7ivTdBK+KUzYH5yiCc6h3UJC1
+ i+38ppsooBJW4DCg==
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=OVZpOfZL;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=JKP5iPCW
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1790777313;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=a0TSbb1/AcOeB/KklB9Xr08mRhSVELOblg7ELOF3W1w=;
+ b=OVZpOfZLNpESwhfzXVn7TQyXcgy8wo7u7vArAfI2S68UD1kUSh7hdMASYtuPVPnGSjR9ZW
+ qO68X26+iQKRBSiC3LKGeKnniH8m2WRdNho4MN56VhA2Vqqv7KCaH2tL7M7EjLy36WKc4p
+ YotgTUrmPNfO3HamaXcid/KHri4nx9M=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1790777313;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=a0TSbb1/AcOeB/KklB9Xr08mRhSVELOblg7ELOF3W1w=;
+ b=JKP5iPCWlzEh864NL4xSqgIoM8Ng7FtZzvnW+yzQWcNGdErJgphB7eccLn7oI+JEF0Ms6E
+ j8X66b7Zf4vhrOAA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8B5F713722;
- Wed, 30 Sep 2026 13:53:38 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 502EE13AC2;
+ Wed, 30 Sep 2026 14:08:33 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id W2XJF2IUvWqRTwAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Wed, 30 Sep 2026 13:53:38 +0000
-Date: Wed, 30 Sep 2026 15:53:33 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 6io+CuEXvWp9XwAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Wed, 30 Sep 2026 14:08:33 +0000
+Date: Wed, 30 Sep 2026 16:08:31 +0200
 From: Petr Vorel <pvorel@suse.cz>
-To: Anders Roxell <anders.roxell@linaro.org>
-Message-ID: <20260930135333.GA2721643@pevik>
-References: <20260929084253.3093742-1-anders.roxell@linaro.org>
- <20260929142156.GB2462033@pevik>
- <CADYN=9Jh83y=n55DbM-niXBE0kot87jECtuM778_WSo6e3p=8g@mail.gmail.com>
+To: Martin Doucha <mdoucha@suse.cz>
+Message-ID: <20260930140831.GB2721643@pevik>
+References: <20260930-fix_epoll_bpf-v2-1-c1ac22e73b8c@suse.com>
+ <8055a421-c46e-4566-bc42-d1e1a08b4d2b@suse.cz>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <CADYN=9Jh83y=n55DbM-niXBE0kot87jECtuM778_WSo6e3p=8g@mail.gmail.com>
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	REPLY(-4.00)[]
-X-Rspamd-Queue-Id: B38EA21E26
+In-Reply-To: <8055a421-c46e-4566-bc42-d1e1a08b4d2b@suse.cz>
+X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[99.99%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ MISSING_XM_UA(0.00)[]; ARC_NA(0.00)[];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ MIME_TRACE(0.00)[0:+]; REPLYTO_EQ_FROM(0.00)[];
+ DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ RCPT_COUNT_THREE(0.00)[4]; RCVD_TLS_ALL(0.00)[];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:dkim,suse.cz:replyto];
+ TO_DN_ALL(0.00)[]; DKIM_TRACE(0.00)[suse.cz:+]
 X-Rspamd-Action: no action
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+X-Rspamd-Queue-Id: A607C1F871
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] tst_clone: Fix child detection on sparc
+Subject: Re: [LTP] [PATCH v2] epoll_ctl06: Fix BPF map on old kernels
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -74,64 +118,23 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it
+Cc: Linux Test Project <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Anders,
+Hi Andrea, Martin,
 
-> On Tue, 29 Sept 2026 at 16:22, Petr Vorel <pvorel@suse.cz> wrote:
+> Hi,
+> look good to me.
 
-> > Hi Anders,
+thanks for you both for your time, merged!
 
-> > > On sparc the clone syscall does not return 0 in the child. It returns
-> > > the parent pid, so the child thinks it is the parent.
-
-> > So, somebody still test sparc :). Before applying a workaround few questions.
-
-> > I suppose this is because we did not updated our syscalls numbers.
-
-> Yes, clone3 was missing...
-
-Thanks for info.
-
-
-
-> > I send a patch which regenerated syscall numbers to have clone3 on sparc (both
-> > 32 and 64 bit) v7.0:
-
-> > $ include/lapi/syscalls/generate_arch.sh ../linux
-
-> > Can you please verify it works with clone3()? It was added this year in v7.0 in
-> > 2153b2e8917b7 ("sparc: Add architecture support for clone3")
-
-> Yes, it works. I tested on sparc64 in QEMU with a v7.3-rc4 kernel and
-> a buildroot
-> rootfs with LTP 20260529 + your patch only. All 94 fs_bind tests pass.
-
-FYI there is v2 from Andrea, your testing is highly appreciated (although the
-might be some additional changes to script which generates it.
-
-https://patchwork.kernel.org/project/ltp/list/?series=1176684&state=*
-
-> > Do we care about the past?
-
-> That's a good question, I think we do, because of the LTS kernels...
-> We run the latest LTP on the LTS kernels...
-
-Yeah, it should be probably merged. I'm sorry that we did not make it to this
-LTP release (Cyril is tagging today). Could you please send v3, which address
-agent issues?
-
-https://lore.kernel.org/ltp/CADYN=9Jh83y=n55DbM-niXBE0kot87jECtuM778_WSo6e3p=8g@mail.gmail.com/
+I suppose this is the last change before the release.
 
 Kind regards,
 Petr
-
-> Cheers,
-> Anders
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
