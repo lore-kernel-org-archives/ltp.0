@@ -4,83 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 36A89CA5FC7
-	for <ltp@archiver.kernel.org>; Wed, 30 Sep 2026 15:02:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7D397CA5FC7
+	for <ltp@archiver.kernel.org>; Wed, 30 Sep 2026 15:04:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1790780668; h=date : to :
+ message-id : references : mime-version : in-reply-to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-type :
+ content-transfer-encoding : sender : from;
+ bh=5f9bHGx8OOcm3R0Klx90acIiHrabG9pJ7Nt2Ry5yT38=;
+ b=ZSaEq4P4fA2h96L/bXgP5aKpUrkU88+EaTSnxs8RRZbnMl0cgSC4GocByT5WSLabM1VH/
+ gJhiJWu3r0KV0PFRG2OrsOG7/mVVS0QycCC+LUtORISX4D7+K2kkLCdEkRfd1XxK/yTiyAw
+ CS2JXwvzNKLHxkSFHGIJI8bnn1wai8k=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 69BC13E5E11
-	for <ltp@archiver.kernel.org>; Wed, 30 Sep 2026 17:02:34 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id A21133E5E11
+	for <ltp@archiver.kernel.org>; Wed, 30 Sep 2026 17:04:28 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 87B493C2EC2
- for <ltp@lists.linux.it>; Wed, 30 Sep 2026 17:02:19 +0200 (CEST)
-Received: from mail-pj2-x0a.google.com (mail-pj2-x0a.google.com
- [IPv6:2607:f8b0:4864:39::a])
+ by picard.linux.it (Postfix) with ESMTPS id 9B19F3C2EC2
+ for <ltp@lists.linux.it>; Wed, 30 Sep 2026 17:04:08 +0200 (CEST)
+Received: from mail-wm2-x10.google.com (mail-wm2-x10.google.com
+ [IPv6:2a00:1450:4864:31::10])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id C2BCE1400246
- for <ltp@lists.linux.it>; Wed, 30 Sep 2026 17:02:18 +0200 (CEST)
-Received: by mail-pj2-x0a.google.com with SMTP id
- d9443c01a7336-2cf5e516e67so15697425ad.1
- for <ltp@lists.linux.it>; Wed, 30 Sep 2026 08:02:18 -0700 (PDT)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 27D2820005A
+ for <ltp@lists.linux.it>; Wed, 30 Sep 2026 17:04:08 +0200 (CEST)
+Received: by mail-wm2-x10.google.com with SMTP id
+ 5b1f17b1804b1-49b912df756so42548215e9.3
+ for <ltp@lists.linux.it>; Wed, 30 Sep 2026 08:04:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1790780537; x=1791385337; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to:content-type;
- bh=43m6d9icJmQ+R6TpYjdp7kZwL0jEiPJCAjJaYtUzBhI=;
- b=FN/CUhJ9OhEU3kUN5+sg14Ab7nlLb3WtZa5+FIXoFCqvAYe2iYFG7Qtl0WEgp6J+1F
- ijXVdBcuJ4NOrxVxw7IMS5vadpRWKKj2R6Wn4KZ1a/f+ZX/vcPc+GItjSQZkx1JoRkxh
- 1lGBrRh5II+teM2t8X39RRig2G6ttGiF61R0ScMY/2nbDVxHNfPDeOfJU7WcfFnFTRKv
- Zmxr6JJe0qgASMNGWtKzNCqpHabtbTOeVBXjmrXGt5M9iH/YqkAL4Wj5qhE7+QXVFGhn
- WMenX/eC9Sc7HSfkiuuBfBK/NZ25bruU8+DpPpM+UJuviuKU/xyFQKPUv3L4xsXpO4Ux
- RoNQ==
+ d=suse.com; s=google; t=1790780647; x=1791385447; darn=lists.linux.it;
+ h=in-reply-to:content-transfer-encoding:content-disposition
+ :content-type:mime-version:references:message-id:subject:cc:to:from
+ :date:from:to:cc:subject:date:message-id:reply-to:content-type;
+ bh=oC8MxY+YgWMMCp9ETTG4QJzFxvYoC74MlZJ/zWw8peA=;
+ b=b3NrOJ9KWUFjq5PpQ8JQXCgC5TcvaeFcxhR3u/O3WYHUlyPL/nq6UTiAecefb6+qcR
+ PZyW7MUmLdqvGxoYb0YnBtfu7F2bYmcb/001vPEzRRdxJGOA6BWKegp8Fo0TFnDXmFbE
+ tsMsk9jACiS5K4wo3wnOCIxfcwxHBn7CutA8hn6TyP6erTT8FxNP11kTvwBY93PkUNcn
+ RzuozlEcJDmTMHlHvduSBNeE1WOfKpw+Wp2rcyjNk02eAaTbYj6WCQRmD8YvC/0S/owx
+ UeeKzsTv65+mn6dGVqUKi98CIE+wL9BxQKjh6XGaT0EOdVXCjmYl4ILpRXtR2qIeV87Z
+ B68w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20260707; t=1790780537; x=1791385337;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to:content-type;
- bh=43m6d9icJmQ+R6TpYjdp7kZwL0jEiPJCAjJaYtUzBhI=;
- b=rTb2V6jrfnGIwTQr0E9CAdIJoe5J0k/e/MUnVFNa24dIV5yMgfydrGUPRmuDNmmZE+
- vwSGepCOxRK1Jq2qa79x8otj7C56VM9YXE3LUPgdp902Rnl65PMuGPFqNLk8kLZh1W1Z
- BfAqTJCGKpVmbyvVMsEawE4o1WKxZqOtr76ylAY2XKNVoRWzKplUKCnv2mJ1xVEOtrK2
- hsjRJvcdcqf0tvj4P0sWnQg7BXAiCQUVpO+UHJ3N6fGhp8uhoZE3nrHFChviU5FVTPX5
- PIWN7G7mBpq36775OZrI38EHG64yg77bJcrp/A/5vQR9iVVWAjc2mxwGXuxTG6zF80wP
- YVYQ==
-X-Gm-Message-State: AFq9FYLiYlV7o+p2cMtoQmidOadgg2g+PE4vLINdoMIYtfEnYxR8DqEg
- c24gO5H02KQ6UV5h5YPPnKh3OX/kwMXPzMGki1t7ekqDTKe2twUEjlHhBuHlrCw7UnA=
-X-Gm-Gg: AYBFou1OjTl0eLbQcjvhkUsLWU6Z0Dxf/ZuZ7VKUxZgCqq4IJB9wo5eF6Tmuc028Gq5
- xImU5OHwi9HcrXfE0JIWsxnfg5akmHU6nCR+Tf0V/EHyXqOjz7SMnyhrkiF/Q05LXlmYXw9Fpcp
- G/SR4r7OD9KUf15zq2zzHTfDgUVLhvWO/JjMlqEwUTXK9vo7Zn2bwKpq4QlzDT9qWdQacdZEoqt
- diiBVe5LG+xm3eFSzixfdf5PrPDccOiQJ7WhzMoZuhLNczLa2YKqLnv8Dp26/nhfTJs5mKecYqV
- bSIjid+G5y4MIbMYrVduJaKt/QbsQon4kGXBdwJKClOxEbTDHx56R54zhBHEtcZSr0Shqe6JthX
- 5qk6hcTKlNyjXQxuB4LOjWUyfqkMUo0BO6xouDwSnxTdLVTrXnDd1h4OHtlmcS8yqZCZTUWUod/
- Z3OM0HQRUh4NFJT3jOarCmU3E3dqy/FRT3tTINIVtfvqtCK2HcEWraa3JjlSDvrpRLJg1LiI5jp
- V0no7GRnruKSaTb2tH0yzU0e1ml6ahffDitY9wy5XXdeZz2XpYjeyhhAQsVIyHdZPpOxkBe7Y1X
- zboZt41P8EjAbfIdRa4=
-X-Received: by 2002:a17:902:ce05:b0:2df:ad58:cf5b with SMTP id
- d9443c01a7336-2e2e491952bmr13960455ad.3.1790780536565; 
- Wed, 30 Sep 2026 08:02:16 -0700 (PDT)
-Received: from
- runnervm8df0l.gwsxv2ois3gero3osach3nzdnc.xx.internal.cloudapp.net
- ([4.155.237.7]) by smtp.gmail.com with ESMTPSA id
- d9443c01a7336-2e2e5b897d8sm9421635ad.28.2026.09.30.08.02.15
+ d=1e100.net; s=20260707; t=1790780647; x=1791385447;
+ h=in-reply-to:content-transfer-encoding:content-disposition
+ :content-type:mime-version:references:message-id:subject:cc:to:from
+ :date:x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to:content-type;
+ bh=oC8MxY+YgWMMCp9ETTG4QJzFxvYoC74MlZJ/zWw8peA=;
+ b=DG3r6PGJmJwkO5RT0+krjPngu3nMZegdfFxnWXWRZ44QPoLwGlrn/BrOo2fjdf82iB
+ Gk0Zhw6w7n+HSMw19M2owrOlGFa+b7Iws5IuPtd1/Zd2zjwDavPgigIix1Bv6n/lfEbr
+ aw5f0kbYWLWXbO4qhGKS0KqP4tUcGyrMIqcWzkouGAz/3FhhBlN9QkzVlhM/jeqn++q/
+ be5jQvdOIXrwYNZ9UEntSAWRF50jEBh9UyLPAsdA0C6Z7pywZDlzduISdlucHWOpEiqr
+ a+SNQmv4FAlBglsJEGq3AS5LdYo69/S3sX1B+/ysOsrEE9XFHz6IiuTU009eZ+V/WBzd
+ NCMQ==
+X-Gm-Message-State: AFuF++kpc1yxNxIPlypZidL9yt+iGkou9NHZ2ozUW8OhbF4C2kuyvMMM
+ ahXVo2TSoYEKtb0vkiyri/HK3R3e95+tklw8Ub9UArh8VNoK8qqH/z9QU4LPIpq/xHE=
+X-Gm-Gg: AYBFou3WEI7Nf/mX/ZZgRgPDFxYvwgLrTKMAlEYuqf6wEIG+V6LsFnuFz7dV1+YgV1S
+ 27dSu/yTh7Cexflk+ZS+GDOxzjpTYfLeRB0l7koxHrsjCeU4Np6QiEnHIoggqwK383vom7fclqf
+ BwYv+ebL3wwJCer63Pjj5stxwM+/bRuoqQBTHiDsGE3zOCZe9q/Fdz6bWhr3S2vcl7PMvChQDPm
+ kg+2plT02EISFM2Zh3lFW289tVLl3AWKiPQW8yIpXUTYmNflQGp7F6Q20N2mnG9JrdO1GYFETka
+ Mr6DZ4/6HLBo3iJHJjk8ss8zadQINdmdQpl7CNck8HvCYsOpZcHw0drMPebgGe89nOSfoD0EMCW
+ rPuLUheEgzUW45WphOLVp88NIuxL5920/ey7xQp9CrsLWNxxem6VEq3zXKEDIN7EdP4MkTkxPcc
+ iyMHNmjFnbcP8xBvwBdrubxIyKzqon3BGlf1xWmdc7U5m3ACAaYdVkGJbbI3btFFhUyrD0o5Oy6
+ w==
+X-Received: by 2002:a05:600d:6409:10b0:4a0:1c10:12b9 with SMTP id
+ 5b1f17b1804b1-4a01c1027c6mr18911965e9.32.1790780647455; 
+ Wed, 30 Sep 2026 08:04:07 -0700 (PDT)
+Received: from localhost.localdomain ([2001:af0:8000:1409:193:86:92:181])
+ by smtp.gmail.com with ESMTPSA id
+ 5b1f17b1804b1-4a01e64dabfsm6953955e9.6.2026.09.30.08.04.06
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 30 Sep 2026 08:02:15 -0700 (PDT)
-From: linuxtestproject.agent@gmail.com
-To: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Wed, 30 Sep 2026 15:02:14 +0000
-Message-ID: <20260930150214.20225-1-linuxtestproject.agent@gmail.com>
-X-Mailer: git-send-email 2.55.0
-In-Reply-To: <20260930-fix_generate_syscalls-v1-1-fccaef437fa1@suse.com>
-References: <20260930-fix_generate_syscalls-v1-1-fccaef437fa1@suse.com>
+ Wed, 30 Sep 2026 08:04:07 -0700 (PDT)
+Date: Wed, 30 Sep 2026 17:04:05 +0200
+To: Sebastian Chlad <sebastianchlad@gmail.com>
+Message-ID: <ar0k4cOIGinJHU6o@localhost.localdomain>
+References: <20260926204459.20699-1-sebastianchlad@gmail.com>
+ <20260926204459.20699-2-sebastianchlad@gmail.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20260926204459.20699-2-sebastianchlad@gmail.com>
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] generate_arch.sh: Fix syscall extraction bugs
+Subject: Re: [LTP] [PATCH 1/2] memcg/memcontrol0[34]: Use expected values
+ from the protection model
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -92,28 +102,81 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+From: =?utf-8?q?Michal_Koutn=C3=BD_via_ltp?= <ltp@lists.linux.it>
+Reply-To: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+Cc: Sebastian Chlad <sebastian.chlad@suse.com>, ltp@lists.linux.it
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Andrea,
+Hello. =
 
-On Wed, 30 Sep 2026, Andrea Cervesato wrote:
-> generate_arch.sh: Fix syscall extraction bugs
 
-Verdict - Reviewed
+On Sat, Sep 26, 2026 at 10:44:53PM +0200, Sebastian Chlad <sebastianchlad@g=
+mail.com> wrote:
+> From: Sebastian Chlad <sebastian.chlad@suse.com>
+> =
 
----
-Note:
+> memcontrol03 (memory.min) and memcontrol04 (memory.low) still expect
+> A/B/C ~=3D 33M and A/B/D ~=3D 17M after reclaim, which are the values from
+> the original kselftest. These were never derived from how the kernel
+> distributes protection among siblings, and the kselftest replaced them
+> with simulated values for both tests in kernel commit f10b6e9a8e66
+> ("selftests: memcg: adjust expected reclaim values of protected
+> cgroups"):
+> =
 
-The agent can sometimes produce false positives although often its
-findings are genuine. If you find issues with the review, please
-comment this email or ignore the suggestions.
+>   A/B/C  memory.current ~=3D 29M
+>   A/B/D  memory.current ~=3D 21M
+> =
 
-Regards,
-LTP AI Reviewer
+> (see tools/testing/selftests/cgroup/memcg_protection.m for the model).
+> =
 
--- 
+> Real kernels match the model,
+
+Note: this was true at the time of the model introduction but the
+contemporary kernels may diverge slightly from it. (Not conceptually
+AFAIR, although some rounding / effective values caching could possibly
+affect the final values.)
+
+> so the old D target leaves very little
+> room below the upper bound of the 20% tolerance. On 6.12 x86_64, 105
+> iterations of memcontrol03 across ext2, ext3, ext4, xfs and btrfs gave:
+> =
+
+>   A/B/C  27.5M - 27.9M  (old range 22.0M - 49.5M)
+>   A/B/D  22.7M - 23.0M  (old range 11.3M - 25.5M)
+> =
+
+> so A/B/D is already at ~90% of the old limit and small variations in
+> reclaim push it over. Passing runs on 6.4 ppc64le show the same
+> picture for both tests (C 22.6M - 32.0M, D 17.6M - 24.2M).
+> =
+
+> Switch to the model values. Keep the 20% tolerance, which is already
+> at least as wide as the kselftest's; kernel commit d2def68ae06a
+> ("selftests: memcg: increase error tolerance of child memory.current
+> check in test_memcg_protection()") raised the kselftest tolerances to
+> 15% (C) and 20% (D) for the same kind of sporadic failures.
+
+Makes sense to sync this with the kernel variant.
+Reviewed-by: Michal Koutn=FD <mkoutny@suse.com>
+
+> This doesn't change the outcome where C is reclaimed far below D while
+> the unprotected A/B/F keeps its pagecache (seen e.g. on ppc64le with
+> C ~=3D 6M and F ~=3D 13M). That is a protection failure the tests should
+> keep reporting.
+
+I presume you refer the same reclaim mode "collapse" that was tackled in
+7e19705f7 ("memcg/memcontrol04: Fix judgment for recursive_protection")
+(there it was only for unexpected events but that could be connected
+with the unexpected final F.memory.current). It is nothing new, correct?
+
+Thanks,
+Michal
+
+-- =
+
 Mailing list info: https://lists.linux.it/listinfo/ltp
