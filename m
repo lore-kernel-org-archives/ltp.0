@@ -4,93 +4,114 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E1E0FCA5FAB
-	for <ltp@archiver.kernel.org>; Wed, 30 Sep 2026 03:55:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1790740536; h=date : to :
- message-id : references : mime-version : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=UznPBWtaC2g08Ydg6oGBsrvGXZXTCd1srI6tAgXsHJc=;
- b=QSZeMYWgAM78DV26S3d1BXC/fkRB527pGb71ZNT8PKgLhUFmGYR7Q7+r6twUkhU+l5gSj
- 6UpdoaDjt3OKqntzGB2QQkF/d7FzHMjCUrJxg33FxOHjaNDqOXr9pT3Ch7LI9XX/gb0GMX1
- gmwQoq9zxpV7pqYJSI46RYFMH0o4Is8=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1F1E0CA5FBB
+	for <ltp@archiver.kernel.org>; Wed, 30 Sep 2026 07:23:50 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 17C0A3EAA89
-	for <ltp@archiver.kernel.org>; Wed, 30 Sep 2026 05:55:36 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 3B9473E55C1
+	for <ltp@archiver.kernel.org>; Wed, 30 Sep 2026 09:23:49 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D6A353C0857
- for <ltp@lists.linux.it>; Wed, 30 Sep 2026 05:55:14 +0200 (CEST)
-Received: from mail-wr2-x0e.google.com (mail-wr2-x0e.google.com
- [IPv6:2a00:1450:4864:30::e])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 126833E237F
+ for <ltp@lists.linux.it>; Wed, 30 Sep 2026 09:23:31 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 81683200B3C
- for <ltp@lists.linux.it>; Wed, 30 Sep 2026 05:55:14 +0200 (CEST)
-Received: by mail-wr2-x0e.google.com with SMTP id
- ffacd0b85a97d-48aef5d66c1so958740f8f.3
- for <ltp@lists.linux.it>; Tue, 29 Sep 2026 20:55:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1790740514; x=1791345314; darn=lists.linux.it;
- h=in-reply-to:content-transfer-encoding:content-disposition
- :content-type:mime-version:references:message-id:subject:cc:to:from
- :date:from:to:cc:subject:date:message-id:reply-to:content-type;
- bh=8ECtTkJbv1BAvGfTba0uppxYr4b0KsEu+emYYAloO9o=;
- b=Dfmqs2jq04ZMHlK1PrM3MK1hoM3GvyUmlnHI7EE05NZmwKlUUZk7/PnMTfa8XlTjRg
- HCrStnqj3auKhXYAGswc37EMYU/CdMo6HFNDkd69gd3sOXu5hhSGg5mMjAvjbUf7WK/E
- P5yEE/PLypMCNduvxfq6MQG+jZQTdK5CUOJ6UZm5dBFXPhabMXUxhH5Lvf1fe8zLBN1c
- rqV1ndjNh/xN5gEjx+XAnuVBaE5hWY4+XQHRbVF3EK0SqmKWR6lTFgcPtZ3d4xiqNlxT
- P4mZ7uuVdEsa1GYdNzSwvi99d9Saz47kYomyArWFHKWX6uLjSI9w1hLbVhT6fcR8KKPC
- /GOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20260707; t=1790740514; x=1791345314;
- h=in-reply-to:content-transfer-encoding:content-disposition
- :content-type:mime-version:references:message-id:subject:cc:to:from
- :date:x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to:content-type;
- bh=8ECtTkJbv1BAvGfTba0uppxYr4b0KsEu+emYYAloO9o=;
- b=lcXF/IUnhj7LrJGyUZywJk0Dt/raPxdAf/NQGDSnrSCUr17FxuIJ1I/rXfukkyNq8P
- 2SrRVtoV/VOUfYvnu0eMOKP1YXXw7lxyBJWKXOL8KwxWQL+G9M0SyIfXtlB3lQQ++x2z
- gODd8kgy43LiAcr5H+7dwtsgf9eucONAOtFCiLUVIHw6VUTcddvvWtYvGVqWFHOTnwO4
- yQeNwZ9ogsBZY+3uBBTNm+b1297nKi6u3jQqj9a/LQZ2toQIwYfNB/GwHwG11plGQEew
- VMtow27kzFz8LQUP9aYSPwOtMhVHWhcCjryH4eSlXXVnPhu45BL0WtDkaZrHCChl4x9D
- Tlvw==
-X-Gm-Message-State: AFq9FYJ5cssd8vCVnfIMYpwoRzxkFXOJ5Vy6SjrUgCdD0ls57z54Zv+9
- t6wlAkdo7Fw+PXZ0f1KjM/vMw3BUta69BjkNNjgAO549f1FU2eaJwbAp5VA10QBJcg==
-X-Gm-Gg: AYBFou0bEsxGTagZOWPCP8qzPSDRG5HEmqDcAZVrQSc9qZ+tsbbh9v+6UJT5Wsix2H6
- 3yAIPLH5mi1+Ecd4vdPBSY7HA+BcQY3WC5ykczUjTdkQLSrkzN95JrN7wmR1uYxRHKLLglb/51S
- COp1ZDmLntP3N0JIsQJ4yhdSkShqP6WDyWBl1yyLxstYiUukAUB59kYgnJnrf31nGUvLoDs8gj5
- ZBuEWTW2y18S0o+Xc+7ON/HGuYQuKHA2bUfKTMlNFkS4qednz7nGVQ+b/xcriTnEd8oq7ngqc+M
- 7eKNE1ervLcE//t4YtkgYeLs17nh5oKfPWQcVkQsbUEYPpSBs84ze4RUJ8S44oHn6Fpx1OcbaPG
- wWLkE6FhC3rAyrGlfPHe9gU3aW0KoG3CpY4lg0Yb7zZ+Em//grlbp14Nx7hzkQUHDP86HSSm1Dk
- hXykxXgcWyqVWTDkLQcLGIbox0jA2sFuODxnUYBQzY+vjNXDrfAA6OX4DsL3+/Oqz+zBDHUtFvN
- +KwEg/V1HBsfBQJkt/eidQ/tfvlSx4eV4CuyQ1dFb4J/rMc5xuYWgLdeCv1a9V2kM2zqt1n
-X-Received: by 2002:a05:6000:4b0c:b0:488:640e:f6ca with SMTP id
- ffacd0b85a97d-48b02551adbmr209798f8f.55.1790740513938; 
- Tue, 29 Sep 2026 20:55:13 -0700 (PDT)
-Received: from autotest-wegao.qe.prg2.suse.org
- ([2a07:de40:b240:0:2ad6:ed42:2ad6:ed42])
- by smtp.gmail.com with ESMTPSA id
- ffacd0b85a97d-48b029cb005sm78887f8f.14.2026.09.29.20.55.13
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 29 Sep 2026 20:55:13 -0700 (PDT)
-Date: Wed, 30 Sep 2026 03:55:12 +0000
-To: Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-Message-ID: <aryIIJJViLtp6KQY@autotest-wegao.qe.prg2.suse.org>
-References: <20260929022340.524-1-wegao@suse.com>
- <20260929-second-foyer-87225078267f@there>
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 8DB19600806
+ for <ltp@lists.linux.it>; Wed, 30 Sep 2026 09:23:30 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id C12FB1F86C;
+ Wed, 30 Sep 2026 07:23:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1790753005; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=5d+tGILVGClgDPI0nzJrjvQ1dTLYXGq0Wx72M8rRrZs=;
+ b=lX/4VEUQwvF/KjCOdpPrufECaudoccfSGkFfTNGEJt0vGNs19F+pZ672gAKvVQGrj+VF4D
+ sAbNZUhMx2F7nqVnNgN6ZXW2X8zMxRxBEvIgYmjAJRhC9XqAe3K10PyocKSiFoj5N7Z0QJ
+ 0HpLcCFLxYijzFOjWOWtKXZEma0526E=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1790753005;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=5d+tGILVGClgDPI0nzJrjvQ1dTLYXGq0Wx72M8rRrZs=;
+ b=fENHDYbdS41fbryIyeha/I4EPxhBHCSxxUVSyvuzJ84fwNSNZ03ZNcZ/J8GwxQGkcCha5m
+ V8aBZVbYIOYNLQCg==
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.de header.s=susede2_rsa header.b=JOp5Iazd;
+ dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=g8FXoXCW
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1790753001; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=5d+tGILVGClgDPI0nzJrjvQ1dTLYXGq0Wx72M8rRrZs=;
+ b=JOp5IazdN1cG14vOB90VgAmcNicIVNasvZkjqxU5XvVjuyWV95XlcQZgEJeCLeU45TubSv
+ XfvAvo0yUk9NObEExK732QrR8B6glNnGJ4FBfv8RFjrJcxjQpmRCmIOmn3yulDsOXTKYBH
+ zxPS8vgL+IVpNT4yaRcFF0CR7AlkWjY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1790753001;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=5d+tGILVGClgDPI0nzJrjvQ1dTLYXGq0Wx72M8rRrZs=;
+ b=g8FXoXCWei3+dFST9Q/+PCPa95nLKEIK6OAU33dWV0337xDo04pUrUWC3BmFM7SRnNTFps
+ 29NGUvAnwPVGt7DA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 85D7413A1E;
+ Wed, 30 Sep 2026 07:23:21 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id /9JtFum4vGrrNAAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>); Wed, 30 Sep 2026 07:23:21 +0000
+From: Andrea Cervesato <andrea.cervesato@suse.de>
+Date: Wed, 30 Sep 2026 09:23:19 +0200
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20260929-second-foyer-87225078267f@there>
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+Message-Id: <20260930-fix_epoll_bpf-v2-1-c1ac22e73b8c@suse.com>
+X-B4-Tracking: v=1; b=H4sIAOa4vGoC/3WNwQ6CMBAFf4Xs2RpaEKwn/8MQQssiNUBJF4iG9
+ N9t8exxknnzdiB0BgluyQ4ON0PGTgHEKQHdN9MTmWkDg0hFkUohWWfeNc52GGo1d+yCeSna5op
+ FpiFsZodBOHqP6se0qhfqJUai0RtarPschxuP3r/2xhlnmVRcNirNM13eaSU8aztC5b3/Amj1j
+ nK7AAAA
+X-Change-ID: 20260929-fix_epoll_bpf-5e472da8e63c
+To: Linux Test Project <ltp@lists.linux.it>
+X-Mailer: b4 0.16.0
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1790753001; l=4667;
+ i=andrea.cervesato@suse.com; s=20251210; h=from:subject:message-id;
+ bh=QyZSHZVj+EQN3hj4b+7l/yvGY7tFxuJAe2kx3RwC9zw=;
+ b=lxv5PR4i5THAibHQD61RmtPFJrZryvrAh01Pv7xk9wXHWnVzf2Duh3snKEfNLbrvxB3RYrhd9
+ lTyi2Jmn+PHBF0UOhsNHIMaMK3CaW0apbtl6d1rATiZJ02ZbZ9QXcbA
+X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
+ pk=zKY+6GCauOiuHNZ//d8PQ/UL4jFCTKbXrzXAOQSLevI=
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: C12FB1F86C
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[];
+ DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from,2a07:de40:b281:106:10:150:64:167:received];
+ ARC_NA(0.00)[]; MIME_TRACE(0.00)[0:+];
+ RCVD_VIA_SMTP_AUTH(0.00)[];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ RCPT_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
+ TO_DN_ALL(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
+ FROM_HAS_DN(0.00)[];
+ DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:email,suse.com:mid];
+ DKIM_TRACE(0.00)[suse.de:+]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1] memcontrol03: Bind to single CPU on systems
- with 64KB pagesize
+Subject: [LTP] [PATCH v2] epoll_ctl06: Fix BPF map on old kernels
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -102,63 +123,135 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Wei Gao via ltp <ltp@lists.linux.it>
-Reply-To: Wei Gao <wegao@suse.com>
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Tue, Sep 29, 2026 at 06:58:26PM +0200, Michal Koutn=FD wrote:
-> Hi.
-> =
+From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-> On Tue, Sep 29, 2026 at 02:23:32AM +0000, Wei Gao <wegao@suse.com> wrote:
-> > On multi-CPU systems with 64KB page size (e.g. ppc64le), memcontrol03
-> > intermittently fails with over-reclaim of protected pagecache under
-> > trunk_B:
-> > =
+BPF map file descriptors gained a poll callback in upstream kernel
+5.8. Without that callback, EPOLL_CTL_ADD fails with EPERM, while the
+test expected it to succeed.
 
-> >   memcontrol03.c:104: TINFO: Child 142113 in trunk_G: Allocating anon: =
-150994944
-> >   memcontrol03.c:121: TPASS: Child 142113 exited
-> >   memcontrol03.c:214: TPASS: Expect: (A/B memory.current=3D54394880) ~=
-=3D 52428800
-> >   ...
-> >   memcontrol03.c:104: TINFO: Child 142114 in trunk_G: Allocating anon: =
-174063616
-> >   memcontrol03.c:116: TPASS: Child 142114 killed by OOM
-> >   memcontrol03.c:230: TFAIL: Expect: (A/B memory.current=3D43319296) ~=
-=3D 52428800
-> > =
+Detect BPF map poll support at runtime so that older kernels with
+backported support are handled correctly as well.
 
-> > In the kernel, per-CPU charge batching (MEMCG_CHARGE_BATCH =3D 64 pages)
-> > caches up to 64 * 64KB =3D 4MB per CPU in memcg_stock. On a multi-CPU
-> > system, allocating memory across CPUs allows cached stock charges to
-> > accumulate in ancestor trunk_A (up to 4MB * nr_cpus, e.g. 16MB on a
-> > 4-CPU machine). Because trunk_A has memory.max =3D 200M, this extra sto=
-ck
-> > pressure forces the reclaimer to evict pagecache in trunk_B down to
-> > ~35-43MB instead of the expected ~50MB. Simply enlarging the tolerance
-> > rate further is not good idea.
-> > =
+Fixes: c4c0ca4c749e ("syscalls: Add epoll_ctl06")
+Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+---
+tst_tmpdir.c:309: TINFO: Using /var/tmp/LTP_epoXsyHnT as tmpdir (btrfs filesystem)
+tst_test.c:2067: TINFO: LTP version: 20260529
+tst_test.c:2070: TINFO: Tested kernel: 4.4.140-491.1.TDC.gedc1884-default #1 SMP Wed Sep 23 11:06:41 UTC 2026 (edc1884) x86_64
+tst_kconfig.c:90: TINFO: Parsing kernel config '/proc/config.gz'
+tst_kconfig.c:760: TINFO: CONFIG_FAULT_INJECTION kernel option detected which might slow the execution
+tst_test.c:1897: TINFO: Overall timeout per run is 0h 02m 00s
+epoll_ctl06.c:57: TPASS: epoll_ctl() on file : EPERM (1)
+epoll_ctl06.c:57: TPASS: epoll_ctl() on O_PATH file : EBADF (9)
+epoll_ctl06.c:57: TPASS: epoll_ctl() on directory : EPERM (1)
+epoll_ctl06.c:57: TPASS: epoll_ctl() on /dev/zero : EPERM (1)
+epoll_ctl06.c:57: TPASS: epoll_ctl() on /proc/self/maps : EPERM (1)
+epoll_ctl06.c:57: TPASS: epoll_ctl() on pipe read end passed
+epoll_ctl06.c:57: TPASS: epoll_ctl() on pipe write end passed
+epoll_ctl06.c:57: TPASS: epoll_ctl() on unix socket passed
+epoll_ctl06.c:57: TPASS: epoll_ctl() on inet socket passed
+epoll_ctl06.c:57: TPASS: epoll_ctl() on epoll passed
+epoll_ctl06.c:57: TPASS: epoll_ctl() on eventfd passed
+epoll_ctl06.c:57: TPASS: epoll_ctl() on signalfd passed
+epoll_ctl06.c:57: TPASS: epoll_ctl() on timerfd passed
+tst_fd.c:144: TCONF: pidfd_open(): ENOSYS (38)
+epoll_ctl06.c:57: TPASS: epoll_ctl() on fanotify passed
+epoll_ctl06.c:57: TPASS: epoll_ctl() on inotify passed
+epoll_ctl06.c:57: TPASS: epoll_ctl() on userfaultfd passed
+epoll_ctl06.c:57: TPASS: epoll_ctl() on perf event passed
+tst_fd.c:200: TCONF: Skipping io uring: ENOSYS (38)
+epoll_ctl06.c:57: TFAIL: epoll_ctl() on bpf map failed: EPERM (1)
+tst_fd.c:225: TCONF: Skipping fsopen: ENOSYS (38)
+tst_fd.c:234: TCONF: Skipping fspick: ENOSYS (38)
+tst_fd.c:243: TCONF: Skipping open_tree: ENOSYS (38)
+epoll_ctl06.c:57: TPASS: epoll_ctl() on memfd : EPERM (1)
+tst_fd.c:261: TCONF: Skipping memfd secret: ENOSYS (38)
 
-> > Bind the test process to a single CPU in setup() when page size is
-> > >=3D 64KB. This confines stock batching to a single CPU, preventing
-> > multi-CPU stock inflation and ensuring reproducible reclaim behavior.
-> =
+Summary:
+passed   18
+failed   1
+broken   0
+skipped  6
+warnings 0
+---
+Changes in v2:
+- skip after 5.8 kernel
+- Link to v1: https://lore.kernel.org/20260929-fix_epoll_bpf-v1-1-39b19ab043c7@suse.com
+---
+ testcases/kernel/syscalls/epoll_ctl/epoll_ctl06.c | 22 ++++++++++++++++++----
+ 1 file changed, 18 insertions(+), 4 deletions(-)
 
-> Should the goal be stability/repeatibility of the test.
-> What about pinning to the single CPU regardless of page size?
-Thanks for quick feedback, v2 sent.
-> =
+diff --git a/testcases/kernel/syscalls/epoll_ctl/epoll_ctl06.c b/testcases/kernel/syscalls/epoll_ctl/epoll_ctl06.c
+index 69321582f..9c6cd2460 100644
+--- a/testcases/kernel/syscalls/epoll_ctl/epoll_ctl06.c
++++ b/testcases/kernel/syscalls/epoll_ctl/epoll_ctl06.c
+@@ -12,19 +12,23 @@
+  * poll file operation are expected to succeed. The rest must fail with:
+  *
+  * - EPERM for fds that are valid but lack poll support (regular files,
+- *   directories, /dev/zero, /proc files, memfd).
++ *   directories, /dev/zero, /proc files, memfd and BPF maps on kernels
++ *   without BPF map poll support).
+  * - EBADF for fds that are not usable for I/O (O_PATH, open_tree).
+  */
+ 
++#include <poll.h>
+ #include <sys/epoll.h>
+ 
+ #include "tst_test.h"
+ #include "tst_epoll.h"
+ #include "tst_fd.h"
+ 
+-static int exp_errno(enum tst_fd_type type)
++static int exp_errno(struct tst_fd *fd)
+ {
+-	switch (type) {
++	struct pollfd pfd = {.fd = fd->fd, .events = POLLIN};
++
++	switch (fd->type) {
+ 	case TST_FD_FILE:
+ 	case TST_FD_DIR:
+ 	case TST_FD_DEV_ZERO:
+@@ -37,6 +41,16 @@ static int exp_errno(enum tst_fd_type type)
+ 	case TST_FD_PATH:
+ 	case TST_FD_OPEN_TREE:
+ 		return EBADF;
++	case TST_FD_BPF_MAP:
++		if (tst_kvercmp(5, 8, 0) >= 0)
++			return 0;
++
++		/*
++		 * The BPF poll callback returns POLLERR for array maps. Without
++		 * the callback, poll() returns the default readiness mask.
++		 */
++		SAFE_POLL(&pfd, 1, 0);
++		return pfd.revents & POLLERR ? 0 : EPERM;
+ 	default:
+ 		return 0;
+ 	}
+@@ -50,7 +64,7 @@ static void run(void)
+ 	TST_FD_FOREACH(fd) {
+ 		efd = SAFE_EPOLL_CREATE1(0);
+ 		ev.data.fd = fd.fd;
+-		err = exp_errno(fd.type);
++		err = exp_errno(&fd);
+ 
+ 		TST_EXP_PASS_OR_FAIL(epoll_ctl(efd, EPOLL_CTL_ADD,
+ 				 fd.fd, &ev), err,
 
-> Thanks,
-> Michal
+---
+base-commit: 1cbe713ca9d55bed7e4d52c6f2216ba3e2089346
+change-id: 20260929-fix_epoll_bpf-5e472da8e63c
+
+Best regards,
+--  
+Andrea Cervesato <andrea.cervesato@suse.com>
 
 
-
--- =
-
+-- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
