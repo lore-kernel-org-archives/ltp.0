@@ -4,82 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 55CDFCA5FC1
-	for <ltp@archiver.kernel.org>; Wed, 30 Sep 2026 08:11:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 77E92CA5FB1
+	for <ltp@archiver.kernel.org>; Wed, 30 Sep 2026 08:11:43 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 018A13E55E0
-	for <ltp@archiver.kernel.org>; Wed, 30 Sep 2026 10:11:29 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id F3A883E5645
+	for <ltp@archiver.kernel.org>; Wed, 30 Sep 2026 10:11:41 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B54D23C6BD3
- for <ltp@lists.linux.it>; Wed, 30 Sep 2026 10:11:14 +0200 (CEST)
-Received: from mail-qk2-x06.google.com (mail-qk2-x06.google.com
- [IPv6:2607:f8b0:4864:34::6])
+ by picard.linux.it (Postfix) with ESMTPS id 5D69D3E55AE
+ for <ltp@lists.linux.it>; Wed, 30 Sep 2026 10:11:18 +0200 (CEST)
+Received: from mail-oa2-x0a.google.com (mail-oa2-x0a.google.com
+ [IPv6:2607:f8b0:4864:30::a])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 49DBE600BD9
- for <ltp@lists.linux.it>; Wed, 30 Sep 2026 10:11:14 +0200 (CEST)
-Received: by mail-qk2-x06.google.com with SMTP id
- af79cd13be357-93bfb25817cso313510185a.0
- for <ltp@lists.linux.it>; Wed, 30 Sep 2026 01:11:14 -0700 (PDT)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id A965760022B
+ for <ltp@lists.linux.it>; Wed, 30 Sep 2026 10:11:17 +0200 (CEST)
+Received: by mail-oa2-x0a.google.com with SMTP id
+ 586e51a60fabf-494859024f0so1553714fac.0
+ for <ltp@lists.linux.it>; Wed, 30 Sep 2026 01:11:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1790755873; x=1791360673; darn=lists.linux.it;
+ d=gmail.com; s=20251104; t=1790755876; x=1791360676; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to:content-type;
- bh=p92hd9JjbB6kLq7uSI3CxuAa34p8jWQiOQdteCaQ+ro=;
- b=rSRVAjOo23rKoYbEreXCmcpMumshH1jMBGLM5vNshV2/zLOShBOWU8BlZXty0jPriB
- en3Zb7hSaznkVXR4nC1Fid6O4VwMik6KATEuovHCkZ2bkgGPLjrH3qJF5Av31PIkdDBs
- wTxmR2n8aKjROC9AUToy6huxPGuvGC0g2aXeeHg9qcGe/vJAw1PU9jVsCZhWy8KeMFLr
- I/I2EQXKvTvk6RNSw7qJ7MRxjrNnDeLt9UMPCGBkb1TtXoZ+gppPAXnTII1bbeX1BJcr
- myjIeeQ1tsXQM9EqxIvl7/qe0yF6gLzEI2HTyf/TOvGncuTDvq7ZYSSfEUBtEnwiBrx1
- QAjg==
+ bh=UcntnRqa3E6YdVrvVTftUT0JScGWgeZFtWHUijGjfPQ=;
+ b=nQgrZVt2SHNnzi3QQwCJvDQfmAXMnSch3wg4orffrPaVFhDLUwWmPuu0tpByMVy2iX
+ hE93Ulmfpkxln5bdgaJGUU4xfD1e8bK4btP/Kzl5nP454SlxPI+pQt+Lv+AQjENIxCMX
+ iP+l4vvC/Hz0Fe8k1EzmPO08JzxGIxaPLNF7NquWqNHe8mFYEdbO+vzoEjl8rN8keOnT
+ gKuLASeob4dmC6RtxgA5SlNyO98vv/HV/R/rB9fCtWDqKMO7hh6YvLxc5exCFNJrSE4r
+ kDvVgXyBS4MQbF0wHpc/FBBBuoZ9kPp8d9p9dWjomNqVKuttDbIzh/TT2hrrlCJqxBuF
+ Pb2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20260707; t=1790755873; x=1791360673;
+ d=1e100.net; s=20260707; t=1790755876; x=1791360676;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to:content-type;
- bh=p92hd9JjbB6kLq7uSI3CxuAa34p8jWQiOQdteCaQ+ro=;
- b=nawhb/fcODiwQAMR5+JNXK1YQJ/FL4fDJM1NtEnree2Jq9CQQ/TlshUUxlc3lRn8qH
- nB2jN213E3CBehQuUCQNrXZOEJz9jhxU2mftMNEG3pQTNPc5dj9Wy2epHrb2PsCGLPid
- r5YxyLJZ5HQToeRvNXmGSdkb7mQHZMlCBlgI7N2WxGG8FDVyNNCoGmnSi4hs8C60m5an
- L50LPmYqRdN28qlhYzDlQZ07KCUdHcQgsdLBfXdfkXh/bB836MrMKhwbllokXAbucu6z
- mFAqsPfD510OetXYEuc9KUY0vVehjil4ejV3KdIPGdlICKheIQfloyQp8uZCvdedmUSl
- IiVg==
-X-Gm-Message-State: AFuF++kegtvjn+xsYCv5j+nJMigBX19TMoQj9IxJN3f3U7u2uaiQB5Mm
- EGBaPuAhI15dKZ+C/PE/We6p9M5/Wl9SQwq0iFVfxlNf1J81MjiHqVTQ
-X-Gm-Gg: AYBFou1vIPasSj8sQOXob/zl9FHYsO4We3Mp2XA1wy5v6s+FaNhvZWsoZC/7+Qbeban
- XuGLeA9LCWMUs8//FiDmCSaUmA2Pnnls3E8u2EIpQXG7d95tuGNxK4fZ+KvLdhPNfKDAMb6LGod
- DeDhWgpwy3M1SJgPD6GL8FsV3xHxm1w++SwCQmHuQxaFBYxAAjnHsc0lDsrHutPtEgpOfLLjgrn
- T/p2JvhVysbBvyvGsZjHfAm+ixBdUECBKJLa4wtugvxOZAT9z4rQB6mRcJ7QgvC0yROCXS0ijD6
- VSgtYTHjqzALX0dfW9QxWje3jLd+FBk3AudUuYxCQvdyVaC18tlEMIz/Q66zmctA8g1zjbSAF6j
- eA1RdH5Yw1K8KBLspg1iTpiwddt8X5baKwvC0q3JgKWDp4J5Gauvc34YiaICbIzSJq5yARQ+ePQ
- ATIde+IGDhqL+prvrNROqX2Z3+NcRXCGN7eRLMiFETooZbSAM3Cf4vdXjl/Jvi/PH2tp7VFfvdk
- AcvalXaZNJ4kREsr1RGou/8edsJh695DTAHuOpn9aGZDrqcEoXdxG42KEkXCLf/EaPMjX1TMDTC
- BWSADRvJym8HAa4=
-X-Received: by 2002:a05:620a:25ca:b0:939:3885:3131 with SMTP id
- af79cd13be357-93ca95db281mr92364485a.3.1790755872867; 
- Wed, 30 Sep 2026 01:11:12 -0700 (PDT)
+ bh=UcntnRqa3E6YdVrvVTftUT0JScGWgeZFtWHUijGjfPQ=;
+ b=dE/IBjBkrcghOno9XFBfLqYXd/bwJK0DRlpXhu0YhMM5H+I4CH3Ln2vYoBvAJwUvX5
+ Ouvj/OLHdfx85TzxYFB/6gFoGcIYNg1Z9/Ri51HqN86SPZUYFl2X0bFoZuCjp08DtPOt
+ VXDIEJelE2bCmagBAHxJ88BABueN3z3yGQAFghEivyMbIZCivAqrZFH4hr+yH6tAEDgJ
+ b/IENefJQt+jpQ+5/+PH1bE0dsDhY4TFtAyhKLs2zD3dXMm0DDZJv/lTVFxfzgjLlQj9
+ B6z7lIfGCpl73j+gn86MxIzxdOi7rgUm9tqNMTyfHEweAx6F8tLl6hp9lTZGuSc5lsBl
+ ndfg==
+X-Gm-Message-State: AFuF++nzPNF9wjTcoG2D/9iiMvuBFLbV0zY5283yu/SHmihMeqtb3Wvl
+ E+VwAxIJaD6GE0q0vVw0qS5BKejiGWfmbL4b8t41Y8ylJcCtC8NnWO0q
+X-Gm-Gg: AYBFou00TCDry16UKDorVdVJ0W55C7r/VUrvH6PZKb+aHNOl1byNM9eNqy/Fupc7HiL
+ Mr9mNOW4hE0pKPugSJaLfnNSb8qZ6V1Kuqc3X3zsArV3Q3IEqiiu2pIiQ0Rl08m1aIE5UNLcpUw
+ tX7L3tihO9dgaS1kJQL306vmKEddbzY6bsrkX0ougjdfOpF9Qs3bOVspwxATZl2R6NCa+75k6fk
+ BiC9IPT5EFzcCxyVFXLt4Oaz7oQqmvQ/OFrilw020YlB5ovUVI6E6RRZQwp5Ha3d4H0hYbkqvwc
+ hS/IOUAuRQ7j3go3Pl/6sP9bjWR8O9bQ0b3WTz55agImx8lCwtmpehDL9ZrMn9jSjAuvBix/BoK
+ RON7dxV66f76THD0+fKIGcGLJDDcEaJTld723j737WPWCfcrJlT7H4iL0EHIT0CRhV/bVYwTNqo
+ KYwVgrwJBoEjYu6fu9h1vgZaKMaATpoEYLV2Bz5J8nR5D6WpETZXSFO8phEtKGezezL9e1BcJYo
+ UKRMM77zXTomt342YmxrIZ90bT3ampU8nmo2u4IJuq84WkGkb5CAJuCI2pm71LCkYTCnysQut+H
+ joqBiGuVEdbzLRhxsLRD1A==
+X-Received: by 2002:a05:6820:4cc1:b0:6d9:4c33:64fa with SMTP id
+ 006d021491bc7-6dcf573613amr532548eaf.37.1790755876176; 
+ Wed, 30 Sep 2026 01:11:16 -0700 (PDT)
 Received: from
- runnervmtr4k5.ohoac4jzuqvefkclfujxk1yw4e.bx.internal.cloudapp.net
- ([172.172.157.217]) by smtp.gmail.com with ESMTPSA id
- af79cd13be357-93ca82ea561sm61649785a.33.2026.09.30.01.11.12
+ runnervmtr4k5.oq3xicayfjpu1o1gnuwmpwcacd.gx.internal.cloudapp.net
+ ([135.119.86.99]) by smtp.gmail.com with ESMTPSA id
+ 006d021491bc7-6dccde2b4b8sm974064eaf.3.2026.09.30.01.11.15
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 30 Sep 2026 01:11:12 -0700 (PDT)
+ Wed, 30 Sep 2026 01:11:15 -0700 (PDT)
 From: linuxtestproject.agent@gmail.com
-To: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Wed, 30 Sep 2026 08:11:12 +0000
-Message-ID: <20260930081112.9226-1-linuxtestproject.agent@gmail.com>
+To: Wei Gao <wegao@suse.com>
+Date: Wed, 30 Sep 2026 08:11:14 +0000
+Message-ID: <20260930081114.8885-1-linuxtestproject.agent@gmail.com>
 X-Mailer: git-send-email 2.55.0
-In-Reply-To: <20260930-fix_fw_load02-v2-1-accf7294475c@suse.com>
-References: <20260930-fix_fw_load02-v2-1-accf7294475c@suse.com>
+In-Reply-To: <20260930035332.3360-2-wegao@suse.com>
+References: <20260930035332.3360-2-wegao@suse.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] lib: Handle empty saved configuration values
+Subject: Re: [LTP] memcontrol: Add bind_to_current_cpu() helper
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -97,12 +97,37 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Andrea,
+Hi Wei,
 
-On Wed Sep 30 09:43:08 2026 +0200, Andrea Cervesato <andrea.cervesato@suse.com> wrote:
-> lib: Handle empty saved configuration values
+On Wed Sep 30 03:53:14 2026 +0000, Wei Gao via ltp wrote:
+> memcontrol: Add bind_to_current_cpu() helper
 
-Verdict - Reviewed
+--- [PATCH 1/2] ---
+
+> Add bind_to_current_cpu() to memcontrol_common.h to allow memcg tests
+> to bind the test process to a single CPU.
+
+The commit message only restates what changed. Explain why memcg tests
+need to bind to a single CPU (e.g. to prevent multi-CPU per-CPU memcg stock
+charge accumulation from causing reclaim variance in hierarchical tests).
+
+> +static inline void bind_to_current_cpu(void)
+> +{
+> +	int cpu = sched_getcpu();
+> +	size_t mask_size;
+> +	cpu_set_t *mask;
+
+Include <sched.h> in memcontrol_common.h. The function uses sched_getcpu(),
+cpu_set_t, CPU_ALLOC(), and sched_setaffinity(), but currently relies on
+indirect inclusion via tst_test.h.
+
+Verdict - Needs revision
+
+Pre-existing issues:
+- memcontrol03.c:209: sleep(1) is used in a polling loop. Polling loops
+  should use exponential backoff or checkpoint synchronization.
+- memcontrol03.c:241, memcontrol04.c:240: fd validity is checked with
+  fd > -1 instead of the LTP convention fd != -1.
 
 ---
 Note:
