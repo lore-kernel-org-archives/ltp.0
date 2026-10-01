@@ -4,83 +4,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 97288CA5FD2
-	for <ltp@archiver.kernel.org>; Thu,  1 Oct 2026 14:18:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B0BD4CA5FCB
+	for <ltp@archiver.kernel.org>; Thu,  1 Oct 2026 15:04:38 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D8DFB3E5CA8
-	for <ltp@archiver.kernel.org>; Thu,  1 Oct 2026 16:18:25 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id D9B533E5B8F
+	for <ltp@archiver.kernel.org>; Thu,  1 Oct 2026 17:04:36 +0200 (CEST)
 Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id AA9A83E1894
- for <ltp@lists.linux.it>; Thu,  1 Oct 2026 16:18:11 +0200 (CEST)
-Received: from mail-oi2-x0b.google.com (mail-oi2-x0b.google.com
- [IPv6:2607:f8b0:4864:32::b])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 9DB733E5B96
+ for <ltp@lists.linux.it>; Thu,  1 Oct 2026 17:04:08 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 5074F6002C9
- for <ltp@lists.linux.it>; Thu,  1 Oct 2026 16:18:11 +0200 (CEST)
-Received: by mail-oi2-x0b.google.com with SMTP id
- 5614622812f47-4bfec71901fso2544773b6e.1
- for <ltp@lists.linux.it>; Thu, 01 Oct 2026 07:18:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1790864290; x=1791469090; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to:content-type;
- bh=kQGu9B9y47n5moVsl1RsK3m/v6eDbK+hyektecGe0zE=;
- b=bdgi5GYMuFzd7TmzxS8cF7JxlZdLcW1snJJNIkpTtCZ08ImGWF38CfCyrDdgDkWYa+
- uEG9Osjav8zK/Jrm0493p8Gl5fQQOh7YAbLUc2MJXrkRBx/WG2XUCnoPLpcCaLolpse3
- S6OeTcD40U9BtwRTFjtWkuNgNpwvNiLUZOIK/QaVgwtUh0BAwEhoRo4hOCAvXc4s5WIY
- QYqCL/y987Ok+zPcg2aQBTmTxT/vzJSFmM5RNLpHDAfKiumLChFoQdiQNwqRsqqm8VaP
- h8UaaR6sm/PEg6zbrxvoaaZStz3FoVMS4Obs6sMsBrBymcUB9a7kFRnit9QEm4t9RXHu
- uMHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20260707; t=1790864290; x=1791469090;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to:content-type;
- bh=kQGu9B9y47n5moVsl1RsK3m/v6eDbK+hyektecGe0zE=;
- b=tPf2OnwYRErI9MS+r99ZxSS5KlASVaZ0ApsuRPE1pe0ehUin+CYP94cu0Rz6sPRWfi
- E3e6ZR22P+Qvrpbg+PrV2b6D9TpBLYDnBIlCWuwxeryjcgeLpt979jLc9PLzK4kODTL/
- L5dNo9f+yO8xHtzZxbumCoIf44KrBA0mZUVhB5gI7kld4E7jSWLl2QkbMSBUNq3K/Qxx
- kkcIYJlADDCOmOarf/ttKCZwFgqyYJxZfPcdzaaGbtIQpey5QjExa+MEt3/PCx2vLbA8
- 0HFm4LdqO3tRtmZvNQHChcxYzFHW166A+/JCn/GUITTTEcV7VpQxeEt+pzu40rJBoPHz
- oPRQ==
-X-Gm-Message-State: AFuF++kTAWChwgskBkIa8+sSE0Sk7dVICl/65rKRbbIuhrXBYvN8hYDo
- xfy1/8qteduPymULYLH1lfy1hqEv2eHovlfQnpyZUhvL5j/nGNukkj8G
-X-Gm-Gg: AYBFou17HUQTU+XpRFqGtlJ1/MIhM50rWuwphTXLKYZvvBT9/hi6V/vfYL13Rkrzqku
- dWrknM+ZkNw3jNiZIHnnan/GOMldQtmMEsGyNAPhDcKp4x+/X9r/L2nfank1XtnZ5jybMBwV3FZ
- CzJ9yApptXyDdSfvS95ML85lcpkAXg+vN5w/b6paO7jrreYLQG/fSXh574D9R2PgAuWqi8iBE+K
- jtoaV8f2ZeZT52tOdAEr5XYF5lxLXR+gpwXK/MpYTQw2oWTA3ug5OMfEgq0EzgTYSdTIuwhn2tf
- HuqB+j3FusrLaKw+9ajHOMzvHVvCpMP5hC5BJrFYaEVmv7/cdn8dvJT7CJD1lQnPvwgliH/tYID
- f8lWsO6GXhqyiWDnuL2q2F5PO5sKcqWrUd6/uDqDsKI3ZlSAmud5lfga+F/0k82Tx6pqES/Y5/0
- kZ1RGmEXn000Dyqp5V/m0Clvh0PUahwwHgUGe3nI0fX9NoH7wBEsH6Cg0MqeydahRCz9ECZv0DS
- A9+RQR5slK2+eKT76XHUEs7PcXsRIWiMb43BCXK7sNNqr6RjbbtYKYgfVElJF0gZ86ofUBy5SwT
- 23ckFoMjpuYSIi0=
-X-Received: by 2002:a05:6808:309a:b0:4f1:6c9c:78c8 with SMTP id
- 5614622812f47-4f1badcb238mr5781688b6e.59.1790864289612; 
- Thu, 01 Oct 2026 07:18:09 -0700 (PDT)
-Received: from
- runnervmtr4k5.l1h5scrcalruddgw10wsm1k3yb.ex.internal.cloudapp.net
- ([172.214.155.180]) by smtp.gmail.com with ESMTPSA id
- 5614622812f47-4f34bbb2227sm2478182b6e.11.2026.10.01.07.18.09
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 01 Oct 2026 07:18:09 -0700 (PDT)
-From: linuxtestproject.agent@gmail.com
-To: Sushmitha <sushmita@linux.ibm.com>
-Date: Thu,  1 Oct 2026 14:18:08 +0000
-Message-ID: <20261001141808.3976-1-linuxtestproject.agent@gmail.com>
-X-Mailer: git-send-email 2.55.0
-In-Reply-To: <20261001110953.32332-1-sushmita@linux.ibm.com>
-References: <20261001110953.32332-1-sushmita@linux.ibm.com>
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 2A44A600351
+ for <ltp@lists.linux.it>; Thu,  1 Oct 2026 17:04:07 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 9500F21E01;
+ Thu,  1 Oct 2026 15:03:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1790867042;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=b0JlTv/tVZBexdPiQ7IWHZBzq3lCCepccAnjCuLcnbE=;
+ b=kZzn+g8wD/kUNKhfYacc4rHg2bX5em5yragCidakJ7nDF5hFIWOV3By0Bzua/GyV4mfIfW
+ S5fRPfnGQqEWAfw4AfVJqD7WipTiKJiLvMSCqEKdEakeRFaYbWkmXAMiE2GghuXwG1Iu/C
+ dnA9GCPzIVKWmm8b56QsyitN+//H6Sw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1790867042;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=b0JlTv/tVZBexdPiQ7IWHZBzq3lCCepccAnjCuLcnbE=;
+ b=Mnt7tS3sOQLAPlQxJtLzMTJmxs2snsvhFyd88PLHDQEiGrV7PiHiocisAJKrSXIXAK6CUW
+ DgGCiXqT22zz8xBg==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1790867038;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=b0JlTv/tVZBexdPiQ7IWHZBzq3lCCepccAnjCuLcnbE=;
+ b=Upn3Cqim1by3e26PNtRm4ow7vuzKvB8qkjumEN9QoQLdbT+vEK3O2/YgVI3ZUMrzTJuoKA
+ C3DGN7nLhWMvbNJcAcTxUaBl8MgNkzPWAb2kZysTjQetAseM/z1DLT+ZfuNIcSZBPcV58O
+ H+XxIY5gwQ5GrP62vWe1GSx1OMxeV0E=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1790867038;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=b0JlTv/tVZBexdPiQ7IWHZBzq3lCCepccAnjCuLcnbE=;
+ b=QsXDi7BoAbkCVe4+4zSBeFQFbj+JejfS5ExaM4akVi/5dNJc3R1qS5oYi0Jqssri78jvwT
+ ttdVYDiKfUt3uMAA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9383613B8D;
+ Thu,  1 Oct 2026 15:03:57 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id hC7YE112vmr7GAAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Thu, 01 Oct 2026 15:03:57 +0000
+Date: Thu, 1 Oct 2026 17:03:41 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Anders Roxell <anders.roxell@linaro.org>
+Message-ID: <20261001150341.GA3016304@pevik>
+References: <20260930201430.1924463-1-anders.roxell@linaro.org>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20260930201430.1924463-1-anders.roxell@linaro.org>
+X-Spamd-Result: default: False [-7.50 / 50.00]; REPLY(-4.00)[];
+ BAYES_HAM(-3.00)[100.00%]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ MID_RHS_NOT_FQDN(0.50)[]; HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ TO_DN_SOME(0.00)[]; MIME_TRACE(0.00)[0:+];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
+ MISSING_XM_UA(0.00)[]; RCVD_TLS_ALL(0.00)[];
+ RCPT_COUNT_THREE(0.00)[4]; FROM_EQ_ENVFROM(0.00)[];
+ FROM_HAS_DN(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ REPLYTO_EQ_FROM(0.00)[]
 X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] cgroup_core02: modernize test using LTP cgroup API
+Subject: Re: [LTP] [PATCH v3] tst_clone: Fix child detection on sparc
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -92,54 +109,153 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Reply-To: Petr Vorel <pvorel@suse.cz>
 Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Sushmitha,
+Hi Anders,
 
-On Thu, 1 Oct 2026 16:39:53 +0530, Sushmitha wrote:
-> cgroup_core02: modernize test using LTP cgroup API
+> On sparc the clone syscall returns the caller's thread id in the child,
+> not 0. So the child thinks it is the parent.
 
-> diff --git a/cgroup_core02.c b/cgroup_core02.c
-> new file mode 100644
-> --- /dev/null
-> +++ b/cgroup_core02.c
+> Compare with tst_gettid() in the clone fallback. clone3 returns 0, but
+> sparc only has it since v7.0.
 
-This adds an unbuilt root-level copy; normal builds and the existing
-runtest entries still use the unchanged original test. Apply the changes
-to testcases/kernel/controllers/cgroup/cgroup_core02.c instead and remove
-the root-level copy.
+> Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
+> ---
+> v2 -> v3: use tst_gettid(), the kernel returns the caller's thread id
+> to the child. And only get it in the clone fallback, as the AI review
+> suggested.
 
-> +		if (pid < 0)
-> +			tst_brk(TBROK, "clone failed");
+> v1 -> v2: fixed the AI review comments, use tst_getpid() since glibc
+> before 2.25 caches getpid(), and only check after clone, so the goto
+> is gone.
 
-In a forked child, tst_brk(TBROK) kills the main test process with SIGKILL,
-skipping cleanup(). If clone fails with EAGAIN, child_a and child_b remain,
-and tst_cg_cleanup() cannot remove their parent because it does not remove
-these descendants. Propagate the error to the main process and report
-TBROK there so cleanup() runs.
+>  lib/tst_clone.c | 9 +++++++++
+>  1 file changed, 9 insertions(+)
 
-> +			TST_EXP_FAIL(write(targ.fds[i], "0", 1), ENOENT,
-> +				     "write to cgroup.procs from different namespace");
+> diff --git a/lib/tst_clone.c b/lib/tst_clone.c
+> index 296cd40ac0a0..a04c4042653b 100644
+> --- a/lib/tst_clone.c
+> +++ b/lib/tst_clone.c
+> @@ -35,6 +35,10 @@ pid_t tst_clone(const struct tst_clone_args *tst_args)
 
-Use TST_EXP_FAIL2() here: write() returns a byte count on success, not zero.
-TST_EXP_FAIL() diagnoses a successful one-byte write as "invalid retval 1"
-instead of an unexpectedly successful migration.
+>  	flags = args.exit_signal | args.flags;
 
-Verdict - Needs revision
+> +#ifdef __sparc__
+> +	pid_t tid = tst_gettid();
 
----
-Note:
+Unfortunately, we haven't realized that this will not work in the PID namespace
+(CLONE_NEWPID). Agent's finding (run locally):
 
-The agent can sometimes produce false positives although often its
-findings are genuine. If you find issues with the review, please
-comment this email or ignore the suggestions.
+	- In the child, the old sparc clone puts current->pid into %o0
+	  (arch/sparc/kernel/process_64.c:634, process_32.c:365). That is the
+	  parent's global thread id.
+	- tst_gettid() returns the thread id as seen inside the namespace
+	  (kernel/sys.c:1007).
+	- Inside a namespace the two numbers differ, so the child takes the parent's
+	  code path.
 
-Regards,
-LTP AI Reviewer
+And concrete way how this can be manifested is e.g.
+testcases/kernel/containers/pidns/pidns05.c:
+
+	pidns05: child_func() runs as pid 1 in a new namespace and calls
+	SAFE_CLONE(). The grandchild sees a number other than 1, behaves as the
+	parent and sits in pause() until the checkpoint times out.
+
+Sounds reasonable, could you please verify it?
+
+Agent suggests to check the second return value in %o1 instead (1 in the child,
+0 in the parent), as glibc's sparc fork/clone wrappers do).
+
+Looking into glibc sources there is indeed clone() sparc specific assembly:
+sysdeps/unix/sysv/linux/sparc/sparc32/clone.S
+sysdeps/unix/sysv/linux/sparc/sparc64/clone.S
+
+Agent even suggested assembly which has similar fragments, but of course we'd
+strive to avoid using it unless really necessary.
+
+#ifdef __sparc__
+/*
+ * On sparc, clone() returns the parent's global thread id in %o0 in the
+ * child, which cannot be compared with gettid() inside a pid namespace.
+ * The kernel sets %o1 to 1 in the child and 0 in the parent, but syscall()
+ * drops %o1, hence inline assembly.
+ */
+static pid_t sparc_clone(unsigned long flags, unsigned long pidfd)
+{
+	register long g1 __asm__("g1") = __NR_clone;
+	register long o0 __asm__("o0") = flags;
+	register long o1 __asm__("o1") = 0;
+	register long o2 __asm__("o2") = pidfd;
+	register long o3 __asm__("o3") = 0;
+	register long o4 __asm__("o4") = 0;
+
+	__asm__ __volatile__(
+# ifdef __arch64__
+		"ta 0x6d\n\t"
+		"bcc,pt %%xcc, 1f\n\t"
+# else
+		"ta 0x10\n\t"
+		"bcc 1f\n\t"
+# endif
+		" mov 0, %%g1\n\t"
+		"mov 1, %%g1\n"
+		"1:"
+		: "+r" (g1), "+r" (o0), "+r" (o1), "+r" (o2), "+r" (o3), "+r" (o4)
+		:
+		: "cc", "memory");
+
+	if (g1) {
+		errno = o0;
+		return -1;
+	}
+
+	return o1 ? 0 : o0;
+}
+#endif
+
+Regard that use of tst_gettid() instead of tst_getpid() suggested for v2 by
+agent [1]:
+
+	the SPARC kernel returns the caller's TID (current->pid) in %o0 to the
+	child, so use tst_gettid() instead of tst_getpid() to support multithreaded
+	callers.
+
+Sure, LTP has tests which use threads, but many of them use
+pthread_create() instead of SAFE_CLONE()/tst_clone() (which you're trying to
+fix).
+
+IMHO there is only testcases/kernel/syscalls/fanotify/fanotify21.c, but even
+that test is safe, because SAFE_CLONE() is call for a different test case than
+pthread usage.
+
+But of course it does not harm to have it.
+
+Kind regards,
+Petr
+
+[1] https://lore.kernel.org/ltp/20260929111636.7777-1-linuxtestproject.agent@gmail.com/
+
+> +#endif
+> +
+>  #ifdef __s390x__
+>  	pid = syscall(__NR_clone, NULL, flags, args.pidfd, NULL, NULL);
+>  #else
+> @@ -44,5 +48,10 @@ pid_t tst_clone(const struct tst_clone_args *tst_args)
+>  	if (pid == -1)
+>  		return -2;
+
+> +#ifdef __sparc__
+> +	if (pid == tid)
+> +		pid = 0;
+> +#endif
+> +
+>  	return pid;
+>  }
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
