@@ -4,82 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 811D9CA5FD4
-	for <ltp@archiver.kernel.org>; Fri,  2 Oct 2026 13:43:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2E424CA5FDD
+	for <ltp@archiver.kernel.org>; Fri,  2 Oct 2026 13:44:33 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B28B13E11F4
-	for <ltp@archiver.kernel.org>; Fri,  2 Oct 2026 15:43:05 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 8D2673E6B32
+	for <ltp@archiver.kernel.org>; Fri,  2 Oct 2026 15:44:31 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id DDC7C3E11F4
- for <ltp@lists.linux.it>; Fri,  2 Oct 2026 15:42:49 +0200 (CEST)
-Received: from mail-qk2-x01.google.com (mail-qk2-x01.google.com
- [IPv6:2607:f8b0:4864:34::1])
+ by picard.linux.it (Postfix) with ESMTPS id 98BE33E11F4
+ for <ltp@lists.linux.it>; Fri,  2 Oct 2026 15:44:16 +0200 (CEST)
+Received: from mail-qk2-x0a.google.com (mail-qk2-x0a.google.com
+ [IPv6:2607:f8b0:4864:34::a])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 4A1B0600701
- for <ltp@lists.linux.it>; Fri,  2 Oct 2026 15:42:49 +0200 (CEST)
-Received: by mail-qk2-x01.google.com with SMTP id
- d75a77b69052e-534a42fc445so4492621cf.1
- for <ltp@lists.linux.it>; Fri, 02 Oct 2026 06:42:49 -0700 (PDT)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 43ABD600698
+ for <ltp@lists.linux.it>; Fri,  2 Oct 2026 15:44:16 +0200 (CEST)
+Received: by mail-qk2-x0a.google.com with SMTP id
+ d75a77b69052e-53332906208so40520801cf.1
+ for <ltp@lists.linux.it>; Fri, 02 Oct 2026 06:44:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1790948568; x=1791553368; darn=lists.linux.it;
+ d=gmail.com; s=20251104; t=1790948655; x=1791553455; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to:content-type;
- bh=xYsQlWKMZOu3FsxAwpsiqkBul9D00ygybDwuZ0tueLY=;
- b=RCGAdAp0p18ep/4LiauUajIV1nPszwts4x+VVDFc5pb+j6syN1ZMsbPlH0PKO271/Y
- guucZpxXPgU6ZVOOMCPFmwsFr3sX2v61he/caV5TILPtVeIvyEk1ZiwucFNduvjqbEDA
- /EwWo2YNcGHjeyMFW1handib1Eeo5dP8k2tmdwNMskFSUbIFyTnTNKWk4G9nUO0kib4V
- hhCB86819wv6zQTi71T1GqtwdmIbnHDVMRSyj3dUAtYYwDavHtMKvcES6vgb0QIsflet
- PtyEQmo7GJTUWTwq0uboQ0Y9ZrtvOdf73/1aArQuS3eaTJCc1br1kofu0k5W23msHVBw
- grNg==
+ bh=wF8vf/BdoCNvNNHezHfCBI9n3BNwaoJFxQ2AhXRFxr0=;
+ b=YF3XJQRycIv5T8j7MQv91ZhSbRVBciM1KvfW3BHQ27ee7Vqcn7R9b9HC4wdc9sPfET
+ lTMqV/ASyif/w8pLPp6rTtv7ds/InYwrfyGf2hj/1i5jgkp9e4dTFtN6iGDUzwrLX3KE
+ OXf8KdG3rSUzNjgado02YKKdsmQ6gNJtgIkJFbwDD6r3S8OZNFiF4ePhyUgfRrEwBgEh
+ 2Zrn3ILSV8Wh9bfT7XZ91gTBVpPKFHfGDm2pKSBE6/n1T1BFJDWEQ8azHdzlbkSJuR8J
+ 0PzLtrepOyhn1bqhBRZ3In8+5oOeLxjJ8pp02i5I80gx7GnTZCsloMpA4Xpm1SpoYjIp
+ XyYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20260707; t=1790948568; x=1791553368;
+ d=1e100.net; s=20260707; t=1790948655; x=1791553455;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to:content-type;
- bh=xYsQlWKMZOu3FsxAwpsiqkBul9D00ygybDwuZ0tueLY=;
- b=we3RXNBiSxPKAXAhoqqbFoo0Tz7eIaQdWCTfqztYVsKaexTPbCz1BcFOiiyubsfEVP
- 7agP9EreUKxE9Rqu6V+PPrrt5LdkFtJmkXRgW2FJzzk8VwpksvR6qcR2ekDSYefPNVnX
- lNzmItGndiR4D5lOFjmaHNgcIVvHxj6lYDk8M18nyA1VSsutjYnj6ziwylpPQr+8rEVR
- ErXy255c+jEkf/QSIUFNFU64/lleJVd2i2YDWCDicuIwobBDFqMqpOqh+nfxufhGaLBI
- lZaWx40WetSPoxf2A0BzmLSA6zrGkUVvWHCgWlT7CdQMNT+2X1SYG4CfJuZWlDudLaU/
- WNDQ==
-X-Gm-Message-State: AFq9FYK4vUqBK9N2s8ekDjIlZVk9flhMdr+S1MPGMY8YpyNUCT8A+Lna
- rdizT22jsyWdTzlLV/f5c7pB6rwH+STpOZpi4BxdbWQjoX+9SKsNboWL
-X-Gm-Gg: AYBFou2J7Se2reuo3nFUViV1UvbuAFu7miATjg0FYB0seerkUD/gmP8neaD4qv4EN4J
- AX+SrTKGHzlVa3mp4+LZblbx7K+cf0FZrpETZB0zBQN1N0pKUnSAFw7T6Bp1m1W81y0X3BSE90s
- Ns35aa/knRVrVnVjxfq0udypyJVITeVEFIeXnPSYQga9Umeh9FRd2hEfnvA5Kz9PFAp0hcnKMNu
- e9N7q//BOpJ33obZvryyds1yE4nho0kc18s97di3Sk4/Z/DhUcgq/1EmZNbjOPWQ+j2LdMkqPDG
- chPCYNGet31Q79/gOx4Ec5qHU6BxCQwFypfdygSTyNIkdWDXJtWMNY7WABvKoIqs6IE1kiUOqxd
- x8C5Y8W1YghoZz1bOSBeVwNqnUicBVJZolJkyr91Oya4MzZpSxHmiYtz9VlYO3TP/kyMsscziQx
- 29vetk3cR3u8Ne29Pxqew4m7tyWtbhq2LAt7Yt42xe1W0EqDod7BT5ARXr0BRmxP99AUXzJ4lj3
- wQKpnEn0eG8bKqvU57HawmUUajYJU61fkBwZvesR/JRgEbbWrG2k2OSLEXxVrQWodNirPDp8GYt
- y1qfkb85qGkx
-X-Received: by 2002:a05:6214:491:b0:914:47db:4640 with SMTP id
- 6a1803df08f44-917c011902dmr57464436d6.19.1790948567814; 
- Fri, 02 Oct 2026 06:42:47 -0700 (PDT)
+ bh=wF8vf/BdoCNvNNHezHfCBI9n3BNwaoJFxQ2AhXRFxr0=;
+ b=1qFB994EnaiFOO6BE2EPXolEWGqy593OGZoiuKvvgE/48sGe3ijxNvIZpQBk/vfrHy
+ uekUqUlxhlom6edYznzUveTETR5lMzRYE4ULTr5NYcjtCo0A5sSC7197LTfl301k21vA
+ Pa9Ixc/1/p3MWsAJBoEXVJu+XgR2OROZTmXkKya6/piyvpW21AUEbsCCH5E0Yf84bmMh
+ u6m2iLLzDaG7uaWN/elKKaPGjnVprrYntpp2a0JIJuCiIjAaW/eqpj0tSF5/4N4qRrq1
+ JwOwtbMmXlY1GssVKBNQN/9rLikM48w8thDiADTuq20h6w0FH043ItpO24LBDfZhZ1/Y
+ sBZw==
+X-Gm-Message-State: AFuF++lunzOMrJlg8a990xzJqDwrMxENhyO9JAnRRRtmd91n7cvPSk5A
+ 9NXz3EAYb+Lip+JCaPONCFmL0xR3f048b4WMFkKWgxAZFQxCac6xj3H7
+X-Gm-Gg: AYBFou1yRBRShyrKe9Es8x7nfodF+/rSgO0W/NoS/XmekbFncHKQKOAP+jVYzShoWQM
+ ppOWXknFXABcVF+HqQHmNGIp/a23OW92DxHQPXPMUQgYXCGrIxTxsD5lS9AACJlNkt4ikm5uJn0
+ +L/i7D/pcQnAHT4Av5yR42YhXrqWHaN7PJHjICqu/5b6IlLhFnkvWMc8+h128GDIJrJwjQvLf2I
+ afPlz1YsyAH8sfW49nujD7oAdDHdJ9PRV5PCToQBuO/UQ2LCO0nc5x7S4CvIBY9zf9VQTkHthiM
+ cifzM3i0wcaNnEIuxvfQpuXo0W9IEhFZsT2a2JOAPkFt2HB5/qP0A9XLQMbR0RUms4sUkPVK7iN
+ 169HIDH/6BbVjVhTTx/E28qK3FtOoitZlsrl82SHy1vRiWJ9hE3B3WnA6STQuDedwWmU3R9eey/
+ JRq/DRqrhgGCSx58Wa7L9HjiKILWXWpFjDFShMtB7AvNmjlTXvXhZDsggZnuT9QcE9BzSUafeBt
+ plbXbPkLb5QbDwjE6xUBakgdZT/yxREB5dPFQavl6EyOA+WcCy6PjCUCwzHuyc4wwNyN3WPB9cY
+ XlLEnqzK/Efa
+X-Received: by 2002:ac8:7f8c:0:b0:533:3f17:cfae with SMTP id
+ d75a77b69052e-533bd17ee64mr47514501cf.6.1790948655107; 
+ Fri, 02 Oct 2026 06:44:15 -0700 (PDT)
 Received: from
- runnervm8df0l.530sfc1j1x4exldi14v4jjn2ng.cx.internal.cloudapp.net
- ([20.109.95.169]) by smtp.gmail.com with ESMTPSA id
- 6a1803df08f44-917d565489dsm20116466d6.0.2026.10.02.06.42.47
+ runnervm8df0l.sdkwdzzwaqsu1mar1bzdugii3h.cx.internal.cloudapp.net
+ ([135.119.236.51]) by smtp.gmail.com with ESMTPSA id
+ d75a77b69052e-53398bd97e2sm26094341cf.18.2026.10.02.06.44.14
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 02 Oct 2026 06:42:47 -0700 (PDT)
+ Fri, 02 Oct 2026 06:44:14 -0700 (PDT)
 From: linuxtestproject.agent@gmail.com
 To: Wake Liu <wakel@google.com>
-Date: Fri,  2 Oct 2026 13:42:46 +0000
-Message-ID: <20261002134246.9378-1-linuxtestproject.agent@gmail.com>
+Date: Fri,  2 Oct 2026 13:44:13 +0000
+Message-ID: <20261002134413.11862-1-linuxtestproject.agent@gmail.com>
 X-Mailer: git-send-email 2.55.0
-In-Reply-To: <20261002130556.1236937-1-wakel@google.com>
-References: <20261002130556.1236937-1-wakel@google.com>
+In-Reply-To: <20261002130546.1236713-1-wakel@google.com>
+References: <20261002130546.1236713-1-wakel@google.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] lapi/procfs.h: Add elf_prstatus and elf_prpsinfo fallbacks
+Subject: Re: [LTP] keyctl: Fix struct keyctl_dh_params build on Bionic
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -99,10 +100,18 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi Wake,
 
-On 2026-10-02, Wake Liu wrote:
-> lapi/procfs.h: Add elf_prstatus and elf_prpsinfo fallbacks
+On Fri, 2 Oct 2026, Wake Liu wrote:
+> keyctl: Fix struct keyctl_dh_params build on Bionic
 
 Verdict - Reviewed
+
+Pre-existing issue (low severity, not introduced by this patch):
+
+In include/lapi/keyctl.h:55-56, keyctl_join_session_keyring() uses
+KEYCTL_JOIN_SESSION_KEYRING before its fallback definition. When
+HAVE_LINUX_KEYCTL_H is unset, including this header fails to compile;
+the same failure occurs with the parent commit. Move the fallback
+definition before the helper in a separate change.
 
 ---
 Note:
