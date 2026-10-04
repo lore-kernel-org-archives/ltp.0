@@ -4,146 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B1CB0CA5FDD
-	for <ltp@archiver.kernel.org>; Fri,  2 Oct 2026 15:22:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 52B20CA5FE4
+	for <ltp@archiver.kernel.org>; Sun,  4 Oct 2026 01:54:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1791078851; h=date :
+ mime-version : message-id : to : subject : list-id : list-unsubscribe
+ : list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : cc : content-type : content-transfer-encoding : sender :
+ from; bh=10D2uEx+w/+huHEQrNnzh5uDwfkoijtMx4/zVbTsgrg=;
+ b=HeecrAptXb+A7Qtawn6Wnmd28Ci9QFg5UxjTxV2q1E291n9nGEzp1XJSt2+8FXJB2N2TY
+ GZG21zVOkA+/gxz2u33y5FnQbqG0UFnyfET/smdDBwe7Pb0uIm1SJsm/rX49oi6UZZEQ5Oh
+ wm2w2dxW6dCeJAsDywUBPp0bAMvRwWM=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C6CB53E971C
-	for <ltp@archiver.kernel.org>; Fri,  2 Oct 2026 17:22:19 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 0D3D63E4F06
+	for <ltp@archiver.kernel.org>; Sun,  4 Oct 2026 03:54:11 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0B7683E5752
- for <ltp@lists.linux.it>; Fri,  2 Oct 2026 17:22:03 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 697C03E27FD
+ for <ltp@lists.linux.it>; Sun,  4 Oct 2026 03:53:50 +0200 (CEST)
+Received: from mail-pg1-x545.google.com (mail-pg1-x545.google.com
+ [IPv6:2607:f8b0:4864:20::545])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 78143140098D
- for <ltp@lists.linux.it>; Fri,  2 Oct 2026 17:22:03 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id B698921A35;
- Fri,  2 Oct 2026 15:21:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1790954512; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
- bh=1Bo0zeHvcWWjVClXTafBvrbvJq7visOUWQ5iJvthPGE=;
- b=htsFUC87kqOjvWkqrEuWzwsEf0vZWV4zU/iMlvUj4GMC55vkXuhfBfkvGyijZPWGaCzOyb
- HyICz1R9hdIwylDyArFi317GZVqAjsD3gyxSTv8xNn4CZKbtFQUeErlz5E9GlMFvB4oVKP
- T/N4bt1nw+lewhe5R6cndclqpX9p7Zk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1790954512;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
- bh=1Bo0zeHvcWWjVClXTafBvrbvJq7visOUWQ5iJvthPGE=;
- b=rhqxyEsXxbGur9MYKB7RExYciMH4zY2j4gLrfTIGbO51U2GO+C2gudE/kPHs6Zg+JoGvvH
- rpoIzhSuKKge1kCw==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1790954508; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
- bh=1Bo0zeHvcWWjVClXTafBvrbvJq7visOUWQ5iJvthPGE=;
- b=zPPhGN9w0xe2TsgxHPLiwjVdWO+bdeej1DmBXtkWT5Zd9v3hV3pwPERIdG3YEccozZEo4t
- rdF596ko977g49efMTO7d6+7ueRtyKdOFfa+Ij5EBpEvsQM9Xb0EYbzi6zLxd+vGtRS0f0
- 6gcFOElJgf3Xp/RYMRCcVCtxEEcGKJs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1790954508;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
- bh=1Bo0zeHvcWWjVClXTafBvrbvJq7visOUWQ5iJvthPGE=;
- b=oH+CfncpzrwE4T8excl+oJT5jF7+xrGd0sh5dDDPcTWp20REzg2OcpVkxEwsxI6VSMhALy
- NYuMqfoIJbrVwHCA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8916A139D1;
- Fri,  2 Oct 2026 15:21:48 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id XdOWGAzMv2r4dgAAD6G6ig
- (envelope-from <mdoucha@suse.cz>); Fri, 02 Oct 2026 15:21:48 +0000
-Message-ID: <760afa22-a964-4418-9980-350151cfd830@suse.cz>
-Date: Fri, 2 Oct 2026 17:21:48 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Petr Vorel <pvorel@suse.cz>, Andrea Cervesato <andrea.cervesato@suse.de>
-References: <20261001-fix_aio_suspend-1-1-v2-1-d444497432ea@suse.com>
- <20261001161604.GA3084598@pevik>
-Content-Language: en-US
-From: Martin Doucha <mdoucha@suse.cz>
-Autocrypt: addr=mdoucha@suse.cz; keydata=
- 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 ag==
-In-Reply-To: <20261001161604.GA3084598@pevik>
-X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
- MIME_TRACE(0.00)[0:+]; MID_RHS_MATCH_FROM(0.00)[];
- RCVD_TLS_ALL(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- TO_DN_ALL(0.00)[]; FROM_HAS_DN(0.00)[];
- RCPT_COUNT_THREE(0.00)[3]; FROM_EQ_ENVFROM(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email, suse.cz:mid,
- imap1.dmz-prg2.suse.org:helo]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 75404600084
+ for <ltp@lists.linux.it>; Sun,  4 Oct 2026 03:53:49 +0200 (CEST)
+Received: by mail-pg1-x545.google.com with SMTP id
+ 41be03b00d2f7-cc1cade6b71so438885a12.0
+ for <ltp@lists.linux.it>; Sat, 03 Oct 2026 18:53:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=google.com; s=20251104; t=1791078827; x=1791683627; darn=lists.linux.it;
+ h=content-type:cc:to:from:subject:message-id:mime-version:date:from
+ :to:cc:subject:date:message-id:reply-to:content-type;
+ bh=PFOtVR9INUjD2oky9H24tAPsWFgcq55ylVmM5Qh+UzQ=;
+ b=QdLcyrrYBWzjftfJWDwU2kKtN9E55ueCu5fGGQOieHEgKHzvz3WI1RcdQo5W9hSs/8
+ If3Pv3+H1wj1DBgqNHj4XOIk95Ixx1fQNSR661dr7G7DnTOicQujaWQfp8d2vrkuysCm
+ aN8NGe+xcgu3V4f3G/v77SJGGI3YJKxRIgw+UXTxG6/eqyGPoQ8mRLVnCpLZif/z9oNa
+ SKrL2TXUHBuRFgvq9BTSCPwTacZipiAT/89TpRZmViv8C4tARVkX3/3EGfxiYSQ0F83D
+ CXfjjXK5UConFQteuZfmsfaaLcQ93Qsen7gJH1dFLB8MBxHd3lsNlNsejDq0tU+gGUtp
+ gArA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20260707; t=1791078827; x=1791683627;
+ h=content-type:cc:to:from:subject:message-id:mime-version:date
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+ :content-type;
+ bh=PFOtVR9INUjD2oky9H24tAPsWFgcq55ylVmM5Qh+UzQ=;
+ b=JhrpiRlGMEEYZ7L+bTfkypXL2DRSR3B20L4F6zMhcdkBuEXvnYz/0UpuSjAwV9P1PP
+ RBgk3HFh4sQff57HWTHx1vuJgGAQwN8C6LeFPzdx22EY7KSt5dxHqsw4CA/yKQhCx6ko
+ HlWhpgMVWkHz1Y6D0F5hxzRWBqpMyMdovnlJ+6MUA1NO7o7AUcoNKO0kvXTSBBYhvLP5
+ mbho5naEjGmEGWDGT4oBMsDK1kIc6jLwyZqsRImXuobe7x9jEfdHbzHLjiN9onOSZwxQ
+ eea+UqrgkVyn/zqoVgFuC78F/pG0e8Bmeaifjf36jA+faLXCjULcU8bY2+CrSn+b0qr5
+ PWOQ==
+X-Gm-Message-State: AFuF++nBAFpv5/5sguTaDJ/XzlFUIvpDcvIIQ3/JwIWrOejDx0P/zjVD
+ vEfkrSy2G3t6mB2QTovu0qppfzQChyQRGw4oERbWtk20YOkgIj5IeOnDPq226HZ9/3g5BezJDPx
+ YC9FN/B71IEPInt1deSeEwvv/+OPK6b/ho/+UofjvyS4Cz9fvTmQGmlq82kGE1j/ZeOFRNFua2Z
+ f5BnSjTfM4cdT0Uo6H/LQVoviiRw==
+X-Received: from pgcv16.prod.google.com ([2002:a05:6a02:5310:b0:cc7:b2dd:797b])
+ (user=wakel job=prod-delivery.src-stubby-dispatcher) by
+ 2002:a05:6a21:4002:b0:3d8:e57a:5a5b
+ with SMTP id adf61e73a8af0-3e0bc9ebc99mr4389715637.5.1791078826874; Sat, 03
+ Oct 2026 18:53:46 -0700 (PDT)
+Date: Sun,  4 Oct 2026 01:53:44 +0000
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.56.0.rc1.315.gc6ed9934b7-goog
+Message-ID: <20261004015344.2862110-1-wakel@google.com>
+To: ltp@lists.linux.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] openposix: Fix aio_suspend/1-1 completion race
+Subject: [LTP] [PATCH] epoll_pwait04: Use raw syscalls to avoid SIGSEGV on
+ 32-bit Bionic
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -155,45 +86,179 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Linux Test Project <ltp@lists.linux.it>
+From: Wake Liu via ltp <ltp@lists.linux.it>
+Reply-To: Wake Liu <wakel@google.com>
+Cc: Wake Liu <wakel@google.com>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On 10/1/26 18:16, Petr Vorel wrote:
->> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/aio_suspend/1-1.c b/testcases/open_posix_testsuite/conformance/interfaces/aio_suspend/1-1.c
->> index 8f0c9ae95..d08709ee9 100644
->> --- a/testcases/open_posix_testsuite/conformance/interfaces/aio_suspend/1-1.c
->> +++ b/testcases/open_posix_testsuite/conformance/interfaces/aio_suspend/1-1.c
->> @@ -7,216 +7,168 @@
->>    */
-> 
->>   /*
->> - * assertion:
-> I'm not sure how important is to keep the doc structure, but other tests
-> keep having "assertion:" and "method:" (e.g.
-> testcases/open_posix_testsuite/conformance/interfaces/aio_cancel/6-1.c
-> which Martin rewrote).
-> That somehow correlates with assertions for aio_suspend() in
-> testcases/open_posix_testsuite/conformance/interfaces/aio_suspend/assertions.xml
+epoll_pwait04 passes an unmapped address from tst_get_bad_addr() as the
+sigmask argument to verify that the kernel returns EFAULT. However,
+do_epoll_pwait() invokes the libc epoll_pwait() and epoll_pwait2()
+wrappers when available.
 
-Hi,
-the "assertion" section in the header comment quotes the relevant part 
-of the POSIX standard. It could be updated to the wording from the 
-latest POSIX revision but in general should be kept. "Steps" could then 
-be renamed to "method" to keep the common format.
+On 32-bit Android Bionic, sizeof(sigset_t) is 4 bytes whereas the
+kernel expects an 8-byte (_NSIG / 8) signal set. The 32-bit Bionic
+wrappers therefore dereference the sigmask pointer in userspace to
+zero-extend it into a sigset64_t on the stack before issuing the
+syscall. Passing an unmapped bad_addr thus causes a SIGSEGV in
+userspace before reaching the kernel. As passing an invalid pointer
+to a libc function is undefined behavior anyway, the EFAULT check
+should call the syscalls directly.
 
-I'll have a closer look at the code on Monday.
+Expose sys_epoll_pwait() and sys_epoll_pwait2() in lapi/epoll.h and add
+do_sys_epoll_pwait() in epoll_pwait_var.h so epoll_pwait04 invokes the
+raw syscalls directly. do_epoll_pwait() is made static inline to avoid
+a -Wunused-function warning now that epoll_pwait04 no longer uses it.
 
+Fixes: 9d083e3a286b ("epoll_pwait: Add invalid sigmask test for epoll_pwait04")
+Signed-off-by: Wake Liu <wakel@google.com>
+---
+ include/lapi/epoll.h                          | 37 ++++++++++++++-----
+ .../syscalls/epoll_pwait/epoll_pwait04.c      |  6 ++-
+ .../syscalls/epoll_pwait/epoll_pwait_var.h    | 30 +++++++++++----
+ 3 files changed, 55 insertions(+), 18 deletions(-)
+
+diff --git a/include/lapi/epoll.h b/include/lapi/epoll.h
+index 15a954175..07fb1503a 100644
+--- a/include/lapi/epoll.h
++++ b/include/lapi/epoll.h
+@@ -24,13 +24,24 @@ static inline void epoll_pwait_supported(void)
+ 	tst_syscall(__NR_epoll_pwait);
+ }
+ 
++/*
++ * Note: The kernel expects an _NSIG / 8 bytes signal set, which may be larger
++ * than sizeof(sigset_t) on some 32-bit libcs (e.g. 4 bytes on 32-bit Bionic).
++ */
++static inline int sys_epoll_pwait(int epfd, struct epoll_event *events,
++				  int maxevents, int timeout,
++				  const sigset_t *sigmask)
++{
++	return tst_syscall(__NR_epoll_pwait, epfd, events, maxevents,
++			   timeout, sigmask, _NSIG / 8);
++}
++
+ #ifndef HAVE_EPOLL_PWAIT
+ static inline int epoll_pwait(int epfd, struct epoll_event *events,
+ 			      int maxevents, int timeout,
+ 			      const sigset_t *sigmask)
+ {
+-	return tst_syscall(__NR_epoll_pwait, epfd, events, maxevents,
+-			   timeout, sigmask, _NSIG / 8);
++	return sys_epoll_pwait(epfd, events, maxevents, timeout, sigmask);
+ }
+ #endif
+ 
+@@ -40,23 +51,31 @@ static inline void epoll_pwait2_supported(void)
+ 	tst_syscall(__NR_epoll_pwait2);
+ }
+ 
+-#ifndef HAVE_EPOLL_PWAIT2
+-static inline int epoll_pwait2(int epfd, struct epoll_event *events,
+-			       int maxevents, const struct timespec *timeout,
+-			       const sigset_t *sigmask)
++static inline int sys_epoll_pwait2(int epfd, struct epoll_event *events,
++				   int maxevents,
++				   const struct timespec *timeout,
++				   const sigset_t *sigmask)
+ {
+-	if (timeout == NULL)
++	struct __kernel_timespec ts;
++
++	if (!timeout)
+ 		return tst_syscall(__NR_epoll_pwait2, epfd, events, maxevents,
+ 				   NULL, sigmask, _NSIG / 8);
+ 
+-	struct __kernel_timespec ts;
+-
+ 	ts.tv_sec = timeout->tv_sec;
+ 	ts.tv_nsec = timeout->tv_nsec;
+ 
+ 	return tst_syscall(__NR_epoll_pwait2, epfd, events, maxevents,
+ 			   &ts, sigmask, _NSIG / 8);
+ }
++
++#ifndef HAVE_EPOLL_PWAIT2
++static inline int epoll_pwait2(int epfd, struct epoll_event *events,
++			       int maxevents, const struct timespec *timeout,
++			       const sigset_t *sigmask)
++{
++	return sys_epoll_pwait2(epfd, events, maxevents, timeout, sigmask);
++}
+ #endif
+ 
+ #endif /* LAPI_EPOLL_H__ */
+diff --git a/testcases/kernel/syscalls/epoll_pwait/epoll_pwait04.c b/testcases/kernel/syscalls/epoll_pwait/epoll_pwait04.c
+index b399225b9..4b77c3bd0 100644
+--- a/testcases/kernel/syscalls/epoll_pwait/epoll_pwait04.c
++++ b/testcases/kernel/syscalls/epoll_pwait/epoll_pwait04.c
+@@ -20,7 +20,11 @@ static void *bad_addr;
+ 
+ static void run(void)
+ {
+-	TST_EXP_FAIL(do_epoll_pwait(efd, &e, 1, NULL, bad_addr),
++	/*
++	 * Use raw syscalls, libc wrappers may dereference sigmask in
++	 * userspace (e.g. 32-bit Bionic) and crash with SIGSEGV.
++	 */
++	TST_EXP_FAIL(do_sys_epoll_pwait(efd, &e, 1, NULL, bad_addr),
+ 		     EFAULT, "with an invalid sigmask pointer");
+ }
+ 
+diff --git a/testcases/kernel/syscalls/epoll_pwait/epoll_pwait_var.h b/testcases/kernel/syscalls/epoll_pwait/epoll_pwait_var.h
+index e215a6540..07d2ac8ca 100644
+--- a/testcases/kernel/syscalls/epoll_pwait/epoll_pwait_var.h
++++ b/testcases/kernel/syscalls/epoll_pwait/epoll_pwait_var.h
+@@ -13,21 +13,35 @@
+ #define MSEC_PER_SEC (1000L)
+ #define NSEC_PER_MSEC (1000000L)
+ 
+-static int do_epoll_pwait(int epfd, struct epoll_event *events, int
+-	maxevents, struct timespec *timeout, const sigset_t *sigmask)
++static inline int epoll_timeout_ms(const struct timespec *timeout)
++{
++	if (!timeout)
++		return -1;
++
++	return timeout->tv_sec * MSEC_PER_SEC +
++		(timeout->tv_nsec + NSEC_PER_MSEC - 1) / NSEC_PER_MSEC;
++}
++
++static inline int do_epoll_pwait(int epfd, struct epoll_event *events,
++	int maxevents, struct timespec *timeout, const sigset_t *sigmask)
+ {
+ 	if (tst_variant == 1)
+ 		return epoll_pwait2(epfd, events, maxevents, timeout, sigmask);
+ 
+-	int timeout_ms = -1;
++	return epoll_pwait(epfd, events, maxevents, epoll_timeout_ms(timeout),
++			   sigmask);
++}
+ 
+-	if (timeout) {
+-		timeout_ms = timeout->tv_sec * MSEC_PER_SEC;
+-		timeout_ms += (timeout->tv_nsec + NSEC_PER_MSEC - 1) /
+-			NSEC_PER_MSEC;
++static inline int do_sys_epoll_pwait(int epfd, struct epoll_event *events,
++	int maxevents, struct timespec *timeout, const sigset_t *sigmask)
++{
++	if (tst_variant == 1) {
++		return sys_epoll_pwait2(epfd, events, maxevents, timeout,
++					sigmask);
+ 	}
+ 
+-	return epoll_pwait(epfd, events, maxevents, timeout_ms, sigmask);
++	return sys_epoll_pwait(epfd, events, maxevents,
++			       epoll_timeout_ms(timeout), sigmask);
+ }
+ 
+ static void epoll_pwait_init(void)
 -- 
-Martin Doucha   mdoucha@suse.cz
-SW Quality Engineer
-SUSE LINUX, s.r.o.
-CORSO IIa
-Krizikova 148/34
-186 00 Prague 8
-Czech Republic
+2.56.0.rc1.315.gc6ed9934b7-goog
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
