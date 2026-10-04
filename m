@@ -4,78 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D4284CA5FDD
-	for <ltp@archiver.kernel.org>; Sun,  4 Oct 2026 01:54:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1791078889; h=date :
- mime-version : message-id : to : subject : list-id : list-unsubscribe
- : list-archive : list-post : list-help : list-subscribe : from :
- reply-to : cc : content-type : content-transfer-encoding : sender :
- from; bh=GAEHljUk6r1pEHLFTD9IaHYX30LBiuzbEtvSvsdeMg4=;
- b=iFszUy0QjYx5A1ZB/voqUHxpmy42ZWsE92QgX3RdZ34+bdxTZEZN3AjeijKQjCFkSQuyE
- eaoG8+h2EeJOaNse03gVGnw6Yvr6lVL2iEnYzJUwQv2DcYF3Ugp2Wh5veRSNcigfFaTRyPa
- FRm2AVC89hJuqeMzBwnj9xs9pqifX10=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AD973CA5FE4
+	for <ltp@archiver.kernel.org>; Sun,  4 Oct 2026 04:31:29 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C3C1A3E6B7A
-	for <ltp@archiver.kernel.org>; Sun,  4 Oct 2026 03:54:49 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 9E8A93E1775
+	for <ltp@archiver.kernel.org>; Sun,  4 Oct 2026 06:31:27 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 837723E27FD
- for <ltp@lists.linux.it>; Sun,  4 Oct 2026 03:54:29 +0200 (CEST)
-Received: from mail-pj1-x1048.google.com (mail-pj1-x1048.google.com
- [IPv6:2607:f8b0:4864:20::1048])
+ by picard.linux.it (Postfix) with ESMTPS id C72863C2C00
+ for <ltp@lists.linux.it>; Sun,  4 Oct 2026 06:30:48 +0200 (CEST)
+Received: from mail-pj2-x01.google.com (mail-pj2-x01.google.com
+ [IPv6:2607:f8b0:4864:39::1])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id F3013100014B
- for <ltp@lists.linux.it>; Sun,  4 Oct 2026 03:54:28 +0200 (CEST)
-Received: by mail-pj1-x1048.google.com with SMTP id
- 98e67ed59e1d1-395543dc382so562296a91.0
- for <ltp@lists.linux.it>; Sat, 03 Oct 2026 18:54:28 -0700 (PDT)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 446E320075F
+ for <ltp@lists.linux.it>; Sun,  4 Oct 2026 06:30:48 +0200 (CEST)
+Received: by mail-pj2-x01.google.com with SMTP id
+ d9443c01a7336-2e497ed2ccbso3963375ad.1
+ for <ltp@lists.linux.it>; Sat, 03 Oct 2026 21:30:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=google.com; s=20251104; t=1791078867; x=1791683667; darn=lists.linux.it;
- h=content-type:cc:to:from:subject:message-id:mime-version:date:from
- :to:cc:subject:date:message-id:reply-to:content-type;
- bh=O3lQcR/fw2UMTQnOnWmzZKnvw0sPJLGVA/1rcZmu/mI=;
- b=CLy8pVT00JbFgQzfv3CtQqGnVyuzbxI62dHlSsDBrB3SJLnmeoEPEmHqJ2A8U2Vjbl
- AQPBSGX1tnkB+BYdAmELA8oDTIPxdna03SqRnYNXV2tGxflQJ6/8iJAb6GJabuKAYO3B
- h+4y7BDMMqNr3rmtoxw8rx9QFZ8WEix9hFI0IqQc66DXegqWs+MISqUgK3JGrGu1mWtC
- kD1j8AsWdFBj/eZf5p8kgoJ7I2Ep5kvhYtlvsJhSFlt8F5RjxSFhRxWfTpbaknYOd3fo
- VCCgtrz436AE9XxQX1l94RyHoJFWwOSZZ9OtxAM77fLxAahe20KWmpgXcZQMmyoir+xw
- U7fQ==
+ d=gmail.com; s=20251104; t=1791088246; x=1791693046; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to:content-type;
+ bh=My8iKZJD97Aj5VpyzxXzKdr9PrrQUzgOQPNIALUdEr4=;
+ b=Jiy/Nq2GfUQviThaV4j18dPgNTif+Xqnwj5oK/vM/mKah0NldFhcaSr0a1hRHA897o
+ f5L4LEbxe87VFQ/ZHwwU+gbR3MVss9dINJDyo05GJzZnuk3g2Elhd9+KUS8kDxI14M2D
+ jM4cDMMpBoIpYzBt8rtrlN45AxRoKlSy77Ewa2tsBPFVAkZGV5mCDzKBNT6rNtaPogqT
+ iiNUk7T3t5V5jouJpQ7aeZAXn1oEejcJQbPH38160Q3khVBqy+u2ae5pMIx3Pe/0qnFY
+ DGhATeI9ImUb/oWgsXhXuhEt/LCsPmf5Fsdg+6ClLe3L7KcpnGuE3ziunl/CEEtiNYq8
+ Rp+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20260707; t=1791078867; x=1791683667;
- h=content-type:cc:to:from:subject:message-id:mime-version:date
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
- :content-type;
- bh=O3lQcR/fw2UMTQnOnWmzZKnvw0sPJLGVA/1rcZmu/mI=;
- b=YV6G6Itb4r7i3Xv7nZSnKc7kCLbf7Xo51wh3mOLKGXAGBFMfLO/vARnHEvE5114XKG
- mDkL2ziotOZI5JAWGN1HlblT7DPhdi6LRSQv+o0vzKoRGmUogrE4wopY6s//v9HrbvtF
- l1PJmXmC0aqs+S6cr/5O7yzIK5p5NWx+LMKY5W8TzdcYCsL0S6BsDZm/WgaMwbCpIfd3
- sIqzbMUJ5XCH1f4ZYT4xSNHH2CJ9HdZDHQSFRp8WUoHuf+SV7XVOSLCSc0qvd1PjhslA
- 7SFZ1ft/hYlbw3UsJy+0mketz8x3GBXilH0+Shon8zWMSwROYPQjRBDVotca1HZXMsyB
- XGcg==
-X-Gm-Message-State: AFq9FYJ+rHRgXWxCrBcoyWK174TgoVcjSmc7ongtPxB2ZlQAofh/uThF
- sBK0CUGLBNy+wV1iVwqXRpw7FoxyxyONRTTuarRpcdaf0DXMQPi3a2y0BNnxPgGl2x69ZMMxrjq
- vMsUhzRh2y928jsObkJkIIUa83bimydZanhq8MNCJiaaB3dCifmhz3jsyrE3oHK+5xAahBQJpQI
- gfJLjd+HVX/zva855vYkpzqs03bQ==
-X-Received: from plme2.prod.google.com ([2002:a17:903:4902:b0:2e1:2414:b08c])
- (user=wakel job=prod-delivery.src-stubby-dispatcher) by
- 2002:a17:902:ce8e:b0:2e3:1bb4:610f
- with SMTP id d9443c01a7336-2e49b694cd5mr62315935ad.71.1791078866955; Sat, 03
- Oct 2026 18:54:26 -0700 (PDT)
-Date: Sun,  4 Oct 2026 01:54:24 +0000
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.56.0.rc1.315.gc6ed9934b7-goog
-Message-ID: <20261004015424.3821821-1-wakel@google.com>
-To: ltp@lists.linux.it
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+ d=1e100.net; s=20260707; t=1791088246; x=1791693046;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to:content-type;
+ bh=My8iKZJD97Aj5VpyzxXzKdr9PrrQUzgOQPNIALUdEr4=;
+ b=xrH1FE4rAUhpEcM0eM5lq2UeuodQmWiUMXl8jgl1tGe1E1NZ8aDvcT6ATPFtPF7ZUG
+ qiFndeL/taxAMBOWv5gLnY29s9Dm+NkZfWdTMdvaYEMKbApT32Sjra2Po5nj0Iw7YXWr
+ Ntz5So4Dcovm/+eMs83EPEFHjCOT+iJlw1Qbyqix4NWcC2oNPB4WG260VxpyVg8GArTR
+ sc5j2BhfpeKaZ2ijWwFuFwvCQd96M7yLt8C8yAtRfLGoj3j+LyTX6glQ8kKtcgPPjigM
+ J0achLvlsKNpia2WqqJ969sqpKaA+atOY+Pc4aDAIgmkZVjhUaoWHrHqnYWnrISc8lnh
+ achA==
+X-Gm-Message-State: AFq9FYK4pSn33GD8GXhz7If+sDkyQkYiPDGd3nZ9xQVF3Cm/hMxRpOGu
+ AUj5s9cXPplJFvCdPq7Go5Baks/Hsn0aM14FAl4F/j6O5jQY53frBsZv1rsRiHEb
+X-Gm-Gg: AYBFou1GHKBan4+gpE2xp+PCCephvPi2zfOz9xhW1hOdyg5yQmJPLYj2r8qAtUEwCQm
+ sZCwPkeL7g8G8gOEBGBV7CStNYbweDjN/skoLE98PcFbI3VuS1jolbk5mLYvxwxCykAaE2x+cAm
+ as+xHvMpDFPR5QwuvUsici4h06hUoUoSTaW1An9ljLVuFFlTtHN7caAIWUqMusy71c1UNMBFKHG
+ DVHIaNHu3PZAqcRcYLgh5y5lwYMsw3T60cMJcN+A1QV209vUO4Da7SUuVgbxYsVPzkj3MCCuAc2
+ U0HrFOB2q76Rui69ci0UhMAWgGgulWqkKHaaYeo3xTF6Di3MSjX9VdAq9OjROXJYEO98/PUibDB
+ +XG3eU+KBWe7wCvfKq0bmByg/PVw3pU8pXts9UFU4D3T877F0LhSndfEBTRxYozQbAOM2lAcQ0e
+ AD3EGsEFfh/Vb7MJSgJr5iE3IwIkyMA+A9eE2ItogW8vGwVjVYeGkN95ijRLg3upcUE4pkQwE40
+ zVotEJdSbVOq4vnyRCpKh/SDPdJlBCYqsWFi5S4zrmk+zUiZxVS8/MttE9Y/2gSSLItfBQ1G8L8
+ cWMdIKcwOA==
+X-Received: by 2002:a17:903:3d0e:b0:2d8:d4ce:7e40 with SMTP id
+ d9443c01a7336-2e49b64e249mr64285205ad.21.1791088246479; 
+ Sat, 03 Oct 2026 21:30:46 -0700 (PDT)
+Received: from
+ runnervm8df0l.iasvrx1ljzae3kc3rga3kj4eie.xx.internal.cloudapp.net
+ ([4.155.71.201]) by smtp.gmail.com with ESMTPSA id
+ d9443c01a7336-2e5378611a2sm8304915ad.20.2026.10.03.21.30.45
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Sat, 03 Oct 2026 21:30:45 -0700 (PDT)
+From: linuxtestproject.agent@gmail.com
+To: Wake Liu <wakel@google.com>
+Date: Sun,  4 Oct 2026 04:30:44 +0000
+Message-ID: <20261004043044.9013-1-linuxtestproject.agent@gmail.com>
+X-Mailer: git-send-email 2.55.0
+In-Reply-To: <20261004015424.3821821-1-wakel@google.com>
+References: <20261004015424.3821821-1-wakel@google.com>
+MIME-Version: 1.0
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] sched_{set,
- get}attr: Call the syscalls via tst_syscall()
+Subject: Re: [LTP] sched_{set, get}attr: Call the syscalls via tst_syscall()
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -87,113 +92,28 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Wake Liu via ltp <ltp@lists.linux.it>
-Reply-To: Wake Liu <wakel@google.com>
-Cc: Wake Liu <wakel@google.com>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Wake Liu <wakel@google.com>
+Hi Wake,
 
-The sched_setattr01, sched_setattr02, sched_getattr01 and
-sched_getattr02 tests call sched_setattr() and sched_getattr().
-Depending on the libc, these names resolve either to the lapi fallback
-wrappers or to the libc functions.
+On October 4, 2026, Wake Liu wrote:
+> sched_{set, get}attr: Call the syscalls via tst_syscall()
 
-On Bionic, sched_setattr() and sched_getattr() were added in API level
-37. When LTP is built against such headers, the test binaries link
-against the libc symbols. They then fail to start on devices with an
-older libc:
+Verdict - Reviewed
 
-  CANNOT LINK EXECUTABLE "sched_setattr01": cannot locate symbol
-  "sched_setattr"
-
-These are syscall tests, so call the syscalls directly through
-tst_syscall(), as SAFE_SCHED_SETATTR() already does. This makes the
-tests independent of libc support, and tst_syscall() reports TCONF if
-the kernel lacks the syscalls. As a bonus, the negative tests no longer
-pass NULL to the libc wrappers, whose attr parameter is declared
-nonnull by glibc and Bionic.
-
-Signed-off-by: Wake Liu <wakel@google.com>
 ---
- testcases/kernel/syscalls/sched_getattr/sched_getattr01.c | 3 ++-
- testcases/kernel/syscalls/sched_getattr/sched_getattr02.c | 7 ++++---
- testcases/kernel/syscalls/sched_setattr/sched_setattr01.c | 5 +++--
- testcases/kernel/syscalls/sched_setattr/sched_setattr02.c | 3 ++-
- 4 files changed, 11 insertions(+), 7 deletions(-)
+Note:
 
-diff --git a/testcases/kernel/syscalls/sched_getattr/sched_getattr01.c b/testcases/kernel/syscalls/sched_getattr/sched_getattr01.c
-index bd05164ca..2f3bd4a9c 100644
---- a/testcases/kernel/syscalls/sched_getattr/sched_getattr01.c
-+++ b/testcases/kernel/syscalls/sched_getattr/sched_getattr01.c
-@@ -51,7 +51,8 @@ static void run(void)
- 
- 	memset((void *)read_attr, 0, sizeof(*read_attr));
- 
--	TST_EXP_PASS(sched_getattr(0, read_attr, sizeof(*read_attr), 0),
-+	TST_EXP_PASS(tst_syscall(__NR_sched_getattr, 0, read_attr,
-+				 sizeof(*read_attr), 0),
- 		     "sched_getattr() with valid parameters");
- 	if (!TST_PASS)
- 		return;
-diff --git a/testcases/kernel/syscalls/sched_getattr/sched_getattr02.c b/testcases/kernel/syscalls/sched_getattr/sched_getattr02.c
-index e2c0bf43b..a70b8ac5c 100644
---- a/testcases/kernel/syscalls/sched_getattr/sched_getattr02.c
-+++ b/testcases/kernel/syscalls/sched_getattr/sched_getattr02.c
-@@ -40,9 +40,10 @@ static void verify_sched_getattr(unsigned int n)
- {
- 	struct test_case *tc = &tcase[n];
- 
--	TST_EXP_FAIL(sched_getattr(*(tc->pid), tc->attr, tc->size, tc->flags),
--				 tc->exp_errno, "sched_getattr(%d, ..., %d, %d)", *tc->pid,
--				 tc->size, tc->flags);
-+	TST_EXP_FAIL(tst_syscall(__NR_sched_getattr, *tc->pid, tc->attr,
-+				 tc->size, tc->flags),
-+		     tc->exp_errno, "sched_getattr(%d, ..., %d, %d)",
-+		     *tc->pid, tc->size, tc->flags);
- }
- 
- static void setup(void)
-diff --git a/testcases/kernel/syscalls/sched_setattr/sched_setattr01.c b/testcases/kernel/syscalls/sched_setattr/sched_setattr01.c
-index 93e532774..b1fe93735 100644
---- a/testcases/kernel/syscalls/sched_setattr/sched_setattr01.c
-+++ b/testcases/kernel/syscalls/sched_setattr/sched_setattr01.c
-@@ -51,12 +51,13 @@ static void run(void)
- {
- 	struct sched_attr read_attr = { .size = sizeof(read_attr) };
- 
--	TST_EXP_PASS(sched_setattr(0, &attr, 0),
-+	TST_EXP_PASS(tst_syscall(__NR_sched_setattr, 0, &attr, 0),
- 		     "sched_setattr() with valid parameters");
- 	if (!TST_PASS)
- 		return;
- 
--	if (sched_getattr(0, &read_attr, sizeof(read_attr), 0) == -1) {
-+	if (tst_syscall(__NR_sched_getattr, 0, &read_attr,
-+			sizeof(read_attr), 0) == -1) {
- 		tst_res(TFAIL | TERRNO, "sched_getattr() failed");
- 		return;
- 	}
-diff --git a/testcases/kernel/syscalls/sched_setattr/sched_setattr02.c b/testcases/kernel/syscalls/sched_setattr/sched_setattr02.c
-index 9f1ccfcd0..462f182a5 100644
---- a/testcases/kernel/syscalls/sched_setattr/sched_setattr02.c
-+++ b/testcases/kernel/syscalls/sched_setattr/sched_setattr02.c
-@@ -123,7 +123,8 @@ static void verify_sched_setattr(unsigned int n)
- 	 */
- 	attr_small.size = SCHED_ATTR_SIZE_VER0 - 1;
- 
--	TST_EXP_FAIL(sched_setattr(pid, target_attr, tc->flags),
-+	TST_EXP_FAIL(tst_syscall(__NR_sched_setattr, pid, target_attr,
-+				 tc->flags),
- 		     tc->exp_errno, "%s", tc->desc);
- }
- 
--- 
-2.56.0.rc1.315.gc6ed9934b7-goog
+The agent can sometimes produce false positives although often its
+findings are genuine. If you find issues with the review, please
+comment this email or ignore the suggestions.
 
+Regards,
+LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
