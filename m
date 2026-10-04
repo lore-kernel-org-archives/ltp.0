@@ -4,92 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7B989CA5FE6
-	for <ltp@archiver.kernel.org>; Sun,  4 Oct 2026 14:35:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C4F81CA5FE6
+	for <ltp@archiver.kernel.org>; Sun,  4 Oct 2026 14:35:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1791124519; h=to : date :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1791124538; h=to : date :
  message-id : in-reply-to : references : mime-version : subject :
  list-id : list-unsubscribe : list-archive : list-post : list-help :
  list-subscribe : from : reply-to : cc : content-type :
  content-transfer-encoding : sender : from;
- bh=WtDk0Btta7OeF40Fp5vMe+j0+0hiPL5Ni2RmORhnKOA=;
- b=P97Okr3tRAg0BGWgzQh5n87/gzi0tAg2l00y/M0sj2BgLOoUYxmJgfBLNdoE8rE327mXt
- NvyEqAxBn8dtFhNFxy8fH6Wy9rdBn2OHfdYqbYu7CRdxRwrjaFgsZe8CuLdGEXm8GTmE2fG
- 80hGEYVsFqc4lxMgyLPlu6B57Rq/o/o=
+ bh=VKD7KMYXEkJGeS+MhoHAlRWffwwzS/Jnt+uvnXOc21c=;
+ b=hfF0jnKDsC1k5nB8egNb6wU8hF3ExAy2HLvhvfB3FN8xuxMOcXOjfoX72No4wtRrsKvxe
+ sp710GLjewD9LVX2BmNU6OEjKV9u7fj8vhCIrlYRkSBvqRQ0y1+2G3j3Rr/LNRWoLZwSlkT
+ mec6wvqZbM06kfo9JCxv9gWz5kW77nA=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 49E833E4E5C
-	for <ltp@archiver.kernel.org>; Sun,  4 Oct 2026 16:35:19 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id DBCAA3E4E5F
+	for <ltp@archiver.kernel.org>; Sun,  4 Oct 2026 16:35:38 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 3953A3E4D60
- for <ltp@lists.linux.it>; Sun,  4 Oct 2026 16:34:40 +0200 (CEST)
-Received: from mail-wm2-x11.google.com (mail-wm2-x11.google.com
- [IPv6:2a00:1450:4864:31::11])
+ by picard.linux.it (Postfix) with ESMTPS id 3BD323E4E52
+ for <ltp@lists.linux.it>; Sun,  4 Oct 2026 16:34:42 +0200 (CEST)
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com
+ [IPv6:2a00:1450:4864:20::336])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id E831A1A002E1
- for <ltp@lists.linux.it>; Sun,  4 Oct 2026 16:34:39 +0200 (CEST)
-Received: by mail-wm2-x11.google.com with SMTP id
- 5b1f17b1804b1-49e66390995so6374155e9.2
- for <ltp@lists.linux.it>; Sun, 04 Oct 2026 07:34:39 -0700 (PDT)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id A4C5B200069
+ for <ltp@lists.linux.it>; Sun,  4 Oct 2026 16:34:41 +0200 (CEST)
+Received: by mail-wm1-x336.google.com with SMTP id
+ 5b1f17b1804b1-4a0286c981dso9635315e9.2
+ for <ltp@lists.linux.it>; Sun, 04 Oct 2026 07:34:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1791124479; x=1791729279; darn=lists.linux.it;
+ d=suse.com; s=google; t=1791124481; x=1791729281; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to:content-type;
- bh=7jXmAQSmANoZcJxIdH8wqQvbUnzDgaibiV6P59gGhUQ=;
- b=PaL6OUwsbWTxb3cLhhl5r9L5OT1DM9ZeOpvXEB/S/N41OYI/PusY7tYb1r7ypqh3Yg
- dWXuiJZGsgI2wnN9WA5G8RAFNOGh/CyZJceOXecxGFp72coZlVXAW6P9lH4a0gOOuadZ
- FCT/Pbm8ng4qZq8rRjuWMdaulsMZwWRHqsQBUlqE0I62GrBRaWFHYZ9kxEkyplGSfH0U
- DjVXff0SimjwSrAK1RoRDWo7oxawCldHaxNC5AoKbglIBWFLfWxwl0t0Kgl4baKkxdbb
- VE3UfViVTprWEcJvwJF2KxfIGOTRYOMHBbRJ9/eZU8PkCYhRb1C1XOlh0AWFwzCSDfoE
- B8tQ==
+ bh=0YiTfYh1d3wCywLHgip7JrZCWBMG7NdovRtgZUVeEws=;
+ b=MYC1hERZYe1ztyFqMc81h9jS5qBIdaXH2rYefzXc0Ktdw8XSNlNClm23kuiINtvAC/
+ Qri4VpaxLqnQpcNKS1mrJnQMofoAAD/9tPeMTUOCoOyoxkIHU/TpaltUFkiHrRnw9kY9
+ AAi+sMgDVXeqAgf1A8YtFBjWg7VN2IxaFKPklZm5neITDNOfo5hH7KMWQR/bhZuaD057
+ TfJqrGp/nuvDd1+WDNxYEbJx2A8GMHBidR/PBWQj7K/1GJFFQ6bu7VfTwEgh5+9liDj3
+ d2rXNEjoOj3rnOXLMkKOWiSo6P/POb94Sk8giyupX64qTCjGtxqbBiNjBZYg+PVr/W6R
+ C3WQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20260707; t=1791124479; x=1791729279;
+ d=1e100.net; s=20260707; t=1791124481; x=1791729281;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to:content-type;
- bh=7jXmAQSmANoZcJxIdH8wqQvbUnzDgaibiV6P59gGhUQ=;
- b=jlpF3gPXLPWbJT48JVjqCThqdW+2g9Qp5xkrmp/1ORwAHWBujaXkdsKIcFQ2st/JJX
- EOHEc3MFvXA+DTVoPAVdc1J4Oe7V7lnfVX84TWpQCL/z8LckvDu+/EV5jTTgyLFDA9zs
- MdjvX5Fj+//6WYovJcMOVeJ7usdve0fs0prvJyyWBiX+lJTBOirYhTm2nXUZ0gTpmROR
- iZVRNd83ZNYJAJMEimXnqXM4VhH053Sa2hIysr6oDDVMCzwLxXrR0QlW0Tg/ioEVaFtn
- vykvxqDHBLXaHxerThb3540wtyWO6qkS3lGOQ18vBKREbDCm1fnfiGatAGXqFd1hb0iq
- L4/g==
-X-Gm-Message-State: AFuF++kH2JN5z4SV9ItRdlvBF4FDEctI9nuV+PCRaDVZdB0YwIkao48W
- xx6UF9TehYLtES4G2MWbGKDPTDT/MczOtFDf4HOvotQHVZPSZUpMJMLh3oB8K9VfGegDiZ5nYNv
- zmGs=
-X-Gm-Gg: AYBFou21lVB6rNfiM4aj2rBMpe+FWYVev2VP4p/ntxwP+H9ZSoiqZCnuw5yqmA5VT+T
- ZWKWptvGXC2NB+ze8DeJf4b++qBAWyc0O121mUxRGcWwhLgWvzj4KEAU3OcTHiYt23HS51/OZB9
- rcnx0i6ApzqLdez1jUji5O3Np1bjw8qTy8rZHkxjuXd2pHCzddkZVeb8Kx3SG9x1vSZEegoNyhY
- 5eLvctYgIQZwAzA7GHfGacCDBreBdbZyMXNXHlDyYdLvWuXZC4yWrMMSgD5fWyDOGJehJr7zvPy
- sOk0/sepoPYcSbN5eJLfx+J7rR0WSJ9maPkfmT/oyinvYsUoSOYT4jQcMQPPOnu+TyEJXURxqeP
- LfeVBLmbqNLd5k0O3ap3WRtFAwwtlgG3m47z7vf2XGc6gblKRkOe8Z/t8AXOXXOjxFPJe3/xm0+
- K1ZMLHNkx1gzOGoufv5eu1ndGg5Efm1GLKZEiJ61+3H66c4UDdrc4tsqQWHt15dvQ9vCKaRclCl
- CAeyVbAKIOcWzfKE9PESlfvcHrf9IosOuPZceWXJUg=
-X-Received: by 2002:a05:600c:8715:b0:49c:fc6c:be08 with SMTP id
- 5b1f17b1804b1-4a0276b1af1mr144967205e9.31.1791124479354; 
- Sun, 04 Oct 2026 07:34:39 -0700 (PDT)
+ bh=0YiTfYh1d3wCywLHgip7JrZCWBMG7NdovRtgZUVeEws=;
+ b=eVIUMVGBbaea9xGaTXXBqnZggs4msSWoEFCOogEmz+PP71Up4aaNylNTnVa7B4Hn6C
+ 02VFfAFVALCXRSwZQVPytWlvnKvJGlc5ZhXwiS6lg6eMXmc1RAVeW2I9feoW5OJBqmce
+ 2uNthQmNMhGr/eCYA6Qo8WkR3Cf3NxjLO/AxeWjVZd7F4JvmjHwXzX+vcQ0Xc2I5kodH
+ klptSbB5yH0WLdwUPIZo/IUY+8S9m/dNrAHDJRw+nggl0JQorih3Tnj3H9GBfADcgAro
+ Wl3EBykPouQbgDjhdX1FS74OMxLGhjv4IinOWr0k3N5ZVf29j5pxZPG6s+TPmV8hnxVM
+ 3qIQ==
+X-Gm-Message-State: AFuF++m55z8LdPVUe/ARGhtWlv9aFCxxptd23eJuWq9tfBGqHuqvMm9n
+ YDFzoUIMvRQ01zv9Xe4eGkj9D6pJGgmCHxHWm+Syhi8r9HAw88L4lLePnycUainQMoSvhXnJ6qg
+ BeCw=
+X-Gm-Gg: AYBFou2Ov2YXmeuFsrQt+UHtgqdG0TxRjbkIAid4+RM5UQFJ9qk1SxPmqnmf2R+icXP
+ WX9mVE+WEk/jrRImnfv/Ax6nqKpbgow4W/Sfm8rS7vs0MvIrZo4ioIQz9Oke3vwHEp/HNM4Km3Y
+ y0iSnIXejWIY1/QSgrWCovkyG2238EyMnzT9vLp2QtaIiKr2WXpA3soUJKk0oV0RiBd31dFXm33
+ +pWXep3Kl2WTDnIqTBFivBG5wDz+EF+HqtlUCKLtKcSqMHF1SYOTwQGxGYxF3NsBGe1bybR2ZsR
+ slKcY0eceDRUNH4PlgAIBeQlA2G1CVsWhpIRybKC5Pw7D0rZ9IIBEjxz3XVZtkYwooFk6XZ9sVc
+ XbGdJBVThX/DKT2DmjqJsMKRjWzuxcOX2Y7Uxe9MJ8fWA4OE2+D84WsYv4sqQs2+O20qro7sPhV
+ 0C9+dv7JBKjp9U1KfxQR3wX0AQ5zRcDJ2ngUz0m1TZ945U7gC51N6tLHce/p5SRz1kvjdxst4O2
+ tGdINkIIJX8CeMWCj3mWQvV2RvK6DFOpGWX7CQifLY=
+X-Received: by 2002:a05:600c:3103:b0:4a0:1efa:c746 with SMTP id
+ 5b1f17b1804b1-4a1680f61damr65512575e9.21.1791124480894; 
+ Sun, 04 Oct 2026 07:34:40 -0700 (PDT)
 Received: from localhost ([2a07:de40:b240:0:2ad6:ed42:2ad6:ed42])
  by smtp.gmail.com with UTF8SMTPSA id
- ffacd0b85a97d-48b380facfesm20046230f8f.23.2026.10.04.07.34.39
+ 5b1f17b1804b1-4a03ff56136sm101698665e9.3.2026.10.04.07.34.40
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sun, 04 Oct 2026 07:34:39 -0700 (PDT)
+ Sun, 04 Oct 2026 07:34:40 -0700 (PDT)
 To: ltp@lists.linux.it
-Date: Sun,  4 Oct 2026 14:33:26 +0000
-Message-ID: <20261004143332.25978-2-wegao@suse.com>
+Date: Sun,  4 Oct 2026 14:33:27 +0000
+Message-ID: <20261004143332.25978-3-wegao@suse.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20261004143332.25978-1-wegao@suse.com>
 References: <20261004143332.25978-1-wegao@suse.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v1 1/2] memcontrol: Add helpers to set and restore
- parent memory knobs
+Subject: [LTP] [PATCH v1 2/2] memcontrol03,
+ memcontrol04: Set protection on parent cgroups to prevent kswapd
+ over-reclaim
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -109,84 +110,152 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-In cgroup v2, memory protection (memory.min and memory.low) is hierarchical
-and evaluated top-down. The effective protection of descendant cgroups is
-bounded by their parent and ancestor protection values. When LTP runs, the
-test sandbox cgroups (tst_cg and its parent ltp) default to 0, which causes
-background reclaim (such as kswapd under node-level memory pressure) to
-reclaim memory from descendants regardless of local protection settings.
+On NUMA systems (observed on PowerPC), allocating memory can trigger
+node-level memory pressure, waking up kswapd when free pages fall below
+the low watermark on a node.
 
-Add set_parent_memory_knob() and restore_parent_memory_knob() to
-memcontrol_common.h to allow memcg tests to configure protection on both
-Level 2 (tst_cg) and Level 1 (the shared ltp directory). The original values
-are read and preserved before modification, and restored upon cleanup.
+In cgroup v2, both hard protection (memory.min) and best-effort protection
+(memory.low) are hierarchical and calculated top-down: effective
+protection of descendant cgroups is bounded by their ancestors' protection
+values. When LTP runs inside an existing cgroup hierarchy, ancestor cgroups
+above the test root have memory.min and memory.low set to 0.
+
+As a result, when kswapd performs node-level background reclaim from the
+root cgroup downwards, ancestor cgroups without protection provide no
+protection boundary. kswapd reclaims pages from descendant leaf cgroups
+regardless of their local memory.min / memory.low settings, causing
+memcontrol03 and memcontrol04 to fail with over-reclaim:
+
+NUMA node info:
+  NUMA Node 2: CPUs=[2], MemTotal=765 MB, MemFree=610 MB
+  NUMA Node 0: CPUs=[0], MemTotal=240 MB, MemFree=93 MB
+  NUMA Node 3: CPUs=[3], MemTotal=750 MB, MemFree=419 MB
+  NUMA Node 1: CPUs=[1], MemTotal=766 MB, MemFree=95 MB
+
+Error info:
+  memcontrol03.c:519: TFAIL: Expect: (A/B/C memory.current=19070976) ~= 34603008
+
+Set memory.min and memory.low on trunk_A and parent cgroups up through the
+hierarchy before allocating child pagecache, ensuring protection propagates
+down the tree to prevent kswapd over-reclaim under NUMA memory pressure,
+and restore the original values upon cleanup.
 
 Signed-off-by: Wei Gao <wegao@suse.com>
 ---
- .../controllers/memcg/memcontrol_common.h     | 46 +++++++++++++++++++
- 1 file changed, 46 insertions(+)
+ .../kernel/controllers/memcg/memcontrol03.c   | 20 ++++++++++++-------
+ .../kernel/controllers/memcg/memcontrol04.c   | 19 +++++++++++-------
+ 2 files changed, 25 insertions(+), 14 deletions(-)
 
-diff --git a/testcases/kernel/controllers/memcg/memcontrol_common.h b/testcases/kernel/controllers/memcg/memcontrol_common.h
-index 495f924a0..e4b12aff3 100644
---- a/testcases/kernel/controllers/memcg/memcontrol_common.h
-+++ b/testcases/kernel/controllers/memcg/memcontrol_common.h
-@@ -10,10 +10,56 @@
- #include <stdio.h>
+diff --git a/testcases/kernel/controllers/memcg/memcontrol03.c b/testcases/kernel/controllers/memcg/memcontrol03.c
+index 25b84c24e..721ae0e46 100644
+--- a/testcases/kernel/controllers/memcg/memcontrol03.c
++++ b/testcases/kernel/controllers/memcg/memcontrol03.c
+@@ -184,21 +184,24 @@ static void test_memcg_min(void)
  
- #include "tst_test.h"
-+#include "tst_safe_file_at.h"
+ 	trunk_cg[G] = tst_cg_group_mk(trunk_cg[A], "trunk_G");
  
- #define TMPDIR "mntdir"
- #define MB(x) (x << 20)
+-	for (i = 0; i < ARRAY_SIZE(leaf_cg); i++) {
++	for (i = 0; i < ARRAY_SIZE(leaf_cg); i++)
+ 		leaf_cg[i] = tst_cg_group_mk(trunk_cg[B],
+ 						 "leaf_%c", 'C' + i);
  
-+static char orig_tst_val[64];
-+static char orig_ltp_val[64];
+-		if (i == E)
+-			continue;
+-
+-		alloc_pagecache_in_child(leaf_cg[i], MB(50));
+-	}
+-
++	SAFE_CG_PRINT(trunk_cg[A], "memory.min", "50M");
+ 	SAFE_CG_PRINT(trunk_cg[B], "memory.min", "50M");
+ 	SAFE_CG_PRINT(leaf_cg[C], "memory.min", "75M");
+ 	SAFE_CG_PRINT(leaf_cg[D], "memory.min", "25M");
+ 	SAFE_CG_PRINT(leaf_cg[E], "memory.min", "500M");
+ 	SAFE_CG_PRINT(leaf_cg[F], "memory.min", "0");
++	set_parent_memory_knob("memory.min", "50M");
 +
-+static inline void set_parent_memory_knob(const char *knob, const char *val)
-+{
-+	int tst_fd = tst_cg_group_unified_dir_fd(tst_cg);
-+	int ltp_fd;
++	for (i = 0; i < ARRAY_SIZE(leaf_cg); i++) {
++		if (i == E)
++			continue;
 +
-+	if (tst_fd < 0)
-+		return;
++		alloc_pagecache_in_child(leaf_cg[i], MB(50));
++	}
+ 
+ 	for (attempts = 0; attempts < 5; attempts++) {
+ 		SAFE_CG_SCANF(trunk_cg[B], "memory.current", "%ld", c);
+@@ -223,6 +226,7 @@ static void test_memcg_min(void)
+ 		     "(A/B/D memory.current=%ld) ~= %d", c[1], MB(21));
+ 	TST_EXP_EXPR(values_close(c[2], 0, 1),
+ 		     "(A/B/E memory.current=%ld) ~= 0", c[2]);
++	tst_res(TINFO, "A/B/F memory.current=%ld", c[F]);
+ 
+ 	alloc_anon_in_child(trunk_cg[G], MB(170), 1);
+ 
+@@ -231,12 +235,14 @@ static void test_memcg_min(void)
+ 		     "(A/B memory.current=%ld) ~= %d", c[0], MB(50));
+ 
+ 	cleanup_sub_groups();
++	restore_parent_memory_knob("memory.min");
+ 	SAFE_CLOSE(fd);
+ 	SAFE_UNLINK(TMPDIR"/tmpfile");
+ }
+ 
+ static void cleanup(void)
+ {
++	restore_parent_memory_knob("memory.min");
+ 	cleanup_sub_groups();
+ 	if (fd > -1)
+ 		SAFE_CLOSE(fd);
+diff --git a/testcases/kernel/controllers/memcg/memcontrol04.c b/testcases/kernel/controllers/memcg/memcontrol04.c
+index f1e136df4..10de95bec 100644
+--- a/testcases/kernel/controllers/memcg/memcontrol04.c
++++ b/testcases/kernel/controllers/memcg/memcontrol04.c
+@@ -157,21 +157,24 @@ static void test_memcg_low(void)
+ 
+ 	trunk_cg[G] = tst_cg_group_mk(trunk_cg[A], "trunk_G");
+ 
+-	for (i = 0; i < ARRAY_SIZE(leaf_cg); i++) {
++	for (i = 0; i < ARRAY_SIZE(leaf_cg); i++)
+ 		leaf_cg[i] = tst_cg_group_mk(trunk_cg[B],
+ 						 "leaf_%c", 'C' + i);
+ 
+-		if (i == E)
+-			continue;
+-
+-		alloc_pagecache_in_child(leaf_cg[i], MB(50));
+-	}
+-
++	SAFE_CG_PRINT(trunk_cg[A], "memory.low", "50M");
+ 	SAFE_CG_PRINT(trunk_cg[B], "memory.low", "50M");
+ 	SAFE_CG_PRINT(leaf_cg[C], "memory.low", "75M");
+ 	SAFE_CG_PRINT(leaf_cg[D], "memory.low", "25M");
+ 	SAFE_CG_PRINT(leaf_cg[E], "memory.low", "500M");
+ 	SAFE_CG_PRINT(leaf_cg[F], "memory.low", "0");
++	set_parent_memory_knob("memory.low", "50M");
 +
-+	ltp_fd = SAFE_OPENAT(tst_fd, "..", O_DIRECTORY | O_RDONLY);
++	for (i = 0; i < ARRAY_SIZE(leaf_cg); i++) {
++		if (i == E)
++			continue;
 +
-+	/* 1. Read and save original values */
-+	SAFE_CG_READ(tst_cg, knob, orig_tst_val, sizeof(orig_tst_val));
-+	SAFE_FILE_READAT(ltp_fd, knob, orig_ltp_val, sizeof(orig_ltp_val));
-+
-+	/* 2. Apply new values to Level 2 (tst_cg) and Level 1 (ltp) */
-+	SAFE_CG_PRINT(tst_cg, knob, val);
-+	SAFE_FILE_PRINTFAT(ltp_fd, knob, "%s\n", val);
-+
-+	SAFE_CLOSE(ltp_fd);
-+}
-+
-+static inline void restore_parent_memory_knob(const char *knob)
-+{
-+	int tst_fd, ltp_fd;
-+
-+	if (!orig_tst_val[0])
-+		return;
-+
-+	tst_fd = tst_cg_group_unified_dir_fd(tst_cg);
-+	if (tst_fd < 0)
-+		return;
-+
-+	ltp_fd = SAFE_OPENAT(tst_fd, "..", O_DIRECTORY | O_RDONLY);
-+
-+	/* Restore original values */
-+	SAFE_CG_PRINT(tst_cg, knob, orig_tst_val);
-+	SAFE_FILE_PRINTFAT(ltp_fd, knob, "%s", orig_ltp_val);
-+
-+	SAFE_CLOSE(ltp_fd);
-+	orig_tst_val[0] = '\0';
-+}
-+
- /*
-  * Checks if two given values differ by less than err% of their
-  * sum. An extra percent is added for every doubling of the page size
++		alloc_pagecache_in_child(leaf_cg[i], MB(50));
++	}
+ 
+ 	alloc_anon_in_child(trunk_cg[G], MB(148));
+ 
+@@ -230,12 +233,14 @@ static void test_memcg_low(void)
+ 	}
+ 
+ 	cleanup_sub_groups();
++	restore_parent_memory_knob("memory.low");
+ 	SAFE_CLOSE(fd);
+ 	SAFE_UNLINK(TMPDIR"/tmpfile");
+ }
+ 
+ static void cleanup(void)
+ {
++	restore_parent_memory_knob("memory.low");
+ 	cleanup_sub_groups();
+ 	if (fd > -1)
+ 		SAFE_CLOSE(fd);
 -- 
 2.55.0
 
