@@ -4,77 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DD34DCA5FE2
-	for <ltp@archiver.kernel.org>; Mon,  5 Oct 2026 06:20:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1791181198; h=date :
- mime-version : message-id : to : subject : list-id : list-unsubscribe
- : list-archive : list-post : list-help : list-subscribe : from :
- reply-to : cc : content-type : content-transfer-encoding : sender :
- from; bh=3p+tRNX1WyGNTaHqWKyWWZcPlKbNaoUxkvZyux15ubQ=;
- b=lJju5sG6t+jHm9q60IQ3zAY1NxT2Ef/uZC2por9OiZH+7oYP8NVo57IDX6kCXiZcUalgw
- 7cPFzsybuJGCkc1CCNxSJkhXTU6CAiP9JWbsdf64ktSFRYX+/tWOXsBv4Wwu3TOLjzdPpdZ
- WgW18bwiBArl32/xPj0B0AlRETy7AkU=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 760C6CA5FF0
+	for <ltp@archiver.kernel.org>; Mon,  5 Oct 2026 08:28:01 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id DB86B3E4A5A
-	for <ltp@archiver.kernel.org>; Mon,  5 Oct 2026 08:19:58 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 7CF463E4AD8
+	for <ltp@archiver.kernel.org>; Mon,  5 Oct 2026 10:27:59 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D86A63E2C5C
- for <ltp@lists.linux.it>; Mon,  5 Oct 2026 08:19:38 +0200 (CEST)
-Received: from mail-pg1-x546.google.com (mail-pg1-x546.google.com
- [IPv6:2607:f8b0:4864:20::546])
+ by picard.linux.it (Postfix) with ESMTPS id 572463E2D84
+ for <ltp@lists.linux.it>; Mon,  5 Oct 2026 10:27:45 +0200 (CEST)
+Received: from mail-qk2-x03.google.com (mail-qk2-x03.google.com
+ [IPv6:2607:f8b0:4864:34::3])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 268776003BE
- for <ltp@lists.linux.it>; Mon,  5 Oct 2026 08:19:38 +0200 (CEST)
-Received: by mail-pg1-x546.google.com with SMTP id
- 41be03b00d2f7-cc7695f6a30so1865746a12.0
- for <ltp@lists.linux.it>; Sun, 04 Oct 2026 23:19:38 -0700 (PDT)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id C0FCE100052D
+ for <ltp@lists.linux.it>; Mon,  5 Oct 2026 10:27:44 +0200 (CEST)
+Received: by mail-qk2-x03.google.com with SMTP id
+ af79cd13be357-93cc1b028bcso110992985a.1
+ for <ltp@lists.linux.it>; Mon, 05 Oct 2026 01:27:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=google.com; s=20251104; t=1791181176; x=1791785976; darn=lists.linux.it;
- h=content-type:cc:to:from:subject:message-id:mime-version:date:from
- :to:cc:subject:date:message-id:reply-to:content-type;
- bh=sTp3+c7Mbpx6pjZn4fRbgyVCUo03ftQojwj4sLOrud4=;
- b=qNuPx55798Sq+2QH94FFYH9LFW7QoBqt8ryyEFDxZVLbIb53b6B0xfywiVw64s+fCh
- aWNFWzXLp/3bWvqYeFKXsYP4Zsoe6lHP+1r10r5BRl0DyOCOzd3//S4WZ2E0jEdDeoxm
- 7jvozaSJw64LZ6dFoxP+1pmwH63pE4t5xZHoKLfvnc9brZ3dU5z4Q99g0EGRJS6qR0dz
- olq8qbEk7FcRURP4xuqqLNXG5OncMyFdez4Q7XcZHgfD8yeGuBTN3w+n/+Lk6+LSHwp7
- JVvhJ3Ial1/CNABs8cqiGoUXzAxk11gft7uIJiUjyr65EYQJ4A2o4GrxrkYYUcVSgq0Z
- l4iw==
+ d=gmail.com; s=20251104; t=1791188863; x=1791793663; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to:content-type;
+ bh=EiMFS1CqmxIvnj3GIjHRZci1DzmzXkOrlCvlZxDKSu0=;
+ b=ilInrF1ww3Og0cFlih5SnnieY0mySm1YR5l5kRrfJ0kc19BzjL+LTDFzaWnd5VnXo8
+ vq/SdHQIZl+8pLVb9+Z/WDlUBeMomX7NY9QdjU6vBqLmg4Vfualj1qq0/V0HpIwkm2z+
+ X7MQjov2HzcmQls7zq94p9Qpi6iU2AEYN14aiIz3zST3bw8v6QP38XExEPApsFz92MJg
+ hY4p4nlM2s1JHGymxW/GvCCV0A62tYrsJin+K6Ge3F6133+L7PmTNyHAidnojXNGvrhK
+ 3gRE0biPe3WfAS0HPKmjsQj35PxVrCrt8PEW6Z2mPQ1sXzCp4SfKJiwuqNbpy/V5OyM0
+ G+sA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20260707; t=1791181176; x=1791785976;
- h=content-type:cc:to:from:subject:message-id:mime-version:date
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
- :content-type;
- bh=sTp3+c7Mbpx6pjZn4fRbgyVCUo03ftQojwj4sLOrud4=;
- b=Z0bmqmhp8IxtcZDzUGp3H+MUDuckZHQfcgaMkMCeUl26xMhMDX0eGh41+uFz+DtzCI
- zw1u/lm0Ybt+uuL4KwAORcINXcAfQfSxiNQ8xDUv2oYng5OhSsUwfEMXZluERBKD+h3X
- H1wy151XJ7GOtA/rnx3kMMUG476S9oPWo4reBKoOCJF3ZNea6e+dwJnVTM6sKaN+h+wT
- JiOhjJNXoOOqnsrN15pforhMZw0zUtI/+yuy2yG2juJVbkTql6AZz/LVY7C6kyIpmZ9R
- pCtTUT7mstqfBmjvJB+PYVm83MeJXa6VSobBEbsnNvJSJFAgJYGFlWq4RTFrVmP1UGxF
- /IvA==
-X-Gm-Message-State: AFuF++mgpbx0Np9uC8bUP0QqhkchmfyC0snD+NxBd2gJmJB6ZN86ulcY
- tLVl7TJL2OdUQY+uXXsuzzv4VJlIuRq+QoGvgcOKflCx2aLgFisH2jLUzqYA82UJt8isu7VEVNW
- LX0l7v8Io3eUP/hHUpFA14jMEOc4GO61wiNG+tpGzYktsVPM03fSfI7hONt0eJmvF4YLQZN6l9w
- OlFdqFLuyWNYbqiG3h7pE5Ju9A1A==
-X-Received: from pgap124.prod.google.com ([2002:a63:4282:0:b0:cc7:c04f:b661])
- (user=wakel job=prod-delivery.src-stubby-dispatcher) by
- 2002:a05:6300:2787:20b0:3e0:da23:874d
- with SMTP id adf61e73a8af0-3e0da239388mr3441413637.55.1791181175904; Sun, 04
- Oct 2026 23:19:35 -0700 (PDT)
-Date: Mon,  5 Oct 2026 06:19:33 +0000
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.56.0.rc1.315.gc6ed9934b7-goog
-Message-ID: <20261005061933.4108985-1-wakel@google.com>
-To: ltp@lists.linux.it
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+ d=1e100.net; s=20260707; t=1791188863; x=1791793663;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to:content-type;
+ bh=EiMFS1CqmxIvnj3GIjHRZci1DzmzXkOrlCvlZxDKSu0=;
+ b=PHHfuYHWzys6Qg2OmJN1zwfdQFlsc/QouUqZ5ohmbt4WuRMCXC1ZGaeOsSFdhXXg9E
+ Z/yWWOYANPSUDt5lUXZKC6wdMmJkMn3sr/awxACaG45qytzxv5ikVYMQIqOXmp6qGVsy
+ SoPLqN9WDYvHY1l5pzCUqX7J420UIdbFir2cIo17DR5x/041GzB33Whft5rmfOyKvm3Y
+ 5h2DgFnIC8Zh3xTpmQBl9AK1C8Kf8lET9ehY3jlGMm0ENBAeLrEWqU51T1lp3VMoTCGw
+ 0YWiLJPpakgxCPWvsqPDH9VE1+GpxqMKkWWF4ji2ImQgOj76zY2q5lMsvi/jb7gJLF5K
+ 0kNA==
+X-Gm-Message-State: AFuF++mR+MIxSxi0EVeQa1vSBlXutJAQgJKjm5wJC1MtBWZPzw8K2gm0
+ 8+XaXYxIcXp8w6sFJf5WYqOx1yxF/+w6wJ4TpZiFL7m+0XDuy1ZfdjDPB8DpgH3y
+X-Gm-Gg: AYBFou2F9OI88sislwqJshsxrUqPK4Anum+fZL2sc2PRi9IO0V4XHQ7tubQX75Qqgl6
+ 7d108/Ammtha47p/cICWlqfujVhQo0CbVdYxDwyUNbGaszxopesPs8R19qak+qUlmp3Izx8lErC
+ 4IgSDMoX+wSf2rV33d9k0oP727Fih64htSkXewqjQrJOU8z2IYD5ZbAh13NyscJPHQnvY9fljzH
+ SlwIkqAfHM+dnP2NizqIKt9bUSVoRpgo7dG9fBjUGxqgLrD3mE6DN+arIeA5sZYXPrB4T111bmf
+ BatQFumY95UCRoju33J5R3fKpXjbDaJ5SXoIznGqHv72Y2nj3bJK+l3b7xHpGBEl9UZbwj/aivV
+ SVVjC23iQ9JeW6oP7NFaePT4l8f235UfTKlztIXQ3Syu8FUXMDMF1pcb74urq1BXE8M4Sy88vWs
+ 1HiQdnAIHQD3s8wRXLXjBX07x9uhIyvmJOYxyDrBEpqni+IsyODwN98cvIHKqp6vSF8S3+lZcEa
+ L/9VXkTtwjS7Mi23P/IXabKQ1i0U8DYhX8ma5kroefZ5MdpUP8tbKOmicmRYHqmguQN4Q9WiDSJ
+ vX81te5Unls/
+X-Received: by 2002:a05:620a:f0e:b0:93c:c4da:f46c with SMTP id
+ af79cd13be357-93cf1a3103bmr1769147685a.56.1791188863288; 
+ Mon, 05 Oct 2026 01:27:43 -0700 (PDT)
+Received: from
+ runnervm8df0l.dy0dcyvzke5e5dxxzu5nqqj3qb.cx.internal.cloudapp.net
+ ([172.172.119.99]) by smtp.gmail.com with ESMTPSA id
+ af79cd13be357-93cca2d361bsm831211385a.45.2026.10.05.01.27.42
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 05 Oct 2026 01:27:42 -0700 (PDT)
+From: linuxtestproject.agent@gmail.com
+To: Victor Cheng-Yen Yang <cyyang772@andestech.com>
+Date: Mon,  5 Oct 2026 08:27:42 +0000
+Message-ID: <20261005082742.4234-1-linuxtestproject.agent@gmail.com>
+X-Mailer: git-send-email 2.55.0
+In-Reply-To: <20261005060345.1019330-1-cyyang772@andestech.com>
+References: <20261005060345.1019330-1-cyyang772@andestech.com>
+MIME-Version: 1.0
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] pathconf01: Allow EINVAL where POSIX leaves support
- unspecified
+Subject: Re: [LTP] Fix typo
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -86,106 +91,28 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Wake Liu via ltp <ltp@lists.linux.it>
-Reply-To: Wake Liu <wakel@google.com>
-Cc: Wake Liu <wakel@google.com>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-POSIX lists two EINVAL cases for pathconf(). It shall fail with EINVAL
-when the value of name is not valid. It may also fail with EINVAL when
-"the implementation does not support an association of the variable
-name with the specified file".
+Hi Victor,
 
-The test always calls pathconf() on a directory. For a directory, POSIX
-leaves it unspecified whether _PC_MAX_CANON, _PC_MAX_INPUT and
-_PC_VDISABLE (note 2), _PC_ASYNC_IO, _PC_PRIO_IO and _PC_SYNC_IO
-(note 8) and the _PC_REC_* names (note 10) are supported, so EINVAL is
-allowed for them.
+On 5 Oct 2026, Victor Cheng-Yen Yang wrote:
+> [PATCH] Fix typo
 
-Bionic before Android 15 returns -1 and sets errno to EINVAL for
-_PC_REC_INCR_XFER_SIZE and _PC_REC_MAX_XFER_SIZE, which makes the test
-fail.
+Verdict - Reviewed
 
-Report EINVAL as TCONF for these names. EINVAL for the other names is
-still a failure.
-
-Also print the name and errno on failure, so it is clear which name
-failed.
-
-Signed-off-by: Wake Liu <wakel@google.com>
 ---
- .../kernel/syscalls/pathconf/pathconf01.c     | 36 ++++++++++++-------
- 1 file changed, 23 insertions(+), 13 deletions(-)
+Note:
 
-diff --git a/testcases/kernel/syscalls/pathconf/pathconf01.c b/testcases/kernel/syscalls/pathconf/pathconf01.c
-index 5af45e417..635c356bc 100644
---- a/testcases/kernel/syscalls/pathconf/pathconf01.c
-+++ b/testcases/kernel/syscalls/pathconf/pathconf01.c
-@@ -19,24 +19,26 @@ static char *path;
- static struct tcase {
- 	int value;
- 	char *name;
-+	/* POSIX leaves support for a directory unspecified */
-+	int einval_ok;
- } tcases[] = {
- 	{NAME_DESC(_PC_LINK_MAX)},
--	{NAME_DESC(_PC_MAX_CANON)},
--	{NAME_DESC(_PC_MAX_INPUT)},
-+	{NAME_DESC(_PC_MAX_CANON), .einval_ok = 1},
-+	{NAME_DESC(_PC_MAX_INPUT), .einval_ok = 1},
- 	{NAME_DESC(_PC_NAME_MAX)},
- 	{NAME_DESC(_PC_PATH_MAX)},
- 	{NAME_DESC(_PC_PIPE_BUF)},
- 	{NAME_DESC(_PC_CHOWN_RESTRICTED)},
- 	{NAME_DESC(_PC_NO_TRUNC)},
--	{NAME_DESC(_PC_VDISABLE)},
--	{NAME_DESC(_PC_SYNC_IO)},
--	{NAME_DESC(_PC_ASYNC_IO)},
--	{NAME_DESC(_PC_PRIO_IO)},
-+	{NAME_DESC(_PC_VDISABLE), .einval_ok = 1},
-+	{NAME_DESC(_PC_SYNC_IO), .einval_ok = 1},
-+	{NAME_DESC(_PC_ASYNC_IO), .einval_ok = 1},
-+	{NAME_DESC(_PC_PRIO_IO), .einval_ok = 1},
- 	{NAME_DESC(_PC_FILESIZEBITS)},
--	{NAME_DESC(_PC_REC_INCR_XFER_SIZE)},
--	{NAME_DESC(_PC_REC_MAX_XFER_SIZE)},
--	{NAME_DESC(_PC_REC_MIN_XFER_SIZE)},
--	{NAME_DESC(_PC_REC_XFER_ALIGN)},
-+	{NAME_DESC(_PC_REC_INCR_XFER_SIZE), .einval_ok = 1},
-+	{NAME_DESC(_PC_REC_MAX_XFER_SIZE), .einval_ok = 1},
-+	{NAME_DESC(_PC_REC_MIN_XFER_SIZE), .einval_ok = 1},
-+	{NAME_DESC(_PC_REC_XFER_ALIGN), .einval_ok = 1},
- };
- 
- static void verify_pathconf(unsigned int i)
-@@ -47,10 +49,18 @@ static void verify_pathconf(unsigned int i)
- 
- 	TEST(pathconf(path, tc->value));
- 
--	if (TST_RET == -1 && errno != 0)
--		tst_res(TFAIL, "pathconf Failed, errno = %d", TST_ERR);
--	else
-+	if (TST_RET != -1 || !TST_ERR) {
- 		tst_res(TPASS, "pathconf(%s, %s)", path, tc->name);
-+		return;
-+	}
-+
-+	if (tc->einval_ok && TST_ERR == EINVAL) {
-+		tst_res(TCONF, "pathconf(%s, %s) not supported for a directory",
-+			path, tc->name);
-+		return;
-+	}
-+
-+	tst_res(TFAIL | TTERRNO, "pathconf(%s, %s)", path, tc->name);
- }
- 
- static struct tst_test test = {
--- 
-2.56.0.rc1.315.gc6ed9934b7-goog
+The agent can sometimes produce false positives although often its
+findings are genuine. If you find issues with the review, please
+comment this email or ignore the suggestions.
 
+Regards,
+LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
