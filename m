@@ -4,107 +4,106 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 55437CA5FED
-	for <ltp@archiver.kernel.org>; Tue,  6 Oct 2026 13:03:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 723EBCA5FF0
+	for <ltp@archiver.kernel.org>; Tue,  6 Oct 2026 13:03:45 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E284D3E4E58
-	for <ltp@archiver.kernel.org>; Tue,  6 Oct 2026 15:03:30 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 2061A3E543B
+	for <ltp@archiver.kernel.org>; Tue,  6 Oct 2026 15:03:44 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E78903E4B17
- for <ltp@lists.linux.it>; Tue,  6 Oct 2026 15:02:49 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id D00C93E5511
+ for <ltp@lists.linux.it>; Tue,  6 Oct 2026 15:02:51 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de
  [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 60F33600845
- for <ltp@lists.linux.it>; Tue,  6 Oct 2026 15:02:49 +0200 (CEST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 1E5A81400B93
+ for <ltp@lists.linux.it>; Tue,  6 Oct 2026 15:02:50 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 0911B22005;
- Tue,  6 Oct 2026 13:02:40 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 87CC2219D3;
+ Tue,  6 Oct 2026 13:02:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1791291764; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1791291763; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=SAyN8J5vJbb5JLIYoT9d3ZswhNjUwz+V+z7AnKre31A=;
- b=zdV+bmNNw/04xxl1cqJTdHVbWlfL/+p3+Vagpb2y+m9r9cX0FHnR3g5RP2PbbojIGU6nb2
- fwN6kt1Cv1L+oHTNTP/w9H/iO1EgtxDj2WcUSBugH4Y+E467Jk76xpu2e7VX0vTzUVNfX7
- k1fBTOEBBVn1p7Isd9j/RcOP8tS4+TQ=
+ bh=7Rm9hzlVCgFtA5t5INC9leF7qZonXeqSiVBBo1VpNqU=;
+ b=zQQOrtIdCQV3OFW/6KNzUyU5cWoT4BEI0QUEiuW6sP9kN2FxFQIRldevkccr92Ptqpc/o7
+ CgHExrpV8DG0V1+l2xKmSATtXQFEhJ2V+gnkjYBVqytzX+IvA/76XWyqKAvrq8C9T/Gu7H
+ V6yv1ClC1B8KiwkAa1Wxchhc+XRi4+c=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1791291764;
+ s=susede2_ed25519; t=1791291763;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=SAyN8J5vJbb5JLIYoT9d3ZswhNjUwz+V+z7AnKre31A=;
- b=WC1kowwBzEtUyE4p7GxKmFT9CqAidYMRv1Y/yaqxGul31nkoTPNzhHI1JB/HbAsJv4uWjT
- dF6sb49CZlJinjDQ==
+ bh=7Rm9hzlVCgFtA5t5INC9leF7qZonXeqSiVBBo1VpNqU=;
+ b=+rJSGK7Lvwh4+YJYIZPazntlIGT2iDI9gFBMuBDmhu79tjdg6WQdQZXoAxoEOR7qoTHI1h
+ 1T0/3ujGLPKdd3Dw==
 Authentication-Results: smtp-out1.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1791291760; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1791291759; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=SAyN8J5vJbb5JLIYoT9d3ZswhNjUwz+V+z7AnKre31A=;
- b=GuUAYVc3ghBs+Ffcm6cx4o2uDdu6MFS62RLLFjqZ75gbAqTUDYsN6E9eaVrT+FQjTm7Oqv
- ybD2E+hyVQ3Tj2IFjqJOefB75UPU62bFAbRv/JqTFD18rSU2ejxxcPZNwlCa/A3q5OY13R
- bKjF4eve03HYTUbTAsljXMiTkXAzKv4=
+ bh=7Rm9hzlVCgFtA5t5INC9leF7qZonXeqSiVBBo1VpNqU=;
+ b=o1kQ7cVYEPbVFteKkn+Y/B27ENWV5JC/EzsWuVf7NsrXGA+VWsDxto32FIn9m4dSqBr34m
+ CjfqiZgpPsDQhLDPF/Y2+5Y1Bw2Za1WrtWv6OHxHIFXsJaL4EEOWHasJ4sZLGpvAVwuPsx
+ lmYotBUqu6hsQzJ8HNodtkzORzrLNhE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1791291760;
+ s=susede2_ed25519; t=1791291759;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=SAyN8J5vJbb5JLIYoT9d3ZswhNjUwz+V+z7AnKre31A=;
- b=Iwz5NZre6WtMLBTvMYK+3trR3M4P3YQq2GcF4dMIyxFsxYv+vWwuu0mk24zNAgHNvpSwvt
- xMAUv9rcXbhHZuBA==
+ bh=7Rm9hzlVCgFtA5t5INC9leF7qZonXeqSiVBBo1VpNqU=;
+ b=SCA8Bo6MIlZWARljokAP5NOneZTcsnhpSVBfsTIWGe9NgcKxrRBrZTsHo3gx5XZilKHZdu
+ NyOW5zo6MUYA8DDw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9108B13C7D;
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5136D13C7B;
  Tue,  6 Oct 2026 13:02:39 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id iGTTAG/xxGqLRQAAD6G6ig:T4
+ by imap1.dmz-prg2.suse.org with ESMTPSA id iGTTAG/xxGqLRQAAD6G6ig:T2
  (envelope-from <andrea.cervesato@suse.de>); Tue, 06 Oct 2026 13:02:39 +0000
 From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Tue, 06 Oct 2026 15:02:39 +0200
+Date: Tue, 06 Oct 2026 15:02:37 +0200
 MIME-Version: 1.0
-Message-Id: <20261006-fix_simple_bugs_core_lib-v1-3-c94199a46ec5@suse.com>
+Message-Id: <20261006-fix_simple_bugs_core_lib-v1-1-c94199a46ec5@suse.com>
 References: <20261006-fix_simple_bugs_core_lib-v1-0-c94199a46ec5@suse.com>
 In-Reply-To: <20261006-fix_simple_bugs_core_lib-v1-0-c94199a46ec5@suse.com>
 To: Linux Test Project <ltp@lists.linux.it>
 X-Mailer: b4 0.16.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1791291759; l=751;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1791291759; l=1266;
  i=andrea.cervesato@suse.com; s=20251210; h=from:subject:message-id;
- bh=HvA/oPFsXubRP4Bu6G42loNABsY22gcpXMqn3R/gHLQ=;
- b=4w+OzrjYbeBzz39Zc0wC/lQr57ALOkes8qgelHyyrL93EXe13nuwpM+B2BpY/vyisk+29bUkV
- pBsXmkTLSZYDjAZY8klb8z60ThGb8SZS6DXZgOnbzL05GGBhQ/cJczy
+ bh=57cEbIEI/pP0lTnZX9oWAQTUTjkeSmBFhcklT5WWByI=;
+ b=VvRXtu7eHFsxrZd5MoqlLCepTfH+3qzrKxiTnAPV+YLKQuvlYGfb/eveydgjD1vhKiAXlAWFV
+ QH4e3rxSoEuAT0bB1/TH3/jQvsrqkLPWaD7YpS7GeQjf3tZKnBqu3zj
 X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
  pk=zKY+6GCauOiuHNZ//d8PQ/UL4jFCTKbXrzXAOQSLevI=
 X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[99.99%];
  NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-0.996]; MIME_GOOD(-0.10)[text/plain];
+ NEURAL_HAM_SHORT(-0.20)[-0.997]; MIME_GOOD(-0.10)[text/plain];
  RCPT_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
  RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
  DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
  TO_DN_ALL(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
  FROM_HAS_DN(0.00)[]; MIME_TRACE(0.00)[0:+];
  FROM_EQ_ENVFROM(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo, suse.com:mid,
- suse.com:email]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo, suse.com:email,
+ suse.com:mid]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 3/3] tst_kconfig: Prevent stack buffer overread
+Subject: [LTP] [PATCH 1/3] tst_timer_test: Fix out-of-bounds array access
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -123,31 +122,41 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-kconfig_parse_line() stops scanning value characters only at
-whitespace. Because isspace('\0') is false, lines without trailing
-whitespace cause an out-of-bounds stack read past the terminating
-NUL byte.
+Both outlier and early-wake loops in do_timer_test() evaluate
+samples[i] before verifying that index i is within bounds.
+When all samples are outliers or early, this causes heap buffer
+overreads at samples[nsamples] or samples[-1].
 
-Stop scanning when reaching NUL or whitespace.
+Check index bounds before indexing the samples array.
 
 Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
- lib/tst_kconfig.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ lib/tst_timer_test.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/lib/tst_kconfig.c b/lib/tst_kconfig.c
-index 49957e28d..f055c2e5f 100644
---- a/lib/tst_kconfig.c
-+++ b/lib/tst_kconfig.c
-@@ -255,7 +255,7 @@ out:
- 		while (isspace(*val))
- 			val++;
+diff --git a/lib/tst_timer_test.c b/lib/tst_timer_test.c
+index b5a088a14..8f9ec12f6 100644
+--- a/lib/tst_timer_test.c
++++ b/lib/tst_timer_test.c
+@@ -276,7 +276,7 @@ void do_timer_test(long long usec, unsigned int nsamples)
  
--		while (!isspace(val[val_len]))
-+		while (val[val_len] && !isspace(val[val_len]))
- 			val_len++;
+ 	write_to_file();
  
- 		if (val_len == 1) {
+-	for (i = 0; samples[i] > 10 * usec && i < (int)nsamples; i++) {
++	for (i = 0; i < (int)nsamples && samples[i] > 10 * usec; i++) {
+ 		if (samples[i] <= 3 * monotonic_resolution)
+ 			break;
+ 	}
+@@ -286,7 +286,8 @@ void do_timer_test(long long usec, unsigned int nsamples)
+ 			i, samples[0], samples[i-1]);
+ 	}
+ 
+-	for (i = nsamples - 1; samples[i] < usec && i > -1; i--);
++	for (i = nsamples - 1; i >= 0 && samples[i] < usec; i--)
++		;
+ 
+ 	if (i < (int)nsamples - 1) {
+ 		tst_res(TFAIL, "%s woken up early %u times range: [%lli,%lli]",
 
 -- 
 2.51.0
