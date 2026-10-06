@@ -4,64 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3E961CA5FFE
-	for <ltp@archiver.kernel.org>; Tue,  6 Oct 2026 02:05:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1791252299; h=to : date :
- message-id : in-reply-to : references : mime-version : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : content-type :
- content-transfer-encoding : sender : from;
- bh=Z0TNn5esSAMTjvi8LnI9kB3VDBcaEK0Os94IGpbQ3y0=;
- b=p8aA22v2RbKYZxg+HKT74w//9MWUhsBo0SNMa0x5Tou+DPmSTxcL1+y+xhWZ48mgntEzx
- QDFtuEZkovBuQR4vHY3RlT/Bzm1n5OiRmRB0c9YVn/jnmAb1oPNgeV/w2+Bulp8WHJNQexk
- a9lv89ilnRX/Sw3iOt7Gflv5n3tgLzs=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AACCECA5FED
+	for <ltp@archiver.kernel.org>; Tue,  6 Oct 2026 05:23:40 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 569653E9E94
-	for <ltp@archiver.kernel.org>; Tue,  6 Oct 2026 04:04:59 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id BA1593CD74C
+	for <ltp@archiver.kernel.org>; Tue,  6 Oct 2026 07:23:38 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 914413EA967
- for <ltp@lists.linux.it>; Tue,  6 Oct 2026 04:04:17 +0200 (CEST)
-Received: from Atcsqr.andestech.com (atcsqr.andestech.com [220.128.198.184])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 3F8C43C9FD7
+ for <ltp@lists.linux.it>; Tue,  6 Oct 2026 07:23:22 +0200 (CEST)
+Received: from mail-dl2-x09.google.com (mail-dl2-x09.google.com
+ [IPv6:2607:f8b0:4864:38::9])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id E544D1A007FD
- for <ltp@lists.linux.it>; Tue,  6 Oct 2026 04:04:16 +0200 (CEST)
-Received: from mail.andestech.com (atcpcs55.andestech.com [10.0.1.155])
- by Atcsqr.andestech.com with ESMTPS id 696247em006193
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
- for <ltp@lists.linux.it>; Tue, 6 Oct 2026 10:04:07 +0800 (+08)
- (envelope-from cyyang772@andestech.com)
-Received: from ATCPCS34.andestech.com (10.0.1.134) by atcpcs55.andestech.com
- (10.0.1.155) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.2.2562.43; Tue, 6 Oct
- 2026 10:04:07 +0800
-Received: from swlinux02.andestech.com (10.0.15.183) by ATCPCS34.andestech.com
- (10.0.1.134) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.39; Tue, 6 Oct
- 2026 10:04:07 +0800
-To: <ltp@lists.linux.it>
-Date: Tue, 6 Oct 2026 10:03:31 +0800
-Message-ID: <20261006020331.3791608-3-cyyang772@andestech.com>
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 940E31A000F9
+ for <ltp@lists.linux.it>; Tue,  6 Oct 2026 07:23:21 +0200 (CEST)
+Received: by mail-dl2-x09.google.com with SMTP id
+ a92af1059eb24-143255db95bso35757c88.0
+ for <ltp@lists.linux.it>; Mon, 05 Oct 2026 22:23:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20251104; t=1791264200; x=1791869000; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to:content-type;
+ bh=CDOmqK+xhMs/eUWisPHCwsRwKtmyXeJSM/ITQJufGXQ=;
+ b=sSo6jM5QuSmEMVmH3R1Dvu2DL+rtYp08Tj9QBk0heHDy8FEpLQ2zlBmLkyTMuBL5og
+ Fy/tgijLPWRaF6AZb6ivKELjapHwtbllUn7gkJ91R0JxwzV07G5HRNADEIrus00GNm4s
+ Kj77c+gvp33mCpo1v6zmsGZtoq2Xw86EoyDMf0pkBkj/5MGEwFCqaJsDx/WQZjuff5dq
+ 5CEdQmazTiL+t0w/7FjTo8nUFseoSipwvgykv3o4Cs/kLX7RraYQQS8hAgwMcQfaClcg
+ b/J/4yYAa8Kk1smX+2Uq3ZZAF7LVbL6Z3HD1gLbpFAeafq+Gpaxs0d/KrWxR+qY+YZwu
+ mjpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20260707; t=1791264200; x=1791869000;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to:content-type;
+ bh=CDOmqK+xhMs/eUWisPHCwsRwKtmyXeJSM/ITQJufGXQ=;
+ b=byu/wO/ExaowDUpNYW/MRI1E4zJKUl6fiYk7Ksn8JzIdT1yHDmdO39++fuKtiN8uYW
+ 49dbx9N3H7ET8GXhnPE/UOIQ15d6paJ51MFVfaqB8oYp1tO3X3ZCKZ005N/myzz5cK76
+ adZ4yzRTlJKtQvrJK1E24ZjZwT/ArNCG7q5FW2jsL5wViP+B9hu1/FP4HRvoGDSMfVsK
+ HsxS1o7YiuMe3idP5JL1Lm5GmysmORP7S6OusIKJXaVlhNSpIx9Iz2z7ZLaZLsQL9j8P
+ puJU/cvI6Aio2NourMBgpLk+aGSGY3sBdBqNuqBe5wZ/dinGFrF6+AcAYJZ58oJ76ght
+ aDbQ==
+X-Gm-Message-State: AFuF++m/0kB6XeSfxG3wAaAsv975XnDLS+WhFhfC5gYQnYdw2Js+Modn
+ 83LTu7TiBuMqNMa72LuueASqQXG3Gn3NEtyo6s+txYvDrYnLeo4zsM6d5TuaJSC2
+X-Gm-Gg: AYBFou3Xvj7IxoWQ7NqA2ZZV/vS7UPM8RAXRegAlVj8xAU3UjJJtpV78Hu3FZCU0LpU
+ Ku3eL//hgYjzEfBPIbfw/w+mhIZN9Fr2ryIeo/PPrwmCrgQ8t7IL4l+/Gsa05IXuurOWjC8J5w9
+ CjCPq4T6x7CVcGkrlilR3VX7Gsr6Znly1NnuuvB01iqkonI2UPFjmTOGsHZ04oHf8+S19j9K9r/
+ YCyttMsJOGM61DkhtP4Tc0q2r2Fi5YRcyVtnbmYORgto9IusuZqmfMrcF9bNOdSTqTselq0oWT6
+ r9YCrNhounbeEcMHHU26WJSwQQpMFuPjT9XyZg3uSfuTVG0aTwae/sySvSjZMnkvlY1flSGvwcd
+ r0nU8NAbQSt4WlzDHPtLJPLdFwqFk5qva573mG/mxhNtiPYljpQwhd//2a0OVInwMW7lMNHyixc
+ gJqoIyWebJ7SJ1RxsyJ6Ve0fgRhldo164/enJMnBbSjPNnQnzXc0kIneB5uwpM1X5UQkhq0jGEp
+ cr5V7XOI76QctzrAjiUQm+pbjT5qYYPQfYR9ZrBUiOQGgXuQwZIQkouoNRO5kVHu49xr6ltKrCt
+ RKoVs98vSAo=
+X-Received: by 2002:a05:701b:2618:b0:154:dc96:c1d8 with SMTP id
+ a92af1059eb24-15ec01d320emr539217c88.2.1791264199508; 
+ Mon, 05 Oct 2026 22:23:19 -0700 (PDT)
+Received: from
+ runnervm8df0l.sjon4tmsf2qexicyal4bq0hddh.dx.internal.cloudapp.net
+ ([52.157.33.160]) by smtp.gmail.com with ESMTPSA id
+ a92af1059eb24-15d84523b6csm3534903c88.12.2026.10.05.22.23.18
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 05 Oct 2026 22:23:19 -0700 (PDT)
+From: linuxtestproject.agent@gmail.com
+To: Victor Cheng-Yen Yang <cyyang772@andestech.com>
+Date: Tue,  6 Oct 2026 05:23:17 +0000
+Message-ID: <20261006052317.12310-1-linuxtestproject.agent@gmail.com>
 X-Mailer: git-send-email 2.55.0
-In-Reply-To: <20261006020331.3791608-1-cyyang772@andestech.com>
-References: <20261006020331.3791608-1-cyyang772@andestech.com>
+In-Reply-To: <20261006020331.3791608-2-cyyang772@andestech.com>
+References: <20261006020331.3791608-2-cyyang772@andestech.com>
 MIME-Version: 1.0
-X-Originating-IP: [10.0.15.183]
-X-ClientProxiedBy: ATCPCS33.andestech.com (10.0.1.100) To
- ATCPCS34.andestech.com (10.0.1.134)
-X-DKIM-Results: atcpcs55.andestech.com; dkim=none;
-X-DNSRBL: 
-X-MAIL: Atcsqr.andestech.com 696247em006193
 X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 2/2] Update old API call sites of SAFE_READ() to use
- the enum values
+Subject: Re: [LTP] Update call sites of SAFE_READ() to use the enum values
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -73,155 +91,28 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Victor Cheng-Yen Yang via ltp <ltp@lists.linux.it>
-Reply-To: Victor Cheng-Yen Yang <cyyang772@andestech.com>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Victor Cheng-Yen Yang <cyyang772@andestech.com>
+Hi Victor,
 
-The old test.h API shares safe_read() with the new one, so the same
-SAFE_READ_ANY / SAFE_READ_ALL constants apply there. Convert the old API
-callers for the same reason as the new API ones: the intent of every
-call site becomes visible without looking up the prototype.
+On 6 October 2026, Victor Cheng-Yen Yang wrote:
+> Update call sites of SAFE_READ() to use the enum values
 
-No functional change.
+Verdict - Reviewed
 
-Signed-off-by: Victor Cheng-Yen Yang <cyyang772@andestech.com>
 ---
- lib/tests/tst_safe_macros.c                       | 4 ++--
- testcases/kernel/syscalls/fcntl/fcntl11.c         | 4 ++--
- testcases/kernel/syscalls/fcntl/fcntl31.c         | 2 +-
- testcases/kernel/syscalls/linkat/linkat01.c       | 3 ++-
- testcases/kernel/syscalls/openat/openat03.c       | 2 +-
- testcases/kernel/syscalls/renameat2/renameat202.c | 2 +-
- testcases/kernel/syscalls/symlinkat/symlinkat01.c | 3 ++-
- testcases/kernel/syscalls/umount2/umount2_01.c    | 2 +-
- 8 files changed, 12 insertions(+), 10 deletions(-)
+Note:
 
-diff --git a/lib/tests/tst_safe_macros.c b/lib/tests/tst_safe_macros.c
-index 59b9b49bb..241ac0daa 100644
---- a/lib/tests/tst_safe_macros.c
-+++ b/lib/tests/tst_safe_macros.c
-@@ -27,9 +27,9 @@ int main(int argc LTP_ATTRIBUTE_UNUSED, char **argv)
- 	printf("%s\n", SAFE_BASENAME(NULL, *argv));
- 	printf("%s\n", SAFE_DIRNAME(NULL, *argv));
- 	fd = SAFE_OPEN(cleanup, __FILE__ "~", O_RDWR);
--	SAFE_READ(cleanup, 0, fd, buf, 9);
-+	SAFE_READ(cleanup, SAFE_READ_ANY, fd, buf, 9);
- 	printf("buf: %s\n", buf);
--	SAFE_READ(cleanup, 1, fd, buf, 9);
-+	SAFE_READ(cleanup, SAFE_READ_ALL, fd, buf, 9);
- 	printf("buf: %s\n", buf);
- 	SAFE_WRITE(cleanup, SAFE_WRITE_ANY, -1, buf, 9);
- 	SAFE_WRITE(NULL, SAFE_WRITE_ANY, fd, buf, 9);
-diff --git a/testcases/kernel/syscalls/fcntl/fcntl11.c b/testcases/kernel/syscalls/fcntl/fcntl11.c
-index 083055dd5..bf46f38d1 100644
---- a/testcases/kernel/syscalls/fcntl/fcntl11.c
-+++ b/testcases/kernel/syscalls/fcntl/fcntl11.c
-@@ -208,7 +208,7 @@ void parent_put(struct flock *l)
- 
- void parent_get(struct flock *l)
- {
--	SAFE_READ(cleanup, 1, child_pipe[0], l, sizeof(*l));
-+	SAFE_READ(cleanup, SAFE_READ_ALL, child_pipe[0], l, sizeof(*l));
- }
- 
- void child_put(struct flock *l)
-@@ -218,7 +218,7 @@ void child_put(struct flock *l)
- 
- void child_get(struct flock *l)
- {
--	SAFE_READ(NULL, 1, parent_pipe[0], l, sizeof(*l));
-+	SAFE_READ(NULL, SAFE_READ_ALL, parent_pipe[0], l, sizeof(*l));
- 	if (l->l_type == (short)STOP)
- 		exit(0);
- }
-diff --git a/testcases/kernel/syscalls/fcntl/fcntl31.c b/testcases/kernel/syscalls/fcntl/fcntl31.c
-index 2aab4a91c..2a74b7478 100644
---- a/testcases/kernel/syscalls/fcntl/fcntl31.c
-+++ b/testcases/kernel/syscalls/fcntl/fcntl31.c
-@@ -344,7 +344,7 @@ static void check_io_signal(char *des)
- 				 "signal mechanism work abnormally");
- 		}
- 
--		SAFE_READ(cleanup, 1, test_fd, &c, 1);
-+		SAFE_READ(cleanup, SAFE_READ_ALL, test_fd, &c, 1);
- 		wait(NULL);
- 	}
- }
-diff --git a/testcases/kernel/syscalls/linkat/linkat01.c b/testcases/kernel/syscalls/linkat/linkat01.c
-index fa2065bbb..c3851874d 100644
---- a/testcases/kernel/syscalls/linkat/linkat01.c
-+++ b/testcases/kernel/syscalls/linkat/linkat01.c
-@@ -249,7 +249,8 @@ static void mylinkat_test(struct test_struct *desc)
- 
- 			fd = SAFE_OPEN(cleanup, desc->referencefn2,
- 				       O_RDONLY);
--			SAFE_READ(cleanup, 1, fd, &vnum, sizeof(vnum));
-+			SAFE_READ(cleanup, SAFE_READ_ALL, fd, &vnum,
-+				  sizeof(vnum));
- 			SAFE_CLOSE(cleanup, fd);
- 
- 			if (tnum == vnum)
-diff --git a/testcases/kernel/syscalls/openat/openat03.c b/testcases/kernel/syscalls/openat/openat03.c
-index 712e85745..2406f9c58 100644
---- a/testcases/kernel/syscalls/openat/openat03.c
-+++ b/testcases/kernel/syscalls/openat/openat03.c
-@@ -129,7 +129,7 @@ static void read_file(int fd)
- 	SAFE_LSEEK(cleanup, fd, 0, SEEK_SET);
- 
- 	for (i = 0; i < blocks_num; ++i) {
--		SAFE_READ(cleanup, 0, fd, tmp, size);
-+		SAFE_READ(cleanup, SAFE_READ_ANY, fd, tmp, size);
- 		if (memcmp(buf, tmp, size))
- 			tst_brkm(TFAIL, cleanup, "got unexepected data");
- 	}
-diff --git a/testcases/kernel/syscalls/renameat2/renameat202.c b/testcases/kernel/syscalls/renameat2/renameat202.c
-index a635206f7..d5def6e83 100644
---- a/testcases/kernel/syscalls/renameat2/renameat202.c
-+++ b/testcases/kernel/syscalls/renameat2/renameat202.c
-@@ -141,7 +141,7 @@ static void renameat2_verify(void)
- 
- 	SAFE_STAT(cleanup, emptyfile, &st);
- 
--	readn = SAFE_READ(cleanup, 0, fd, str, BUFSIZ);
-+	readn = SAFE_READ(cleanup, SAFE_READ_ANY, fd, str, BUFSIZ);
- 
- 	if (close(fd) < 0)
- 		tst_brkm(TERRNO | TFAIL, cleanup, "close fd failed");
-diff --git a/testcases/kernel/syscalls/symlinkat/symlinkat01.c b/testcases/kernel/syscalls/symlinkat/symlinkat01.c
-index 565e4d923..285e75d8c 100644
---- a/testcases/kernel/syscalls/symlinkat/symlinkat01.c
-+++ b/testcases/kernel/syscalls/symlinkat/symlinkat01.c
-@@ -181,7 +181,8 @@ static void mysymlinkat_test(struct test_struct *desc)
- 			SAFE_CLOSE(cleanup, fd);
- 
- 			fd = SAFE_OPEN(cleanup, desc->referencefn2, O_RDONLY);
--			SAFE_READ(cleanup, 1, fd, &vnum, sizeof(vnum));
-+			SAFE_READ(cleanup, SAFE_READ_ALL, fd, &vnum,
-+				  sizeof(vnum));
- 			SAFE_CLOSE(cleanup, fd);
- 
- 			if (tnum == vnum)
-diff --git a/testcases/kernel/syscalls/umount2/umount2_01.c b/testcases/kernel/syscalls/umount2/umount2_01.c
-index c6496e306..9e0732461 100644
---- a/testcases/kernel/syscalls/umount2/umount2_01.c
-+++ b/testcases/kernel/syscalls/umount2/umount2_01.c
-@@ -128,7 +128,7 @@ static void umount2_verify(void)
- 
- 	memset(buf, 0, sizeof(buf));
- 
--	SAFE_READ(cleanup, 1, fd, buf, strlen(str));
-+	SAFE_READ(cleanup, SAFE_READ_ALL, fd, buf, strlen(str));
- 
- 	if (strcmp(str, buf)) {
- 		tst_resm(TFAIL, "umount2(2) MNT_DETACH flag "
--- 
-2.55.0
+The agent can sometimes produce false positives although often its
+findings are genuine. If you find issues with the review, please
+comment this email or ignore the suggestions.
 
+Regards,
+LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
