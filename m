@@ -4,106 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 723EBCA5FF0
-	for <ltp@archiver.kernel.org>; Tue,  6 Oct 2026 13:03:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BD02CCA6004
+	for <ltp@archiver.kernel.org>; Tue,  6 Oct 2026 18:53:48 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 2061A3E543B
-	for <ltp@archiver.kernel.org>; Tue,  6 Oct 2026 15:03:44 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id B42BC3E9CCD
+	for <ltp@archiver.kernel.org>; Tue,  6 Oct 2026 20:53:46 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D00C93E5511
- for <ltp@lists.linux.it>; Tue,  6 Oct 2026 15:02:51 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 9F67D3E53BA
+ for <ltp@lists.linux.it>; Tue,  6 Oct 2026 20:53:28 +0200 (CEST)
+Received: from mail-qk2-x09.google.com (mail-qk2-x09.google.com
+ [IPv6:2607:f8b0:4864:34::9])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 1E5A81400B93
- for <ltp@lists.linux.it>; Tue,  6 Oct 2026 15:02:50 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 87CC2219D3;
- Tue,  6 Oct 2026 13:02:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1791291763; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=7Rm9hzlVCgFtA5t5INC9leF7qZonXeqSiVBBo1VpNqU=;
- b=zQQOrtIdCQV3OFW/6KNzUyU5cWoT4BEI0QUEiuW6sP9kN2FxFQIRldevkccr92Ptqpc/o7
- CgHExrpV8DG0V1+l2xKmSATtXQFEhJ2V+gnkjYBVqytzX+IvA/76XWyqKAvrq8C9T/Gu7H
- V6yv1ClC1B8KiwkAa1Wxchhc+XRi4+c=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1791291763;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=7Rm9hzlVCgFtA5t5INC9leF7qZonXeqSiVBBo1VpNqU=;
- b=+rJSGK7Lvwh4+YJYIZPazntlIGT2iDI9gFBMuBDmhu79tjdg6WQdQZXoAxoEOR7qoTHI1h
- 1T0/3ujGLPKdd3Dw==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1791291759; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=7Rm9hzlVCgFtA5t5INC9leF7qZonXeqSiVBBo1VpNqU=;
- b=o1kQ7cVYEPbVFteKkn+Y/B27ENWV5JC/EzsWuVf7NsrXGA+VWsDxto32FIn9m4dSqBr34m
- CjfqiZgpPsDQhLDPF/Y2+5Y1Bw2Za1WrtWv6OHxHIFXsJaL4EEOWHasJ4sZLGpvAVwuPsx
- lmYotBUqu6hsQzJ8HNodtkzORzrLNhE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1791291759;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=7Rm9hzlVCgFtA5t5INC9leF7qZonXeqSiVBBo1VpNqU=;
- b=SCA8Bo6MIlZWARljokAP5NOneZTcsnhpSVBfsTIWGe9NgcKxrRBrZTsHo3gx5XZilKHZdu
- NyOW5zo6MUYA8DDw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5136D13C7B;
- Tue,  6 Oct 2026 13:02:39 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id iGTTAG/xxGqLRQAAD6G6ig:T2
- (envelope-from <andrea.cervesato@suse.de>); Tue, 06 Oct 2026 13:02:39 +0000
-From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Tue, 06 Oct 2026 15:02:37 +0200
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 3B73D1400BC8
+ for <ltp@lists.linux.it>; Tue,  6 Oct 2026 20:53:28 +0200 (CEST)
+Received: by mail-qk2-x09.google.com with SMTP id
+ af79cd13be357-93497257b7aso148084085a.0
+ for <ltp@lists.linux.it>; Tue, 06 Oct 2026 11:53:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20251104; t=1791312807; x=1791917607; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to:content-type;
+ bh=tO13MnIRDHfzwjG0WSghU3RiBMbmL3C87iocXYuovfo=;
+ b=hgCjAhR7bkL+v42xFd6ihqe845TAGTQXzn38Uhb52ow86WUf9ucwrQCIXx6S5EWEnp
+ D2Skf/O4QoAfAnRrWWqONN+7zMFYI8h8IqW86p80Khj5rZrd3cW3U+Uce6lhs/naJPUh
+ 6iXgg9V9psswUkgUfFAnneVekjBnPWidZ6DZOby+cgMOvmWdhq+ufIo9cL2wXJrofXII
+ qCXBgV1XUXDCDIVmhwzWmgS7LmDNeEQu4mxNXdBMC+9rGhKxR0MYEEyhLa/CyMidwU53
+ cVnUwwtfJLbXWHbIy8DJ6XrNze6VqNAJfOf0QKZWy8plZN+BvTiJgLiXosGnpxhx/+5m
+ RHjg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20260707; t=1791312807; x=1791917607;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to:content-type;
+ bh=tO13MnIRDHfzwjG0WSghU3RiBMbmL3C87iocXYuovfo=;
+ b=aJiax9e4XSD5mn5oagdin0LxQ2ZZSEqEKpA6QczXbd/Gx6l9v5hOLp2cKvR/YaB+7a
+ nQtZSAb0WdcvaK3XX27Zy8tJfs6AfBYsz8SAAPsjfq/ZHwVppnZmaNtsfAMIMHNnHNaw
+ EtiO0Y9R1uSJjapRpCni3XBL35tmgc9CQJZNFxhfWLmc2AAmkAyX6CPS8i5JGqNa1m/O
+ ZUzt4wJX1Z71dVETLILfZVCM3czL+xXcRFNNCp7tDbnQxTUNtBE8g5Kg0wxfwiyQcoPq
+ hgJCDA+RcKwXCTRedwTzLXhIRhZr+RfWwgJQmwZmhQmluQEcw3dlLygC/dhQseEv7N5K
+ p9lg==
+X-Gm-Message-State: AFuF++kzmlTQrzsdofShFSUjfjmlEiF2m6QFgaALS2ulvlGjtvOKSQWd
+ IC7/DNgbSFjqb7ENXBF64a5BWjHwDcYAzaDi6ayMHyHZzIbx3EpZkarR
+X-Gm-Gg: AYBFou2bjt8JvXIyQxed4Eqqpc7jXRjSOKbrLsxVDDq9WmvKPO/u0hmw8J0y2C595pp
+ uPLdXb22oqWV4FGlQRFQfqb6vq5x4ZFViF6B868/qozSmkzOe8HTVv6dXjvQ0/Vy8VwK4lzf0HY
+ Ad7lFXkWpc9FS8q7DtDUsvEHfJrki6HW7DL/tAsY2LqI72QGrShH+83JSm0WvyTYuG7iwr05A7S
+ xIbFe01r9bOUn0sNXxQWN5QLxvQcKxwwVDu4YKA0kLAEi3ar0Wp/6skRJAb8YuhEewANLV9hvyj
+ GCRqSQGS1z62NHBaNImnje3DfxdcsNYytXYUtrrWQEf2+ESBB+GoAsxfURcFC82WW3+hSmdm6Gg
+ zyith2NRVYct3etPC3LuEwgGAnpnenH9MZ1bdCP9+WxTbUijKI8ydv9svMoKlKEwV4btKI0cI9w
+ O6zUdda2MHKfboU3acn3prS37hxo+DuanjIPJcgsrl5FRtqSu0jQ9oIk8UrHg4Xr3dN6vYQFgLh
+ MHD74Z8uhVBuMSJre8mFi5n79SFl/LpbUwfPgkbqlX7jpV49a7UZE/FbZCRnJ/w1K6h0mUiXcrq
+ dIHnMGstBW0=
+X-Received: by 2002:a05:620a:17a7:b0:93c:7fab:c44e with SMTP id
+ af79cd13be357-93e8f5387d7mr433777385a.63.1791312806432; 
+ Tue, 06 Oct 2026 11:53:26 -0700 (PDT)
+Received: from
+ runnervm8df0l.mdtce0mt4ome5kzwfyfkzdq1na.bx.internal.cloudapp.net
+ ([74.235.90.84]) by smtp.gmail.com with ESMTPSA id
+ 6a1803df08f44-91996d52f41sm470356d6.34.2026.10.06.11.53.25
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 06 Oct 2026 11:53:26 -0700 (PDT)
+From: linuxtestproject.agent@gmail.com
+To: Andrea Cervesato <andrea.cervesato@suse.de>
+Date: Tue,  6 Oct 2026 18:53:25 +0000
+Message-ID: <20261006185325.8520-1-linuxtestproject.agent@gmail.com>
+X-Mailer: git-send-email 2.55.0
+In-Reply-To: <20261006-fix_simple_bugs_core_lib-v1-1-c94199a46ec5@suse.com>
+References: <20261006-fix_simple_bugs_core_lib-v1-1-c94199a46ec5@suse.com>
 MIME-Version: 1.0
-Message-Id: <20261006-fix_simple_bugs_core_lib-v1-1-c94199a46ec5@suse.com>
-References: <20261006-fix_simple_bugs_core_lib-v1-0-c94199a46ec5@suse.com>
-In-Reply-To: <20261006-fix_simple_bugs_core_lib-v1-0-c94199a46ec5@suse.com>
-To: Linux Test Project <ltp@lists.linux.it>
-X-Mailer: b4 0.16.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1791291759; l=1266;
- i=andrea.cervesato@suse.com; s=20251210; h=from:subject:message-id;
- bh=57cEbIEI/pP0lTnZX9oWAQTUTjkeSmBFhcklT5WWByI=;
- b=VvRXtu7eHFsxrZd5MoqlLCepTfH+3qzrKxiTnAPV+YLKQuvlYGfb/eveydgjD1vhKiAXlAWFV
- QH4e3rxSoEuAT0bB1/TH3/jQvsrqkLPWaD7YpS7GeQjf3tZKnBqu3zj
-X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
- pk=zKY+6GCauOiuHNZ//d8PQ/UL4jFCTKbXrzXAOQSLevI=
-X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[99.99%];
- NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-0.997]; MIME_GOOD(-0.10)[text/plain];
- RCPT_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
- DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- TO_DN_ALL(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- FROM_HAS_DN(0.00)[]; MIME_TRACE(0.00)[0:+];
- FROM_EQ_ENVFROM(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo, suse.com:email,
- suse.com:mid]
 X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 1/3] tst_timer_test: Fix out-of-bounds array access
+Subject: Re: [LTP] tst_timer_test: Fix out-of-bounds array access
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -115,52 +92,28 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Andrea Cervesato <andrea.cervesato@suse.com>
+Hi Andrea,
 
-Both outlier and early-wake loops in do_timer_test() evaluate
-samples[i] before verifying that index i is within bounds.
-When all samples are outliers or early, this causes heap buffer
-overreads at samples[nsamples] or samples[-1].
+On Tue, 6 Oct 2026, Andrea Cervesato wrote:
+> tst_timer_test: Fix out-of-bounds array access
 
-Check index bounds before indexing the samples array.
+Verdict - Reviewed
 
-Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
- lib/tst_timer_test.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+Note:
 
-diff --git a/lib/tst_timer_test.c b/lib/tst_timer_test.c
-index b5a088a14..8f9ec12f6 100644
---- a/lib/tst_timer_test.c
-+++ b/lib/tst_timer_test.c
-@@ -276,7 +276,7 @@ void do_timer_test(long long usec, unsigned int nsamples)
- 
- 	write_to_file();
- 
--	for (i = 0; samples[i] > 10 * usec && i < (int)nsamples; i++) {
-+	for (i = 0; i < (int)nsamples && samples[i] > 10 * usec; i++) {
- 		if (samples[i] <= 3 * monotonic_resolution)
- 			break;
- 	}
-@@ -286,7 +286,8 @@ void do_timer_test(long long usec, unsigned int nsamples)
- 			i, samples[0], samples[i-1]);
- 	}
- 
--	for (i = nsamples - 1; samples[i] < usec && i > -1; i--);
-+	for (i = nsamples - 1; i >= 0 && samples[i] < usec; i--)
-+		;
- 
- 	if (i < (int)nsamples - 1) {
- 		tst_res(TFAIL, "%s woken up early %u times range: [%lli,%lli]",
+The agent can sometimes produce false positives although often its
+findings are genuine. If you find issues with the review, please
+comment this email or ignore the suggestions.
 
--- 
-2.51.0
-
+Regards,
+LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
