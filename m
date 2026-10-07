@@ -4,112 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9471ACA5FF1
-	for <ltp@archiver.kernel.org>; Wed,  7 Oct 2026 10:00:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 966BFCA5FFC
+	for <ltp@archiver.kernel.org>; Wed,  7 Oct 2026 10:58:09 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 669E13E9C8A
-	for <ltp@archiver.kernel.org>; Wed,  7 Oct 2026 12:00:10 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 8628D3C61C4
+	for <ltp@archiver.kernel.org>; Wed,  7 Oct 2026 12:58:07 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 5455A3E6C17
- for <ltp@lists.linux.it>; Wed,  7 Oct 2026 11:59:52 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id D71943C61C4
+ for <ltp@lists.linux.it>; Wed,  7 Oct 2026 12:57:49 +0200 (CEST)
+Received: from mta0.migadu.com (out-237.mta0.migadu.com
+ [IPv6:2001:41d0:1004:224b::ed])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 76FF31A003D2
- for <ltp@lists.linux.it>; Wed,  7 Oct 2026 11:59:50 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 595191F441;
- Wed,  7 Oct 2026 09:59:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1791367184;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=zsqNh53HtWB2sAjtXfG2nCisfuB03mXPtd9eQK5XWLU=;
- b=A3mq0EvXL8A7guPy2F8vpv/d9+BuzRsAJ2Sk10ahDvu7MFSw9j6P0uNCVQBPRqXLG+1ahc
- pUTb7egZ6L+RjDT0pHH/69GG8w7QQ6e+R3ItRAgdmyfvNpSKWpK1pYNdW97G/aZ4kZIktd
- 2yxKxUEHDYZTEGGK+1l2IvUjI7+ZdnY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1791367184;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=zsqNh53HtWB2sAjtXfG2nCisfuB03mXPtd9eQK5XWLU=;
- b=7jkxIWkoOagSV0COfkys2n7htHI2X4b/AIf8G8si1WNNDORoZhv8YQWe1wjcUlUX9vjpnW
- 2fGF+zKedX9xjUBA==
-Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=A3mq0EvX;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=7jkxIWko
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1791367184;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=zsqNh53HtWB2sAjtXfG2nCisfuB03mXPtd9eQK5XWLU=;
- b=A3mq0EvXL8A7guPy2F8vpv/d9+BuzRsAJ2Sk10ahDvu7MFSw9j6P0uNCVQBPRqXLG+1ahc
- pUTb7egZ6L+RjDT0pHH/69GG8w7QQ6e+R3ItRAgdmyfvNpSKWpK1pYNdW97G/aZ4kZIktd
- 2yxKxUEHDYZTEGGK+1l2IvUjI7+ZdnY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1791367184;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=zsqNh53HtWB2sAjtXfG2nCisfuB03mXPtd9eQK5XWLU=;
- b=7jkxIWkoOagSV0COfkys2n7htHI2X4b/AIf8G8si1WNNDORoZhv8YQWe1wjcUlUX9vjpnW
- 2fGF+zKedX9xjUBA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2D1ED13B97;
- Wed,  7 Oct 2026 09:59:44 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 4/mfOA8YxmoXJwAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Wed, 07 Oct 2026 09:59:44 +0000
-Date: Wed, 7 Oct 2026 11:59:38 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Wake Liu <wakel@google.com>
-Message-ID: <20261007095938.GA3295049@pevik>
-References: <20261002130546.1236713-1-wakel@google.com>
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id C9FAB1400C54
+ for <ltp@lists.linux.it>; Wed,  7 Oct 2026 12:57:46 +0200 (CEST)
+X-Envelope-To: ltp@lists.linux.it
+DKIM-Signature: a=rsa-sha256; bh=dW8diFthGBdi/LpLkjn+ADtJJyisHHLNr4+7F+dxqnk=; 
+ c=simple/simple; d=linux.dev;
+ h=from:to:subject:date:message-id:mime-version:content-type; s=key1;
+ t=1791370665; v=1; x=1791975465;
+ b=OGD6Yu2XMlWbyHdnUWC/zk8HRNqtekNR9Ae3Y6GSyuuQLKy6tW/0AuDTiJGb5iaOwBS1wfDa
+ VCn14dw8x4eI970Ao8US94JsyFQuUAQ3McPzUqo/ColyoVP9Cid+s7GhmQYOmN5TZcRpToELceZ
+ u2oWBtnR2qtU9/mAvOXsQBWI=
+X-Envelope-To: ltp@lists.linux.it
+Received: by mta10.migadu.com with ESMTPS id 2737bd704d6681d4;
+ Wed, 07 Oct 2026 10:57:45 +0000
+X-Mizu-Trace-ID: 2737bd704d6681d4
+X-Migadu-Flow: FLOW_OUT
+From: Li Wang <li.wang@linux.dev>
+To: ltp@lists.linux.it
+Date: Wed,  7 Oct 2026 18:57:27 +0800
+Message-ID: <20261007105730.94492-1-li.wang@linux.dev>
+X-Mailer: git-send-email 2.55.0
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20261002130546.1236713-1-wakel@google.com>
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- TO_DN_SOME(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- MIME_TRACE(0.00)[0:+];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- ARC_NA(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
- DKIM_TRACE(0.00)[suse.cz:+]; RCPT_COUNT_THREE(0.00)[4];
- RCVD_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[]; RCVD_TLS_ALL(0.00)[];
- DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- RCVD_VIA_SMTP_AUTH(0.00)[];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- MISSING_XM_UA(0.00)[]; REPLYTO_EQ_FROM(0.00)[]
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: 595191F441
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] keyctl: Fix struct keyctl_dh_params build on
- Bionic
+Subject: [LTP] [PATCH 0/3] tst_kconfig: automatic module load/unload for
+ CONFIG_*=m
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -121,110 +57,37 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Wake Liu, Cyril,
+Tests that depend on a config set to =m currently load the module
+themselves, and may fail with misleading errors when it is missing,
+e.g. bind() returning EADDRNOTAVAIL for AF_VSOCK without vsock_loopback.
 
-> Bionic generates its copy of the UAPI headers with the C++ keyword
+This series makes tst_kconfig record the module for every
+config_module_maps[] entry seen as =m, load them once the kernel
+config check passes, and unload them at cleanup time.
 
-Ah, we forget on the most used C++ libc when we prepared 71353a6c009b.
+Li Wang (3):
+  tst_kconfig: load and unload kernel modules for CONFIG_*=m
+  tst_kconfig: add module mappings for vsock/vsock_loopback
+  testcases: drop manual tst_modprobe() now handled by tst_kconfig
 
-> 'private' renamed to '__linux_private', so its struct keyctl_dh_params
-> only provides the 'priv' alias added in kernel 4.20. Since keyctl25-28
-> were switched to 'private', they fail to build on Android:
+ include/tst_kconfig.h                       | 28 ++++++++
+ lib/tst_kconfig.c                           | 72 +++++++++++++++++++++
+ lib/tst_test.c                              |  4 ++
+ testcases/cve/cve-2025-21756.c              |  6 ++
+ testcases/cve/cve-2026-46331.c              |  7 --
+ testcases/cve/sctphantom.c                  |  3 -
+ testcases/kernel/syscalls/keyctl/keyctl29.c |  3 -
+ testcases/kernel/syscalls/keyctl/keyctl30.c |  3 -
+ 8 files changed, 110 insertions(+), 16 deletions(-)
 
->     error: no member named 'private' in 'struct keyctl_dh_params'
+-- 
+2.55.0
 
-> Detect the 'private' member in configure and access the member via a
-> new KEYCTL_DH_PRIVATE() macro, which falls back to 'priv' when
-> 'private' is not available, similar to FSID_VAL_MEMBER() in
-> lapi/fanotify.h.
-
-> Checking for 'private' rather than 'priv' leaves every build whose UAPI
-> headers provide 'private' unchanged, including headers older than 4.20
-> which lack 'priv'. It also makes 'priv' the default when configure is
-> not run, as in the Android build, which uses a hand-maintained
-> config.h. The LTP fallback definition provides both members.
-
-> Fixes: 71353a6c009b ("keyctl: Use struct keyctl_dh_params 'private' instead of 'priv'")
-> Signed-off-by: Wake Liu <wakel@google.com>
-
-Looks like we cannot avoid struct keyctl_dh_params.private. Make sense.
-Cc Cyril just in case he has some different idea.
-
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
-
-Kind regards,
-Petr
-
-> ---
->  configure.ac                                |  1 +
->  include/lapi/keyctl.h                       | 14 ++++++++++++++
->  testcases/kernel/syscalls/keyctl/keyctl25.c |  5 +++--
->  testcases/kernel/syscalls/keyctl/keyctl26.c |  5 +++--
->  testcases/kernel/syscalls/keyctl/keyctl27.c |  5 +++--
->  testcases/kernel/syscalls/keyctl/keyctl28.c |  2 +-
->  6 files changed, 25 insertions(+), 7 deletions(-)
-
-> diff --git a/configure.ac b/configure.ac
-> index e979de0e7..4087856c8 100644
-> --- a/configure.ac
-> +++ b/configure.ac
-> @@ -302,6 +302,7 @@ AC_CHECK_TYPES([struct uffdio_writeprotect],,,[#include <linux/userfaultfd.h>])
->  AC_CHECK_TYPES([struct keyctl_dh_params, struct keyctl_kdf_params,
->  	struct keyctl_pkey_query, struct keyctl_pkey_params],,,
->  	[#include <linux/keyctl.h>])
-> +AC_CHECK_MEMBERS([struct keyctl_dh_params.private],,,[#include <linux/keyctl.h>])
-
->  # Tools knobs
-
-> diff --git a/include/lapi/keyctl.h b/include/lapi/keyctl.h
-> index eb4d25c42..788c4d509 100644
-> --- a/include/lapi/keyctl.h
-> +++ b/include/lapi/keyctl.h
-> @@ -67,6 +67,20 @@ struct keyctl_dh_params {
->  };
->  #endif
-
-> +/**
-> + * KEYCTL_DH_PRIVATE - Access the private key in struct keyctl_dh_params.
-> + * @params: Pointer to struct keyctl_dh_params.
-> + *
-> + * Uses 'private' if the UAPI headers provide it, 'priv' otherwise. UAPI
-> + * headers older than 4.20 provide only 'private'. Bionic renames 'private'
-> + * (a C++ keyword) to '__linux_private', so only 'priv' is usable there.
-> + */
-> +#ifdef HAVE_STRUCT_KEYCTL_DH_PARAMS_PRIVATE
-> +# define KEYCTL_DH_PRIVATE(params) ((params)->private)
-> +#else
-> +# define KEYCTL_DH_PRIVATE(params) ((params)->priv)
-> +#endif
-> +
->  #ifndef HAVE_STRUCT_KEYCTL_KDF_PARAMS
->  struct keyctl_kdf_params {
->  	char *hashname;
-> diff --git a/testcases/kernel/syscalls/keyctl/keyctl25.c b/testcases/kernel/syscalls/keyctl/keyctl25.c
-> index 84e76c019..80a341cf3 100644
-> --- a/testcases/kernel/syscalls/keyctl/keyctl25.c
-> +++ b/testcases/kernel/syscalls/keyctl/keyctl25.c
-> @@ -22,8 +22,9 @@ static void setup(void)
->  {
->  	SAFE_KEYCTL(KEYCTL_JOIN_SESSION_KEYRING, 0, 0, 0, 0);
-
-> -	dh_params->private = SAFE_NEW_USER_KEY("dh_priv", dh_priv, sizeof(dh_priv),
-> -				       KEY_SPEC_PROCESS_KEYRING);
-> +	KEYCTL_DH_PRIVATE(dh_params) =
-> +		SAFE_NEW_USER_KEY("dh_priv", dh_priv, sizeof(dh_priv),
-> +				  KEY_SPEC_PROCESS_KEYRING);
->  	dh_params->prime = SAFE_NEW_USER_KEY("dh_prime", dh_prime, sizeof(dh_prime),
->  					KEY_SPEC_PROCESS_KEYRING);
->  	dh_params->base = SAFE_NEW_USER_KEY("dh_base", dh_base, sizeof(dh_base),
-...
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
