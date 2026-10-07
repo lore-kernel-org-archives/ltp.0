@@ -4,105 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 96FFBCA5FF1
-	for <ltp@archiver.kernel.org>; Wed,  7 Oct 2026 14:01:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DFAE5CA5FF1
+	for <ltp@archiver.kernel.org>; Wed,  7 Oct 2026 14:18:19 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9C6133E2E81
-	for <ltp@archiver.kernel.org>; Wed,  7 Oct 2026 16:01:55 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 2A3AA3E96B1
+	for <ltp@archiver.kernel.org>; Wed,  7 Oct 2026 16:18:18 +0200 (CEST)
 Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 5ABE73E9C87
- for <ltp@lists.linux.it>; Wed,  7 Oct 2026 16:00:54 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id D21393E7429
+ for <ltp@lists.linux.it>; Wed,  7 Oct 2026 16:18:02 +0200 (CEST)
+Received: from mail-qk2-x03.google.com (mail-qk2-x03.google.com
+ [IPv6:2607:f8b0:4864:34::3])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id CB85F1000A0E
- for <ltp@lists.linux.it>; Wed,  7 Oct 2026 16:00:51 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 6B5A921BCB;
- Wed,  7 Oct 2026 14:00:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1791381650; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=CFLaAU8dcuDnT3DUj2CZYIW26N/N4+0MCbZPqxhSz3w=;
- b=uVUbHLTDN7FTq61j014/T8+ckYWZq8zcVrsHpjAPKxPZidfy+Dr1OcNNuB0OQm9FWNy9jE
- wMt4e3QKQtxhicgoZwuJiLFqH6/6LIwDL4AQrz14koJdAlS/96ps9S/uI55dorXDV/zcKS
- 7rIQr8/bQn8VHc3FYTIAH9Ae5Gmikaw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1791381650;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=CFLaAU8dcuDnT3DUj2CZYIW26N/N4+0MCbZPqxhSz3w=;
- b=Ukl5zVpBWmZkaHHJr9Oo5y1X0pLtL6TiiZmm9XM1TkRCkQx9n1L4kE+gatxmI+X7eU6skQ
- pjqa7ILyclPEnHAw==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1791381649; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=CFLaAU8dcuDnT3DUj2CZYIW26N/N4+0MCbZPqxhSz3w=;
- b=vRWsI5j8uYvgvaDSe/eGnrT0JTvx7kABNjXPcs8Nvxz55dHCW3RwmWeuQS/AfTXRCNOa0t
- 8sumbBNWen2M7MbpOppJGHkGWPOqu2iAlG9qeRgK34dgk2yJoze0b18zDCXPRse4ZeA6hB
- VJ3igKYqNmoS+ODN6B0E7AZvAOV5PFM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1791381649;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=CFLaAU8dcuDnT3DUj2CZYIW26N/N4+0MCbZPqxhSz3w=;
- b=o/RB+Xm1goa84avqSQ1rgC1pTFl2LxtGbQeiLMEsj91OLvekMTDhGaexu2actqIYjpIr6X
- 6SNumsJX9cnlI3Aw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id F0802139B1;
- Wed,  7 Oct 2026 14:00:48 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id cP34H5BQxmqSLgAAD6G6ig:T3
- (envelope-from <andrea.cervesato@suse.de>); Wed, 07 Oct 2026 14:00:48 +0000
-From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Wed, 07 Oct 2026 16:00:46 +0200
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 995821000286
+ for <ltp@lists.linux.it>; Wed,  7 Oct 2026 16:18:01 +0200 (CEST)
+Received: by mail-qk2-x03.google.com with SMTP id
+ d75a77b69052e-53391df636aso10757491cf.0
+ for <ltp@lists.linux.it>; Wed, 07 Oct 2026 07:18:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20251104; t=1791382680; x=1791987480; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to:content-type;
+ bh=tE0aVFYQ2r9XxHRNCt9+XVKaibDi4uZ8jCjYnBfvsIM=;
+ b=iY4UpaWfpxZEksY1gmqocq8n2WgGnClSwoLvgd2biPrOhXP/VaEpbDp0L+0vKv/mmU
+ aOdIBczPbSSBK7mhD265kSqpYA59+2nKcA+Yxx3sq/yZPjawTqz81/1vbM1BczZvzEjo
+ ykjWyv7c+jQSTAT2MPiVYFJaiJikWFk0HBWIjuzW1tVf4h7Hq9ohs03wcy3A2pCN8Det
+ X2sOx8ZYCFLtFguQyCFGwX8qPcsSaGSMeevG1FWchoOlIZyX0hhfszpThcSeBkrWifDB
+ 5P6iMlq+RwrR41dql7fte65877WGfu/rtHKXThhgwSOiPNIj4iTD3dln4uub4oNYk05/
+ +clw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20260707; t=1791382680; x=1791987480;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to:content-type;
+ bh=tE0aVFYQ2r9XxHRNCt9+XVKaibDi4uZ8jCjYnBfvsIM=;
+ b=aBLc0MEqae6S3uMhUnseWxso8yVvQbyfU8h0PB9zE5jZHOYy4fsCaFnP/IANAVSZWO
+ HYyh9TnukVrTSk8kTNV1/LQkh0Uy6RsA3R8WAkd7uuue4KX6l4ENWQDrOOzx+uQ16kdL
+ URU9ZB/2RemT+W9qMW8o2WkTglV4AtXCd4jNlewkEwVew0bRmfbX5gIY6NTa1Olpvi8B
+ LVzPyoav2wbrmRNwaDBNXiix0jY91CL5IlCnc2rNqLzPlcLY7IukxIyBrjpCm8rLA3Z/
+ khalqVhOJKDtel5SpRMyavSz0fLHgbS5mZrToPTI9O8hyfoUnm3ROEsAlG5xjzTbYTAA
+ G4HQ==
+X-Gm-Message-State: AFuF++nUI3w+tr7tTy4lwEN3RBafKV/AvZi3S2cYgmVpQ1YyRPZ7OAUu
+ uXBb3GGyVCM9ZW9ipFcLZ/35baQ+q3jtidC/XEJiSVS2nTxd7/o4L9eJ
+X-Gm-Gg: AYBFou0efITbH71k+6x5osumBrGk6hAHH2D0If15YI/q2/g3oUv8pvXC63SHPwbPca1
+ f0FuoPtTvi96kl3JnDMshhRb6FBVrYl6dthYiQ2HfHm8ecwC2VuiBUGXuFddrdK6oCLOawyDPeR
+ hmDszTmnlvZVmJ/StM6r7iCnYIty6kvlgsHIXnAM3r42xFz5NGfYmh+YQsLKpzgpuqMlHgRWELI
+ f4Kai7a297Dy3CR+YaA0tIGj9bGTbAFxJi406QiOc4l6/reLuWx69qc0u/6q5Rv583kT6rhi9eJ
+ Bl1JYTI9bjYDPjY9S9J4q4q5/JPRcM6H2zKzDZvwxii1MgHKWOtLpjRlpla3HJkWtuTEm8rAXBF
+ +JUwdV0QhGcgmUWxY4OsTBY7T39Dv2fm8P+4R2WGLaabHOsCxu08muWSf3xLXrLNVOQL4uSiksg
+ /2NUUeBalFKsgNc7U4mL5IOEH6hmt8F0bDqYixG1BH41BPWkXQaEtd8XbNr2YzF/1+1FhTUwTma
+ NF+cYQLailyxpD1w7kZvFo+IsQmppFhpfod1o+3vDxfBxFuhXsXPqF7zg2m2SmLM2O1aveIGn0q
+ 3ekiYSpJJxFXIA==
+X-Received: by 2002:a05:622a:1a81:b0:535:70b4:9d9b with SMTP id
+ d75a77b69052e-5357564cd27mr41170811cf.77.1791382680000; 
+ Wed, 07 Oct 2026 07:18:00 -0700 (PDT)
+Received: from
+ runnervmmprz5.tornivwsjy1exiwt0otn1hacmb.cx.internal.cloudapp.net
+ ([135.237.130.154]) by smtp.gmail.com with ESMTPSA id
+ d75a77b69052e-5357219c0ecsm20854401cf.24.2026.10.07.07.17.59
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 07 Oct 2026 07:17:59 -0700 (PDT)
+From: linuxtestproject.agent@gmail.com
+To: Li Wang <li.wang@linux.dev>
+Date: Wed,  7 Oct 2026 14:17:58 +0000
+Message-ID: <20261007141758.9828-1-linuxtestproject.agent@gmail.com>
+X-Mailer: git-send-email 2.55.0
+In-Reply-To: <20261007105730.94492-2-li.wang@linux.dev>
+References: <20261007105730.94492-2-li.wang@linux.dev>
 MIME-Version: 1.0
-Message-Id: <20261007-fix_leftovers-v1-2-63a1e7acd0e6@suse.com>
-References: <20261007-fix_leftovers-v1-0-63a1e7acd0e6@suse.com>
-In-Reply-To: <20261007-fix_leftovers-v1-0-63a1e7acd0e6@suse.com>
-To: Linux Test Project <ltp@lists.linux.it>
-X-Mailer: b4 0.16.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1791381648; l=5252;
- i=andrea.cervesato@suse.com; s=20251210; h=from:subject:message-id;
- bh=EgD2hJzcNxVy8qQ/wgDs61F3/xkcQX697LkW9K7FShM=;
- b=wGUtc9NcpTndZRF3SquSrrRBOcMKoAabO9batS0phJme/ZImtWpN8WmK5Am/mCinx5JYXGks/
- FfHE4owr4S9DLPHgusMSXUS/aNYyCAE79CuRBDY4rtesGprTrSBuifg
-X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
- pk=zKY+6GCauOiuHNZ//d8PQ/UL4jFCTKbXrzXAOQSLevI=
-X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-0.996]; MIME_GOOD(-0.10)[text/plain];
- RCPT_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
- DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- TO_DN_ALL(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- FROM_HAS_DN(0.00)[]; MIME_TRACE(0.00)[0:+];
- FROM_EQ_ENVFROM(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,imap1.dmz-prg2.suse.org:helo]
 X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 2/3] tree: Remove needs_checkpoints leftovers
+Subject: Re: [LTP] tst_kconfig: load and unload kernel modules for CONFIG_*=m
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -114,140 +91,102 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Andrea Cervesato <andrea.cervesato@suse.com>
+Hi Li,
 
-Several tests declare .needs_checkpoints = 1 in struct tst_test,
-but do not make use of any checkpoint synchronization. Remove this
-leftover flag from those tests.
+On Wed, 7 Oct 2026, Li Wang wrote:
+> tst_kconfig: load and unload kernel modules for CONFIG_*=m
 
-Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+--- [PATCH 1/3] ---
+
+> diff --git a/lib/tst_kconfig.c b/lib/tst_kconfig.c
+> +	if (loaded_module_count < MAX_LOADED_MODULES)
+> +		loaded_modules[loaded_module_count++] = mod;
+
+High: This records config matches, not modules newly loaded by the test,
+so cleanup can remove an unused module that was already loaded beforehand.
+A read-only tst_kconfig_read() during a callback also adds unload targets
+without loading them. Separate config discovery from ownership tracking
+and unload only modules successfully added by this test.
+
+> diff --git a/lib/tst_test.c b/lib/tst_test.c
+> +	tst_kconfig_module_unload_all();
+
+High: Loading happens once in the library parent, but this cleanup runs
+in each test child. Setup aborts and killed children leak modules, later
+variants can lose modules removed by the first child, and cve-2026-46331
+cannot unload after dropping initial-user-namespace privileges. Move
+unloading to parent do_cleanup(), after all variants and resource teardown.
+
+> diff --git a/lib/tst_kconfig.c b/lib/tst_kconfig.c
+> +		tst_modprobe(loaded_modules[i], NULL);
+> +		const char *const argv[] = { "rmmod", loaded_modules[i - 1], NULL };
+
+Medium: modprobe also inserts dependencies that this list never records;
+with both initially absent, loading can-raw inserts can, but cleanup only
+removes can-raw and leaves can loaded. Track newly inserted dependencies
+relative to the initial module state and remove owned modules in
+dependency order.
+
+> diff --git a/include/tst_kconfig.h b/include/tst_kconfig.h
+> +/*
+> + * tst_kconfig_module_load() - Load kernel modules for CONFIG_*=m entries.
+
+Low: Both new public API comments use /* rather than /** and are omitted
+from the generated kernel-doc reference. Use kernel-doc comment openers
+for both declarations.
+
+--- [PATCH 2/3] ---
+
+> Map CONFIG_VSOCKETS and CONFIG_VSOCKETS_LOOPBACK to their kernel
+> modules (vsock, vsock_loopback).
+
+Low: The body only restates the mappings and does not explain the new
+config and privilege gates in cve-2025-21756. Explain the missing-loopback
+bind failure and why the test now requires root.
+
+> diff --git a/testcases/cve/cve-2025-21756.c b/testcases/cve/cve-2025-21756.c
+> +	.needs_root = 1,
+
+Low: Document this new root requirement in the test's high-level
+description, identifying module loading as the privileged operation.
+
+--- [PATCH 3/3] ---
+
+> diff --git a/testcases/kernel/syscalls/keyctl/keyctl29.c b/testcases/kernel/syscalls/keyctl/keyctl29.c
+> -	tst_modprobe("x509_key_parser", NULL);
+> diff --git a/testcases/kernel/syscalls/keyctl/keyctl30.c b/testcases/kernel/syscalls/keyctl/keyctl30.c
+> -	tst_modprobe("pkcs8_key_parser", NULL);
+
+Medium: With KCONFIG_SKIP_CHECK=1, tst_kconfig_check() returns before
+recording modules, leaving these removed loads without a replacement.
+When parser modules are installed but unloaded, keyctl29/keyctl30 now
+skip with EBADMSG instead of executing their checks. Preserve module
+setup independently of config validation, or retain the explicit loads.
+
+Verdict - Needs revision
+
+Pre-existing issue (not introduced by this series):
+
+Medium: sctphantom saves its SCTP sysctls in the test child's private
+tst_sys_conf list, but only the library parent calls tst_sys_conf_restore()
+and cannot see those saved values. Use parent-side .save_restore after
+module loading, or explicitly restore them in the test child's cleanup.
+
 ---
- testcases/cve/cve-2015-3290.c                             | 1 -
- testcases/kernel/containers/sysvipc/shmnstest.c           | 1 -
- testcases/kernel/containers/utsname/utsname04.c           | 1 -
- testcases/kernel/syscalls/exit_group/exit_group01.c       | 1 -
- testcases/kernel/syscalls/set_mempolicy/set_mempolicy01.c | 1 -
- testcases/kernel/syscalls/set_mempolicy/set_mempolicy02.c | 1 -
- testcases/kernel/syscalls/set_mempolicy/set_mempolicy03.c | 1 -
- testcases/kernel/syscalls/set_mempolicy/set_mempolicy04.c | 1 -
- testcases/kernel/uevents/uevent03.c                       | 1 -
- 9 files changed, 9 deletions(-)
+Note:
 
-diff --git a/testcases/cve/cve-2015-3290.c b/testcases/cve/cve-2015-3290.c
-index d44276860..021b5702d 100644
---- a/testcases/cve/cve-2015-3290.c
-+++ b/testcases/cve/cve-2015-3290.c
-@@ -499,7 +499,6 @@ static void run(void)
- static struct tst_test test = {
- 	.forks_child = 1,
- 	.needs_root = 1,
--	.needs_checkpoints = 1,
- 	.setup = setup,
- 	.runtime = 180,
- 	.test_all = run,
-diff --git a/testcases/kernel/containers/sysvipc/shmnstest.c b/testcases/kernel/containers/sysvipc/shmnstest.c
-index aa576eb08..de27cb585 100644
---- a/testcases/kernel/containers/sysvipc/shmnstest.c
-+++ b/testcases/kernel/containers/sysvipc/shmnstest.c
-@@ -66,7 +66,6 @@ static struct tst_test test = {
- 	.cleanup = cleanup,
- 	.forks_child = 1,
- 	.needs_root = 1,
--	.needs_checkpoints = 1,
- 	.options = (struct tst_option[]) {
- 		{ "m:", &str_op, "Test execution mode <clone|unshare|none>" },
- 		{},
-diff --git a/testcases/kernel/containers/utsname/utsname04.c b/testcases/kernel/containers/utsname/utsname04.c
-index 2bcf61156..c328543a7 100644
---- a/testcases/kernel/containers/utsname/utsname04.c
-+++ b/testcases/kernel/containers/utsname/utsname04.c
-@@ -53,7 +53,6 @@ static struct tst_test test = {
- 	.test_all = run,
- 	.needs_root = 1,
- 	.forks_child = 1,
--	.needs_checkpoints = 1,
- 	.options = (struct tst_option[]) {
- 		{ "m:", &str_op, "Test execution mode <clone|unshare>" },
- 		{},
-diff --git a/testcases/kernel/syscalls/exit_group/exit_group01.c b/testcases/kernel/syscalls/exit_group/exit_group01.c
-index 9005f4679..09bcccbea 100644
---- a/testcases/kernel/syscalls/exit_group/exit_group01.c
-+++ b/testcases/kernel/syscalls/exit_group/exit_group01.c
-@@ -121,5 +121,4 @@ static struct tst_test test = {
- 	.cleanup = cleanup,
- 	.test_all = run,
- 	.forks_child = 1,
--	.needs_checkpoints = 1,
- };
-diff --git a/testcases/kernel/syscalls/set_mempolicy/set_mempolicy01.c b/testcases/kernel/syscalls/set_mempolicy/set_mempolicy01.c
-index 07836cc69..9d93d21e6 100644
---- a/testcases/kernel/syscalls/set_mempolicy/set_mempolicy01.c
-+++ b/testcases/kernel/syscalls/set_mempolicy/set_mempolicy01.c
-@@ -118,7 +118,6 @@ static struct tst_test test = {
- 	.test = verify_set_mempolicy,
- 	.tcnt = 2,
- 	.forks_child = 1,
--	.needs_checkpoints = 1,
- 	.timeout = 600,
- 	.needs_kconfigs = (const char *const[]){
- 		"CONFIG_NUMA=y",
-diff --git a/testcases/kernel/syscalls/set_mempolicy/set_mempolicy02.c b/testcases/kernel/syscalls/set_mempolicy/set_mempolicy02.c
-index d98f81545..73a9f09b4 100644
---- a/testcases/kernel/syscalls/set_mempolicy/set_mempolicy02.c
-+++ b/testcases/kernel/syscalls/set_mempolicy/set_mempolicy02.c
-@@ -108,7 +108,6 @@ static struct tst_test test = {
- 	.test = verify_set_mempolicy,
- 	.tcnt = 2,
- 	.forks_child = 1,
--	.needs_checkpoints = 1,
- 	.needs_kconfigs = (const char *const[]){
- 		"CONFIG_NUMA=y",
- 		NULL
-diff --git a/testcases/kernel/syscalls/set_mempolicy/set_mempolicy03.c b/testcases/kernel/syscalls/set_mempolicy/set_mempolicy03.c
-index 43e0439d4..dd9fc53b3 100644
---- a/testcases/kernel/syscalls/set_mempolicy/set_mempolicy03.c
-+++ b/testcases/kernel/syscalls/set_mempolicy/set_mempolicy03.c
-@@ -102,7 +102,6 @@ static struct tst_test test = {
- 	.all_filesystems = 1,
- 	.mntpoint = MNTPOINT,
- 	.forks_child = 1,
--	.needs_checkpoints = 1,
- 	.needs_kconfigs = (const char *const[]){
- 		"CONFIG_NUMA=y",
- 		NULL
-diff --git a/testcases/kernel/syscalls/set_mempolicy/set_mempolicy04.c b/testcases/kernel/syscalls/set_mempolicy/set_mempolicy04.c
-index fa88385ce..55065f64a 100644
---- a/testcases/kernel/syscalls/set_mempolicy/set_mempolicy04.c
-+++ b/testcases/kernel/syscalls/set_mempolicy/set_mempolicy04.c
-@@ -133,7 +133,6 @@ static struct tst_test test = {
- 	.needs_root = 1,
- 	.all_filesystems = 1,
- 	.mntpoint = MNTPOINT,
--	.needs_checkpoints = 1,
- 	.needs_kconfigs = (const char *const[]){
- 		"CONFIG_NUMA=y",
- 		NULL
-diff --git a/testcases/kernel/uevents/uevent03.c b/testcases/kernel/uevents/uevent03.c
-index 8c8a464af..2993acb99 100644
---- a/testcases/kernel/uevents/uevent03.c
-+++ b/testcases/kernel/uevents/uevent03.c
-@@ -237,7 +237,6 @@ static void verify_uevent(void)
- static struct tst_test test = {
- 	.test_all = verify_uevent,
- 	.forks_child = 1,
--	.needs_checkpoints = 1,
- 	.needs_kconfigs = (const char *const[]) {
- 		"CONFIG_INPUT_UINPUT",
- 		NULL
+The agent can sometimes produce false positives although often its
+findings are genuine. If you find issues with the review, please
+comment this email or ignore the suggestions.
 
--- 
-2.51.0
-
+Regards,
+LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
