@@ -4,91 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3F886CA6007
-	for <ltp@archiver.kernel.org>; Thu,  8 Oct 2026 07:04:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E6129CA6007
+	for <ltp@archiver.kernel.org>; Thu,  8 Oct 2026 07:45:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1791443088; h=message-id :
- to : in-reply-to : date : subject : list-id : list-unsubscribe :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1791445526; h=to : date :
+ message-id : mime-version : subject : list-id : list-unsubscribe :
  list-archive : list-post : list-help : list-subscribe : from :
- reply-to : cc : mime-version : content-type :
- content-transfer-encoding : sender : from;
- bh=RWBj789HCSiUrKB8R4V2KKfYWo3b/dWdN6e1tu5kcT0=;
- b=U10R6+PdT/dWGJDVtcRWOa2XGqI2Bpahw1QORX9uo/4+XvMLogBEdUlIVC69RIlo+2OTN
- LSgtOKCDoP+fI+JmW4kzBvWi+WSVIRiBHiEy3QdImpwVLeN6A83QE/Bco96GTGOUGflDRd+
- x7sCFCdNeM7OxipcRNMIJvksNY0MsAg=
+ reply-to : content-type : content-transfer-encoding : sender : from;
+ bh=RlPk/fVPd5PYNSm1BKgXCbCKcebGL3YnNfDGIRtdWmI=;
+ b=ah7udOhB/8nts6dTfpxZl/VGdAbciN4hiBjFnsNNrxzmXmyxqcShzWmGlB87iCixyRIWN
+ ngZBCpbhAzh/nD2vAf76aDk5miq6926+qfVyI3anFHhRyBmp51y07GY3AZfxApI9kmMtlK0
+ Z9ZsV3tO2hg/B96+0ysg3j38dYbfs2s=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id AE6FC3E2F5E
-	for <ltp@archiver.kernel.org>; Thu,  8 Oct 2026 09:04:48 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 1A2D93DCD62
+	for <ltp@archiver.kernel.org>; Thu,  8 Oct 2026 09:45:26 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id AE0AF3CD635
- for <ltp@lists.linux.it>; Thu,  8 Oct 2026 09:04:27 +0200 (CEST)
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com
- [IPv6:2a00:1450:4864:20::434])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 421DF3DCD62
+ for <ltp@lists.linux.it>; Thu,  8 Oct 2026 09:45:03 +0200 (CEST)
+Received: from Atcsqr.andestech.com (atcsqr.andestech.com [220.128.198.184])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 821372005F6
- for <ltp@lists.linux.it>; Thu,  8 Oct 2026 09:04:27 +0200 (CEST)
-Received: by mail-wr1-x434.google.com with SMTP id
- ffacd0b85a97d-48af27fe287so1940917f8f.0
- for <ltp@lists.linux.it>; Thu, 08 Oct 2026 00:04:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1791443067; x=1792047867; darn=lists.linux.it;
- h=date:content-transfer-encoding:content-type:subject:in-reply-to:cc
- :to:from:message-id:from:to:cc:subject:date:message-id:reply-to
- :content-type; bh=nIYZV4wIwN0c0BMAf0MMCsM9Xjm5KWqPcbqWD98uGZ0=;
- b=bdSg9izU6FAj35rRQ4D2DZ8CYL6tRxYv1H71d+07bHeOisM+oE6j6QoohH2w4fqYLh
- V0aqLnHdbEcdJkq5f/OU8huI7j0YMqYTDeuMYChstWPOaKT5QHDdB8q8fY7FcQFpvvfJ
- 7lA9ApPx80YWGoNyhNYBlTH+qilDOWr9z66NhKmHeh+cqqNKf9UskMWAp2PHKLqlHbqv
- LGuH/2DrftlUIIwvnx4Z+ABqDQnhRpNzmb71/Gx94K1saEChETtq1DVofnJyWS5KcOl2
- kH1rr29bEXb7tNwvzTVgixI4SJnX9RuLxLnbEt3MqfT8saw8BlujdE7mymTe+kCMXYTZ
- 886A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20260707; t=1791443067; x=1792047867;
- h=date:content-transfer-encoding:content-type:subject:in-reply-to:cc
- :to:from:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject
- :date:message-id:reply-to:content-type;
- bh=nIYZV4wIwN0c0BMAf0MMCsM9Xjm5KWqPcbqWD98uGZ0=;
- b=xDzZggKX3iF9sve1eJXML4Bmvx1+Dt7Kg09m8x0XTcQOU/MCxfhTPu11GUgMOY8NmV
- i7MzvoLybxxJM4/NpUGBTYnkI5ZzNTOL3zyYl4+nxd+2B8MXelIlCbbDRsLSQyO5356C
- f3jSRtkTfS/9IZcCqD+JAYBt4rFw6s5CxMHWckqfxpSmXc4pp6EenlpawQ8ONav2Yt7u
- RAo64SGoijTQweXuMWM9O7uJp45YKCOLHdea7A9VA6eVThXj2x4SYv2d/atdBONRKc2o
- 5sOev+eeV8/2O5jQQGR8u5wFKmWBlcpi2qgLEHR8IUCcHAgSi0hF3WZR6muXK5Ga18fr
- FSxw==
-X-Gm-Message-State: AFq9FYL+2xuyblSuA0Zu2FBSdUzwHGra79vcn2KU41zSjDcES7K3In1K
- OejaCErZxFmVJsBwDlE8k9Z0sSM+Q0UIYDkcq5B/0GG/crPKNP3gfzTewomL/3C+G5ixx7g0l0D
- YN4uZMdc=
-X-Gm-Gg: AYBFou0TqUhZ10hWK8TBqw5D083SQYw9V3q2F5EOIhOusMmGtk/USoq7IU5mmubbA91
- 00d8Wamvf6TGThp6GBEtYvZWMvyTFUAfn7qWUiqBNg6uGZv1k7qtd2KmwyJu4iHfyKyeSNt0VUf
- t2rAvb0uegFQnFmQKym9ZsUmQLBSCnRf2A2ROkZjjpm/9KNlomH3MWFKPe2Q8/sYdbN7+/f9FVX
- KHnOY25z1IPXNp06GxVXoLs1H8TFrpDpXcOQaMo5Dyp2Ki2yiI0HnQwYUnI4y6FShLPAL/V3zI0
- CTAUZpBYpPDqjxcTBuBkC3wIMHMI4qvQR2J1B4PuBjOt/8sDLtcoXAUXfhaayFyljNOEIM1EHuU
- tFkOXgoIX/+doNh78rMBwPgo3FBG6MZrUbCx7g95uaIv1i2H8HVcP7Rj1jS+ddnWaIlhQ4/Gbn+
- L30n2o7ZsDZYIBZAvpx5mt3T/MF9wFPTSavFAou1w301NBQwegliEBvx3Eo+MNIoyhxAvyNuckx
- S0pPIjFF/1FuDLtfiUDDIgPPTN4g9Smf5Ys+IFGdeEbgMCHc9TZc7cL3mFHemLOSjzf6A66/voW
- Ng==
-X-Received: by 2002:a5d:5f09:0:b0:48b:4a2:8175 with SMTP id
- ffacd0b85a97d-48c7288cc87mr8369916f8f.43.1791443066935; 
- Thu, 08 Oct 2026 00:04:26 -0700 (PDT)
-Received: from localhost.localdomain
- (p200300ef2f310000926bd7eee21e6eee.dip0.t-ipconnect.de.
- [2003:ef:2f31:0:926b:d7ee:e21e:6eee])
- by smtp.gmail.com with ESMTPSA id
- ffacd0b85a97d-48c71d3d44asm9964639f8f.54.2026.10.08.00.04.26
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 08 Oct 2026 00:04:26 -0700 (PDT)
-Message-ID: <6ac7407a.b8bed76c.368598.0d44@mx.google.com>
-To: "Victor Cheng-Yen Yang" <cyyang772@andestech.com>
-In-Reply-To: <20261006020331.3791608-2-cyyang772@andestech.com>
-Date: Thu, 08 Oct 2026 07:04:26 +0000
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 642F6140074C
+ for <ltp@lists.linux.it>; Thu,  8 Oct 2026 09:44:59 +0200 (CEST)
+Received: from mail.andestech.com (atcpcs54.andestech.com [10.0.1.154])
+ by Atcsqr.andestech.com with ESMTPS id 6987ilPr051883
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
+ for <ltp@lists.linux.it>; Thu, 8 Oct 2026 15:44:47 +0800 (+08)
+ (envelope-from cyyang772@andestech.com)
+Received: from ATCPCS34.andestech.com (10.0.1.134) by atcpcs54.andestech.com
+ (10.0.1.154) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.2.2562.43; Thu, 8 Oct
+ 2026 15:44:47 +0800
+Received: from swlinux02.andestech.com (10.0.15.183) by ATCPCS34.andestech.com
+ (10.0.1.134) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.39; Thu, 8 Oct
+ 2026 15:44:47 +0800
+To: <ltp@lists.linux.it>
+Date: Thu, 8 Oct 2026 15:44:28 +0800
+Message-ID: <20261008074428.480353-1-cyyang772@andestech.com>
+X-Mailer: git-send-email 2.55.0
+MIME-Version: 1.0
+X-Originating-IP: [10.0.15.183]
+X-ClientProxiedBy: ATCPCS33.andestech.com (10.0.1.100) To
+ ATCPCS34.andestech.com (10.0.1.134)
+X-DKIM-Results: atcpcs54.andestech.com; dkim=none;
+X-DNSRBL: 
+X-MAIL: Atcsqr.andestech.com 6987ilPr051883
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/2] Update call sites of SAFE_READ() to use the
- enum values
+Subject: [LTP] [PATCH] Update call sites of SAFE_WRITE() to use the enum
+ values
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -100,21 +70,383 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Cc: ltp@lists.linux.it
-MIME-Version: 1.0
+From: Victor Cheng-Yen Yang via ltp <ltp@lists.linux.it>
+Reply-To: Victor Cheng-Yen Yang <cyyang772@andestech.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Reviewed-by: Andrea Cervesato <andrea.cervesato@suse.com>
+From: Victor Cheng-Yen Yang <cyyang772@andestech.com>
 
---
-Andrea Cervesato
-SUSE QE Automation Engineer Linux
-andrea.cervesato@suse.com
+SAFE_WRITE_ANY (0) and SAFE_WRITE_ALL (1) exist so that the len_strict
+parameter is not a nameless boolean. Replace the remaining magic numbers
+in the tests so that the intent of every call site is visible without
+looking up the prototype.
+
+The conversion is mechanical: 0 becomes SAFE_WRITE_ANY and 1 becomes
+SAFE_WRITE_ALL. No functional change.
+
+Signed-off-by: Victor Cheng-Yen Yang <cyyang772@andestech.com>
+---
+ testcases/cve/refluxfs.c                            | 2 +-
+ testcases/kernel/fs/fsplough/fsplough.c             | 2 +-
+ testcases/kernel/io/ltp-aiodio/aiocp.c              | 2 +-
+ testcases/kernel/mem/hugetlb/hugemmap/hugemmap11.c  | 2 +-
+ testcases/kernel/mem/mmapstress/mmapstress01.c      | 2 +-
+ testcases/kernel/syscalls/cachestat/cachestat01.c   | 2 +-
+ testcases/kernel/syscalls/cachestat/cachestat02.c   | 2 +-
+ testcases/kernel/syscalls/epoll_wait/epoll_wait07.c | 4 ++--
+ testcases/kernel/syscalls/eventfd/eventfd02.c       | 4 ++--
+ testcases/kernel/syscalls/eventfd/eventfd03.c       | 2 +-
+ testcases/kernel/syscalls/eventfd/eventfd04.c       | 4 ++--
+ testcases/kernel/syscalls/eventfd/eventfd05.c       | 2 +-
+ testcases/kernel/syscalls/eventfd/eventfd06.c       | 2 +-
+ testcases/kernel/syscalls/eventfd2/eventfd2_03.c    | 2 +-
+ testcases/kernel/syscalls/fanotify/fanotify25.c     | 2 +-
+ testcases/kernel/syscalls/ioctl/ioctl_ficlone01.c   | 2 +-
+ testcases/kernel/syscalls/madvise/madvise11.c       | 4 ++--
+ testcases/kernel/syscalls/mount/mount03.c           | 2 +-
+ testcases/kernel/syscalls/open/open12.c             | 4 ++--
+ testcases/kernel/syscalls/open/open14.c             | 2 +-
+ testcases/kernel/syscalls/pipe/pipe15.c             | 4 ++--
+ testcases/kernel/syscalls/splice/splice09.c         | 2 +-
+ 22 files changed, 28 insertions(+), 28 deletions(-)
+
+diff --git a/testcases/cve/refluxfs.c b/testcases/cve/refluxfs.c
+index bdf5d32c9..384082861 100644
+--- a/testcases/cve/refluxfs.c
++++ b/testcases/cve/refluxfs.c
+@@ -109,7 +109,7 @@ static void setup(void)
+ 	SAFE_CHMOD(WORKDIR, 0777);
+ 
+ 	target_fd = SAFE_OPEN(TARGET, O_RDWR | O_CREAT | O_TRUNC, 0644);
+-	SAFE_WRITE(1, target_fd, tbuf, blksize);
++	SAFE_WRITE(SAFE_WRITE_ALL, target_fd, tbuf, blksize);
+ 	SAFE_FSYNC(target_fd);
+ 	SAFE_CLOSE(target_fd);
+ 
+diff --git a/testcases/kernel/fs/fsplough/fsplough.c b/testcases/kernel/fs/fsplough/fsplough.c
+index 590c7a734..2b789b9e8 100644
+--- a/testcases/kernel/fs/fsplough/fsplough.c
++++ b/testcases/kernel/fs/fsplough/fsplough.c
+@@ -94,7 +94,7 @@ static void update_filedata(const void *buf, size_t offset, size_t size)
+ static void do_write(void *buf, size_t offset, size_t size)
+ {
+ 	SAFE_LSEEK(write_fd, offset, SEEK_SET);
+-	SAFE_WRITE(1, write_fd, buf, size);
++	SAFE_WRITE(SAFE_WRITE_ALL, write_fd, buf, size);
+ }
+ 
+ static void do_pwrite(void *buf, size_t offset, size_t size)
+diff --git a/testcases/kernel/io/ltp-aiodio/aiocp.c b/testcases/kernel/io/ltp-aiodio/aiocp.c
+index adfee63b7..5742c24d8 100644
+--- a/testcases/kernel/io/ltp-aiodio/aiocp.c
++++ b/testcases/kernel/io/ltp-aiodio/aiocp.c
+@@ -58,7 +58,7 @@ static void fill_with_rand_data(int fd, long long size)
+ 	long long i = size;
+ 
+ 	while (i > 0) {
+-		SAFE_WRITE(1, fd, tst_rand_data,
++		SAFE_WRITE(SAFE_WRITE_ALL, fd, tst_rand_data,
+ 			   MIN((long long)tst_rand_data_len, i));
+ 		i -= tst_rand_data_len;
+ 	}
+diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap11.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap11.c
+index fa25251e2..5c0d1f7e7 100644
+--- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap11.c
++++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap11.c
+@@ -37,7 +37,7 @@ static void run_test(void)
+ 	p = SAFE_MMAP(NULL, hpage_size, PROT_READ|PROT_WRITE, MAP_PRIVATE, fd, 0);
+ 	memcpy(p, P0, 8);
+ 
+-	SAFE_WRITE(1, nfd, p, IOSZ);
++	SAFE_WRITE(SAFE_WRITE_ALL, nfd, p, IOSZ);
+ 	SAFE_LSEEK(nfd, 0, SEEK_SET);
+ 
+ 	SAFE_READ(SAFE_READ_ALL, nfd, buf, IOSZ);
+diff --git a/testcases/kernel/mem/mmapstress/mmapstress01.c b/testcases/kernel/mem/mmapstress/mmapstress01.c
+index bdf8425c4..36635c25b 100644
+--- a/testcases/kernel/mem/mmapstress/mmapstress01.c
++++ b/testcases/kernel/mem/mmapstress/mmapstress01.c
+@@ -291,7 +291,7 @@ static void run(void)
+ 	SAFE_LSEEK(fd, (off_t)sparseoffset, SEEK_SET);
+ 	for (bytes_left = filesize; bytes_left; bytes_left -= c) {
+ 		write_cnt = MIN((long long)pagesize, (long long)bytes_left);
+-		c = SAFE_WRITE(1, fd, buf, write_cnt);
++		c = SAFE_WRITE(SAFE_WRITE_ALL, fd, buf, write_cnt);
+ 	}
+ 	SAFE_CLOSE(fd);
+ 
+diff --git a/testcases/kernel/syscalls/cachestat/cachestat01.c b/testcases/kernel/syscalls/cachestat/cachestat01.c
+index 0663f4099..4402eab27 100644
+--- a/testcases/kernel/syscalls/cachestat/cachestat01.c
++++ b/testcases/kernel/syscalls/cachestat/cachestat01.c
+@@ -39,7 +39,7 @@ static void test_cached_pages(const unsigned int use_sync, const int num_pages)
+ 	fd = SAFE_OPEN(FILENAME, O_RDWR | O_CREAT, 0600);
+ 
+ 	for (int i = 0; i < num_pages; i++)
+-		SAFE_WRITE(0, fd, page_data, page_size);
++		SAFE_WRITE(SAFE_WRITE_ANY, fd, page_data, page_size);
+ 
+ 	if (use_sync)
+ 		SAFE_FSYNC(fd);
+diff --git a/testcases/kernel/syscalls/cachestat/cachestat02.c b/testcases/kernel/syscalls/cachestat/cachestat02.c
+index d6505c4a4..258247940 100644
+--- a/testcases/kernel/syscalls/cachestat/cachestat02.c
++++ b/testcases/kernel/syscalls/cachestat/cachestat02.c
+@@ -43,7 +43,7 @@ static void test_cached_pages(const int num_pages)
+ 
+ 	SAFE_FTRUNCATE(fd, file_size);
+ 	for (int i = 0; i < num_pages; i++)
+-		SAFE_WRITE(0, fd, page_data, page_size);
++		SAFE_WRITE(SAFE_WRITE_ANY, fd, page_data, page_size);
+ 
+ 	memset(cs, 0xff, sizeof(*cs));
+ 
+diff --git a/testcases/kernel/syscalls/epoll_wait/epoll_wait07.c b/testcases/kernel/syscalls/epoll_wait/epoll_wait07.c
+index 07ba0e368..1e5225f50 100644
+--- a/testcases/kernel/syscalls/epoll_wait/epoll_wait07.c
++++ b/testcases/kernel/syscalls/epoll_wait/epoll_wait07.c
+@@ -47,7 +47,7 @@ static void run(void)
+ 
+ 	tst_res(TINFO, "Write channel for the 1st time. EPOLLIN expected");
+ 
+-	SAFE_WRITE(0, fds[1], &buff, 1);
++	SAFE_WRITE(SAFE_WRITE_ANY, fds[1], &buff, 1);
+ 	TST_EXP_EQ_LI(SAFE_EPOLL_WAIT(epfd, &evt_receive, 10, 0), 1);
+ 	TST_EXP_EQ_LI(evt_receive.events & EPOLLIN, EPOLLIN);
+ 	TST_EXP_EQ_LI(evt_receive.data.fd, fds[0]);
+@@ -57,7 +57,7 @@ static void run(void)
+ 
+ 	tst_res(TINFO, "Write channel for the 2nd time. No events expected");
+ 
+-	SAFE_WRITE(0, fds[1], &buff, 1);
++	SAFE_WRITE(SAFE_WRITE_ANY, fds[1], &buff, 1);
+ 	TST_EXP_EQ_LI(SAFE_EPOLL_WAIT(epfd, &evt_receive, 10, 0), 0);
+ 
+ 	SAFE_CLOSE(epfd);
+diff --git a/testcases/kernel/syscalls/eventfd/eventfd02.c b/testcases/kernel/syscalls/eventfd/eventfd02.c
+index 88b319ae5..ac19df659 100644
+--- a/testcases/kernel/syscalls/eventfd/eventfd02.c
++++ b/testcases/kernel/syscalls/eventfd/eventfd02.c
+@@ -27,12 +27,12 @@ static void run(void)
+ 
+ 	fd = TST_EXP_FD(eventfd(0, EFD_NONBLOCK));
+ 
+-	SAFE_WRITE(0, fd, &val, sizeof(val));
++	SAFE_WRITE(SAFE_WRITE_ANY, fd, &val, sizeof(val));
+ 	SAFE_READ(SAFE_READ_ANY, fd, &buf, sizeof(buf));
+ 	TST_EXP_EQ_LI(buf, val);
+ 
+ 	val = UINT64_MAX - 1;
+-	SAFE_WRITE(0, fd, &val, sizeof(val));
++	SAFE_WRITE(SAFE_WRITE_ANY, fd, &val, sizeof(val));
+ 	TST_EXP_FAIL(write(fd, &val, sizeof(val)), EAGAIN);
+ 	TST_EXP_FAIL(write(fd, &invalid, sizeof(invalid)), EINVAL);
+ 
+diff --git a/testcases/kernel/syscalls/eventfd/eventfd03.c b/testcases/kernel/syscalls/eventfd/eventfd03.c
+index b1e0dcc79..6abdd9d72 100644
+--- a/testcases/kernel/syscalls/eventfd/eventfd03.c
++++ b/testcases/kernel/syscalls/eventfd/eventfd03.c
+@@ -29,7 +29,7 @@ static void run(void)
+ 	FD_ZERO(&readfds);
+ 	FD_SET(fd, &readfds);
+ 
+-	SAFE_WRITE(0, fd, &non_zero, sizeof(non_zero));
++	SAFE_WRITE(SAFE_WRITE_ANY, fd, &non_zero, sizeof(non_zero));
+ 	TEST(select(fd + 1, &readfds, NULL, NULL, &timeout));
+ 	if (TST_RET == -1)
+ 		tst_brk(TBROK | TERRNO, "select");
+diff --git a/testcases/kernel/syscalls/eventfd/eventfd04.c b/testcases/kernel/syscalls/eventfd/eventfd04.c
+index 4d255bac6..f5fe2a9d1 100644
+--- a/testcases/kernel/syscalls/eventfd/eventfd04.c
++++ b/testcases/kernel/syscalls/eventfd/eventfd04.c
+@@ -30,7 +30,7 @@ static void run(void)
+ 	FD_ZERO(&writefds);
+ 	FD_SET(fd, &writefds);
+ 
+-	SAFE_WRITE(0, fd, &non_max, sizeof(non_max));
++	SAFE_WRITE(SAFE_WRITE_ANY, fd, &non_max, sizeof(non_max));
+ 	TEST(select(fd + 1, NULL, &writefds, NULL, &timeout));
+ 	if (TST_RET == -1)
+ 		tst_brk(TBROK | TERRNO, "select");
+@@ -38,7 +38,7 @@ static void run(void)
+ 	TST_EXP_EQ_LI(FD_ISSET(fd, &writefds), 1);
+ 
+ 	SAFE_READ(SAFE_READ_ANY, fd, &val, sizeof(val));
+-	SAFE_WRITE(0, fd, &max, sizeof(max));
++	SAFE_WRITE(SAFE_WRITE_ANY, fd, &max, sizeof(max));
+ 
+ 	TEST(select(fd + 1, NULL, &writefds, NULL, &timeout));
+ 	if (TST_RET == -1)
+diff --git a/testcases/kernel/syscalls/eventfd/eventfd05.c b/testcases/kernel/syscalls/eventfd/eventfd05.c
+index 81310718d..a82120bcd 100644
+--- a/testcases/kernel/syscalls/eventfd/eventfd05.c
++++ b/testcases/kernel/syscalls/eventfd/eventfd05.c
+@@ -23,7 +23,7 @@ static void run(void)
+ 	fd = TST_EXP_FD(eventfd(0, EFD_NONBLOCK));
+ 
+ 	if (!SAFE_FORK()) {
+-		SAFE_WRITE(0, fd, &to_parent, sizeof(to_parent));
++		SAFE_WRITE(SAFE_WRITE_ANY, fd, &to_parent, sizeof(to_parent));
+ 		exit(0);
+ 	}
+ 
+diff --git a/testcases/kernel/syscalls/eventfd/eventfd06.c b/testcases/kernel/syscalls/eventfd/eventfd06.c
+index 8ee0dd229..97f82f808 100644
+--- a/testcases/kernel/syscalls/eventfd/eventfd06.c
++++ b/testcases/kernel/syscalls/eventfd/eventfd06.c
+@@ -80,7 +80,7 @@ static void clear_counter(void)
+ 	if (TST_RET == -1 && TST_ERR != EAGAIN)
+ 		tst_brk(TBROK | TERRNO, "read");
+ 
+-	SAFE_WRITE(0, evfd, &max, sizeof(max));
++	SAFE_WRITE(SAFE_WRITE_ANY, evfd, &max, sizeof(max));
+ }
+ 
+ static void test_select(void)
+diff --git a/testcases/kernel/syscalls/eventfd2/eventfd2_03.c b/testcases/kernel/syscalls/eventfd2/eventfd2_03.c
+index b218385ff..a8d8f0a52 100644
+--- a/testcases/kernel/syscalls/eventfd2/eventfd2_03.c
++++ b/testcases/kernel/syscalls/eventfd2/eventfd2_03.c
+@@ -26,7 +26,7 @@ static void xsem_post(int fd, int count)
+ {
+ 	u_int64_t cntr = count;
+ 
+-	SAFE_WRITE(0, fd, &cntr, sizeof(cntr));
++	SAFE_WRITE(SAFE_WRITE_ANY, fd, &cntr, sizeof(cntr));
+ }
+ 
+ static void sem_player(int fd1, int fd2)
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify25.c b/testcases/kernel/syscalls/fanotify/fanotify25.c
+index 733270ad8..713ee4ac7 100644
+--- a/testcases/kernel/syscalls/fanotify/fanotify25.c
++++ b/testcases/kernel/syscalls/fanotify/fanotify25.c
+@@ -62,7 +62,7 @@ static void do_child(void)
+ 
+ 	for (i = 0, events = 0; trace_cmds[i].filename; i++) {
+ 		fd = SAFE_OPEN(trace_cmds[i].filename, O_WRONLY, 0644);
+-		SAFE_WRITE(1, fd, trace_cmds[i].wdata,
++		SAFE_WRITE(SAFE_WRITE_ALL, fd, trace_cmds[i].wdata,
+ 			strlen(trace_cmds[i].wdata));
+ 		SAFE_CLOSE(fd);
+ 
+diff --git a/testcases/kernel/syscalls/ioctl/ioctl_ficlone01.c b/testcases/kernel/syscalls/ioctl/ioctl_ficlone01.c
+index 97a637bff..d8dc361db 100644
+--- a/testcases/kernel/syscalls/ioctl/ioctl_ficlone01.c
++++ b/testcases/kernel/syscalls/ioctl/ioctl_ficlone01.c
+@@ -40,7 +40,7 @@ static void run(void)
+ 
+ 	tst_res(TINFO, "Writing data inside src file");
+ 
+-	SAFE_WRITE(1, src_fd, FILEDATA, FILESIZE);
++	SAFE_WRITE(SAFE_WRITE_ALL, src_fd, FILEDATA, FILESIZE);
+ 	SAFE_FSYNC(src_fd);
+ 
+ 	TST_EXP_PASS(ioctl(dst_fd, FICLONE, src_fd));
+diff --git a/testcases/kernel/syscalls/madvise/madvise11.c b/testcases/kernel/syscalls/madvise/madvise11.c
+index c19d67127..6c778f8ba 100644
+--- a/testcases/kernel/syscalls/madvise/madvise11.c
++++ b/testcases/kernel/syscalls/madvise/madvise11.c
+@@ -287,7 +287,7 @@ static void unpoison_this_pfn(unsigned long pfn, int fd)
+ 	char pfn_str[19];
+ 
+ 	snprintf(pfn_str, sizeof(pfn_str), "0x%lx", pfn);
+-	SAFE_WRITE(0, fd, pfn_str, strlen(pfn_str));
++	SAFE_WRITE(SAFE_WRITE_ANY, fd, pfn_str, strlen(pfn_str));
+ }
+ 
+ /* Find and open the <debugfs>/hwpoison/unpoison-pfn special file */
+@@ -382,7 +382,7 @@ static void write_beginning_tag_to_kmsg(void)
+ 	snprintf(beginning_tag, sizeof(beginning_tag),
+ 		 "Soft-offlining pages test starting (pid: %ld)",
+ 		 (long)getpid());
+-	SAFE_WRITE(1, fd, beginning_tag, strlen(beginning_tag));
++	SAFE_WRITE(SAFE_WRITE_ALL, fd, beginning_tag, strlen(beginning_tag));
+ 	SAFE_CLOSE(fd);
+ }
+ 
+diff --git a/testcases/kernel/syscalls/mount/mount03.c b/testcases/kernel/syscalls/mount/mount03.c
+index 1cb6f47f8..a901792be 100644
+--- a/testcases/kernel/syscalls/mount/mount03.c
++++ b/testcases/kernel/syscalls/mount/mount03.c
+@@ -110,7 +110,7 @@ static void test_file_dir_noatime(int update_fatime, int update_datime)
+ 	if (access(dir, F_OK) == -1 && errno == ENOENT)
+ 		SAFE_MKDIR(dir, 0700);
+ 
+-	SAFE_WRITE(1, otfd, TEST_STR, strlen(TEST_STR));
++	SAFE_WRITE(SAFE_WRITE_ALL, otfd, TEST_STR, strlen(TEST_STR));
+ 	SAFE_FSTAT(otfd, &st);
+ 	atime = st.st_atime;
+ 
+diff --git a/testcases/kernel/syscalls/open/open12.c b/testcases/kernel/syscalls/open/open12.c
+index ff3f8ebb5..809a717bd 100644
+--- a/testcases/kernel/syscalls/open/open12.c
++++ b/testcases/kernel/syscalls/open/open12.c
+@@ -61,7 +61,7 @@ static void test_append(void)
+ 
+ 	SAFE_FSTAT(fd, &statbuf);
+ 	len1 = strlen(TEST_FILE);
+-	SAFE_WRITE(1, fd, TEST_FILE, len1);
++	SAFE_WRITE(SAFE_WRITE_ALL, fd, TEST_FILE, len1);
+ 	len2 = SAFE_LSEEK(fd, 0, SEEK_CUR);
+ 	SAFE_CLOSE(fd);
+ 	len1 += statbuf.st_size;
+@@ -161,7 +161,7 @@ static void test_largefile(void)
+ 		return;
+ 	}
+ 
+-	SAFE_WRITE(1, fd, LARGE_FILE, strlen(LARGE_FILE));
++	SAFE_WRITE(SAFE_WRITE_ALL, fd, LARGE_FILE, strlen(LARGE_FILE));
+ 	SAFE_CLOSE(fd);
+ 	fd = open(LARGE_FILE, O_LARGEFILE | O_RDONLY, 0644);
+ 
+diff --git a/testcases/kernel/syscalls/open/open14.c b/testcases/kernel/syscalls/open/open14.c
+index 7d3a3d55e..db2771a78 100644
+--- a/testcases/kernel/syscalls/open/open14.c
++++ b/testcases/kernel/syscalls/open/open14.c
+@@ -51,7 +51,7 @@ static void write_file(int fd)
+ 	int i;
+ 
+ 	for (i = 0; i < blocks_num; ++i)
+-		SAFE_WRITE(1, fd, buf, size);
++		SAFE_WRITE(SAFE_WRITE_ALL, fd, buf, size);
+ }
+ 
+ static void test01(void)
+diff --git a/testcases/kernel/syscalls/pipe/pipe15.c b/testcases/kernel/syscalls/pipe/pipe15.c
+index b7a87ec3a..cf2fa01b8 100644
+--- a/testcases/kernel/syscalls/pipe/pipe15.c
++++ b/testcases/kernel/syscalls/pipe/pipe15.c
+@@ -30,9 +30,9 @@ static void run(void)
+ 	const int buffer_size = SAFE_FCNTL(pipe[1], F_GETPIPE_SZ);
+ 
+ 	tst_res(TINFO, "Soft-limited buffer size: %d bytes", buffer_size);
+-	SAFE_WRITE(1, pipe[1], buffer, buffer_size);
++	SAFE_WRITE(SAFE_WRITE_ALL, pipe[1], buffer, buffer_size);
+ 	SAFE_READ(SAFE_READ_ALL, pipe[0], buffer, buffer_size - 1);
+-	SAFE_WRITE(1, pipe[1], buffer, 1);
++	SAFE_WRITE(SAFE_WRITE_ALL, pipe[1], buffer, 1);
+ 	tst_res(TPASS, "Pipe operation did not block");
+ 
+ 	SAFE_READ(SAFE_READ_ALL, pipe[0], buffer, 2);
+diff --git a/testcases/kernel/syscalls/splice/splice09.c b/testcases/kernel/syscalls/splice/splice09.c
+index 8863a0134..d4404edee 100644
+--- a/testcases/kernel/syscalls/splice/splice09.c
++++ b/testcases/kernel/syscalls/splice/splice09.c
+@@ -32,7 +32,7 @@ static void verify_splice(unsigned int n)
+ 	dev_fd = SAFE_OPEN(test_devices[n], O_WRONLY);
+ 
+ 	SAFE_PIPE(pipefd);
+-	SAFE_WRITE(1, pipefd[1], buf, sizeof(buf));
++	SAFE_WRITE(SAFE_WRITE_ALL, pipefd[1], buf, sizeof(buf));
+ 
+ 	TST_EXP_POSITIVE(splice(pipefd[0], NULL, dev_fd, NULL, sizeof(buf), 0));
+ 
+-- 
+2.55.0
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
