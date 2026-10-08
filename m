@@ -4,50 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CD401CA6007
-	for <ltp@archiver.kernel.org>; Thu,  8 Oct 2026 05:10:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A70A8CA6007
+	for <ltp@archiver.kernel.org>; Thu,  8 Oct 2026 05:22:16 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 883793E2C3C
-	for <ltp@archiver.kernel.org>; Thu,  8 Oct 2026 07:10:30 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id EA2F93E2C46
+	for <ltp@archiver.kernel.org>; Thu,  8 Oct 2026 07:22:14 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id BAADF3C5AD6
- for <ltp@lists.linux.it>; Thu,  8 Oct 2026 07:10:14 +0200 (CEST)
-Received: from mta0.migadu.com (out-42.mta0.migadu.com
- [IPv6:2001:41d0:1004:224b::2a])
+ by picard.linux.it (Postfix) with ESMTPS id 0CCFE3E1456
+ for <ltp@lists.linux.it>; Thu,  8 Oct 2026 07:21:56 +0200 (CEST)
+Received: from mta1.migadu.com (out-211.mta1.migadu.com
+ [IPv6:2001:41d0:203:375::d3])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 0A62F60057F
- for <ltp@lists.linux.it>; Thu,  8 Oct 2026 07:10:13 +0200 (CEST)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 86CED6009F3
+ for <ltp@lists.linux.it>; Thu,  8 Oct 2026 07:21:55 +0200 (CEST)
 X-Envelope-To: ltp@lists.linux.it
-DKIM-Signature: a=rsa-sha256; bh=rl4r3ffIw/v3r2AsMirOe/1yARTSGEIpsn2tEf7Pns0=; 
+DKIM-Signature: a=rsa-sha256; bh=dY0/jTaIcI0RjrReRWwzfFea0DIuOZAUj1nqLcCtJpc=; 
  c=simple/simple; d=linux.dev;
  h=from:to:subject:date:message-id:mime-version:content-type; s=key1;
- t=1791436212; v=1; x=1792041012;
- b=eaDdvCje4GcOWi4flJe0SMqaWOfBQ607SuLaGDo+49BgNzJ3DsYTidt+8s3CjzHL4vvCG35G
- GAKyGchV2BwHw9TeqA1C18hmefuT/PozASvst+INbTNgbcQgSKvU/tjSvqXk9INYi29a/Ts/c/j
- qkYGFRfLPqwZKJ5qnIvSxY+I=
+ t=1791436914; v=1; x=1792041714;
+ b=AOfAP6qX0MQSxVFaWeJoYAvHcFJWZlk2IGxgJafVLBkTrUHi1WYCOVE4C7N0hSaWvRXvdCXy
+ W5SskUNM10TJZeq1dJuG3plszf/YqK/HGza3xwP1s/C71k65db/irGXTWuwKo8j5LvzORJ6/urK
+ 7FJ/icY0dL4rjQZrn3OYgkVY=
 X-Envelope-To: ltp@lists.linux.it
-Received: by smtp.migadu.com with ESMTPS id 7188bd766941ff3a;
- Thu, 08 Oct 2026 05:10:11 +0000
-X-Mizu-Trace-ID: 7188bd766941ff3a
+Received: by mta11.migadu.com with ESMTPS id bc85ff21fcc589f5;
+ Thu, 08 Oct 2026 05:21:54 +0000
+X-Mizu-Trace-ID: bc85ff21fcc589f5
 X-Migadu-Flow: FLOW_OUT
-Date: Thu, 8 Oct 2026 13:09:58 +0800
 From: Li Wang <li.wang@linux.dev>
-To: linuxtestproject.agent@gmail.com
-Message-ID: <asclptsE0nKmz2eq@linux.dev>
-Mail-Followup-To: linuxtestproject.agent@gmail.com, ltp@lists.linux.it
-References: <20261007105730.94492-2-li.wang@linux.dev>
- <20261007141758.9828-1-linuxtestproject.agent@gmail.com>
+To: ltp@lists.linux.it
+Date: Thu,  8 Oct 2026 13:21:37 +0800
+Message-ID: <20261008052141.129763-1-li.wang@linux.dev>
+X-Mailer: git-send-email 2.56.0
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20261007141758.9828-1-linuxtestproject.agent@gmail.com>
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] tst_kconfig: load and unload kernel modules for CONFIG_*=m
+Subject: [LTP] [Patch v2 0/4] tst_kconfig: automatic module load/unload for
+ CONFIG_*=m
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -59,125 +57,49 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Wed, Oct 07, 2026 at 02:17:58PM +0000, linuxtestproject.agent@gmail.com wrote:
-> Hi Li,
-> 
-> On Wed, 7 Oct 2026, Li Wang wrote:
-> > tst_kconfig: load and unload kernel modules for CONFIG_*=m
-> 
-> --- [PATCH 1/3] ---
-> 
-> > diff --git a/lib/tst_kconfig.c b/lib/tst_kconfig.c
-> > +	if (loaded_module_count < MAX_LOADED_MODULES)
-> > +		loaded_modules[loaded_module_count++] = mod;
-> 
-> High: This records config matches, not modules newly loaded by the test,
-> so cleanup can remove an unused module that was already loaded beforehand.
-> A read-only tst_kconfig_read() during a callback also adds unload targets
-> without loading them. Separate config discovery from ownership tracking
-> and unload only modules successfully added by this test.
+Tests that depend on a config set to =m currently load the module
+themselves, and may fail with misleading errors when it is missing,
+e.g. bind() returning EADDRNOTAVAIL for AF_VSOCK without vsock_loopback.
 
-Good point, will fix it in v2.
+This series makes tst_kconfig record the module for every
+config_module_maps[] entry seen as =m, load them once the kernel
+config check passes, and unload them at cleanup time.
 
-> 
-> > diff --git a/lib/tst_test.c b/lib/tst_test.c
-> > +	tst_kconfig_module_unload_all();
-> 
-> High: Loading happens once in the library parent, but this cleanup runs
-> in each test child. Setup aborts and killed children leak modules, later
-> variants can lose modules removed by the first child, and cve-2026-46331
-> cannot unload after dropping initial-user-namespace privileges. Move
-> unloading to parent do_cleanup(), after all variants and resource teardown.
+Changes in v2:
 
-Agreed.
+- Add tst_module_is_loaded() helper.
+- Only load/unload modules that are not already loaded.
+- Skip automatic loading when KCONFIG_SKIP_CHECK=1, keeping the
+  semantics consistent with skipping the config check.
+- Document the KCONFIG_SKIP_CHECK=1 behaviour for keyctl29/keyctl30
+  and the vsock/vsock_loopback mapping.
 
-> 
-> > diff --git a/lib/tst_kconfig.c b/lib/tst_kconfig.c
-> > +		tst_modprobe(loaded_modules[i], NULL);
-> > +		const char *const argv[] = { "rmmod", loaded_modules[i - 1], NULL };
-> 
-> Medium: modprobe also inserts dependencies that this list never records;
-> with both initially absent, loading can-raw inserts can, but cleanup only
-> removes can-raw and leaves can loaded. Track newly inserted dependencies
-> relative to the initial module state and remove owned modules in
-> dependency order.
-> 
-> > diff --git a/include/tst_kconfig.h b/include/tst_kconfig.h
-> > +/*
-> > + * tst_kconfig_module_load() - Load kernel modules for CONFIG_*=m entries.
-> 
-> Low: Both new public API comments use /* rather than /** and are omitted
-> from the generated kernel-doc reference. Use kernel-doc comment openers
-> for both declarations.
+Li Wang (4):
+  lib: add module is loaded check
+  tst_kconfig: load and unload kernel modules for CONFIG_*=m
+  tst_kconfig: add module mappings for vsock/vsock_loopback
+  testcases: drop manual tst_modprobe() now handled by tst_kconfig
 
-+1
-
-> 
-> --- [PATCH 2/3] ---
-> 
-> > Map CONFIG_VSOCKETS and CONFIG_VSOCKETS_LOOPBACK to their kernel
-> > modules (vsock, vsock_loopback).
-> 
-> Low: The body only restates the mappings and does not explain the new
-> config and privilege gates in cve-2025-21756. Explain the missing-loopback
-> bind failure and why the test now requires root.
-
-Will add the note in v2.
-
-> 
-> > diff --git a/testcases/cve/cve-2025-21756.c b/testcases/cve/cve-2025-21756.c
-> > +	.needs_root = 1,
-> 
-> Low: Document this new root requirement in the test's high-level
-> description, identifying module loading as the privileged operation.
-
-Sure.
-
-> 
-> --- [PATCH 3/3] ---
-> 
-> > diff --git a/testcases/kernel/syscalls/keyctl/keyctl29.c b/testcases/kernel/syscalls/keyctl/keyctl29.c
-> > -	tst_modprobe("x509_key_parser", NULL);
-> > diff --git a/testcases/kernel/syscalls/keyctl/keyctl30.c b/testcases/kernel/syscalls/keyctl/keyctl30.c
-> > -	tst_modprobe("pkcs8_key_parser", NULL);
-> 
-> Medium: With KCONFIG_SKIP_CHECK=1, tst_kconfig_check() returns before
-> recording modules, leaving these removed loads without a replacement.
-> When parser modules are installed but unloaded, keyctl29/keyctl30 now
-> skip with EBADMSG instead of executing their checks. Preserve module
-> setup independently of config validation, or retain the explicit loads.
-
-With KCONFIG_SKIP_CHECK=1 the config check returns early and the
-automatic module loading is skipped as well. However, I consider
-that the intended behaviour rather than a regression.
-
-KCONFIG_SKIP_CHECK=1 is an explicit opt-out from the kernel config
-check. Loading the modules depends on the result of that check: the
-list of modules is built by kconfig_parse_line() while parsing the
-config, and with the check skipped that parsing never happens. To
-load the modules anyway we would have to either re-parse the config,
-which contradicts the whole point of skipping it, or hardcode the
-module list, which would duplicate config_module_maps[].
-
-So skipping the automatic load together with the config check keeps
-the semantics consistent: KCONFIG_SKIP_CHECK=1 skips everything that
-depends on the config check, and users who set it are expected to
-make sure the modules their tests need are already loaded.
-
-The affected tests are still executed normally when the config check
-runs, which is the default. I've added a note to the commit message
-to make the KCONFIG_SKIP_CHECK=1 behaviour explicit.
-
+ include/tst_kconfig.h                       | 28 +++++++
+ include/tst_module.h                        |  1 +
+ lib/tst_kconfig.c                           | 81 +++++++++++++++++++++
+ lib/tst_module.c                            | 39 ++++++++++
+ lib/tst_test.c                              | 11 ++-
+ testcases/cve/cve-2025-21756.c              |  6 ++
+ testcases/cve/cve-2026-46331.c              |  7 --
+ testcases/cve/sctphantom.c                  |  3 -
+ testcases/kernel/syscalls/keyctl/keyctl29.c |  3 -
+ testcases/kernel/syscalls/keyctl/keyctl30.c |  3 -
+ 10 files changed, 164 insertions(+), 18 deletions(-)
 
 -- 
-Regards,
-Li Wang
+2.56.0
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
