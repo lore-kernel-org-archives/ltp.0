@@ -4,48 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A70A8CA6007
-	for <ltp@archiver.kernel.org>; Thu,  8 Oct 2026 05:22:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 09A22CA6002
+	for <ltp@archiver.kernel.org>; Thu,  8 Oct 2026 05:22:36 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id EA2F93E2C46
-	for <ltp@archiver.kernel.org>; Thu,  8 Oct 2026 07:22:14 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 0B8AD3E2A46
+	for <ltp@archiver.kernel.org>; Thu,  8 Oct 2026 07:22:35 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0CCFE3E1456
- for <ltp@lists.linux.it>; Thu,  8 Oct 2026 07:21:56 +0200 (CEST)
-Received: from mta1.migadu.com (out-211.mta1.migadu.com
- [IPv6:2001:41d0:203:375::d3])
+ by picard.linux.it (Postfix) with ESMTPS id 0598A3E2A7E
+ for <ltp@lists.linux.it>; Thu,  8 Oct 2026 07:22:02 +0200 (CEST)
+Received: from mta1.migadu.com (out-214.mta1.migadu.com
+ [IPv6:2001:41d0:203:375::d6])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 86CED6009F3
- for <ltp@lists.linux.it>; Thu,  8 Oct 2026 07:21:55 +0200 (CEST)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 22D7C60066C
+ for <ltp@lists.linux.it>; Thu,  8 Oct 2026 07:22:00 +0200 (CEST)
 X-Envelope-To: ltp@lists.linux.it
-DKIM-Signature: a=rsa-sha256; bh=dY0/jTaIcI0RjrReRWwzfFea0DIuOZAUj1nqLcCtJpc=; 
+DKIM-Signature: a=rsa-sha256; bh=zXfQWcRW8QXnDxERk6p6chTIVuCn9r7u2TviGFuGBu4=; 
  c=simple/simple; d=linux.dev;
  h=from:to:subject:date:message-id:mime-version:content-type; s=key1;
- t=1791436914; v=1; x=1792041714;
- b=AOfAP6qX0MQSxVFaWeJoYAvHcFJWZlk2IGxgJafVLBkTrUHi1WYCOVE4C7N0hSaWvRXvdCXy
- W5SskUNM10TJZeq1dJuG3plszf/YqK/HGza3xwP1s/C71k65db/irGXTWuwKo8j5LvzORJ6/urK
- 7FJ/icY0dL4rjQZrn3OYgkVY=
+ t=1791436920; v=1; x=1792041720;
+ b=aqcHRDfkU/NhrRvoj6GCsqf9oTqLFxJ0PserawrT7CCcJjbPD8RHoqSwUMxIdsUYoR5+Shlm
+ JN8+Ae6cyXalish5/nN5Nj8CiCXqzp2aAfFB9QpX1BQurS1q5hQbHBiFswQLlq/lmjaXHTneWRP
+ y/T78OQC1UGkr8jSsaOfDvfA=
 X-Envelope-To: ltp@lists.linux.it
-Received: by mta11.migadu.com with ESMTPS id bc85ff21fcc589f5;
- Thu, 08 Oct 2026 05:21:54 +0000
-X-Mizu-Trace-ID: bc85ff21fcc589f5
+Received: by mta11.migadu.com with ESMTPS id a950f534376a6be7;
+ Thu, 08 Oct 2026 05:22:00 +0000
+X-Mizu-Trace-ID: a950f534376a6be7
 X-Migadu-Flow: FLOW_OUT
 From: Li Wang <li.wang@linux.dev>
 To: ltp@lists.linux.it
-Date: Thu,  8 Oct 2026 13:21:37 +0800
-Message-ID: <20261008052141.129763-1-li.wang@linux.dev>
+Date: Thu,  8 Oct 2026 13:21:38 +0800
+Message-ID: <20261008052141.129763-2-li.wang@linux.dev>
 X-Mailer: git-send-email 2.56.0
+In-Reply-To: <20261008052141.129763-1-li.wang@linux.dev>
+References: <20261008052141.129763-1-li.wang@linux.dev>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [Patch v2 0/4] tst_kconfig: automatic module load/unload for
- CONFIG_*=m
+Subject: [LTP] [Patch v2 1/4] lib: add module is loaded check
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -62,41 +62,81 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Tests that depend on a config set to =m currently load the module
-themselves, and may fail with misleading errors when it is missing,
-e.g. bind() returning EADDRNOTAVAIL for AF_VSOCK without vsock_loopback.
+Add a helper that checks whether a kernel module is loaded by
+looking it up in /proc/modules. Module names are normalized so that
+hyphens match the underscores used by the kernel.
 
-This series makes tst_kconfig record the module for every
-config_module_maps[] entry seen as =m, load them once the kernel
-config check passes, and unload them at cleanup time.
+Signed-off-by: Li Wang <li.wang@linux.dev>
+---
+ include/tst_module.h |  1 +
+ lib/tst_module.c     | 39 +++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 40 insertions(+)
 
-Changes in v2:
-
-- Add tst_module_is_loaded() helper.
-- Only load/unload modules that are not already loaded.
-- Skip automatic loading when KCONFIG_SKIP_CHECK=1, keeping the
-  semantics consistent with skipping the config check.
-- Document the KCONFIG_SKIP_CHECK=1 behaviour for keyctl29/keyctl30
-  and the vsock/vsock_loopback mapping.
-
-Li Wang (4):
-  lib: add module is loaded check
-  tst_kconfig: load and unload kernel modules for CONFIG_*=m
-  tst_kconfig: add module mappings for vsock/vsock_loopback
-  testcases: drop manual tst_modprobe() now handled by tst_kconfig
-
- include/tst_kconfig.h                       | 28 +++++++
- include/tst_module.h                        |  1 +
- lib/tst_kconfig.c                           | 81 +++++++++++++++++++++
- lib/tst_module.c                            | 39 ++++++++++
- lib/tst_test.c                              | 11 ++-
- testcases/cve/cve-2025-21756.c              |  6 ++
- testcases/cve/cve-2026-46331.c              |  7 --
- testcases/cve/sctphantom.c                  |  3 -
- testcases/kernel/syscalls/keyctl/keyctl29.c |  3 -
- testcases/kernel/syscalls/keyctl/keyctl30.c |  3 -
- 10 files changed, 164 insertions(+), 18 deletions(-)
-
+diff --git a/include/tst_module.h b/include/tst_module.h
+index e55321d19..9b789e289 100644
+--- a/include/tst_module.h
++++ b/include/tst_module.h
+@@ -49,5 +49,6 @@ static inline void tst_requires_module_signature_disabled(void)
+ 
+ void tst_modprobe(const char *mod_name, char *const argv[]);
+ void tst_module_reload(const char *mod_name, char *const argv[]);
++bool tst_module_is_loaded(const char *mod_name);
+ 
+ #endif /* TST_MODULE_H */
+diff --git a/lib/tst_module.c b/lib/tst_module.c
+index cbd2415d5..db341ec57 100644
+--- a/lib/tst_module.c
++++ b/lib/tst_module.c
+@@ -21,6 +21,7 @@
+  */
+ 
+ #define _GNU_SOURCE
++#include <ctype.h>
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <unistd.h>
+@@ -174,3 +175,41 @@ void tst_module_reload(const char *mod_name, char *const argv[])
+ 	tst_module_unload_(NULL, mod_name);
+ 	tst_modprobe(mod_name, argv);
+ }
++
++bool tst_module_is_loaded(const char *mod_name)
++{
++	char line[4096];
++	size_t mod_len = strlen(mod_name);
++	FILE *file;
++
++	file = fopen("/proc/modules", "r");
++	if (!file)
++		return false;
++
++	while (fgets(line, sizeof(line), file)) {
++		char *p = line;
++		size_t i;
++
++		while (*p && !isspace(*p))
++			p++;
++
++		if ((size_t)(p - line) != mod_len)
++			continue;
++
++		for (i = 0; i < mod_len; i++) {
++			char a = (line[i] == '-') ? '_' : line[i];
++			char b = (mod_name[i] == '-') ? '_' : mod_name[i];
++
++			if (a != b)
++				break;
++		}
++
++		if (i == mod_len) {
++			fclose(file);
++			return true;
++		}
++	}
++
++	fclose(file);
++	return false;
++}
 -- 
 2.56.0
 
