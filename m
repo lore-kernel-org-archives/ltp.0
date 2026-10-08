@@ -4,74 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9D020CA5FED
-	for <ltp@archiver.kernel.org>; Fri,  9 Oct 2026 06:49:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1791528589; h=to : date :
- message-id : mime-version : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : content-type : content-transfer-encoding : sender : from;
- bh=C2v44TMPb/AWsfh3adHmlZXHxypfPT3EXGhhJsyh2pE=;
- b=pFZNyOJ/+6lgK/7o/g04WsOIMGIMz5srCuoD/sg2xXID4dmPtipgLiAUJLj9ByYoBoYzc
- s44C+fEjwHBr/qZ1YRHs0J/Mhzs4fbohLMhvmTUx2/JAgWpNod/rVl9paiPxSw4N2PFMxaH
- hvwcPBp3eZ4BwHLaZaU6fRfycshdlbI=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5BF2ACA6012
+	for <ltp@archiver.kernel.org>; Fri,  9 Oct 2026 08:47:45 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id BE3963E2AEF
-	for <ltp@archiver.kernel.org>; Fri,  9 Oct 2026 08:49:49 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 95E033E490C
+	for <ltp@archiver.kernel.org>; Fri,  9 Oct 2026 10:47:43 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 163683E2455
- for <ltp@lists.linux.it>; Fri,  9 Oct 2026 08:49:29 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 7EAD33E24F7
+ for <ltp@lists.linux.it>; Thu,  8 Oct 2026 21:45:04 +0200 (CEST)
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com
+ [IPv6:2a00:1450:4864:20::129])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 9718D1400E43
- for <ltp@lists.linux.it>; Fri,  9 Oct 2026 08:49:27 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1791528566;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=b7N+QXQjBpycwakRnT6B4nzOnk1rHgDUwOrPBh1vQZ0=;
- b=ePtFSrReFmqvF+Ba85ygX0T2NoORSZwXvQqlcGPiBXP/zsYqTjeM9uW667H/ltN6qsOFSq
- FkJZXhWOQ/5RU/bWrsIS8eqOxz8zNLAEFno1jOs3xlNW3uO0NNVtnNezxG/juoyDlGob4s
- 1jqXk2DEZ2K7U+HJAuyz3g/+xWygmx0=
-Received: from mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-590-J_I8ZNA2MoCiMtL6A_oQbw-1; Fri,
- 09 Oct 2026 02:49:24 -0400
-X-MC-Unique: J_I8ZNA2MoCiMtL6A_oQbw-1
-X-Mimecast-MFC-AGG-ID: J_I8ZNA2MoCiMtL6A_oQbw_1791528563
-Received: from mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com
- (mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.93])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
- id 811EC1955E7E
- for <ltp@lists.linux.it>; Fri,  9 Oct 2026 06:49:23 +0000 (UTC)
-Received: from jstancek-thinkpadt14gen5.redhat.corp
- (headnet03.pony-001.prod.iad2.dc.redhat.com [10.2.32.114])
- by mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP
- id C5A9A1800473
- for <ltp@lists.linux.it>; Fri,  9 Oct 2026 06:49:22 +0000 (UTC)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id E11EF1400338
+ for <ltp@lists.linux.it>; Thu,  8 Oct 2026 21:45:03 +0200 (CEST)
+Received: by mail-lf1-x129.google.com with SMTP id
+ 2adb3069b0e04-5ba3adf78f5so4310436e87.3
+ for <ltp@lists.linux.it>; Thu, 08 Oct 2026 12:45:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20251104; t=1791488703; x=1792093503; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+ bh=jk0gsHGjOrqFpygrQXa/odhw13x5iMsOTMcoB8fsgDk=;
+ b=gXII+svTGsmCLg4EsR58ttk3VGCbIcn1rWwUxhl0tRvZ94V5TLVa3b9DL6+3lHrJ16
+ yYEOqSLaEh15ghg6Bf2+HnUp24ZbkXifLR3haxoVp9GZCUU9CmHndjNm5pT+Ph+v9uAL
+ RDE76ZzPF/cR60sqcfrUdhDsyTtNzZbNhT4Uq8jcL6i/891RdSrPoVcf06nmzivh4rL3
+ d9a/I1HNEClmhBAUB/WP4SKtA0vCM1iFhlnCETg9JRMDt1lJzluUOuL3ALavzFrcKDeD
+ qa33vaVEJow2f/hgvB3yG4Q4Wh6x274l1UtLZJvEqfle1lOaQroX93BeaVsDlgOulmjn
+ +Dtw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20260707; t=1791488703; x=1792093503;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to:content-type;
+ bh=jk0gsHGjOrqFpygrQXa/odhw13x5iMsOTMcoB8fsgDk=;
+ b=hVdLMci2j4KUb19x9KcXJFgebL5Yh3tuc1Ap3Dsq7tWDyCxQQitMbOrUMGHrxSlzHy
+ HZUqSR8Ya/+RzWp52PJ1BOWsFGz+LqTBXZ40gCgdZjozmdXYIK89GO73vH8NwBJ0dVeH
+ xiXNRWU070Gef6f4ghmPM1bmGHK/8agmT9ilFj6uet9SFcfESFYyGsRhVovDf01SiAzp
+ I0ktLfxBMCtyUb4/3lMzssddrfTJfHU8R5SB5coQ6VclyxksXmlkC8Dsz+ZL/c7MC/As
+ 5OBhP+8wHlwKw4VqBXtTuCo+qcKNPzB7ACDLMDUUwtIAlW0FRBXXi3uoB1HV3XqVKzc8
+ r0tQ==
+X-Gm-Message-State: AFq9FYJR6kLSeQhBCyXjzo63irkSYv8Jm9WSIbHxKeEBjnusW+UVOwqc
+ Gndn10qgS/h0QgKmrYR92n708Yq4zQnqKGqljmfSLMjbQbMh2PqhN++0tpROSUceS5rg6w==
+X-Gm-Gg: AYBFou01PRcQjmg87/AvL8pmjsergqiPH0RyU0/dLZQfzPPSaclEogif2cXy3kPtkXd
+ IhsjFdiH/nayZXWyByi4JeuUtW6j3i1x1uyR8PNBe5E79loaTEgDClSEaqTEWB83MGEtXfqr/cK
+ 0R6km+dRa8L/mJ1tbKzB8w/ucdhh1InIIwIFFLLxP3rYA3zvn2+w5MxmA6rt7alUG07PCWhwKjp
+ ERsoCpqgandEwCdi3158WUAozcjRdGPu5YHFTBzJagzPkTcSl9NPK3bI7ECOYB7k1ufi8oCXKN2
+ +Icsu06FdR9ZIji1MAHK8p5M6f40DIwOp8/RrDNwQMBya1/wG5uLZ2SNi0cZPdkSwv1pqxoYx/e
+ 4Ce0X9tYN7q1LhPvuoDJjWgx4dahGh4+tkHM4For4+rxDZvO/IJpGkiJddDVebbxqWX41xigNZ5
+ y4lncjb6YQzyD2QE6R4B9fSHlHfwalCvMZTD0PFXqhDHpjApOdX9flRcKxAkykb3mHVa6AVCP3O
+ 3nmkZyFt2NS0Utp1i/Vr2bs7bAuUJYrYUv6wGYdLvUzI26HGoE=
+X-Received: by 2002:a05:6512:6cb:b0:5b6:1a7c:aa0d with SMTP id
+ 2adb3069b0e04-5bcd0727e7dmr2389623e87.37.1791488702612; 
+ Thu, 08 Oct 2026 12:45:02 -0700 (PDT)
+Received: from chestnykh (broadband-46-242-13-70.ip.moscow.rt.ru.
+ [46.242.13.70]) by smtp.gmail.com with ESMTPSA id
+ 2adb3069b0e04-5bcdd2e26a7sm60857e87.82.2026.10.08.12.44.59
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Thu, 08 Oct 2026 12:45:00 -0700 (PDT)
+From: dm.chestnykh@gmail.com
 To: ltp@lists.linux.it
-Date: Fri,  9 Oct 2026 08:49:19 +0200
-Message-ID: <4e46078e97ec7c6678cabd9f2b32cba8be3ee3cf.1791528355.git.jstancek@redhat.com>
+Date: Thu,  8 Oct 2026 22:47:25 +0300
+Message-ID: <20261008194725.1198-1-dm.chestnykh@gmail.com>
+X-Mailer: git-send-email 2.56.0
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.93
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: Me0Rh7-bTPpB1K4d__LxYyU7eF9UL710vHR_--yGNW0_1791528563
-X-Mimecast-Originator: redhat.com
 X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] openposix: timers/twoevtimers: Wait for both timer
- signals
+X-Mailman-Approved-At: Fri, 09 Oct 2026 10:47:27 +0200
+Subject: [LTP] [PATCH] arch_prctl: add ARCH_GET_FS, ARCH_GET_GS tests
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -83,114 +88,127 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Jan Stancek via ltp <ltp@lists.linux.it>
-Reply-To: Jan Stancek <jstancek@redhat.com>
+Cc: Dmitry Chestnykh <dm.chestnykh@gmail.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-The test arms two timers with the same absolute expiration time and
-then does a single sleep() before checking that both signals arrived.
-sleep() returns as soon as the first signal interrupts it, and the
-kernel delivers the two signals one at a time. This sporadically
-leads to failure:
+From: Dmitry Chestnykh <dm.chestnykh@gmail.com>
 
-  Caught abort signal
-  Test FAILED
-
-even though the second timer fires microseconds later.
-
-Keep sleeping on the remaining time until both signals have been
-caught or the LONGTIME budget, which was defined but never used, runs
-out. Make the counters volatile sig_atomic_t and print from the handlers
-with the async-signal-safe PTS_WRITE_MSG() instead of printf().
-
-Lower the sleep time, and also correct the header comment: the timers
-live in the same process, not in different processes, and the test only
-checks that both of them expire, not that they expire at the same time.
-
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
+Signed-off-by: Dmitry Chestnykh <dm.chestnykh@gmail.com>
 ---
- .../functional/timers/timers/twoevtimers.c    | 34 +++++++++++++------
- 1 file changed, 23 insertions(+), 11 deletions(-)
+ .../kernel/syscalls/arch_prctl/.gitignore     |  1 +
+ testcases/kernel/syscalls/arch_prctl/Makefile |  2 +
+ .../kernel/syscalls/arch_prctl/arch_prctl02.c | 81 +++++++++++++++++++
+ 3 files changed, 84 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/arch_prctl/arch_prctl02.c
 
-diff --git a/testcases/open_posix_testsuite/functional/timers/timers/twoevtimers.c b/testcases/open_posix_testsuite/functional/timers/timers/twoevtimers.c
-index 0e46229777fe..b581678d2b12 100644
---- a/testcases/open_posix_testsuite/functional/timers/timers/twoevtimers.c
-+++ b/testcases/open_posix_testsuite/functional/timers/timers/twoevtimers.c
-@@ -5,8 +5,14 @@
-  * of this license, see the COPYING file at the top level of this
-  * source tree.
-  *
-- * Test having two timers in different processes set to expire at the
-- * same time, and ensure they both expire at the same time.
-+ * Test having two timers in the same process, armed with the same
-+ * absolute expiration time but delivering different signals, and ensure
-+ * that both of them expire.
-+ *
-+ * Note that the test does not (and cannot) verify that the two signals
-+ * are delivered simultaneously.  Signals are delivered one at a time, so
-+ * the first one interrupts sleep() while the second one may still be
-+ * on its way.  Keep waiting until both have arrived or LONGTIME elapses.
-  */
- #include <stdio.h>
- #include <time.h>
-@@ -17,23 +23,23 @@
- #include <unistd.h>
- #include "posixtest.h"
- 
--#define EXPIREDELTA 3
--#define LONGTIME 5
-+#define EXPIREDELTA 1
-+#define LONGTIME 3
- 
- #define CHILDPASS 1
- 
--static int caughtabort = 0;
--static int caughtalarm = 0;
-+static volatile sig_atomic_t caughtabort = 0;
-+static volatile sig_atomic_t caughtalarm = 0;
- 
--static void handler_abrt(int signo)
-+static void handler_abrt(int signo PTS_ATTRIBUTE_UNUSED)
- {
--	printf("Caught abort signal\n");
-+	PTS_WRITE_MSG("Caught abort signal\n");
- 	caughtabort++;
- }
- 
--static void handler_alrm(int signo)
-+static void handler_alrm(int signo PTS_ATTRIBUTE_UNUSED)
- {
--	printf("Caught alarm signal\n");
-+	PTS_WRITE_MSG("Caught alarm signal\n");
- 	caughtalarm++;
- }
- 
-@@ -45,6 +51,7 @@ int test_main(int argc, char **argv)
- 	struct timespec ts;
- 	struct itimerspec its;
- 	int flags = 0;
-+	unsigned int left = LONGTIME;
- 
- 	act1.sa_handler = handler_abrt;
- 	act1.sa_flags = 0;
-@@ -93,7 +100,12 @@ int test_main(int argc, char **argv)
- 		return PTS_UNRESOLVED;
- 	}
- 
--	sleep(EXPIREDELTA + 1);
-+	/*
-+	 * sleep() returns early when the first signal arrives; keep waiting
-+	 * until the second one has been delivered as well or we time out.
-+	 */
-+	while (left > 0 && !(caughtalarm && caughtabort))
-+		left = sleep(left);
- 
- 	if ((caughtalarm == 1) && (caughtabort == 1)) {
- 		printf("Test PASSED\n");
--- 
+diff --git a/testcases/kernel/syscalls/arch_prctl/.gitignore b/testcases/kernel/syscalls/arch_prctl/.gitignore
+index 24871e249..72187b8b4 100644
+--- a/testcases/kernel/syscalls/arch_prctl/.gitignore
++++ b/testcases/kernel/syscalls/arch_prctl/.gitignore
+@@ -1 +1,2 @@
+ /arch_prctl01
++/arch_prctl02
+diff --git a/testcases/kernel/syscalls/arch_prctl/Makefile b/testcases/kernel/syscalls/arch_prctl/Makefile
+index 272949d57..c4413a81f 100644
+--- a/testcases/kernel/syscalls/arch_prctl/Makefile
++++ b/testcases/kernel/syscalls/arch_prctl/Makefile
+@@ -6,3 +6,5 @@ top_srcdir		?= ../../../..
+ include $(top_srcdir)/include/mk/testcases.mk
+
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
++
++CFLAGS += -mfsgsbase
+diff --git a/testcases/kernel/syscalls/arch_prctl/arch_prctl02.c b/testcases/kernel/syscalls/arch_prctl/arch_prctl02.c
+new file mode 100644
+index 000000000..124dd13b9
+--- /dev/null
++++ b/testcases/kernel/syscalls/arch_prctl/arch_prctl02.c
+@@ -0,0 +1,81 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Author: Dmitry Chestnykh <dm.chestnykh@gmail.com>
++ */
++
++/*\
++ * Simple test on arch_prctl to get FS_BASE and GS_BASE
++ */
++
++#include "tst_test.h"
++#include "lapi/syscalls.h"
++#include "lapi/arch_prctl.h"
++#include <stdlib.h>
++#include <string.h>
++
++#include <sys/auxv.h>
++#ifndef HWCAP2_FSGSBASE
++#if defined(__has_include) && __has_include(<asm/hwcap2.h>)
++#include <asm/hwcap2.h>
++#else
++#warning "Cannot obtain HWCAP2_FSGSBASE from system headers"
++#define HWCAP2_FSGSBASE (1UL << 1)
++#endif /* defined(__has_include) && __has_include(<asm/hwcap2.h>) */
++#endif /* HWCAP2_FSGSBASE */
++
++static int arch_prctl_get(int code, unsigned long *out)
++{
++	return tst_syscall(__NR_arch_prctl, code, out);
++}
++
++static bool tag;
++
++static void setup(void)
++{
++	unsigned long v = getauxval(AT_HWCAP2);
++
++	tag = v & HWCAP2_FSGSBASE ? true : false;
++}
++
++#define READ_FS_BASE() ({                              \
++	unsigned long long __res;                          \
++	asm volatile("rdfsbase %0" : "=r"(__res));         \
++	__res;                                             \
++})
++
++#define READ_GS_BASE() ({                              \
++	unsigned long long __res;                          \
++	asm volatile("rdgsbase %0" : "=r"(__res));         \
++	__res;                                             \
++})
++
++static void run(unsigned int index)
++{
++	(void)index;
++	if (!tag)
++		tst_brk(TCONF, "rdfsbase/rdgsbase are not supported/enabled");
++
++	unsigned long fs = READ_FS_BASE();
++	unsigned long gs = READ_GS_BASE();
++	unsigned long fs_prctl, gs_prctl;
++
++	TEST(arch_prctl_get(ARCH_GET_FS, &fs_prctl));
++	if (TST_RET == 0 && fs_prctl == fs)
++		tst_res(TPASS, "get fs succeed");
++	else
++		tst_res(TFAIL, "got wrong fs register value");
++
++	TEST(arch_prctl_get(ARCH_GET_GS, &gs_prctl));
++	if (TST_RET == 0 && gs_prctl == gs)
++		tst_res(TPASS, "get gs succeed");
++	else
++		tst_res(TFAIL, "got wrong gs register value");
++}
++
++static struct tst_test test = {
++	.test = run,
++	.setup = setup,
++	.tcnt = 1,
++	.min_kver = "5.9",
++	.supported_archs = (const char *const []){"x86_64", NULL}
++};
+--
 2.56.0
 
 
