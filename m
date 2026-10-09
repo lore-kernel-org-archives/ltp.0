@@ -4,61 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D7AD8CA6019
-	for <ltp@archiver.kernel.org>; Fri,  9 Oct 2026 16:05:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 40D42CA9EBE
+	for <ltp@archiver.kernel.org>; Fri,  9 Oct 2026 17:26:23 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 20B993E949F
-	for <ltp@archiver.kernel.org>; Fri,  9 Oct 2026 18:05:36 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 2B0523E9EFC
+	for <ltp@archiver.kernel.org>; Fri,  9 Oct 2026 19:26:21 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id DC90F3C21F2
- for <ltp@lists.linux.it>; Fri,  9 Oct 2026 18:05:17 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 0E2A33C198F
+ for <ltp@lists.linux.it>; Fri,  9 Oct 2026 19:26:04 +0200 (CEST)
+Received: from mail-qk2-x01.google.com (mail-qk2-x01.google.com
+ [IPv6:2607:f8b0:4864:34::1])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 87A5F1000D55
- for <ltp@lists.linux.it>; Fri,  9 Oct 2026 18:05:17 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 128C821BFF;
- Fri,  9 Oct 2026 16:05:17 +0000 (UTC)
-Authentication-Results: smtp-out1.suse.de;
-	none
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D2E011368B;
- Fri,  9 Oct 2026 16:05:16 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id r7z/KrwQyWrCCgAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Fri, 09 Oct 2026 16:05:16 +0000
-Date: Fri, 9 Oct 2026 18:05:29 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Andrea Cervesato <andrea.cervesato@suse.de>
-Message-ID: <askQyWTnbZFpGELv@yuki.lan>
-References: <20261005-fix_core_lib_deepseek-v1-0-fec334ce8e80@suse.com>
- <20261005-fix_core_lib_deepseek-v1-15-fec334ce8e80@suse.com>
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 3F44C1A00920
+ for <ltp@lists.linux.it>; Fri,  9 Oct 2026 19:26:04 +0200 (CEST)
+Received: by mail-qk2-x01.google.com with SMTP id
+ d75a77b69052e-5332a0f6dbbso58001061cf.1
+ for <ltp@lists.linux.it>; Fri, 09 Oct 2026 10:26:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20251104; t=1791566763; x=1792171563; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to:content-type;
+ bh=O74Ia4HIkW4Nuasi0O1t5Fq/T3DjHpPaBGq4qxMxhnY=;
+ b=fLtg3ggvMr7Q6b4NaP3F8MjwTG/9eXpv15Mp5KKqkuLo7s8rAX9EdEQmmJEwZXy/hO
+ Gn0nMHigwJhzHfUYrDRxn3PUGAzHYzBiefoNNpJ23w3rRqyJRj9V/FqVKXt4a96NLyIx
+ syfwBtpT4fobDhxjkOmFRTn8AS5BL7jD+BCyxbNkoUAdLgRwE2P3gDNGORjIYgeIuRKw
+ jtomnp7l3jLkMhj5MFDNNqODxgXCbTkHLRbPfSTpE5CuXD65qkMZipKzzQrjaN78r4yv
+ rtXIHDVhxubi9BKLyCEw2cWReDB4/auqWv+I+cvL7vMZ1oFBn5WtCd6uv2lsgTaLIt+L
+ HH9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20260707; t=1791566763; x=1792171563;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to:content-type;
+ bh=O74Ia4HIkW4Nuasi0O1t5Fq/T3DjHpPaBGq4qxMxhnY=;
+ b=MTCh/Jw4Ya8QCiFX+n64c7gG0hpykDl6mu74nWA+T8pFuNZNeCqHnEiLe9SEQXW6zK
+ lOXbq4PXCth+sOJPnpMrUtTjlchX/bpAL/PaOtFyfITPbjxmjSTc8SZxj8MVBt/dSFse
+ g2A099px8Kgsoa0GoE1YqxGwaIEbkQdno6Ih16iT80OT4O0LCXgkeEMuovXptl639wpA
+ 1juhAzXNCpAOxEKY4G2xLDgDT7rKIkR2kwtxF3r2Vn4BAOPc77nLvOdo1pi/Ltlu6huM
+ BzlYsSe/1vn5seOFS/IO2ASRCVtf00ApC8ew5bjGXgR062ukHOnWs+5JposN1x9VoBqe
+ 9aSw==
+X-Gm-Message-State: AFuF++k52n26UrjE5E96kmcZ2Cgcnyx1SDsbdnOcAxdDfhcvXE3M1y9a
+ izgSTLy276nBzuV5a0FrdbRJVJOmdogt4CkQvBln7diWvZ+dZsXu8b2a
+X-Gm-Gg: AYBFou1M6Tqh6SCGNrHwNttKlTWC/bKm3XlVTrRTYlK2npIJB85pVbyiRWTJK8IOB1/
+ kXLdIK4zA2O9YiXn5ga0bIc0KOTGp+PmhRLop2gqWNfbm/8hIFtrGPce3HelYWwmQqOCabkDoDG
+ spfRooLezlYM8oihRIANWHT3WLbRMXbtlN9uK68OLFP2l1iwyJ9WJz0LXZzdJEMeOwZbKCgzNYU
+ bBcnnbTPYT7Le9uj80ftuO74IRAAJoXUSnebDWJZdz6vFvuwP4SXEOPJofwR7eCtXfqvUB4bK1o
+ Y+G8CDzupO5XawAoRg3uq+0uMYOs1wAL4zAmZTn4gZaWcURnqhzVfqM23RFrYH2FPiDB4R1zsK8
+ sNult/5tGW3zdOVssgUFsUURUOml/vOIkkRdYUJ+wdR/vHgMVM8CNVtpYVjS8G4AJCErars13Ns
+ VeCbGHCuOPxAULi0/wLD/gb3El35AKtL0dn7SANyzeImk5OUz+EBuj5pq0SMqUvmusxfKhU6Va/
+ RICPhYx7MSbdSoh3fcHoeuhwjRtqI2sT/uHnRv0ZNnAfuDyUE9JIyDiRATpYdCTDk5W6CA3mdAE
+ kB+pdM7l0g==
+X-Received: by 2002:a05:622a:1b88:b0:535:1f03:32aa with SMTP id
+ d75a77b69052e-5359fb85a7bmr47021341cf.45.1791566762911; 
+ Fri, 09 Oct 2026 10:26:02 -0700 (PDT)
+Received: from
+ runnervmmprz5.tam30pcoubfehpvxim35l0nwzh.bx.internal.cloudapp.net
+ ([20.83.175.27]) by smtp.gmail.com with ESMTPSA id
+ d75a77b69052e-5359b46c470sm23053051cf.2.2026.10.09.10.26.02
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 09 Oct 2026 10:26:02 -0700 (PDT)
+From: linuxtestproject.agent@gmail.com
+To: Jan Stancek <jstancek@redhat.com>
+Date: Fri,  9 Oct 2026 17:26:01 +0000
+Message-ID: <20261009172601.34695-1-linuxtestproject.agent@gmail.com>
+X-Mailer: git-send-email 2.55.0
+In-Reply-To: <24014310ac600340c4ef9720980eac1c047f4b6f.1791543115.git.jstancek@redhat.com>
+References: <24014310ac600340c4ef9720980eac1c047f4b6f.1791543115.git.jstancek@redhat.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20261005-fix_core_lib_deepseek-v1-15-fec334ce8e80@suse.com>
-X-Rspamd-Pre-Result: action=no action;
-	module=Unknown lua;
-	unknown reason
-X-Rspamd-Pre-Result: action=no action;
-	module=Unknown lua;
-	unknown reason
-X-Spamd-Result: default: False [0.00 / 50.00]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 15/15] ujson: writer: Flush buffer before direct
- writes
+Subject: Re: [LTP] openposix: timers/twoevtimers: Wait for both timer signals
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -70,64 +92,42 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Linux Test Project <ltp@lists.linux.it>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> Fixes: c50a0e0751c8 ("libs: Vendor ujson library")
-> Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
-> ---
->  libs/ujson/ujson_writer.c | 10 +++++++++-
->  1 file changed, 9 insertions(+), 1 deletion(-)
-> 
-> diff --git a/libs/ujson/ujson_writer.c b/libs/ujson/ujson_writer.c
-> index 2553d8cd2..df67b1f4d 100644
-> --- a/libs/ujson/ujson_writer.c
-> +++ b/libs/ujson/ujson_writer.c
-> @@ -424,8 +424,16 @@ static int out_writer_file(ujson_writer *self, const char *buf, size_t buf_len)
->  	size_t buf_size = sizeof(writer_file->buf);
->  	size_t buf_avail = buf_size - writer_file->buf_used;
->  
-> -	if (buf_len > buf_size/4)
-> +	if (buf_len > buf_size / 4) {
-> +		if (writer_file->buf_used &&
-> +		    out_writer_file_write(self, writer_file->fd,
-> +					  writer_file->buf, writer_file->buf_used))
+Hi Jan,
 
-The check for buf_len == 0 should be inside the out_writer_fiel_write()
-so that we do not have to handle it in each caller.
+On Fri, 9 Oct 2026, Jan Stancek via ltp wrote:
+> openposix: timers/twoevtimers: Wait for both timer signals
 
-diff --git a/libs/ujson/ujson_writer.c b/libs/ujson/ujson_writer.c
-index c86a3b2af..29a863287 100644
---- a/libs/ujson/ujson_writer.c
-+++ b/libs/ujson/ujson_writer.c
-@@ -389,6 +389,9 @@ struct json_writer_file {
- 
- static int out_writer_file_write(ujson_writer *self, int fd, const char *buf, ssize_t buf_len)
- {
-+       if (!buf_len)
-+               return 0;
-+
-        do {
+> +	PTS_WRITE_MSG("Caught abort signal\n");
+> +	PTS_WRITE_MSG("Caught alarm signal\n");
+> +		if (errno != EINTR) {
+> +			perror("nanosleep() did not return success\n");
+> +			return PTS_UNRESOLVED;
+> +		}
 
-> +			return 1;
-> +
-> +		writer_file->buf_used = 0;
-> +
->  		return out_writer_file_write(self, writer_file->fd, buf, buf_len);
-> +	}
->  
->  	if (buf_len >= buf_avail) {
->  		if (out_writer_file_write(self, writer_file->fd,
+Medium: PTS_WRITE_MSG() calls write() without preserving errno. If the
+second signal arrives after nanosleep() sets EINTR but before the new
+errno check, a failed handler write (e.g. EAGAIN on a full nonblocking
+stdout pipe) causes a spurious unresolved result even when both timers
+fired. Save errno on entry and restore it before returning in both
+handlers.
 
-For example we need the check here.
+Verdict - Needs revision
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+---
+Note:
+
+The agent can sometimes produce false positives although often its
+findings are genuine. If you find issues with the review, please
+comment this email or ignore the suggestions.
+
+Regards,
+LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
