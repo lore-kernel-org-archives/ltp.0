@@ -4,50 +4,50 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C6442CA6019
-	for <ltp@archiver.kernel.org>; Fri,  9 Oct 2026 11:26:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 07702CA6018
+	for <ltp@archiver.kernel.org>; Fri,  9 Oct 2026 11:32:52 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E56CA3E9B4E
-	for <ltp@archiver.kernel.org>; Fri,  9 Oct 2026 13:26:56 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id EF8B03E9B50
+	for <ltp@archiver.kernel.org>; Fri,  9 Oct 2026 13:32:50 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 54B8C3E29BD
- for <ltp@lists.linux.it>; Fri,  9 Oct 2026 13:26:39 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ by picard.linux.it (Postfix) with ESMTPS id B19783E29BD
+ for <ltp@lists.linux.it>; Fri,  9 Oct 2026 13:32:35 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 7F7531A0107A
- for <ltp@lists.linux.it>; Fri,  9 Oct 2026 13:26:38 +0200 (CEST)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 956D2600551
+ for <ltp@lists.linux.it>; Fri,  9 Oct 2026 13:32:33 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 092781F790;
- Fri,  9 Oct 2026 11:26:38 +0000 (UTC)
-Authentication-Results: smtp-out2.suse.de;
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 9899A21C28;
+ Fri,  9 Oct 2026 11:32:32 +0000 (UTC)
+Authentication-Results: smtp-out1.suse.de;
 	none
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C91D91326D;
- Fri,  9 Oct 2026 11:26:37 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 61AB61326D;
+ Fri,  9 Oct 2026 11:32:32 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id QpQHKW3PyGp8WQAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Fri, 09 Oct 2026 11:26:37 +0000
-Date: Fri, 9 Oct 2026 13:26:50 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id p8GXD9DQyGqBYAAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Fri, 09 Oct 2026 11:32:32 +0000
+Date: Fri, 9 Oct 2026 13:32:49 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
 To: Andrea Cervesato <andrea.cervesato@suse.de>
-Message-ID: <asjPevNZtHSjuyYm@yuki.lan>
+Message-ID: <asjQ4ayJSvfg-U3p@yuki.lan>
 References: <20261007-fix_leftovers-v1-0-63a1e7acd0e6@suse.com>
- <20261007-fix_leftovers-v1-1-63a1e7acd0e6@suse.com>
+ <20261007-fix_leftovers-v1-2-63a1e7acd0e6@suse.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20261007-fix_leftovers-v1-1-63a1e7acd0e6@suse.com>
+In-Reply-To: <20261007-fix_leftovers-v1-2-63a1e7acd0e6@suse.com>
 X-Rspamd-Pre-Result: action=no action;
 	module=Unknown lua;
 	unknown reason
@@ -55,9 +55,9 @@ X-Rspamd-Pre-Result: action=no action;
 	module=Unknown lua;
 	unknown reason
 X-Spamd-Result: default: False [0.00 / 50.00]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/3] ltp-aiodio: Remove unused common_sparse.h
+Subject: Re: [LTP] [PATCH 2/3] tree: Remove needs_checkpoints leftovers
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
