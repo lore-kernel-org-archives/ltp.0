@@ -4,82 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 00F74CA6019
-	for <ltp@archiver.kernel.org>; Fri,  9 Oct 2026 10:12:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 61333CA6019
+	for <ltp@archiver.kernel.org>; Fri,  9 Oct 2026 10:54:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1791543245; h=to : date :
+ message-id : in-reply-to : references : mime-version : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : content-type :
+ content-transfer-encoding : sender : from;
+ bh=s5e8u34aEsAYH7Kd8P0+EGln6+lKT7Lf7PY4oExv4IA=;
+ b=OA2lPka3Le2KjQ9QRKafGoW6o37/UYR9VUrYE+F0KEfOiyWTVPG5vGjI0GaLkBrzZqB5A
+ 2HPxElV/31U++B/hUa9NlLbYGutqLomzdPcoGM+qAn74Duw0LeGEcYqwN40/8hymC+oURet
+ SEFr+F9KTk5vwCZtBjtGJx3U1bpwfJ0=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 2C4863E6AD2
-	for <ltp@archiver.kernel.org>; Fri,  9 Oct 2026 12:12:47 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 39F9B3E6ADA
+	for <ltp@archiver.kernel.org>; Fri,  9 Oct 2026 12:54:05 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 61C963E4C0B
- for <ltp@lists.linux.it>; Fri,  9 Oct 2026 12:12:31 +0200 (CEST)
-Received: from mail-qk2-x00.google.com (mail-qk2-x00.google.com
- [IPv6:2607:f8b0:4864:34::])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 1CEAE3E49EF
+ for <ltp@lists.linux.it>; Fri,  9 Oct 2026 12:53:43 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 0BABC2001A7
- for <ltp@lists.linux.it>; Fri,  9 Oct 2026 12:12:31 +0200 (CEST)
-Received: by mail-qk2-x00.google.com with SMTP id
- af79cd13be357-93e5da88874so14002385a.1
- for <ltp@lists.linux.it>; Fri, 09 Oct 2026 03:12:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1791540750; x=1792145550; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to:content-type;
- bh=RJ8JCDNuZ6gxrtuL+1OkfSNpycLPXIAYri+dsSOuwZ0=;
- b=mrCNOY52SehwQa5LSGFb+I0byrzEGGjrj77BTn1iuh1Kw5KJ1dX2hO6ayAAv5LTeDg
- HYoLpQgD4LkCuvXIyhr4bjuu7HZFg64Z7hhOfJekO7vbhEkA8lSOAIO3RA6Nki7GU6ne
- gbyWCG+J2mnFuOuRER7YFoYz2rHgiJsteGBfh3zgBhCLxFn5p7NqBIPQlXj7rDJ6IIY6
- M9APAiCxuJbiW116I/1mx1Vd65utbrpgaF2iOVQAHsGmYEPOZbMpErqoC5EGDSWVWwUn
- 6+xXDU1SFMKExbDm3npH07xEYbgV+3TjDT38Oz3Y2V3umc+QwYmaS73jjI8oD6n6g8jv
- CkDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20260707; t=1791540750; x=1792145550;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to:content-type;
- bh=RJ8JCDNuZ6gxrtuL+1OkfSNpycLPXIAYri+dsSOuwZ0=;
- b=uXbGhOlDxPn7QqGs8YTKODSSS97kO5INOu2qdwB+vNdD7xwnXhmY3b6tvILJ1+F6tS
- OEyTAUs0gNzImS0eDdMeg58UYm0ZS4S9TQsQLD8BUCcFjSidFtN6D0T1V0lPZrY2XNTP
- vkxhr/rSaFlG6+jk4Bq5gjC4Se41V6kMlaguOmHo6801mR1ecAyU/KEvxcUCZ3Y7ZTVO
- K24eY28ArGe0U1KGZdCg4slvPmtQcmKKrCELHVDs2Z4Yg5YoOFkr36kvJ4DNu7l9mXct
- BDx16UiloBFXsR07T1ztetV1PDMhkFZLMaZ0zkW5o41Z5bMLV++M+6l5aRMSpmNygket
- 5qFw==
-X-Gm-Message-State: AFuF++keUiA0SK3terf/PiLLngGfFvST2M7pKfzZ2y90ImBHgVSoK6JD
- zPTEe8xlzbNN7BZHFvvUA2T5YHu7bto3vZjntYhJ1jXS9zpn3IL9Diax
-X-Gm-Gg: AYBFou33+cq58aMfcMJbtOXfKgcJ0xevnyLM3BQePAULbKXMaYof4PqnEc+GuWCAb1u
- kqBI4YSQXWx0cFzTijSLFmGsBV/Dhhryk29X5a2LknzhMzCc4VxDSJdK6mrgPZuTG1WibfvGhu9
- h1pILcAYgrOzKzFvOhgwuRlo9SfL71kVnbnsd0VGg4T9B29qoYM/+ECvnPY1oQRVLLDn+txTn3F
- Nefya6T+RaZ/HQ8Lv5FMumhVdwOkVW+TqQOuwcRtj6/IHgVowGNB4sdZjslWBsSoiT5xCAZBqbU
- Wll9xqxeHOgCeg0SH4x1Eazipc9rBOJOL0Rwf7w1hPXKaj+Y5mFgsMSjvnS9FzlO+t+KUktHXqA
- nb24EiuROS2wYCLI6JYvlw5CYFYEWcJDJkhCLStXXmV4q8eQ3hmjK34v+o+MqTj9suY5ul9BpBa
- 63TF5zAHwCBgJTE9bY5Y50MzbPBy1xnYKj6qtf4cW8DY/yfxnd9UDUSsWEAbn17nyMgnT+8yGln
- T3ow6ZQKwYBjvdpVsFi6nFW18o2r5nbSq3k9G/DywxCvJgopO7lh1N+75KMV3r3EVes6Sl72zFl
- Zji04V5Pc95qKNyY2d29
-X-Received: by 2002:a05:620a:6602:b0:93e:c12c:fbc7 with SMTP id
- af79cd13be357-93ec12d100cmr90576185a.67.1791540749443; 
- Fri, 09 Oct 2026 03:12:29 -0700 (PDT)
-Received: from
- runnervmmprz5.d3uhv5dcqpzuppv0dnbf21ujch.bx.internal.cloudapp.net
- ([40.76.106.65]) by smtp.gmail.com with ESMTPSA id
- af79cd13be357-93eb98861bdsm149971785a.24.2026.10.09.03.12.29
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 09 Oct 2026 03:12:29 -0700 (PDT)
-From: linuxtestproject.agent@gmail.com
-To: dm.chestnykh@gmail.com
-Date: Fri,  9 Oct 2026 10:12:28 +0000
-Message-ID: <20261009101228.9426-1-linuxtestproject.agent@gmail.com>
-X-Mailer: git-send-email 2.55.0
-In-Reply-To: <20261008194725.1198-1-dm.chestnykh@gmail.com>
-References: <20261008194725.1198-1-dm.chestnykh@gmail.com>
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id EBB1B10006D9
+ for <ltp@lists.linux.it>; Fri,  9 Oct 2026 12:53:40 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1791543219;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=7zNUKYgiQs+QzqRs29XpXpDH+8SZi9yIqbBj2/LR9+s=;
+ b=YXOhUoeb+6PxqtPP2CGRAZTsEnti64FhpSmW2GMX01TWIXRSJFvtIukToN1y7Kjl6CKjWA
+ +eFlDFeA5YeRGV+XOmc8xr85YAS8ojqabKaAkFgqn4QksCeyvrcbGfABI4kJMVIVS9vNt3
+ FewI1fQwB+tGPgclO2xdmojNbny1XPo=
+Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-582-CjWVNAG5NmKwsyhCQEWPBg-1; Fri,
+ 9 Oct 2026 10:53:37 +0000
+X-MC-Unique: CjWVNAG5NmKwsyhCQEWPBg-1
+X-Mimecast-MFC-AGG-ID: CjWVNAG5NmKwsyhCQEWPBg_1791543217
+Received: from mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com
+ (mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.4])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
+ id 7EB511954218
+ for <ltp@lists.linux.it>; Fri,  9 Oct 2026 10:53:36 +0000 (UTC)
+Received: from jstancek-thinkpadt14gen5.redhat.corp
+ (headnet03.pony-001.prod.iad2.dc.redhat.com [10.2.32.114])
+ by mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP
+ id A405B30000E3
+ for <ltp@lists.linux.it>; Fri,  9 Oct 2026 10:53:35 +0000 (UTC)
+To: ltp@lists.linux.it
+Date: Fri,  9 Oct 2026 12:52:47 +0200
+Message-ID: <24014310ac600340c4ef9720980eac1c047f4b6f.1791543115.git.jstancek@redhat.com>
+In-Reply-To: <4e46078e97ec7c6678cabd9f2b32cba8be3ee3cf.1791528355.git.jstancek@redhat.com>
+References: <4e46078e97ec7c6678cabd9f2b32cba8be3ee3cf.1791528355.git.jstancek@redhat.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.4
+X-Mimecast-Spam-Score: 0
+X-Mimecast-MFC-PROC-ID: gBeFG4BX0_N6_XNGWMgxcul3yp21fCWrFoiA1xxbcE8_1791543217
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] arch_prctl: add ARCH_GET_FS, ARCH_GET_GS tests
+Subject: [LTP] [PATCH v2] openposix: timers/twoevtimers: Wait for both timer
+ signals
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,88 +88,151 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+From: Jan Stancek via ltp <ltp@lists.linux.it>
+Reply-To: Jan Stancek <jstancek@redhat.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Dmitry,
+The test arms two timers with the same absolute expiration time and
+then does a single sleep() before checking that both signals arrived.
+sleep() returns as soon as the first signal interrupts it, and the
+kernel delivers the two signals one at a time. This sporadically
+leads to failure:
 
-On Thu, 8 Oct 2026, Dmitry Chestnykh wrote:
-> arch_prctl: add ARCH_GET_FS, ARCH_GET_GS tests
+  Caught abort signal
+  Test FAILED
 
-> +CFLAGS += -mfsgsbase
+even though the second timer fires microseconds later.
 
-This directory-wide x86 option breaks supported non-x86 builds, including
-the existing arch_prctl01 target; AArch64 clang rejects it. Remove the
-option: the new test's inline assembly compiles without it on x86_64.
+Keep sleeping on the remaining time until both signals have been caught
+or the LONGTIME budget, which was defined but never used, runs out. Use
+nanosleep() rather than sleep() for this, since sleep() returns the
+unslept time in whole seconds and the fraction would be lost on every
+interruption. Make the counters volatile sig_atomic_t and print from the
+handlers with the async-signal-safe PTS_WRITE_MSG() instead of printf().
 
-> +	asm volatile("rdfsbase %0" : "=r"(__res));         \
-> +	asm volatile("rdgsbase %0" : "=r"(__res));         \
-> +	.supported_archs = (const char *const []){"x86_64", NULL}
+Arm the timers to expire 50ms from now instead of 3 seconds, so the test
+passes in about 50ms, and lower LONGTIME, the upper bound for when a
+signal does not arrive, from 5 to 3 seconds. Also correct the header
+comment: the timers live in the same process, not in different
+processes, and the test only checks that both of them expire, not that
+they expire at the same time.
 
-Removing the compiler option alone is insufficient: the unconditional
-assembly still fails on AArch64, and lapi/arch_prctl.h supplies no
-ARCH_GET_FS/ARCH_GET_GS definitions on non-x86 targets. The supported_archs
-check runs only after compilation; provide a buildable unsupported-feature
-path or filter the target appropriately in the Makefile.
-
-> +#if defined(__has_include) && __has_include(<asm/hwcap2.h>)
-
-GCC 4.8.5, a supported compiler, cannot parse this expression: the left
-operand does not protect an undefined function-like preprocessing operator.
-The repository's sparse check also rejects this line. Use separately nested
-checks or configured optional-header inclusion.
-
-> +#include <asm/hwcap2.h>
-> +#else
-> +#warning "Cannot obtain HWCAP2_FSGSBASE from system headers"
-> +#define HWCAP2_FSGSBASE (1UL << 1)
-
-An existing older header bypasses the fallback even when it lacks this bit:
-compilation against Linux 5.4's hwcap2.h fails with HWCAP2_FSGSBASE
-undeclared.
-Apply the fallback after optional header inclusion, independently of header
-availability, and put the compatibility definition in include/lapi.
-
-> +/arch_prctl02
-
-The new binary has no entry in any runtest file, so normal syscall-suite
-runs never execute it. Add "arch_prctl02 arch_prctl02" to runtest/syscalls.
-
-> +	TEST(arch_prctl_get(ARCH_GET_FS, &fs_prctl));
-> +	if (TST_RET == 0 && fs_prctl == fs)
-> +		tst_res(TPASS, "get fs succeed");
-> +	else
-> +		tst_res(TFAIL, "got wrong fs register value");
-
-These messages discard errno and the expected/actual bases, and report a
-syscall failure as a register mismatch. Use TST_EXP_PASS_SILENT(), then
-TST_EXP_EQ_LU() only when TST_PASS is true; apply the same change to GS.
-
-> + * Author: Dmitry Chestnykh <dm.chestnykh@gmail.com>
-
-Add the required copyright line with year and author, for example
-"Copyright (c) 2026 Dmitry Chestnykh <dm.chestnykh@gmail.com>".
-
-> + * Simple test on arch_prctl to get FS_BASE and GS_BASE
-
-Use the required manpage role and describe the comparison, for example:
-"Check that :manpage:`arch_prctl(2)` with ``ARCH_GET_FS`` and ``ARCH_GET_GS``
-returns bases matching ``rdfsbase`` and ``rdgsbase``."
-
-Verdict - Needs revision
-
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
 ---
-Note:
+ .../functional/timers/timers/twoevtimers.c    | 51 ++++++++++++++-----
+ 1 file changed, 38 insertions(+), 13 deletions(-)
 
-The agent can sometimes produce false positives although often its
-findings are genuine. If you find issues with the review, please
-comment this email or ignore the suggestions.
+Changes in v2:
+ - use nanosleep
+ - make signals arrive in 50ms instead of 1 second
 
-Regards,
-LTP AI Reviewer
+diff --git a/testcases/open_posix_testsuite/functional/timers/timers/twoevtimers.c b/testcases/open_posix_testsuite/functional/timers/timers/twoevtimers.c
+index 0e46229777fe..1b2b20a5c399 100644
+--- a/testcases/open_posix_testsuite/functional/timers/timers/twoevtimers.c
++++ b/testcases/open_posix_testsuite/functional/timers/timers/twoevtimers.c
+@@ -5,9 +5,16 @@
+  * of this license, see the COPYING file at the top level of this
+  * source tree.
+  *
+- * Test having two timers in different processes set to expire at the
+- * same time, and ensure they both expire at the same time.
++ * Test having two timers in the same process, armed with the same
++ * absolute expiration time but delivering different signals, and ensure
++ * that both of them expire.
++ *
++ * Note that the test does not (and cannot) verify that the two signals
++ * are delivered simultaneously.  Signals are delivered one at a time, so
++ * the first one interrupts nanosleep() while the second one may still be
++ * on its way.  Keep waiting until both have arrived or LONGTIME elapses.
+  */
++#include <errno.h>
+ #include <stdio.h>
+ #include <time.h>
+ #include <signal.h>
+@@ -16,24 +23,25 @@
+ #include <sys/wait.h>
+ #include <unistd.h>
+ #include "posixtest.h"
++#include "timespec.h"
+ 
+-#define EXPIREDELTA 3
+-#define LONGTIME 5
++#define EXPIREDELTA_NS 50000000
++#define LONGTIME 3
+ 
+ #define CHILDPASS 1
+ 
+-static int caughtabort = 0;
+-static int caughtalarm = 0;
++static volatile sig_atomic_t caughtabort = 0;
++static volatile sig_atomic_t caughtalarm = 0;
+ 
+-static void handler_abrt(int signo)
++static void handler_abrt(int signo PTS_ATTRIBUTE_UNUSED)
+ {
+-	printf("Caught abort signal\n");
++	PTS_WRITE_MSG("Caught abort signal\n");
+ 	caughtabort++;
+ }
+ 
+-static void handler_alrm(int signo)
++static void handler_alrm(int signo PTS_ATTRIBUTE_UNUSED)
+ {
+-	printf("Caught alarm signal\n");
++	PTS_WRITE_MSG("Caught alarm signal\n");
+ 	caughtalarm++;
+ }
+ 
+@@ -45,6 +53,7 @@ int test_main(int argc, char **argv)
+ 	struct timespec ts;
+ 	struct itimerspec its;
+ 	int flags = 0;
++	struct timespec left = { .tv_sec = LONGTIME };
+ 
+ 	act1.sa_handler = handler_abrt;
+ 	act1.sa_flags = 0;
+@@ -77,8 +86,12 @@ int test_main(int argc, char **argv)
+ 		return PTS_UNRESOLVED;
+ 	}
+ 
+-	its.it_value.tv_sec = ts.tv_sec + EXPIREDELTA;
+-	its.it_value.tv_nsec = ts.tv_nsec;
++	its.it_value.tv_sec = ts.tv_sec;
++	its.it_value.tv_nsec = ts.tv_nsec + EXPIREDELTA_NS;
++	if (its.it_value.tv_nsec >= NSEC_IN_SEC) {
++		its.it_value.tv_sec++;
++		its.it_value.tv_nsec -= NSEC_IN_SEC;
++	}
+ 	its.it_interval.tv_sec = 0;
+ 	its.it_interval.tv_nsec = 0;
+ 
+@@ -93,7 +106,19 @@ int test_main(int argc, char **argv)
+ 		return PTS_UNRESOLVED;
+ 	}
+ 
+-	sleep(EXPIREDELTA + 1);
++	/*
++	 * nanosleep() returns early when the first signal arrives; keep
++	 * waiting on the remaining time until the second one has been
++	 * delivered as well or we time out.
++	 */
++	while (!(caughtalarm && caughtabort)) {
++		if (nanosleep(&left, &left) == 0)
++			break;
++		if (errno != EINTR) {
++			perror("nanosleep() did not return success\n");
++			return PTS_UNRESOLVED;
++		}
++	}
+ 
+ 	if ((caughtalarm == 1) && (caughtabort == 1)) {
+ 		printf("Test PASSED\n");
+-- 
+2.56.0
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
