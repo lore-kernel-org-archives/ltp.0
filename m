@@ -4,81 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 45F50CA601E
-	for <ltp@archiver.kernel.org>; Fri,  9 Oct 2026 18:33:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 71989CA601E
+	for <ltp@archiver.kernel.org>; Fri,  9 Oct 2026 18:37:15 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 704D53EA8DC
-	for <ltp@archiver.kernel.org>; Fri,  9 Oct 2026 20:33:24 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 568C93E9EFC
+	for <ltp@archiver.kernel.org>; Fri,  9 Oct 2026 20:37:13 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 959583E2E3E
- for <ltp@lists.linux.it>; Fri,  9 Oct 2026 20:33:06 +0200 (CEST)
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com
- [IPv6:2a00:1450:4864:20::12a])
+ by picard.linux.it (Postfix) with ESMTPS id 67AB83E9C90
+ for <ltp@lists.linux.it>; Fri,  9 Oct 2026 20:36:57 +0200 (CEST)
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com
+ [IPv6:2a00:1450:4864:20::12c])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 780DC6002B8
- for <ltp@lists.linux.it>; Fri,  9 Oct 2026 20:33:06 +0200 (CEST)
-Received: by mail-lf1-x12a.google.com with SMTP id
- 2adb3069b0e04-5bb7ae22913so3153297e87.3
- for <ltp@lists.linux.it>; Fri, 09 Oct 2026 11:33:06 -0700 (PDT)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id D3C82601937
+ for <ltp@lists.linux.it>; Fri,  9 Oct 2026 20:36:56 +0200 (CEST)
+Received: by mail-lf1-x12c.google.com with SMTP id
+ 2adb3069b0e04-5ba41ea31ccso4417244e87.0
+ for <ltp@lists.linux.it>; Fri, 09 Oct 2026 11:36:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1791570786; x=1792175586; darn=lists.linux.it;
+ d=gmail.com; s=20251104; t=1791571016; x=1792175816; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to:content-type;
- bh=F7E5CiktXtt0g+emKhyfvKdQKfWhOfR/SXS+ir+Q2LM=;
- b=P8fdpxz1FKGkdEBh0PuwtDQ7FmsXK80hz6llHuqt9mj7SOhmWCtyGMwaQ1Hra+aCeR
- D6c2AONyoGFEMRRXfnmsXSE5fCqHDeDaQAk7Wct07OtnXuhZbrjSBnDMCIcPNeQ3btgf
- bqbSpf1E9ZSp4YSJik1nGM1uuvb+GCOP8zkcZLLjVepcLoMWbq1ReMUfZDCADqxHLbEA
- punFN8IMnajBBai0JDetBUQPWtRWe092P9voermlz0+B+3IkWCKFk89kafHMo9vxiJIc
- lchI2Wa8/zjxwcDXTGSEQ86Gip8ph/ctbCJRvxNKmMDaCW+yMqwaBnjNbpa0gseECyCH
- Xm0w==
+ bh=buNd5l+Ln/e+Cm1Ucju9sdmizZO6PGc44r55wOseRuY=;
+ b=KDTdC/SuNjWKmWk+jXPBbDx8/R6ZqD+U77uzu/PgMCUqRyOqr9XlxDQnmDAOmc6VTx
+ BwcikpVBPMPl8ARY1LHkm9JsTpu4aaHJVJo6PnZMuzqhWJnLWNNaYmUnfSkwINb9SJXn
+ Qn04jo9Iw+5++z8DHg7u6vtFilmE9VJ8NRpeICktGNpZ/RfCEYP+pfSQM0e9sOXrq5/c
+ C1h6ChvLI8XMOmUrz9K8LfSoaLc1N/xSBtrwcLyobGACJKyPpJO0kbknLWp6UWKR1IEd
+ g8Mo28ZyGq8NiIuqOgCy0kcAC7Enh59HtDbBr5CxNm+Hj8zTsoh0q8zPby4SRL1Ye3EN
+ p9eg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20260707; t=1791570786; x=1792175586;
+ d=1e100.net; s=20260707; t=1791571016; x=1792175816;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to:content-type;
- bh=F7E5CiktXtt0g+emKhyfvKdQKfWhOfR/SXS+ir+Q2LM=;
- b=tzdlZDXgmplZ4s+sP3o7xSlkUcNXF/Jh+1wQEeNaVCQqysRIjsdhsqFelG6gPS6lHr
- GSLAfcBomeMT7G898/GoXvAwaRRqV2tnNRDkNyv2/8NbTnlZDZ2Ozr/pPSIEIDgZ5gNJ
- /lqX8IsZleCBscAAe8qqbjtM7VuDBXDSW8zl1ri73iJOGICXgyvRhOAwNyra8C/9nWq1
- iVu0/SMmVxihzlOcw1M0ev9TPvuJrXmyS1KF7WEbECBm8ilHs8m66TV8UsZ4FHV742YE
- KORthSNK1Z7DZFFzt1vPEKFC6fbxvsJlWrkstveelBdg4bZ/wjTL5sQXGpKiEJEpRp9m
- uDNw==
-X-Gm-Message-State: AFq9FYI206aQ51vTWTKiqivgx6xP5wIFbJnRLGYKCuOI3reEai6PHJLp
- LDddR+fIt9YZDwxslZ7u9DPUwk/m36Oab+AjfPIJS3CWbBJGwtyRRxmJi45xsKoze3yGcg==
-X-Gm-Gg: AYBFou3Urm6Evu3ogeElNT2DJ+9hatotZ6Z/U0CYwVoxGzFYLGu4yX394hyeyClfk+I
- HwXWI/jyc3iPm7u8lR/UKTJpys1WA6fui9VBkfSmLq4HLgvfTkPJ7CG1GT1w5GeGo9RLgoS87Ef
- 0BkK56BkNng6bSn7h4yOCH70MrYoneTREUaJMC63Y0GsR1yYo5yrnlseiUarZhF680t74g8Jf23
- EKSX8Xcb7jAWEcftNb2eUxf5+FVCDevicVc70ytGjXaB0OQQTSLBtp2Wy6CPrzSyVL1YLD0TUel
- PfoiiHqAF4EL3Xm1V9JlQe8GwT8/EEC+Kb4sMRwWCtK1u89J/UpUDU9m2hGvf5kcJ8EmZxjU2eY
- WTO59QcnnsKTrNV7RaRHX/qKmzp53eUIpakxXsyA5v3s6QB9Tg8sbpFdBryF0NPv5dZPSdnNhIk
- 6EXlgDhHbURjjH3YgOieeoNksOeOMWBn79bw/DZYLkwUO6LF1HSNqkMrAGUfCLkoGtCBYl8/8V8
- LGNOXGAYCNhImxFCar996CmzD31ZtAPe3T0CVBC
-X-Received: by 2002:a05:6512:1155:b0:5bc:cc96:67cc with SMTP id
- 2adb3069b0e04-5bcde39f469mr1066254e87.13.1791570785337; 
- Fri, 09 Oct 2026 11:33:05 -0700 (PDT)
+ bh=buNd5l+Ln/e+Cm1Ucju9sdmizZO6PGc44r55wOseRuY=;
+ b=DDV7I1CmPwXZzgZbgBeohgXSVs9aVIUdL+lzz/IR0gGdSP/MSQsPhUWItc/jyTm0eE
+ U3yHQgkr3KrHr1Nz81czILzcWFgJtTdkHKeBc5lS90N+0m4UweYt+OTf0ycinOYvdpm/
+ wMlqda/MpWqZ9u703TG0QWECmDiBraR9XBYuUdOl38+Pr8jOTa4OGooo3rq4Hri4x5HU
+ epKMxbuN4zmPjITAhmRgA3AxzCVKjzfA0PEupa6OPrEXC6cpMGnXKiFNTqCRlL4t+4Rt
+ 11Rw58FDf5QpRkJTH9JeZx0EMxVs/w6gotn7S5UTXm7kDVQSH58VjryEQjqYA2L+2st2
+ cYWw==
+X-Gm-Message-State: AFq9FYK3ITmtw1uUaG8SHMx15YV564aRmhj8tqwzyP9AoZQb1+t6IEfV
+ tLp2LOIddvCqwSnZfFv0TE7XqpRSy7UstylSY365vW5F5Yh+Og8TNL0ybfpq+5SbQ+cGZg==
+X-Gm-Gg: AYBFou0dzIGs/oC02yML+RriyjkfkIPDhr7eRI/PNqm2r5rz27fuqAexqBLNlx0HV5S
+ 7StpoRd8wmXbJ/atTPa33TQIjXFCKM+frwGSZDLBy6xzZS6MSpPHwRIoeVZOn0RawviBwgCDGa4
+ RfEnM9PSi4MWpTGqB3YNlGoXyq5RWsPe8w0zp07D56Ts6NR/JZ9U4YPOQM6fAMXr41E4PyjM+Cs
+ Jwp6LWYzN5ug9Wf/C8APY4fAWsXmekCFnSuKTTPl8LkSxkt4KED/eIxK1ljywtIBIwj79n/0zgJ
+ sNNgsy4GfqAfTJn7xfKw15CCUITjX7P3j4ciD9wthLA7oksnYHcib7viwo5V6AKntHAYPpui64s
+ GFAA1XLNhxTcP0wHs9lm7edQUmCpRTHiLOfxVOtmq38RTaHE1arPZjHA66xX9tlYhCaOPuVQlL9
+ G5jgTNa3vgcTYiAeri3C1lfGX4zdjvErg/fRGdUZfPX2TfdYu/grf2geGDIYW9laj+un1oTBj1A
+ DpS3a+P3GLqzC9ZCOZ5tMekiJ2t4zG+LkRJ648P
+X-Received: by 2002:a05:6512:438d:b0:5bc:e906:ad3 with SMTP id
+ 2adb3069b0e04-5bce9060f28mr11808e87.14.1791571015881; 
+ Fri, 09 Oct 2026 11:36:55 -0700 (PDT)
 Received: from chestnykh (broadband-46-242-13-70.ip.moscow.rt.ru.
  [46.242.13.70]) by smtp.gmail.com with ESMTPSA id
- 2adb3069b0e04-5bcdde3655bsm868692e87.6.2026.10.09.11.33.02
+ 38308e7fff4ca-3a9c3cd5a35sm8783761fa.31.2026.10.09.11.36.53
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 09 Oct 2026 11:33:03 -0700 (PDT)
+ Fri, 09 Oct 2026 11:36:53 -0700 (PDT)
 From: dm.chestnykh@gmail.com
 To: ltp@lists.linux.it
-Date: Fri,  9 Oct 2026 21:35:30 +0300
-Message-ID: <20261009183530.3114-1-dm.chestnykh@gmail.com>
+Date: Fri,  9 Oct 2026 21:39:21 +0300
+Message-ID: <20261009183921.3408-1-dm.chestnykh@gmail.com>
 X-Mailer: git-send-email 2.56.0
-In-Reply-To: <20261009155224.9042-1-dm.chestnykh@gmail.com>
-References: <20261009155224.9042-1-dm.chestnykh@gmail.com>
+In-Reply-To: <20261009183530.3114-1-dm.chestnykh@gmail.com>
+References: <20261009183530.3114-1-dm.chestnykh@gmail.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3] arch_prctl: add ARCH_GET_FS, ARCH_GET_GS tests
+Subject: [LTP] [PATCH v4] arch_prctl: add ARCH_GET_FS, ARCH_GET_GS tests
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -104,8 +103,8 @@ Signed-off-by: Dmitry Chestnykh <dm.chestnykh@gmail.com>
  include/lapi/arch_prctl.h                     |   9 ++
  runtest/syscalls                              |   1 +
  .../kernel/syscalls/arch_prctl/.gitignore     |   1 +
- .../kernel/syscalls/arch_prctl/arch_prctl02.c | 122 ++++++++++++++++++
- 5 files changed, 134 insertions(+)
+ .../kernel/syscalls/arch_prctl/arch_prctl02.c | 119 ++++++++++++++++++
+ 5 files changed, 131 insertions(+)
  create mode 100644 testcases/kernel/syscalls/arch_prctl/arch_prctl02.c
 
 diff --git a/configure.ac b/configure.ac
@@ -159,10 +158,10 @@ index 24871e249..72187b8b4 100644
 +/arch_prctl02
 diff --git a/testcases/kernel/syscalls/arch_prctl/arch_prctl02.c b/testcases/kernel/syscalls/arch_prctl/arch_prctl02.c
 new file mode 100644
-index 000000000..6992e93a3
+index 000000000..a69ee00ad
 --- /dev/null
 +++ b/testcases/kernel/syscalls/arch_prctl/arch_prctl02.c
-@@ -0,0 +1,122 @@
+@@ -0,0 +1,119 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
 + * Copyright (c) 2026 Dmitry Chestnykh <dm.chestnykh@gmail.com>
@@ -231,8 +230,7 @@ index 000000000..6992e93a3
 +
 +static void test_gs(void)
 +{
-+	unsigned long gs_prctl;
-+	unsigned long gs, orig_gs;
++	unsigned long gs, gs_prctl;
 +#define TEST_GS_BASE() do { \
 +	gs = READ_GS_BASE(); \
 +	TST_EXP_PASS_SILENT(arch_prctl_get(ARCH_GET_GS, &gs_prctl)); \
@@ -242,7 +240,6 @@ index 000000000..6992e93a3
 +} while (0)
 +
 +	TEST_GS_BASE();
-+	orig_gs = gs;
 +
 +	if (gs == 0) {
 +		unsigned long test_gs = 0xabababab;
@@ -252,7 +249,6 @@ index 000000000..6992e93a3
 +		}
 +	}
 +
-+	set_gs(orig_gs);
 +}
 +
 +static struct tcase {
