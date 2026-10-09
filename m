@@ -4,79 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5BF2ACA6012
-	for <ltp@archiver.kernel.org>; Fri,  9 Oct 2026 08:47:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 86FB7CA6019
+	for <ltp@archiver.kernel.org>; Fri,  9 Oct 2026 10:09:44 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 95E033E490C
-	for <ltp@archiver.kernel.org>; Fri,  9 Oct 2026 10:47:43 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 5D9A93E59B5
+	for <ltp@archiver.kernel.org>; Fri,  9 Oct 2026 12:09:42 +0200 (CEST)
 Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 7EAD33E24F7
- for <ltp@lists.linux.it>; Thu,  8 Oct 2026 21:45:04 +0200 (CEST)
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com
- [IPv6:2a00:1450:4864:20::129])
+ by picard.linux.it (Postfix) with ESMTPS id 24EA23E2EA2
+ for <ltp@lists.linux.it>; Fri,  9 Oct 2026 12:09:26 +0200 (CEST)
+Received: from mail-oo2-x08.google.com (mail-oo2-x08.google.com
+ [IPv6:2607:f8b0:4864:31::8])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id E11EF1400338
- for <ltp@lists.linux.it>; Thu,  8 Oct 2026 21:45:03 +0200 (CEST)
-Received: by mail-lf1-x129.google.com with SMTP id
- 2adb3069b0e04-5ba3adf78f5so4310436e87.3
- for <ltp@lists.linux.it>; Thu, 08 Oct 2026 12:45:03 -0700 (PDT)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 4C1DC1400456
+ for <ltp@lists.linux.it>; Fri,  9 Oct 2026 12:09:26 +0200 (CEST)
+Received: by mail-oo2-x08.google.com with SMTP id
+ 006d021491bc7-6debc457754so2693369eaf.0
+ for <ltp@lists.linux.it>; Fri, 09 Oct 2026 03:09:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1791488703; x=1792093503; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
- bh=jk0gsHGjOrqFpygrQXa/odhw13x5iMsOTMcoB8fsgDk=;
- b=gXII+svTGsmCLg4EsR58ttk3VGCbIcn1rWwUxhl0tRvZ94V5TLVa3b9DL6+3lHrJ16
- yYEOqSLaEh15ghg6Bf2+HnUp24ZbkXifLR3haxoVp9GZCUU9CmHndjNm5pT+Ph+v9uAL
- RDE76ZzPF/cR60sqcfrUdhDsyTtNzZbNhT4Uq8jcL6i/891RdSrPoVcf06nmzivh4rL3
- d9a/I1HNEClmhBAUB/WP4SKtA0vCM1iFhlnCETg9JRMDt1lJzluUOuL3ALavzFrcKDeD
- qa33vaVEJow2f/hgvB3yG4Q4Wh6x274l1UtLZJvEqfle1lOaQroX93BeaVsDlgOulmjn
- +Dtw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20260707; t=1791488703; x=1792093503;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+ d=gmail.com; s=20251104; t=1791540565; x=1792145365; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to:content-type;
- bh=jk0gsHGjOrqFpygrQXa/odhw13x5iMsOTMcoB8fsgDk=;
- b=hVdLMci2j4KUb19x9KcXJFgebL5Yh3tuc1Ap3Dsq7tWDyCxQQitMbOrUMGHrxSlzHy
- HZUqSR8Ya/+RzWp52PJ1BOWsFGz+LqTBXZ40gCgdZjozmdXYIK89GO73vH8NwBJ0dVeH
- xiXNRWU070Gef6f4ghmPM1bmGHK/8agmT9ilFj6uet9SFcfESFYyGsRhVovDf01SiAzp
- I0ktLfxBMCtyUb4/3lMzssddrfTJfHU8R5SB5coQ6VclyxksXmlkC8Dsz+ZL/c7MC/As
- 5OBhP+8wHlwKw4VqBXtTuCo+qcKNPzB7ACDLMDUUwtIAlW0FRBXXi3uoB1HV3XqVKzc8
- r0tQ==
-X-Gm-Message-State: AFq9FYJR6kLSeQhBCyXjzo63irkSYv8Jm9WSIbHxKeEBjnusW+UVOwqc
- Gndn10qgS/h0QgKmrYR92n708Yq4zQnqKGqljmfSLMjbQbMh2PqhN++0tpROSUceS5rg6w==
-X-Gm-Gg: AYBFou01PRcQjmg87/AvL8pmjsergqiPH0RyU0/dLZQfzPPSaclEogif2cXy3kPtkXd
- IhsjFdiH/nayZXWyByi4JeuUtW6j3i1x1uyR8PNBe5E79loaTEgDClSEaqTEWB83MGEtXfqr/cK
- 0R6km+dRa8L/mJ1tbKzB8w/ucdhh1InIIwIFFLLxP3rYA3zvn2+w5MxmA6rt7alUG07PCWhwKjp
- ERsoCpqgandEwCdi3158WUAozcjRdGPu5YHFTBzJagzPkTcSl9NPK3bI7ECOYB7k1ufi8oCXKN2
- +Icsu06FdR9ZIji1MAHK8p5M6f40DIwOp8/RrDNwQMBya1/wG5uLZ2SNi0cZPdkSwv1pqxoYx/e
- 4Ce0X9tYN7q1LhPvuoDJjWgx4dahGh4+tkHM4For4+rxDZvO/IJpGkiJddDVebbxqWX41xigNZ5
- y4lncjb6YQzyD2QE6R4B9fSHlHfwalCvMZTD0PFXqhDHpjApOdX9flRcKxAkykb3mHVa6AVCP3O
- 3nmkZyFt2NS0Utp1i/Vr2bs7bAuUJYrYUv6wGYdLvUzI26HGoE=
-X-Received: by 2002:a05:6512:6cb:b0:5b6:1a7c:aa0d with SMTP id
- 2adb3069b0e04-5bcd0727e7dmr2389623e87.37.1791488702612; 
- Thu, 08 Oct 2026 12:45:02 -0700 (PDT)
-Received: from chestnykh (broadband-46-242-13-70.ip.moscow.rt.ru.
- [46.242.13.70]) by smtp.gmail.com with ESMTPSA id
- 2adb3069b0e04-5bcdd2e26a7sm60857e87.82.2026.10.08.12.44.59
+ bh=9IjTJf8CvyFrfSUSaDqC9aQggtGRdrWmqnxeXjROT4U=;
+ b=QmNlTQEEghaWunvfyKVq/V3euhDMkHXgQUQRMYJMK6maZskksJ8yz5254Eat3eUdm6
+ 2QFv1PaCd4Mhh3770A3UESUeYiJag43nrga2T6vW7TB37jel8gXz0asV2Mfynuo/WF9+
+ skQg4E74YNBe+9V7pUqR2MM2cBC4Ljs+NVPJucsAod/pbwn5vb+RZDSwktI03tN4F6Yo
+ 2JtuM8Pg7XQJkYoTnja+kFrA+L+H2BKMZjlOobp0CofTangOq8My0D/Tb9hK909D2L40
+ rAzLIoGmgmmRm7C5WN5xQTitAIKqvgCHBihRkEPDHL8D74FNpkfVz74+fsdEH3104NEx
+ 9kYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20260707; t=1791540565; x=1792145365;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to:content-type;
+ bh=9IjTJf8CvyFrfSUSaDqC9aQggtGRdrWmqnxeXjROT4U=;
+ b=IV0dIGBuLXZCXB7IttAYfEAJy2dx0XudVSFExawVrQv9717eSuH4UAvB90wogD1Sn2
+ vss9kyrcryr3D8STyO9wt1Dl+jdtjXfg/JZTtKUICP47Je6g/LEEXQMV0KtqgqhjVYoU
+ 7WNpEXk3zEsRG4QVl8JPt1ouzYw5OCQtQRATsWUAL9jTcIXnvTwAkF72BBmTbhLb/d5q
+ SYe/hrIH8IQHfHolVRo5CTjiOBMIluXDzcuhSiXeDjO0hQaspX1Q9sotQTGOWLr8knbv
+ j4iRX/fEPetXfWuurP4uDOKaH3Eqof7YtwczssZK8fWgiP9mqCUnPGTO7pkw64Diftn9
+ ZYzA==
+X-Gm-Message-State: AFuF++mzIlF/wzKewrnD28wORitp3zUgrZcIJ/ho3p2Mit0qs2ucIBTc
+ usaM+lgobAEY8k2rRGJ74ZoCBctVvVvFnV/5gZxk6ZiDgShL0Zq18fUA
+X-Gm-Gg: AYBFou3u4nbtZcE+tcA3NtjQfVjJNlKxS1xtaXHEdFZjL1yhUE/xPbrywP+gK0jxWr8
+ 7CciVqLzjnFfpetxT6DK9/QvG3LlslWVju36miobCMVyu/migxQRmP8Fa7S1LSYixNfFND8TJSX
+ IGzF9asqBDjw+3kfuiA/U+ZQOdwAVWZv/gqRoCpS06aSjIts+v9E0QT4li7PZ3sugIb+bOdg4/3
+ UK2C6z4cLFQqdwZIfOl52aFul04HRdXUtZUfg7I27ozc3M/hCU9muxhfl41XqaITGnANdZnsrqD
+ 5e2e3kDGsCzhKvXctHdZhfqvYbGKEoIf/bOx2KgBmlGNb4NjSCJt3fm9CCaBVasiZxLJtls9sFt
+ rKoEQXSWHZXd9+KxQiljQaBcugeXHGgsGVqzkupJBH2dSE+Sd+RofucnJ9hWD1Wt7BtLeGCIxuN
+ ENiKuJsBcJami6l3LQD6pBh2JrRv7BQCEsn1S7bkkD85KiYwImzsLftWuEwFAXxKZkVtW7QWf5T
+ KVIOcuaU4y936kSrlL4b6RroLDJUduvAbIlnAvmIS2BBs7zulAXA+c6EG2PrZfRVM2ZYQCT0mVL
+ IVmRlmbF2rZu
+X-Received: by 2002:a4a:e911:0:b0:6dd:6d12:2317 with SMTP id
+ 006d021491bc7-6ef0eec20camr1007532eaf.25.1791540564605; 
+ Fri, 09 Oct 2026 03:09:24 -0700 (PDT)
+Received: from
+ runnervmmprz5.givru4gvcybuxl0txu4is0bsyd.gx.internal.cloudapp.net
+ ([172.212.205.20]) by smtp.gmail.com with ESMTPSA id
+ 006d021491bc7-6ef00ff3b83sm1412300eaf.6.2026.10.09.03.09.23
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 08 Oct 2026 12:45:00 -0700 (PDT)
-From: dm.chestnykh@gmail.com
-To: ltp@lists.linux.it
-Date: Thu,  8 Oct 2026 22:47:25 +0300
-Message-ID: <20261008194725.1198-1-dm.chestnykh@gmail.com>
-X-Mailer: git-send-email 2.56.0
+ Fri, 09 Oct 2026 03:09:23 -0700 (PDT)
+From: linuxtestproject.agent@gmail.com
+To: Jan Stancek <jstancek@redhat.com>
+Date: Fri,  9 Oct 2026 10:09:22 +0000
+Message-ID: <20261009100922.4010-1-linuxtestproject.agent@gmail.com>
+X-Mailer: git-send-email 2.55.0
+In-Reply-To: <4e46078e97ec7c6678cabd9f2b32cba8be3ee3cf.1791528355.git.jstancek@redhat.com>
+References: <4e46078e97ec7c6678cabd9f2b32cba8be3ee3cf.1791528355.git.jstancek@redhat.com>
 MIME-Version: 1.0
 X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Mailman-Approved-At: Fri, 09 Oct 2026 10:47:27 +0200
-Subject: [LTP] [PATCH] arch_prctl: add ARCH_GET_FS, ARCH_GET_GS tests
+Subject: Re: [LTP] openposix: timers/twoevtimers: Wait for both timer signals
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -88,129 +92,38 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Dmitry Chestnykh <dm.chestnykh@gmail.com>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Dmitry Chestnykh <dm.chestnykh@gmail.com>
+Hi Jan,
 
-Signed-off-by: Dmitry Chestnykh <dm.chestnykh@gmail.com>
+On 9 Oct 2026, Jan Stancek wrote:
+> openposix: timers/twoevtimers: Wait for both timer signals
+
+> +	while (left > 0 && !(caughtalarm && caughtabort))
+> +		left = sleep(left);
+
+On glibc and musl, sleep() discards the fractional remaining time.
+If the first signal interrupts sleep(3) after 2.1 seconds, it returns
+zero with about 0.9 seconds still in the budget, so this can fail before
+the second signal arrives.
+Use nanosleep() and retain the full remaining timespec, or wait against
+a monotonic deadline.
+
+Verdict - Needs revision
+
 ---
- .../kernel/syscalls/arch_prctl/.gitignore     |  1 +
- testcases/kernel/syscalls/arch_prctl/Makefile |  2 +
- .../kernel/syscalls/arch_prctl/arch_prctl02.c | 81 +++++++++++++++++++
- 3 files changed, 84 insertions(+)
- create mode 100644 testcases/kernel/syscalls/arch_prctl/arch_prctl02.c
+Note:
 
-diff --git a/testcases/kernel/syscalls/arch_prctl/.gitignore b/testcases/kernel/syscalls/arch_prctl/.gitignore
-index 24871e249..72187b8b4 100644
---- a/testcases/kernel/syscalls/arch_prctl/.gitignore
-+++ b/testcases/kernel/syscalls/arch_prctl/.gitignore
-@@ -1 +1,2 @@
- /arch_prctl01
-+/arch_prctl02
-diff --git a/testcases/kernel/syscalls/arch_prctl/Makefile b/testcases/kernel/syscalls/arch_prctl/Makefile
-index 272949d57..c4413a81f 100644
---- a/testcases/kernel/syscalls/arch_prctl/Makefile
-+++ b/testcases/kernel/syscalls/arch_prctl/Makefile
-@@ -6,3 +6,5 @@ top_srcdir		?= ../../../..
- include $(top_srcdir)/include/mk/testcases.mk
+The agent can sometimes produce false positives although often its
+findings are genuine. If you find issues with the review, please
+comment this email or ignore the suggestions.
 
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-+
-+CFLAGS += -mfsgsbase
-diff --git a/testcases/kernel/syscalls/arch_prctl/arch_prctl02.c b/testcases/kernel/syscalls/arch_prctl/arch_prctl02.c
-new file mode 100644
-index 000000000..124dd13b9
---- /dev/null
-+++ b/testcases/kernel/syscalls/arch_prctl/arch_prctl02.c
-@@ -0,0 +1,81 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Author: Dmitry Chestnykh <dm.chestnykh@gmail.com>
-+ */
-+
-+/*\
-+ * Simple test on arch_prctl to get FS_BASE and GS_BASE
-+ */
-+
-+#include "tst_test.h"
-+#include "lapi/syscalls.h"
-+#include "lapi/arch_prctl.h"
-+#include <stdlib.h>
-+#include <string.h>
-+
-+#include <sys/auxv.h>
-+#ifndef HWCAP2_FSGSBASE
-+#if defined(__has_include) && __has_include(<asm/hwcap2.h>)
-+#include <asm/hwcap2.h>
-+#else
-+#warning "Cannot obtain HWCAP2_FSGSBASE from system headers"
-+#define HWCAP2_FSGSBASE (1UL << 1)
-+#endif /* defined(__has_include) && __has_include(<asm/hwcap2.h>) */
-+#endif /* HWCAP2_FSGSBASE */
-+
-+static int arch_prctl_get(int code, unsigned long *out)
-+{
-+	return tst_syscall(__NR_arch_prctl, code, out);
-+}
-+
-+static bool tag;
-+
-+static void setup(void)
-+{
-+	unsigned long v = getauxval(AT_HWCAP2);
-+
-+	tag = v & HWCAP2_FSGSBASE ? true : false;
-+}
-+
-+#define READ_FS_BASE() ({                              \
-+	unsigned long long __res;                          \
-+	asm volatile("rdfsbase %0" : "=r"(__res));         \
-+	__res;                                             \
-+})
-+
-+#define READ_GS_BASE() ({                              \
-+	unsigned long long __res;                          \
-+	asm volatile("rdgsbase %0" : "=r"(__res));         \
-+	__res;                                             \
-+})
-+
-+static void run(unsigned int index)
-+{
-+	(void)index;
-+	if (!tag)
-+		tst_brk(TCONF, "rdfsbase/rdgsbase are not supported/enabled");
-+
-+	unsigned long fs = READ_FS_BASE();
-+	unsigned long gs = READ_GS_BASE();
-+	unsigned long fs_prctl, gs_prctl;
-+
-+	TEST(arch_prctl_get(ARCH_GET_FS, &fs_prctl));
-+	if (TST_RET == 0 && fs_prctl == fs)
-+		tst_res(TPASS, "get fs succeed");
-+	else
-+		tst_res(TFAIL, "got wrong fs register value");
-+
-+	TEST(arch_prctl_get(ARCH_GET_GS, &gs_prctl));
-+	if (TST_RET == 0 && gs_prctl == gs)
-+		tst_res(TPASS, "get gs succeed");
-+	else
-+		tst_res(TFAIL, "got wrong gs register value");
-+}
-+
-+static struct tst_test test = {
-+	.test = run,
-+	.setup = setup,
-+	.tcnt = 1,
-+	.min_kver = "5.9",
-+	.supported_archs = (const char *const []){"x86_64", NULL}
-+};
---
-2.56.0
-
+Regards,
+LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
