@@ -4,50 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D9AFECA6015
-	for <ltp@archiver.kernel.org>; Fri,  9 Oct 2026 14:01:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 88A05CA6019
+	for <ltp@archiver.kernel.org>; Fri,  9 Oct 2026 14:15:32 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E615C3E9B51
-	for <ltp@archiver.kernel.org>; Fri,  9 Oct 2026 16:01:10 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id DEE7D3E9C7F
+	for <ltp@archiver.kernel.org>; Fri,  9 Oct 2026 16:15:30 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9F79C3E294E
- for <ltp@lists.linux.it>; Fri,  9 Oct 2026 16:00:55 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ by picard.linux.it (Postfix) with ESMTPS id 451E43E294E
+ for <ltp@lists.linux.it>; Fri,  9 Oct 2026 16:15:16 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 817D61400E67
- for <ltp@lists.linux.it>; Fri,  9 Oct 2026 16:00:53 +0200 (CEST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id BB1CB20011A
+ for <ltp@lists.linux.it>; Fri,  9 Oct 2026 16:15:15 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id F26001F7CB;
- Fri,  9 Oct 2026 14:00:52 +0000 (UTC)
-Authentication-Results: smtp-out2.suse.de;
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 4594B21BA9;
+ Fri,  9 Oct 2026 14:15:15 +0000 (UTC)
+Authentication-Results: smtp-out1.suse.de;
 	none
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C6D761368B;
- Fri,  9 Oct 2026 14:00:52 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1BE161368B;
+ Fri,  9 Oct 2026 14:15:15 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id EcS/KJTzyGqhBQAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Fri, 09 Oct 2026 14:00:52 +0000
-Date: Fri, 9 Oct 2026 16:01:10 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id ZGW7APP2yGqQFAAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Fri, 09 Oct 2026 14:15:15 +0000
+Date: Fri, 9 Oct 2026 16:15:32 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
 To: Andrea Cervesato <andrea.cervesato@suse.de>
-Message-ID: <asjzpnaV0oFB9HpV@yuki.lan>
+Message-ID: <asj3BGzxX9DxPaGH@yuki.lan>
 References: <20261005-fix_core_lib_deepseek-v1-0-fec334ce8e80@suse.com>
- <20261005-fix_core_lib_deepseek-v1-8-fec334ce8e80@suse.com>
+ <20261005-fix_core_lib_deepseek-v1-9-fec334ce8e80@suse.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20261005-fix_core_lib_deepseek-v1-8-fec334ce8e80@suse.com>
+In-Reply-To: <20261005-fix_core_lib_deepseek-v1-9-fec334ce8e80@suse.com>
 X-Rspamd-Pre-Result: action=no action;
 	module=Unknown lua;
 	unknown reason
@@ -55,10 +54,10 @@ X-Rspamd-Pre-Result: action=no action;
 	module=Unknown lua;
 	unknown reason
 X-Spamd-Result: default: False [0.00 / 50.00]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 08/15] ujson: writer: Check return value in
- ESC_FLUSH
+Subject: Re: [LTP] [PATCH 09/15] ujson: reader: Do not increment depth on
+ overflow
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,40 +76,41 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> ESC_FLUSH ignores the return values of out() and out_str().
-> If an output error occurs while flushing escaped characters, the error
-> is ignored and writing continues. Check the return values and return
-> immediately on failure.
+> any_first() increments buf->depth before verifying whether
+> depth > max_depth. If recursion overflows, depth is left skewed
+> beyond max_depth. Check bounds before incrementing.
 > 
 > Fixes: c50a0e0751c8 ("libs: Vendor ujson library")
 > Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 > ---
->  libs/ujson/ujson_writer.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
+>  libs/ujson/ujson_reader.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
 > 
-> diff --git a/libs/ujson/ujson_writer.c b/libs/ujson/ujson_writer.c
-> index c203ee079..15faca9be 100644
-> --- a/libs/ujson/ujson_writer.c
-> +++ b/libs/ujson/ujson_writer.c
-> @@ -98,10 +98,12 @@ static inline int out_ch(ujson_writer *self, char ch)
->  }
+> diff --git a/libs/ujson/ujson_reader.c b/libs/ujson/ujson_reader.c
+> index 272df4d55..b73a31b8f 100644
+> --- a/libs/ujson/ujson_reader.c
+> +++ b/libs/ujson/ujson_reader.c
+> @@ -811,13 +811,13 @@ static int any_first(ujson_reader *buf, char b)
+>  		return 1;
+>  	}
 >  
->  #define ESC_FLUSH(esc_char) do {\
-> -	out(self, val, i); \
-> +	if (out(self, val, i)) \
-> +		return 1; \
->  	val += i + 1; \
->  	i = 0; \
-> -	out_str(self, esc_char); \
-> +	if (out_str(self, esc_char)) \
-> +		return 1; \
->  } while (0)
+> -	buf->depth++;
+> -
+> -	if (buf->depth > buf->max_depth) {
+> +	if (buf->depth >= buf->max_depth) {
+>  		ujson_err(buf, "Recursion too deep");
+>  		return 1;
+>  	}
+>  
+> +	buf->depth++;
+> +
+>  	return 0;
+>  }
 
-An return in a macro is a bit borderline.
-
-Maybe it would have been cleaner to change the ESC_FLUSH() into a
-funciton and return a proper return value that would be stored in the
-switch instead.
+I think that this is not a real problem, since once the error is set in
+the buffer all subsequent calls to the library just return, since all of
+them call check_err() at the start. That means that once the error is
+set we will never call this function again.
 
 -- 
 Cyril Hrubis
