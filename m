@@ -4,80 +4,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B34F0CA9EC1
-	for <ltp@archiver.kernel.org>; Sat, 10 Oct 2026 06:40:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 79A94CA6017
+	for <ltp@archiver.kernel.org>; Sat, 10 Oct 2026 09:07:15 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 11EEA3E2D49
-	for <ltp@archiver.kernel.org>; Sat, 10 Oct 2026 08:40:32 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 38B8B3E2E1C
+	for <ltp@archiver.kernel.org>; Sat, 10 Oct 2026 11:07:13 +0200 (CEST)
 Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 4F9463C23B2
- for <ltp@lists.linux.it>; Sat, 10 Oct 2026 08:40:15 +0200 (CEST)
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com
- [IPv6:2a00:1450:4864:20::134])
+ by picard.linux.it (Postfix) with ESMTPS id BCD3B3E2904
+ for <ltp@lists.linux.it>; Sat, 10 Oct 2026 11:06:58 +0200 (CEST)
+Received: from mta0.migadu.com (out-153.mta0.migadu.com
+ [IPv6:2001:41d0:1004:224b::99])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 8DAC2200045
- for <ltp@lists.linux.it>; Sat, 10 Oct 2026 08:40:14 +0200 (CEST)
-Received: by mail-lf1-x134.google.com with SMTP id
- 2adb3069b0e04-5ba3b1199f6so278257e87.3
- for <ltp@lists.linux.it>; Fri, 09 Oct 2026 23:40:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1791614414; x=1792219214; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to:content-type;
- bh=xOuyqhzwUZ7m99sAEZ/QOXTHA4+bwE2qpv8p5/njB+c=;
- b=hF6qyeRNoc3YkBY3Wc7sXeE9fsaSGuiX0PcilM8mfAJdj8lnIk1LcWvJuSLZokE9PZ
- IpGqIfHOUXiPP/DzNO+RDzebRexnZweEvJBPCDIVwuL4Y/kTUPMp5T4qOVWnM+lMth1Y
- Td5HZmFNNvaOGAsCDzTc2JKuqxgVQt1PZo5h5IYkz0DjxAo0evE4F0jqFggz8t/KUsNw
- 2vmgV6UL/hFMFBivoEV4iRCkhSSMTTwyV5qhvCK78ApIOzwtAq72ryvH1psfQNKR7Xo5
- auoAWP00Lj9FvB5lWdFfUDRgSfZKCsE5Qd2MLeMeU2uy6o4nCfX3zv1oKlppGUlMFbSl
- mvgw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20260707; t=1791614414; x=1792219214;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to:content-type;
- bh=xOuyqhzwUZ7m99sAEZ/QOXTHA4+bwE2qpv8p5/njB+c=;
- b=SyLgvjCB398BY9ZHCNah902jGkhuIOyIrHFOqmXgKfcYoC1QzZgCXbacGQ0C9yvVXl
- 8+8Sr/mzAayXZEq+pvL9/gmcIWL1j4F1XAC19p3uOfbYcFqRzvDKvsgZYD2VZGVCmDZe
- AvRoXs0NBn0NgPq7D/c2qrl03Jse4I7Fb6kOsDKtdFvBmmlZmnGph+tNsQjGogALGYQ3
- NF6V069GWrxNIuzklk3MAzJruMVVzQHYPvnSYbBxeq+wm/0lRgHqy//79D56tat9wqnZ
- UgcFJX9ALpjTPy/30ezd0ju4CTAEQ7xLNLM2+QMcLqSzCMfktdcYP2qYN6LgzasNIqt1
- Raiw==
-X-Gm-Message-State: AFq9FYL1AMwO9TAY/2V5Hf2gFZXdwF4DE5P1XXXzBKGOyJ4mh3T4Gqni
- 6Tk5+97kX9E8jdKpd1KPsljh4V3bMfdsW+h7/+ji3LFXE4w1seqQyBWnaohIs3+QlbZuSA==
-X-Gm-Gg: AYBFou03MntSMbr16+w1jGNTutFNeAeubCGdu0NpGhg8Yz0TC2VC3tx3wGqoB5hn5/d
- ETZtQ91w9B+P5u+jPFDWdEUN9Fd6sY/B6hdC4p38C+lbA89Tb8/WIM/W1IOitHPO97grdPzaD+K
- rBng2kfFLbPmte0d/IqDFWTLEnKaIGbZ5SwYrwW5cu6/hMtxbGNR3NfaPfRXEcBP+97JMrYiEA+
- Xp2BSkfEQ5mEEHSdx4sVlFHaYQuWAV0eldtF16AJ+xW0NQD+Ij01VDfLok2/OV1SzQS3OY+IgyY
- 55ODx5h3qHPRaHPJ1Rb2oNZspvrv8s+yxj45J5Ny0iDyc3zUhSNrFneUvFsBuHUZUhsWKoTNS4n
- Pvt1YMeG5GVT9nG7NYwU1zhYkIK5yw+5K6992XzAW0jznHZSkmd3MC9LasgiOkkqZdCpqDz8mer
- USwVatlfjXxOLMiH5AFIDhhu6PI+0kNGDsPgmwhxV1520YrzEDq55cVHcCzef9RUGeyZs+49jBO
- zw1EiWBnejv0e0O0wJsFCKWN5IDyikEUf/Ec+yNn7H4oCJKum8=
-X-Received: by 2002:a05:6512:3f21:b0:5ba:4472:75d4 with SMTP id
- 2adb3069b0e04-5bcde6afa8cmr1520045e87.10.1791614413591; 
- Fri, 09 Oct 2026 23:40:13 -0700 (PDT)
-Received: from chestnykh (broadband-46-242-13-70.ip.moscow.rt.ru.
- [46.242.13.70]) by smtp.gmail.com with ESMTPSA id
- 2adb3069b0e04-5bcdde9c8f8sm1240458e87.37.2026.10.09.23.40.11
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 09 Oct 2026 23:40:11 -0700 (PDT)
-From: dm.chestnykh@gmail.com
-To: ltp@lists.linux.it
-Date: Sat, 10 Oct 2026 09:42:40 +0300
-Message-ID: <20261010064240.2467-1-dm.chestnykh@gmail.com>
-X-Mailer: git-send-email 2.56.0
-In-Reply-To: <20261010063824.2073-1-dm.chestnykh@gmail.com>
-References: <20261010063824.2073-1-dm.chestnykh@gmail.com>
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id E1D4D2001B6
+ for <ltp@lists.linux.it>; Sat, 10 Oct 2026 11:06:57 +0200 (CEST)
+X-Envelope-To: ltp@lists.linux.it
+DKIM-Signature: a=rsa-sha256; bh=ZLc1hjGYT3OJ6tHUnLSby9RpY/x2ICkWjy6HpAPctLA=; 
+ c=simple/simple; d=linux.dev;
+ h=from:to:subject:date:message-id:mime-version:content-type; s=key1;
+ t=1791623216; v=1; x=1792228016;
+ b=if8LVlgKYKeMXWD8lRxuPZ2ltZLQUz1m9ndxlahzlEBdL1lT5GWoayCPclzStxG/RgGVrCFZ
+ t5oHtN5Hd7caIuSttsY4UTBdtWOmpPY9oyVh+L2A5txfeVBrTKsyrb35dWAe0IYiH+djz+IsShq
+ c+UMXqBIQuTXFlRKrbOgxPjE=
+X-Envelope-To: ltp@lists.linux.it
+Received: by smtp.migadu.com with ESMTPS id 9cdf419edc1adf0f;
+ Sat, 10 Oct 2026 09:06:56 +0000
+X-Mizu-Trace-ID: 9cdf419edc1adf0f
+X-Migadu-Flow: FLOW_OUT
+Date: Sat, 10 Oct 2026 17:06:49 +0800
+From: Li Wang <li.wang@linux.dev>
+To: linuxtestproject.agent@gmail.com
+Message-ID: <asoAKV-Wd-TK5XUe@linux.dev>
+Mail-Followup-To: linuxtestproject.agent@gmail.com,
+ Jan Stancek <jstancek@redhat.com>, ltp@lists.linux.it
+References: <24014310ac600340c4ef9720980eac1c047f4b6f.1791543115.git.jstancek@redhat.com>
+ <20261009172601.34695-1-linuxtestproject.agent@gmail.com>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20261009172601.34695-1-linuxtestproject.agent@gmail.com>
 X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v6] arch_prctl: add ARCH_GET_FS, ARCH_GET_GS tests
+Subject: Re: [LTP] openposix: timers/twoevtimers: Wait for both timer signals
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -89,204 +60,64 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Dmitry Chestnykh <dm.chestnykh@gmail.com>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Dmitry Chestnykh <dm.chestnykh@gmail.com>
+Hi Jan,
 
-Signed-off-by: Dmitry Chestnykh <dm.chestnykh@gmail.com>
----
- configure.ac                                  |   1 +
- include/lapi/arch_prctl.h                     |   9 ++
- runtest/syscalls                              |   1 +
- .../kernel/syscalls/arch_prctl/.gitignore     |   1 +
- .../kernel/syscalls/arch_prctl/arch_prctl02.c | 122 ++++++++++++++++++
- 5 files changed, 134 insertions(+)
- create mode 100644 testcases/kernel/syscalls/arch_prctl/arch_prctl02.c
+linuxtestproject.agent@gmail.com wrote:
 
-diff --git a/configure.ac b/configure.ac
-index e979de0e7..9db3e06ad 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -53,6 +53,7 @@ AC_CHECK_HEADERS_ONCE([ \
-     aio.h \
-     asm/ldt.h \
-     asm/prctl.h \
-+    asm/hwcap2.h \
-     cpuid.h \
-     emmintrin.h \
-     ifaddrs.h \
-diff --git a/include/lapi/arch_prctl.h b/include/lapi/arch_prctl.h
-index a4e7f8458..6d8376e58 100644
---- a/include/lapi/arch_prctl.h
-+++ b/include/lapi/arch_prctl.h
-@@ -19,4 +19,13 @@
- # define ARCH_SET_CPUID 0x1012
- #endif
+> Hi Jan,
+> 
+> On Fri, 9 Oct 2026, Jan Stancek via ltp wrote:
+> > openposix: timers/twoevtimers: Wait for both timer signals
+> 
+> > +	PTS_WRITE_MSG("Caught abort signal\n");
+> > +	PTS_WRITE_MSG("Caught alarm signal\n");
+> > +		if (errno != EINTR) {
+> > +			perror("nanosleep() did not return success\n");
+> > +			return PTS_UNRESOLVED;
+> > +		}
+> 
+> Medium: PTS_WRITE_MSG() calls write() without preserving errno. If the
+> second signal arrives after nanosleep() sets EINTR but before the new
+> errno check, a failed handler write (e.g. EAGAIN on a full nonblocking
+> stdout pipe) causes a spurious unresolved result even when both timers
+> fired. Save errno on entry and restore it before returning in both
+> handlers.
 
-+#ifdef __x86_64__
-+# ifdef HAVE_ASM_HWCAP2_H
-+#  include <asm/hwcap2.h>
-+# endif /* HAVE_ASM_HWCAP2_H */
-+# ifndef HWCAP2_FSGSBASE
-+#  define HWCAP2_FSGSBASE (1UL << 1)
-+# endif /* HWCAP2_FSGSBASE */
-+#endif /* __x86_64__ */
-+
- #endif /* LAPI_ARCH_PRCTL_H__ */
-diff --git a/runtest/syscalls b/runtest/syscalls
-index accdf2df9..f2f2a0602 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -32,6 +32,7 @@ alarm06 alarm06
- alarm07 alarm07
+The race condition pointed out by the AI seems plausible. Would it make
+sense to save and restore errno in the signal handlers, like this:
 
- arch_prctl01 arch_prctl01
-+arch_prctl02 arch_prctl02
+static void handler_abrt(int signo PTS_ATTRIBUTE_UNUSED)
+ {
++       int saved_errno = errno;
++
+        PTS_WRITE_MSG("Caught abort signal\n");
+        caughtabort++;
++
++       errno = saved_errno;
++
+ }
 
- bind01 bind01
- bind02 bind02
-diff --git a/testcases/kernel/syscalls/arch_prctl/.gitignore b/testcases/kernel/syscalls/arch_prctl/.gitignore
-index 24871e249..72187b8b4 100644
---- a/testcases/kernel/syscalls/arch_prctl/.gitignore
-+++ b/testcases/kernel/syscalls/arch_prctl/.gitignore
-@@ -1 +1,2 @@
- /arch_prctl01
-+/arch_prctl02
-diff --git a/testcases/kernel/syscalls/arch_prctl/arch_prctl02.c b/testcases/kernel/syscalls/arch_prctl/arch_prctl02.c
-new file mode 100644
-index 000000000..81295234d
---- /dev/null
-+++ b/testcases/kernel/syscalls/arch_prctl/arch_prctl02.c
-@@ -0,0 +1,122 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2026 Dmitry Chestnykh <dm.chestnykh@gmail.com>
-+ * Author: Dmitry Chestnykh <dm.chestnykh@gmail.com>
-+ */
+ static void handler_alrm(int signo PTS_ATTRIBUTE_UNUSED)
+ {
++       int saved_errno = errno;
 +
-+/*\
-+ * Test that ``ARCH_GET_FS`` and ``ARCH_GET_GS`` return the same bases read independently
-+ * by RDFSBASE and RDGSBASE.
-+ */
+        PTS_WRITE_MSG("Caught alarm signal\n");
+        caughtalarm++;
 +
-+#include "tst_test.h"
-+#include "lapi/syscalls.h"
-+#include "lapi/arch_prctl.h"
-+#include <stdlib.h>
-+#include <string.h>
-+
-+#ifdef __x86_64__
-+
-+#ifdef HAVE_GETAUXVAL
-+# include <sys/auxv.h>
-+#endif
-+
-+static int arch_prctl_get(int code, unsigned long long *out)
-+{
-+	return tst_syscall(__NR_arch_prctl, code, out);
-+}
-+
-+static int set_gs(unsigned long long val)
-+{
-+	return tst_syscall(__NR_arch_prctl, ARCH_SET_GS, val);
-+}
-+
-+static bool tag;
-+
-+static void setup(void)
-+{
-+	unsigned long long v = 0;
-+
-+#ifdef AT_HWCAP2
-+	v = getauxval(AT_HWCAP2);
-+#endif
-+	tag = v & HWCAP2_FSGSBASE ? true : false;
-+}
-+
-+#define READ_FS_BASE() ({                              \
-+	unsigned long long __res_fs;                       \
-+	asm volatile("rdfsbase %0" : "=r"(__res_fs));      \
-+	__res_fs;                                          \
-+})
-+
-+#define READ_GS_BASE() ({                              \
-+	unsigned long long __res_gs;                       \
-+	asm volatile("rdgsbase %0" : "=r"(__res_gs));      \
-+	__res_gs;                                          \
-+})
-+
-+static void test_fs(void)
-+{
-+	unsigned long long fs = READ_FS_BASE();
-+	unsigned long long fs_prctl;
-+
-+	TST_EXP_PASS_SILENT(arch_prctl_get(ARCH_GET_FS, &fs_prctl));
-+	if (TST_PASS)
-+		TST_EXP_EQ_LU(fs_prctl, fs);
-+}
-+
-+static void test_gs(void)
-+{
-+	unsigned long long gs, gs_prctl, orig_gs;
-+#define TEST_GS_BASE() do { \
-+	gs = READ_GS_BASE(); \
-+	TST_EXP_PASS_SILENT(arch_prctl_get(ARCH_GET_GS, &gs_prctl)); \
-+	if (TST_PASS) { \
-+		TST_EXP_EQ_LU(gs_prctl, gs); \
-+	} \
-+} while (0)
-+
-+	TEST_GS_BASE();
-+	orig_gs = gs;
-+
-+	if (gs == 0) {
-+		unsigned long long test_gs = 0xabababab;
-+
-+		TST_EXP_PASS_SILENT(set_gs(test_gs));
-+		if (TST_PASS)
-+			TEST_GS_BASE();
-+
-+		set_gs(orig_gs);
-+	}
-+}
-+
-+static struct tcase {
-+	unsigned int idx;
-+	void (*test_fn)(void);
-+} tcases[] = {
-+	{0, test_fs},
-+	{1, test_gs}
-+};
-+
-+static void run(unsigned int index)
-+{
-+	if (!tag)
-+		tst_brk(TCONF, "rdfsbase/rdgsbase are not supported/enabled");
-+
-+	struct tcase *tc = &tcases[index];
-+	(*tc->test_fn)();
-+}
-+
-+static struct tst_test test = {
-+	.test = run,
-+	.setup = setup,
-+	.tcnt = ARRAY_SIZE(tcases),
-+	.min_kver = "5.9",
-+	.supported_archs = (const char *const []){"x86_64", NULL}
-+};
-+
-+#else
-+
-+TST_TEST_TCONF("Tests needs x86_64 CPU");
-+
-+#endif /* __x86_64__ */
---
-2.56.0
++       errno = saved_errno;
+ }
 
+The rest part looks good to me.
+
+-- 
+Regards,
+Li Wang
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
