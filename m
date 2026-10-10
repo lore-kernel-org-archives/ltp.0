@@ -4,50 +4,50 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0C085CA6004
-	for <ltp@archiver.kernel.org>; Sat, 10 Oct 2026 03:37:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 64F2BCA6017
+	for <ltp@archiver.kernel.org>; Sat, 10 Oct 2026 03:37:55 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 428C03EB1CA
-	for <ltp@archiver.kernel.org>; Sat, 10 Oct 2026 05:37:34 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 917303EB1C2
+	for <ltp@archiver.kernel.org>; Sat, 10 Oct 2026 05:37:53 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 3CE563EB1C6
- for <ltp@lists.linux.it>; Sat, 10 Oct 2026 05:36:57 +0200 (CEST)
-Received: from mta1.migadu.com (out-88.mta1.migadu.com
- [IPv6:2001:41d0:203:375::58])
+ by picard.linux.it (Postfix) with ESMTPS id 692033EB1C4
+ for <ltp@lists.linux.it>; Sat, 10 Oct 2026 05:36:59 +0200 (CEST)
+Received: from mta0.migadu.com (out-151.mta0.migadu.com
+ [IPv6:2001:41d0:1004:224b::97])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id B8E80200047
- for <ltp@lists.linux.it>; Sat, 10 Oct 2026 05:36:56 +0200 (CEST)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id DF91D60193C
+ for <ltp@lists.linux.it>; Sat, 10 Oct 2026 05:36:58 +0200 (CEST)
 X-Envelope-To: ltp@lists.linux.it
-DKIM-Signature: a=rsa-sha256; bh=NHkuiGycDT0r4DbJi+7vVGFOyoT0yK73LQ9lCobLrDs=; 
+DKIM-Signature: a=rsa-sha256; bh=AS9FRZerIDXcoyM0v7qS+yJRT10d9lTmm6kYtZpG1qU=; 
  c=simple/simple; d=linux.dev;
  h=from:to:subject:date:message-id:mime-version:content-type; s=key1;
- t=1791603415; v=1; x=1792208215;
- b=wx0A2cig/TShmIsD1EImg8DMERqH78CaAKWQ3wTyaJ2di2svPuMZs8WUA6Szc2PAGvDMGV1R
- G2aE+ofxrQOPzuWbcF79Vifk+femITCOi6Z0/GUyYdbFRT57DKSxR6P9Bg7Vweiis4OBZAO7kPr
- igBE1XlB7zOMnVzAPhg32/VU=
+ t=1791603417; v=1; x=1792208217;
+ b=cdlQtoYP0rGDBvAP4507lpxpDF4JJFfdyfOUfMNrCa14VRPmI8dJxZAKbpTKYnclPou4ZLlR
+ 6YOTgfurfgChxm+RaShzvnJN/SYCWb1ekgJ8l6UvZp3qQpuhhpGZSP8cU92a6UIHo1wd72cCO1e
+ a/UVLPj3hLAIV7V/IpYxUCs0=
 X-Envelope-To: ltp@lists.linux.it
-Received: by mta10.migadu.com with ESMTPS id c22051d54b4da19c;
- Sat, 10 Oct 2026 03:36:55 +0000
-X-Mizu-Trace-ID: c22051d54b4da19c
+Received: by mta10.migadu.com with ESMTPS id 905328b9c6565e13;
+ Sat, 10 Oct 2026 03:36:57 +0000
+X-Mizu-Trace-ID: 905328b9c6565e13
 X-Migadu-Flow: FLOW_OUT
 From: Li Wang <li.wang@linux.dev>
 To: ltp@lists.linux.it
-Date: Sat, 10 Oct 2026 11:36:20 +0800
-Message-ID: <20261010033622.68927-3-li.wang@linux.dev>
+Date: Sat, 10 Oct 2026 11:36:21 +0800
+Message-ID: <20261010033622.68927-4-li.wang@linux.dev>
 X-Mailer: git-send-email 2.56.0
 In-Reply-To: <20261010033622.68927-1-li.wang@linux.dev>
 References: <20261010033622.68927-1-li.wang@linux.dev>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3 2/4] tst_kconfig: load and unload kernel modules
- for CONFIG_*=m
+Subject: [LTP] [PATCH v3 3/4] tst_kconfig: add module mappings for
+ vsock/vsock_loopback
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -64,206 +64,101 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Tests that depend on a config set to =m must currently load the
-module themselves, and may fail with misleading errors when it is
-not loaded, e.g. bind() returning EADDRNOTAVAIL for AF_VSOCK when
-vsock_loopback is missing.
+Map CONFIG_VSOCKETS to "vsock" and CONFIG_VSOCKETS_LOOPBACK to
+"vsock_loopback" so tst_kconfig can load them on demand.
 
-Record the module for every config_module_maps[] entry seen as =m
-during kconfig_parse_line(), load them in
-tst_kconfig_module_load() via tst_modprobe(), and unload them in
-reverse order from tst_kconfig_module_unload_all(), called by
-do_test_cleanup(). Modules still in use are skipped without
-aborting the test.
+cve-2025-21756 binds to VMADDR_CID_LOCAL and therefore needs
+vsock_loopback. Without the module loaded, bind() fails with
+EADDRNOTAVAIL and the test aborts with TBROK. Declare both configs in
+needs_kconfigs so the modules are loaded first.
 
-Loading and unloading are performed only as root; otherwise the
-recorded list is left untouched.
+The test needs root only to load the modules; the reproducer runs as
+an ordinary nonroot process in the initial namespace, which can use
+loopback VSOCK on nonprivileged ports. Drop privileges to nobody after
+module loading and regain root in cleanup() so the modules can be
+unloaded.
 
 Signed-off-by: Li Wang <li.wang@linux.dev>
 ---
- include/tst_kconfig.h | 28 ++++++++++++++++
- lib/tst_kconfig.c     | 78 +++++++++++++++++++++++++++++++++++++++++++
- lib/tst_test.c        | 11 ++++--
- 3 files changed, 115 insertions(+), 2 deletions(-)
+ lib/tst_kconfig.c              |  2 ++
+ testcases/cve/cve-2025-21756.c | 36 ++++++++++++++++++++++++++++++++++
+ 2 files changed, 38 insertions(+)
 
-diff --git a/include/tst_kconfig.h b/include/tst_kconfig.h
-index c454f3467..a525429d4 100644
---- a/include/tst_kconfig.h
-+++ b/include/tst_kconfig.h
-@@ -105,4 +105,32 @@ void tst_kcmdline_parse(struct tst_kcmdline_var params[], size_t params_len);
-  */
- int tst_has_slow_kconfig(void);
- 
-+/**
-+ * tst_kconfig_module_load() - Load kernel modules for CONFIG_*=m entries.
-+ *
-+ * Loads every module recorded during the last kernel config check, in
-+ * the order they were discovered. The list is populated by
-+ * kconfig_module_record() from kconfig_parse_line() for each CONFIG_*
-+ * entry that is set to =m and has a matching entry in
-+ * config_module_maps[].
-+ *
-+ * Loading is skipped when not running as root, and does nothing when
-+ * the recorded list is empty.
-+ */
-+void tst_kconfig_module_load(void);
-+
-+/**
-+ * tst_kconfig_module_unload_all() - Unload modules loaded by
-+ *                                   tst_kconfig_module_load().
-+ *
-+ * Unloads every module recorded by tst_kconfig_module_load(), in
-+ * reverse load order so that inter-module dependencies are respected.
-+ * Modules still in use are skipped silently, leaving the system state
-+ * as close as possible to what it was before the test started.
-+ *
-+ * Called from do_test_cleanup() so that the modules are released when
-+ * the test finishes, regardless of the test result.
-+ */
-+void tst_kconfig_module_unload_all(void);
-+
- #endif	/* TST_KCONFIG_H__ */
 diff --git a/lib/tst_kconfig.c b/lib/tst_kconfig.c
-index 49957e28d..e2f3061c0 100644
+index e2f3061c0..d239f39df 100644
 --- a/lib/tst_kconfig.c
 +++ b/lib/tst_kconfig.c
-@@ -16,8 +16,15 @@
- #include "tst_bool_expr.h"
- #include "tst_safe_stdio.h"
+@@ -174,6 +174,8 @@ static struct config_module_map {
+ 	{"CONFIG_NET_ACT_PEDIT", "act_pedit"},
+ 	{"CONFIG_PKCS8_PRIVATE_KEY_PARSER", "pkcs8_key_parser"},
+ 	{"CONFIG_X509_CERTIFICATE_PARSER", "x509_key_parser"},
++	{"CONFIG_VSOCKETS", "vsock"},
++	{"CONFIG_VSOCKETS_LOOPBACK", "vsock_loopback"},
+ 	{}
+ };
  
-+#include "tst_module.h"
- #include "tst_kconfig_checks.h"
+diff --git a/testcases/cve/cve-2025-21756.c b/testcases/cve/cve-2025-21756.c
+index 4245a4c95..a57abeef8 100644
+--- a/testcases/cve/cve-2025-21756.c
++++ b/testcases/cve/cve-2025-21756.c
+@@ -13,12 +13,40 @@
+  * Beware, this test will crash the system.
+  */
  
-+#define MAX_LOADED_MODULES 32
++#include <pwd.h>
 +
-+static const char *loaded_modules[MAX_LOADED_MODULES];
-+static unsigned int loaded_module_count;
-+static bool modules_loaded;
+ #include "tst_test.h"
+ #include "lapi/vm_sockets.h"
+ 
+ #define MAX_PORT_RETRIES	24
+ #define VMADDR_CID_NONEXISTING	42
+ 
++static void drop_privileges(void)
++{
++	struct passwd *pw = SAFE_GETPWNAM("nobody");
 +
- static int kconfig_skip_check(void)
++	SAFE_SETEGID(pw->pw_gid);
++	SAFE_SETEUID(pw->pw_uid);
++}
++
++static void restore_privileges(void)
++{
++	SAFE_SETEGID(0);
++	SAFE_SETEUID(0);
++}
++
++static void setup(void)
++{
++	/* This exercises the vulnerability from a non-root context. */
++	drop_privileges();
++}
++
++static void cleanup(void)
++{
++	/* Regain root so that the module can be unloaded. */
++	restore_privileges();
++}
++
+ static int vsock_bind(unsigned int cid, unsigned int port, int type)
  {
- 	char *skipped = getenv("KCONFIG_SKIP_CHECK");
-@@ -189,6 +196,38 @@ static void kconfig_module_check(struct tst_kconfig_var *var)
- 	}
+ 	int sock;
+@@ -85,8 +113,16 @@ static void run(void)
  }
  
-+static const char *module_name_for_config(const char *cfg)
-+{
-+	size_t i;
-+
-+	for (i = 0; config_module_maps[i].config; i++) {
-+		if (!strcmp(config_module_maps[i].config, cfg))
-+			return config_module_maps[i].module_name;
-+	}
-+
-+	return NULL;
-+}
-+
-+static void kconfig_module_record(const char *cfg)
-+{
-+	unsigned int i;
-+	const char *mod = module_name_for_config(cfg);
-+
-+	if (!mod)
-+		return;
-+
-+	if (tst_module_is_loaded(mod))
-+		return;
-+
-+	for (i = 0; i < loaded_module_count; i++) {
-+		if (!strcmp(loaded_modules[i], mod))
-+			return;
-+	}
-+
-+	if (loaded_module_count < MAX_LOADED_MODULES)
-+		loaded_modules[loaded_module_count++] = mod;
-+}
-+
- static inline int kconfig_parse_line(const char *line,
-                                      struct tst_kconfig_var *vars,
-                                      unsigned int vars_len)
-@@ -268,6 +307,8 @@ out:
- 				vars[i].choice = 'm';
- 				kconfig_runtime_check(&vars[i]);
- 				kconfig_module_check(&vars[i]);
-+				if (vars[i].choice == 'm')
-+					kconfig_module_record(vars[i].id);
- 				return 1;
- 			}
- 		}
-@@ -300,6 +341,43 @@ exit:
- 	close_kconfig(fp);
- }
- 
-+void tst_kconfig_module_load(void)
-+{
-+	unsigned int i;
-+
-+	if (geteuid() != 0)
-+		return;
-+
-+	for (i = 0; i < loaded_module_count; i++) {
-+		tst_res(TDEBUG, "Loading module '%s'", loaded_modules[i]);
-+		tst_modprobe(loaded_modules[i], NULL);
-+	}
-+
-+	modules_loaded = true;
-+}
-+
-+void tst_kconfig_module_unload_all(void)
-+{
-+	unsigned int i;
-+
-+	if (!loaded_module_count)
-+		return;
-+
-+	if (!modules_loaded)
-+		return;
-+
-+	for (i = loaded_module_count; i > 0; i--) {
-+		const char *const argv[] = { "modprobe", "-r",
-+						loaded_modules[i - 1], NULL };
-+
-+		tst_res(TDEBUG, "Unloading module '%s'", loaded_modules[i - 1]);
-+		tst_cmd(argv, "/dev/null", "/dev/null", TST_CMD_PASS_RETVAL);
-+	}
-+
-+	loaded_module_count = 0;
-+	modules_loaded = false;
-+}
-+
- static size_t array_len(const char *const kconfigs[])
- {
- 	size_t i = 0;
-diff --git a/lib/tst_test.c b/lib/tst_test.c
-index 10ff73397..f55830983 100644
---- a/lib/tst_test.c
-+++ b/lib/tst_test.c
-@@ -1471,8 +1471,12 @@ static void do_setup(int argc, char *argv[])
- 
- 	check_supported_kver();
- 
--	if (tst_test->needs_kconfigs && tst_kconfig_check(tst_test->needs_kconfigs))
--		tst_brk(TCONF, "Aborting due to unsuitable kernel config, see above!");
-+	if (tst_test->needs_kconfigs) {
-+		if (tst_kconfig_check(tst_test->needs_kconfigs))
-+			tst_brk(TCONF, "Aborting due to unsuitable kernel config, see above!");
-+
-+		tst_kconfig_module_load();
-+	}
- 
- 	if (tst_test->needs_root && geteuid() != 0)
- 		tst_brk(TCONF, "Test needs to be run as root");
-@@ -1690,6 +1694,9 @@ static void do_cleanup(void)
- 	if (tst_test->restore_wallclock)
- 		tst_wallclock_restore();
- 
-+	if (tst_test->needs_kconfigs)
-+		tst_kconfig_module_unload_all();
-+
- 	cleanup_ipc();
- }
- 
+ static struct tst_test test = {
++	.needs_root = 1,
+ 	.test_all = run,
++	.setup = setup,
++	.cleanup = cleanup,
+ 	.taint_check = TST_TAINT_W | TST_TAINT_D,
++	.needs_kconfigs = (const char *const[]) {
++		"CONFIG_VSOCKETS",
++		"CONFIG_VSOCKETS_LOOPBACK",
++		NULL
++	},
+ 	.tags = (const struct tst_tag[]) {
+ 		{"linux-git", "fcdd2242c0231032fc84e1404315c245ae56322a"},
+ 		{"CVE", "2025-21756"},
 -- 
 2.56.0
 
