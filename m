@@ -4,80 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 48933CA9EBE
-	for <ltp@archiver.kernel.org>; Sat, 10 Oct 2026 09:35:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F3431CA9EBE
+	for <ltp@archiver.kernel.org>; Sat, 10 Oct 2026 09:35:59 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B2A683E2E2F
-	for <ltp@archiver.kernel.org>; Sat, 10 Oct 2026 11:35:23 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 2532B3E2E34
+	for <ltp@archiver.kernel.org>; Sat, 10 Oct 2026 11:35:58 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 5EC963E26CD
- for <ltp@lists.linux.it>; Sat, 10 Oct 2026 11:35:09 +0200 (CEST)
-Received: from mail-dl2-x04.google.com (mail-dl2-x04.google.com
- [IPv6:2607:f8b0:4864:38::4])
+ by picard.linux.it (Postfix) with ESMTPS id EDC5D3E26CD
+ for <ltp@lists.linux.it>; Sat, 10 Oct 2026 11:35:42 +0200 (CEST)
+Received: from mail-dy1-x1344.google.com (mail-dy1-x1344.google.com
+ [IPv6:2607:f8b0:4864:20::1344])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id E06286002DA
- for <ltp@lists.linux.it>; Sat, 10 Oct 2026 11:35:08 +0200 (CEST)
-Received: by mail-dl2-x04.google.com with SMTP id
- a92af1059eb24-144fff5061dso245510c88.0
- for <ltp@lists.linux.it>; Sat, 10 Oct 2026 02:35:08 -0700 (PDT)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 5A163100049E
+ for <ltp@lists.linux.it>; Sat, 10 Oct 2026 11:35:42 +0200 (CEST)
+Received: by mail-dy1-x1344.google.com with SMTP id
+ 5a478bee46e88-3115c4451c8so432736eec.1
+ for <ltp@lists.linux.it>; Sat, 10 Oct 2026 02:35:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1791624907; x=1792229707; darn=lists.linux.it;
+ d=gmail.com; s=20251104; t=1791624941; x=1792229741; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to:content-type;
- bh=p6P+HHZ1+EJaNjtQuyxgbnxmKohnBc6kt/gGTOMAXdU=;
- b=SSAXsTYgrIYfcJvcKtx4TFCFswEHqa7O9snhUd7hGRan6EpufPxGio5QvTtAunaqkg
- Jtqa3U762KmPj7vMqxAedNB+U7qeGq/rkGn/7h/A5IiSuTxstN8drBAs3fkzf5TTWxg8
- XDBX+wNgocjCO0tOsD/b3T8gr5lEwyDIrQHRZjWBxDs9c86axaqREfi+ak9xW0lVswuM
- esnRO+NrrXUzN/ARaJ1ZDIMJ1QUKSSc6n8vHE08KgmziD2MYHzWXoZ766PV8XazV/ypA
- 84VXtMIl91FAIrNjqMdbEII2DuxDHeb5KFMdj0HGukOqfhHv3H6FxGA4hKZ9Lyi6EHNV
- YXKA==
+ bh=sW9hmV4g1sBtJ9u08y13Ddv8OUoMcLBd0HuWyeBhorM=;
+ b=AX9NADJq87Q9fgGGdSECfqwI1bNSTRzh55VABk3eZQ8lnlyZHlg+xOoNFzY+Qrvv2k
+ U+9bx/FaeeYsMVKbtVvjbpULaTPSv3muZKc5DIpxhLhtex1sSP3I5OLHTiSghz+LdyOz
+ q0JdaeEFtXwUc+LibugoD5PkVU+4/rXwArxRTPMPYnxHroOMEJCSCsYpv9BiGIE6lSUp
+ YPAiLbmL9ySRxn7p6dtyyFcXoP6/vI9nieVqDxfrFv3sV5Oxmg2AgrpU2bBD1CLx7y2O
+ bKQEHbxscnUYwQFEWIsxsMlIJZul37cTxX0RPi1ttQZX/AQMYDjaca56MQ+7/0DDxUEf
+ lW+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20260707; t=1791624907; x=1792229707;
+ d=1e100.net; s=20260707; t=1791624941; x=1792229741;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to:content-type;
- bh=p6P+HHZ1+EJaNjtQuyxgbnxmKohnBc6kt/gGTOMAXdU=;
- b=CEdu/sGASh5bQS07FaHruyQ+fFkuDsn/t6jNen+ZY2dAFBdUxDjhGK1Xs977Skyo6j
- 5HNISVlmRffMyeJF93nQ6XiXsxgNjpO+SzeJ4DNx+eBOpmsFIpxpdk5W0D3zrSZ/Vlvd
- H4gvdbmCECE6K+wSMzDkiewjSpS5An/STQGxpgNq+zQTbda8VuSKwunpCKLBhKLbEIBp
- NRtovC/NQ61OpeLxRmFQotOz7zyvvPCP/HXsFxsShuClGw9Gd/pyLltVbvw1Mx3TPQiH
- 15c+YXb1LdcD9+nRKwgx5uj+jZkzMRQHFqRPrQoW8qSDWIJL6QXdTjL6HeN3nYnbuE8C
- RtGw==
-X-Gm-Message-State: AFq9FYJUi7zAGkizjU+BlrlRmOkUlF7Iopg0oxa0mOrzzMXHTPk8Xa/+
- ajLtkMsE1kpDBOIyS2DDslLzivqtPYIZoHBed7d50F8fENnb1V/EN6ou
-X-Gm-Gg: AYBFou0IwDUk2YjJfiTDh0Q7S0/nvZNaFdXiDxARk3qvx2+C8vSyMKXOeCXkDFN+BlS
- 1xFCK8b1qrwIJ32NRvn5q8IyCwZk41OOVvjeIDh9f4F61KpiiVLdFQR330LVwk8kAqnYXUKftdQ
- Z92CtYpSKGhlQaS1DGpS/txKQEX+fAjCjwGSskGb3EQZEBrBA7gLLXb0Sxb1WflXMnsBftGZPuF
- B5dA6bEp5LyTvsjlm2wl4jx+yAvTKVciyZg/TjlaKqdSONvnJf+M22udrH0NfqFO7Ni2dYKmPt5
- rhb+k0GzsfLzgWCHL3cfqL0gyINiTjRFU+VTsG26d888jVTWT1kKoxSrQGmIdstJDf/oOWONef4
- NRzbFm/UOAwVH0Pz07eScZVSj6+WULzWygnEoSYIShb5RxuTHHhlwZb7TxIgzg/Tor4q1NwCMx9
- 1UZjsLjub0xl0II1gTPIVynux4Rzdbfn9mHIVxykAyMK0O409lilk0X45FmEnn62FgH1Z5uP4eS
- EIEt+9y3o289gk3/e3bN8xKQeXkYNc9p7qKbxyOMjhpO8yR03f1lFUebIV/id0aJ6bW2lKy0hxm
- OMAIbxyIRz29r2hdGsd1Uwj7
-X-Received: by 2002:a05:701b:2608:b0:143:298e:45a1 with SMTP id
- a92af1059eb24-16a612bc05cmr5980345c88.40.1791624907094; 
- Sat, 10 Oct 2026 02:35:07 -0700 (PDT)
+ bh=sW9hmV4g1sBtJ9u08y13Ddv8OUoMcLBd0HuWyeBhorM=;
+ b=TYEvDlkIhUM7x5m84EfUL2J45OUYSL1SR0AINpCEj+KT2cmYa00Yv8zUpaeAml4xGr
+ HiKsid3k8GMmrj0YvjnFaF78wj1ud88skyMFBk99dJWeeyaEV9kw7W6DR6QWzr1LYW3N
+ eHZngoZvOQwZI2QkACP2OkubL/LXcbutGf5UOiOZhjQq1tngV2fvAJeSE1/Ud3F2p5LT
+ h0rAAyVtuYYkZa6ziqtb7wWWJQSFN7fZ0yXXB9Kggdt3y+f4kBClY4oR9TDOzE/DoP79
+ /BZbfB3+KMP21IAhP67jyjwS8MSuYqTniYFvvOltDiQW4ImCvLoLYfSn49mpKKc5/R70
+ tOPw==
+X-Gm-Message-State: AFq9FYL7Bcf/5u0pBOtoou0E7nzJjUXzYR1x9PhYHgSEPJMMl+kP5oGo
+ Jq5+ekxsAwEB2PgjSpw2aVInwKdJ+slIc1WL+O+3T5vhwOGKLWeIZVqb
+X-Gm-Gg: AYBFou2FequyJHEguPSaIUjOwjL77FxGepJ1PPrmFX0jim3GFiMnUiHSegQz/g0j59z
+ z5SHVllCWIVMupdb+UweBp1qoEgpD66AQYAq7RvqkiKQlUaT5KjUe2eerRjaIqtdhEDzFCyehsY
+ PZys9E/6Zbj8i2XVV28Eg5T3o70JondkGyNB+K2zgQzJo6UQZNuL77lUOTTlK/9C+QFHyIkmjvs
+ Us8HVFpLwzGaUcgFkWyGgCn/1KqF9HPbqido5XAUeJSWKLkEIU4zxl1Y04KwBkxrhFigzVLjNc0
+ Ls0SSnkc2KH8JoN1jAmB/eUrWl04ytnqDUpGrp45Eoj9AMg2o9CGGfbm7BDaetBNl0rFvlahTAX
+ DBKF1M7zGy+2Bechof5Wr6pImN/SGqyCWkzwfFoFypEkLjydnggcofncjSeY2JbwcSQ1QpZ4J/1
+ k4vyD1r0Mw+hvJOQawYlgHm4IwBIHPMgG7CO6hlHxEW6QZk/RyxQXfs68zdLNL1SmMV4ZA6wft7
+ 6UlOIJ+dK+9AxOHtblW8r88qfMHWAC0lVQJJ81foHkTTxC6gvxBdJi9s4Kj9BI9ARQ9akXAk5zB
+ uXK698RpAMEE
+X-Received: by 2002:a05:7300:fb8a:b0:353:82a3:eb86 with SMTP id
+ 5a478bee46e88-35382a3ef76mr7043174eec.0.1791624940509; 
+ Sat, 10 Oct 2026 02:35:40 -0700 (PDT)
 Received: from
- runnervmmprz5.oxntq2pneleudbr4ohwvsaqdeg.dx.internal.cloudapp.net
- ([172.184.214.210]) by smtp.gmail.com with ESMTPSA id
- 5a478bee46e88-3537ca329d9sm14793361eec.5.2026.10.10.02.35.06
+ runnervmmprz5.52dwv3yx1kqepbrblpjpu1ecva.phxx.internal.cloudapp.net
+ ([20.169.93.176]) by smtp.gmail.com with ESMTPSA id
+ 5a478bee46e88-3537cacb61asm14067235eec.21.2026.10.10.02.35.40
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sat, 10 Oct 2026 02:35:06 -0700 (PDT)
+ Sat, 10 Oct 2026 02:35:40 -0700 (PDT)
 From: linuxtestproject.agent@gmail.com
 To: dm.chestnykh@gmail.com
-Date: Sat, 10 Oct 2026 09:35:05 +0000
-Message-ID: <20261010093505.9326-1-linuxtestproject.agent@gmail.com>
+Date: Sat, 10 Oct 2026 09:35:39 +0000
+Message-ID: <20261010093539.9074-1-linuxtestproject.agent@gmail.com>
 X-Mailer: git-send-email 2.55.0
-In-Reply-To: <20261010064240.2467-1-dm.chestnykh@gmail.com>
-References: <20261010064240.2467-1-dm.chestnykh@gmail.com>
+In-Reply-To: <20261010063824.2073-1-dm.chestnykh@gmail.com>
+References: <20261010063824.2073-1-dm.chestnykh@gmail.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] arch_prctl: add ARCH_GET_FS, ARCH_GET_GS tests
 X-BeenThere: ltp@lists.linux.it
@@ -102,21 +103,14 @@ Hi Dmitry,
 On Sat, 10 Oct 2026, Dmitry Chestnykh wrote:
 > arch_prctl: add ARCH_GET_FS, ARCH_GET_GS tests
 
-> diff --git a/testcases/kernel/syscalls/arch_prctl/arch_prctl02.c b/testcases/kernel/syscalls/arch_prctl/arch_prctl02.c
+> +++ b/testcases/kernel/syscalls/arch_prctl/arch_prctl02.c
 > +	if (gs == 0) {
 > +		unsigned long long test_gs = 0xabababab;
 
-Medium: Both exercised GS bases fit in 32 bits when the initial base is
-zero, so an ARCH_GET_GS implementation that drops the upper 32 bits still
-passes. Include a valid base above UINT32_MAX, such as 0x1ababababULL, to
-exercise the documented 64-bit result.
-
-> +		set_gs(orig_gs);
-
-Medium: The restoration syscall's return value is discarded. Injecting
-EPERM here leaves GS nonzero, but -i 3 exits successfully with seven
-passes and silently skips the set/read case in subsequent iterations.
-Use TST_EXP_PASS_SILENT(set_gs(orig_gs)) and abort with TBROK on failure.
+Medium: When the original GS base is zero, both samples fit in 32 bits,
+so the test misses truncation in ARCH_GET_GS. A probe masking its result
+to 32 bits still reported all tests passed. Use a canonical user-space
+base with nonzero upper 32 bits, such as 0x1234ababababULL.
 
 Verdict - Needs revision
 
