@@ -4,49 +4,50 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8E021CA6017
-	for <ltp@archiver.kernel.org>; Sat, 10 Oct 2026 03:37:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0C085CA6004
+	for <ltp@archiver.kernel.org>; Sat, 10 Oct 2026 03:37:35 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 2C7943EB1C6
-	for <ltp@archiver.kernel.org>; Sat, 10 Oct 2026 05:37:20 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 428C03EB1CA
+	for <ltp@archiver.kernel.org>; Sat, 10 Oct 2026 05:37:34 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 8F9723EB1C6
- for <ltp@lists.linux.it>; Sat, 10 Oct 2026 05:36:51 +0200 (CEST)
-Received: from mta1.migadu.com (out-85.mta1.migadu.com
- [IPv6:2001:41d0:203:375::55])
+ by picard.linux.it (Postfix) with ESMTPS id 3CE563EB1C6
+ for <ltp@lists.linux.it>; Sat, 10 Oct 2026 05:36:57 +0200 (CEST)
+Received: from mta1.migadu.com (out-88.mta1.migadu.com
+ [IPv6:2001:41d0:203:375::58])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 8DC8110005F7
- for <ltp@lists.linux.it>; Sat, 10 Oct 2026 05:36:49 +0200 (CEST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id B8E80200047
+ for <ltp@lists.linux.it>; Sat, 10 Oct 2026 05:36:56 +0200 (CEST)
 X-Envelope-To: ltp@lists.linux.it
-DKIM-Signature: a=rsa-sha256; bh=zXfQWcRW8QXnDxERk6p6chTIVuCn9r7u2TviGFuGBu4=; 
+DKIM-Signature: a=rsa-sha256; bh=NHkuiGycDT0r4DbJi+7vVGFOyoT0yK73LQ9lCobLrDs=; 
  c=simple/simple; d=linux.dev;
  h=from:to:subject:date:message-id:mime-version:content-type; s=key1;
- t=1791603408; v=1; x=1792208208;
- b=d5+e06DVXmuE2eBtHTbntNwlNL0DhcTJAccZIT8+fpz65xnzX+1417Dspl3buo7d5u+yZjgL
- omZBnxDULIoP0pnXFcrcjzacwFI4t7Un79QgEBF24UlHMfssKof8I3QLRVk00p32M/6pvA2NT8i
- Iv4Lbkd8ZN0OIfsNWF7raBP0=
+ t=1791603415; v=1; x=1792208215;
+ b=wx0A2cig/TShmIsD1EImg8DMERqH78CaAKWQ3wTyaJ2di2svPuMZs8WUA6Szc2PAGvDMGV1R
+ G2aE+ofxrQOPzuWbcF79Vifk+femITCOi6Z0/GUyYdbFRT57DKSxR6P9Bg7Vweiis4OBZAO7kPr
+ igBE1XlB7zOMnVzAPhg32/VU=
 X-Envelope-To: ltp@lists.linux.it
-Received: by mta10.migadu.com with ESMTPS id 3f6aa252c74f7637;
- Sat, 10 Oct 2026 03:36:48 +0000
-X-Mizu-Trace-ID: 3f6aa252c74f7637
+Received: by mta10.migadu.com with ESMTPS id c22051d54b4da19c;
+ Sat, 10 Oct 2026 03:36:55 +0000
+X-Mizu-Trace-ID: c22051d54b4da19c
 X-Migadu-Flow: FLOW_OUT
 From: Li Wang <li.wang@linux.dev>
 To: ltp@lists.linux.it
-Date: Sat, 10 Oct 2026 11:36:19 +0800
-Message-ID: <20261010033622.68927-2-li.wang@linux.dev>
+Date: Sat, 10 Oct 2026 11:36:20 +0800
+Message-ID: <20261010033622.68927-3-li.wang@linux.dev>
 X-Mailer: git-send-email 2.56.0
 In-Reply-To: <20261010033622.68927-1-li.wang@linux.dev>
 References: <20261010033622.68927-1-li.wang@linux.dev>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3 1/4] lib: add module is loaded check
+Subject: [LTP] [PATCH v3 2/4] tst_kconfig: load and unload kernel modules
+ for CONFIG_*=m
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -63,81 +64,206 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Add a helper that checks whether a kernel module is loaded by
-looking it up in /proc/modules. Module names are normalized so that
-hyphens match the underscores used by the kernel.
+Tests that depend on a config set to =m must currently load the
+module themselves, and may fail with misleading errors when it is
+not loaded, e.g. bind() returning EADDRNOTAVAIL for AF_VSOCK when
+vsock_loopback is missing.
+
+Record the module for every config_module_maps[] entry seen as =m
+during kconfig_parse_line(), load them in
+tst_kconfig_module_load() via tst_modprobe(), and unload them in
+reverse order from tst_kconfig_module_unload_all(), called by
+do_test_cleanup(). Modules still in use are skipped without
+aborting the test.
+
+Loading and unloading are performed only as root; otherwise the
+recorded list is left untouched.
 
 Signed-off-by: Li Wang <li.wang@linux.dev>
 ---
- include/tst_module.h |  1 +
- lib/tst_module.c     | 39 +++++++++++++++++++++++++++++++++++++++
- 2 files changed, 40 insertions(+)
+ include/tst_kconfig.h | 28 ++++++++++++++++
+ lib/tst_kconfig.c     | 78 +++++++++++++++++++++++++++++++++++++++++++
+ lib/tst_test.c        | 11 ++++--
+ 3 files changed, 115 insertions(+), 2 deletions(-)
 
-diff --git a/include/tst_module.h b/include/tst_module.h
-index e55321d19..9b789e289 100644
---- a/include/tst_module.h
-+++ b/include/tst_module.h
-@@ -49,5 +49,6 @@ static inline void tst_requires_module_signature_disabled(void)
- 
- void tst_modprobe(const char *mod_name, char *const argv[]);
- void tst_module_reload(const char *mod_name, char *const argv[]);
-+bool tst_module_is_loaded(const char *mod_name);
- 
- #endif /* TST_MODULE_H */
-diff --git a/lib/tst_module.c b/lib/tst_module.c
-index cbd2415d5..db341ec57 100644
---- a/lib/tst_module.c
-+++ b/lib/tst_module.c
-@@ -21,6 +21,7 @@
+diff --git a/include/tst_kconfig.h b/include/tst_kconfig.h
+index c454f3467..a525429d4 100644
+--- a/include/tst_kconfig.h
++++ b/include/tst_kconfig.h
+@@ -105,4 +105,32 @@ void tst_kcmdline_parse(struct tst_kcmdline_var params[], size_t params_len);
   */
+ int tst_has_slow_kconfig(void);
  
- #define _GNU_SOURCE
-+#include <ctype.h>
- #include <stdio.h>
- #include <stdlib.h>
- #include <unistd.h>
-@@ -174,3 +175,41 @@ void tst_module_reload(const char *mod_name, char *const argv[])
- 	tst_module_unload_(NULL, mod_name);
- 	tst_modprobe(mod_name, argv);
++/**
++ * tst_kconfig_module_load() - Load kernel modules for CONFIG_*=m entries.
++ *
++ * Loads every module recorded during the last kernel config check, in
++ * the order they were discovered. The list is populated by
++ * kconfig_module_record() from kconfig_parse_line() for each CONFIG_*
++ * entry that is set to =m and has a matching entry in
++ * config_module_maps[].
++ *
++ * Loading is skipped when not running as root, and does nothing when
++ * the recorded list is empty.
++ */
++void tst_kconfig_module_load(void);
++
++/**
++ * tst_kconfig_module_unload_all() - Unload modules loaded by
++ *                                   tst_kconfig_module_load().
++ *
++ * Unloads every module recorded by tst_kconfig_module_load(), in
++ * reverse load order so that inter-module dependencies are respected.
++ * Modules still in use are skipped silently, leaving the system state
++ * as close as possible to what it was before the test started.
++ *
++ * Called from do_test_cleanup() so that the modules are released when
++ * the test finishes, regardless of the test result.
++ */
++void tst_kconfig_module_unload_all(void);
++
+ #endif	/* TST_KCONFIG_H__ */
+diff --git a/lib/tst_kconfig.c b/lib/tst_kconfig.c
+index 49957e28d..e2f3061c0 100644
+--- a/lib/tst_kconfig.c
++++ b/lib/tst_kconfig.c
+@@ -16,8 +16,15 @@
+ #include "tst_bool_expr.h"
+ #include "tst_safe_stdio.h"
+ 
++#include "tst_module.h"
+ #include "tst_kconfig_checks.h"
+ 
++#define MAX_LOADED_MODULES 32
++
++static const char *loaded_modules[MAX_LOADED_MODULES];
++static unsigned int loaded_module_count;
++static bool modules_loaded;
++
+ static int kconfig_skip_check(void)
+ {
+ 	char *skipped = getenv("KCONFIG_SKIP_CHECK");
+@@ -189,6 +196,38 @@ static void kconfig_module_check(struct tst_kconfig_var *var)
+ 	}
  }
-+
-+bool tst_module_is_loaded(const char *mod_name)
+ 
++static const char *module_name_for_config(const char *cfg)
 +{
-+	char line[4096];
-+	size_t mod_len = strlen(mod_name);
-+	FILE *file;
++	size_t i;
 +
-+	file = fopen("/proc/modules", "r");
-+	if (!file)
-+		return false;
-+
-+	while (fgets(line, sizeof(line), file)) {
-+		char *p = line;
-+		size_t i;
-+
-+		while (*p && !isspace(*p))
-+			p++;
-+
-+		if ((size_t)(p - line) != mod_len)
-+			continue;
-+
-+		for (i = 0; i < mod_len; i++) {
-+			char a = (line[i] == '-') ? '_' : line[i];
-+			char b = (mod_name[i] == '-') ? '_' : mod_name[i];
-+
-+			if (a != b)
-+				break;
-+		}
-+
-+		if (i == mod_len) {
-+			fclose(file);
-+			return true;
-+		}
++	for (i = 0; config_module_maps[i].config; i++) {
++		if (!strcmp(config_module_maps[i].config, cfg))
++			return config_module_maps[i].module_name;
 +	}
 +
-+	fclose(file);
-+	return false;
++	return NULL;
 +}
++
++static void kconfig_module_record(const char *cfg)
++{
++	unsigned int i;
++	const char *mod = module_name_for_config(cfg);
++
++	if (!mod)
++		return;
++
++	if (tst_module_is_loaded(mod))
++		return;
++
++	for (i = 0; i < loaded_module_count; i++) {
++		if (!strcmp(loaded_modules[i], mod))
++			return;
++	}
++
++	if (loaded_module_count < MAX_LOADED_MODULES)
++		loaded_modules[loaded_module_count++] = mod;
++}
++
+ static inline int kconfig_parse_line(const char *line,
+                                      struct tst_kconfig_var *vars,
+                                      unsigned int vars_len)
+@@ -268,6 +307,8 @@ out:
+ 				vars[i].choice = 'm';
+ 				kconfig_runtime_check(&vars[i]);
+ 				kconfig_module_check(&vars[i]);
++				if (vars[i].choice == 'm')
++					kconfig_module_record(vars[i].id);
+ 				return 1;
+ 			}
+ 		}
+@@ -300,6 +341,43 @@ exit:
+ 	close_kconfig(fp);
+ }
+ 
++void tst_kconfig_module_load(void)
++{
++	unsigned int i;
++
++	if (geteuid() != 0)
++		return;
++
++	for (i = 0; i < loaded_module_count; i++) {
++		tst_res(TDEBUG, "Loading module '%s'", loaded_modules[i]);
++		tst_modprobe(loaded_modules[i], NULL);
++	}
++
++	modules_loaded = true;
++}
++
++void tst_kconfig_module_unload_all(void)
++{
++	unsigned int i;
++
++	if (!loaded_module_count)
++		return;
++
++	if (!modules_loaded)
++		return;
++
++	for (i = loaded_module_count; i > 0; i--) {
++		const char *const argv[] = { "modprobe", "-r",
++						loaded_modules[i - 1], NULL };
++
++		tst_res(TDEBUG, "Unloading module '%s'", loaded_modules[i - 1]);
++		tst_cmd(argv, "/dev/null", "/dev/null", TST_CMD_PASS_RETVAL);
++	}
++
++	loaded_module_count = 0;
++	modules_loaded = false;
++}
++
+ static size_t array_len(const char *const kconfigs[])
+ {
+ 	size_t i = 0;
+diff --git a/lib/tst_test.c b/lib/tst_test.c
+index 10ff73397..f55830983 100644
+--- a/lib/tst_test.c
++++ b/lib/tst_test.c
+@@ -1471,8 +1471,12 @@ static void do_setup(int argc, char *argv[])
+ 
+ 	check_supported_kver();
+ 
+-	if (tst_test->needs_kconfigs && tst_kconfig_check(tst_test->needs_kconfigs))
+-		tst_brk(TCONF, "Aborting due to unsuitable kernel config, see above!");
++	if (tst_test->needs_kconfigs) {
++		if (tst_kconfig_check(tst_test->needs_kconfigs))
++			tst_brk(TCONF, "Aborting due to unsuitable kernel config, see above!");
++
++		tst_kconfig_module_load();
++	}
+ 
+ 	if (tst_test->needs_root && geteuid() != 0)
+ 		tst_brk(TCONF, "Test needs to be run as root");
+@@ -1690,6 +1694,9 @@ static void do_cleanup(void)
+ 	if (tst_test->restore_wallclock)
+ 		tst_wallclock_restore();
+ 
++	if (tst_test->needs_kconfigs)
++		tst_kconfig_module_unload_all();
++
+ 	cleanup_ipc();
+ }
+ 
 -- 
 2.56.0
 
