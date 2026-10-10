@@ -4,51 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 79A94CA6017
-	for <ltp@archiver.kernel.org>; Sat, 10 Oct 2026 09:07:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EC0FCCA6017
+	for <ltp@archiver.kernel.org>; Sat, 10 Oct 2026 09:35:09 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 38B8B3E2E1C
-	for <ltp@archiver.kernel.org>; Sat, 10 Oct 2026 11:07:13 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id DD2F63E2E20
+	for <ltp@archiver.kernel.org>; Sat, 10 Oct 2026 11:35:07 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id BCD3B3E2904
- for <ltp@lists.linux.it>; Sat, 10 Oct 2026 11:06:58 +0200 (CEST)
-Received: from mta0.migadu.com (out-153.mta0.migadu.com
- [IPv6:2001:41d0:1004:224b::99])
+ by picard.linux.it (Postfix) with ESMTPS id E0B123E2D20
+ for <ltp@lists.linux.it>; Sat, 10 Oct 2026 11:34:51 +0200 (CEST)
+Received: from mail-dy2-x0a.google.com (mail-dy2-x0a.google.com
+ [IPv6:2607:f8b0:4864:36::a])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id E1D4D2001B6
- for <ltp@lists.linux.it>; Sat, 10 Oct 2026 11:06:57 +0200 (CEST)
-X-Envelope-To: ltp@lists.linux.it
-DKIM-Signature: a=rsa-sha256; bh=ZLc1hjGYT3OJ6tHUnLSby9RpY/x2ICkWjy6HpAPctLA=; 
- c=simple/simple; d=linux.dev;
- h=from:to:subject:date:message-id:mime-version:content-type; s=key1;
- t=1791623216; v=1; x=1792228016;
- b=if8LVlgKYKeMXWD8lRxuPZ2ltZLQUz1m9ndxlahzlEBdL1lT5GWoayCPclzStxG/RgGVrCFZ
- t5oHtN5Hd7caIuSttsY4UTBdtWOmpPY9oyVh+L2A5txfeVBrTKsyrb35dWAe0IYiH+djz+IsShq
- c+UMXqBIQuTXFlRKrbOgxPjE=
-X-Envelope-To: ltp@lists.linux.it
-Received: by smtp.migadu.com with ESMTPS id 9cdf419edc1adf0f;
- Sat, 10 Oct 2026 09:06:56 +0000
-X-Mizu-Trace-ID: 9cdf419edc1adf0f
-X-Migadu-Flow: FLOW_OUT
-Date: Sat, 10 Oct 2026 17:06:49 +0800
-From: Li Wang <li.wang@linux.dev>
-To: linuxtestproject.agent@gmail.com
-Message-ID: <asoAKV-Wd-TK5XUe@linux.dev>
-Mail-Followup-To: linuxtestproject.agent@gmail.com,
- Jan Stancek <jstancek@redhat.com>, ltp@lists.linux.it
-References: <24014310ac600340c4ef9720980eac1c047f4b6f.1791543115.git.jstancek@redhat.com>
- <20261009172601.34695-1-linuxtestproject.agent@gmail.com>
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 5BCC260071B
+ for <ltp@lists.linux.it>; Sat, 10 Oct 2026 11:34:51 +0200 (CEST)
+Received: by mail-dy2-x0a.google.com with SMTP id
+ 5a478bee46e88-33baa8eb238so273853eec.0
+ for <ltp@lists.linux.it>; Sat, 10 Oct 2026 02:34:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20251104; t=1791624890; x=1792229690; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to:content-type;
+ bh=wXW8+1FQNVxHCpT1c9GvrpCHR6a1tW2sXwxNqGMqjy0=;
+ b=sWRgBj7aGPGQrOJRpqBesKKQyXQR+smHgXxvsL0gGa6asIUWDrBK9DhHHXw8nOpm2d
+ Qo9yItd9TOwEOADY6BtW3XiUcCYQSFAVPeq1RSwD16c4W4ZavnmYh8c7shasQr7HkDJf
+ cxbehAR4sRxeuClOWW2kQsEm2RUZwiiHJcol7YwQ3GznZggsgplI6lA+8leS+T1lBJ02
+ nIS1vH/00BhEMyqDCsZE+1F606R8xtQBNc+zGtOtppma8mi7xcsLMlMZWMIRDDpGMdqZ
+ Si7V91fwTTw2ssQdLrwwP6020z7ly+o9PSHB4dnQEwyZo/eR7j2eEHcyh0z/E8Ve1Lay
+ t/GA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20260707; t=1791624890; x=1792229690;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to:content-type;
+ bh=wXW8+1FQNVxHCpT1c9GvrpCHR6a1tW2sXwxNqGMqjy0=;
+ b=1hArINqGGSzJx/wcbUXRizqjGsmM/eJLIRfuMVB3zxoa75T0/LjvRFMfFtc0C0hnOD
+ 8z5JFzsD8vT7PD91isCDi9HqSse0sOrAdHgYjHCpdTz5MtKD6km95PFuqYMPksCYAnGM
+ FP29ayxC3qAZyCMiQiXa42YeprMNqQMNpGyx8E3EO9eFWQ50j+ntugbu29kApSh9zNSm
+ PYT+6tZWogPjyeHojYvoRM4LJgzib9wlCLP/NKioHDrkt7jYPClo0CncsA9tXGyBinXb
+ Ob6OCkQXRH06fv9MwNiPFtTvTwIRzHa4CpTzDna/G7ZR+99znInq5xYo1EBwlu9fOJc6
+ Hxgg==
+X-Gm-Message-State: AFq9FYJZ9DC8CBF/RYHG4dLjEaD29vVtEt0P/kAxQXJZphi8sHBC4715
+ Vze0Msb1qIJi0i+l6gvNyN0MDgjiAwgFwA7l2/BxlzwojcLh+VxpZRR+
+X-Gm-Gg: AYBFou0ViC8CT0jU1/IV8ip+Q6d9+CrFkZr1cYjFv4betHW4yFNq6R5geIBnOg/8KEo
+ H+oiHmhElVuzNRd6pTUWuXUqx62xyaxqSenn/QSIqYFP/kC1mf8NB6vLBw2AYrcwmeEbPC/dk4Q
+ PbSR5Wq+MW2+gupK9yN4odD91AmN4BoZC5gCNXYfLlToF9UKNTOVGdoBh6vjE4bfFPSgU7fgT7h
+ uGU9PX+1ep3g+Ty3bBL/yz57hTijc0MU2CJQ+a3cBWBw/MT415mTv8y4UQK2JsaQzAT3VaWsG6e
+ aZgVqeseKCFE3Fhfu45i70Ek/NWSbtB/aIPWa4aLaxjtEbGkUSZryswbgntMKk+8wwL2j0jaIIj
+ UCr70aopQJMlF2zoa9Oq/RdcBfpG+4zIjtAeeWvK5xBCi/DPVidcMeyHT+xWuilW7AeyJIbiQr2
+ fh4eyzsQTOOFiAfTM/smnQ+ZYXOy6mJrTAylZqPQngUlwfB6vb8SjVRc5FMgFFQfs93X55Cxbx4
+ +upllxErjIHrbp6VyAJ82bqGNcrGvvNuau3CiHKFtziVj1t+4X+K0ZGQkBFLiqVb6V2cQlA2lNn
+ aAkdLvVz9Tsy
+X-Received: by 2002:a05:7300:ce94:b0:345:84eb:7153 with SMTP id
+ 5a478bee46e88-3537e033341mr5955306eec.11.1791624889490; 
+ Sat, 10 Oct 2026 02:34:49 -0700 (PDT)
+Received: from
+ runnervmmprz5.kwurqgh3ggeupncspab0njquae.phxx.internal.cloudapp.net
+ ([20.168.127.89]) by smtp.gmail.com with ESMTPSA id
+ 5a478bee46e88-3537c61eaa0sm16349489eec.0.2026.10.10.02.34.48
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Sat, 10 Oct 2026 02:34:49 -0700 (PDT)
+From: linuxtestproject.agent@gmail.com
+To: Wenyuan Li <2063309626@qq.com>
+Date: Sat, 10 Oct 2026 09:34:48 +0000
+Message-ID: <20261010093448.8958-1-linuxtestproject.agent@gmail.com>
+X-Mailer: git-send-email 2.55.0
+In-Reply-To: <tencent_182C622AB08B4EBB09116956A32EE29EF909@qq.com>
+References: <tencent_182C622AB08B4EBB09116956A32EE29EF909@qq.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20261009172601.34695-1-linuxtestproject.agent@gmail.com>
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] openposix: timers/twoevtimers: Wait for both timer signals
+Subject: Re: [LTP] syscalls/munmap03: Fix addresses passed to munmap
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -66,58 +98,22 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Jan,
+Hi Wenyuan,
 
-linuxtestproject.agent@gmail.com wrote:
+On 10 Oct 2026, Wenyuan Li wrote:
+> syscalls/munmap03: Fix addresses passed to munmap
 
-> Hi Jan,
-> 
-> On Fri, 9 Oct 2026, Jan Stancek via ltp wrote:
-> > openposix: timers/twoevtimers: Wait for both timer signals
-> 
-> > +	PTS_WRITE_MSG("Caught abort signal\n");
-> > +	PTS_WRITE_MSG("Caught alarm signal\n");
-> > +		if (errno != EINTR) {
-> > +			perror("nanosleep() did not return success\n");
-> > +			return PTS_UNRESOLVED;
-> > +		}
-> 
-> Medium: PTS_WRITE_MSG() calls write() without preserving errno. If the
-> second signal arrives after nanosleep() sets EINTR but before the new
-> errno check, a failed handler write (e.g. EAGAIN on a full nonblocking
-> stdout pipe) causes a spurious unresolved result even when both timers
-> fired. Save errno on entry and restore it before returning in both
-> handlers.
+Verdict - Reviewed
 
-The race condition pointed out by the AI seems plausible. Would it make
-sense to save and restore errno in the signal handlers, like this:
+---
+Note:
 
-static void handler_abrt(int signo PTS_ATTRIBUTE_UNUSED)
- {
-+       int saved_errno = errno;
-+
-        PTS_WRITE_MSG("Caught abort signal\n");
-        caughtabort++;
-+
-+       errno = saved_errno;
-+
- }
+The agent can sometimes produce false positives although often its
+findings are genuine. If you find issues with the review, please
+comment this email or ignore the suggestions.
 
- static void handler_alrm(int signo PTS_ATTRIBUTE_UNUSED)
- {
-+       int saved_errno = errno;
-+
-        PTS_WRITE_MSG("Caught alarm signal\n");
-        caughtalarm++;
-+
-+       errno = saved_errno;
- }
-
-The rest part looks good to me.
-
--- 
 Regards,
-Li Wang
+LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
