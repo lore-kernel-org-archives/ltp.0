@@ -4,82 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 995B5CA9EBE
-	for <ltp@archiver.kernel.org>; Sat, 10 Oct 2026 09:38:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4B26CCA6017
+	for <ltp@archiver.kernel.org>; Sat, 10 Oct 2026 09:42:36 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 766193E2DEE
-	for <ltp@archiver.kernel.org>; Sat, 10 Oct 2026 11:38:54 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 79A713E537A
+	for <ltp@archiver.kernel.org>; Sat, 10 Oct 2026 11:42:34 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 4B4453CE2C2
- for <ltp@lists.linux.it>; Sat, 10 Oct 2026 11:38:39 +0200 (CEST)
-Received: from mail-oo2-x02.google.com (mail-oo2-x02.google.com
- [IPv6:2607:f8b0:4864:31::2])
+ by picard.linux.it (Postfix) with ESMTPS id 94E073E27F1
+ for <ltp@lists.linux.it>; Sat, 10 Oct 2026 11:42:18 +0200 (CEST)
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com
+ [IPv6:2a00:1450:4864:20::236])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id BDCEA1400075
- for <ltp@lists.linux.it>; Sat, 10 Oct 2026 11:38:38 +0200 (CEST)
-Received: by mail-oo2-x02.google.com with SMTP id
- 46e09a7af769-824f3901d55so389358a34.1
- for <ltp@lists.linux.it>; Sat, 10 Oct 2026 02:38:38 -0700 (PDT)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id D5C34600212
+ for <ltp@lists.linux.it>; Sat, 10 Oct 2026 11:42:17 +0200 (CEST)
+Received: by mail-lj1-x236.google.com with SMTP id
+ 38308e7fff4ca-3a771ad2a9aso20213221fa.0
+ for <ltp@lists.linux.it>; Sat, 10 Oct 2026 02:42:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1791625117; x=1792229917; darn=lists.linux.it;
+ d=gmail.com; s=20251104; t=1791625337; x=1792230137; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to:content-type;
- bh=+3CGq/8rOF1tnd1rybLJW64CstL8wiPtuBKAkLrRcOc=;
- b=OCWpGwwrQ9jrbcQtH72HdarsHXq/zVseNfqiWeBeWve0GyAooVzH4WlaH23P50b5sw
- zYL6CJff+1ztegQUwK29M1fT3rB5lJ1/9cQpsMZ0mxBFU7wpIOCwQWtGrqd69C3WmMg0
- plAJXrSl/hmI8R0zqKPfTqSbvd26ep+rgPG/zKOqd+bY0UT3Sk/dyEpD+RSQ40sp67Bn
- /oA+rv46uMvJYrt1huAoX/93Vi86DBoDPUPI/ZJugVkKZF8L3reg1kzS8zNNTK/zLZMN
- 9NL4nlpOREnuRDGDlULfoQ3m9Dm/z892wTBaIxToejzXXs5Zi6ZL91WGsWTkW6gRFcHB
- jDlg==
+ bh=Y3ee3UhOAwwAOdv8iDuS06UjgnAFWalebbi3lja/fPc=;
+ b=SsjVxeEw4DcAJiT0HfJAw3k+7IRomtIOPHDVPipYVFN2JZ7XrwSYzNPmky27xnV9AG
+ GvOMX9CZiqmmx88m18+XXPFBKbF1J+Rfg4BSZdxz3Si8gOIcheX36SdHLyU3B8/suA53
+ TNu+yKmdO1MgRrdYDZPCxMuUuzrtnXK+kIZEx/hYo9BHkxDNgnQtmx2JDjoIOQcvGCeq
+ rnt/vQDqxt1d4Gy7OIyKwOrqSDwBqJfa0yYYusEYen9PGdmQQ8g6bo0NeMLmnh/INYZz
+ QYKq1OOx5J4tWQh4udqYdDrXr3loQydksAI1LgkmCARpERQK1O3ssFn759OZT/o9wm2q
+ dIBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20260707; t=1791625117; x=1792229917;
+ d=1e100.net; s=20260707; t=1791625337; x=1792230137;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to:content-type;
- bh=+3CGq/8rOF1tnd1rybLJW64CstL8wiPtuBKAkLrRcOc=;
- b=xW7ZDU6wOLM6XZTb8XLxrNjeKV8pw18MFCOIQI6wdGk5TnG4ABLMOUDT0KW9jqBP2w
- GfWTP5An+5dh7KNeAZdpZmOo7pcIy+W4wnvJl0gnmdiDWNtq/5ZGJs7CIsCXdLTBEQjX
- NYQTOnt+lfUxv0gxsN4KKh8OUafPenMsakmwKlqYunro8Cp5eHFfedX2DktKwE7qrTby
- 2aTvUglX3aLlPtPCZRTP2fiDpRQXcmFU4swN8gfrh8c0YZqrfQNiinMqL6kmVeuAgd2O
- Wn1yLorRmGg+83H6cczedRW1larC3th6S20x+bEdt66i9UVzZ7F0Gbak2ImDj120QPhU
- QIQQ==
-X-Gm-Message-State: AFq9FYKo3Pun58yF/zbADC2bOgPRdapVvBXT9XoZ9wLndc8zJoLure9g
- 0izIgIWfDWPUoY4A9KOME9JXxvvACDwqhsZnIs54ES9iqyg6Z5HD08WT
-X-Gm-Gg: AYBFou0uRO1Ld5q0KD1SWoCKqGoXcFZzfdnmVqSS9e72VEwKzFYDcl3npL9dwxhEuQI
- vHeWpErofQyEyYHg7RLUmnNntkHHVPCh/O+NzdpNNkx2NAtDR45gslFpzqcFrmt+ELClFv5Q5jl
- gwYFA5x6UmxZV0hgoSzDOnhM8owxt2e9BdvD7ozdxrl7vmiq1DYsQyQ9T1D9/qNFqVYToOW08Jj
- qKUwHno7pb3T1Yz/IITchpzmrF7eXyIrEpvaMivDRJe7Q7N3OC3dEv08QHY/AZObI1ras+sO9uk
- FtTZlchmJjk24VyRzTk/XVcbwNHLejFgStcbv1WYWo8vOxETxCzMw6ovUPhAS8zZpYa8J6WQ0WC
- H/ku6I8M4pKLFl4Oy3sw/zslxfkqGeBpDzOg2R66ErmrvsJP7t52CNVPsBAHsoo5beyCoUSHuew
- soZVUd3u3I7AnRfePFcGsJt02T6L3bdBGzRTA5GRr7VEnHDK/XfMrpSMBCFCAFA73rjjTClJQ2i
- CIlZo+DUz6Iwch2nZXXQ6m+MPLXa1ZGtx4Oth05Ya3M2ZZFSz7Ovuix3qz1VKRBu85RTDARZd48
- XTIOGBiQM/QqDr+4V2DV3m+f
-X-Received: by 2002:a05:6820:1508:b0:6e1:d890:3825 with SMTP id
- 006d021491bc7-6ef0cf39d5cmr2970377eaf.18.1791625116726; 
- Sat, 10 Oct 2026 02:38:36 -0700 (PDT)
-Received: from
- runnervmmprz5.00bfzilhbqpu5jaih4rtw2a2mc.jx.internal.cloudapp.net
- ([172.215.146.224]) by smtp.gmail.com with ESMTPSA id
- 586e51a60fabf-4a2a86317a5sm3952900fac.17.2026.10.10.02.38.35
+ bh=Y3ee3UhOAwwAOdv8iDuS06UjgnAFWalebbi3lja/fPc=;
+ b=ugjGSiPux7+MsM7PvjQaiQvQoGoAGe1CdwH4GRWZa5k4z2BVNYXs6XpsH1rX8oYV7e
+ w3N9k4+yLfOSKkzKTXyG3rSKCn1dikdgIG+6PpFK0qltG3PO9HiGG7XUOLgo2Hbpe3m3
+ sqlYFAeWZCoOJ9hEY6c0MPSrA2D355Q3R7yp5Jo4KDrRi+Ln6GvjPAQDeDQm/MdLBAqh
+ GzUO1SN/LsjBDUu19zHql1tQF/lBgRxOYklO49gMSO3//ZXZC/2VTWEBvicqcU+71omy
+ G1Bzh1of7o/6FQoyDAaQxtocda6wa4tc8eHFg9ySyzOpExt6nvBp5TXdGszj7OOwP9eF
+ QZzw==
+X-Gm-Message-State: AFq9FYIRSU28EWd0dXQRG5rJvaveyZOuAZ8kgwvJ51grWqWwEYDeQ+Uj
+ rEQ/uDgPl39Due30RQkOIqFeEfKR2lftMSd0oiww5VvOR2+wDBL2ENtM/WxxTt5uPvOHqQ==
+X-Gm-Gg: AYBFou2Xv5+jbQ4bWYKvbgqyiZVONvg757VqthFPhNq9axHhFw1G7oThm47hIu9lQ+V
+ /DDz5Kp6oo8lzMffs6W9bgjrb75nPEJTYmDvriMTfW7+KCJKPJ0+Ca8bXtNervj60PL/GUYOJdg
+ QNMyqvmFQvmtta7tDMUTMRr42s5CbMpV1Cika3m0dt/S6ZN0yTVsJCLDXCphepICKNi1It0B//x
+ HJCE6TG+dLNmCSIWkuyRseQ7SwvUZCa0fQKApbC4MTI6K52jq3z54j9UnIel5qV1OdN6xCc84Zh
+ 0xBRJinsamDjwUZzyspXEXPSGYJ7WnRGGwbKTre4ocjmaVTKWtnUhJmpy3ct1ajFLO4d2a6ZBea
+ MoT0P53PbB9po4d/pP5w6Gw2nVZjS30ql2xkd198GCqh4s48wPLt7hoLWU/g08OucCjgBhQrea9
+ +BNcyhrS/OntkTmgOjUk/VNYPTYnTXGP3fojt9zU4zJSfTjlFAF2icDcQb9pBf0vV8OQBmUK8FE
+ 8+hBdnLeljStxSJtJaVwfX0DW+Nl9xzRtuglGKD
+X-Received: by 2002:a05:651c:43c2:20b0:3a9:7605:6c4b with SMTP id
+ 38308e7fff4ca-3a9c55ac7e5mr6194441fa.9.1791625336698; 
+ Sat, 10 Oct 2026 02:42:16 -0700 (PDT)
+Received: from chestnykh (broadband-46-242-13-70.ip.moscow.rt.ru.
+ [46.242.13.70]) by smtp.gmail.com with ESMTPSA id
+ 38308e7fff4ca-3a9c3cebd07sm13820541fa.38.2026.10.10.02.42.13
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sat, 10 Oct 2026 02:38:36 -0700 (PDT)
-From: linuxtestproject.agent@gmail.com
-To: Li Wang <li.wang@linux.dev>
-Date: Sat, 10 Oct 2026 09:38:35 +0000
-Message-ID: <20261010093835.9399-1-linuxtestproject.agent@gmail.com>
-X-Mailer: git-send-email 2.55.0
-In-Reply-To: <20261010033622.68927-2-li.wang@linux.dev>
-References: <20261010033622.68927-2-li.wang@linux.dev>
+ Sat, 10 Oct 2026 02:42:14 -0700 (PDT)
+From: dm.chestnykh@gmail.com
+To: ltp@lists.linux.it
+Date: Sat, 10 Oct 2026 12:44:39 +0300
+Message-ID: <20261010094439.26053-1-dm.chestnykh@gmail.com>
+X-Mailer: git-send-email 2.56.0
+In-Reply-To: <20261010064240.2467-1-dm.chestnykh@gmail.com>
+References: <20261010064240.2467-1-dm.chestnykh@gmail.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] lib: add module is loaded check
+Subject: [LTP] [PATCH v7] arch_prctl: add ARCH_GET_FS, ARCH_GET_GS tests
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,85 +90,206 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+Cc: Dmitry Chestnykh <dm.chestnykh@gmail.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Li,
+From: Dmitry Chestnykh <dm.chestnykh@gmail.com>
 
-On 10 October 2026, Li Wang wrote:
-> lib: add module is loaded check
-
---- [PATCH 1/4] ---
-
-> diff --git a/include/tst_module.h b/include/tst_module.h
-> +bool tst_module_is_loaded(const char *mod_name);
-
-Low: The new public helper has no kernel-doc comment. Document mod_name,
-hyphen normalization, return values, and whether built-in modules count
-as loaded.
-
---- [PATCH 2/4] ---
-
-> diff --git a/lib/tst_kconfig.c b/lib/tst_kconfig.c
-> +	for (i = 0; i < loaded_module_count; i++) {
-> +		tst_res(TDEBUG, "Loading module '%s'", loaded_modules[i]);
-> +		tst_modprobe(loaded_modules[i], NULL);
-> +	}
-> +
-> +	modules_loaded = true;
-
-High: If a later modprobe fails, tst_modprobe() aborts before modules_loaded
-becomes true, so cleanup skips modules already loaded successfully.
-Track each successful load separately and make partial-load cleanup
-available before invoking the next modprobe.
-
-> +		const char *const argv[] = { "modprobe", "-r",
-> +						loaded_modules[i - 1], NULL };
-
-High: modprobe -r also removes unused dependencies, including modules
-loaded before the test and excluded from this list. For example, removing
-can-raw can remove a pre-existing can module; snapshot dependency ownership
-and remove only modules loaded by this test.
-
-> +		tst_cmd(argv, "/dev/null", "/dev/null", TST_CMD_PASS_RETVAL);
-> +	}
-> +
-> +	loaded_module_count = 0;
-
-Medium: Every removal error is discarded, both output streams are
-suppressed, and the ownership list is then cleared. Keep teardown nonfatal,
-but report failed removals with TWARN and the module name instead of
-silently leaving new modules loaded.
-
---- [PATCH 3/4] ---
-
-> diff --git a/testcases/cve/cve-2025-21756.c b/testcases/cve/cve-2025-21756.c
-> +	.needs_root = 1,
-
-Low: Document the new root requirement in the test description: root is
-needed to load the VSOCK modules, while the reproducer runs as nobody.
-The commit message explains this, but the exported test description does
-not.
-
-Verdict - Needs revision
-
-Pre-existing issue (not a patch finding):
-
-The description in testcases/cve/sctphantom.c says to run modprobe sctp
-manually, although setup() already loaded it before this series.
-
+Signed-off-by: Dmitry Chestnykh <dm.chestnykh@gmail.com>
 ---
-Note:
+ configure.ac                                  |   1 +
+ include/lapi/arch_prctl.h                     |   9 ++
+ runtest/syscalls                              |   1 +
+ .../kernel/syscalls/arch_prctl/.gitignore     |   1 +
+ .../kernel/syscalls/arch_prctl/arch_prctl02.c | 124 ++++++++++++++++++
+ 5 files changed, 136 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/arch_prctl/arch_prctl02.c
 
-The agent can sometimes produce false positives although often its
-findings are genuine. If you find issues with the review, please
-comment this email or ignore the suggestions.
+diff --git a/configure.ac b/configure.ac
+index e979de0e7..9db3e06ad 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -53,6 +53,7 @@ AC_CHECK_HEADERS_ONCE([ \
+     aio.h \
+     asm/ldt.h \
+     asm/prctl.h \
++    asm/hwcap2.h \
+     cpuid.h \
+     emmintrin.h \
+     ifaddrs.h \
+diff --git a/include/lapi/arch_prctl.h b/include/lapi/arch_prctl.h
+index a4e7f8458..6d8376e58 100644
+--- a/include/lapi/arch_prctl.h
++++ b/include/lapi/arch_prctl.h
+@@ -19,4 +19,13 @@
+ # define ARCH_SET_CPUID 0x1012
+ #endif
 
-Regards,
-LTP AI Reviewer
++#ifdef __x86_64__
++# ifdef HAVE_ASM_HWCAP2_H
++#  include <asm/hwcap2.h>
++# endif /* HAVE_ASM_HWCAP2_H */
++# ifndef HWCAP2_FSGSBASE
++#  define HWCAP2_FSGSBASE (1UL << 1)
++# endif /* HWCAP2_FSGSBASE */
++#endif /* __x86_64__ */
++
+ #endif /* LAPI_ARCH_PRCTL_H__ */
+diff --git a/runtest/syscalls b/runtest/syscalls
+index accdf2df9..f2f2a0602 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -32,6 +32,7 @@ alarm06 alarm06
+ alarm07 alarm07
+
+ arch_prctl01 arch_prctl01
++arch_prctl02 arch_prctl02
+
+ bind01 bind01
+ bind02 bind02
+diff --git a/testcases/kernel/syscalls/arch_prctl/.gitignore b/testcases/kernel/syscalls/arch_prctl/.gitignore
+index 24871e249..72187b8b4 100644
+--- a/testcases/kernel/syscalls/arch_prctl/.gitignore
++++ b/testcases/kernel/syscalls/arch_prctl/.gitignore
+@@ -1 +1,2 @@
+ /arch_prctl01
++/arch_prctl02
+diff --git a/testcases/kernel/syscalls/arch_prctl/arch_prctl02.c b/testcases/kernel/syscalls/arch_prctl/arch_prctl02.c
+new file mode 100644
+index 000000000..67bd27639
+--- /dev/null
++++ b/testcases/kernel/syscalls/arch_prctl/arch_prctl02.c
+@@ -0,0 +1,124 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2026 Dmitry Chestnykh <dm.chestnykh@gmail.com>
++ * Author: Dmitry Chestnykh <dm.chestnykh@gmail.com>
++ */
++
++/*\
++ * Test that ``ARCH_GET_FS`` and ``ARCH_GET_GS`` return the same bases read independently
++ * by RDFSBASE and RDGSBASE.
++ */
++
++#include "tst_test.h"
++#include "lapi/syscalls.h"
++#include "lapi/arch_prctl.h"
++#include <stdlib.h>
++#include <string.h>
++
++#ifdef __x86_64__
++
++#ifdef HAVE_GETAUXVAL
++# include <sys/auxv.h>
++#endif
++
++static int arch_prctl_get(int code, unsigned long long *out)
++{
++	return tst_syscall(__NR_arch_prctl, code, out);
++}
++
++static int set_gs(unsigned long long val)
++{
++	return tst_syscall(__NR_arch_prctl, ARCH_SET_GS, val);
++}
++
++static bool tag;
++
++static void setup(void)
++{
++	unsigned long long v = 0;
++
++#ifdef AT_HWCAP2
++	v = getauxval(AT_HWCAP2);
++#endif
++	tag = v & HWCAP2_FSGSBASE ? true : false;
++}
++
++#define READ_FS_BASE() ({                              \
++	unsigned long long __res_fs;                       \
++	asm volatile("rdfsbase %0" : "=r"(__res_fs));      \
++	__res_fs;                                          \
++})
++
++#define READ_GS_BASE() ({                              \
++	unsigned long long __res_gs;                       \
++	asm volatile("rdgsbase %0" : "=r"(__res_gs));      \
++	__res_gs;                                          \
++})
++
++static void test_fs(void)
++{
++	unsigned long long fs = READ_FS_BASE();
++	unsigned long long fs_prctl;
++
++	TST_EXP_PASS_SILENT(arch_prctl_get(ARCH_GET_FS, &fs_prctl));
++	if (TST_PASS)
++		TST_EXP_EQ_LU(fs_prctl, fs);
++}
++
++static void test_gs(void)
++{
++	unsigned long long gs, gs_prctl, orig_gs;
++#define TEST_GS_BASE() do { \
++	gs = READ_GS_BASE(); \
++	TST_EXP_PASS_SILENT(arch_prctl_get(ARCH_GET_GS, &gs_prctl)); \
++	if (TST_PASS) { \
++		TST_EXP_EQ_LU(gs_prctl, gs); \
++	} \
++} while (0)
++
++	TEST_GS_BASE();
++	orig_gs = gs;
++
++	if (gs == 0) {
++		unsigned long long test_gs = 0x1ababababULL;
++
++		TST_EXP_PASS_SILENT(set_gs(test_gs));
++		if (TST_PASS)
++			TEST_GS_BASE();
++
++		TST_EXP_PASS_SILENT(set_gs(orig_gs));
++		if (!TST_PASS)
++			tst_brk(TBROK | TTERRNO, "Failed to restore GS base");
++	}
++}
++
++static struct tcase {
++	unsigned int idx;
++	void (*test_fn)(void);
++} tcases[] = {
++	{0, test_fs},
++	{1, test_gs}
++};
++
++static void run(unsigned int index)
++{
++	if (!tag)
++		tst_brk(TCONF, "rdfsbase/rdgsbase are not supported/enabled");
++
++	struct tcase *tc = &tcases[index];
++	(*tc->test_fn)();
++}
++
++static struct tst_test test = {
++	.test = run,
++	.setup = setup,
++	.tcnt = ARRAY_SIZE(tcases),
++	.min_kver = "5.9",
++	.supported_archs = (const char *const []){"x86_64", NULL}
++};
++
++#else
++
++TST_TEST_TCONF("Tests needs x86_64 CPU");
++
++#endif /* __x86_64__ */
+--
+2.56.0
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
