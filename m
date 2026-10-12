@@ -4,84 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AEEF6CA9ED1
-	for <ltp@archiver.kernel.org>; Mon, 12 Oct 2026 10:32:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B3E3FCA9ED1
+	for <ltp@archiver.kernel.org>; Mon, 12 Oct 2026 10:51:44 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 1C04A3E9B17
-	for <ltp@archiver.kernel.org>; Mon, 12 Oct 2026 12:32:37 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id F271F3E9E6E
+	for <ltp@archiver.kernel.org>; Mon, 12 Oct 2026 12:51:42 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 39EDB3E309A
- for <ltp@lists.linux.it>; Mon, 12 Oct 2026 12:32:22 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ by picard.linux.it (Postfix) with ESMTPS id F11003E75A6
+ for <ltp@lists.linux.it>; Mon, 12 Oct 2026 12:51:28 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 9F6BF100077D
- for <ltp@lists.linux.it>; Mon, 12 Oct 2026 12:32:22 +0200 (CEST)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 6EB3D60026A
+ for <ltp@lists.linux.it>; Mon, 12 Oct 2026 12:51:28 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 18B8321E8A;
- Mon, 12 Oct 2026 10:32:22 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 29D5C1F7A1;
+ Mon, 12 Oct 2026 10:51:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1791801142; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1791802287; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=W3+018bWbqgMvYHnuPavxZApfztnFlXvqaHQqs3Zu7o=;
- b=M4mxb0XP5yp3Q6vJhtOO+dQmGGM1jczn2eMtNTruaOioJ/ocIlVkhTlDVO0q1NkRVue87a
- AAQ+9MK3HcPVmhsWNN9zrUekx2kfbj3NYATboGPd2men4Yne5CUlhDmXY1vzbBkizm+k8Z
- v6njaMG5x38j1FWowy16+Oc86db7hjI=
+ bh=+qEjuQevZqyO6CweEJ3yMgcImI5q9b4HueNFxukrWBY=;
+ b=NaFqfsZYzHd9sE7kqEkHr0DMGq9PFepZe0i7r1abXlSaPgCD0KwIs6M4EKOkZZCXdEO1Gg
+ Gr2f6VIMQUqLl/JhJgAzqPQYOFNZUG2qpfREA/QqWB/v5L7tqDMnBWK4uFFxTjCnlD1HF1
+ YdAckvqzgw804cLL5OKAsQVzCLbMnzU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1791801142;
+ s=susede2_ed25519; t=1791802287;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=W3+018bWbqgMvYHnuPavxZApfztnFlXvqaHQqs3Zu7o=;
- b=p64UbhU5gvve7CpuBK69sDx6JLe0sGB1+5FfWj28yZtTqd9q7+tgigFI0WWfyanlEY9ZcW
- xcgIMRJ+yZr4lGCg==
-Authentication-Results: smtp-out1.suse.de;
+ bh=+qEjuQevZqyO6CweEJ3yMgcImI5q9b4HueNFxukrWBY=;
+ b=WH2AgBd/esJ25smROFiIz7KtsUxxLVTZ2Cpt/sM93eDrqsTdoCWRAJf0DrX+Cybi9BKWOG
+ qG93ebCePO5DIuDA==
+Authentication-Results: smtp-out2.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1791801142; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1791802287; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=W3+018bWbqgMvYHnuPavxZApfztnFlXvqaHQqs3Zu7o=;
- b=M4mxb0XP5yp3Q6vJhtOO+dQmGGM1jczn2eMtNTruaOioJ/ocIlVkhTlDVO0q1NkRVue87a
- AAQ+9MK3HcPVmhsWNN9zrUekx2kfbj3NYATboGPd2men4Yne5CUlhDmXY1vzbBkizm+k8Z
- v6njaMG5x38j1FWowy16+Oc86db7hjI=
+ bh=+qEjuQevZqyO6CweEJ3yMgcImI5q9b4HueNFxukrWBY=;
+ b=NaFqfsZYzHd9sE7kqEkHr0DMGq9PFepZe0i7r1abXlSaPgCD0KwIs6M4EKOkZZCXdEO1Gg
+ Gr2f6VIMQUqLl/JhJgAzqPQYOFNZUG2qpfREA/QqWB/v5L7tqDMnBWK4uFFxTjCnlD1HF1
+ YdAckvqzgw804cLL5OKAsQVzCLbMnzU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1791801142;
+ s=susede2_ed25519; t=1791802287;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=W3+018bWbqgMvYHnuPavxZApfztnFlXvqaHQqs3Zu7o=;
- b=p64UbhU5gvve7CpuBK69sDx6JLe0sGB1+5FfWj28yZtTqd9q7+tgigFI0WWfyanlEY9ZcW
- xcgIMRJ+yZr4lGCg==
+ bh=+qEjuQevZqyO6CweEJ3yMgcImI5q9b4HueNFxukrWBY=;
+ b=WH2AgBd/esJ25smROFiIz7KtsUxxLVTZ2Cpt/sM93eDrqsTdoCWRAJf0DrX+Cybi9BKWOG
+ qG93ebCePO5DIuDA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id DCC2613408;
- Mon, 12 Oct 2026 10:32:21 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id EB42113408;
+ Mon, 12 Oct 2026 10:51:26 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 4JDVLTW3zGrwLgAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Mon, 12 Oct 2026 10:32:21 +0000
-Date: Mon, 12 Oct 2026 12:32:39 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 6jRRMa67zGruQgAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Mon, 12 Oct 2026 10:51:26 +0000
+Date: Mon, 12 Oct 2026 12:51:40 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
 To: Andrea Cervesato <andrea.cervesato@suse.de>
-Message-ID: <asy3R7sb8Limzr1V@yuki.lan>
+Message-ID: <asy7vBVKIsZJfCQY@yuki.lan>
 References: <20260831-fchroot-v4-0-57cceb68f927@suse.com>
- <20260831-fchroot-v4-6-57cceb68f927@suse.com>
+ <20260831-fchroot-v4-5-57cceb68f927@suse.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20260831-fchroot-v4-6-57cceb68f927@suse.com>
-X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+In-Reply-To: <20260831-fchroot-v4-5-57cceb68f927@suse.com>
+X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[99.99%];
  NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-0.998]; MIME_GOOD(-0.10)[text/plain];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
  RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
  MISSING_XM_UA(0.00)[]; RCPT_COUNT_TWO(0.00)[2];
  RCVD_TLS_ALL(0.00)[];
@@ -90,10 +91,10 @@ X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  FROM_EQ_ENVFROM(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
  RCVD_COUNT_TWO(0.00)[2];
  DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:email]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH STAGING v4 06/16] fchroot03: test fchroot()
- permission checks
+Subject: Re: [LTP] [PATCH STAGING v4 05/16] fchroot02: test fchroot()
+ invalid arguments
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -112,28 +113,6 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> +static void run(unsigned int i)
-> +{
-> +	struct tcase *tc = &tcases[i];
-> +
-> +	if (SAFE_FORK())
-> +		return;
-> +
-> +	int dfd = SAFE_OPEN(tc->dir, O_PATH | O_DIRECTORY);
-> +
-> +	SAFE_SETRESUID(ltpuser->pw_uid, ltpuser->pw_uid,
-> +		ltpuser->pw_uid);
-> +
-> +	TST_EXP_FAIL(tst_syscall(__NR_fchroot, dfd, 0),
-> +		tc->exp_errno, "fchroot() with %s", tc->desc);
-> +
-> +	exit(0);
-
-The test library does exit(0); for any process that has been forked from
-the main test process. There is no need for the exit(0) here.
-
-Otherwise:
-
 Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
 
 -- 
