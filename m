@@ -4,96 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2CA69CA9EC5
-	for <ltp@archiver.kernel.org>; Mon, 12 Oct 2026 14:14:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1791814456; h=date : to :
- message-id : references : mime-version : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type : sender : from;
- bh=CHRcJuBYXwq4MaQFrecp4d90jD4UqBySmZ2iqfZvnP0=;
- b=MidgWvz/EbWUE8fCF4/yd90V/dS+7tlM0dG4HG0RzdlTvUSKrMLciWqy0uMxV8rmmYH9W
- rGOM6Q0xRA7fZ9yGQzUa7Q+F+f1txqBvSz2iYBtvu60nVhmySb63Cv857+Hdp4dMciYJ/f1
- ad9GeWNgLp1T0qrH8GWsEUIOAL0lJoA=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C8112CA9EC5
+	for <ltp@archiver.kernel.org>; Mon, 12 Oct 2026 15:48:02 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B9DF23EA8E8
-	for <ltp@archiver.kernel.org>; Mon, 12 Oct 2026 16:14:16 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id E64673EB5E6
+	for <ltp@archiver.kernel.org>; Mon, 12 Oct 2026 17:48:00 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 8DC303E2F49
- for <ltp@lists.linux.it>; Mon, 12 Oct 2026 16:13:55 +0200 (CEST)
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com
- [IPv6:2a00:1450:4864:20::332])
+ by picard.linux.it (Postfix) with ESMTPS id E88BA3EB148
+ for <ltp@lists.linux.it>; Mon, 12 Oct 2026 17:47:45 +0200 (CEST)
+Received: from mail-qk2-x0b.google.com (mail-qk2-x0b.google.com
+ [IPv6:2607:f8b0:4864:34::b])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 7C65E1A007B2
- for <ltp@lists.linux.it>; Mon, 12 Oct 2026 16:13:54 +0200 (CEST)
-Received: by mail-wm1-x332.google.com with SMTP id
- 5b1f17b1804b1-4a061a13884so16824185e9.3
- for <ltp@lists.linux.it>; Mon, 12 Oct 2026 07:13:54 -0700 (PDT)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 743DC6001FB
+ for <ltp@lists.linux.it>; Mon, 12 Oct 2026 17:47:45 +0200 (CEST)
+Received: by mail-qk2-x0b.google.com with SMTP id
+ d75a77b69052e-5350beb1d49so18877381cf.1
+ for <ltp@lists.linux.it>; Mon, 12 Oct 2026 08:47:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1791814434; x=1792419234; darn=lists.linux.it;
- h=in-reply-to:content-disposition:content-type:mime-version
- :references:message-id:subject:cc:to:from:date:from:to:cc:subject
- :date:message-id:reply-to:content-type;
- bh=2pJPhCOZe/IYPFLvtQxjCi2SVEfh19gBRMAcq4V1zlM=;
- b=N/XQUdM+OoBxq6AooGaYGZQRRrwTfPx+r9QnhRML5OfIB6vdxKd883e64GPoK9oBH9
- sDser2qd2kogBk5XnWECPiDxMxbigRNEKnvidFod1nMmp1/iV2GhxVS7Wd19iUrMDGhU
- 3a7MtnTDuxHJNa4BheXdFbh7xm4QOEsf+Rt7gGyBVocuANAe0CeYbWh8mkgyg4+YmyoH
- u6xnghux5463yL6raj4HcqbmejLuWSJ+GXK05Sm/VBJC9XRW5fE57HDBirGa2gM2TCrW
- mUVxpbmBuyadHnIFY+4JIXoUakJsANf7qvLHCE/hLCv8Qh9n6TAWlbQD1cGozjtyiokm
- jK9A==
+ d=gmail.com; s=20251104; t=1791820064; x=1792424864; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to:content-type;
+ bh=crsegXQW3y5aVWi01cs3Ut1w1ch/7uslr854JocYl/M=;
+ b=XwxTtxQQSuYqmaMb5X4VOeh1Izca3J+2k98g16s2nUWu1iCfirNwaNKNCk61X4/Wbq
+ FuzGYt+9CzVpY3MBfYkRz72nNcqEcgkvvIAQSW9EEIaeFroJI03aTypwFdSKMKP7C1vX
+ kBpOMAi5qtOw7PK3QB3ZhUwXBqG7/q6C3Nq9Sd0Tcs016jpj1h1uKjngbovC0QoMHriP
+ IwRGB1+neP85qOYNb1K0JQ2ztmqn0Zlp1/4crhCNIxQU2LHhLpCCg8eJgKjSKLWJIUFt
+ EuFVqMrGpHSGL3T6mlz50c5DsB4M0gQuYQd+8lqe5ew8Rwale5kKkAE95GpADVc/DYSX
+ FP6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20260707; t=1791814434; x=1792419234;
- h=in-reply-to:content-disposition:content-type:mime-version
- :references:message-id:subject:cc:to:from:date:x-gm-gg
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
- :content-type;
- bh=2pJPhCOZe/IYPFLvtQxjCi2SVEfh19gBRMAcq4V1zlM=;
- b=nh3tZPeqbilFQ9J4qpYfmZ2uQe3bnXJVMFKeuQHpkIad6u6HFG7ut3AXbtljvLXUHw
- /z47rFGmbOe04a9OV2s7Cv36PNUuERH7RJFyGJCq8yHAu/jovTsBBJZeAS7/j6V5KdpC
- StMrzNxhUKLTLCvvkgkLCDfvWcnIc62gu7FuxH1OyBDM84c2yE1WUHErTwD/sH1+LE8G
- sliOMHkaGlO/Of/aRlQEIj+i4VQi7qqhyeSzzqQCLtLJckEkskne6Tbr+XQrjwAJbo1C
- aYwb7j3/u/nf31SLO93/d584b2EJEueTMvnUwtD9cOlpdOS3p07as0JMUyvwoc7JrYdV
- duuQ==
-X-Gm-Message-State: AFq9FYKH0HQ1ioVhWnJpofgCuKQgAQa/EvfBl9Rim+FSA/vJDLEcO0Sj
- 1U+g4UPxxzJJ1qzdX1beqpFSsQHCTr3RHY+7E0HAKLtROWgjiecm+Agu9/Cm/UU2cSmkb71iahW
- WF9GOKy0=
-X-Gm-Gg: AYBFou04Kew44XF54ELhhjiV9Ud/kCL8ZTMiOsv2I+eufKuKY0nZdycC3BS8iNnrGrC
- 765S6HVgkG+XwqOXyVYzF7/VnfslaaHplOL21C54NZfxpD+kzehRBlZn2/jUO4va+Dif8ofYISW
- FsrkwwZTj9++N3+9KtYqysETH551qzkD/dLnIYekaQABud5kEGcqBvpdnp8u8DUVzBljF9RZhyP
- 64KB833SiGw8NSETLk2PJ42khpkCS5bC7z2j7WI2q1pvzTAysg3ToZyQAuPcSxFPumA6aY/S0jp
- /em1ojCdDI8QSkIS2K/OzRSGZGj6sBE533oC836zRlGPxTrddOv4y9nhETTUArdQsN0LsybokgY
- fq+ZYPHthYNGdyyO14vO1CdGd2HfDpwXxug3ktcI3du9s/zwtx9OF2cRmd9QY/vPgn4jWpSnqLf
- tDPd6oomggqN519auNG+zzRFPOXNDs9YqqmEoZorXzB08TFA+yyqCu3TT0hJ/52Pw5QIcdjYHg9
- Q==
-X-Received: by 2002:a05:600c:630f:b0:4a1:9f59:ee7 with SMTP id
- 5b1f17b1804b1-4a19f5911f4mr57613725e9.0.1791814433678; 
- Mon, 12 Oct 2026 07:13:53 -0700 (PDT)
-Received: from localhost.localdomain ([2001:af0:8000:1409:193:86:92:181])
- by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-4a18be97d1esm465166545e9.8.2026.10.12.07.13.53
+ d=1e100.net; s=20260707; t=1791820064; x=1792424864;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to:content-type;
+ bh=crsegXQW3y5aVWi01cs3Ut1w1ch/7uslr854JocYl/M=;
+ b=M2NhcWueFlFM5O75y1kKZDGkIxaYywGd496JI2V2J5c1lzNAT6hK/o9BCedeDHxUsX
+ B+VUd845XtYAG1UrSy6jkqtwuSiN1qEPf159YbiyHta23awlauejmjgfjI90o9iXb4T6
+ SgJEytY2JHLqMG+nAtvcvv+E7rlpYUKiI/T+R8O1JZYZw5CKL/+D8EcWdkKF//NZr+w3
+ lo9tpw62LOdfsoLvSnLIlf0091FeGReCVrVYWwXn+C7QAvqQVkmoVJ9rpDl17gCHpdxJ
+ l3QB/eqrq3Uvy6n/dSJ/ZxIFjwGWTBincz1vN9l8490dEScgjnvQ2Yrc6L3eM9QuCLe9
+ s5PA==
+X-Gm-Message-State: AFq9FYK0xMhOHk/hSeH9TFSqSghOjAgnDUAJNE1ZFWWkNj0iTRWHpu8J
+ 2Etk5SUOdSIlLh+dPS0Qe5xx2b9GDDRyaz2Jrp+j9gKYfh0faFM80BWf
+X-Gm-Gg: AYBFou2d0hyd8Gttf5qlFtBiv9k9fn0Ta04wpH9YSW52j29qE+1XlPnEz4Ck6+ohKzB
+ /eeEkC9c/3QTuXen9SZFSdzx6yuL71wIp7Fuc/E6EP70S+f+ta/0E/XZ2u8yRu47kk3qVYWguza
+ YLn/RfbRnWGIfXYYb2+RXAVRdlia7wsKZtW9QmheB7/IXiPWecO11SBhNxtg8m31H5i6M2ndXKN
+ G41zu+PRPuo+yjHU1qpFz5r8DgeTf8y6mfkkZjH4rkFocw6lvvDy4xElQhln7kjt7Pj/G2TQuVD
+ RFEHmriQGxazKCLtjxKm8mfIHRAsQvr8sR3aqpeNj+gi6UnUh/VCmgswUqdynCENC2dbgaVevyp
+ ZZezPjsk/0OMQQElVuWl8K5rcnnDV8f1O6PKEYwBpQtTLqEOIRn9Rri207xqPNLm4DoHejCVxba
+ Se66H6GSUUV929ioctNNvZHNEay7NwDv2YUbOZeeU+k6zC0nRU0OZYUvMr1dZ4WzcjvNs3Tgbyy
+ fSIlAHB2XPleRb0qj6JHHfLTG1mCydsBPNM7D54AKS0hqlCTDg3cZF1YK1j6Yxnxm1UF4AIfDLG
+ XS+2WSuq0DE=
+X-Received: by 2002:a05:622a:5c0c:b0:535:84e7:59c9 with SMTP id
+ d75a77b69052e-5359f06b1e4mr178429071cf.0.1791820064182; 
+ Mon, 12 Oct 2026 08:47:44 -0700 (PDT)
+Received: from
+ runnervmmprz5.c2rp1btxlhcejh44lz4aykhskb.bx.internal.cloudapp.net
+ ([20.115.95.132]) by smtp.gmail.com with ESMTPSA id
+ d75a77b69052e-5359b79a2easm80192431cf.21.2026.10.12.08.47.41
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 12 Oct 2026 07:13:53 -0700 (PDT)
-Date: Mon, 12 Oct 2026 16:13:51 +0200
-To: Wei Gao <wegao@suse.com>
-Message-ID: <20261012-postbox-cultural-bdfeea18f89f@there>
-References: <20261004143332.25978-1-wegao@suse.com>
- <20261004143332.25978-3-wegao@suse.com>
- <asPB9JgbOowPDAgX@blackbook2>
- <asb7iTU4FBh4b0UT@autotest-wegao.qe.prg2.suse.org>
+ Mon, 12 Oct 2026 08:47:42 -0700 (PDT)
+From: linuxtestproject.agent@gmail.com
+To: Jan Stancek <jstancek@redhat.com>
+Date: Mon, 12 Oct 2026 15:47:41 +0000
+Message-ID: <20261012154741.35026-1-linuxtestproject.agent@gmail.com>
+X-Mailer: git-send-email 2.55.0
+In-Reply-To: <b6d98d03422ec30d0bf5284cd094d2ecf688efe3.1791792065.git.jstancek@redhat.com>
+References: <b6d98d03422ec30d0bf5284cd094d2ecf688efe3.1791792065.git.jstancek@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <asb7iTU4FBh4b0UT@autotest-wegao.qe.prg2.suse.org>
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [PATCH v1 2/2] memcontrol03,
- memcontrol04: Set protection on parent cgroups to prevent kswapd
- over-reclaim
+Subject: Re: [LTP] openposix: timers/twoevtimers: Wait for both timer signals
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -105,65 +91,28 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: =?utf-8?q?Michal_Koutn=C3=BD_via_ltp?= <ltp@lists.linux.it>
-Reply-To: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
 Cc: ltp@lists.linux.it
-Content-Type: multipart/mixed; boundary="===============0799885386=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
+Hi Jan,
 
---===============0799885386==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="6tpu5kcakg6xzxui"
-Content-Disposition: inline
+On 12 October 2026, Jan Stancek wrote:
+> openposix: timers/twoevtimers: Wait for both timer signals
 
+Verdict - Reviewed
 
---6tpu5kcakg6xzxui
-Content-Type: text/plain; protected-headers=v1; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH v1 2/2] memcontrol03, memcontrol04: Set protection on
- parent cgroups to prevent kswapd over-reclaim
-MIME-Version: 1.0
+---
+Note:
 
-On Thu, Oct 08, 2026 at 02:10:17AM +0000, Wei Gao <wegao@suse.com> wrote:
-> Protecting this solely from the external runner is tricky since LTP builds
-> a 3-level cgroup hierarchy:
-> - /sys/fs/cgroup/ltp (Level 1)
-> - tst_cg (/sys/fs/cgroup/ltp/ltp-testxxxx, Level 2 =E2=80=94 trunk_A's pa=
-rent)
-> - trunk_cg[A] (Level 3 =E2=80=94 trunk_B's parent)
-> Every level in this chain needs memory.low =3D 50M. Even if an external r=
-unner=20
-> sets it at /sys/fs/cgroup/ltp, tst_cg or trunk_A will break the protectio=
-n chain.
+The agent can sometimes produce false positives although often its
+findings are genuine. If you find issues with the review, please
+comment this email or ignore the suggestions.
 
-I see. (Note that this needn't be the same 50M as inside the test. The
-value at this level would denote some protection sufficient for test's
-stability.)
-
-> Another option is make sure enough memory to the test environment so kswa=
-pd=20
-> doesn't get triggered at all. I guess we can do this to avoid issue?
-
-That sounds even better (or limit amount of tests running in parallel
-wrt available amounts), memory.low on the high level is best-effort in
-the end.
-
-
-Michal
-
---6tpu5kcakg6xzxui--
-
---===============0799885386==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Regards,
+LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
-
---===============0799885386==--
