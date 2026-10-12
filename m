@@ -4,83 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A0227CA9ED0
-	for <ltp@archiver.kernel.org>; Mon, 12 Oct 2026 11:03:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3B90ACA9ED0
+	for <ltp@archiver.kernel.org>; Mon, 12 Oct 2026 11:14:37 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 748313EA844
-	for <ltp@archiver.kernel.org>; Mon, 12 Oct 2026 13:03:54 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id A87BD3E9C61
+	for <ltp@archiver.kernel.org>; Mon, 12 Oct 2026 13:14:35 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 5A4B23E6A6E
- for <ltp@lists.linux.it>; Mon, 12 Oct 2026 13:03:38 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+ by picard.linux.it (Postfix) with ESMTPS id 67C813E2D2D
+ for <ltp@lists.linux.it>; Mon, 12 Oct 2026 13:14:20 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 9229610007CC
- for <ltp@lists.linux.it>; Mon, 12 Oct 2026 13:03:38 +0200 (CEST)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id AEF751000741
+ for <ltp@lists.linux.it>; Mon, 12 Oct 2026 13:14:19 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 691641F7A1;
- Mon, 12 Oct 2026 11:03:37 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 09B6C1F7A1;
+ Mon, 12 Oct 2026 11:14:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1791803017; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1791803659; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=1JpoeqqGhycL6d1TC6Wu92CNXmo2naa4hN4OrFx146Y=;
- b=FTP6RKMy5udz7ZqAZ62In9K42iCzd/Ey4XkWtdWggUwsLLOYFkvY0IFCVwSuIHV1bvhVOi
- 8wighclOoN7OnlRot3y3mxYOHro155jamii3MFQUYnb5iyHHZ8UuB+VJUvWvf3B8w/Mzz2
- jmBivLCBL5YdjIRwQ1fSGiUwW7aYv1c=
+ bh=ngRFiZ167N8uYJLRcBwkx2hwvij0bMSny41ewpHO/E4=;
+ b=HevBgCEwHNyTSwaEzfHNQJf+qKhtl8PVoi/zXn65jMRoXurT42n+Y/At1RSMXn/1yWs69b
+ yt6ek4aSfW+jUb4pNVE7FKt+zlrnWuu/R7Li8ODeRtCXrhGByOQG1yktNFmToOu7c0UxWM
+ E8EDTkYfm+aHGfYZiBz2tVoGiTHHlRU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1791803017;
+ s=susede2_ed25519; t=1791803659;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=1JpoeqqGhycL6d1TC6Wu92CNXmo2naa4hN4OrFx146Y=;
- b=GfZZs1WfvaB9iuwkKEYwlYrTLepeamqVBR4iIzQUtdu3Ica6TZjtbotv9DHV4pIPVqyJmZ
- FQ0QOeZp4OIIh1Aw==
+ bh=ngRFiZ167N8uYJLRcBwkx2hwvij0bMSny41ewpHO/E4=;
+ b=GfAGGR1gUh4LZapIP5iNtykMfxnpVMFo1nFdf1+PGZsgnm4pMQLFYCp8xWZZRJevWpR4Rg
+ 9qIo01Jd/dfXg6Dw==
 Authentication-Results: smtp-out2.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1791803017; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1791803659; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=1JpoeqqGhycL6d1TC6Wu92CNXmo2naa4hN4OrFx146Y=;
- b=FTP6RKMy5udz7ZqAZ62In9K42iCzd/Ey4XkWtdWggUwsLLOYFkvY0IFCVwSuIHV1bvhVOi
- 8wighclOoN7OnlRot3y3mxYOHro155jamii3MFQUYnb5iyHHZ8UuB+VJUvWvf3B8w/Mzz2
- jmBivLCBL5YdjIRwQ1fSGiUwW7aYv1c=
+ bh=ngRFiZ167N8uYJLRcBwkx2hwvij0bMSny41ewpHO/E4=;
+ b=HevBgCEwHNyTSwaEzfHNQJf+qKhtl8PVoi/zXn65jMRoXurT42n+Y/At1RSMXn/1yWs69b
+ yt6ek4aSfW+jUb4pNVE7FKt+zlrnWuu/R7Li8ODeRtCXrhGByOQG1yktNFmToOu7c0UxWM
+ E8EDTkYfm+aHGfYZiBz2tVoGiTHHlRU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1791803017;
+ s=susede2_ed25519; t=1791803659;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=1JpoeqqGhycL6d1TC6Wu92CNXmo2naa4hN4OrFx146Y=;
- b=GfZZs1WfvaB9iuwkKEYwlYrTLepeamqVBR4iIzQUtdu3Ica6TZjtbotv9DHV4pIPVqyJmZ
- FQ0QOeZp4OIIh1Aw==
+ bh=ngRFiZ167N8uYJLRcBwkx2hwvij0bMSny41ewpHO/E4=;
+ b=GfAGGR1gUh4LZapIP5iNtykMfxnpVMFo1nFdf1+PGZsgnm4pMQLFYCp8xWZZRJevWpR4Rg
+ 9qIo01Jd/dfXg6Dw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3A3E613408;
- Mon, 12 Oct 2026 11:03:37 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id CC8D613408;
+ Mon, 12 Oct 2026 11:14:18 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id /sUZBom+zGrcTwAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Mon, 12 Oct 2026 11:03:37 +0000
-Date: Mon, 12 Oct 2026 13:03:51 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 2ld3KQrBzGrTWwAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Mon, 12 Oct 2026 11:14:18 +0000
+Date: Mon, 12 Oct 2026 13:14:36 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
 To: Andrea Cervesato <andrea.cervesato@suse.de>
-Message-ID: <asy-l3cymtWrm_ss@yuki.lan>
+Message-ID: <aszBHHq0VvINVwrT@yuki.lan>
 References: <20260831-fchroot-v4-0-57cceb68f927@suse.com>
- <20260831-fchroot-v4-7-57cceb68f927@suse.com>
+ <20260831-fchroot-v4-8-57cceb68f927@suse.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20260831-fchroot-v4-7-57cceb68f927@suse.com>
-X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+In-Reply-To: <20260831-fchroot-v4-8-57cceb68f927@suse.com>
+X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[99.99%];
  NEURAL_HAM_LONG(-1.00)[-1.000];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
  RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
@@ -90,11 +90,11 @@ X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  TO_DN_ALL(0.00)[]; FROM_HAS_DN(0.00)[]; MIME_TRACE(0.00)[0:+];
  FROM_EQ_ENVFROM(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
  RCVD_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:email]
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo]
 X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH STAGING v4 07/16] fchroot04: test fchroot() into
- failfs as root
+Subject: Re: [LTP] [PATCH STAGING v4 08/16] fchroot05: test failfs root can
+ not be referenced
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -113,35 +113,17 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> +static void run(void)
-> +{
-> +	if (SAFE_FORK())
-> +		return;
-> +
-> +	char buf[PATH_MAX];
-> +
-> +	TST_EXP_PASS(tst_syscall(__NR_fchroot, FD_FAILFS_ROOT, 0),
-> +		"fchroot() with the FD_FAILFS_ROOT sentinel");
-> +
-> +	TST_EXP_FAIL2(open("/etc/passwd", O_RDONLY), EOPNOTSUPP,
-> +		"absolute file open");
-> +
-> +	TST_EXP_FAIL(mkdir("/foo", 0700), EOPNOTSUPP,
-> +		"absolute directory creation");
-> +
-> +	/*
-> +	 * The libc getcwd() wrapper rejects the "(unreachable)"
-> +	 * prefix produced by the kernel, so call the raw syscall.
-> +	 */
-> +	TEST(tst_syscall(__NR_getcwd, buf, sizeof(buf)));
-> +	if (TST_RET > 0)
-> +		TST_EXP_EQ_STRN(buf, UNR_TAG, sizeof(UNR_TAG) - 1);
-> +	else
-> +		tst_res(TFAIL | TTERRNO, "getcwd() failed");
+> +	len = readlinkat(procfd, "self/root", buf, sizeof(buf) - 1);
+> +	if (len < 0) {
+> +		tst_res(TFAIL | TTERRNO, "readlinkat() of /proc/self/root");
+> +	} else {
+> +		buf[len] = '\0';
+> +		TST_EXP_EQ_STR(buf, "failfs:/");
+> +	}
 > +
 > +	exit(0);
 
-Here as well, no need to add the exit(0)
+Here as well.
 
 Otherwise:
 
