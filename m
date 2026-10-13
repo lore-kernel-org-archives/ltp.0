@@ -4,107 +4,118 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E1AC7CC6B03
-	for <ltp@archiver.kernel.org>; Tue, 13 Oct 2026 12:03:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E1F62CA9ED2
+	for <ltp@archiver.kernel.org>; Tue, 13 Oct 2026 12:03:29 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 4244D3EA824
-	for <ltp@archiver.kernel.org>; Tue, 13 Oct 2026 14:03:15 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 9AAC13EA829
+	for <ltp@archiver.kernel.org>; Tue, 13 Oct 2026 14:03:28 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9720C3EA812
+ by picard.linux.it (Postfix) with ESMTPS id D2A233EA818
  for <ltp@lists.linux.it>; Tue, 13 Oct 2026 14:02:04 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 0D9E460071B
- for <ltp@lists.linux.it>; Tue, 13 Oct 2026 14:02:04 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 0DB4560080A
+ for <ltp@lists.linux.it>; Tue, 13 Oct 2026 14:02:03 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 769A121F3E;
+ by smtp-out2.suse.de (Postfix) with ESMTPS id DFF511F788;
  Tue, 13 Oct 2026 12:02:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1791892923; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=txsoV5fggwuOBjNZnQat1QmD/F0IlfkUPYI/pk8ITBU=;
- b=qbmNsBgLke//zCZgQQkmToDD/+l9YDP6O4ny0LNV7nQYCm26Kben7FEVnwtVM8l6tvUj6J
- Up4ygfAFc98oGgI1VqBLyGZDVDmU9dI8Zbwt9qGf4Hqj576y5E9ZeA3KwuPvZefDAHnIVJ
- IaTgEW18UJmYe2pVCXXOs7I7GY08wfM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1791892923;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=txsoV5fggwuOBjNZnQat1QmD/F0IlfkUPYI/pk8ITBU=;
- b=KxqXC4eTsoC0VV10ykjQQBmo8NcvG2V3NfAg9GL+zWobDNaURtnK09pbr++zIgNGXzBxSv
- LJUydCJFgboYs1Cw==
-Authentication-Results: smtp-out1.suse.de;
-	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1791892922; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=txsoV5fggwuOBjNZnQat1QmD/F0IlfkUPYI/pk8ITBU=;
- b=M4iOQGN1BByyg1bKU3yV4q3tWPcTSzv/FFO+CfaigFLd1xkQ9vNwmCbpGBrauW8wYq+A74
- I0h1CJ/UKIdeU/MBewEwkB93ckjCqOuKmw0s4GGei42y7+MP0nLyVMG/70ttlDwExsvf4p
- rYJvjv6ACEpEqvAE8Su4ELWZKeDp7pw=
+ bh=TFqXaOE+gQusroHOvXxIH0wWXvPh95dnenIqMMfRbAs=;
+ b=s69TwCWLtg7dBh1p4GwCRXKpLgGqANYIYdna70ctZ0CakgLu6mw5IBVX0/C0gnOvbY+UGU
+ jYdOPnVLZhc/abda4j53zF/fJZXF1OIlJERPDeW08FHACdSkKr7aSrEAWUOwsgsZMJhl6W
+ gi5vu1G5RtWYV9UVvkMGsjyK1w+txNQ=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1791892922;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=txsoV5fggwuOBjNZnQat1QmD/F0IlfkUPYI/pk8ITBU=;
- b=kLFSXOzBeRgOHcXBSV5gOfqVLqCyKXG18xz47JY8FmotP3hbIJNzSGCFX9rrwHF6r0C9o9
- wZQPXkUEsLvqx/DQ==
+ bh=TFqXaOE+gQusroHOvXxIH0wWXvPh95dnenIqMMfRbAs=;
+ b=Lma2aXWuCmjZto5VsCo04/CS2EFNZePq2Oj0kwHQjlmM0ZOnYGzziGAINtovywJlzKdWhk
+ Y4gs9XaV/fWghhCw==
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.de header.s=susede2_rsa header.b=s69TwCWL;
+ dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=Lma2aXWu
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1791892922; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=TFqXaOE+gQusroHOvXxIH0wWXvPh95dnenIqMMfRbAs=;
+ b=s69TwCWLtg7dBh1p4GwCRXKpLgGqANYIYdna70ctZ0CakgLu6mw5IBVX0/C0gnOvbY+UGU
+ jYdOPnVLZhc/abda4j53zF/fJZXF1OIlJERPDeW08FHACdSkKr7aSrEAWUOwsgsZMJhl6W
+ gi5vu1G5RtWYV9UVvkMGsjyK1w+txNQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1791892922;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=TFqXaOE+gQusroHOvXxIH0wWXvPh95dnenIqMMfRbAs=;
+ b=Lma2aXWuCmjZto5VsCo04/CS2EFNZePq2Oj0kwHQjlmM0ZOnYGzziGAINtovywJlzKdWhk
+ Y4gs9XaV/fWghhCw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 920EE1352C;
- Tue, 13 Oct 2026 12:02:01 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9D93F13503;
+ Tue, 13 Oct 2026 12:02:02 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id jWLfDrgdzmouEgAAD6G6ig:T9
- (envelope-from <andrea.cervesato@suse.de>); Tue, 13 Oct 2026 12:02:01 +0000
+ by imap1.dmz-prg2.suse.org with ESMTPSA id jWLfDrgdzmouEgAAD6G6ig:T16
+ (envelope-from <andrea.cervesato@suse.de>); Tue, 13 Oct 2026 12:02:02 +0000
 From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Tue, 13 Oct 2026 14:02:04 +0200
+Date: Tue, 13 Oct 2026 14:02:11 +0200
 MIME-Version: 1.0
-Message-Id: <20261013-fix_core_lib_deepseek-v2-8-7a6670fd6fd6@suse.com>
+Message-Id: <20261013-fix_core_lib_deepseek-v2-15-7a6670fd6fd6@suse.com>
 References: <20261013-fix_core_lib_deepseek-v2-0-7a6670fd6fd6@suse.com>
 In-Reply-To: <20261013-fix_core_lib_deepseek-v2-0-7a6670fd6fd6@suse.com>
 To: Linux Test Project <ltp@lists.linux.it>
 X-Mailer: b4 0.16.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1791892920; l=1318;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1791892920; l=1518;
  i=andrea.cervesato@suse.com; s=20251210; h=from:subject:message-id;
- bh=uaXIeqqv2mjA/szAN3FFSGD+eG91eyXZnLbc2b8IuxU=;
- b=NeOB5ng6yA3P+n5iPcUcG5Gadzgn2vhWmAXcVI0OXT032MwbbwS3hxYmF9zXtQWet6ux87iwN
- cxVg21l/AyyAW6An3ed+A0fZJPXF78swvjebDtrasXY7qitZabsVSNR
+ bh=u/smh43ym2iLR/pq9S2Ctz3myosQOYHXunPyAO1kVr4=;
+ b=3AP45x6LvwENAFW/lrcKwWR38EFjpmRXCDp8lr+VPtG2DUDiVBabyN+xM4USwgsx2zNngunXc
+ JuooGnRJ7lxCZZiv2zXWqg1DAQdH/R0ck6oMCAHUAZ4wAK/6BAuBK5Z
 X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
  pk=zKY+6GCauOiuHNZ//d8PQ/UL4jFCTKbXrzXAOQSLevI=
-X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: DFF511F788
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-0.999]; MIME_GOOD(-0.10)[text/plain];
- RCVD_VIA_SMTP_AUTH(0.00)[]; RCVD_TLS_ALL(0.00)[];
- ARC_NA(0.00)[]; MIME_TRACE(0.00)[0:+];
+ R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MX_GOOD(-0.01)[];
+ RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+ DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
+ ARC_NA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ MIME_TRACE(0.00)[0:+]; RCPT_COUNT_TWO(0.00)[2];
+ RCVD_TLS_ALL(0.00)[];
+ URIBL_BLOCKED(0.00)[suse.com:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.de:dkim];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
  DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- URIBL_BLOCKED(0.00)[suse.com:email,imap1.dmz-prg2.suse.org:helo,suse.cz:email];
- TO_DN_ALL(0.00)[]; FROM_HAS_DN(0.00)[];
- RCPT_COUNT_THREE(0.00)[3]; FROM_EQ_ENVFROM(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo, suse.com:email,
- suse.cz:email]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.de:dkim];
+ TO_DN_ALL(0.00)[]; DKIM_TRACE(0.00)[suse.de:+]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 08/15] ujson: writer: Return error when newline()
- fails
+Subject: [LTP] [PATCH v2 15/15] ujson: writer: Flush buffer before direct
+ writes
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -123,53 +134,48 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-When out_ch(self, '\n') fails, newline() returns 0 instead of 1,
-masking output write errors from the caller. ujson_obj_finish() and
-ujson_arr_finish() also ignore the newline() return value. Return 1
-on write failure and propagate it to the caller.
+out_writer_file() writes chunks larger than a quarter of its buffer
+directly to the file, bypassing data still sitting in the buffer. Any
+string longer than 256 bytes was therefore written before the preceding
+output, producing corrupted JSON. Flush the buffer first.
 
 Fixes: c50a0e0751c8 ("libs: Vendor ujson library")
-Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
 Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
- libs/ujson/ujson_writer.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ libs/ujson/ujson_writer.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
 diff --git a/libs/ujson/ujson_writer.c b/libs/ujson/ujson_writer.c
-index 040ae680e..c203ee079 100644
+index ac21ab442..7874735a1 100644
 --- a/libs/ujson/ujson_writer.c
 +++ b/libs/ujson/ujson_writer.c
-@@ -179,7 +179,7 @@ static int do_padd(ujson_writer *self)
- static int newline(ujson_writer *self)
+@@ -402,6 +402,9 @@ struct json_writer_file {
+ 
+ static int out_writer_file_write(ujson_writer *self, int fd, const char *buf, ssize_t buf_len)
  {
- 	if (out_ch(self, '\n'))
--		return 0;
-+		return 1;
++	if (!buf_len)
++		return 0;
++
+ 	do {
+ 		ssize_t ret = write(fd, buf, buf_len);
+ 		if (ret < 0) {
+@@ -434,8 +437,15 @@ static int out_writer_file(ujson_writer *self, const char *buf, size_t buf_len)
+ 	size_t buf_size = sizeof(writer_file->buf);
+ 	size_t buf_avail = buf_size - writer_file->buf_used;
  
- 	if (do_padd(self))
- 		return 1;
-@@ -261,8 +261,8 @@ int ujson_obj_finish(ujson_writer *self)
+-	if (buf_len > buf_size/4)
++	if (buf_len > buf_size / 4) {
++		if (out_writer_file_write(self, writer_file->fd,
++					  writer_file->buf, writer_file->buf_used))
++			return 1;
++
++		writer_file->buf_used = 0;
++
+ 		return out_writer_file_write(self, writer_file->fd, buf, buf_len);
++	}
  
- 	clear_depth_bit(self);
- 
--	if (!first)
--		newline(self);
-+	if (!first && newline(self))
-+		return 1;
- 
- 	return out_ch(self, '}');
- }
-@@ -304,8 +304,8 @@ int ujson_arr_finish(ujson_writer *self)
- 
- 	clear_depth_bit(self);
- 
--	if (!first)
--		newline(self);
-+	if (!first && newline(self))
-+		return 1;
- 
- 	return out_ch(self, ']');
- }
+ 	if (buf_len >= buf_avail) {
+ 		if (out_writer_file_write(self, writer_file->fd,
 
 -- 
 2.51.0
