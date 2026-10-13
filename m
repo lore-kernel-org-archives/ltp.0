@@ -4,118 +4,109 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1A900CC6B03
-	for <ltp@archiver.kernel.org>; Tue, 13 Oct 2026 12:05:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 25AF4CA9ED2
+	for <ltp@archiver.kernel.org>; Tue, 13 Oct 2026 12:06:04 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9F9CB3EA83F
-	for <ltp@archiver.kernel.org>; Tue, 13 Oct 2026 14:05:48 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id AA0543EA815
+	for <ltp@archiver.kernel.org>; Tue, 13 Oct 2026 14:06:02 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 871543EA825
+ by picard.linux.it (Postfix) with ESMTPS id A744E3EA833
  for <ltp@lists.linux.it>; Tue, 13 Oct 2026 14:02:10 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id EF46F1400997
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id DA1CB1A00914
  for <ltp@lists.linux.it>; Tue, 13 Oct 2026 14:02:09 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id A49BA21F35;
- Tue, 13 Oct 2026 12:02:01 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id B3F781F74A;
+ Tue, 13 Oct 2026 12:02:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1791892923; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=p8hu5wFOwpRBr6EY35KrS1CNQ5GjNmE2VA6HrUvvyTI=;
- b=ANYA1JxUQt9s4lmo9wASxGhid17AchUY3DEyvTAR7dBDndbytngoNjcULHAbLF3icbH5xc
- EMMyD/hlbHkJQDmWCKQROTL0tOg0F/4EmnqRQjlUs13Zl0XukiDk3Oe2dNnmK3IT21b01+
- yxC6Fceke5WW5xGvlo9+VmMoBr7WuWA=
+ bh=qm1M8Kg1taS1f1O8I8RSHBfYbrz7xZpyh1Vo8v193Ok=;
+ b=xeDC154pLWkRFASyIMXfnqoiKubIvvLx2Qmf8rFeRCM4E02mR+vB8ySaA0/mRKro7mLlbC
+ 7pFTMzxSMvni14SlChk4r+qe2wj0nu4/Qn3kvlwtA37eU+7LFKxuctGk9snUDXO1qCRs7b
+ FmYJMUdnV70BERPu2CmDK3H8+67Wwx8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1791892923;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=p8hu5wFOwpRBr6EY35KrS1CNQ5GjNmE2VA6HrUvvyTI=;
- b=E1sXYKza6ZEnCIP+VuDarmPnRS/QQYfcr9FVaaGckHpRWDu5erDtCwOFVxCJQkZLDYyfbH
- J+FOe0K+8WAM/ABg==
-Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.de header.s=susede2_rsa header.b=cEsgojJN;
- dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=6mRWQYFe
+ bh=qm1M8Kg1taS1f1O8I8RSHBfYbrz7xZpyh1Vo8v193Ok=;
+ b=xRD7YfKYaa+qqZ0C4sjEWJM3R3akAu4yd9aYZXc5kHMtGDfrL9I2fetcU3Q5qE8F6vlKob
+ uJ1gWOYW0JYGZ8AA==
+Authentication-Results: smtp-out2.suse.de;
+	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1791892921; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1791892922; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=p8hu5wFOwpRBr6EY35KrS1CNQ5GjNmE2VA6HrUvvyTI=;
- b=cEsgojJNTZavxDyxUo29CWowqoUMNzNomqhorzoJLFnzclFo3CpKgJwJYdN3VlPFz3fNaY
- 68nRq/sPshxel7Wpo5K/cQ9wtnxvQpx8zXpkVJzLTHekC1CflPi+QIP9fRYUeqG4deBWmP
- iOgZJ1pykJgaslTX3qFT5necjRcwF8o=
+ bh=qm1M8Kg1taS1f1O8I8RSHBfYbrz7xZpyh1Vo8v193Ok=;
+ b=PSyN39WrOBuDjO0462C4dwWXKPEgdkUpaHUK76onQmjl7mFpPRtD5WIgwSqQz7g65FqfMS
+ sGQHNcB9WjNULG7ec5hvfsPXneEnROpFHvxjRGHsvYEyhrHvtxRPZzsS6e0BrXvqWIgsry
+ +ikC+byiWWl118+bmlXfgquztAat/BU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1791892921;
+ s=susede2_ed25519; t=1791892922;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=p8hu5wFOwpRBr6EY35KrS1CNQ5GjNmE2VA6HrUvvyTI=;
- b=6mRWQYFeJuScrLC/Y2w2ZhUxh84QiNig6zs7e+VOE1EE/oMc81s+pXZ1CqCJEGAYgz3Xm9
- xm2BCgxPN0WYOLAg==
+ bh=qm1M8Kg1taS1f1O8I8RSHBfYbrz7xZpyh1Vo8v193Ok=;
+ b=4vjaXEfVtV2GTK8ggwKz4UzytG7rH+j9QsMcDVSx5llLRv2IeNBMh3LNuZ3dGWRzpGnG2a
+ OAdUxi93e64TJJDQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 043BE134E4;
- Tue, 13 Oct 2026 12:02:00 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2C4B3134C7;
+ Tue, 13 Oct 2026 12:02:02 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id jWLfDrgdzmouEgAAD6G6ig:T5
- (envelope-from <andrea.cervesato@suse.de>); Tue, 13 Oct 2026 12:02:00 +0000
+ by imap1.dmz-prg2.suse.org with ESMTPSA id jWLfDrgdzmouEgAAD6G6ig:T13
+ (envelope-from <andrea.cervesato@suse.de>); Tue, 13 Oct 2026 12:02:02 +0000
 From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Tue, 13 Oct 2026 14:02:00 +0200
+Date: Tue, 13 Oct 2026 14:02:08 +0200
 MIME-Version: 1.0
-Message-Id: <20261013-fix_core_lib_deepseek-v2-4-7a6670fd6fd6@suse.com>
+Message-Id: <20261013-fix_core_lib_deepseek-v2-12-7a6670fd6fd6@suse.com>
 References: <20261013-fix_core_lib_deepseek-v2-0-7a6670fd6fd6@suse.com>
 In-Reply-To: <20261013-fix_core_lib_deepseek-v2-0-7a6670fd6fd6@suse.com>
 To: Linux Test Project <ltp@lists.linux.it>
 X-Mailer: b4 0.16.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1791892920; l=944;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1791892920; l=1009;
  i=andrea.cervesato@suse.com; s=20251210; h=from:subject:message-id;
- bh=A34dQUqNZGBtr1paNZ+YOziPy6VBfhljHlhBrdHbikI=;
- b=pfg9lBMZE53ZcKr8ehL/ub+YQ00sMQ2+MBCbAtm7cSDsA3FJGNqXLjHEymNC2Uwug8tiuD+Mh
- 0rL/SfxA3g+BusofNhI3Q2laF9kc6YFFrHKiORLf/PSUCsSxD2dL9IK
+ bh=sAyohHnh9cJEAIVnRpX56bYchimDNuMLrQd28QswD4Q=;
+ b=HEUjcpHG4PPRhM43d6KEzGw5/6NhU8rN3bBDGmmfsQ9ZJ6gvBF0e4Hh+65b/KywE/8tu4SxjT
+ 6KSC5U8WB2fD8t34aKRTo/g+QBkg6LfnRYUvtDCVnoAO3BHoFIRixwx
 X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
  pk=zKY+6GCauOiuHNZ//d8PQ/UL4jFCTKbXrzXAOQSLevI=
-X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  NEURAL_HAM_LONG(-1.00)[-1.000];
- R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- ARC_NA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- MIME_TRACE(0.00)[0:+]; DWL_DNSWL_BLOCKED(0.00)[suse.de:dkim];
- RCVD_TLS_ALL(0.00)[];
+ NEURAL_HAM_SHORT(-0.20)[-0.999]; MIME_GOOD(-0.10)[text/plain];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; RCVD_TLS_ALL(0.00)[];
+ ARC_NA(0.00)[]; MIME_TRACE(0.00)[0:+];
  DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- RCPT_COUNT_THREE(0.00)[3]; RCVD_COUNT_TWO(0.00)[2];
- TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:email,suse.de:dkim,suse.com:email];
- TO_DN_ALL(0.00)[]; DKIM_TRACE(0.00)[suse.de:+]
-X-Rspamd-Queue-Id: A49BA21F35
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+ URIBL_BLOCKED(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email,suse.cz:email];
+ TO_DN_ALL(0.00)[]; FROM_HAS_DN(0.00)[];
+ RCPT_COUNT_THREE(0.00)[3]; FROM_EQ_ENVFROM(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo, suse.cz:email,
+ suse.com:email]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 04/15] ujson: writer: Fix open() return value check
+Subject: [LTP] [PATCH v2 12/15] ujson: reader: Reject \u0000 escape in
+ strings
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -134,31 +125,34 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-open() returns -1 on failure and a non-negative file descriptor on
-success (including 0). Checking !writer_file->fd wrongly rejects fd 0
-as an error and accepts -1 on open failure. Check for negative fd
-instead.
+String values and object IDs are returned as NUL-terminated C strings.
+A \u0000 escape was written as a NUL byte into the output buffer,
+silently truncating the string. Report an error instead.
 
 Fixes: c50a0e0751c8 ("libs: Vendor ujson library")
 Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
 Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
- libs/ujson/ujson_writer.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ libs/ujson/ujson_reader.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/libs/ujson/ujson_writer.c b/libs/ujson/ujson_writer.c
-index b5da494d1..040ae680e 100644
---- a/libs/ujson/ujson_writer.c
-+++ b/libs/ujson/ujson_writer.c
-@@ -475,7 +475,7 @@ ujson_writer *ujson_writer_file_open(const char *path)
- 	writer_file = (void*)ret + sizeof(ujson_writer);
+diff --git a/libs/ujson/ujson_reader.c b/libs/ujson/ujson_reader.c
+index 9d17bbf4b..dae45ebb9 100644
+--- a/libs/ujson/ujson_reader.c
++++ b/libs/ujson/ujson_reader.c
+@@ -135,6 +135,12 @@ static unsigned int parse_ucode_esc(ujson_reader *buf, char *str,
+ 	if (ucode < 0)
+ 		return 0;
  
- 	writer_file->fd = open(path, O_CREAT | O_WRONLY | O_TRUNC, 0664);
--	if (!writer_file->fd) {
-+	if (writer_file->fd < 0) {
- 		free(ret);
- 		return NULL;
- 	}
++	/* Strings are NUL-terminated, an embedded NUL would truncate them */
++	if (!ucode) {
++		ujson_err(buf, "\\u0000 is not supported");
++		return 0;
++	}
++
+ 	if (ucode >= 0xdc00 && ucode <= 0xdfff) {
+ 		ujson_err(buf, "Unpaired low surrogate");
+ 		return 0;
 
 -- 
 2.51.0
