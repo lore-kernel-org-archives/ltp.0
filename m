@@ -4,109 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 25AF4CA9ED2
-	for <ltp@archiver.kernel.org>; Tue, 13 Oct 2026 12:06:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AB183CA9ED2
+	for <ltp@archiver.kernel.org>; Tue, 13 Oct 2026 12:06:25 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id AA0543EA815
-	for <ltp@archiver.kernel.org>; Tue, 13 Oct 2026 14:06:02 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id DB4B03C2CC0
+	for <ltp@archiver.kernel.org>; Tue, 13 Oct 2026 14:06:23 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A744E3EA833
- for <ltp@lists.linux.it>; Tue, 13 Oct 2026 14:02:10 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 6E1803EA836
+ for <ltp@lists.linux.it>; Tue, 13 Oct 2026 14:05:56 +0200 (CEST)
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id DA1CB1A00914
- for <ltp@lists.linux.it>; Tue, 13 Oct 2026 14:02:09 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id B3F781F74A;
- Tue, 13 Oct 2026 12:02:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1791892923; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=qm1M8Kg1taS1f1O8I8RSHBfYbrz7xZpyh1Vo8v193Ok=;
- b=xeDC154pLWkRFASyIMXfnqoiKubIvvLx2Qmf8rFeRCM4E02mR+vB8ySaA0/mRKro7mLlbC
- 7pFTMzxSMvni14SlChk4r+qe2wj0nu4/Qn3kvlwtA37eU+7LFKxuctGk9snUDXO1qCRs7b
- FmYJMUdnV70BERPu2CmDK3H8+67Wwx8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1791892923;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=qm1M8Kg1taS1f1O8I8RSHBfYbrz7xZpyh1Vo8v193Ok=;
- b=xRD7YfKYaa+qqZ0C4sjEWJM3R3akAu4yd9aYZXc5kHMtGDfrL9I2fetcU3Q5qE8F6vlKob
- uJ1gWOYW0JYGZ8AA==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1791892922; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=qm1M8Kg1taS1f1O8I8RSHBfYbrz7xZpyh1Vo8v193Ok=;
- b=PSyN39WrOBuDjO0462C4dwWXKPEgdkUpaHUK76onQmjl7mFpPRtD5WIgwSqQz7g65FqfMS
- sGQHNcB9WjNULG7ec5hvfsPXneEnROpFHvxjRGHsvYEyhrHvtxRPZzsS6e0BrXvqWIgsry
- +ikC+byiWWl118+bmlXfgquztAat/BU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1791892922;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=qm1M8Kg1taS1f1O8I8RSHBfYbrz7xZpyh1Vo8v193Ok=;
- b=4vjaXEfVtV2GTK8ggwKz4UzytG7rH+j9QsMcDVSx5llLRv2IeNBMh3LNuZ3dGWRzpGnG2a
- OAdUxi93e64TJJDQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2C4B3134C7;
- Tue, 13 Oct 2026 12:02:02 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id jWLfDrgdzmouEgAAD6G6ig:T13
- (envelope-from <andrea.cervesato@suse.de>); Tue, 13 Oct 2026 12:02:02 +0000
-From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Tue, 13 Oct 2026 14:02:08 +0200
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 098C014002D3
+ for <ltp@lists.linux.it>; Tue, 13 Oct 2026 14:05:54 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1791893156; x=1823429156;
+ h=from:to:cc:subject:date:message-id:in-reply-to:
+ references:mime-version:content-transfer-encoding;
+ bh=YfOAN5TV+hsDQh7dL2FhcHZh1XuxQFBuPhFL7ilyVi4=;
+ b=NjmmBUmRpvPwocPOmdEtgvOHM/5DSimZlZt2IkcY4atGXJ+UtU/fkvSo
+ 6Fr5PGp5A13Of/k9M3mJfxaZGTrDeXBxKPlDwIX0jnJSK7Pt8ws0GTNcS
+ XkVGorJ7dY0LTLJYJ8MWXGRhw6R7ceSpa1xaxteLGG2bLH4KjciBdXfvG
+ dATWVIiuICSHXMuXHbrNcU+XZhpKPqiZxl/PY1Lu5/wDAoBV0dQDpZv1A
+ mPuD8zMeYUmNJ8BQFUHI9orlm6lc6QqFDe169XPTW1lbcmR8jGCTl+EyS
+ xLrc2d66Jn0g+0yoo0aJe28yL/G8ibE78PKvZy6A+FqEiIbCSUUQTRzDu A==;
+X-CSE-ConnectionGUID: YH3X23aZSq2ymcHB96Qrqw==
+X-CSE-MsgGUID: kidom+2uT/+TWX0ovbpXmQ==
+X-IronPort-AV: E=McAfee;i="6800,10657,11933"; a="489009"
+X-IronPort-AV: E=Sophos;i="6.27,155,1787036400"; 
+   d="scan'208";a="489009"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+ by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 13 Oct 2026 05:05:53 -0700
+X-CSE-ConnectionGUID: czfzaALkRKe34NQNLqPJwQ==
+X-CSE-MsgGUID: GgE0wpM5Sm+tzjk4vCKKJw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.27,155,1787036400"; 
+   d="scan'208";a="1150918"
+Received: from pkubaj-desk.igk.intel.com (HELO intel.com) ([10.237.142.111])
+ by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 13 Oct 2026 05:05:52 -0700
+From: Piotr Kubaj <piotr.kubaj@intel.com>
+To: ltp@lists.linux.it
+Date: Tue, 13 Oct 2026 14:04:39 +0200
+Message-ID: <20261013120441.206263-2-piotr.kubaj@intel.com>
+X-Mailer: git-send-email 2.47.3
+In-Reply-To: <20261013120441.206263-1-piotr.kubaj@intel.com>
+References: <20261013120441.206263-1-piotr.kubaj@intel.com>
 MIME-Version: 1.0
-Message-Id: <20261013-fix_core_lib_deepseek-v2-12-7a6670fd6fd6@suse.com>
-References: <20261013-fix_core_lib_deepseek-v2-0-7a6670fd6fd6@suse.com>
-In-Reply-To: <20261013-fix_core_lib_deepseek-v2-0-7a6670fd6fd6@suse.com>
-To: Linux Test Project <ltp@lists.linux.it>
-X-Mailer: b4 0.16.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1791892920; l=1009;
- i=andrea.cervesato@suse.com; s=20251210; h=from:subject:message-id;
- bh=sAyohHnh9cJEAIVnRpX56bYchimDNuMLrQd28QswD4Q=;
- b=HEUjcpHG4PPRhM43d6KEzGw5/6NhU8rN3bBDGmmfsQ9ZJ6gvBF0e4Hh+65b/KywE/8tu4SxjT
- 6KSC5U8WB2fD8t34aKRTo/g+QBkg6LfnRYUvtDCVnoAO3BHoFIRixwx
-X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
- pk=zKY+6GCauOiuHNZ//d8PQ/UL4jFCTKbXrzXAOQSLevI=
-X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-0.999]; MIME_GOOD(-0.10)[text/plain];
- RCVD_VIA_SMTP_AUTH(0.00)[]; RCVD_TLS_ALL(0.00)[];
- ARC_NA(0.00)[]; MIME_TRACE(0.00)[0:+];
- DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- URIBL_BLOCKED(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email,suse.cz:email];
- TO_DN_ALL(0.00)[]; FROM_HAS_DN(0.00)[];
- RCPT_COUNT_THREE(0.00)[3]; FROM_EQ_ENVFROM(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo, suse.cz:email,
- suse.com:email]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 12/15] ujson: reader: Reject \u0000 escape in
- strings
+Subject: [LTP] [PATCH v4 1/3] lib: add tst_test.needs_debugfs flag
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -118,44 +71,267 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: helena.anna.dubel@intel.com, tomasz.ossowski@intel.com,
+ rafael.j.wysocki@intel.com, daniel.niestepski@intel.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Andrea Cervesato <andrea.cervesato@suse.com>
+Tests that read debugfs files have to check that debugfs is mounted at
+/sys/kernel/debug and mount it when it is not. The mount point exists as
+a plain sysfs directory whenever CONFIG_DEBUG_FS is enabled, whether or
+not debugfs is mounted on it, so a test that only checks that the path is
+there reports the platform as unsupported when debugfs simply is not
+mounted, and each test ends up carrying the same statfs() and mount()
+dance.
 
-String values and object IDs are returned as NUL-terminated C strings.
-A \u0000 escape was written as a NUL byte into the output buffer,
-silently truncating the string. Report an error instead.
+Move it into the library: with tst_test.needs_debugfs set the library
+mounts debugfs during setup, exits with TCONF if it cannot, and unmounts
+it at the end of the test if it was the one that mounted it. Add
+TST_DEBUGFS_PATH so that tests build their paths from the library
+constant, register the flag in the metadata parser, and add a
+lib/newlib_tests self-test that covers both the mounted and the unmounted
+case.
 
-Fixes: c50a0e0751c8 ("libs: Vendor ujson library")
-Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
-Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+Signed-off-by: Piotr Kubaj <piotr.kubaj@intel.com>
 ---
- libs/ujson/ujson_reader.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ doc/developers/writing_tests.rst     |  3 +++
+ include/tst_fs.h                     |  4 +++
+ include/tst_test.h                   |  8 ++++++
+ lib/newlib_tests/.gitignore          |  1 +
+ lib/newlib_tests/runtest.sh          |  1 +
+ lib/newlib_tests/tst_needs_debugfs.c | 37 ++++++++++++++++++++++++++++
+ lib/tst_test.c                       | 35 ++++++++++++++++++++++++++
+ metadata/metaparse.c                 |  1 +
+ 8 files changed, 90 insertions(+)
+ create mode 100644 lib/newlib_tests/tst_needs_debugfs.c
 
-diff --git a/libs/ujson/ujson_reader.c b/libs/ujson/ujson_reader.c
-index 9d17bbf4b..dae45ebb9 100644
---- a/libs/ujson/ujson_reader.c
-+++ b/libs/ujson/ujson_reader.c
-@@ -135,6 +135,12 @@ static unsigned int parse_ucode_esc(ujson_reader *buf, char *str,
- 	if (ucode < 0)
- 		return 0;
+diff --git a/doc/developers/writing_tests.rst b/doc/developers/writing_tests.rst
+index 9a56c0265..5d08cd907 100644
+--- a/doc/developers/writing_tests.rst
++++ b/doc/developers/writing_tests.rst
+@@ -448,6 +448,9 @@ shell API. For tests using the new shell loader library, see
+     * - .needs_cpu_vendor
+       - \-
  
-+	/* Strings are NUL-terminated, an embedded NUL would truncate them */
-+	if (!ucode) {
-+		ujson_err(buf, "\\u0000 is not supported");
-+		return 0;
++    * - .needs_debugfs
++      - \-
++
+     * - .needs_devfs
+       - \-
+ 
+diff --git a/include/tst_fs.h b/include/tst_fs.h
+index 80eb1292e..131fecd48 100644
+--- a/include/tst_fs.h
++++ b/include/tst_fs.h
+@@ -8,6 +8,7 @@
+ 
+ /* man 2 statfs or kernel-source/include/uapi/linux/magic.h */
+ #define TST_BTRFS_MAGIC    0x9123683E
++#define TST_DEBUGFS_MAGIC  0x64626720
+ #define TST_NFS_MAGIC      0x6969
+ #define TST_RAMFS_MAGIC    0x858458f6
+ #define TST_TMPFS_MAGIC    0x01021994
+@@ -58,6 +59,9 @@ enum {
+ #define OVL_WORK	OVL_BASE_MNTPOINT"/work"
+ #define OVL_MNT		OVL_BASE_MNTPOINT"/ovl"
+ 
++/* Where debugfs is mounted by the tst_test.needs_debugfs flag */
++#define TST_DEBUGFS_PATH "/sys/kernel/debug"
++
+ /*
+  * @path: path is the pathname of any file within the mounted file system
+  * @mult: mult should be TST_KB, TST_MB or TST_GB
+diff --git a/include/tst_test.h b/include/tst_test.h
+index 53f58180f..2226197ae 100644
+--- a/include/tst_test.h
++++ b/include/tst_test.h
+@@ -358,6 +358,13 @@ struct tst_fs {
+  *               needed for tests that need to create device files since tmpfs
+  *               at /tmp is usually mounted with 'nodev' option.
+  *
++ * @needs_debugfs: If set debugfs is mounted at TST_DEBUGFS_PATH i.e.
++ *                 /sys/kernel/debug, unless it is mounted there already, and
++ *                 the test exits with TCONF if it cannot be. The library
++ *                 unmounts it at the end of the test if it mounted it. Note
++ *                 that both mounting debugfs and reading its content require
++ *                 root, so tests using this also set tst_test.needs_root.
++ *
+  * @restore_wallclock: Saves wall clock at the start of the test and restores
+  *                     it at the end with the help of monotonic timers.
+  *                     Testcases that modify system wallclock use this to
+@@ -573,6 +580,7 @@ struct tst_fs {
+ 	unsigned int child_needs_reinit:1;
+ 	unsigned int runs_script:1;
+ 	unsigned int needs_devfs:1;
++	unsigned int needs_debugfs:1;
+ 	unsigned int restore_wallclock:1;
+ 
+ 	unsigned int all_filesystems:1;
+diff --git a/lib/newlib_tests/.gitignore b/lib/newlib_tests/.gitignore
+index b85163824..7237723bf 100644
+--- a/lib/newlib_tests/.gitignore
++++ b/lib/newlib_tests/.gitignore
+@@ -60,6 +60,7 @@ tst_needs_cmds05
+ tst_needs_cmds06
+ tst_needs_cmds07
+ tst_needs_cmds08
++tst_needs_debugfs
+ test_runtime01
+ test_runtime02
+ test_children_cleanup
+diff --git a/lib/newlib_tests/runtest.sh b/lib/newlib_tests/runtest.sh
+index 71808ef8b..1a51d8b7a 100755
+--- a/lib/newlib_tests/runtest.sh
++++ b/lib/newlib_tests/runtest.sh
+@@ -27,6 +27,7 @@ tst_expiration_timer
+ tst_filesystems01
+ tst_fuzzy_sync0[1-3]
+ tst_needs_cmds0[1-36-8]
++tst_needs_debugfs
+ tst_res_hexd
+ tst_safe_sscanf
+ tst_strstatus}"
+diff --git a/lib/newlib_tests/tst_needs_debugfs.c b/lib/newlib_tests/tst_needs_debugfs.c
+new file mode 100644
+index 000000000..fd6adf7a5
+--- /dev/null
++++ b/lib/newlib_tests/tst_needs_debugfs.c
+@@ -0,0 +1,37 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (C) 2026 Piotr Kubaj <piotr.kubaj@intel.com>
++ */
++
++/*
++ * Test that tst_test.needs_debugfs gets debugfs mounted for the test.
++ *
++ * Run it both with debugfs mounted and with it unmounted, it has to pass either
++ * way. In the latter case the library reports mounting debugfs and has to leave
++ * it unmounted once the test is over.
++ */
++
++#include <sys/vfs.h>
++#include "tst_test.h"
++
++static void run(void)
++{
++	struct statfs sfs;
++
++	SAFE_STATFS(TST_DEBUGFS_PATH, &sfs);
++
++	if (sfs.f_type == TST_DEBUGFS_MAGIC)
++		tst_res(TPASS, "debugfs is mounted at %s", TST_DEBUGFS_PATH);
++	else
++		tst_res(TFAIL, "debugfs is not mounted at %s", TST_DEBUGFS_PATH);
++}
++
++static struct tst_test test = {
++	.needs_root = 1,
++	.needs_debugfs = 1,
++	.needs_kconfigs = (const char *const []) {
++		"CONFIG_DEBUG_FS",
++		NULL
++	},
++	.test_all = run,
++};
+diff --git a/lib/tst_test.c b/lib/tst_test.c
+index f3f72141b..eb6079c5f 100644
+--- a/lib/tst_test.c
++++ b/lib/tst_test.c
+@@ -15,6 +15,7 @@
+ #include <errno.h>
+ #include <sys/mount.h>
+ #include <sys/types.h>
++#include <sys/vfs.h>
+ #include <sys/utsname.h>
+ #include <sys/wait.h>
+ #include <math.h>
+@@ -82,6 +83,7 @@ struct context {
+ 	tst_atomic_t abort_flag;
+ 	uint32_t mntpoint_mounted:1;
+ 	uint32_t ovl_mounted:1;
++	uint32_t debugfs_mounted:1;
+ 	uint32_t tdebug;
+ };
+ 
+@@ -1225,6 +1227,31 @@ static void prepare_and_mount_dev_fs(const char *mntpoint)
+ 	}
+ }
+ 
++static void mount_debugfs(void)
++{
++	struct statfs sfs;
++
++	/*
++	 * TST_DEBUGFS_PATH exists as a plain sysfs directory whenever
++	 * CONFIG_DEBUG_FS is enabled, whether or not debugfs is mounted on it,
++	 * so the filesystem type has to be checked rather than the directory
++	 * being present.
++	 */
++	if (statfs(TST_DEBUGFS_PATH, &sfs))
++		tst_brk(TCONF | TERRNO, "Can't statfs %s", TST_DEBUGFS_PATH);
++
++	if (sfs.f_type == TST_DEBUGFS_MAGIC)
++		return;
++
++	if (mount("debugfs", TST_DEBUGFS_PATH, "debugfs", 0, NULL)) {
++		tst_brk(TCONF | TERRNO, "Can't mount debugfs at %s",
++			TST_DEBUGFS_PATH);
 +	}
 +
- 	if (ucode >= 0xdc00 && ucode <= 0xdfff) {
- 		ujson_err(buf, "Unpaired low surrogate");
- 		return 0;
-
++	tst_res(TINFO, "Mounted debugfs at %s", TST_DEBUGFS_PATH);
++	context->debugfs_mounted = 1;
++}
++
+ static void prepare_and_mount_hugetlb_fs(void)
+ {
+ 	if (access(PATH_MM_HUGEPAGES, F_OK))
+@@ -1563,6 +1590,9 @@ static void do_setup(int argc, char *argv[])
+ 			"Two or more of needs_{rofs, devfs, device, hugetlbfs} are set");
+ 	}
+ 
++	if (tst_test->needs_debugfs)
++		mount_debugfs();
++
+ 	if (tst_test->needs_devfs)
+ 		prepare_and_mount_dev_fs(tst_test->mntpoint);
+ 
+@@ -1674,6 +1704,11 @@ static void do_cleanup(void)
+ 	if (context->mntpoint_mounted)
+ 		tst_umount(tst_test->mntpoint);
+ 
++	if (context->debugfs_mounted) {
++		tst_umount(TST_DEBUGFS_PATH);
++		context->debugfs_mounted = 0;
++	}
++
+ 	if (tst_test->needs_device && tdev.dev)
+ 		tst_release_device(tdev.dev);
+ 
+diff --git a/metadata/metaparse.c b/metadata/metaparse.c
+index cb141c383..7f2c09037 100644
+--- a/metadata/metaparse.c
++++ b/metadata/metaparse.c
+@@ -1169,6 +1169,7 @@ static struct typemap tst_test_typemap[] = {
+ 	{.id = "child_needs_reinit", .type = DATA_BOOL},
+ 	{.id = "runs_script", .type = DATA_BOOL},
+ 	{.id = "needs_devfs", .type = DATA_BOOL},
++	{.id = "needs_debugfs", .type = DATA_BOOL},
+ 	{.id = "restore_wallclock", .type = DATA_BOOL},
+ 	{.id = "all_filesystems", .type = DATA_BOOL},
+ 	{.id = "skip_in_lockdown", .type = DATA_BOOL},
 -- 
-2.51.0
+2.47.3
+
+---------------------------------------------------------------------
+Intel Technology Poland sp. z o.o.
+ul. Slowackiego 173 | 80-298 Gdansk | Sad Rejonowy Gdansk Polnoc | VII Wydzial Gospodarczy Krajowego Rejestru Sadowego - KRS 101882 | NIP 957-07-52-316 | Kapital zakladowy 200.000 PLN.
+Spolka oswiadcza, ze posiada status duzego przedsiebiorcy w rozumieniu ustawy z dnia 8 marca 2013 r. o przeciwdzialaniu nadmiernym opoznieniom w transakcjach handlowych.
+
+Ta wiadomosc wraz z zalacznikami jest przeznaczona dla okreslonego adresata i moze zawierac informacje poufne. W razie przypadkowego otrzymania tej wiadomosci, prosimy o powiadomienie nadawcy oraz trwale jej usuniecie; jakiekolwiek przegladanie lub rozpowszechnianie jest zabronione.
+This e-mail and any attachments may contain confidential material for the sole use of the intended recipient(s). If you are not the intended recipient, please contact the sender and delete all copies; any review or distribution by others is strictly prohibited.
 
 
 -- 
