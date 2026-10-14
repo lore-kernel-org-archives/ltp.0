@@ -4,78 +4,99 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 11131CC6B2A
-	for <ltp@archiver.kernel.org>; Wed, 14 Oct 2026 09:36:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1791970601; h=date :
- mime-version : message-id : to : subject : list-id : list-unsubscribe
- : list-archive : list-post : list-help : list-subscribe : from :
- reply-to : cc : content-type : content-transfer-encoding : sender :
- from; bh=yhgwfJ3BiXz5J6EqvziI2KytHj74QpupOv8R6LZFfGk=;
- b=dn7xQ7iJaTd7dtwt8ymZqs5YlXlM6CgM33BwemZMQmmPtIAg0dnqC/nBuYZQXfQmcVW8M
- x2qObPGQxL3gQHsJ82zZ+HsaV0DbffWIVYOS13DYVrwB4rWK9QEmjY3i7B+ojUWq6Nsnbzu
- dKlFqAbS0+4spfw/ScBHwIhZWK4pYJQ=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6156FCC6B1D
+	for <ltp@archiver.kernel.org>; Wed, 14 Oct 2026 10:02:36 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 55A203E6A44
-	for <ltp@archiver.kernel.org>; Wed, 14 Oct 2026 11:36:41 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id EC6103E6A17
+	for <ltp@archiver.kernel.org>; Wed, 14 Oct 2026 12:02:34 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 44B503E6A3D
- for <ltp@lists.linux.it>; Wed, 14 Oct 2026 11:36:23 +0200 (CEST)
-Received: from mail-pj1-x1048.google.com (mail-pj1-x1048.google.com
- [IPv6:2607:f8b0:4864:20::1048])
+ by picard.linux.it (Postfix) with ESMTPS id 9ABF93E2AF1
+ for <ltp@lists.linux.it>; Wed, 14 Oct 2026 12:02:17 +0200 (CEST)
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com
+ [IPv6:2a00:1450:4864:20::22d])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 9AEE4600A18
- for <ltp@lists.linux.it>; Wed, 14 Oct 2026 11:36:22 +0200 (CEST)
-Received: by mail-pj1-x1048.google.com with SMTP id
- 98e67ed59e1d1-3a8041a532eso188045a91.3
- for <ltp@lists.linux.it>; Wed, 14 Oct 2026 02:36:22 -0700 (PDT)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 0C23D1000A0F
+ for <ltp@lists.linux.it>; Wed, 14 Oct 2026 12:02:17 +0200 (CEST)
+Received: by mail-lj1-x22d.google.com with SMTP id
+ 38308e7fff4ca-3a87e23860cso41844681fa.0
+ for <ltp@lists.linux.it>; Wed, 14 Oct 2026 03:02:17 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1791972136; cv=none;
+ d=google.com; s=arc-20260327;
+ b=fMyrRfyTpo72JNNbLbQFjvM0OStemniPLiJMTiC0Dsu7SiY3kTdjr+/OkaSDOPqHN2
+ 8VLtgtrfJ9duQRZpSiTFfTUxrPHqDBFvEX7qkq63mFQoPBgoevfaeDjo8RrBDdTpgH0V
+ mal5HU0IkUzV4Gj3HzJP0EYpJnRIN0sRIFGylB8ey4JwWDvBeDtlHD96rvKreMsG0kCC
+ HAR7p4hRE1D+rc5b5C18yZRV/vPOV5ZhsrKGLk+tOgKYdO2jOBgk7mHpqH0Pvxb/0DtE
+ kd1Tld57HwLGs9Ez1K0z5flBChes/PC9faXnZDoHY/zRqMsyWqM3Px7kIDNwvolm29dK
+ ihEg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com;
+ s=arc-20260327; 
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:dkim-signature;
+ bh=32dg+3PBHbuDiItavtJPVI0QLQF9hz9nM+iHgJwBEgY=;
+ fh=hEINy12EUhEgGn0f8upuE5bndgG6fGdT1SVr+fAXyO0=;
+ b=l88Vj4r2dxwnYLtq2ZpvmzVkGOWmZRzfKfRop4++ZXpwMOQew/tTZn0dWLMKZo9PrO
+ TCa4jhoOgYVX5to+tV2F1gu2P3Rj5uQiiIbncvqbOOTDaEbsY05NSNAUm+mydjHN+9R+
+ AiJTC8FBNaQLYQiBCvCBgPV28AfdIzBfhxVKvGcdz4aCLmVGmxqgEznb+XmDfuiGPKlK
+ VrwkomZD6Z4q8jqTQ2VnPevTm3wE20vBgV3w01w2ygqjaGplhpk09Y8VW3AccfmQn4GE
+ FgqxJVpWkGCdBf6owoG+/yx+kWv1DYzbvwb2O+TXDqQ6OwmpK6yp2MjthBpXtHoIganx
+ n9gQ==; darn=lists.linux.it
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=google.com; s=20251104; t=1791970581; x=1792575381; darn=lists.linux.it;
- h=content-type:cc:to:from:subject:message-id:mime-version:date:from
- :to:cc:subject:date:message-id:reply-to:content-type;
- bh=6ZRYuUBMp0i3iCRg7RhtvkbGLeTyOFvpdD0zwYGNUTM=;
- b=aY+C2ajIR5X9ynamT08AWP2D5kXOjHS8++BPeIXh488iBOxYS+9HMWqzYHCVxBJcM/
- cI9nS8ikIR9LZc0+gBSg6CpNWSbcdb5WTJrBsX/dQxzQMowbZqSKuCO7Ow5UKF+/S+dS
- FaVIFTpYQB3ahHXhnceuZ6V9XwiefARsPvg1QxfdEl6UeSDIiZDV+pc3+mIOgOMhXXOM
- C0FW1yDKrhQsmC7zno5ObbRQIy6OXXvKn2RPALEUFpBvI908s+HXz+jbP4cJ94bLLzXF
- qfV8IE94IC1n8VI3LsCFO31WD5ka9s/weLe+//ydVXPW/GjHYuSF2Ar6BNGqNhkpks3z
- 63PA==
+ d=gmail.com; s=20251104; t=1791972136; x=1792576936; darn=lists.linux.it;
+ h=content-type:cc:to:subject:message-id:date:from:in-reply-to
+ :references:mime-version:from:to:cc:subject:date:message-id:reply-to
+ :content-type; bh=32dg+3PBHbuDiItavtJPVI0QLQF9hz9nM+iHgJwBEgY=;
+ b=GJYIGXHf20FE2dv/XbLD8K9BehbAd3qvNYThw6opHv/DTLhx9DCkTJ8TOQhgXWNtlI
+ xG1cN2d/Wjj/9tSE59Of+j+blwlCOiaZAuS0hnO1HZVuqcmHjh8+p7f36VDCI9VEMlAe
+ LI8rNlberl6+Bt+XVolba1/uU2NYjJOf3DlgPzVogJpx0SvEY9ugsdMhRklYUTfNLsyf
+ MFFGsAHQltns2PZTngclix30YQFAPfxgWHO1x0x6rAzy2OkH2yehSTfqzqtZ+fRrQnZf
+ Ln2bZDYUNBzlCuZ/5Tz+50Z3OVZq5R+WqpZ488KMhWjccmvpFQgW4J05MENQWFwHcVE1
+ Wk8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20260707; t=1791970581; x=1792575381;
- h=content-type:cc:to:from:subject:message-id:mime-version:date
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
- :content-type;
- bh=6ZRYuUBMp0i3iCRg7RhtvkbGLeTyOFvpdD0zwYGNUTM=;
- b=qW0CMzu6XrTKjx8U851fHUzb75xbSh43iMWkJbzWWOCyha7rZSpr+ZfZk6UDK1x7W4
- Yd0Y4D4ZITbXgfEoqNVdPQcuzpnr4Q4/ZxUzUOirgkhF/gMhSwX/HG9/AXWCY9jnZcij
- UlYO0LCgFDpNMSQcxZLRpNyrIg3KeNF/CINvOyWH6z8ulXPyg5+BU8QAj86g3set7p+T
- vIFkvKRme6vE/W2mFj99WryzGTaTVp0o5Qh0m55CHJlJrWUuOVCzgbu+t9Y4CWjJbjBl
- 3X/uGqfwXeamg/LqMrtzD/VK5L3Bj5+nDy3uJx4t0xebrR00tVjL7Hl141fkWvvwJ38Q
- AzCg==
-X-Gm-Message-State: AFq9FYJHxRxCSDLRSGPGcNr8GrojPMsKV2eNMmXjs1d0hw8OeR1DVXG1
- tzQ/I+7X0LFVOIyFmlED0GBj4wJLnhvKbTkVvtEwvBfTrIJigH4VQZBVC7ihwgYQXsi+o8JGLiU
- ijBNs3Sz64B8FihISwh85g7vDQm5BEW66FJVMK3nWnTwIHDbVjoC0blaJjXQXjggYoScQnQRIMP
- K6g7ap2ipOhgB9DdMHPbkIe9Xqag==
-X-Received: from pjbkh21.prod.google.com ([2002:a17:90b:34d5:b0:3ac:20d5:5e0c])
- (user=wakel job=prod-delivery.src-stubby-dispatcher) by
- 2002:a17:90b:384a:b0:3a8:bb56:f1ef
- with SMTP id 98e67ed59e1d1-3ab3a2902a2mr13235559a91.2.1791970580596; Wed, 14
- Oct 2026 02:36:20 -0700 (PDT)
-Date: Wed, 14 Oct 2026 09:36:18 +0000
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.56.0.385.gd3acb90ef8-goog
-Message-ID: <20261014093618.1475191-1-wakel@google.com>
-To: ltp@lists.linux.it
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+ d=1e100.net; s=20260707; t=1791972136; x=1792576936;
+ h=content-type:cc:to:subject:message-id:date:from:in-reply-to
+ :references:mime-version:x-gm-gg:x-gm-message-state:from:to:cc
+ :subject:date:message-id:reply-to:content-type;
+ bh=32dg+3PBHbuDiItavtJPVI0QLQF9hz9nM+iHgJwBEgY=;
+ b=K53KNk09KpABuNeU15v64qKH8TVhEr9vC1xNmNnhLMm7DlHOf6FZYrKJPj4zqI8JN3
+ MRsNcM3NaSiRE9UodPXOO6NaAd7RmZm9Hx5Dv+25ZwWEfpZnYZKWB935E7kZRRFp7y3o
+ +pYE9AiXIlm8TKt9DIxkniHh3KVP4oyEAhkeRBdq67RmowW0g4ebVIQ4Lm3aA/JjjaBZ
+ 2YTLzKHpYFUMTqdKhEg9AsMBuE8jiNotqEHy6+soByTXFRb2Iglvi6R+B0q9m3s2hgbj
+ hf+cAoygWWCh6vDXfB3s1cExQs5l5nPtyLsA0yZsPUQPO0Lf/Cy0NPlahsmdRifJ5oAd
+ zRtw==
+X-Forwarded-Encrypted: i=1;
+ AKwUvBxvUKXQ6DRSBAhLWwyAup08J0Rg79kfDcoZi75gjf5icMvQeYmokOyUaHIptnKVf5bpqy8=@lists.linux.it
+X-Gm-Message-State: AFq9FYKhND/AUUPkJoo9Q58QGPPJGqXWAFX4iDbI9xNB3CTS7qKlop1Z
+ WcxufdndRLpu6EMkWgtwOrQY+BGn8zgxJx/kHSA8oJvqeSIsBhsBPqaTV85RG4pncVAATPq5Kvi
+ WB0x84jG1rJ/BPSpN9LHIn8MV3VV4zEU=
+X-Gm-Gg: AYBFou1Ij0TQ6iWi+RWEzj3asMCaX060t5HjtLzlWaXC3z/yfkITbtkpD7rTSX9A1O4
+ 6Nyfa2GCd+CBsaOmJSzLNs2v1VEkcYHC5VyNqY70P2tsS6WYLJeM8MOp1/q8dZdZgyFQv0RUMBS
+ YvgTM7CCmnheF9fXzRBkTbIF1HQtcwVFa44jJ9KF1iPiIRbYucsEfVGy/xIECc9FCvEJe98mfYd
+ /6Cwce97BDF0X+zdqCYJsrbJ4vY9WBNEwTHTYFZ8ncdbHkoSFMSSjoNsr444XoJ9QCn2bG2/WPN
+ OiAPqe9YY4XcQGz8kAmpFo6eE3OiWjrD1jRXvnpnZzcDOJTvnziYNraycqw+Rg==
+X-Received: by 2002:a05:651c:b09:b0:3a9:d22d:a79b with SMTP id
+ 38308e7fff4ca-3a9d22da89dmr27520541fa.14.1791972134364; Wed, 14 Oct 2026
+ 03:02:14 -0700 (PDT)
+MIME-Version: 1.0
+References: <20260531000822.4114-1-linuxtestproject.agent@gmail.com>
+ <6a4382ea.abb839ae.10559d.dfe8@mx.google.com>
+ <CAGsesORhG7VtJP8oGOdBDN8SgbYGb7EZrVUyr+3M8bSF--cfnQ@mail.gmail.com>
+In-Reply-To: <CAGsesORhG7VtJP8oGOdBDN8SgbYGb7EZrVUyr+3M8bSF--cfnQ@mail.gmail.com>
+From: Pradeep Susarla <pradeep.susarla@gmail.com>
+Date: Wed, 14 Oct 2026 11:02:02 +0100
+X-Gm-Features: AclHuK8ySitobADr9fc3LMim5FWoUr1Cl9AU00VaQsTz1LpRHlYACPYai-OUKtM
+Message-ID: <CAGsesOS0RUqRxqWVnRvUUsBkj0puamEPQ1V2n-XmeFX1TayQBQ@mail.gmail.com>
+To: Andrea Cervesato <andrea.cervesato@suse.com>
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] swapon04: Report TCONF when SELinux denies loop
- device I/O
+X-Content-Filtered-By: Mailman/MimeDel 2.1.29
+Subject: Re: [LTP] hugetlb: Migrate library and numa helpers to libs/
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -87,100 +108,50 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Wake Liu via ltp <ltp@lists.linux.it>
-Reply-To: Wake Liu <wakel@google.com>
-Cc: Wake Liu <wakel@google.com>
+Cc: ltp@lists.linux.it, linuxtestproject.agent@gmail.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Kernels without commit f2fed441c69b ("loop: stop using
-vfs_iter_{read,write} for buffered I/O") access the loop backing file
-through vfs_iter_{read,write}(), which run the LSM file permission
-checks with the credentials of the loop worker kernel thread.
+Hi Andrea,
 
-swapon04 backs the loop device with a file on the freshly formatted
-test filesystem. That file has no SELinux label, and strict policies
-such as Android's do not allow the kernel domain to access unlabeled
-files. Every I/O on the loop device then fails with EIO and the test
-breaks on the first mkswap call:
+I submitted my patch 10 days ago and wanted to follow up, as I haven't
+received any feedback yet. Could you please take a look when you have a
+moment?
 
-  tst_cmd.c:114: TBROK: 'mkswap' exited with a non-zero code 1
+Best regards,
+Pradeep Susarla
 
-  avc: denied { read } for comm="kworker/u8:0" dev="loop52" ino=12
-    scontext=u:r:kernel:s0 tcontext=u:object_r:unlabeled:s0
-    tclass=file permissive=0
+On Tue, 30 Jun 2026 at 12:13, Pradeep Susarla <pradeep.susarla@gmail.com>
+wrote:
 
-This is a policy restriction rather than a swap bug, and it does not
-depend on how LTP is built: running the system's losetup and mkswap
-on such a file fails the same way. The test passes on the same 6.1
-kernel once SELinux is switched to permissive mode, and on a 6.18
-kernel in enforcing mode.
-
-A kernel version check would not help, since that commit has been
-backported to v6.12.25, and older kernels pass the test when the
-policy does not get in the way. Instead, read the first sector of the
-loop device in setup() and report TCONF if it fails with EIO while
-SELinux is enforcing. On the 6.1 kernel above, ext2, ext3 and ext4
-are now skipped, while tmpfs, whose files the kernel domain is
-allowed to access, still passes.
-
-Signed-off-by: Wake Liu <wakel@google.com>
----
- testcases/kernel/syscalls/swapon/swapon04.c | 29 +++++++++++++++++++++
- 1 file changed, 29 insertions(+)
-
-diff --git a/testcases/kernel/syscalls/swapon/swapon04.c b/testcases/kernel/syscalls/swapon/swapon04.c
-index de95849e3..839752dd4 100644
---- a/testcases/kernel/syscalls/swapon/swapon04.c
-+++ b/testcases/kernel/syscalls/swapon/swapon04.c
-@@ -84,6 +84,33 @@ static struct tcase {
- 	},
- };
- 
-+/*
-+ * Kernels without commit f2fed441c69b ("loop: stop using
-+ * vfs_iter_{read,write} for buffered I/O") access the backing file through
-+ * vfs_iter_{read,write}(), which run LSM permission checks with the
-+ * credentials of the loop worker kernel thread. Strict SELinux policies,
-+ * such as Android's, do not allow the kernel to access the unlabeled files
-+ * on the freshly formatted test filesystem, so any I/O on the loop device
-+ * fails with EIO.
-+ */
-+static void check_loop_io(void)
-+{
-+	char buf[512];
-+	int fd;
-+
-+	fd = SAFE_OPEN(loop_dev, O_RDONLY);
-+	TEST(read(fd, buf, sizeof(buf)));
-+	SAFE_CLOSE(fd);
-+
-+	if (TST_RET == (long)sizeof(buf))
-+		return;
-+
-+	if (TST_RET == -1 && TST_ERR == EIO && tst_selinux_enforcing())
-+		tst_brk(TCONF | TTERRNO, "I/O on %s is likely denied by SELinux", loop_dev);
-+
-+	tst_brk(TBROK | TTERRNO, "read(%s) returned %ld", loop_dev, TST_RET);
-+}
-+
- static void setup(void)
- {
- 	char discard_path[PATH_MAX];
-@@ -114,6 +141,8 @@ static void setup(void)
- 		tst_brk(TBROK, "Failed to attach %s to %s", loop_dev, BACKING_FILE);
- 	loop_attached = 1;
- 
-+	check_loop_io();
-+
- 	snprintf(discard_path, sizeof(discard_path),
- 		 "/sys/block/loop%d/queue/discard_max_bytes", loop_dev_id);
- 	if (FILE_SCANF(discard_path, "%lu", &discard_max_bytes) != 0 || discard_max_bytes == 0) {
--- 
-2.56.0.385.gd3acb90ef8-goog
-
+> Sure. I have the patch ready with 2 separate commits. I'll submit them
+> letter today.
+>
+> Pradeep Susarla
+> Mobile: +447710542285 <07710%20542285>
+> Email    : pradeep@pradeeps.org
+> Twitter : @pradeepsusarla <http://twitter.com/pradeepsusarla>
+>
+> On Tue, 30 Jun 2026, 09:48 Andrea Cervesato, <andrea.cervesato@suse.com>
+> wrote:
+>
+>> Hi Pradeep,
+>>
+>> can you please split the tse_hugetlb.h and tse_numa.h changes
+>> into 2 separate commits? They are unrelated changes, but related
+>> to a bigger picture that is the full patch-set.
+>>
+>> The overall idea LGTM.
+>>
+>> Regards,
+>> --
+>> Andrea Cervesato
+>> SUSE QE Automation Engineer Linux
+>> andrea.cervesato@suse.com
+>>
+>
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
