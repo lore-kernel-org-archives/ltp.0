@@ -4,102 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 660E9CC6B1A
-	for <ltp@archiver.kernel.org>; Wed, 14 Oct 2026 08:21:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 738F2CC6B27
+	for <ltp@archiver.kernel.org>; Wed, 14 Oct 2026 08:24:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1791966287; h=message-id :
+ to : in-reply-to : date : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : cc : mime-version : content-type :
+ content-transfer-encoding : sender : from;
+ bh=34fdjgQNrJAJRUGIWtXYUqE5GgrCLEsJhJtSlI/xQdY=;
+ b=RlihyTRkkW3UvJC5jaRz5zC2JTv8aUC5JVr/VGOCsBkDUrDLlkv429rPtelPWGweOYvy4
+ NkJSYrBajTGjP4Vg/yx5s0rEpBRPGOWOgoshg99aytu4WFJgt5u/Mc2yhqaU7uvuTiqaMlE
+ 4+RymNSz2tz0mDhZrhreKSS8kO+Kb2M=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id DE23C3E4DB8
-	for <ltp@archiver.kernel.org>; Wed, 14 Oct 2026 10:21:39 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id CD4923E2AFC
+	for <ltp@archiver.kernel.org>; Wed, 14 Oct 2026 10:24:47 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9130A3CD546
- for <ltp@lists.linux.it>; Wed, 14 Oct 2026 10:21:24 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 1EAA23CD546
+ for <ltp@lists.linux.it>; Wed, 14 Oct 2026 10:24:28 +0200 (CEST)
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com
+ [IPv6:2a00:1450:4864:20::32c])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id DF5F3200CEE
- for <ltp@lists.linux.it>; Wed, 14 Oct 2026 10:21:23 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 949D622167;
- Wed, 14 Oct 2026 08:21:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1791966081; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=xfv8/spRTkryYFWiovX2zAL+AOfyvIQT1R3JyUVHS3c=;
- b=f+NANs+54Ne2PQeZH/lvj55UM1JnLs+71j2T75BKeMicuhxLyENfiNXLm4yf27LclsfKyG
- mfIMx1jo5U6NO0NN1NFORvfk8xkixToZ46gra1jq6/C9IIVNUvgsHg3FkAajyN+2LZS5jg
- Eo0kZZH4cixruFgpIcLHi4ViALFK6Ok=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1791966081;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=xfv8/spRTkryYFWiovX2zAL+AOfyvIQT1R3JyUVHS3c=;
- b=oa6chNeAmrZRZK/8++bHoWW8ykKauhtPAH8JIXZhhJlqHpbpVy5ftJHOYrkt5tfhlDTZQI
- W9+Mk5LBVLYIcfAQ==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1791966081; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=xfv8/spRTkryYFWiovX2zAL+AOfyvIQT1R3JyUVHS3c=;
- b=f+NANs+54Ne2PQeZH/lvj55UM1JnLs+71j2T75BKeMicuhxLyENfiNXLm4yf27LclsfKyG
- mfIMx1jo5U6NO0NN1NFORvfk8xkixToZ46gra1jq6/C9IIVNUvgsHg3FkAajyN+2LZS5jg
- Eo0kZZH4cixruFgpIcLHi4ViALFK6Ok=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1791966081;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=xfv8/spRTkryYFWiovX2zAL+AOfyvIQT1R3JyUVHS3c=;
- b=oa6chNeAmrZRZK/8++bHoWW8ykKauhtPAH8JIXZhhJlqHpbpVy5ftJHOYrkt5tfhlDTZQI
- W9+Mk5LBVLYIcfAQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 34A231368E;
- Wed, 14 Oct 2026 08:21:21 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id L38nM4A7z2rQYAAAD6G6ig
- (envelope-from <andrea.cervesato@suse.de>); Wed, 14 Oct 2026 08:21:21 +0000
-From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Wed, 14 Oct 2026 10:21:20 +0200
-MIME-Version: 1.0
-Message-Id: <20261014-fix_process_vm_writev_permissions-v1-1-6affee2da859@suse.com>
-X-B4-Tracking: v=1; b=H4sIAH87z2oC/yWNwQ6CMBAFf4Xs2SaUaCP+ijENlFddE6DZxWpC+
- HeLHucwMysphKF0qVYSZFaepwL2UFF4dNMdhofC1NSNs7U9msgfn2QOUPV59G/hBdknyMi6y2p
- cDJ07teehjT2VThIU6fe43v6sr/6JsOxh2rYvosYy9oUAAAA=
-X-Change-ID: 20261014-fix_process_vm_writev_permissions-6fca6598d9fb
-To: Linux Test Project <ltp@lists.linux.it>
-X-Mailer: b4 0.16.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1791966080; l=3672;
- i=andrea.cervesato@suse.com; s=20251210; h=from:subject:message-id;
- bh=4AUJWTyc7KbCcfxwFKwTM88eysOx3eBD6jMVaakiOwE=;
- b=QVMoGNBwzbAB9cCohPi8OpA+DFxeS7RDBSEv+QO289x92BX0jDhEwjuOSJXmx7wIBM8aSTNLx
- qoYSbisTpYaDaA0HJ9vkV9DM5aRLivuHv+xSRkFYvws4r6mv06BDW8f
-X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
- pk=zKY+6GCauOiuHNZ//d8PQ/UL4jFCTKbXrzXAOQSLevI=
-X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- TO_DN_ALL(0.00)[];
- DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- FROM_HAS_DN(0.00)[]; ARC_NA(0.00)[]; RCPT_COUNT_TWO(0.00)[2];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_TLS_ALL(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[]; MIME_TRACE(0.00)[0:+];
- FROM_EQ_ENVFROM(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,imap1.dmz-prg2.suse.org:helo]
-Subject: [LTP] [PATCH] syscalls/cma: Require root for process_vm tests
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 9825B60081D
+ for <ltp@lists.linux.it>; Wed, 14 Oct 2026 10:24:27 +0200 (CEST)
+Received: by mail-wm1-x32c.google.com with SMTP id
+ 5b1f17b1804b1-4a018792ab3so31380975e9.0
+ for <ltp@lists.linux.it>; Wed, 14 Oct 2026 01:24:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1791966267; x=1792571067; darn=lists.linux.it;
+ h=date:content-transfer-encoding:content-type:in-reply-to:cc:to
+ :message-id:subject:from:from:to:cc:subject:date:message-id:reply-to
+ :content-type; bh=kuPSF5DA5kUKtzsujCUy981zMHn6OKsgw6LQ7prm57Q=;
+ b=XJrfQn5QpFRWlhJLxE3s8nws0ptbgtqpS2sEE7H/19O5f86j8SbqAxNKSJrlhZSWW/
+ 59erNJwT7uyAhOYXJApPpvgMTAN9xoVo/GK9USD46wn2bLcaSqKHZnEkUcQCdHqOlGVM
+ rW05Z53v28Fq2J6pIczlOodvQ0GE6UCaE5Tb2xOQ/mLJjcx956eJVxZaC57/QtBw/Kv8
+ TKBqvTEiz1XhDvrV3gX0vHaa2/Htiho+re0a5SrycCdlOHoTcsKijxziYf9vPTwBCFxo
+ ZxnvsdxsW8w0IfsccMShhoRzcUNJSaMpwsuIDN4HWxLozm5+VkJ4wcWgHZ6Z5ICT9MB+
+ HQgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20260707; t=1791966267; x=1792571067;
+ h=date:content-transfer-encoding:content-type:in-reply-to:cc:to
+ :message-id:subject:from:x-gm-gg:x-gm-message-state:from:to:cc
+ :subject:date:message-id:reply-to:content-type;
+ bh=kuPSF5DA5kUKtzsujCUy981zMHn6OKsgw6LQ7prm57Q=;
+ b=hI87+fWS/MdlICkv9bzhQQpKl8xgKkUKX4fZCBtaXPRdNQh5+GZ6YshLQy9Q/eicx/
+ EVb08MjJsUTWfrVdfh5adaDfCfGtRjS8Oavkbjfs90JQJKYffp9I/a1eshVYcAeGwJoO
+ R5gYTewJZ1lPq8sy4uuWLlBqVKb4eAA3PdDBV8pHEQt+IqIyhFFEWuJoFXaZ/ahfONmU
+ vAsEtS8R+ACy2BRL6DfpGPOtW2jomcRhO667dqSKLQ0XCP+8JB9o8Qk9F+HPwL3dEXUp
+ KVv474JwSx5GmjuX4BO+ILN9hwMSvQ/jFPHxoJ6gprWkGoYwEgKUJGHB8GuuyDdpazmx
+ JKTQ==
+X-Gm-Message-State: AFq9FYK7rKah5OCcXMffEUbQ9qq2q6uGDvC5q3c/YXPfcmsuM3BQhuyp
+ VncgN9Uh2Gn16O3JVhvbdiScOQMj/AVjURT8meZ8kDZpRp2SwUE4xBI0EZs6z35V1wM8uCdEVZi
+ TMcz92F9BlQ==
+X-Gm-Gg: AYBFou04p5gbptxUu8qWX0dCFeC4GooLi56ii+j2HblMRulH+1jD2I4j87ZfFjFxzkK
+ LBvQI/EQh/kUojr5EGA/H6v3AETcKxRixdznGxUTQf7Bo7r29YIdxPXne4iX+xuLujZ+H0luSZM
+ GRlQMicw9D5z3WJqBGkiUgfUxjdPD/BfCYCaGsfnd9M4Oc3Z3zcshMZKQzPjOz4Fg8T5KHS1uUk
+ D3MgJ+g7HcaVV/5qpCuh4EWxHyjBDX1sbjKqASfgEtU7xPGc7ypKJ3TXxe5K8tOgmmaGZcLml7D
+ hqIiVckYAEgmwU7w31zdUthcFFawk1DVqaSzB297/FaSzSMVq9wytRuYomGZ7zVFgkJqtv7TDP/
+ 8Rc7kWtPbELdeh3H9u0s2beyBxko6i144NSvzYgSAAegq555CSYW+3rfxHmX8rCPFcMkgGN6Di+
+ RcYfMmnRqLRO8xXhqpH5+ge5blwpY/Xq8x3h7i3zpmwk1jXQ8XsXhu7xsrx/i4W0ocu32ExcccS
+ amiIr/0HJChQK5RZKWlO0WhG4s1XcZRGptDmz3+BTrfNYyz5RWxk27Pyc9nwdPToCUgpo9et9i1
+ aA==
+X-Received: by 2002:a05:600c:3e0a:b0:4a0:1c10:1419 with SMTP id
+ 5b1f17b1804b1-4a18e4cd667mr295501575e9.26.1791966266964; 
+ Wed, 14 Oct 2026 01:24:26 -0700 (PDT)
+Received: from localhost.localdomain
+ (p200300ef2f310000926bd7eee21e6eee.dip0.t-ipconnect.de.
+ [2003:ef:2f31:0:926b:d7ee:e21e:6eee])
+ by smtp.gmail.com with ESMTPSA id
+ 5b1f17b1804b1-4a18bf214a1sm486264365e9.7.2026.10.14.01.24.26
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 14 Oct 2026 01:24:26 -0700 (PDT)
+Message-ID: <DkqcS9z6QNhWOfxK5lLMYGCle8AY14iEBf11@localhost.localdomain>
+To: "Florian Schmaus" <florian.schmaus@codasip.com>
+In-Reply-To: <20261014071734.450957-1-florian.schmaus@codasip.com>
+Date: Wed, 14 Oct 2026 08:24:25 +0000
+Subject: Re: [LTP] [PATCH] keyctl05: Use DNS_LOOKUP_GOOD to avoid
+ false-negatives due to EKEYEXPIRED
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -111,110 +98,21 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Cc: ltp@lists.linux.it
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Andrea Cervesato <andrea.cervesato@suse.com>
+Merged, Thanks!
 
-When security modules like Yama LSM are active (e.g. ptrace_scope >= 1),
-process_vm_readv() and process_vm_writev() fail with EPERM for
-unprivileged sibling processes due to missing CAP_SYS_PTRACE capability.
-
-Require root so tests can reliably execute across different security
-configurations.
-
-Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
----
-The cma testing suite started to fail on modern systems enabling YAMA.
-Unfortunately, using CAP_PTRACE capability for users is not enough to
-avoid an EPERM. For this reason, it's better to require root and fix the
-whole suite in one shot.
----
- testcases/kernel/syscalls/cma/process_vm_readv02.c  | 5 +++++
- testcases/kernel/syscalls/cma/process_vm_readv03.c  | 5 +++++
- testcases/kernel/syscalls/cma/process_vm_writev02.c | 5 +++++
- 3 files changed, 15 insertions(+)
-
-diff --git a/testcases/kernel/syscalls/cma/process_vm_readv02.c b/testcases/kernel/syscalls/cma/process_vm_readv02.c
-index 1e2ac38fa..d985bdad9 100644
---- a/testcases/kernel/syscalls/cma/process_vm_readv02.c
-+++ b/testcases/kernel/syscalls/cma/process_vm_readv02.c
-@@ -10,6 +10,10 @@
-  * then the other one calls process_vm_readv and reads from the same
-  * memory location, it then verifies if process_vm_readv returns
-  * correct data.
-+ *
-+ * Requires root for ``CAP_SYS_PTRACE`` to access the address space of
-+ * another process when security policies such as Yama LSM (ptrace_scope)
-+ * are enabled.
-  */
- 
- #include <stdio.h>
-@@ -116,6 +120,7 @@ static struct tst_test test = {
- 	.test_all = run,
- 	.setup = setup,
- 	.cleanup = cleanup,
-+	.needs_root = 1,
- 	.forks_child = 1,
- 	.needs_checkpoints = 1,
- };
-diff --git a/testcases/kernel/syscalls/cma/process_vm_readv03.c b/testcases/kernel/syscalls/cma/process_vm_readv03.c
-index 95d35c422..2b533ca56 100644
---- a/testcases/kernel/syscalls/cma/process_vm_readv03.c
-+++ b/testcases/kernel/syscalls/cma/process_vm_readv03.c
-@@ -12,6 +12,10 @@
-  * locations and the local iovecs initialized to randomly sized and
-  * allocated local memory locations. The second child then verifies
-  * that the data is copied correctly.
-+ *
-+ * Requires root for ``CAP_SYS_PTRACE`` to access the address space of
-+ * another process when security policies such as Yama LSM (ptrace_scope)
-+ * are enabled.
-  */
- 
- #include <stdio.h>
-@@ -189,6 +193,7 @@ static struct tst_test test = {
- 	.test = run,
- 	.setup = setup,
- 	.cleanup = cleanup,
-+	.needs_root = 1,
- 	.forks_child = 1,
- 	.needs_checkpoints = 1,
- 	.tcnt = ARRAY_SIZE(testcases),
-diff --git a/testcases/kernel/syscalls/cma/process_vm_writev02.c b/testcases/kernel/syscalls/cma/process_vm_writev02.c
-index 15bd66a44..e9edc4a6f 100644
---- a/testcases/kernel/syscalls/cma/process_vm_writev02.c
-+++ b/testcases/kernel/syscalls/cma/process_vm_writev02.c
-@@ -9,6 +9,10 @@
-  * Fork two children, the first one allocates a chunk of memory and the
-  * other one call process_vm_writev to write known data into the first
-  * child. Then first child verifies that the data is as expected.
-+ *
-+ * Requires root for ``CAP_SYS_PTRACE`` to access the address space of
-+ * another process when security policies such as Yama LSM (ptrace_scope)
-+ * are enabled.
-  */
- 
- #include <stdlib.h>
-@@ -122,6 +126,7 @@ static struct tst_test test = {
- 	.test_all = run,
- 	.setup = setup,
- 	.cleanup = cleanup,
-+	.needs_root = 1,
- 	.forks_child = 1,
- 	.needs_checkpoints = 1,
- 	.options =
-
----
-base-commit: c082253808608e57a4fba3e7f3787a9f5c377638
-change-id: 20261014-fix_process_vm_writev_permissions-6fca6598d9fb
-
-Best regards,
---  
-Andrea Cervesato <andrea.cervesato@suse.com>
-
+--
+Andrea Cervesato
+SUSE QE Automation Engineer Linux
+andrea.cervesato@suse.com
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
