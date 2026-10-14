@@ -4,90 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C2DECCC6B27
-	for <ltp@archiver.kernel.org>; Wed, 14 Oct 2026 08:00:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1791964818; h=message-id :
- to : in-reply-to : date : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : cc : mime-version : content-type :
- content-transfer-encoding : sender : from;
- bh=34fdjgQNrJAJRUGIWtXYUqE5GgrCLEsJhJtSlI/xQdY=;
- b=QbbG3bGkY9F+fZYok21BzmvlAt74jSUD52zfmv/LPuig4Wn/Mm+UPvrKwsuIaH53b3n7I
- db2U5IJH8niMnrLWRkdxXvWFpZlz99pz1id6L7soPnhr5jgniI6h+/vyKbc3L2rV20p2Opz
- /7sVToV/PtnUnC4H47BQuFhA5D6/aqE=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7647ACC6B1A
+	for <ltp@archiver.kernel.org>; Wed, 14 Oct 2026 08:00:34 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 360653E6A0C
-	for <ltp@archiver.kernel.org>; Wed, 14 Oct 2026 10:00:18 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 046983E6A13
+	for <ltp@archiver.kernel.org>; Wed, 14 Oct 2026 10:00:33 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6028F3E2B3B
+ by picard.linux.it (Postfix) with ESMTPS id 7E79D3E5531
  for <ltp@lists.linux.it>; Wed, 14 Oct 2026 09:59:57 +0200 (CEST)
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com
- [IPv6:2a00:1450:4864:20::32d])
+Received: from mail-vs2-x08.google.com (mail-vs2-x08.google.com
+ [IPv6:2a00:1450:4864:3a::8])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id E87E91000A30
- for <ltp@lists.linux.it>; Wed, 14 Oct 2026 09:53:24 +0200 (CEST)
-Received: by mail-wm1-x32d.google.com with SMTP id
- 5b1f17b1804b1-4a0213948d3so22945915e9.2
- for <ltp@lists.linux.it>; Wed, 14 Oct 2026 00:53:24 -0700 (PDT)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 27C9D600478
+ for <ltp@lists.linux.it>; Wed, 14 Oct 2026 09:59:57 +0200 (CEST)
+Received: by mail-vs2-x08.google.com with SMTP id
+ ada2fe7eead31-7bffbbcf007so116706137.0
+ for <ltp@lists.linux.it>; Wed, 14 Oct 2026 00:59:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1791964404; x=1792569204; darn=lists.linux.it;
- h=date:content-transfer-encoding:content-type:in-reply-to:cc:to
- :message-id:subject:from:from:to:cc:subject:date:message-id:reply-to
- :content-type; bh=kuPSF5DA5kUKtzsujCUy981zMHn6OKsgw6LQ7prm57Q=;
- b=U+DSPruQNpAs8ul7gBiuN9JjSEtGDY1rVzoTWNy0tYdr/GJGzlhd2M5eWSYvbjoMfb
- VbvcGL8QG9k3d+efYZzg2uLGx9s5LQmDuW/cUpD65dRopEYvqfbEMLqTMXKzfUWm/NDM
- UxfyX7zkFobReNxhJj0qCSVUsbBi3MDiQNTp9p5qLvrcz7xlG48PbgU6oibm7b38dHrM
- n74cWeJ6YC91EHMkPaIDDMtCNZxW4yPlSQ1y8GLd3RKe95uckW3KXFOKT/ay3zGXWCK/
- 00PIue1aq9DyeJPcJkG1xfwO6T1dQVmUzxS+Ad9jj+zn4Fo8h8yDNaiohzz+bAkFqFvz
- omrQ==
+ d=gmail.com; s=20251104; t=1791964796; x=1792569596; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to:content-type;
+ bh=jO4wdAHeJKofuHR1jemond3iSc1H7kV8dMXFmWzsyow=;
+ b=DBlr0wPmEeBpTLLCOgPU3/YlgqyTh5h/82Ov3/JoK+FJ2c/dd72lGbb/cWxGm7SJuH
+ NVUScgpI1AmbI4gyeq46XwGc5UjC0LCyGJ+WaB+REh8RAu2yUy5YBgOSW7eUc2KdxrMi
+ 5ullRvLNtThNbVAhK/x0+geIFwo1MbF/gmJcwO0a8CsKWYD60R3KwsUjVKlUnPXzSySE
+ kz5TT0LFoe2UY7+9nnip8v9mo1gbmiD81tvZy8gfo302/rOhuZe26jgfz7xlQRJOQ/ME
+ plMbrlu1o9Her684LjNE0N+/A0H28nGu+tulqP1QHMmxpXw4NRCKaoXzLy56w53AIFg2
+ tOJg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20260707; t=1791964404; x=1792569204;
- h=date:content-transfer-encoding:content-type:in-reply-to:cc:to
- :message-id:subject:from:x-gm-gg:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to:content-type;
- bh=kuPSF5DA5kUKtzsujCUy981zMHn6OKsgw6LQ7prm57Q=;
- b=JbjQOeMJ442QmItcjnCrk020CPVlEIArA6MvoBv61Bo0yMS3qU6Jck64n6Igoop2T3
- 2DEQSLmmdRRYajTt3cUt3p9oKPWiy9sVMBrqnD/PLAdssnTVcmeQH39mzYlTOdPBBWxe
- axKwgJ0G4c6NXBDJULkBXp+ulYW2InM9SRMFnm5Wc0TydPT5dIbkmP9AH2lIlO3zeLj4
- D4JomMDx5+ItsRErDywplcYkij5fT3NyTQvCS863tqathHt2ectF6KeY5sJWFbXynsYI
- FxAAuydP2Ct7/3HVUYp9QBXlDyw8RDRubCFuS0Kpk7H1Tm808yANMaXDJo5tMata6e99
- DUzA==
-X-Gm-Message-State: AFq9FYKi3+Bsf5lD/hoYOVknltU+gZSnxrmIQ7lwRWs6ePjdnkp7wM9f
- DgeCElwik4U7yQhWlRrnCp42GTdKQ2nXGiq3nrtv8QdQrIvw7paSJw/g0t7FXIdebHZJRtT1Eci
- 9rMoXWgKBGA==
-X-Gm-Gg: AYBFou2/Z7AxtZk1nkeI1JHBpS/NBKeKMtMpL4VTcIICOeNANJhiZDjHjZ04j4SO5vW
- IT5naw2bHGXgqQ0e+neiZUOklczQoLdYEsC/yO5X79doCLKRWAmXbFKRxxlZKKi4D7gcL3bZ8ef
- PgM+SVW2y8/qMlSsjDTik1RkgWRwXLFnIfDvDxTrSObO97yW7kJWHiMIc7aP5OMIpkw6JTNKn5M
- 3zNEhx4yBoP4w52b3iIpQpkzPuUK1nbnQykX2qx7qGKoU2JwOTcuXtWynkp8BIQzqwnS01BImOc
- oAkF4m1M9AryUntpqysBUtqNjwaRx57qbsoCQo/3xEsoowOhe+3EFeo2e9ouxy3xNrUtCGeDXDg
- AuguuraKpXmfv9J+2WtRQP3CiavDmCSgds7DNgByf1/nFYP6rSqG2TP/neHr6EXdVx4YsNfJZii
- /Wu5cfnOaB3ekbCXSrY5wkbDHV6ALj9Akkwp+Q0Pc8RriBy+lt72xrDznqMPKMWMSFEcUr1WXWd
- nZyVCgC0yTZkO6k5OGCeISF7z10/WDKXO9dD6S19wRt7O5NAvmHzam3IB/pJsgA7o5dRt7qwEuB
- fA==
-X-Received: by 2002:a05:600c:3554:b0:4a0:1b14:e283 with SMTP id
- 5b1f17b1804b1-4a18e43a1cemr299777955e9.1.1791964404218; 
- Wed, 14 Oct 2026 00:53:24 -0700 (PDT)
-Received: from localhost.localdomain
- (p200300ef2f310000926bd7eee21e6eee.dip0.t-ipconnect.de.
- [2003:ef:2f31:0:926b:d7ee:e21e:6eee])
- by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-4a19471edd5sm564066795e9.11.2026.10.14.00.53.23
+ d=1e100.net; s=20260707; t=1791964796; x=1792569596;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to:content-type;
+ bh=jO4wdAHeJKofuHR1jemond3iSc1H7kV8dMXFmWzsyow=;
+ b=mF+7W4fF1xfXc/8QebaYEL4biWPcN1We2z4DHEQppW6ejJN2Oo3w55IXmI349o2swA
+ 0zjsfmhLCywtDHNOpEwhe2/0Nu7p/N6BVToqMEnvMrF6q4idrfuS49WOVsnhfimcdCnK
+ 6HS+DmOv9jUWb8x8Ix0N3NzPRnHO9+Acg/dBIxYlAN4jrTJt0r6FR8IiKbFzj9u9UbrG
+ jIVJASzlPuKpDR8N5/1l77Rmw1n6ZYpyt6pzrYTJVxvRCISWNySOXSltGE4ovk1qroOl
+ tlkpU9sW4JqWpmxZMLPTwE+pSQRHZlFANuPkE2aCsRPDCOOJGl/fseWulQqw4CqRsIB6
+ sESw==
+X-Gm-Message-State: AFq9FYJ0oYZFZFoC+lZ/XkNamATCpZ+Q/RVwCP3TU25aehko5s/iUJZW
+ J+nEL2llYpi69ElVk8PRCxCOzf2GH01vR98JEYqylSBOrb4wLnTHhPDHy98ZEsjS
+X-Gm-Gg: AYBFou3G/nkqlN5ZrdGKDhSwYTAtGspqyIEJsS999OBv6j72xZITVNV0vVT4SR1B0si
+ ryGhFJG5mH9R4KUqFDMmJF5VAFmXw8xNvZd+MxUWYAdVETrvghneREWZfqQBO+vURfwLdvFpD0N
+ xadbHXqsGZVCRKzAtjmnLzqNfaW3pNNF1Ttw+7ekcg9sMGBmpHQZvoL3qAo1sBQQIV8hPz2CNB6
+ 5/PcqV9EhEoO7i2yr7xj/8xLgmnSgoct4rz0IKTty+ArD2nW3z3F6xdcLGBzeS6TeAoK2wPvCtk
+ Sp8H6P3Ss9dwIUcMaBS5PeG5imJfSc+UnXl+0XYDqPmlMH1o3NC2T2E8OmNhDfWkH8psF4xRNm7
+ a7T4hwYoxNbNlGV+oGBpfTvjfJP+uFS5rMgiJ+elsv4rQvvER2yaa5oO/V0VZxVC1BMN0IwxbaF
+ YhMTEvxBZgQYueYkc0fPO66ZiE4txRGyyaD+sK16h82XhO8dmxkRW8sCEW1/JJYs3csYSX9yRGI
+ bC1imMv1j3boYWwmCxE0wBLqtlwLTpCVHaq6eW8zwqJ1p7tunDUoo+QuvnpzNfjb/XIYF15vNPE
+ 7G4pfVtfIujYVigKawg=
+X-Received: by 2002:a17:90b:224c:b0:3a7:9adb:2a0d with SMTP id
+ 98e67ed59e1d1-3ab3a0218bfmr14090537a91.0.1791964374291; 
+ Wed, 14 Oct 2026 00:52:54 -0700 (PDT)
+Received: from
+ runnervmmprz5.ldcbmbo2laxuhg0cuwrmeuiwuf.xx.internal.cloudapp.net
+ ([4.155.111.1]) by smtp.gmail.com with ESMTPSA id
+ 98e67ed59e1d1-3ac7a17cd3bsm1002347a91.15.2026.10.14.00.52.53
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 14 Oct 2026 00:53:23 -0700 (PDT)
-Message-ID: <ybQLfGBdMSwtlamvp5ZZ8ggOFTmNMKDRQSzK@localhost.localdomain>
-To: "Darren Chang" <chihsheng@google.com>
-In-Reply-To: <20261014060212.1081388-1-chihsheng@google.com>
-Date: Wed, 14 Oct 2026 07:53:23 +0000
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+ Wed, 14 Oct 2026 00:52:53 -0700 (PDT)
+From: linuxtestproject.agent@gmail.com
+To: Gaurav Pathak <gpathak@suse.de>
+Date: Wed, 14 Oct 2026 07:52:53 +0000
+Message-ID: <20261014075253.9979-1-linuxtestproject.agent@gmail.com>
+X-Mailer: git-send-email 2.55.0
+In-Reply-To: <20261014062016.178140-1-gpathak@suse.de>
+References: <20261014062016.178140-1-gpathak@suse.de>
+MIME-Version: 1.0
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] process_vm_writev02: Fix stack overflow with
- large buffer size
+Subject: Re: [LTP] syscalls/statx13: Add basic test for STATX_WRITE_ATOMIC
+ on regular file
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -99,21 +93,82 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
 Cc: ltp@lists.linux.it
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Merged, Thanks!
+Hi Gaurav,
 
---
-Andrea Cervesato
-SUSE QE Automation Engineer Linux
-andrea.cervesato@suse.com
+On 13 Oct 2026, Gaurav Pathak wrote:
+> syscalls/statx13: Add basic test for STATX_WRITE_ATOMIC on regular file
+
+> +	struct ltp_statx buff;
+> +
+> +	TST_EXP_PASS(statx(AT_FDCWD, TESTFILE, 0, STATX_BASIC_STATS | STATX_WRITE_ATOMIC, &buff.buff),
+> +			"statx(AT_FDCWD, %s, 0, STATX_BASIC_STATS | STATX_WRITE_ATOMIC, &buf)", TESTFILE);
+
+TST_EXP_PASS reports failure but does not return, so a statx() error leaves
+the following checks reading uninitialized output. Return immediately when
+!TST_PASS before accessing buff. Allocate this syscall buffer through .bufs
+rather than on the stack.
+
+> +	.min_kver = "6.11",
+> ...
+> +			.type = "xfs",
+> +			.mkfs_opts = (const char *const []){"-f", "-bsize=16K", NULL},
+
+Linux 6.11 rejects XFS blocks larger than PAGE_SIZE, so this configuration
+fails to mount on a 4 KiB-page system admitted by min_kver. The framework
+reports TBROK before setup or feature detection, also preventing the ext4
+case from running. Use a portable block size or separately gate this
+large-block configuration.
+
+> +	if (!(buff.data.stx_attributes & STATX_ATTR_WRITE_ATOMIC))
+> +		tst_brk(TCONF, "STATX_WRITE_ATOMIC unsupported by block dev or filesystem: STATX_ATTR_WRITE_ATOMIC missing from stx_attributes");
+
+A response with nonzero atomic limits but a missing support attribute is
+inconsistent, not simply unsupported. This branch hides that regression as
+TCONF despite the stated goal of validating the attribute. Check
+attribute/limit consistency first and reserve TCONF for unsupported results
+with zero limits.
+
+> +	uint32_t	stx_atomic_write_segments_max; \
+
+verify_statx() never checks this returned limit. A response advertising
+atomic writes with segments_max = 0 passes every assertion, although it
+cannot describe a nonempty atomic write. Require
+stx_atomic_write_segments_max > 0 when support is advertised.
+
+> +	if (buff.data.stx_atomic_write_unit_min <= buff.data.stx_atomic_write_unit_max)
+> +		tst_res(TPASS, "stx_atomic_write_unit_min(%u) <= stx_atomic_write_unit_max(%u)",
+> +				buff.data.stx_atomic_write_unit_min, buff.data.stx_atomic_write_unit_max);
+> +	else
+> +		tst_res(TFAIL, "stx_atomic_write_unit_min(%u) > stx_atomic_write_unit_max(%u)",
+> +				buff.data.stx_atomic_write_unit_min, buff.data.stx_atomic_write_unit_max);
+
+Use TST_EXP_EXPR for this comparison and the repeated power-of-two
+assertions instead of manual TPASS/TFAIL branches.
+
+> + * It ensures that supported filesystems (xfs and nfs) correctly report their
+> + * atomic write limits to user space when queried via statx().
+
+The filesystem list tests XFS and ext4, not NFS. Describe the actual
+regular-file checks using :manpage:`statx(2)` and document that root is
+required to format and mount the test filesystems.
+
+Verdict - Needs revision
+
+---
+Note:
+
+The agent can sometimes produce false positives although often its
+findings are genuine. If you find issues with the review, please
+comment this email or ignore the suggestions.
+
+Regards,
+LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
