@@ -4,103 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1DE0FCC6B1A
-	for <ltp@archiver.kernel.org>; Wed, 14 Oct 2026 06:20:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F00ECCC6B24
+	for <ltp@archiver.kernel.org>; Wed, 14 Oct 2026 07:13:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1791962030; h=message-id :
+ to : in-reply-to : date : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : cc : mime-version : content-type :
+ content-transfer-encoding : sender : from;
+ bh=w82p6GhcEVFG7nEtSwxzdDseLh2fLxbx/qz4jTiMbBA=;
+ b=Crmj/OhIPefYq408Sjcai5FbfLP2DYwwJ/W7/sfQtSI+Uvhduh0eo5WvoaggwC8hKVjn2
+ 00xkcao1b7nBTTI9b7fQR7Fba6mHYNI7qpjHTQDNe+QsqF6S0/v+3OP9wKRqcMyr9pPgyta
+ 1vpt5cfZgCHSX6sFXvebyKEJl5cW2yQ=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 577383E2B30
-	for <ltp@archiver.kernel.org>; Wed, 14 Oct 2026 08:20:52 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 036B53E2B30
+	for <ltp@archiver.kernel.org>; Wed, 14 Oct 2026 09:13:50 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C5B603E2959
- for <ltp@lists.linux.it>; Wed, 14 Oct 2026 08:20:37 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 71BC23E2B30
+ for <ltp@lists.linux.it>; Wed, 14 Oct 2026 09:13:30 +0200 (CEST)
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com
+ [IPv6:2a00:1450:4864:20::329])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 9EB2F600984
- for <ltp@lists.linux.it>; Wed, 14 Oct 2026 08:20:36 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 561DB21F8E;
- Wed, 14 Oct 2026 06:20:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1791958835; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=pxV2IYNSZeYygZcRAMWhAgAvbBspKchaotamVpwztW0=;
- b=pTFZP6MmeC7nIK+w/JOqHI/njcOMrfYwaR3B+yyVFyZTfIJ/LOOMEK838l9GFDKM9V81ET
- qIK1Qe/QTyrD2/tQQaTFA05dwL4F7Nz62tmUyS3X39lYoqwbEQ9oO6mFC8Id24TFZyb77f
- UGla7UvBEoJh5bUp0iCYyQbbqhAt9Ss=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1791958835;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=pxV2IYNSZeYygZcRAMWhAgAvbBspKchaotamVpwztW0=;
- b=ayaCyxcRqebcGDRqRNM6LTTHF+P8vLqGmBHOgHrCMXYxunApc299ln/5e4+J7SQGBKyglV
- oAsDchG3sLZr5oAA==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1791958834; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=pxV2IYNSZeYygZcRAMWhAgAvbBspKchaotamVpwztW0=;
- b=VuyvCxGYn4hp7vydutplNasTat/cobhbbWPDS5ldjFdkjMbnlRG0ez/XY8hbL9JQcXe1Hw
- YELMBCxwEVThub7hmrfrsR1U5FR6jaMOyl2CRsbHIgZHO9jjhj9LcjLmTPGEPQDCMjx6oP
- w38Ou3dstu6lm9CkIzJ35UhKPeoSQE4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1791958834;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=pxV2IYNSZeYygZcRAMWhAgAvbBspKchaotamVpwztW0=;
- b=Y2qO7di2n8BisyEDYcnaOq0HryqRFIU9axxe7ST5nxYMOLeVix+6sk1ocnzuqC6d/rTHot
- 2GNLkAAv4S0sTbDQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A7F371368E;
- Wed, 14 Oct 2026 06:20:32 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id WE1ZNS8fz2p6LQAAD6G6ig
- (envelope-from <gpathak@suse.de>); Wed, 14 Oct 2026 06:20:32 +0000
-From: Gaurav Pathak <gpathak@suse.de>
-To: ltp@lists.linux.it
-Date: Wed, 14 Oct 2026 11:50:16 +0530
-Message-ID: <20261014062016.178140-1-gpathak@suse.de>
-X-Mailer: git-send-email 2.51.0
-In-Reply-To: <20261013112715.9633-1-linuxtestproject.agent@gmail.com>
-References: <20261013112715.9633-1-linuxtestproject.agent@gmail.com>
-MIME-Version: 1.0
-X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
- R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-1.000];
- MIME_GOOD(-0.10)[text/plain]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- URIBL_BLOCKED(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email];
- ARC_NA(0.00)[];
- DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- MIME_TRACE(0.00)[0:+]; FREEMAIL_CC(0.00)[gmail.com,suse.com];
- RCPT_COUNT_THREE(0.00)[3]; TO_DN_SOME(0.00)[];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- RCVD_TLS_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- TAGGED_RCPT(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,imap1.dmz-prg2.suse.org:helo];
- RCVD_VIA_SMTP_AUTH(0.00)[]; FREEMAIL_ENVRCPT(0.00)[gmail.com]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 6C057200208
+ for <ltp@lists.linux.it>; Wed, 14 Oct 2026 09:13:29 +0200 (CEST)
+Received: by mail-wm1-x329.google.com with SMTP id
+ 5b1f17b1804b1-4a16c399641so36988025e9.2
+ for <ltp@lists.linux.it>; Wed, 14 Oct 2026 00:13:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1791962009; x=1792566809; darn=lists.linux.it;
+ h=date:content-transfer-encoding:content-type:in-reply-to:cc:to
+ :message-id:subject:from:from:to:cc:subject:date:message-id:reply-to
+ :content-type; bh=ob+DjeHLeOBsl8lDAnshog3Y1QN7XOMG4J97E8pJauc=;
+ b=LWysiuPaes5VwdUIeZkjKN8OH6FNkJ6pRIbA2g3xMmySUq3rc3SIiqisaprvuCsv0v
+ PubM1164PAO0oNY6Dc1Frw+S8Ktr2xyWJZziD15umL0bEcAPDELCYBenvlGdghfXMVTh
+ GT02fOiauDkvyW8uhTQtiRQDehDidZnNXsbEQpQMRG1G/cGebXJnS2tcc4q9sky+PQzP
+ 0Ke63s6kBDYPz7i20oVuIusEYW6CdEXeFDBDo9CW6K7OYxV2+nuFnCqkFjZnfCqXA40Q
+ 0E+OcA6WbuCUKbicqGGDboIX48L6KmYl0Gopq4SC7L8ra68lBRoHvstZi/U5uf0e0vIj
+ zzgQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20260707; t=1791962009; x=1792566809;
+ h=date:content-transfer-encoding:content-type:in-reply-to:cc:to
+ :message-id:subject:from:x-gm-gg:x-gm-message-state:from:to:cc
+ :subject:date:message-id:reply-to:content-type;
+ bh=ob+DjeHLeOBsl8lDAnshog3Y1QN7XOMG4J97E8pJauc=;
+ b=IrHbnW9NRIPuF7wnrIen6JAv+wV/dvAt5hwtxr4tX5y2EAQvumagVT/l/pJ4FAJ7mK
+ 62zZl28Isy+XJ5wnpt++oI+YH1mwKrEGfhR3EPEcntqAe8JkUYLMTDCRN1eahjkKKV7x
+ IP/cIKQ1PUj2Q5vNcZEJXFabPCL0SnC7DrA0LXIpshjhVDrcqekuz+HCpiVanMXVv8KE
+ RqxbFqOpKQyE6vjF0oCNzWOusKY8pWQxqflZHEYoqahFwi3remNAaXK37nWfe9NdDtFx
+ Kvs0vCkJd4hETiloRgm1Aab+2E/OoKzdVC7cI0Cm3xJ8AvUgh45xJTdbkhe3S5Ys/NAv
+ YhUQ==
+X-Gm-Message-State: AFq9FYIgSq/DNUhCUVO3T0vfjcpWLY4p+iTOOLLZlgx+MwTN03RIx1rk
+ GdAVUBhS9HN8CUokrd3GnVLaUpoPutQIOLIUf2VA1wxVtsMNdC4MR9Iqo3sjZGvSr7KaP0dey5t
+ a9gfn3Tvpow==
+X-Gm-Gg: AYBFou3SXIH53oHY9CKOMSOIUvhKUW67vnvFsz9pl4m29LWfw9SdMU/GZilOgCWpqRd
+ 1AumC1/1Q+aIAt0JqKBoe/Aa8xdOI6DutmzD28dn5QT9UXNBjbS+e2ztCEg7+kibr6FXh6kp+Hd
+ meLK4CPUPHPJ+F2UVDVadmFEmIlwWlnp1l4up7efOLEsmGYtMTP03xH81XKJNi+xW+f2/5zTDAG
+ Zyw8hYTSEX2vZCwYYc6JmA3PRcoLxaYjr3w2bK4XAX4Y8DaGNcnivLg72DctltiMBg/Cgboe2dl
+ IQSLqv8HgwYa/pDWuDLrLImZ8h8XRFX5/5/O2I8Bi4ZZ4ntVYmASuCLD7OccBL3+Of+cGy7/tME
+ WbRsS9sIgXvWh8IKcAMXkuxiXtKJPnZdQEHLSigrMD0uWT6V4r53QZe3M/ExZimaJSRBDAuCP7J
+ u5qA4jFZ5Aa4pKIEWUHHTH70KOh3sLfsKaR8MArRaoHQZaLMzDMn6k54h8bQY00soJrrz7g2vNu
+ hEvk+pokHcuMYaUIZ7hJbpD90C8aCKIlm+oBuTzb0dr++mRhXEloNrtPL+mUUo5jRmdZkg8IRjx
+ vgQf6H3gOBrq
+X-Received: by 2002:a05:600c:698d:b0:4a1:97c6:d2b4 with SMTP id
+ 5b1f17b1804b1-4a197c6d614mr220353715e9.15.1791962008505; 
+ Wed, 14 Oct 2026 00:13:28 -0700 (PDT)
+Received: from localhost.localdomain
+ (p200300ef2f310000926bd7eee21e6eee.dip0.t-ipconnect.de.
+ [2003:ef:2f31:0:926b:d7ee:e21e:6eee])
+ by smtp.gmail.com with ESMTPSA id
+ 5b1f17b1804b1-4a18bf2caf4sm468733585e9.10.2026.10.14.00.13.28
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 14 Oct 2026 00:13:28 -0700 (PDT)
+Message-ID: <lPrzeOZgU1fMNKhK15I6cCnPk2b9oRZnJfxX@localhost.localdomain>
+To: "Li Wang" <li.wang@linux.dev>
+In-Reply-To: <as8MmB6eIyIh3tT2@linux.dev>
+Date: Wed, 14 Oct 2026 07:13:27 +0000
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v6] syscalls/statx13: Add basic test for
- STATX_WRITE_ATOMIC on regular file
+Subject: Re: [LTP] [PATCH v3 3/4] tst_kconfig: add module mappings for
+ vsock/vsock_loopback
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -112,236 +99,45 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Gaurav Pathak <gaurav.pathak@suse.com>, linuxtestproject.agent@gmail.com
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Cc: ltp@lists.linux.it
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Gaurav Pathak <gaurav.pathak@suse.com>
+> On Mon, Oct 12, 2026 at 03:51:32PM +0000, Andrea Cervesato wrote:
+> > Hi Li,
+> > 
+> > > The test needs root only to load the modules; the reproducer runs as
+> > > an ordinary nonroot process in the initial namespace, which can use
+> > > loopback VSOCK on nonprivileged ports. Drop privileges to nobody after
+> > > module loading and regain root in cleanup() so the modules can be
+> > > unloaded.
+> > 
+> > Please drop the root _only_ if we are root, we shouldn'f force the test
+> > to be root always, even when we are user.
+> 
+> After thinking it over, I'd prefer to leave this patch unchanged:
+> 
+> The test does need root, but not for the reproducer itself -- it needs
+> root for setup and cleanup:
+> 
+>   - loading vsock_loopback requires CAP_SYS_MODULE;
+>   - unloading it in cleanup() also requires CAP_SYS_MODULE.
 
-This patch adds a new test to validate the atomic write limit fields.
-The test ensures the filesystem correctly advertises the STATX_ATTR_WRITE_ATOMIC
-attribute when queried on a file opened with O_DIRECT. It also verifies that the
-reported optimized maximum is logically consistent by falling within the
-absolute minimum and maximum boundaries. Furthermore, it checks that all
-reported atomic write unit sizes are valid powers of two, adhering to the strict
-requirements of the kernel block layer.
+yeah we need root for that. This is something we can't workaround.
 
-If the underlying storage hardware or filesystem lacks atomic write
-support, the test gracefully skips with TCONF.
+So I would just avoid defining functions we use once. We can simply merge
+them with setup/cleanup and keep the needs_root = 1.
 
-Signed-off-by: Gaurav Pathak <gaurav.pathak@suse.com>
----
- include/lapi/stat.h                        |  17 ++-
- runtest/syscalls                           |   1 +
- testcases/kernel/syscalls/statx/.gitignore |   1 +
- testcases/kernel/syscalls/statx/statx13.c  | 130 +++++++++++++++++++++
- 4 files changed, 148 insertions(+), 1 deletion(-)
- create mode 100644 testcases/kernel/syscalls/statx/statx13.c
-
-diff --git a/include/lapi/stat.h b/include/lapi/stat.h
-index 17b62ea98..859e410ab 100644
---- a/include/lapi/stat.h
-+++ b/include/lapi/stat.h
-@@ -93,7 +93,14 @@ struct statx_timestamp {
- 	uint64_t	stx_mnt_id; \
- 	uint32_t	stx_dio_mem_align; \
- 	uint32_t	stx_dio_offset_align; \
--	uint64_t	__spare3[12]; \
-+	uint64_t	stx_subvol; \
-+	uint32_t	stx_atomic_write_unit_min; \
-+	uint32_t	stx_atomic_write_unit_max; \
-+	uint32_t	stx_atomic_write_segments_max; \
-+	uint32_t	stx_dio_read_offset_align; \
-+	uint32_t	stx_atomic_write_unit_max_opt; \
-+	uint32_t	__spare2[1]; \
-+	uint64_t	__spare3[8]; \
- };
- 
- LTP_DEFINE_STATX_STRUCT(statx_fallback);
-@@ -197,6 +204,10 @@ static inline int statx(int dirfd, const char *pathname, unsigned int flags,
- # define STATX_DIOALIGN		0x00002000U
- #endif
- 
-+#ifndef STATX_WRITE_ATOMIC
-+#define STATX_WRITE_ATOMIC  0x00010000U
-+#endif
-+
- #ifndef STATX__RESERVED
- # define STATX__RESERVED	0x80000000U
- #endif
-@@ -248,6 +259,10 @@ static inline int statx(int dirfd, const char *pathname, unsigned int flags,
- # define STATX_MNT_ID_UNIQUE  0x00004000U
- #endif
- 
-+#ifndef STATX_ATTR_WRITE_ATOMIC
-+#define STATX_ATTR_WRITE_ATOMIC	0x00400000
-+#endif
-+
- #define SAFE_FCHMODAT2(dfd, filename, mode, flags) \
- 	safe_fchmodat2(__FILE__, __LINE__, (dfd), (filename), (mode), (flags))
- 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index accdf2df9..c0d8eb31e 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -1947,6 +1947,7 @@ statx09 statx09
- statx10 statx10
- statx11 statx11
- statx12 statx12
-+statx13 statx13
- 
- membarrier01 membarrier01
- 
-diff --git a/testcases/kernel/syscalls/statx/.gitignore b/testcases/kernel/syscalls/statx/.gitignore
-index f6a423eed..e601a46a3 100644
---- a/testcases/kernel/syscalls/statx/.gitignore
-+++ b/testcases/kernel/syscalls/statx/.gitignore
-@@ -10,3 +10,4 @@
- /statx10
- /statx11
- /statx12
-+/statx13
-diff --git a/testcases/kernel/syscalls/statx/statx13.c b/testcases/kernel/syscalls/statx/statx13.c
-new file mode 100644
-index 000000000..4b717e27e
---- /dev/null
-+++ b/testcases/kernel/syscalls/statx/statx13.c
-@@ -0,0 +1,130 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2026 SUSE LLC <gaurav.pathak@suse.com>
-+ */
-+
-+/*\
-+ * This test validates the STATX_WRITE_ATOMIC feature (introduced in Linux 6.13).
-+ * It ensures that supported filesystems (xfs and ext4) correctly report their
-+ * atomic write limits to user space when queried via statx().
-+ *
-+ * Minimum Linux version required is v6.11.
-+ */
-+
-+#define _GNU_SOURCE
-+#include "tst_test.h"
-+#include "lapi/stat.h"
-+
-+#define MNTPOINT "mnt_point"
-+#define TESTFILE MNTPOINT "/testfile"
-+#define MODE 0644
-+
-+static int file_fd = -1;
-+static struct ltp_statx *buff;
-+
-+static void verify_statx(void)
-+{
-+	TST_EXP_PASS(statx(AT_FDCWD, TESTFILE, 0, STATX_BASIC_STATS | STATX_WRITE_ATOMIC, &buff->buff),
-+			"statx(AT_FDCWD, %s, 0, STATX_BASIC_STATS | STATX_WRITE_ATOMIC, &buf)", TESTFILE);
-+
-+	/* Check if the kernel populated the atomic limit struct members */
-+	if (!(buff->data.stx_mask & STATX_WRITE_ATOMIC))
-+		tst_brk(TCONF, "Kernel may be too old to report atomic limits: STATX_WRITE_ATOMIC missing from stx_mask");
-+
-+	/* Check if the filesystem supports reporting the atomic write attribute */
-+	if (!(buff->data.stx_attributes_mask & STATX_ATTR_WRITE_ATOMIC)) {
-+		tst_res(TFAIL, "Inconsistent: stx_mask has STATX_WRITE_ATOMIC but stx_attributes_mask lacks STATX_ATTR_WRITE_ATOMIC");
-+		return;
-+	}
-+
-+	/* Check if the file/device actively supports atomic writes */
-+	if (!(buff->data.stx_attributes & STATX_ATTR_WRITE_ATOMIC))
-+		tst_brk(TCONF, "STATX_WRITE_ATOMIC unsupported by block dev or filesystem: STATX_ATTR_WRITE_ATOMIC missing from stx_attributes");
-+
-+	if (buff->data.stx_atomic_write_unit_min <= buff->data.stx_atomic_write_unit_max)
-+		tst_res(TPASS, "stx_atomic_write_unit_min(%u) <= stx_atomic_write_unit_max(%u)",
-+				buff->data.stx_atomic_write_unit_min, buff->data.stx_atomic_write_unit_max);
-+	else
-+		tst_res(TFAIL, "stx_atomic_write_unit_min(%u) > stx_atomic_write_unit_max(%u)",
-+				buff->data.stx_atomic_write_unit_min, buff->data.stx_atomic_write_unit_max);
-+
-+	if (buff->data.stx_atomic_write_unit_min > 0 &&
-+			__builtin_popcount(buff->data.stx_atomic_write_unit_min) == 1)
-+		tst_res(TPASS, "stx_atomic_write_unit_min(%u) is power of 2",
-+				buff->data.stx_atomic_write_unit_min);
-+	else
-+		tst_res(TFAIL, "stx_atomic_write_unit_min(%u) is not a power of 2",
-+				buff->data.stx_atomic_write_unit_min);
-+
-+	if (buff->data.stx_atomic_write_unit_max > 0 &&
-+			__builtin_popcount(buff->data.stx_atomic_write_unit_max) == 1)
-+		tst_res(TPASS, "stx_atomic_write_unit_max(%u) is power of 2",
-+				buff->data.stx_atomic_write_unit_max);
-+	else
-+		tst_res(TFAIL, "stx_atomic_write_unit_max(%u) is not a power of 2",
-+				buff->data.stx_atomic_write_unit_max);
-+
-+	if (buff->data.stx_atomic_write_unit_max_opt == 0) {
-+		tst_res(TPASS, "stx_atomic_write_unit_max_opt is 0 (no optimized max reported)");
-+	} else {
-+		if (buff->data.stx_atomic_write_unit_max_opt > buff->data.stx_atomic_write_unit_max)
-+			tst_res(TFAIL, "stx_atomic_write_unit_max_opt (%u) exceeds max (%u)",
-+					buff->data.stx_atomic_write_unit_max_opt,
-+					buff->data.stx_atomic_write_unit_max);
-+
-+		else if (buff->data.stx_atomic_write_unit_max_opt < buff->data.stx_atomic_write_unit_min)
-+			tst_res(TFAIL, "stx_atomic_write_unit_max_opt (%u) is less than min (%u)",
-+					buff->data.stx_atomic_write_unit_max_opt,
-+					buff->data.stx_atomic_write_unit_min);
-+		else
-+			tst_res(TPASS, "stx_atomic_write_unit_max_opt (%u) is within valid range [%u, %u]",
-+					buff->data.stx_atomic_write_unit_max_opt,
-+					buff->data.stx_atomic_write_unit_min,
-+					buff->data.stx_atomic_write_unit_max);
-+
-+		if (__builtin_popcount(buff->data.stx_atomic_write_unit_max_opt) != 1)
-+			tst_res(TFAIL, "stx_atomic_write_unit_max_opt (%u) is not a power of 2",
-+					buff->data.stx_atomic_write_unit_max_opt);
-+	}
-+}
-+
-+static void setup(void)
-+{
-+	char *data_buff = NULL;
-+	struct stat sb;
-+
-+	SAFE_STAT(MNTPOINT, &sb);
-+
-+	data_buff = SAFE_MEMALIGN(sb.st_blksize, sb.st_blksize);
-+	memset(data_buff, '@', sb.st_blksize);
-+
-+	file_fd = SAFE_OPEN(TESTFILE, O_RDWR | O_CREAT | O_DIRECT, MODE);
-+	SAFE_WRITE(SAFE_WRITE_ALL, file_fd, data_buff, sb.st_blksize);
-+
-+	SAFE_CLOSE(file_fd);
-+	free(data_buff);
-+}
-+
-+static struct tst_test test = {
-+	.test_all = verify_statx,
-+	.setup = setup,
-+	.min_kver = "6.11",
-+	.needs_root = 1,
-+	.mntpoint = MNTPOINT,
-+	.mount_device = 1,
-+	.bufs = (struct tst_buffers []) {
-+		{&buff, .size = sizeof(*buff)},
-+		{}
-+	},
-+	.filesystems = (struct tst_fs[]) {
-+		{
-+			.type = "xfs",
-+			.mkfs_opts = (const char *const []){"-f", "-bsize=16K", NULL},
-+		},
-+		{
-+			.type = "ext4",
-+			.mkfs_opts = (const char *const []){"-O", "bigalloc", "-b", "4096", "-C", "65536", NULL},
-+		},
-+		{}
-+	},
-+};
--- 
-2.51.0
-
+Kind Regards,
+--
+Andrea Cervesato
+SUSE QE Automation Engineer Linux
+andrea.cervesato@suse.com
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
