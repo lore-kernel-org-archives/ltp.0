@@ -4,109 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1D84DCC6B1D
-	for <ltp@archiver.kernel.org>; Wed, 14 Oct 2026 11:39:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 07272CC6B1D
+	for <ltp@archiver.kernel.org>; Wed, 14 Oct 2026 11:52:36 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 716D53EA78A
-	for <ltp@archiver.kernel.org>; Wed, 14 Oct 2026 13:39:44 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id A27573EA786
+	for <ltp@archiver.kernel.org>; Wed, 14 Oct 2026 13:52:34 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 4D90A3E6C83
- for <ltp@lists.linux.it>; Wed, 14 Oct 2026 13:39:29 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+ by picard.linux.it (Postfix) with ESMTPS id 944AC3E6A6C
+ for <ltp@lists.linux.it>; Wed, 14 Oct 2026 13:52:18 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 391CD1A00A44
- for <ltp@lists.linux.it>; Wed, 14 Oct 2026 13:39:27 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 05DA760035C
+ for <ltp@lists.linux.it>; Wed, 14 Oct 2026 13:52:17 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 679362213E;
- Wed, 14 Oct 2026 11:39:20 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 4524B21DA2;
+ Wed, 14 Oct 2026 11:52:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1791977960; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1791978737; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=GcAbWqRlu12eL/jqxhsthKN+x9XwSIOhwmm7H57wVcM=;
- b=hYw144Ds8gu2a6kx8iQ9gzYFP70JJ9xq9nR+zYgPIobMSZUqnpBCEBl0UpMq0TiopmW3wO
- TFFiWhenti7PM1AuA4Rh7EkJbu74SoM4kVa05bK+g0J8goLJH1jSt6Q7xyxHx9QRjWIIu+
- WkR2TcitnnVI2LgSCNLTR8AQ4LOMD1A=
+ bh=EoU+k9AVK7Ww9pgbGt7cg474zYGlNCYURZ9d9YDTVHw=;
+ b=gFNM8xMkUbpc9oWzABYUnNg4h5UnU0lO5zh9GnUWoew1cH5LtWlmjjZuiS+tiXfbUwkqKT
+ UykCWNievWk75MlAPmvVQNSeom5pPogrDOMd+pTTW1MaH6aHAYSrnHQd+Egt8L29b+PTWo
+ LgpgptGF83VWNfBr7tyTDcAJthtzTdw=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1791977960;
+ s=susede2_ed25519; t=1791978737;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=GcAbWqRlu12eL/jqxhsthKN+x9XwSIOhwmm7H57wVcM=;
- b=hA2kUAoAqsvZb+b5ARytmQq3TDYUOUay0jn4h8onvP95IWPwJsQzPvm9SdLSZxQfGypexD
- e7+Wko4uQp8cAIBw==
+ bh=EoU+k9AVK7Ww9pgbGt7cg474zYGlNCYURZ9d9YDTVHw=;
+ b=+MCdNljZYuNxH+ccJsQsVXXRxIQ8cdp9hwv54PN4akJmlu5HAX1aWGEY+CuzCrVQ/8Wike
+ 7lLaFsK0M/fzWSDw==
 Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=hYw144Ds;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=hA2kUAoA
+	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1791977960; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1791978736; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=GcAbWqRlu12eL/jqxhsthKN+x9XwSIOhwmm7H57wVcM=;
- b=hYw144Ds8gu2a6kx8iQ9gzYFP70JJ9xq9nR+zYgPIobMSZUqnpBCEBl0UpMq0TiopmW3wO
- TFFiWhenti7PM1AuA4Rh7EkJbu74SoM4kVa05bK+g0J8goLJH1jSt6Q7xyxHx9QRjWIIu+
- WkR2TcitnnVI2LgSCNLTR8AQ4LOMD1A=
+ bh=EoU+k9AVK7Ww9pgbGt7cg474zYGlNCYURZ9d9YDTVHw=;
+ b=tvZa3ZvIuDEH6kKGj+NFaqltjx4rRyYjSS/8c7xMjv/Whgm4zNaCsgYvducFqJhiLrY/Yn
+ SiuUffsmR65trau0SzPMLZz7y1iTjNRAVCQNbgbvQU8qlTqQsnEt8ij28R49SuY+V5rCbe
+ 4y2hSalJEj6W3Pg0fIrxhTyfBa7Scxo=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1791977960;
+ s=susede2_ed25519; t=1791978736;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=GcAbWqRlu12eL/jqxhsthKN+x9XwSIOhwmm7H57wVcM=;
- b=hA2kUAoAqsvZb+b5ARytmQq3TDYUOUay0jn4h8onvP95IWPwJsQzPvm9SdLSZxQfGypexD
- e7+Wko4uQp8cAIBw==
+ bh=EoU+k9AVK7Ww9pgbGt7cg474zYGlNCYURZ9d9YDTVHw=;
+ b=dkqyjx0tbLdin+PfVh6PEFApVa6dRZzeQ6dE7Ak87rgXJsNKWm0QqTUZ5KErXFDMqF8F9t
+ XauoBU1qvHRVp8BA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0D4B9133F1;
- Wed, 14 Oct 2026 11:39:20 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 15940133F1;
+ Wed, 14 Oct 2026 11:52:16 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id CHKFKOdpz2qTQAAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Wed, 14 Oct 2026 11:39:20 +0000
-Date: Wed, 14 Oct 2026 13:39:34 +0200
+ by imap1.dmz-prg2.suse.org with ESMTPSA id jRc6OO9sz2qhTwAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Wed, 14 Oct 2026 11:52:16 +0000
+Date: Wed, 14 Oct 2026 13:52:30 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
 To: Andrea Cervesato <andrea.cervesato@suse.de>
-Message-ID: <as9p9q27TFl3-EQP@yuki.lan>
+Message-ID: <as9s_vmNm66HStbG@yuki.lan>
 References: <20260831-fchroot-v4-0-57cceb68f927@suse.com>
- <20260831-fchroot-v4-9-57cceb68f927@suse.com>
+ <20260831-fchroot-v4-12-57cceb68f927@suse.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20260831-fchroot-v4-9-57cceb68f927@suse.com>
-X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-4.51 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+In-Reply-To: <20260831-fchroot-v4-12-57cceb68f927@suse.com>
+X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  NEURAL_HAM_LONG(-1.00)[-1.000];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[];
- DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- RCVD_TLS_ALL(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- ARC_NA(0.00)[];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- MIME_TRACE(0.00)[0:+]; MISSING_XM_UA(0.00)[];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- RCPT_COUNT_TWO(0.00)[2]; TO_DN_ALL(0.00)[];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
+ MISSING_XM_UA(0.00)[]; RCPT_COUNT_TWO(0.00)[2];
+ RCVD_TLS_ALL(0.00)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:email,suse.cz:dkim,linux.it:url];
- DKIM_TRACE(0.00)[suse.cz:+]
-X-Rspamd-Queue-Id: 679362213E
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+ TO_DN_ALL(0.00)[]; FROM_HAS_DN(0.00)[]; MIME_TRACE(0.00)[0:+];
+ FROM_EQ_ENVFROM(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ RCVD_COUNT_TWO(0.00)[2];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email, suse.com:email,
+ imap1.dmz-prg2.suse.org:helo, linux.it:url]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH STAGING v4 09/16] fchroot06: test path walks under
- failfs root
+Subject: Re: [LTP] [PATCH STAGING v4 12/16] fchroot09: test setns escape
+ from failfs root
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -125,66 +113,58 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> Verify that once the root is in failfs only lookups anchored at a
-> file descriptor keep working: relative lookups from the working
-> directory and from a pre-opened directory fd succeed, absolute
-> symlinks fail with EOPNOTSUPP and ".." walks clamp at the top of the
-> mount tree, landing on the real root.
+> Verify that entering failfs with fchroot() is hard to undo: a process
+> inside counts as chrooted, so the remaining way out is a pre-opened
+> mount namespace fd. setns() into it resets both the root and the
+> working directory.
 > 
 > Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 > ---
->  runtest/staging                               |   1 +
->  testcases/kernel/syscalls/fchroot/.gitignore  |   1 +
->  testcases/kernel/syscalls/fchroot/fchroot06.c | 126 ++++++++++++++++++++++++++
->  3 files changed, 128 insertions(+)
+>  runtest/staging                               |  1 +
+>  testcases/kernel/syscalls/fchroot/.gitignore  |  1 +
+>  testcases/kernel/syscalls/fchroot/fchroot09.c | 86 +++++++++++++++++++++++++++
+>  3 files changed, 88 insertions(+)
 > 
 > diff --git a/runtest/staging b/runtest/staging
-> index 49f51d637..8b6b1ecd9 100644
+> index 8dfe95c4a..23f6c6a20 100644
 > --- a/runtest/staging
 > +++ b/runtest/staging
-> @@ -5,3 +5,4 @@ fchroot02 fchroot02
->  fchroot03 fchroot03
->  fchroot04 fchroot04
->  fchroot05 fchroot05
-> +fchroot06 fchroot06
+> @@ -8,3 +8,4 @@ fchroot05 fchroot05
+>  fchroot06 fchroot06
+>  fchroot07 fchroot07
+>  fchroot08 fchroot08
+> +fchroot09 fchroot09
 > diff --git a/testcases/kernel/syscalls/fchroot/.gitignore b/testcases/kernel/syscalls/fchroot/.gitignore
-> index 0697f10eb..12151270a 100644
+> index 0a2510d8a..b577da61f 100644
 > --- a/testcases/kernel/syscalls/fchroot/.gitignore
 > +++ b/testcases/kernel/syscalls/fchroot/.gitignore
-> @@ -3,3 +3,4 @@ fchroot02
->  fchroot03
->  fchroot04
->  fchroot05
-> +fchroot06
-> diff --git a/testcases/kernel/syscalls/fchroot/fchroot06.c b/testcases/kernel/syscalls/fchroot/fchroot06.c
+> @@ -7,3 +7,4 @@ fchroot06
+>  fchroot07
+>  fchroot07_child
+>  fchroot08
+> +fchroot09
+> diff --git a/testcases/kernel/syscalls/fchroot/fchroot09.c b/testcases/kernel/syscalls/fchroot/fchroot09.c
 > new file mode 100644
-> index 000000000..8f678344f
+> index 000000000..bc9324ceb
 > --- /dev/null
-> +++ b/testcases/kernel/syscalls/fchroot/fchroot06.c
-> @@ -0,0 +1,126 @@
+> +++ b/testcases/kernel/syscalls/fchroot/fchroot09.c
+> @@ -0,0 +1,86 @@
 > +// SPDX-License-Identifier: GPL-2.0-or-later
 > +/*
 > + * Copyright (C) 2026 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
 > + */
 > +
 > +/*\
-> + * Test path walks under the failfs root.
+> + * Test that :manpage:`setns(2)` escapes the failfs root.
 > + *
-> + * Once :manpage:`fchroot(2)` moved the process root into failfs, only
-> + * lookups anchored at a file descriptor keep working:
+> + * Entering failfs with :manpage:`fchroot(2)` is hard to undo: a process
+> + * inside counts as chrooted, so :manpage:`chroot(2)` and :manpage:`fchroot(2)`
+> + * back out require ``CAP_SYS_CHROOT``. The remaining way out is a pre-opened
+> + * mount namespace file descriptor: :manpage:`setns(2)` into it resets both the
+> + * root and the working directory.
 > + *
-> + * - lookups relative to the working directory, which stays in the real
-> + *   filesystem, keep working
-> + * - lookups anchored at a pre-opened directory fd keep working, including
-> + *   resolution of relative symlinks
-> + * - absolute symlinks restart the walk at the failfs root and fail with
-> + *   ``EOPNOTSUPP``
-> + * - ".." walks clamp at the top of the mount tree, not at the failfs
-> + *   root, so walking up from the working directory lands on the real
-> + *   root
-> + *
-> + * Root is required because entering failfs with the ``FD_FAILFS_ROOT``
-> + * sentinel requires ``CAP_SYS_CHROOT``.
+> + * Root is required because entering failfs requires ``CAP_SYS_CHROOT`` and
+> + * :manpage:`setns(2)` into the mount namespace requires ``CAP_SYS_ADMIN``.
 > + *
 > + * The test runs in a forked child so the root of the parent process is
 > + * left untouched.
@@ -195,13 +175,11 @@ Hi!
 > +#include <sys/stat.h>
 > +#include "tst_test.h"
 > +#include "lapi/fcntl.h"
+> +#include "lapi/sched.h"
+> +#include "lapi/setns.h"
 > +#include "lapi/syscalls.h"
-> +#include "tst_safe_file_at.h"
 > +
-> +#define RELDIR "rel"
 > +#define ABSDIR "abs"
-> +
-> +static char upwards[PATH_MAX];
 > +
 > +static void run(void)
 > +{
@@ -209,46 +187,35 @@ Hi!
 > +		return;
 > +
 > +	struct stat realroot, st;
-> +	int dfd, fd;
+> +	int nsfd;
 > +
 > +	SAFE_STAT("/", &realroot);
-> +	dfd = SAFE_OPEN(".", O_RDONLY | O_DIRECTORY);
+> +	nsfd = SAFE_OPEN("/proc/self/ns/mnt", O_RDONLY);
 > +
 > +	TST_EXP_PASS(tst_syscall(__NR_fchroot, FD_FAILFS_ROOT, 0),
 > +		"fchroot() with the FD_FAILFS_ROOT sentinel");
 > +
-> +	fd = TST_EXP_FD(openat(AT_FDCWD, ".", O_RDONLY | O_DIRECTORY));
-> +	if (fd != -1)
-> +		SAFE_CLOSE(fd);
+> +	TST_EXP_FAIL2(open(ABSDIR, O_PATH), EOPNOTSUPP,
+> +		"absolute lookup after entering failfs");
 > +
-> +	fd = TST_EXP_FD(openat(dfd, "canary", O_WRONLY | O_CREAT, 0600));
-> +	if (fd != -1) {
-> +		SAFE_WRITE(SAFE_WRITE_ALL, fd, "x", 1);
-> +		SAFE_CLOSE(fd);
-> +	}
+> +	TST_EXP_PASS(setns(nsfd, CLONE_NEWNS),
+> +		"setns() back into the mount namespace");
 > +
-> +	fd = TST_EXP_FD(openat(dfd, RELDIR, O_RDONLY));
-> +	if (fd != -1)
-> +		SAFE_CLOSE(fd);
+> +	SAFE_CLOSE(nsfd);
 > +
-> +	TST_EXP_FAIL2(openat(dfd, ABSDIR, O_RDONLY), EOPNOTSUPP,
-> +		"resolution of an absolute symlink");
+> +	SAFE_STAT("/", &st);
+> +	TST_EXP_EXPR(st.st_dev == realroot.st_dev &&
+> +		st.st_ino == realroot.st_ino,
+> +		"root restored after setns()");
 > +
-> +	fd = TST_EXP_FD(openat(AT_FDCWD, upwards, O_PATH));
-> +	if (fd != -1) {
-> +		SAFE_FSTAT(fd, &st);
-> +		SAFE_CLOSE(fd);
-> +
-> +		TST_EXP_EXPR(st.st_dev == realroot.st_dev &&
-> +			st.st_ino == realroot.st_ino,
-> +			"'..' walk clamps at the top of the mount tree");
-> +	}
-> +
-> +	SAFE_CLOSE(dfd);
+> +	SAFE_STAT(".", &st);
+> +	TST_EXP_EXPR(st.st_dev == realroot.st_dev &&
+> +		st.st_ino == realroot.st_ino,
+> +		"working directory restored after setns()");
 > +
 > +	exit(0);
 
-Here as well, no need for the exit(0);
+Here as well, no need for the exit.
 
 > +}
 > +
@@ -256,53 +223,28 @@ Here as well, no need for the exit(0);
 > +{
 > +	char *tmpdir;
 > +	char abs_path[PATH_MAX];
-> +	struct stat root_st, st;
-> +	int fd, off;
 > +
 > +	tmpdir = tst_tmpdir_path();
 > +	snprintf(abs_path, sizeof(abs_path), "%s/%s", tmpdir, "target");
 > +
 > +	SAFE_TOUCH("target", 0644, NULL);
-> +	SAFE_SYMLINK("target", RELDIR);
 > +	SAFE_SYMLINK(abs_path, ABSDIR);
-> +
-> +	SAFE_STAT("/", &root_st);
-> +
-> +	off = snprintf(upwards, sizeof(upwards), "..");
-> +	while (1) {
-> +		fd = SAFE_OPENAT(AT_FDCWD, upwards, O_PATH);
-> +		SAFE_FSTAT(fd, &st);
-> +		SAFE_CLOSE(fd);
 
-Why not just SAFE_FSTAT(upwards, &st) ?
+Here as well, why are all the absolute directories symlinks? It makes
+sense to have a test symlink to absolute directory restarts the lookup
+and fails, but why don't we use just abs_path in most of the tests?
 
-> +		if (st.st_dev == root_st.st_dev && st.st_ino == root_st.st_ino)
-> +			break;
-> +
-> +		if ((size_t)off + sizeof("/..") > sizeof(upwards))
-> +			tst_brk(TBROK, "Path to root too long");
-> +
-> +		off += snprintf(upwards + off, sizeof(upwards) - off, "/..");
+I suppose that we can even open just "/" with O_PATH to check if the
+failfs root is active or not...
 
-This can probably be simplified to:
-
-	strcpy(upwards + off, "../");
-	off += 3;
-
-The string is constant and we already checked that it fits, there is no
-need to use the big hammer (snprintf).
-
-And the same for the initial snprintf(), just strcpy(upwards, ".."); off = 2;
-
-> +	}
 > +}
 > +
 > +static struct tst_test test = {
-> +	.setup = setup,
 > +	.test_all = run,
+> +	.setup = setup,
 > +	.needs_root = 1,
-> +	.needs_tmpdir = 1,
 > +	.forks_child = 1,
+> +	.needs_tmpdir = 1,
 > +};
 > 
 > -- 
