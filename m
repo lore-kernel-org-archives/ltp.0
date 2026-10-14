@@ -4,101 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9C821CC6B29
-	for <ltp@archiver.kernel.org>; Wed, 14 Oct 2026 07:57:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C2DECCC6B27
+	for <ltp@archiver.kernel.org>; Wed, 14 Oct 2026 08:00:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1791964818; h=message-id :
+ to : in-reply-to : date : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : cc : mime-version : content-type :
+ content-transfer-encoding : sender : from;
+ bh=34fdjgQNrJAJRUGIWtXYUqE5GgrCLEsJhJtSlI/xQdY=;
+ b=QbbG3bGkY9F+fZYok21BzmvlAt74jSUD52zfmv/LPuig4Wn/Mm+UPvrKwsuIaH53b3n7I
+ db2U5IJH8niMnrLWRkdxXvWFpZlz99pz1id6L7soPnhr5jgniI6h+/vyKbc3L2rV20p2Opz
+ /7sVToV/PtnUnC4H47BQuFhA5D6/aqE=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 41C353E4E30
-	for <ltp@archiver.kernel.org>; Wed, 14 Oct 2026 09:57:16 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 360653E6A0C
+	for <ltp@archiver.kernel.org>; Wed, 14 Oct 2026 10:00:18 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id BE3303E2455
- for <ltp@lists.linux.it>; Wed, 14 Oct 2026 09:57:00 +0200 (CEST)
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
- [148.163.158.5])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 6028F3E2B3B
+ for <ltp@lists.linux.it>; Wed, 14 Oct 2026 09:59:57 +0200 (CEST)
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com
+ [IPv6:2a00:1450:4864:20::32d])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 343EE600A6D
- for <ltp@lists.linux.it>; Wed, 14 Oct 2026 09:56:43 +0200 (CEST)
-Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id
- 69DLjISj1932812
- for <ltp@lists.linux.it>; Wed, 14 Oct 2026 07:56:24 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
- :content-transfer-encoding:date:from:message-id:mime-version
- :subject:to; s=pp1; bh=pjxVEB64N7wRBcuY23FQ0GOPytTaTFK9eiLh5/IDY
- bo=; b=d/9exUHowQr9tnXRs4jNqm8IoTpFV35OrbuGA6za13dGrGsVnG/9sPn4k
- ggKBIHQE9m2/y2abPSjCSaEVljIzqIv853eMuNDCUiINqZGb6mFEmXVH6WBVAKgn
- 1JuvejjLLJNY8cNpiHwc4JjJ7ZHW/UrBBZbq6qNcOQIATIdJnJZZouwweUCp1xuN
- tvXFAJB0P/tXoF+k/7t03zCZamVrJ6o+r6eWG+wmpgAVq1V2g9SfuKvgXD1p0UeS
- NjaybcgEB6iuiSK7eWTABoM289feN0trolnwKBVLcd7oD0z1/YRrxWlEPQE6iAT2
- Fd9wlAgjIlxKZF9gbE2PhWyMkj/dQ==
-Received: from ppma21.wdc07v.mail.ibm.com
- (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4h7e1wakf3-1
- (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT)
- for <ltp@lists.linux.it>; Wed, 14 Oct 2026 07:56:24 +0000 (GMT)
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
- by ppma21.wdc07v.mail.ibm.com (8.18.1.11/8.18.1.11) with ESMTP id
- 69E6Rkcb3211941
- for <ltp@lists.linux.it>; Wed, 14 Oct 2026 07:56:24 GMT
-Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
- by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4h9q2ykttn-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
- for <ltp@lists.linux.it>; Wed, 14 Oct 2026 07:56:23 +0000 (GMT)
-Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com
- [10.20.54.101])
- by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 69E7uJPS50266526
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Wed, 14 Oct 2026 07:56:19 GMT
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id EFD512004E;
- Wed, 14 Oct 2026 07:56:18 +0000 (GMT)
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id DA60A2004B;
- Wed, 14 Oct 2026 07:56:18 +0000 (GMT)
-Received: from b315lp15.lnxne.boe (unknown [9.87.84.240])
- by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
- Wed, 14 Oct 2026 07:56:18 +0000 (GMT)
-From: Ramesh Chhetri <rameshch@linux.ibm.com>
-To: ltp@lists.linux.it
-Date: Wed, 14 Oct 2026 09:56:16 +0200
-Message-ID: <20261014075616.5050-1-rameshch@linux.ibm.com>
-X-Mailer: git-send-email 2.56.0
-MIME-Version: 1.0
-X-TM-AS-GCONF: 00
-X-Proofpoint-Spam-Info: AW1haW4tMjYxMDE0MDAzMCBTYWx0ZWRfX8eBGhpfpHfz7
- rjoFoHuhLLU5rvQ5BzdClK3qznIJOkFlvKe4BJ4Cwn74aL60Q+5bTdHWfvYaRFh53l3s0K6DOdT
- hy74fM+hV8yAvaq6phnH1ZaU/RUYh44=
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYxMDE0MDAzMCBTYWx0ZWRfX3/Lo2EgJwqAa
- AdHCejELZBBITtMP1sgL+iGvi+OwF9/K2ZQ/rYJuo3zA1VSYiL/sWWBhwx2+uYhzN25J27WQ35E
- 8xSU7Im6iiXU8IBgY2idsUcvHHeTe7eWcGvnot1hjP97t8cgWF10lF4EviftkAt6irHOKkL0GRX
- yrTjeAF3fgGtlPzDfiLBRmiavBqP8aPcLIy8Sue71mP7Ic8Vr1k0W03cVPPdtDl9uumWXWTc1oj
- 1szwe1M5huQYsnz+4ifhLmssJaBGbKxETgAE0gNIH6ZaG7ePn8/EENt3zHp/ENvzO6xlWj7ltNg
- IJ31AO7Jfp8OFDbGaN6UWyGbg3UEc7cVJe4gOR2qgLFahwLXcqFWAfsq4Bd2u4X2qfBsarYz8yg
- Oe1aOfEBGGZwmmDd2MzIrj/vW1gVpDSuhDODu8zEjBwDjCY0Y6OB8pfR5fAZvJnvvnRqIXNXnRy
- h/BPXgBLTHm4m48IrIg==
-X-Authority-Analysis: v=2.4 cv=E6pYNqdl c=1 sm=1 tr=0 ts=6acf35a8 cx=c_pps
- a=GFwsV6G8L6GxiO2Y/PsHdQ==:117 a=GFwsV6G8L6GxiO2Y/PsHdQ==:17
- a=660iZSQnnn4A:10 a=VkNPw1HP01LnGYTKEx00:22 a=RnoormkPH1_aCDwRdu11:22
- a=RzCfie-kr_QcCd8fBx8p:22 a=VnNF1IyMAAAA:8 a=i9FlshoGAPESm_VBR0MA:9
-X-Proofpoint-ORIG-GUID: KZSTH3og6OjmVP9HtXgJSQX45YxsovdW
-X-Proofpoint-GUID: KZSTH3og6OjmVP9HtXgJSQX45YxsovdW
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1176,Hydra:6.1.134,FMLib:17.12.100.49
- definitions=2026-10-13_01,2026-10-09_01,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- impostorscore=0 phishscore=0 clxscore=1011 bulkscore=0 priorityscore=1501
- spamscore=0 adultscore=0 suspectscore=0 malwarescore=0 lowpriorityscore=0
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.22.0-2610080000 definitions=main-2610140030
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id E87E91000A30
+ for <ltp@lists.linux.it>; Wed, 14 Oct 2026 09:53:24 +0200 (CEST)
+Received: by mail-wm1-x32d.google.com with SMTP id
+ 5b1f17b1804b1-4a0213948d3so22945915e9.2
+ for <ltp@lists.linux.it>; Wed, 14 Oct 2026 00:53:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1791964404; x=1792569204; darn=lists.linux.it;
+ h=date:content-transfer-encoding:content-type:in-reply-to:cc:to
+ :message-id:subject:from:from:to:cc:subject:date:message-id:reply-to
+ :content-type; bh=kuPSF5DA5kUKtzsujCUy981zMHn6OKsgw6LQ7prm57Q=;
+ b=U+DSPruQNpAs8ul7gBiuN9JjSEtGDY1rVzoTWNy0tYdr/GJGzlhd2M5eWSYvbjoMfb
+ VbvcGL8QG9k3d+efYZzg2uLGx9s5LQmDuW/cUpD65dRopEYvqfbEMLqTMXKzfUWm/NDM
+ UxfyX7zkFobReNxhJj0qCSVUsbBi3MDiQNTp9p5qLvrcz7xlG48PbgU6oibm7b38dHrM
+ n74cWeJ6YC91EHMkPaIDDMtCNZxW4yPlSQ1y8GLd3RKe95uckW3KXFOKT/ay3zGXWCK/
+ 00PIue1aq9DyeJPcJkG1xfwO6T1dQVmUzxS+Ad9jj+zn4Fo8h8yDNaiohzz+bAkFqFvz
+ omrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20260707; t=1791964404; x=1792569204;
+ h=date:content-transfer-encoding:content-type:in-reply-to:cc:to
+ :message-id:subject:from:x-gm-gg:x-gm-message-state:from:to:cc
+ :subject:date:message-id:reply-to:content-type;
+ bh=kuPSF5DA5kUKtzsujCUy981zMHn6OKsgw6LQ7prm57Q=;
+ b=JbjQOeMJ442QmItcjnCrk020CPVlEIArA6MvoBv61Bo0yMS3qU6Jck64n6Igoop2T3
+ 2DEQSLmmdRRYajTt3cUt3p9oKPWiy9sVMBrqnD/PLAdssnTVcmeQH39mzYlTOdPBBWxe
+ axKwgJ0G4c6NXBDJULkBXp+ulYW2InM9SRMFnm5Wc0TydPT5dIbkmP9AH2lIlO3zeLj4
+ D4JomMDx5+ItsRErDywplcYkij5fT3NyTQvCS863tqathHt2ectF6KeY5sJWFbXynsYI
+ FxAAuydP2Ct7/3HVUYp9QBXlDyw8RDRubCFuS0Kpk7H1Tm808yANMaXDJo5tMata6e99
+ DUzA==
+X-Gm-Message-State: AFq9FYKi3+Bsf5lD/hoYOVknltU+gZSnxrmIQ7lwRWs6ePjdnkp7wM9f
+ DgeCElwik4U7yQhWlRrnCp42GTdKQ2nXGiq3nrtv8QdQrIvw7paSJw/g0t7FXIdebHZJRtT1Eci
+ 9rMoXWgKBGA==
+X-Gm-Gg: AYBFou2/Z7AxtZk1nkeI1JHBpS/NBKeKMtMpL4VTcIICOeNANJhiZDjHjZ04j4SO5vW
+ IT5naw2bHGXgqQ0e+neiZUOklczQoLdYEsC/yO5X79doCLKRWAmXbFKRxxlZKKi4D7gcL3bZ8ef
+ PgM+SVW2y8/qMlSsjDTik1RkgWRwXLFnIfDvDxTrSObO97yW7kJWHiMIc7aP5OMIpkw6JTNKn5M
+ 3zNEhx4yBoP4w52b3iIpQpkzPuUK1nbnQykX2qx7qGKoU2JwOTcuXtWynkp8BIQzqwnS01BImOc
+ oAkF4m1M9AryUntpqysBUtqNjwaRx57qbsoCQo/3xEsoowOhe+3EFeo2e9ouxy3xNrUtCGeDXDg
+ AuguuraKpXmfv9J+2WtRQP3CiavDmCSgds7DNgByf1/nFYP6rSqG2TP/neHr6EXdVx4YsNfJZii
+ /Wu5cfnOaB3ekbCXSrY5wkbDHV6ALj9Akkwp+Q0Pc8RriBy+lt72xrDznqMPKMWMSFEcUr1WXWd
+ nZyVCgC0yTZkO6k5OGCeISF7z10/WDKXO9dD6S19wRt7O5NAvmHzam3IB/pJsgA7o5dRt7qwEuB
+ fA==
+X-Received: by 2002:a05:600c:3554:b0:4a0:1b14:e283 with SMTP id
+ 5b1f17b1804b1-4a18e43a1cemr299777955e9.1.1791964404218; 
+ Wed, 14 Oct 2026 00:53:24 -0700 (PDT)
+Received: from localhost.localdomain
+ (p200300ef2f310000926bd7eee21e6eee.dip0.t-ipconnect.de.
+ [2003:ef:2f31:0:926b:d7ee:e21e:6eee])
+ by smtp.gmail.com with ESMTPSA id
+ 5b1f17b1804b1-4a19471edd5sm564066795e9.11.2026.10.14.00.53.23
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 14 Oct 2026 00:53:23 -0700 (PDT)
+Message-ID: <ybQLfGBdMSwtlamvp5ZZ8ggOFTmNMKDRQSzK@localhost.localdomain>
+To: "Darren Chang" <chihsheng@google.com>
+In-Reply-To: <20261014060212.1081388-1-chihsheng@google.com>
+Date: Wed, 14 Oct 2026 07:53:23 +0000
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v1] syscalls/connect02: Handle IPV6_ADDRFORM removal
- and listen() EINVAL
+Subject: Re: [LTP] [PATCH] process_vm_writev02: Fix stack overflow with
+ large buffer size
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -110,68 +99,21 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: rameshch@linux.ibm.com
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Cc: ltp@lists.linux.it
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Upstream kernel commit 31c5ea8a3296 ("ipv6: Remove IPV6_ADDRFORM.") completely
-removed IPV6_ADDRFORM socket option support from the Linux kernel, causing
-setsockopt(SOL_IPV6, IPV6_ADDRFORM, ...) to return -ENOPROTOOPT.
+Merged, Thanks!
 
-In addition, commit 8cc3aef0cb19 ("tcp: Do not allow buggy transitions between
-ehash and lhash2.") intentionally disallows converting an unhashed established
-socket into a listening socket by returning -EINVAL from listen().
-
-Update connect02 to:
-1. Skip the test with TCONF when IPV6_ADDRFORM returns ENOPROTOOPT or EOPNOTSUPP.
-2. Accept EINVAL from listen() on kernels with the TCP transition restriction.
-
-Signed-off-by: Ramesh Chhetri <rameshch@linux.ibm.com>
----
- testcases/kernel/syscalls/connect/connect02.c | 18 +++++++++++++++++-
- 1 file changed, 17 insertions(+), 1 deletion(-)
-
-diff --git a/testcases/kernel/syscalls/connect/connect02.c b/testcases/kernel/syscalls/connect/connect02.c
-index 079bc5bca..0b7e7df90 100644
---- a/testcases/kernel/syscalls/connect/connect02.c
-+++ b/testcases/kernel/syscalls/connect/connect02.c
-@@ -91,6 +91,14 @@ static void run(void)
- 			sizeof(optval)));
- 
- 		if (TST_RET == -1) {
-+			SAFE_CLOSE(confd1);
-+			SAFE_CLOSE(fd);
-+
-+			if (TST_ERR == ENOPROTOOPT || TST_ERR == EOPNOTSUPP) {
-+				tst_brk(TCONF | TTERRNO,
-+					"IPV6_ADDRFORM is removed/unsupported by this kernel");
-+			}
-+
- 			tst_res(TFAIL | TTERRNO,
- 				"setsockopt(IPV6_ADDRFORM) failed");
- 			return;
-@@ -104,7 +112,15 @@ static void run(void)
- 			sizeof(reset_addr));
- 		SAFE_BIND(fd, (struct sockaddr *)&bind_addr4,
- 			sizeof(bind_addr4));
--		SAFE_LISTEN(fd, 5);
-+		TEST(listen(fd, 5));
-+		if (TST_RET == -1) {
-+			if (TST_ERR == EINVAL) {
-+				SAFE_CLOSE(fd);
-+				SAFE_CLOSE(confd1);
-+				continue;
-+			}
-+			tst_brk(TBROK | TTERRNO, "listen(fd,5) failed unexpectedly");
-+		}
- 
- 		addrlen = tst_get_connect_address(fd, &client_addr2);
- 		confd2 = SAFE_SOCKET(AF_INET, SOCK_STREAM, IPPROTO_TCP);
--- 
-2.55.0
-
+--
+Andrea Cervesato
+SUSE QE Automation Engineer Linux
+andrea.cervesato@suse.com
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
