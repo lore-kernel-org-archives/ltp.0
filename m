@@ -4,89 +4,102 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1FE07CC6B1A
-	for <ltp@archiver.kernel.org>; Wed, 14 Oct 2026 08:16:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1791965810; h=message-id :
- to : in-reply-to : date : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : cc : mime-version : content-type :
- content-transfer-encoding : sender : from;
- bh=89cDejn+sss2+5/wT3qL/KJ2fCW/97PKWmHTbuusgT4=;
- b=dYT0DV1EE7ckjhvOka1oplg+HweMmelOsLoluwERUbGkyipQzi501v8NuM32jW0L53lsB
- fGntgA6RkXLpYn5wZiQWjD0HfqKCBiq2M9f7zF/ddnKwLxjPyjrxp7UjRYckSyMn4pRnTeu
- 86JIokikkXJ4icp1Pd/UGqut6VGzFrs=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 660E9CC6B1A
+	for <ltp@archiver.kernel.org>; Wed, 14 Oct 2026 08:21:41 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6267D3E559C
-	for <ltp@archiver.kernel.org>; Wed, 14 Oct 2026 10:16:50 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id DE23C3E4DB8
+	for <ltp@archiver.kernel.org>; Wed, 14 Oct 2026 10:21:39 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B89093E2AFC
- for <ltp@lists.linux.it>; Wed, 14 Oct 2026 10:16:30 +0200 (CEST)
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com
- [IPv6:2a00:1450:4864:20::635])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 9130A3CD546
+ for <ltp@lists.linux.it>; Wed, 14 Oct 2026 10:21:24 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 03AE0600651
- for <ltp@lists.linux.it>; Wed, 14 Oct 2026 10:16:29 +0200 (CEST)
-Received: by mail-ej1-x635.google.com with SMTP id
- a640c23a62f3a-c2acc1e170cso643932166b.1
- for <ltp@lists.linux.it>; Wed, 14 Oct 2026 01:16:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1791965789; x=1792570589; darn=lists.linux.it;
- h=date:content-transfer-encoding:content-type:in-reply-to:cc:to
- :message-id:subject:from:from:to:cc:subject:date:message-id:reply-to
- :content-type; bh=qqGEG2G08rDX+mEGOkjDBemkmhuFzJed13QwYleMORs=;
- b=A2GNTEEFSx1HTRKUh6nK7KiSb8wDDSWqKswoYntafl9LsN9v1U4NyV2KFMUXPpdtDC
- /0MLvoAnFXk65aEg/jhweL58PHJSErQhw92adhoIM/oXS0mYkva+QdRYvzjvVndnjYeW
- mm5L3JUB4yljnsXACbH4vcXxMS52bkVAGchmhpuOtYZUShq62kvoKkoB2N+KnAYHz2Vk
- 4vIeHmRgGtiMZ+B89njMvJImlCO3VUFvakQ8rK2UTVCV9ISFeLI/oDDYGTbrAOjyu46M
- SAfe0g00VjFoHUtKDVcEiC+kPN4gAjstbdb0PpgJc3S2ETIPwCDUwU/K81J3VVHeYYV+
- ksFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20260707; t=1791965789; x=1792570589;
- h=date:content-transfer-encoding:content-type:in-reply-to:cc:to
- :message-id:subject:from:x-gm-gg:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to:content-type;
- bh=qqGEG2G08rDX+mEGOkjDBemkmhuFzJed13QwYleMORs=;
- b=0YQQ+NXkqY4U6xF2H4W/gr6bXpa+HQBDeUhDSY1qZvUW0OhBXn6tEWymVWmL734AJp
- Iu1bIIA2fqIRjfdqlmAUjGB1Wg/aRjPWK4axRxp5eOKMWFxMSmZcwXd3QcCuvVMNwkmp
- +xT0m0W1yw478lzEFhFx/ZRleVInCq0qvsW9vcAcTvQPyO/jN6dYAZjDU7Cug2ofoAH7
- vHJmX4qtv/1otQm8I/4W+gkl2mjocmCCZIo8V7lT/uaaXKGvLs1UcewHNmPNO7mFqU5v
- /ZMi5ww70JN0BIuR+5EiWf8vuRF9ci1K1rg40fLjC+9OH/V0J4N468vgNuROctPQemcw
- B9xw==
-X-Gm-Message-State: AFq9FYKzpqPk6ZeebAAc3aj40l3elW1XcUSR1kTVdbC6YL/RjVxlexh0
- AwNFgSXSt+579L8KXkw0XTJU2t248WW1fjdBQ6Fx9lhwOHVJrc7kTwFf1ccrt08DodiHcI8Ghmp
- Nj8xqYE14Jg==
-X-Gm-Gg: AYBFou3lcuk65VZlvspsk4s3oaioLVXVhTtFxJOHFy/9E6TfPF+95QIaqCV86sUjp+o
- +LtcKpkxQ0MPaI3Qho7UrCF6aHzyotpVcEDpEVAKDl2dlE3nZN8o0qdCfXngyGeVWfAjwIOishu
- XMuGbTpPLNi9GEfzq9b2ao3eDS/dh9a2mWqXM+hHLfM2G8kxizxlksFqxDiFljs/1H8RJaidFCt
- oliVhdz+U1X5Igtcm3ksooOqHSxN875klz1cWHMaanYoU65i4qMG2znnWR1KmYXRVkz8DsCyH9F
- u7NeQshlDjNtd4w+zESYtn1iA9VAcV251VyIO3bmTiCAC5B/qfIkgesquuD7G50quceoVzoiwE2
- UErm7+xTkNs9r9aJfAF2a4eNxZIHsCdrh5APCDGUd6PdLWNVwt3zO9ox63qfzzlNG6yOQIBWpva
- gP2v3+2rGfw8Em0O2nX1GV/WEERTEUqScLglpUNWKWRQhNZN3c5Xg2lKXfRwqQnM9I6aGhuz+vE
- KpWHSrPdJhY7GmftaxAo6Epm4IKvZyDW223shgKpzrAJfl+xqZtWAziblqHB+zCWZOAe5nX6oXq
- 7w==
-X-Received: by 2002:a05:600c:64c7:b0:49f:ff32:803c with SMTP id
- 5b1f17b1804b1-4a18e49c536mr284637345e9.16.1791963802919; 
- Wed, 14 Oct 2026 00:43:22 -0700 (PDT)
-Received: from localhost.localdomain
- (p200300ef2f310000926bd7eee21e6eee.dip0.t-ipconnect.de.
- [2003:ef:2f31:0:926b:d7ee:e21e:6eee])
- by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-4a19f249692sm413777345e9.3.2026.10.14.00.43.22
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 14 Oct 2026 00:43:22 -0700 (PDT)
-Message-ID: <zEv6AUi5JUa4zZxBhpChWHtlkQSFX3ZQ9BPa@localhost.localdomain>
-To: "Florian Schmaus" <florian.schmaus@codasip.com>
-In-Reply-To: <20261014071734.450957-1-florian.schmaus@codasip.com>
-Date: Wed, 14 Oct 2026 07:43:22 +0000
-Subject: Re: [LTP] [PATCH] keyctl05: Use DNS_LOOKUP_GOOD to avoid
- false-negatives due to EKEYEXPIRED
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id DF5F3200CEE
+ for <ltp@lists.linux.it>; Wed, 14 Oct 2026 10:21:23 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 949D622167;
+ Wed, 14 Oct 2026 08:21:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1791966081; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=xfv8/spRTkryYFWiovX2zAL+AOfyvIQT1R3JyUVHS3c=;
+ b=f+NANs+54Ne2PQeZH/lvj55UM1JnLs+71j2T75BKeMicuhxLyENfiNXLm4yf27LclsfKyG
+ mfIMx1jo5U6NO0NN1NFORvfk8xkixToZ46gra1jq6/C9IIVNUvgsHg3FkAajyN+2LZS5jg
+ Eo0kZZH4cixruFgpIcLHi4ViALFK6Ok=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1791966081;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=xfv8/spRTkryYFWiovX2zAL+AOfyvIQT1R3JyUVHS3c=;
+ b=oa6chNeAmrZRZK/8++bHoWW8ykKauhtPAH8JIXZhhJlqHpbpVy5ftJHOYrkt5tfhlDTZQI
+ W9+Mk5LBVLYIcfAQ==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1791966081; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=xfv8/spRTkryYFWiovX2zAL+AOfyvIQT1R3JyUVHS3c=;
+ b=f+NANs+54Ne2PQeZH/lvj55UM1JnLs+71j2T75BKeMicuhxLyENfiNXLm4yf27LclsfKyG
+ mfIMx1jo5U6NO0NN1NFORvfk8xkixToZ46gra1jq6/C9IIVNUvgsHg3FkAajyN+2LZS5jg
+ Eo0kZZH4cixruFgpIcLHi4ViALFK6Ok=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1791966081;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=xfv8/spRTkryYFWiovX2zAL+AOfyvIQT1R3JyUVHS3c=;
+ b=oa6chNeAmrZRZK/8++bHoWW8ykKauhtPAH8JIXZhhJlqHpbpVy5ftJHOYrkt5tfhlDTZQI
+ W9+Mk5LBVLYIcfAQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 34A231368E;
+ Wed, 14 Oct 2026 08:21:21 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id L38nM4A7z2rQYAAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>); Wed, 14 Oct 2026 08:21:21 +0000
+From: Andrea Cervesato <andrea.cervesato@suse.de>
+Date: Wed, 14 Oct 2026 10:21:20 +0200
+MIME-Version: 1.0
+Message-Id: <20261014-fix_process_vm_writev_permissions-v1-1-6affee2da859@suse.com>
+X-B4-Tracking: v=1; b=H4sIAH87z2oC/yWNwQ6CMBAFf4Xs2SaUaCP+ijENlFddE6DZxWpC+
+ HeLHucwMysphKF0qVYSZFaepwL2UFF4dNMdhofC1NSNs7U9msgfn2QOUPV59G/hBdknyMi6y2p
+ cDJ07teehjT2VThIU6fe43v6sr/6JsOxh2rYvosYy9oUAAAA=
+X-Change-ID: 20261014-fix_process_vm_writev_permissions-6fca6598d9fb
+To: Linux Test Project <ltp@lists.linux.it>
+X-Mailer: b4 0.16.0
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1791966080; l=3672;
+ i=andrea.cervesato@suse.com; s=20251210; h=from:subject:message-id;
+ bh=4AUJWTyc7KbCcfxwFKwTM88eysOx3eBD6jMVaakiOwE=;
+ b=QVMoGNBwzbAB9cCohPi8OpA+DFxeS7RDBSEv+QO289x92BX0jDhEwjuOSJXmx7wIBM8aSTNLx
+ qoYSbisTpYaDaA0HJ9vkV9DM5aRLivuHv+xSRkFYvws4r6mv06BDW8f
+X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
+ pk=zKY+6GCauOiuHNZ//d8PQ/UL4jFCTKbXrzXAOQSLevI=
+X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ TO_DN_ALL(0.00)[];
+ DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ FROM_HAS_DN(0.00)[]; ARC_NA(0.00)[]; RCPT_COUNT_TWO(0.00)[2];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_TLS_ALL(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; MIME_TRACE(0.00)[0:+];
+ FROM_EQ_ENVFROM(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,imap1.dmz-prg2.suse.org:helo]
+Subject: [LTP] [PATCH] syscalls/cma: Require root for process_vm tests
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -98,59 +111,110 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Cc: ltp@lists.linux.it
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Florian,
+From: Andrea Cervesato <andrea.cervesato@suse.com>
 
+When security modules like Yama LSM are active (e.g. ptrace_scope >= 1),
+process_vm_readv() and process_vm_writev() fail with EPERM for
+unprivileged sibling processes due to missing CAP_SYS_PTRACE capability.
 
-> In keyctl05, test_update_nonupdatable() verifies that
-> keyctl(KEYCTL_UPDATE) fails with EOPNOTSUPP on key types without an
-> ->update() method (such as 'dns_resolver').
-> 
-> Commit 4e9400050683 ("keyctl05: Improve the dns_res_payload for boundary
-> testing") changed the dns_res_payload to a 6-byte V1 server-list header:
->     { 0x00, 0x00, 0x01, 0xff, 0x00, 0x00 }
-> 
-> Byte 4 represents the lookup status (enum dns_lookup_status). Setting it
-> to 0x00 (DNS_LOOKUP_NOT_DONE) causes the kernel's dns_resolver_preparse()
-> (net/dns_resolver/dns_key.c) to treat it as a failed lookup:
->     if ((v1->status != DNS_LOOKUP_GOOD &&
->          v1->status != DNS_LOOKUP_GOOD_WITH_BAD)) {
->         if (prep->expiry == TIME64_MAX)
->             prep->expiry = ktime_get_real_seconds() + 1;
->     }
-> 
-> This sets an aggressive 1-second expiration on the key. On slower
-> environments, such as QEMU, more than 1 second may elapse between
-> add_key() and keyctl(KEYCTL_UPDATE), causing the update call in
-> test_update_nonupdatable() to fail with EKEYEXPIRED (127) rather than
-> EOPNOTSUPP:
->     keyctl05.c:143: TFAIL: updating 'dns_resolver' key unexpectedly failed: EKEYEXPIRED (127)
-> 
-> Set status (byte 4) in dns_res_payload to 0x01 (DNS_LOOKUP_GOOD) so
-> that the kernel does not set a 1-second negative expiry, while still
-> retaining the 6-byte boundary payload check for commit acc657692aed.
+Require root so tests can reliably execute across different security
+configurations.
 
-Good catch. I'm wondering if it makes sense to use KEYCTL_SET_TIMEOUT in
-this case, but I guess we can rely on the test timeout in this case.
+Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+---
+The cma testing suite started to fail on modern systems enabling YAMA.
+Unfortunately, using CAP_PTRACE capability for users is not enough to
+avoid an EPERM. For this reason, it's better to require root and fix the
+whole suite in one shot.
+---
+ testcases/kernel/syscalls/cma/process_vm_readv02.c  | 5 +++++
+ testcases/kernel/syscalls/cma/process_vm_readv03.c  | 5 +++++
+ testcases/kernel/syscalls/cma/process_vm_writev02.c | 5 +++++
+ 3 files changed, 15 insertions(+)
 
-did you explore this option already?
+diff --git a/testcases/kernel/syscalls/cma/process_vm_readv02.c b/testcases/kernel/syscalls/cma/process_vm_readv02.c
+index 1e2ac38fa..d985bdad9 100644
+--- a/testcases/kernel/syscalls/cma/process_vm_readv02.c
++++ b/testcases/kernel/syscalls/cma/process_vm_readv02.c
+@@ -10,6 +10,10 @@
+  * then the other one calls process_vm_readv and reads from the same
+  * memory location, it then verifies if process_vm_readv returns
+  * correct data.
++ *
++ * Requires root for ``CAP_SYS_PTRACE`` to access the address space of
++ * another process when security policies such as Yama LSM (ptrace_scope)
++ * are enabled.
+  */
+ 
+ #include <stdio.h>
+@@ -116,6 +120,7 @@ static struct tst_test test = {
+ 	.test_all = run,
+ 	.setup = setup,
+ 	.cleanup = cleanup,
++	.needs_root = 1,
+ 	.forks_child = 1,
+ 	.needs_checkpoints = 1,
+ };
+diff --git a/testcases/kernel/syscalls/cma/process_vm_readv03.c b/testcases/kernel/syscalls/cma/process_vm_readv03.c
+index 95d35c422..2b533ca56 100644
+--- a/testcases/kernel/syscalls/cma/process_vm_readv03.c
++++ b/testcases/kernel/syscalls/cma/process_vm_readv03.c
+@@ -12,6 +12,10 @@
+  * locations and the local iovecs initialized to randomly sized and
+  * allocated local memory locations. The second child then verifies
+  * that the data is copied correctly.
++ *
++ * Requires root for ``CAP_SYS_PTRACE`` to access the address space of
++ * another process when security policies such as Yama LSM (ptrace_scope)
++ * are enabled.
+  */
+ 
+ #include <stdio.h>
+@@ -189,6 +193,7 @@ static struct tst_test test = {
+ 	.test = run,
+ 	.setup = setup,
+ 	.cleanup = cleanup,
++	.needs_root = 1,
+ 	.forks_child = 1,
+ 	.needs_checkpoints = 1,
+ 	.tcnt = ARRAY_SIZE(testcases),
+diff --git a/testcases/kernel/syscalls/cma/process_vm_writev02.c b/testcases/kernel/syscalls/cma/process_vm_writev02.c
+index 15bd66a44..e9edc4a6f 100644
+--- a/testcases/kernel/syscalls/cma/process_vm_writev02.c
++++ b/testcases/kernel/syscalls/cma/process_vm_writev02.c
+@@ -9,6 +9,10 @@
+  * Fork two children, the first one allocates a chunk of memory and the
+  * other one call process_vm_writev to write known data into the first
+  * child. Then first child verifies that the data is as expected.
++ *
++ * Requires root for ``CAP_SYS_PTRACE`` to access the address space of
++ * another process when security policies such as Yama LSM (ptrace_scope)
++ * are enabled.
+  */
+ 
+ #include <stdlib.h>
+@@ -122,6 +126,7 @@ static struct tst_test test = {
+ 	.test_all = run,
+ 	.setup = setup,
+ 	.cleanup = cleanup,
++	.needs_root = 1,
+ 	.forks_child = 1,
+ 	.needs_checkpoints = 1,
+ 	.options =
 
-Otherwise LGTM
+---
+base-commit: c082253808608e57a4fba3e7f3787a9f5c377638
+change-id: 20261014-fix_process_vm_writev_permissions-6fca6598d9fb
 
-Reviewed-by: Andrea Cervesato <andrea.cervesato@suse.com>
+Best regards,
+--  
+Andrea Cervesato <andrea.cervesato@suse.com>
 
---
-Andrea Cervesato
-SUSE QE Automation Engineer Linux
-andrea.cervesato@suse.com
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
