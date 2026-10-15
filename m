@@ -4,50 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6DD3BCC6B34
-	for <ltp@archiver.kernel.org>; Thu, 15 Oct 2026 07:59:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B3128CC6B39
+	for <ltp@archiver.kernel.org>; Thu, 15 Oct 2026 08:00:02 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id EDD683E69F0
-	for <ltp@archiver.kernel.org>; Thu, 15 Oct 2026 09:59:46 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id AC2CB3E69F0
+	for <ltp@archiver.kernel.org>; Thu, 15 Oct 2026 10:00:00 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 31DDB3E69F4
- for <ltp@lists.linux.it>; Thu, 15 Oct 2026 09:58:57 +0200 (CEST)
-Received: from mta0.migadu.com (out-13.mta0.migadu.com
- [IPv6:2001:41d0:1004:224b::d])
+ by picard.linux.it (Postfix) with ESMTPS id 7FE6C3E69F5
+ for <ltp@lists.linux.it>; Thu, 15 Oct 2026 09:59:03 +0200 (CEST)
+Received: from mta0.migadu.com (out-21.mta0.migadu.com
+ [IPv6:2001:41d0:1004:224b::15])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 6BC2360223E
- for <ltp@lists.linux.it>; Thu, 15 Oct 2026 09:58:55 +0200 (CEST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id F379D1401386
+ for <ltp@lists.linux.it>; Thu, 15 Oct 2026 09:59:01 +0200 (CEST)
 X-Envelope-To: ltp@lists.linux.it
-DKIM-Signature: a=rsa-sha256; bh=X8j5RSiKdsuM71iPv6u1xGLnVp5fLjfF/cKQ7ZLdu+A=; 
+DKIM-Signature: a=rsa-sha256; bh=6BMyMStrYBlQ/C21RtStdtbkPTagTEjhjkVC7cJOgXM=; 
  c=simple/simple; d=linux.dev;
  h=from:to:subject:date:message-id:mime-version:content-type; s=key1;
- t=1792051135; v=1; x=1792655935;
- b=k0QTNQAXyHU7S3vXx2AnvPtbrSO/+I9+rdeMYfOQPzfRIABZkX7nDEk7KyfhlrTz632Y/3rN
- bxtTaT7AXZImG71YABLcAEISIQf5y1h2rmj5FGF6zjGYJjpEyu3Q+rzJzwC0OhoEbRwQiQaioXJ
- hTsLa6dS62f6ZiyOhwOeyPVk=
+ t=1792051141; v=1; x=1792655941;
+ b=s61XrL4xpWwM3zAspDCfnScpfkV+QadDWd3utTXUIZ5yylwrQFcThnUOWHw8cyC+nHPxmxZS
+ cXjGzQUBDAk5YbJ0NpliVVW0Dub5f7e+A4ffvZd2NUphWRCXFu5J/i4uAvLH54pS8vxVRC3Tj7N
+ pdlMbKsimp3/2fVnMPwjxAM0=
 X-Envelope-To: ltp@lists.linux.it
-Received: by mta12.migadu.com with ESMTPS id 256b4bfe0e84d93e;
- Thu, 15 Oct 2026 07:58:54 +0000
-X-Mizu-Trace-ID: 256b4bfe0e84d93e
+Received: by mta12.migadu.com with ESMTPS id 69e1ddffa68796f1;
+ Thu, 15 Oct 2026 07:59:01 +0000
+X-Mizu-Trace-ID: 69e1ddffa68796f1
 X-Migadu-Flow: FLOW_OUT
 From: Li Wang <li.wang@linux.dev>
 To: ltp@lists.linux.it
-Date: Thu, 15 Oct 2026 15:58:11 +0800
-Message-ID: <20261015075812.184811-4-li.wang@linux.dev>
+Date: Thu, 15 Oct 2026 15:58:12 +0800
+Message-ID: <20261015075812.184811-5-li.wang@linux.dev>
 X-Mailer: git-send-email 2.56.0
 In-Reply-To: <20261015075812.184811-1-li.wang@linux.dev>
 References: <20261015075812.184811-1-li.wang@linux.dev>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v5 3/4] tst_kconfig: add module mappings for
- vsock/vsock_loopback
+Subject: [LTP] [PATCH v5 4/4] testcases: drop manual tst_modprobe() now
+ handled by tst_kconfig
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -67,83 +66,155 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 From: "Li Wang (Hieco)" <li.wang@linux.dev>
 
-Map CONFIG_VSOCKETS to "vsock" and CONFIG_VSOCKETS_LOOPBACK to
-"vsock_loopback" so tst_kconfig can load them on demand.
+Now that tst_kconfig loads the modules for every CONFIG_*=m entry
+listed in config_module_maps[] and unloads them again at cleanup
+time, tests no longer have to call tst_modprobe() from setup().
 
-cve-2025-21756 binds to VMADDR_CID_LOCAL and therefore needs
-vsock_loopback. Without the module loaded, bind() fails with
-EADDRNOTAVAIL and the test aborts with TBROK. Declare both configs in
-needs_kconfigs so the modules are loaded first.
+Drop the explicit tst_modprobe() calls, and the now unused
+tst_module.h includes, from:
 
-The test needs root only to load the modules; the reproducer runs as
-an ordinary non-root process in the initial namespace, where it can
-use loopback VSOCK on non-privileged ports. Drop privileges to nobody
-in setup() after the modules are loaded; the framework unloads the
-modules from its still-root context, so no restore is needed in
-cleanup().
+- cve-2026-46331.c: sch_ingress, cls_matchall, act_pedit
+- sctphantom.c: sctp
+- keyctl23.c: x509_key_parser
+- keyctl29.c: x509_key_parser
+- keyctl30.c: pkcs8_key_parser
+
+All four tests already declare the matching configs in
+.needs_kconfigs, so tst_kconfig takes care of loading the modules
+before setup() runs and unloading them once the test finishes.
+
+BTW, with KCONFIG_SKIP_CHECK=1 the config check returns early,
+so the automatic module loading is skipped as well. Users who set
+that variable are expected to ensure the required modules are
+loaded themselves.
 
 Signed-off-by: Li Wang (Hieco) <li.wang@linux.dev>
 ---
- lib/tst_kconfig.c              |  2 ++
- testcases/cve/cve-2025-21756.c | 17 +++++++++++++++++
- 2 files changed, 19 insertions(+)
+ testcases/cve/cve-2026-46331.c              | 7 -------
+ testcases/cve/sctphantom.c                  | 3 ---
+ testcases/kernel/syscalls/keyctl/keyctl23.c | 5 -----
+ testcases/kernel/syscalls/keyctl/keyctl29.c | 3 ---
+ testcases/kernel/syscalls/keyctl/keyctl30.c | 3 ---
+ 5 files changed, 21 deletions(-)
 
-diff --git a/lib/tst_kconfig.c b/lib/tst_kconfig.c
-index 421852ba5..dc025c9f0 100644
---- a/lib/tst_kconfig.c
-+++ b/lib/tst_kconfig.c
-@@ -174,6 +174,8 @@ static struct config_module_map {
- 	{"CONFIG_NET_ACT_PEDIT", "act_pedit"},
- 	{"CONFIG_PKCS8_PRIVATE_KEY_PARSER", "pkcs8_key_parser"},
- 	{"CONFIG_X509_CERTIFICATE_PARSER", "x509_key_parser"},
-+	{"CONFIG_VSOCKETS", "vsock"},
-+	{"CONFIG_VSOCKETS_LOOPBACK", "vsock_loopback"},
- 	{}
- };
+diff --git a/testcases/cve/cve-2026-46331.c b/testcases/cve/cve-2026-46331.c
+index 3d32a1cbb..3c8db5042 100644
+--- a/testcases/cve/cve-2026-46331.c
++++ b/testcases/cve/cve-2026-46331.c
+@@ -44,7 +44,6 @@
+ #include <linux/rtnetlink.h>
  
-diff --git a/testcases/cve/cve-2025-21756.c b/testcases/cve/cve-2025-21756.c
-index 4245a4c95..b49950045 100644
---- a/testcases/cve/cve-2025-21756.c
-+++ b/testcases/cve/cve-2025-21756.c
-@@ -13,12 +13,22 @@
-  * Beware, this test will crash the system.
+ #include "tst_test.h"
+-#include "tst_module.h"
+ #include "tst_net.h"
+ #include "tst_netdevice.h"
+ #include "lapi/if_ether.h"
+@@ -136,12 +135,6 @@ static void setup(void)
+ {
+ 	struct sockaddr_in addr;
+ 	struct passwd *pw;
+-	static const char *const mods[] = {
+-		"sch_ingress", "cls_matchall", "act_pedit"
+-	};
+-
+-	for (unsigned int i = 0; i < ARRAY_SIZE(mods); i++)
+-		tst_modprobe(mods[i], NULL);
+ 
+ 	/* Drop privileges so the reproducer runs as an unprivileged user */
+ 	pw = SAFE_GETPWNAM("nobody");
+diff --git a/testcases/cve/sctphantom.c b/testcases/cve/sctphantom.c
+index 83834b848..bdbe40286 100644
+--- a/testcases/cve/sctphantom.c
++++ b/testcases/cve/sctphantom.c
+@@ -50,7 +50,6 @@
   */
  
-+#include <pwd.h>
-+
  #include "tst_test.h"
- #include "lapi/vm_sockets.h"
+-#include "tst_module.h"
+ #include "tst_checksum.h"
+ #include "tst_safe_net.h"
  
- #define MAX_PORT_RETRIES	24
- #define VMADDR_CID_NONEXISTING	42
+@@ -205,8 +204,6 @@ static void setup(void)
+ 	};
+ 	const struct tst_path_val *sysctl;
  
-+static void setup(void)
-+{
-+	struct passwd *pw = SAFE_GETPWNAM("nobody");
-+
-+	SAFE_SETEGID(pw->pw_gid);
-+	SAFE_SETEUID(pw->pw_uid);
-+}
-+
- static int vsock_bind(unsigned int cid, unsigned int port, int type)
+-	tst_modprobe("sctp", NULL);
+-
+ 	for (sysctl = sysctls; sysctl->path; sysctl++)
+ 		tst_sys_conf_save(sysctl);
+ 
+diff --git a/testcases/kernel/syscalls/keyctl/keyctl23.c b/testcases/kernel/syscalls/keyctl/keyctl23.c
+index cf90210d2..2e4799f86 100644
+--- a/testcases/kernel/syscalls/keyctl/keyctl23.c
++++ b/testcases/kernel/syscalls/keyctl/keyctl23.c
+@@ -6,8 +6,6 @@
+ /*\
+  * Test ``KEYCTL_RESTRICT_KEYRING`` builtin_trusted of :manpage:`keyctl(2)`.
+  *
+- * Requires root (CAP_SYS_MODULE) to load the ``x509_key_parser`` module.
+- *
+  * [Algorithm]
+  *
+  * - restrict a keyring with ``asymmetric`` and ``builtin_trusted``
+@@ -16,7 +14,6 @@
+  */
+ 
+ #include "keyctl_common.h"
+-#include "tst_module.h"
+ 
+ #define PAYLOAD		"payload"
+ 
+@@ -89,8 +86,6 @@ static void setup(void)
  {
- 	int sock;
-@@ -85,8 +95,15 @@ static void run(void)
- }
+ 	SAFE_KEYCTL(KEYCTL_JOIN_SESSION_KEYRING, 0, 0, 0, 0);
  
- static struct tst_test test = {
-+	.needs_root = 1,
-+	.setup = setup,
- 	.test_all = run,
- 	.taint_check = TST_TAINT_W | TST_TAINT_D,
-+	.needs_kconfigs = (const char *const[]) {
-+		"CONFIG_VSOCKETS",
-+		"CONFIG_VSOCKETS_LOOPBACK",
-+		NULL
-+	},
- 	.tags = (const struct tst_tag[]) {
- 		{"linux-git", "fcdd2242c0231032fc84e1404315c245ae56322a"},
- 		{"CVE", "2025-21756"},
+-	tst_modprobe("x509_key_parser", NULL);
+-
+ 	ring_builtin = SAFE_NEW_RING("ltpkeyctl23_builtin");
+ 
+ 	user_key = SAFE_NEW_USER_KEY("k", PAYLOAD, sizeof(PAYLOAD),
+diff --git a/testcases/kernel/syscalls/keyctl/keyctl29.c b/testcases/kernel/syscalls/keyctl/keyctl29.c
+index afc0a093c..e66b39bcb 100644
+--- a/testcases/kernel/syscalls/keyctl/keyctl29.c
++++ b/testcases/kernel/syscalls/keyctl/keyctl29.c
+@@ -23,7 +23,6 @@
+ 
+ #include "keyctl_common.h"
+ #include "keyctl_pkey_data.h"
+-#include "tst_module.h"
+ 
+ static key_serial_t cert_key;
+ static struct keyctl_pkey_query *query_buf;
+@@ -32,8 +31,6 @@ static void setup(void)
+ {
+ 	SAFE_KEYCTL(KEYCTL_JOIN_SESSION_KEYRING, 0, 0, 0, 0);
+ 
+-	tst_modprobe("x509_key_parser", NULL);
+-
+ 	cert_key = add_asymmetric_key_or_tconf("cert", rsa2048_cert,
+ 					       sizeof(rsa2048_cert),
+ 					       "CONFIG_X509_CERTIFICATE_PARSER");
+diff --git a/testcases/kernel/syscalls/keyctl/keyctl30.c b/testcases/kernel/syscalls/keyctl/keyctl30.c
+index ef51bba33..4f43007e0 100644
+--- a/testcases/kernel/syscalls/keyctl/keyctl30.c
++++ b/testcases/kernel/syscalls/keyctl/keyctl30.c
+@@ -20,7 +20,6 @@
+ 
+ #include "keyctl_common.h"
+ #include "keyctl_pkey_data.h"
+-#include "tst_module.h"
+ 
+ static key_serial_t priv_key;
+ static struct keyctl_pkey_query *query_buf;
+@@ -29,8 +28,6 @@ static void setup(void)
+ {
+ 	SAFE_KEYCTL(KEYCTL_JOIN_SESSION_KEYRING, 0, 0, 0, 0);
+ 
+-	tst_modprobe("pkcs8_key_parser", NULL);
+-
+ 	priv_key = add_asymmetric_key_or_tconf("priv", rsa2048_pkcs8,
+ 					       sizeof(rsa2048_pkcs8),
+ 					       "CONFIG_PKCS8_PRIVATE_KEY_PARSER");
 -- 
 2.56.0
 
