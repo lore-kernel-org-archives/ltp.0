@@ -4,102 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 45296CC6B34
-	for <ltp@archiver.kernel.org>; Thu, 15 Oct 2026 09:02:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1792054930; h=date : to :
- message-id : references : mime-version : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=jxF9xaowNb4ZNMZMrMD5ZDhDaPHXGg/Lg93Xu9moguA=;
- b=LclWldJQsRIoMSn7KICvJH2Ai9LAjfBDuQRV3ujQnt0Lle4EApJB3qqOfUDgHg2pjthkz
- 3bUu+6d6HNS8GTtc7KB69NlOXN4weggjIbM6M/J5uVXx1Mou+G1N7exU7DYWSUFPUMIJe4i
- AaKMLIq8orsXpfjshVhO6bwrUPHBe6k=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 649B9CC6B2F
+	for <ltp@archiver.kernel.org>; Thu, 15 Oct 2026 09:02:27 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 793BB3E9AF2
-	for <ltp@archiver.kernel.org>; Thu, 15 Oct 2026 11:02:10 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 6F7E73E62AC
+	for <ltp@archiver.kernel.org>; Thu, 15 Oct 2026 11:02:25 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 06BF03E1D5D
- for <ltp@lists.linux.it>; Thu, 15 Oct 2026 11:01:50 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id DAE453E1D5D
+ for <ltp@lists.linux.it>; Thu, 15 Oct 2026 11:01:51 +0200 (CEST)
+Received: from mail-dl2-x08.google.com (mail-dl2-x08.google.com
+ [IPv6:2607:f8b0:4864:38::8])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 39AD314002D3
- for <ltp@lists.linux.it>; Thu, 15 Oct 2026 11:01:48 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1792054907;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=VNYfj6Hb9SdxTaOKOd79yIocfOp3uXkvMPrrfn59pGI=;
- b=MUcARHEaQuLeT+1HMv1LCdmb5rBjo5KG33YtBfrNoyWiMbd83xKptb/eVuqmVSHU6piptC
- owgedCFZug9HZqVOeOHPbWfhCw465/g7Nx2c3yULaOdtXpjgM82TrtiJeI50ftKqVDsImQ
- XAOEg+AoUqVPOq5ZsdjctrOO1a/8v9E=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-661-6d_wdIgTPWSYMBQuyKCsbA-1; Thu, 15 Oct 2026 09:01:46 +0000
-X-MC-Unique: 6d_wdIgTPWSYMBQuyKCsbA-1
-X-Mimecast-MFC-AGG-ID: 6d_wdIgTPWSYMBQuyKCsbA_1792054905
-Received: by mail-wm1-f69.google.com with SMTP id
- 5b1f17b1804b1-4a166a9ea21so42405035e9.2
- for <ltp@lists.linux.it>; Thu, 15 Oct 2026 02:01:46 -0700 (PDT)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 4FFD210004A2
+ for <ltp@lists.linux.it>; Thu, 15 Oct 2026 11:01:51 +0200 (CEST)
+Received: by mail-dl2-x08.google.com with SMTP id
+ a92af1059eb24-1379d236149so721461c88.1
+ for <ltp@lists.linux.it>; Thu, 15 Oct 2026 02:01:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20251104; t=1792054909; x=1792659709; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to:content-type;
+ bh=1foD37Npubmoy5AbnQeS5oV2bMoypmHaKbuB0xkK9i8=;
+ b=GGQFkosgtdInc8C0hH0y10QGk7UmoJmQGev6QLRce02XHnvr11XwDviPE8WrfXg0Q9
+ YOyMA5skFIVlPd9Ag78DHecYIkufWvGMyQYXiE4ohacZRDE3jB0zWbIL76cIuCzCzraC
+ kQBDXDR8aDwFtcn10czneOIwAKtTNFg27FtLw7CQAbwNmRaqvwDM/ZCCY2WX2Li/9AuE
+ dWRmWh8CvsoD8ua8KMRNwBnrpU4323I79LgN/Cme4V0gZwIV1m3eZNX1pCLoJopHOPaT
+ JQwqoUudfYMOdayX+GHYx21yPeWIPHMKhetjj76dabgW3e11089iLUXE/s7IVmSLZVXE
+ JGpQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20260707; t=1792054905; x=1792659705;
- h=in-reply-to:content-transfer-encoding:content-disposition
- :content-type:mime-version:references:message-id:subject:cc:to:from
- :date:x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to:content-type;
- bh=VNYfj6Hb9SdxTaOKOd79yIocfOp3uXkvMPrrfn59pGI=;
- b=WGQg7GsiE/KToZ9FK0BKIUP1FHEQITgn0qdF6F7NuQ5ogOji2SEGAvc9pAxiiiUS7V
- beNAv4xN2/RsG8WBbXu2t8UPiZ5aAXOzPY/c7Xqv/q6VNuqL+TMNEkoeT8uYKR33AqC0
- 0plgoQSHz/F7RPFtgGhCkj2WGdf7Tmz1x+cVPHGWnHFMowKAMRgLR7CRT5fLrhr0ENfn
- vxn/w1BMdfrsP4uoaxL8PpKsWfjbddiC0VzMb4fMpR41BbRMXw+53bcu7NIT/OfoBIe/
- ioPqnMT74MeKN4aeoSkPzXKy0wIQjAa0SSdQ8bXWD6mzzxxNQ8AJh80rupHYGpR521Aj
- Vfnw==
-X-Forwarded-Encrypted: i=1;
- AKwUvBxJa3oJX3wTZsVgegWGKC/2cLdGbCHruiDPF8TjM/b7kP0/ffSoWVVUt8NAibwuGHBdSoc=@lists.linux.it
-X-Gm-Message-State: AFq9FYL4NJqYNZ5GpVgeSutLkIBnceOX8tNWS7zYQaiIyhBlDb7ocv6Z
- VIg30QT8PKMK/9/6DeSYDBUuxXHUZjLLjREU8CNDotin6maNi3XVVWMopehB+gyWwVJSpq4qV5a
- L3NPEMQ0awzZinstnIEsqPQeL++VHQiQh40lE5i57dWado/ZTz33h9gKOdOT1
-X-Gm-Gg: AYBFou03rOUrknk0jRNa10HITrFWF1tHvAuI7s5MvAcakmtl5qNWTGmM6cKAC/4yINh
- z/o7vmI5TkMRlUgbU3BBgJ/wxCJ2DzVYRfR06tS3hXMTFnCaZZhlAEdDC6hCafUMgcUa/OvoH7D
- x1vXaEXG65A3GLeMaRkaCIYV6oyA93f0L3Szuk1D71BV7qT3mkjRsHEW9tIZgCwOWUZaej6qshU
- Yi7+ywl8bVmlqhIX4oXhJG/AnZcuy55nc49Fae8SuaAMZJmKXPr0wGyhaOpQ8lhhQQhHz9a+E93
- +RDah4Kx8vxkS2os1MpzRSfvNV/1nO1kh7UOjc+g1OQu/9BVj0qVh1sDci8kYCFi
-X-Received: by 2002:a05:600c:524d:b0:4a1:80d8:aeb3 with SMTP id
- 5b1f17b1804b1-4a18e4a95c2mr367069335e9.12.1792054904790; 
- Thu, 15 Oct 2026 02:01:44 -0700 (PDT)
-X-Received: by 2002:a05:600c:524d:b0:4a1:80d8:aeb3 with SMTP id
- 5b1f17b1804b1-4a18e4a95c2mr367068925e9.12.1792054904303; 
- Thu, 15 Oct 2026 02:01:44 -0700 (PDT)
-Received: from toolbx ([85.93.121.125]) by smtp.gmail.com with ESMTPSA id
- ffacd0b85a97d-48de0aaa5dbsm18164939f8f.12.2026.10.15.02.01.43
+ d=1e100.net; s=20260707; t=1792054909; x=1792659709;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to:content-type;
+ bh=1foD37Npubmoy5AbnQeS5oV2bMoypmHaKbuB0xkK9i8=;
+ b=tkqhh8WxtTlpPBPhliXJ/EaKRqhkbgNjm/igDToPitGRlrk6iSXAavvRWdOZMpFFV3
+ w/HVxSU8CB7mFJSCMKeYlDM4DrMwyQRPV25dQvrv48mpzMTdi5p09NHN8kW2Sz2cxm7j
+ kKnQPa88jeNk+AgFTFSId2ctK0xMEig/m5FR1T/7P8ogpYPJloPgIk/kLqXdI5zQ0Oir
+ j+AldE/QSB66Axyu9letqlYkWVrFFt97pVv34Qe1ErwzaJzcDo/U/TP8a8Ui5w/Esums
+ 8XKus+zCtrp8U1EuPGaqbvmM1WU/2UKysEdyw9Tn1OhtfkUW/q13oKwozdzmH8romdOo
+ momw==
+X-Gm-Message-State: AFq9FYJh3CI6RI4u9fNDf9Thru0kQnptb++/ZR0HlxqXydsPFTihzjbi
+ PuQmCTg0UlOiQJCe/KhqmBq6uhpOdjLixEtBFE4fL3ZRCyrAWcts7S2k
+X-Gm-Gg: AYBFou1aGQvecy4BVMKr1PC5zCtCngvXOoqjWLWxacoJQhIJ4m9rYzE27JUfCQp3/++
+ EVkTE/ip3ZXDhbGCw18UYouPMdGF4nOPRUdT7TWvV2EnMuAqFViCxKeta88xq6rYgHG62OS6IkP
+ szo6YWmn78tAQJ7GIDOmPhuftXm5GooPlUTk6XVBXgVDR4ZGjyC7KuFCfTMLa5oLU+HEqxEY+PV
+ 7ExByPrw668J92f4pFnGg8PESgj3VanJcduKlF7oSj0rZskTcdg5rVkvCBlwj48L5kulssQFrrg
+ yWosmNZtoM1FP1t6poCAoL0rzLMK34zxQVM3iJcfsQpsahMI1d8Dx5VzaYJYk7m8IcbWSqtx8Q0
+ X1mkCYtNicQ8qEINiYWnyHc1c7eLuAv1UQiu0npzHOZxSFUG0n8JYE2Hzwv33CkcFFaOLPGLX6g
+ kiVBp0j3nIuhxx8VPiHNdg0CgJDrnyJWBZblK19b9oikiWGGZtzVWloT9oGS9BzlEqOs35jF857
+ J/0LmuY/fxfAVYdLo9ydVYa2xwPpSqKrn46Y59jQ3r3vEM59ZkYKmQ1E+E5+vCyMIhqOxA5fYrO
+ emOGtIyLX52gEYsfcB1fslY=
+X-Received: by 2002:a05:701b:230c:b0:14a:51c8:ea06 with SMTP id
+ a92af1059eb24-16a5fe7c17dmr26993716c88.29.1792054909133; 
+ Thu, 15 Oct 2026 02:01:49 -0700 (PDT)
+Received: from
+ runnervm8k3b6.vlhbw3y3jgde1kfjxwvs020s1b.yx.internal.cloudapp.net
+ ([52.161.182.114]) by smtp.gmail.com with ESMTPSA id
+ a92af1059eb24-169a1becefdsm53961788c88.7.2026.10.15.02.01.48
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 15 Oct 2026 02:01:43 -0700 (PDT)
-Date: Thu, 15 Oct 2026 11:01:41 +0200
-To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <atCVc5kQoGx5spgk@toolbx>
-References: <as9x2R-9IQb7vjn7@toolbx>
- <27AE9564-6115-491B-AE80-D9016EA7CDB5@suse.com>
- <20261015083851.GA290292@pevik>
+ Thu, 15 Oct 2026 02:01:48 -0700 (PDT)
+From: linuxtestproject.agent@gmail.com
+To: Li Wang <li.wang@linux.dev>
+Date: Thu, 15 Oct 2026 09:01:47 +0000
+Message-ID: <20261015090147.9591-1-linuxtestproject.agent@gmail.com>
+X-Mailer: git-send-email 2.55.0
+In-Reply-To: <20261015075812.184811-2-li.wang@linux.dev>
+References: <20261015075812.184811-2-li.wang@linux.dev>
 MIME-Version: 1.0
-In-Reply-To: <20261015083851.GA290292@pevik>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: uBfhYgo-5kVNb30hTW0QCgAq-BM9D1L9xRe488nu01I_1792054905
-X-Mimecast-Originator: redhat.com
-Content-Disposition: inline
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [Valgrind-developers] Suggested fix for the mremap03
- syscall testcase
+Subject: Re: [LTP] lib: add module is loaded check
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -111,80 +91,92 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Martin Cermak via ltp <ltp@lists.linux.it>
-Reply-To: Martin Cermak <mcermak@redhat.com>
-Cc: valgrind-developers@lists.sourceforge.net, Mark Wielaard <mark@klomp.org>,
- ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-SGkgUGV0ciwKCndpdGggcGF0Y2hlZCB0ZXN0Y2FzZSwgdmFsZ3JpbmQgZG9lc24ndCBjcmFzaCBh
-bnkgbW9yZSwgYXQgbGVhc3QKbXkgZnJlc2ggdXBzdHJlYW0gdmVyc2lvbiBvZiB2YWxncmluZCBk
-b2Vzbid0OgoKJCBnaXQgbG9nIC0xIC0tb25lbGluZSB0ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxz
-L21yZW1hcC9tcmVtYXAwMy5jCjNkZGNmYThjMyAoSEVBRCAtPiBtYXN0ZXIpIEZpeCB0aGUgbXJl
-bWFwMDMgc3lzY2FsbCB0ZXN0Y2FzZQokIHZhbGdyaW5kIC0tdmVyc2lvbgp2YWxncmluZC0zLjI4
-LjAuR0lUCiQgdmFsZ3JpbmQgdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9tcmVtYXAvbXJlbWFw
-MDMKPT0xNDE5OTczPT0gTWVtY2hlY2ssIGEgbWVtb3J5IGVycm9yIGRldGVjdG9yCj09MTQxOTk3
-Mz09IENvcHlyaWdodCAoQykgMjAwMi0yMDI2LCBhbmQgR05VIEdQTCdkLCBieSBKdWxpYW4gU2V3
-YXJkIGV0IGFsLgo9PTE0MTk5NzM9PSBVc2luZyBWYWxncmluZC0zLjI4LjAuR0lUIGFuZCBMaWJW
-RVg7IHJlcnVuIHdpdGggLWggZm9yIGNvcHlyaWdodCBpbmZvCj09MTQxOTk3Mz09IENvbW1hbmQ6
-IHRlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvbXJlbWFwL21yZW1hcDAzCj09MTQxOTk3Mz09IAp0
-c3RfdGVzdC5jOjIwNjE6IFRJTkZPOiBMVFAgdmVyc2lvbjogMjAyNjA5MzAtMjAtZzNkZGNmYThj
-Mwp0c3RfdGVzdC5jOjIwNjQ6IFRJTkZPOiBUZXN0ZWQga2VybmVsOiA3LjIuNy0yMDAuZmM0NC54
-ODZfNjQgIzEgU01QIFBSRUVNUFRfRFlOQU1JQyBNb24gU2VwIDIxIDE4OjI1OjU3IFVUQyAyMDI2
-IHg4Nl82NAp0c3Rfa2NvbmZpZy5jOjczOiBUSU5GTzogQ291bGRuJ3QgbG9jYXRlIGtlcm5lbCBj
-b25maWchCnRzdF90ZXN0LmM6MTg5NTogVElORk86IE92ZXJhbGwgdGltZW91dCBwZXIgcnVuIGlz
-IDBoIDAwbSAzMHMKbXJlbWFwMDMuYzo0MjogVEZBSUw6IG1yZW1hcChiYWRfYWRkciwgbWVtc2l6
-ZSwgbmV3c2l6ZSwgTVJFTUFQX01BWU1PVkUpIGV4cGVjdGVkIEVGQVVMVDogRUlOVkFMICgyMikK
-PT0xNDE5OTkyPT0gCj09MTQxOTk5Mj09IEhFQVAgU1VNTUFSWToKPT0xNDE5OTkyPT0gICAgIGlu
-IHVzZSBhdCBleGl0OiAwIGJ5dGVzIGluIDAgYmxvY2tzCj09MTQxOTk5Mj09ICAgdG90YWwgaGVh
-cCB1c2FnZTogMTMgYWxsb2NzLCAxMyBmcmVlcywgNyw2NDcgYnl0ZXMgYWxsb2NhdGVkCj09MTQx
-OTk5Mj09IAo9PTE0MTk5OTI9PSBBbGwgaGVhcCBibG9ja3Mgd2VyZSBmcmVlZCAtLSBubyBsZWFr
-cyBhcmUgcG9zc2libGUKPT0xNDE5OTkyPT0gCj09MTQxOTk5Mj09IEZvciBsaXN0cyBvZiBkZXRl
-Y3RlZCBhbmQgc3VwcHJlc3NlZCBlcnJvcnMsIHJlcnVuIHdpdGg6IC1zCj09MTQxOTk5Mj09IEVS
-Uk9SIFNVTU1BUlk6IDAgZXJyb3JzIGZyb20gMCBjb250ZXh0cyAoc3VwcHJlc3NlZDogMCBmcm9t
-IDApCgpTdW1tYXJ5OgpwYXNzZWQgICAwCmZhaWxlZCAgIDEKYnJva2VuICAgMApza2lwcGVkICAw
-Cndhcm5pbmdzIDAKPT0xNDE5OTczPT0gCj09MTQxOTk3Mz09IEhFQVAgU1VNTUFSWToKPT0xNDE5
-OTczPT0gICAgIGluIHVzZSBhdCBleGl0OiAwIGJ5dGVzIGluIDAgYmxvY2tzCj09MTQxOTk3Mz09
-ICAgdG90YWwgaGVhcCB1c2FnZTogNiBhbGxvY3MsIDYgZnJlZXMsIDQsNDg4IGJ5dGVzIGFsbG9j
-YXRlZAo9PTE0MTk5NzM9PSAKPT0xNDE5OTczPT0gQWxsIGhlYXAgYmxvY2tzIHdlcmUgZnJlZWQg
-LS0gbm8gbGVha3MgYXJlIHBvc3NpYmxlCj09MTQxOTk3Mz09IAo9PTE0MTk5NzM9PSBGb3IgbGlz
-dHMgb2YgZGV0ZWN0ZWQgYW5kIHN1cHByZXNzZWQgZXJyb3JzLCByZXJ1biB3aXRoOiAtcwo9PTE0
-MTk5NzM9PSBFUlJPUiBTVU1NQVJZOiAwIGVycm9ycyBmcm9tIDAgY29udGV4dHMgKHN1cHByZXNz
-ZWQ6IDAgZnJvbSAwKQokCgpCdXQgdGhhdCBkb2Vzbid0IG1lYW4gdGhpbmdzIGFyZSBwZXJmZWN0
-LiAgVGhlIG1haW4gcHJvYmxlbSBpcwp0aGF0IHVuZGVyIHZhbGdyaW5kIHRoZSB0ZXN0Y2FzZSBi
-ZWhhdmVzIGRpZmZlcmVudGx5IGNvbXBhcmVkIHRvCmEgcnVuIHdpdGhvdXQgdmFsZ3JpbmQuIExv
-b2tpbmcgaW50byBpdC4gIFRoYW5rcyBmb3IgdGhlIG1lcmdlLgoKTWFydGluCgpPbiAgVGh1ICAy
-MDI2LTEwLTE1ICAxMDozOCAsIFBldHIgVm9yZWwgd3JvdGU6Cj4gSGkgTWFydGluLCBBbmRyZWEs
-IAo+IAo+ID4gSGkgTWFydGluLAo+IAo+ID4geW91IGFyZSByaWdodC4gVGhhdOKAmXMgYSBidWcg
-d2UgZGlkbuKAmXQgc3BvdCBkdXJpbmcgdGhlIHRlc3QgcmV3cml0ZS4gVGhhbmtzLgo+IAo+IEdv
-b2QgY2F0Y2gsIE1hcnRpbiwgeW91J3JlIG9mIGNvdXJzZSByaWdodCA9PiB0dXJuZWQgaW50byBw
-cm9wZXIgcGF0Y2ggYW5kCj4gbWVyZ2VkLgo+IAo+IHZhbGdyaW5kIC4vbXJlbWFwMDMKPiB0c3Rf
-dGVzdC5jOjE4OTU6IFRJTkZPOiBPdmVyYWxsIHRpbWVvdXQgcGVyIHJ1biBpcyAwaCAwMG0gMzBz
-Cj4gLS0yOTI3OTktLSBWQUxHUklORCBJTlRFUk5BTCBFUlJPUjogVmFsZ3JpbmQgcmVjZWl2ZWQg
-YSBzaWduYWwgMTEgKFNJR1NFR1YpIC0gZXhpdGluZwo+IC0tMjkyNzk5LS0gc2lfY29kZT0xOyAg
-RmF1bHRpbmcgYWRkcmVzczogMHg4OyAgc3A6IDB4MTAwMmVmMmNjMAo+IAo+IHZhbGdyaW5kOiB0
-aGUgJ2ltcG9zc2libGUnIGhhcHBlbmVkOgo+ICAgIEtpbGxlZCBieSBmYXRhbCBzaWduYWwKPiAK
-PiBob3N0IHN0YWNrdHJhY2U6Cj4gPT0yOTI3OTk9PSAgICBhdCAweDU4MEFFM0QzOiA/Pz8gKGlu
-IC91c3IvbGliZXhlYy92YWxncmluZC9tZW1jaGVjay1hbWQ2NC1saW51eCkKPiA9PTI5Mjc5OT09
-ICAgIGJ5IDB4NTgwQTdFRDk6ID8/PyAoaW4gL3Vzci9saWJleGVjL3ZhbGdyaW5kL21lbWNoZWNr
-LWFtZDY0LWxpbnV4KQo+ID09MjkyNzk5PT0gICAgYnkgMHg1ODBBMzg3QTogPz8/IChpbiAvdXNy
-L2xpYmV4ZWMvdmFsZ3JpbmQvbWVtY2hlY2stYW1kNjQtbGludXgpCj4gPT0yOTI3OTk9PSAgICBi
-eSAweDU4MEE1OEE2OiA/Pz8gKGluIC91c3IvbGliZXhlYy92YWxncmluZC9tZW1jaGVjay1hbWQ2
-NC1saW51eCkKPiA9PTI5Mjc5OT09ICAgIGJ5IDB4NTgxMTUwODg6ID8/PyAoaW4gL3Vzci9saWJl
-eGVjL3ZhbGdyaW5kL21lbWNoZWNrLWFtZDY0LWxpbnV4KQo+IAo+IEJUVyB0ZXN0Y2FzZSBhZnRl
-ciBmaXggc3RpbGwgZmFpbHMsIGJ1dCB0aGF0J3MgSSBzdXBwb3NlIGp1c3QgZXhwZWN0ZWQgdmFs
-Z3JpbmQKPiBiZWhhdmlvciBvbiBtbWFwKFBST1RfTk9ORSksIHJpZ2h0Pwo+IAo+IHZhbGdyaW5k
-IC4vbXJlbWFwMDMKPiA9PTI5Mjk0MT09IE1lbWNoZWNrLCBhIG1lbW9yeSBlcnJvciBkZXRlY3Rv
-cgo+ID09MjkyOTQxPT0gQ29weXJpZ2h0IChDKSAyMDAyLTIwMjYsIGFuZCBHTlUgR1BMJ2QsIGJ5
-IEp1bGlhbiBTZXdhcmQgZXQgYWwuCj4gPT0yOTI5NDE9PSBVc2luZyBWYWxncmluZC0zLjI3LjEg
-YW5kIExpYlZFWDsgcmVydW4gd2l0aCAtaCBmb3IgY29weXJpZ2h0IGluZm8KPiA9PTI5Mjk0MT09
-IENvbW1hbmQ6IC4vbXJlbWFwMDMKPiA9PTI5Mjk0MT09Cj4gdHN0X3Rlc3QuYzoyMDYxOiBUSU5G
-TzogTFRQIHZlcnNpb246IDIwMjYwOTMwLTIwLWdkNDk0YThlMWM5Cj4gLi4uCj4gdHN0X3Rlc3Qu
-YzoxODk1OiBUSU5GTzogT3ZlcmFsbCB0aW1lb3V0IHBlciBydW4gaXMgMGggMDBtIDMwcwo+IG1y
-ZW1hcDAzLmM6NDI6IFRGQUlMOiBtcmVtYXAoYmFkX2FkZHIsIG1lbXNpemUsIG5ld3NpemUsIE1S
-RU1BUF9NQVlNT1ZFKSBleHBlY3RlZCBFRkFVTFQ6IEVJTlZBTCAoMjIpCj4gCj4gS2luZCByZWdh
-cmRzLAo+IFBldHIKPiAKPiAKCgotLSAKTWFpbGluZyBsaXN0IGluZm86IGh0dHBzOi8vbGlzdHMu
-bGludXguaXQvbGlzdGluZm8vbHRwCg==
+Hi Li,
+
+On 15 October 2026, Li Wang (Hieco) wrote:
+> lib: add module is loaded check
+
+--- [PATCH 1/4] ---
+
+> diff --git a/include/tst_module.h b/include/tst_module.h
+> +bool tst_module_is_loaded(const char *mod_name);
+
+Low: Add kernel-doc for this new public helper, documenting mod_name,
+hyphen/underscore normalization, and its return semantics, including
+built-in modules and failure to open /proc/modules.
+
+--- [PATCH 2/4] ---
+
+> diff --git a/lib/tst_kconfig.c b/lib/tst_kconfig.c
+> +	for (i = 0; i < loaded_module_count; i++) {
+> +		tst_res(TDEBUG, "Loading module '%s'", loaded_modules[i]);
+> +		tst_modprobe(loaded_modules[i], NULL);
+> +	}
+> +
+> +	modules_loaded = true;
+
+High: If a later tst_modprobe() aborts, modules_loaded is still false, so
+do_cleanup() skips unloading earlier successfully loaded modules. Track
+successful loads incrementally and make that prefix eligible for cleanup
+before attempting the next load.
+
+> +		const char *const argv[] = { "modprobe", "-r",
+> +						loaded_modules[i - 1], NULL };
+
+High: modprobe -r also removes unused dependencies, including pre-existing
+ones: if can is already loaded and this run loads can-raw, cleanup can
+remove both. Track ownership of dependencies and use targeted removal so
+cleanup preserves modules that were loaded before the test.
+
+> diff --git a/include/tst_kconfig.h b/include/tst_kconfig.h
+> + * Called from do_test_cleanup() so that the modules are released when
+
+Low: The call is in do_cleanup() in the library parent, not
+do_test_cleanup() in the test child. Correct this comment and the same
+statement in the commit message.
+
+--- [PATCH 3/4] ---
+
+> diff --git a/testcases/cve/cve-2025-21756.c b/testcases/cve/cve-2025-21756.c
+> +	.needs_root = 1,
+> +	.setup = setup,
+
+Low: Document the new root requirement in the test's description block:
+root preloads the vsock modules, then setup drops privileges before running
+the reproducer.
+
+--- [PATCH 4/4] ---
+
+> diff --git a/testcases/kernel/syscalls/keyctl/keyctl23.c b/testcases/kernel/syscalls/keyctl/keyctl23.c
+> - * Requires root (CAP_SYS_MODULE) to load the ``x509_key_parser`` module.
+> - *
+
+Low: Remove keyctl23's remaining .needs_root = 1 alongside this explanation
+and the load call. Its CONFIG_X509_CERTIFICATE_PARSER=y requirement means
+the automatic loader has no parser module to load, and the remaining
+operations act on the caller's own keyrings.
+
+> All four tests already declare the matching configs in
+
+Low: The list and diff contain five tests, not four.
+
+Verdict - Needs revision
+
+---
+Note:
+
+The agent can sometimes produce false positives although often its
+findings are genuine. If you find issues with the review, please
+comment this email or ignore the suggestions.
+
+Regards,
+LTP AI Reviewer
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
