@@ -4,53 +4,46 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BD1F0CC6B2D
-	for <ltp@archiver.kernel.org>; Thu, 15 Oct 2026 02:22:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AE48FCC6B34
+	for <ltp@archiver.kernel.org>; Thu, 15 Oct 2026 07:59:00 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 92A763E6BDB
-	for <ltp@archiver.kernel.org>; Thu, 15 Oct 2026 04:22:40 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 6DF6A3E2D1D
+	for <ltp@archiver.kernel.org>; Thu, 15 Oct 2026 09:58:58 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id DBF543E28A6
- for <ltp@lists.linux.it>; Thu, 15 Oct 2026 04:22:24 +0200 (CEST)
-Received: from mta0.migadu.com (out-213.mta0.migadu.com
- [IPv6:2001:41d0:1004:224b::d5])
+ by picard.linux.it (Postfix) with ESMTPS id 4EDB23C9EF6
+ for <ltp@lists.linux.it>; Thu, 15 Oct 2026 09:58:42 +0200 (CEST)
+Received: from mta1.migadu.com (out-135.mta1.migadu.com [95.215.58.135])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id A5C1D600F14
- for <ltp@lists.linux.it>; Thu, 15 Oct 2026 04:22:22 +0200 (CEST)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 249B310000C8
+ for <ltp@lists.linux.it>; Thu, 15 Oct 2026 09:58:40 +0200 (CEST)
 X-Envelope-To: ltp@lists.linux.it
-DKIM-Signature: a=rsa-sha256; bh=cc0PO24NeJU1xj1ZYGuo8xx+4Oea1E7mKgFlvsfMCyk=; 
+DKIM-Signature: a=rsa-sha256; bh=D2un5He+IAk/XCyt6NVUWk/ReEA3L1Cj3FwlqDK4AlM=; 
  c=simple/simple; d=linux.dev;
  h=from:to:subject:date:message-id:mime-version:content-type; s=key1;
- t=1792030942; v=1; x=1792635742;
- b=RJcLH5Cmu1nixoRqbgIb0/wMj+6cqQPaKhMPr4sS4nnAW6Xzos4R5m0QFaQVykvyqwQGdXos
- pv1cNHYZN6OSR53JUAhKUPC0F+Od3PhPqFnL8Dg04OFbUAwEA95E0UrURPvQ452/8tdJASy1SCr
- T4yR26qEDG5/jDmiPG3L/crk=
+ t=1792051119; v=1; x=1792655919;
+ b=PAjAgw0MqWjIpudpAIxX4AFLrFKrkG23E4ZrXzvd0cokQA2sXgEcs3SFDkgOKe9JkO6JLw/R
+ 68rvN3UwAZKhZjrAnxkTnq6yUpVn2wOTOt+2qkWuAl/UvA6+RIftanaORLqxA7bm3MmUjaXUSxJ
+ B6CO8cPqBg+RFi3bAbIpQULU=
 X-Envelope-To: ltp@lists.linux.it
-Received: by smtp.migadu.com with ESMTPS id 8d91efc598758df5;
- Thu, 15 Oct 2026 02:22:21 +0000
-X-Mizu-Trace-ID: 8d91efc598758df5
+Received: by mta12.migadu.com with ESMTPS id b07712ed32f286e7;
+ Thu, 15 Oct 2026 07:58:39 +0000
+X-Mizu-Trace-ID: b07712ed32f286e7
 X-Migadu-Flow: FLOW_OUT
-Date: Thu, 15 Oct 2026 10:22:19 +0800
 From: Li Wang <li.wang@linux.dev>
-To: Wake Liu <wakel@google.com>
-Message-ID: <atA4roTkggDPCrDA@linux.dev>
-Mail-Followup-To: Wake Liu <wakel@google.com>, ltp@lists.linux.it,
- Andrea Cervesato <andrea.cervesato@suse.com>
-References: <20261014061202.56362-1-li.wang@linux.dev>
- <20261014061202.56362-5-li.wang@linux.dev>
- <20261014-keyctl23-tst-modprobe-1-wakel@google.com>
+To: ltp@lists.linux.it
+Date: Thu, 15 Oct 2026 15:58:08 +0800
+Message-ID: <20261015075812.184811-1-li.wang@linux.dev>
+X-Mailer: git-send-email 2.56.0
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20261014-keyctl23-tst-modprobe-1-wakel@google.com>
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v4 4/4] testcases: drop manual tst_modprobe() now
- handled by tst_kconfig
+Subject: [LTP] [PATCH v5 0/4] tst_kconfig: automatic module load/unload for
+ CONFIG_*=m
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -62,49 +55,75 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+Cc: wakel@google.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> Hi Li,
-> 
-> > Drop the explicit tst_modprobe() calls, and the now unused
-> > tst_module.h includes, from:
-> >
-> > - cve-2026-46331.c: sch_ingress, cls_matchall, act_pedit
-> > - sctphantom.c: sctp
-> > - keyctl29.c: x509_key_parser
-> > - keyctl30.c: pkcs8_key_parser
-> 
-> Could you please drop the tst_modprobe() call from keyctl23.c in this
-> patch as well?
-> 
-> keyctl23 still calls tst_modprobe("x509_key_parser", NULL) in setup(),
-> but it requires CONFIG_X509_CERTIFICATE_PARSER=y, so the parser is
-> always built in and there is nothing to load. With the call gone, the
-> tst_module.h include and the "Requires root (CAP_SYS_MODULE) to load
-> the x509_key_parser module" line in the doc comment can go as well.
-> 
-> On most distributions the call is harmless, since modprobe returns 0
-> for built-in modules, but on Android it breaks the test. Without -d,
-> Android's modprobe scans /lib/modules/, which does not exist on Android
-> devices, so it always fails and tst_modprobe() turns that into TBROK:
-> 
->   modprobe: Failed to scan dir /lib/modules/: No such file or directory
->   lib/tst_cmd.c:114: TBROK: 'modprobe' exited with a non-zero code 1
-> 
-> keyctl29 fails the same way today, and this series fixes it since
-> modprobe is no longer called when the parser is built in. With keyctl23
-> covered too, we can re-enable both tests in Android VTS. If you would
-> rather keep this series as is, I can send a separate patch for keyctl23.
+From: "Li Wang (Hieco)" <li.wang@linux.dev>
 
-Thank you Wake for the feedback, sure I can add keyctl23 into this patch in v5.
+Tests that depend on a config set to =m currently load the module
+themselves, and may fail with misleading errors when it is missing,
+e.g. bind() returning EADDRNOTAVAIL for AF_VSOCK without vsock_loopback.
+
+This series makes tst_kconfig record the module for every
+config_module_maps[] entry seen as =m, load them once the kernel
+config check passes, and unload them at cleanup time.
+
+Changes in v5:
+- cve-2025-21756.c: merge drop_privileges into setup and drop cleanup.
+- keyctl23.c: remove tst_modprobe() so it can run on Android.
+
+Changes in v4:
+- tst_kconfig: fold module_name_for_config() into
+  kconfig_module_record()
+- tst_kconfig: move the choice == 'm' gate into
+  kconfig_module_record() and pass struct tst_kconfig_var * instead
+  of the raw config name.
+
+Changes in v3:
+- Queue only configs that stay 'm' after kconfig_module_check(),
+  so a module downgraded to 'n' does not abort an otherwise
+  runnable test.
+- Unload with "modprobe -r" instead of "rmmod" to also remove
+  dependencies pulled in by modprobe.
+- Drop the redundant geteuid() check in the unload path.
+- Raise MAX_LOADED_MODULES from 16 to 32.
+- cve-2025-21756: drop privileges to nobody after module loading
+  and regain root in cleanup(), so the reproducer runs from a
+  non-root context while the framework can still unload modules.
+
+Changes in v2:
+- Add tst_module_is_loaded() helper.
+- Only load/unload modules that are not already loaded.
+- Skip automatic loading when KCONFIG_SKIP_CHECK=1, keeping the
+  semantics consistent with skipping the config check.
+- Document the KCONFIG_SKIP_CHECK=1 behaviour for keyctl29/keyctl30
+  and the vsock/vsock_loopback mapping.
+
+Li Wang (Hieco) (4):
+  lib: add module is loaded check
+  tst_kconfig: load and unload kernel modules for CONFIG_*=m
+  tst_kconfig: add module mappings for vsock/vsock_loopback
+  testcases: drop manual tst_modprobe() now handled by tst_kconfig
+
+ include/tst_kconfig.h                       | 28 ++++++++
+ include/tst_module.h                        |  1 +
+ lib/tst_kconfig.c                           | 77 +++++++++++++++++++++
+ lib/tst_module.c                            | 39 +++++++++++
+ lib/tst_test.c                              | 11 ++-
+ testcases/cve/cve-2025-21756.c              | 17 +++++
+ testcases/cve/cve-2026-46331.c              |  7 --
+ testcases/cve/sctphantom.c                  |  3 -
+ testcases/kernel/syscalls/keyctl/keyctl23.c |  5 --
+ testcases/kernel/syscalls/keyctl/keyctl29.c |  3 -
+ testcases/kernel/syscalls/keyctl/keyctl30.c |  3 -
+ 11 files changed, 171 insertions(+), 23 deletions(-)
 
 -- 
-Regards,
-Li Wang
+2.56.0
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
