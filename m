@@ -4,112 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8FA27CCA464
-	for <ltp@archiver.kernel.org>; Fri, 16 Oct 2026 09:06:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 74A55CC6B38
+	for <ltp@archiver.kernel.org>; Fri, 16 Oct 2026 10:52:27 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 438323EA717
-	for <ltp@archiver.kernel.org>; Fri, 16 Oct 2026 11:06:48 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 55C793EA720
+	for <ltp@archiver.kernel.org>; Fri, 16 Oct 2026 12:52:25 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 267AD3E29D4
- for <ltp@lists.linux.it>; Fri, 16 Oct 2026 11:06:31 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id AB7403E29BE
+ for <ltp@lists.linux.it>; Fri, 16 Oct 2026 12:52:08 +0200 (CEST)
+Received: from mail-dy1-x1344.google.com (mail-dy1-x1344.google.com
+ [IPv6:2607:f8b0:4864:20::1344])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 4AC1F1000A52
- for <ltp@lists.linux.it>; Fri, 16 Oct 2026 11:06:30 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 7F90D1F452;
- Fri, 16 Oct 2026 09:06:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1792141589;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=yDOV0ECqGxUCJDIEnAhSxoUblgSgZ34G3oUWQTymYpM=;
- b=iOeb9bXq7+oQUYXDnQt1WWaSElQ9oL47e0Dg+h9g1cGbiRd0zk85oHItQRTAVTQZpj4lyn
- uoC82WGBK/9HEKU0O5lq7v9+wjL8D4O1k/6M5wR6DlwPUPBo2+9O+II7dh5xT1IPuQtd4H
- fO+6hSNjbboATzh/cnQrIV4w2GJN15o=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1792141589;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=yDOV0ECqGxUCJDIEnAhSxoUblgSgZ34G3oUWQTymYpM=;
- b=dY2NP2YgrgKOsB2ENo69uwn2pdc+Qm7dRkpWtFmZZkAO8AiDf4MkleYA7w0MCm3k0P5FL6
- Wnc8g6cOWHtXDRAw==
-Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=iOeb9bXq;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=dY2NP2Yg
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1792141589;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=yDOV0ECqGxUCJDIEnAhSxoUblgSgZ34G3oUWQTymYpM=;
- b=iOeb9bXq7+oQUYXDnQt1WWaSElQ9oL47e0Dg+h9g1cGbiRd0zk85oHItQRTAVTQZpj4lyn
- uoC82WGBK/9HEKU0O5lq7v9+wjL8D4O1k/6M5wR6DlwPUPBo2+9O+II7dh5xT1IPuQtd4H
- fO+6hSNjbboATzh/cnQrIV4w2GJN15o=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1792141589;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=yDOV0ECqGxUCJDIEnAhSxoUblgSgZ34G3oUWQTymYpM=;
- b=dY2NP2YgrgKOsB2ENo69uwn2pdc+Qm7dRkpWtFmZZkAO8AiDf4MkleYA7w0MCm3k0P5FL6
- Wnc8g6cOWHtXDRAw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 397291339F;
- Fri, 16 Oct 2026 09:06:29 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id hu2BOhTp0WpxAQAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Fri, 16 Oct 2026 09:06:29 +0000
-Date: Fri, 16 Oct 2026 11:06:23 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Martin Cermak <mcermak@redhat.com>
-Message-ID: <20261016090623.GB311652@pevik>
-References: <as9x2R-9IQb7vjn7@toolbx>
- <27AE9564-6115-491B-AE80-D9016EA7CDB5@suse.com>
- <20261015083851.GA290292@pevik> <atCVc5kQoGx5spgk@toolbx>
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 11EB9140124B
+ for <ltp@lists.linux.it>; Fri, 16 Oct 2026 12:52:08 +0200 (CEST)
+Received: by mail-dy1-x1344.google.com with SMTP id
+ 5a478bee46e88-35829219da8so966525eec.0
+ for <ltp@lists.linux.it>; Fri, 16 Oct 2026 03:52:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20251104; t=1792147926; x=1792752726; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to:content-type;
+ bh=/NHYALfzd4pfrrKuxGTZKAKAa7Bzugg8QZ4yPPEnysk=;
+ b=DxregVn52I4LnNk2DkcPLAUvYO//F/GgCGsqPgqY2H8qX+PCX/6GKs16JH99njBF75
+ TTgRC6TdI82oSfNLdbqijMfqoEcp9ARV/mHxuTEQl9ipb2VC+L88HW5fAAC2LQ5omESp
+ rJM/3eLas6nTEgrYw+eXJoF6hZaqHi/qh9hqmapfI0VgYJ6t08wIHbW8V3U0D/C4GaMc
+ I39naA6/2ZcYTyWUAIR2LLXvynIlZt8hpu2EGd7KU8B93Wn+YVOed6CH9LsrLaK+8PD0
+ 18+D+t2DW1L1Td6L4A28TPY7aJyXmczaUasEprxXkYV9S/CmezMnvSmuTrIZyI7HsJa/
+ ssLA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20260707; t=1792147926; x=1792752726;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to:content-type;
+ bh=/NHYALfzd4pfrrKuxGTZKAKAa7Bzugg8QZ4yPPEnysk=;
+ b=BqgeRnV7AJJslZXAUj3QahoQcn8y0pVVO92YYoMPZjVND/LpNNm/pwEqSgbyjYAqo5
+ xNRh+fvbMuzMdVllvt7oZ32h2Vbu6CL2HWxmEubTQL3NrjT8QO03EGLLtaH17t9HRzBH
+ Pqt5kiuzg19ZCVYrnw5BEABvvbUXAjn37zM6pYToMBBG56P/k9m4ap/6kdgHsmWGZX1I
+ B+DuWRCI5Rg1KRbbuY8qDwdYKwTri200M5yEQlT0aVx3y8wSX8An4iIFOZn74kI07FzQ
+ O9TBfklss+155Ome4FoDMNskP+soFpVFe+9fVL4xr0TcPaKdC//1PB5N/ih4Crh0l1yq
+ jtJQ==
+X-Gm-Message-State: AFq9FYLVEih3Ge5zPxBCWfaM7v3Kc7PUAjTeGyET0WIzhIqvQcvr0vIB
+ QV+VpIVsAGX6y6Bt94aIDH+jzdzjxAN3m14ba0Igkqd33uXp0awmvdCo
+X-Gm-Gg: AYBFou3v6yaZB/Ji9pizbxHfyLYpEvhD9OcRd3kpd1qyXPDC6xhwUUyat+Q+3mlthZp
+ zootmTRuJYYdJGONX/N4EXV1eGD8lrQIrKP5dNBuf/li74WfgI4cOsMwr5zLtvH9GQTFehNe9sf
+ pQVtGb9OoyuQckPOrimCgkqnatKGwoC+3z6U9ps2oju41vXDxR8C1Wwyey3GqsnsuQUmNt6DaWe
+ 8/nLVHRUw7sGA1Z82CU5hMHSPFSJ2cpS3ta6slPAVL9NnsDxfX3Y75KUliRrqLkul9pOC5vF4aJ
+ C9q5STL13CJyaeRaO5bv4Idscjwi0ogmji+E0CHzOYlmDGjAgLx9ZwR8A0mHiePcHrXK/lMPOcv
+ +Z37vqnJsMbWkJhWSUZT6txNMEpTLh/vx8iRU3aDJ2H4yPVa2dyHU1ge5PR/ZHO2fSz7iOztUoV
+ 27+1MkMmyhkKaTv5GQYV+L47wc4OwauSiZT8k9FVmAIwgEYHhtS1ofdN7QI+MkE916OhqNkc6ZW
+ cOtzD+TwO7KZYk9Q4nOl7FrdIpT53KP5YLQv8r1ZKg9V7NE9K0v0acggbN57RZ38tz3VcYfw39b
+ lzLLnKh3UGOO
+X-Received: by 2002:a05:7022:f9c:b0:166:fc9a:11b3 with SMTP id
+ a92af1059eb24-1825856b60cmr4719716c88.12.1792147926155; 
+ Fri, 16 Oct 2026 03:52:06 -0700 (PDT)
+Received: from
+ runnervm8k3b6.3wpxypyusazulgllm30x5wu1ga.dx.internal.cloudapp.net
+ ([13.86.140.151]) by smtp.gmail.com with ESMTPSA id
+ a92af1059eb24-1831c2e7bf4sm4526744c88.20.2026.10.16.03.52.05
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 16 Oct 2026 03:52:05 -0700 (PDT)
+From: linuxtestproject.agent@gmail.com
+To: Gaurav Pathak <gpathak@suse.de>
+Date: Fri, 16 Oct 2026 10:52:03 +0000
+Message-ID: <20261016105203.9420-1-linuxtestproject.agent@gmail.com>
+X-Mailer: git-send-email 2.55.0
+In-Reply-To: <20261016-statx-atomic-write-v7-1-d9cd4e1f1bcd@suse.com>
+References: <20261016-statx-atomic-write-v7-1-d9cd4e1f1bcd@suse.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <atCVc5kQoGx5spgk@toolbx>
-X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-3.71 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- TO_DN_SOME(0.00)[];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- URIBL_BLOCKED(0.00)[suse.cz:replyto,suse.cz:dkim,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
- ARC_NA(0.00)[]; MIME_TRACE(0.00)[0:+];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,suse.cz:dkim,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
- RCVD_TLS_ALL(0.00)[]; DKIM_TRACE(0.00)[suse.cz:+];
- RCVD_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
- FROM_HAS_DN(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- RCPT_COUNT_FIVE(0.00)[5]; RCVD_VIA_SMTP_AUTH(0.00)[];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- MISSING_XM_UA(0.00)[]; REPLYTO_EQ_FROM(0.00)[]
-X-Rspamd-Queue-Id: 7F90D1F452
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [Valgrind-developers] Suggested fix for the mremap03
- syscall testcase
+Subject: Re: [LTP] syscalls/statx13: Add basic test for STATX_WRITE_ATOMIC
+ on regular file
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -121,74 +93,57 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: valgrind-developers@lists.sourceforge.net, Mark Wielaard <mark@klomp.org>,
- ltp@lists.linux.it
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Martin,
+Hi Gaurav,
 
-> Hi Petr,
+On Fri, 16 Oct 2026, Gaurav Pathak wrote:
+> syscalls/statx13: Add basic test for STATX_WRITE_ATOMIC on regular file
 
-> with patched testcase, valgrind doesn't crash any more, at least
-> my fresh upstream version of valgrind doesn't:
+> +++ b/testcases/kernel/syscalls/statx/statx13.c
+> +			.type = "xfs",
+> +			.min_kver = "6.12",
+> +			.mkfs_opts = (const char *const []){"-f", "-bsize=16K", NULL},
 
-> $ git log -1 --oneline testcases/kernel/syscalls/mremap/mremap03.c
-> 3ddcfa8c3 (HEAD -> master) Fix the mremap03 syscall testcase
-> $ valgrind --version
-> valgrind-3.28.0.GIT
-> $ valgrind testcases/kernel/syscalls/mremap/mremap03
-> ==1419973== Memcheck, a memory error detector
-> ==1419973== Copyright (C) 2002-2026, and GNU GPL'd, by Julian Seward et al.
-> ==1419973== Using Valgrind-3.28.0.GIT and LibVEX; rerun with -h for copyright info
-> ==1419973== Command: testcases/kernel/syscalls/mremap/mremap03
-> ==1419973== 
-> tst_test.c:2061: TINFO: LTP version: 20260930-20-g3ddcfa8c3
-> tst_test.c:2064: TINFO: Tested kernel: 7.2.7-200.fc44.x86_64 #1 SMP PREEMPT_DYNAMIC Mon Sep 21 18:25:57 UTC 2026 x86_64
-> tst_kconfig.c:73: TINFO: Couldn't locate kernel config!
-> tst_test.c:1895: TINFO: Overall timeout per run is 0h 00m 30s
-> mremap03.c:42: TFAIL: mremap(bad_addr, memsize, newsize, MREMAP_MAYMOVE) expected EFAULT: EINVAL (22)
-> ==1419992== 
-> ==1419992== HEAP SUMMARY:
-> ==1419992==     in use at exit: 0 bytes in 0 blocks
-> ==1419992==   total heap usage: 13 allocs, 13 frees, 7,647 bytes allocated
-> ==1419992== 
-> ==1419992== All heap blocks were freed -- no leaks are possible
-> ==1419992== 
-> ==1419992== For lists of detected and suppressed errors, rerun with: -s
-> ==1419992== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+With 4 KiB pages and CONFIG_TRANSPARENT_HUGEPAGE disabled, XFS rejects
+this 16 KiB filesystem with ENOSYS even on kernels newer than 6.12.
+mapping_max_folio_size_supported() returns PAGE_SIZE in that configuration,
+so SAFE_MOUNT2 reports TBROK before the statx checks run.
+Use the default XFS block size, or gate the large-block configuration on
+its actual prerequisites.
 
-> Summary:
-> passed   0
-> failed   1
-> broken   0
-> skipped  0
-> warnings 0
-> ==1419973== 
-> ==1419973== HEAP SUMMARY:
-> ==1419973==     in use at exit: 0 bytes in 0 blocks
-> ==1419973==   total heap usage: 6 allocs, 6 frees, 4,488 bytes allocated
-> ==1419973== 
-> ==1419973== All heap blocks were freed -- no leaks are possible
-> ==1419973== 
-> ==1419973== For lists of detected and suppressed errors, rerun with: -s
-> ==1419973== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
-> $
+> + * This test validates the STATX_WRITE_ATOMIC feature (introduced in Linux 6.13).
+> + * It ensures that supported filesystems (xfs and ext4) correctly report their
+> + * atomic write limits to user space when queried via statx().
+> + *
+> + * Minimum Linux version required is v6.12.
 
-> But that doesn't mean things are perfect.  The main problem is
-> that under valgrind the testcase behaves differently compared to
-> a run without valgrind. Looking into it.  Thanks for the merge.
+STATX_WRITE_ATOMIC was introduced in 6.11 for block devices; regular-file
+reporting on XFS/ext4 arrived in 6.13, so the stated 6.12 minimum is
+incorrect. Describe the regular-file support explicitly, correct or remove
+the minimum-version sentence, and use :manpage:`statx(2)` for the syscall
+reference.
 
-I see, there is more work needed :). Anyway, false positive is much better than
-test crash and we are happy to have test regression fixed.
+> +	.needs_root = 1,
 
-Thank you!
+Document in the high-level description that root is required to format
+and mount the test filesystems.
 
-Kind regards,
-Petr
+Verdict - Needs revision
+
+---
+Note:
+
+The agent can sometimes produce false positives although often its
+findings are genuine. If you find issues with the review, please
+comment this email or ignore the suggestions.
+
+Regards,
+LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
