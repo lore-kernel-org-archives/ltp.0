@@ -4,75 +4,99 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 590AECCF2E3
-	for <ltp@archiver.kernel.org>; Mon, 19 Oct 2026 12:36:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1792413362; h=to : date :
- message-id : mime-version : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : content-type : content-transfer-encoding : sender : from;
- bh=HmfemE0WPleoGTwmNna4XoGATXj6jqrVImu0c3q7H/0=;
- b=kh/BssmcfYe5ZAigxH19L9/uFJwWTzReJVlYoNGzKcGnLBilm0b5TzFL2E0dIrBJRs0Ln
- r2tAIC7xTBxGSe9RIytHoWVcbME/AQCB3A7np/49Byj4jjk5mvhvVMsxO7d51x4CZL898Jr
- pvLsbO5L3M1dwbTb6Hhe/QpT+rtaPXM=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 34AF3CCF2DB
+	for <ltp@archiver.kernel.org>; Mon, 19 Oct 2026 13:13:49 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8C2FD3EA64B
-	for <ltp@archiver.kernel.org>; Mon, 19 Oct 2026 14:36:02 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 12E893EA65E
+	for <ltp@archiver.kernel.org>; Mon, 19 Oct 2026 15:13:47 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id ACBDB3E9AD7
- for <ltp@lists.linux.it>; Mon, 19 Oct 2026 14:35:42 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ by picard.linux.it (Postfix) with ESMTPS id 2C2E83E61E5
+ for <ltp@lists.linux.it>; Mon, 19 Oct 2026 15:13:31 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 83A011400175
- for <ltp@lists.linux.it>; Mon, 19 Oct 2026 14:35:41 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1792413339;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=6UanoN8sWcmN1lGOn42ogzn1WWDrPZoQC8vuLgVneAI=;
- b=UGVsB2Sz31H3xmhZypASdscOkJxv5qLBe25li1/XHbIkJGT/bysyHi1rRFtObOlBmJycL3
- xigT0AsTy0UaGauF8sDsK7+2BWB8/6NOoEuvLwFPmq0+s5wE3zTdyNf66g96H+0hHB2rhu
- 1tIn/uflMmZlm5ZSGIYCrC8SuX8TEZY=
-Received: from mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-680-98D1GJa2PwaoClRDXrx4Rg-1; Mon,
- 19 Oct 2026 12:35:38 +0000
-X-MC-Unique: 98D1GJa2PwaoClRDXrx4Rg-1
-X-Mimecast-MFC-AGG-ID: 98D1GJa2PwaoClRDXrx4Rg_1792413337
-Received: from mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com
- (mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.93])
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 9F6931A0071B
+ for <ltp@lists.linux.it>; Mon, 19 Oct 2026 15:13:30 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
- id 77A63195606F
- for <ltp@lists.linux.it>; Mon, 19 Oct 2026 12:35:37 +0000 (UTC)
-Received: from jstancek-thinkpadt14gen5.redhat.corp
- (headnet04.pony-001.prod.iad2.dc.redhat.com [10.2.32.116])
- by mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP
- id BED0418004D2
- for <ltp@lists.linux.it>; Mon, 19 Oct 2026 12:35:36 +0000 (UTC)
-To: ltp@lists.linux.it
-Date: Mon, 19 Oct 2026 14:35:31 +0200
-Message-ID: <89fe77f22e26d912865c8b8266b150ba7459bfae.1792413314.git.jstancek@redhat.com>
+ by smtp-out1.suse.de (Postfix) with ESMTPS id B18D721C3B;
+ Mon, 19 Oct 2026 13:13:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1792415609;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=Wneeka+qCKgG4h7GQjGd6eWsjYciwdK8MVBGAQZXJLs=;
+ b=Hcjn5hUZ5HSMkXQugWhIk3mLFaCNz1624yx88WZC0xBEcoGyf5QrOXl3CR6FwsuaQfOAO/
+ odDdtvPpk6158LcjxhRR1gzMOhTjeqo6NbNM73nnyyHNiZcXna/i4LabsjQdDhE+Yk5ULN
+ Ldq1fbdzUe3jV8sEhKEX9eynX0m1L2g=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1792415609;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=Wneeka+qCKgG4h7GQjGd6eWsjYciwdK8MVBGAQZXJLs=;
+ b=t89xYEFy2t9qnnlBDy/8eHANN2KpSQBfnhqNlteRKJCE8tYxNgHqK9NKl/lJPzsH8PZ8sO
+ LaYIGHzRvRNsJvBw==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1792415609;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=Wneeka+qCKgG4h7GQjGd6eWsjYciwdK8MVBGAQZXJLs=;
+ b=Hcjn5hUZ5HSMkXQugWhIk3mLFaCNz1624yx88WZC0xBEcoGyf5QrOXl3CR6FwsuaQfOAO/
+ odDdtvPpk6158LcjxhRR1gzMOhTjeqo6NbNM73nnyyHNiZcXna/i4LabsjQdDhE+Yk5ULN
+ Ldq1fbdzUe3jV8sEhKEX9eynX0m1L2g=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1792415609;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=Wneeka+qCKgG4h7GQjGd6eWsjYciwdK8MVBGAQZXJLs=;
+ b=t89xYEFy2t9qnnlBDy/8eHANN2KpSQBfnhqNlteRKJCE8tYxNgHqK9NKl/lJPzsH8PZ8sO
+ LaYIGHzRvRNsJvBw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5D25C134B3;
+ Mon, 19 Oct 2026 13:13:29 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id ibwCCHkX1mqyGQAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Mon, 19 Oct 2026 13:13:29 +0000
+Date: Mon, 19 Oct 2026 15:13:27 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Jan Stancek <jstancek@redhat.com>
+Message-ID: <20261019131327.GA63027@pevik>
+References: <89fe77f22e26d912865c8b8266b150ba7459bfae.1792413314.git.jstancek@redhat.com>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.93
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: LNJVKzOs6HLqQaar54gWmBv7O_4lP5LzF0iVuIzbo84_1792413337
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <89fe77f22e26d912865c8b8266b150ba7459bfae.1792413314.git.jstancek@redhat.com>
+X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ RCPT_COUNT_TWO(0.00)[2]; TO_DN_SOME(0.00)[]; ARC_NA(0.00)[];
+ MIME_TRACE(0.00)[0:+];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,suse.cz:email,imap1.dmz-prg2.suse.org:helo];
+ RCVD_TLS_ALL(0.00)[]; MISSING_XM_UA(0.00)[];
+ FROM_HAS_DN(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ FROM_EQ_ENVFROM(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ RCVD_COUNT_TWO(0.00)[2]; REPLYTO_EQ_FROM(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] nextafter01: Check exact results and convert to new
- API
+Subject: Re: [LTP] [PATCH] nextafter01: Check exact results and convert to
+ new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -84,199 +108,55 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Jan Stancek via ltp <ltp@lists.linux.it>
-Reply-To: Jan Stancek <jstancek@redhat.com>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-The test can hardly fail. Block 1 accepts nextafter(1.0, 1.1) whenever
-(answer + 1.0) / 2 rounds to 1.0 as a float, which is also true when
-nextafter() returns 1.0 unchanged. Block 2 never recomputes 'check'
-and compares the stale value from block 1, which is exactly 1.0, so its
-'check != 1.0' condition is always false and any return value passes.
-Only the x == y case in block 3 is really verified. The file header also
-names the test "scalb".
+Hi Jan,
 
-Compare the results with the exact next doubles instead: 1.0 + 2^-52
-above and 1.0 - 2^-53 below. Both are exactly representable, so a plain
-equality test is sufficient. Rewrite the test with the new API while at
-it and fix the description.
+> The test can hardly fail. Block 1 accepts nextafter(1.0, 1.1) whenever
+> (answer + 1.0) / 2 rounds to 1.0 as a float, which is also true when
+> nextafter() returns 1.0 unchanged. Block 2 never recomputes 'check'
+> and compares the stale value from block 1, which is exactly 1.0, so its
+> 'check != 1.0' condition is always false and any return value passes.
+> Only the x == y case in block 3 is really verified. The file header also
+> names the test "scalb".
 
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
- testcases/misc/math/nextafter/nextafter01.c | 145 +++++---------------
- 1 file changed, 33 insertions(+), 112 deletions(-)
+> Compare the results with the exact next doubles instead: 1.0 + 2^-52
+> above and 1.0 - 2^-53 below. Both are exactly representable, so a plain
+> equality test is sufficient. Rewrite the test with the new API while at
+> it and fix the description.
 
-diff --git a/testcases/misc/math/nextafter/nextafter01.c b/testcases/misc/math/nextafter/nextafter01.c
-index f4b212d4daa2..a74b7dc8e974 100644
---- a/testcases/misc/math/nextafter/nextafter01.c
-+++ b/testcases/misc/math/nextafter/nextafter01.c
-@@ -1,127 +1,48 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-- *
-- *   Copyright (c) International Business Machines  Corp., 2002
-- *
-- *   This program is free software;  you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
-- *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- *   the GNU General Public License for more details.
-- *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software
-- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-+ * Copyright (c) International Business Machines Corp., 2002
-+ * Copyright (c) 2026 Jan Stancek <jstancek@redhat.com>
-  */
- 
--/* 01/02/2003	Port to LTP	avenkat@us.ibm.com */
--/* 06/30/2001	Port to Linux	nsharoff@us.ibm.com */
--
--/*
-- * NAME
-- *      scalb
-+/*\
-+ * Verify that nextafter() returns the next representable double in the
-+ * direction of its second argument:
-  *
-- * CALLS
-- *      nextafter(3C)
-- *
-- * ALGORITHM
-- *	Check results from the above functions against expected values.
-- *
-- * RESTRICTIONS
-- * 	Checks for basic functionality, nothing fancy
-+ * - nextafter(1.0, 1.1) is 1.0 + 2^-52 (DBL_EPSILON)
-+ * - nextafter(1.0, 0.9) is 1.0 - 2^-53
-+ * - nextafter(1.0, 1.0) is 1.0
-  */
- 
--#include <errno.h>
- #include <math.h>
--#include <stdio.h>
--#include <stdlib.h>
--#include "test.h"
-+#include "tst_test.h"
- 
--#define	FAILED 0
--#define	PASSED 1
-+/* DBL_EPSILON spelled out, as sparse does not know __DBL_EPSILON__ */
-+#define EPSILON (1.0 / (1ULL << 52))
- 
--char *TCID = "nextafter01";
-+static struct tcase {
-+	double x;
-+	double y;
-+	double exp;
-+} tcases[] = {
-+	{1.0, 1.1, 1.0 + EPSILON},
-+	{1.0, 0.9, 1.0 - EPSILON / 2},
-+	{1.0, 1.0, 1.0},
-+};
- 
--int local_flag = PASSED;
--int block_number;
--FILE *temp;
--int TST_TOTAL = 1;
--
--void setup();
--void blenter();
--void blexit();
--
--/*--------------------------------------------------------------*/
--int main()
-+static void run(unsigned int n)
- {
--	double answer;
--	double check;		/* tmp variable */
-+	struct tcase *tc = &tcases[n];
-+	double ret = nextafter(tc->x, tc->y);
- 
--	setup();		/* temp file is now open */
--/*--------------------------------------------------------------*/
--	blenter();
--
--	answer = nextafter(1.0, 1.1);
--	check = (answer + 1.0) / 2;
--	if ((check != answer) && ((float)check != 1.0)) {
--		fprintf(temp, "nextafter returned %e, expected answer or 1.0\n",
--			answer);
--		local_flag = FAILED;
-+	if (ret == tc->exp) {
-+		tst_res(TPASS, "nextafter(%g, %g) == %.17g", tc->x, tc->y, ret);
-+	} else {
-+		tst_res(TFAIL, "nextafter(%g, %g) == %.17g, expected %.17g",
-+			tc->x, tc->y, ret, tc->exp);
- 	}
--
--	blexit();
--/*--------------------------------------------------------------*/
--	blenter();
--
--	answer = nextafter(1.0, 0.9);
--	if ((check != answer) && (check != 1.0)) {
--		fprintf(temp, "nextafter returned %e, expected answer or 1.0\n",
--			answer);
--		local_flag = FAILED;
--	}
--
--	blexit();
--/*--------------------------------------------------------------*/
--	blenter();
--
--	answer = nextafter(1.0, 1.0);
--	if (answer != 1.0) {
--		fprintf(temp, "nextafter 3 returned %e, expected 1.0\n",
--			answer);
--		local_flag = FAILED;
--	}
--
--	blexit();
--/*--------------------------------------------------------------*/
--
--	tst_exit();
- }
- 
--/*--------------------------------------------------------------*/
--
--/*****	*****	LTP Port	*****/
--
--/* FUNCTIONS */
--
--void setup()
--{
--	temp = stderr;
--}
--
--void blenter()
--{
--	local_flag = PASSED;
--}
--
--void blexit()
--{
--	if (local_flag == PASSED)
--		tst_resm(TPASS, "Test passed");
--	else
--		tst_resm(TFAIL, "Test failed");
--}
--
--/*****	*****		*****/
-+static struct tst_test test = {
-+	.test = run,
-+	.tcnt = ARRAY_SIZE(tcases),
-+};
--- 
-2.56.0
+Thanks!
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
 
+...
+> -char *TCID = "nextafter01";
+> +static struct tcase {
+> +	double x;
+> +	double y;
+> +	double exp;
+> +} tcases[] = {
+> +	{1.0, 1.1, 1.0 + EPSILON},
+> +	{1.0, 0.9, 1.0 - EPSILON / 2},
+> +	{1.0, 1.0, 1.0},
+> +};
+
+...
+> +	if (ret == tc->exp) {
+Hm, we still does not have TST_EXP_EQ_* variant for double.
+Likely not worth of having it (not many tests comparing double).
+
+Kind regards,
+Petr
+
+> +		tst_res(TPASS, "nextafter(%g, %g) == %.17g", tc->x, tc->y, ret);
+> +	} else {
+> +		tst_res(TFAIL, "nextafter(%g, %g) == %.17g, expected %.17g",
+> +			tc->x, tc->y, ret, tc->exp);
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
