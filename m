@@ -4,46 +4,102 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EE97ACCF2DA
-	for <ltp@archiver.kernel.org>; Mon, 19 Oct 2026 08:46:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6750ACCF2DA
+	for <ltp@archiver.kernel.org>; Mon, 19 Oct 2026 10:16:54 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 17BB53E61A6
-	for <ltp@archiver.kernel.org>; Mon, 19 Oct 2026 10:46:09 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id F0D053EA655
+	for <ltp@archiver.kernel.org>; Mon, 19 Oct 2026 12:16:51 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id BC1723C0646
- for <ltp@lists.linux.it>; Mon, 19 Oct 2026 10:45:52 +0200 (CEST)
-Received: from mta1.migadu.com (out-111.mta1.migadu.com
- [IPv6:2001:41d0:203:375::6f])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 4B4503E61A9
+ for <ltp@lists.linux.it>; Mon, 19 Oct 2026 12:16:37 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 33B12600074
- for <ltp@lists.linux.it>; Mon, 19 Oct 2026 10:45:51 +0200 (CEST)
-X-Envelope-To: ltp@lists.linux.it
-DKIM-Signature: a=rsa-sha256; bh=gsagyy9jpRuKzUq2NfPf1P9V08TtcoM5/VFwv+QtMZ0=; 
- c=simple/simple; d=linux.dev;
- h=from:to:subject:date:message-id:mime-version:content-type; s=key1;
- t=1792399550; v=1; x=1793004350;
- b=xFR42X1YBXzQwS+MM+OYS7xCO9T3nGT4sJPZaO7cfyyteGBUFUo7bmcElowaJkgt2j8CTxvC
- xhBKTN/Tn8710MH3IGpTPUg3TMGICkKB8X1GkFGPg/UqaZ7+ccVPV+khItkcvqrYf8ytC++GesO
- Efvdvo2s7D0BMiPGTPh7b4lc=
-X-Envelope-To: ltp@lists.linux.it
-Received: by mta11.migadu.com with ESMTPS id 76f2e0fef56cd6d5;
- Mon, 19 Oct 2026 08:45:50 +0000
-X-Mizu-Trace-ID: 76f2e0fef56cd6d5
-X-Migadu-Flow: FLOW_OUT
-From: "Li Wang (Hieco)" <li.wang@linux.dev>
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id BEAF810007C3
+ for <ltp@lists.linux.it>; Mon, 19 Oct 2026 12:16:36 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 571451F444;
+ Mon, 19 Oct 2026 10:16:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1792404995; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=sEGfFZl0RoVwHYZZ85zt/jsw7QOiPFj1Xn0KAYiaX08=;
+ b=pscG+93FcXMe6pK4XvlGV2//FoUUBNOHhxTOQKoGn+zhO5T5QS3bjYMSyQ0vLlEurvkR5M
+ tW1/+oWeNCl6VDw/vALD0/awG390O5dT962vWdmMSTKjzG9JqCBShOMhBNU6T+9mMU/UAe
+ GBt1mqqdaXy8KnV4dKk0TXD9d2Y11Nc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1792404995;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=sEGfFZl0RoVwHYZZ85zt/jsw7QOiPFj1Xn0KAYiaX08=;
+ b=cKtSHwlAtyJqHN8hxJz6jjNHJzuzTt8NEOb0qRc/XbvkeB7vMsjfncsSM0oRjzecL2lJk7
+ 3NaapziVIaFko7CQ==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1792404994; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=sEGfFZl0RoVwHYZZ85zt/jsw7QOiPFj1Xn0KAYiaX08=;
+ b=VyAukOiLKFMEJYt2hdUFJ+3wQDRzlx0PD6sh4chf9Puh5T8LYpeWNXzKopJOiP4MSJhBr1
+ jumtKs+p1ueDDgGjlHYIAFdRCtjM/+QaGI+D3Bo8LkzV69nzDZPsBQe5RDizcqJ3K9/9u/
+ 50CLm7UXFREnKT9awi8p3NZCQsxQ+vk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1792404994;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=sEGfFZl0RoVwHYZZ85zt/jsw7QOiPFj1Xn0KAYiaX08=;
+ b=pi1k2prHpX3d35pGJZxk3mfuOknsHAtYP+oHcl8CRnQJ5L0S11y8nNYZWHcgqfsVm2Q6SJ
+ 0FDR9v9L5SYg5HAg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0A675136CC;
+ Mon, 19 Oct 2026 10:16:32 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id rcvrIQDu1WplUwAAD6G6ig
+ (envelope-from <gpathak@suse.de>); Mon, 19 Oct 2026 10:16:32 +0000
+From: Gaurav Pathak <gpathak@suse.de>
 To: ltp@lists.linux.it
-Date: Mon, 19 Oct 2026 16:45:33 +0800
-Message-ID: <20261019084533.70801-1-li.wang@linux.dev>
-X-Mailer: git-send-email 2.56.0
+Date: Mon, 19 Oct 2026 15:46:19 +0530
+Message-ID: <20261019101620.370689-1-gpathak@suse.de>
+X-Mailer: git-send-email 2.51.0
+In-Reply-To: <20261016105203.9420-1-linuxtestproject.agent@gmail.com>
+References: <20261016105203.9420-1-linuxtestproject.agent@gmail.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+X-Spamd-Result: default: False [-2.80 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MID_CONTAINS_FROM(1.00)[];
+ R_MISSING_CHARSET(0.50)[]; NEURAL_HAM_SHORT(-0.20)[-1.000];
+ MIME_GOOD(-0.10)[text/plain]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ ARC_NA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ FREEMAIL_CC(0.00)[gmail.com,suse.com]; TO_DN_SOME(0.00)[];
+ MIME_TRACE(0.00)[0:+];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email];
+ TAGGED_RCPT(0.00)[]; FROM_HAS_DN(0.00)[];
+ RCVD_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
+ FROM_EQ_ENVFROM(0.00)[]; RCPT_COUNT_THREE(0.00)[3];
+ DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ FREEMAIL_ENVRCPT(0.00)[gmail.com]
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] sys_hwmon01: always report a result
+Subject: [LTP] [PATCH v8 0/1] statx: Add regression test for
+ STATX_WRITE_ATOMIC on regular files
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -55,214 +111,52 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: Gaurav Pathak <gaurav.pathak@suse.com>, linuxtestproject.agent@gmail.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On machines where the only hwmon devices expose no checkable
-attributes (e.g. a VM or laptop where hwmon0 is just 'ACAD' with
-nothing but a name attribute), every *_SILENT assertion skips
-silently and the test finishes without reporting a single result,
-which the library turns into:
+From: Gaurav Pathak <gaurav.pathak@suse.com>
 
-    tst_test.c:1730: TBROK: Test haven't reported results!
+    This series adds syscalls/statx13, an LTP test exercising statx(2)'s
+    STATX_WRITE_ATOMIC reporting on regular files for XFS and ext4.
+    It covers the hardware-backed atomic write path (shared by both
+    filesystems, where the underlying block device itself advertises
+    atomic write support) as well as XFS's newer software/CoW-based
+    atomic write path (Linux v6.16+), which works even on devices without
+    hardware atomic write support, such as loop devices.
+    
+    ---
+    Changes in v8:
+    - Query the test device's own atomic write capability via statx()
+      before formatting, instead of assuming fixed mkfs options always apply.
+    - Derive the XFS/ext4 mkfs block size (and ext4 bigalloc cluster size)
+      from the device's reported atomic write limits at runtime, capped at
+      the 64KiB xfsprogs/e2fsprogs ceiling and at the page size unless THP
+      (xfs) or blocksize_gt_pagesize (ext4) allows larger blocks.
+    - Add support for XFS's software (CoW/reflink-based) atomic write path
+      (Linux v6.16+), so the test produces meaningful results on loop
+      devices too, not just on real or scsi_debug-emulated hardware.
+    - Keep ext4 on the hardware-only path, since it has no software
+      fallback; TCONF cleanly when the device lacks atomic write support.
+    - Switch from .mount_device with static per-filesystem mkfs_opts to
+      .needs_device + .needs_root with explicit setup()/cleanup(), to
+      support the new dynamic mkfs/mount logic and TCONF branching.
+    - Drop the hardcoded xfs-only .min_kver = "6.12" override; gate
+      behavior on runtime statx() results instead of a fixed kernel
+      version.
+    - Expand the file's top comment to document the hardware vs.
+      software atomic write mechanisms and the block-size constraints
+      involved.
+    - Link to v7: https://lore.kernel.org/r/20261016-statx-atomic-write-v7-1-d9cd4e1f1bcd@suse.com
 
-Fix this by counting the attributes that actually exist and get
-validated, then report a TPASS summary at the end, or TCONF when
-hwmon devices are present but expose nothing we can check.
+Gaurav Pathak (1):
+  statx: Add regression test for STATX_WRITE_ATOMIC on regular files
 
-Signed-off-by: Li Wang (Hieco) <li.wang@linux.dev>
----
- .../kernel/sysfs/class/hwmon/sys_hwmon01.c    | 109 ++++++++++++------
- 1 file changed, 76 insertions(+), 33 deletions(-)
 
-diff --git a/testcases/kernel/sysfs/class/hwmon/sys_hwmon01.c b/testcases/kernel/sysfs/class/hwmon/sys_hwmon01.c
-index 1bb574c23..8ecbd47d1 100644
---- a/testcases/kernel/sysfs/class/hwmon/sys_hwmon01.c
-+++ b/testcases/kernel/sysfs/class/hwmon/sys_hwmon01.c
-@@ -49,6 +49,8 @@
- 
- #include <string.h>
- #include <dirent.h>
-+#include <stdarg.h>
-+#include <limits.h>
- 
- #include "tst_test.h"
- #include "tst_sysfs_assert.h"
-@@ -56,39 +58,67 @@
- 
- #define MAX_CHANNELS 32
- 
-+static unsigned int checked;
-+
-+static int attr_exists(const char *fmt, ...)
-+{
-+	char path[PATH_MAX];
-+	va_list va;
-+
-+	va_start(va, fmt);
-+	vsnprintf(path, sizeof(path), fmt, va);
-+	va_end(va);
-+
-+	return tst_sysfs_exists(path);
-+}
-+
-+#define CHECK_RANGELL(lo, hi, ...) do { \
-+	if (attr_exists(__VA_ARGS__)) { \
-+		checked++; \
-+		TST_SYSFS_ASSERT_RANGELL_SILENT(lo, hi, __VA_ARGS__); \
-+	} \
-+} while (0)
-+
-+#define CHECK_BOOL(...) do { \
-+	if (attr_exists(__VA_ARGS__)) { \
-+		checked++; \
-+		TST_SYSFS_ASSERT_BOOL_SILENT(__VA_ARGS__); \
-+	} \
-+} while (0)
-+
- static void check_temp_channel(const char *hwmon, int idx)
- {
--	TST_SYSFS_ASSERT_RANGELL_SILENT(-55000, 200000,
--					PATH_CLASS_HWMON "/%s/temp%d_input", hwmon, idx);
--
--	TST_SYSFS_ASSERT_BOOL_SILENT(PATH_CLASS_HWMON "/%s/temp%d_alarm", hwmon, idx);
--	TST_SYSFS_ASSERT_BOOL_SILENT(PATH_CLASS_HWMON "/%s/temp%d_crit_alarm", hwmon, idx);
--	TST_SYSFS_ASSERT_BOOL_SILENT(PATH_CLASS_HWMON "/%s/temp%d_min_alarm", hwmon, idx);
--	TST_SYSFS_ASSERT_BOOL_SILENT(PATH_CLASS_HWMON "/%s/temp%d_max_alarm", hwmon, idx);
--	TST_SYSFS_ASSERT_BOOL_SILENT(PATH_CLASS_HWMON "/%s/temp%d_fault", hwmon, idx);
-+	CHECK_RANGELL(-55000, 200000,
-+		      PATH_CLASS_HWMON "/%s/temp%d_input", hwmon, idx);
-+
-+	CHECK_BOOL(PATH_CLASS_HWMON "/%s/temp%d_alarm", hwmon, idx);
-+	CHECK_BOOL(PATH_CLASS_HWMON "/%s/temp%d_crit_alarm", hwmon, idx);
-+	CHECK_BOOL(PATH_CLASS_HWMON "/%s/temp%d_min_alarm", hwmon, idx);
-+	CHECK_BOOL(PATH_CLASS_HWMON "/%s/temp%d_max_alarm", hwmon, idx);
-+	CHECK_BOOL(PATH_CLASS_HWMON "/%s/temp%d_fault", hwmon, idx);
- }
- 
- static void check_fan_channel(const char *hwmon, int idx)
- {
--	TST_SYSFS_ASSERT_RANGELL_SILENT(0, 100000,
--					PATH_CLASS_HWMON "/%s/fan%d_input", hwmon, idx);
-+	CHECK_RANGELL(0, 100000,
-+		      PATH_CLASS_HWMON "/%s/fan%d_input", hwmon, idx);
- 
--	TST_SYSFS_ASSERT_BOOL_SILENT(PATH_CLASS_HWMON "/%s/fan%d_alarm", hwmon, idx);
--	TST_SYSFS_ASSERT_BOOL_SILENT(PATH_CLASS_HWMON "/%s/fan%d_min_alarm", hwmon, idx);
--	TST_SYSFS_ASSERT_BOOL_SILENT(PATH_CLASS_HWMON "/%s/fan%d_max_alarm", hwmon, idx);
--	TST_SYSFS_ASSERT_BOOL_SILENT(PATH_CLASS_HWMON "/%s/fan%d_fault", hwmon, idx);
-+	CHECK_BOOL(PATH_CLASS_HWMON "/%s/fan%d_alarm", hwmon, idx);
-+	CHECK_BOOL(PATH_CLASS_HWMON "/%s/fan%d_min_alarm", hwmon, idx);
-+	CHECK_BOOL(PATH_CLASS_HWMON "/%s/fan%d_max_alarm", hwmon, idx);
-+	CHECK_BOOL(PATH_CLASS_HWMON "/%s/fan%d_fault", hwmon, idx);
- }
- 
- static void check_in_channel(const char *hwmon, int idx)
- {
--	TST_SYSFS_ASSERT_RANGELL_SILENT(-100000, 100000,
--					PATH_CLASS_HWMON "/%s/in%d_input", hwmon, idx);
--
--	TST_SYSFS_ASSERT_BOOL_SILENT(PATH_CLASS_HWMON "/%s/in%d_alarm", hwmon, idx);
--	TST_SYSFS_ASSERT_BOOL_SILENT(PATH_CLASS_HWMON "/%s/in%d_min_alarm", hwmon, idx);
--	TST_SYSFS_ASSERT_BOOL_SILENT(PATH_CLASS_HWMON "/%s/in%d_max_alarm", hwmon, idx);
--	TST_SYSFS_ASSERT_BOOL_SILENT(PATH_CLASS_HWMON "/%s/in%d_crit_alarm", hwmon, idx);
--	TST_SYSFS_ASSERT_BOOL_SILENT(PATH_CLASS_HWMON "/%s/in%d_lcrit_alarm", hwmon, idx);
-+	CHECK_RANGELL(-100000, 100000,
-+		      PATH_CLASS_HWMON "/%s/in%d_input", hwmon, idx);
-+
-+	CHECK_BOOL(PATH_CLASS_HWMON "/%s/in%d_alarm", hwmon, idx);
-+	CHECK_BOOL(PATH_CLASS_HWMON "/%s/in%d_min_alarm", hwmon, idx);
-+	CHECK_BOOL(PATH_CLASS_HWMON "/%s/in%d_max_alarm", hwmon, idx);
-+	CHECK_BOOL(PATH_CLASS_HWMON "/%s/in%d_crit_alarm", hwmon, idx);
-+	CHECK_BOOL(PATH_CLASS_HWMON "/%s/in%d_lcrit_alarm", hwmon, idx);
- }
- 
- static void check_curr_channel(const char *hwmon, int idx)
-@@ -97,10 +127,10 @@ static void check_curr_channel(const char *hwmon, int idx)
- 	 * Unlike fan/power, current can be negative on bidirectional sensors,
- 	 * e.g. a battery charge/discharge current monitor.
- 	 */
--	TST_SYSFS_ASSERT_RANGELL_SILENT(-500000, 500000,
--					PATH_CLASS_HWMON "/%s/curr%d_input", hwmon, idx);
-+	CHECK_RANGELL(-500000, 500000,
-+		      PATH_CLASS_HWMON "/%s/curr%d_input", hwmon, idx);
- 
--	TST_SYSFS_ASSERT_BOOL_SILENT(PATH_CLASS_HWMON "/%s/curr%d_alarm", hwmon, idx);
-+	CHECK_BOOL(PATH_CLASS_HWMON "/%s/curr%d_alarm", hwmon, idx);
- }
- 
- static void check_power_channel(const char *hwmon, int idx)
-@@ -110,13 +140,13 @@ static void check_power_channel(const char *hwmon, int idx)
- 	 * sensor (CPU, GPU, PSU rail, ...) while still fitting within
- 	 * LONG_MAX on 32bit architectures.
- 	 */
--	TST_SYSFS_ASSERT_RANGELL_SILENT(0, 2000000000,
--					PATH_CLASS_HWMON "/%s/power%d_input", hwmon, idx);
-+	CHECK_RANGELL(0, 2000000000,
-+		      PATH_CLASS_HWMON "/%s/power%d_input", hwmon, idx);
- }
- 
- static void check_pwm_channel(const char *hwmon, int idx)
- {
--	TST_SYSFS_ASSERT_RANGELL_SILENT(0, 255, PATH_CLASS_HWMON "/%s/pwm%d", hwmon, idx);
-+	CHECK_RANGELL(0, 255, PATH_CLASS_HWMON "/%s/pwm%d", hwmon, idx);
- }
- 
- static void check_hwmon_device(const char *hwmon)
-@@ -127,8 +157,8 @@ static void check_hwmon_device(const char *hwmon)
- 	if (TST_SYSFS_READ_STR(name, sizeof(name), PATH_CLASS_HWMON "/%s/name", hwmon))
- 		tst_res(TINFO, "%s: name = '%s'", hwmon, name);
- 
--	TST_SYSFS_ASSERT_RANGELL_SILENT(1, 3600000,
--					PATH_CLASS_HWMON "/%s/update_interval", hwmon);
-+	CHECK_RANGELL(1, 3600000,
-+		      PATH_CLASS_HWMON "/%s/update_interval", hwmon);
- 
- 	/* inN channels are numbered from 0, per the hwmon ABI */
- 	for (i = 0; i <= MAX_CHANNELS; i++)
-@@ -147,7 +177,9 @@ static void do_test(void)
- {
- 	DIR *d;
- 	struct dirent *ent;
--	int found = 0;
-+	int devices = 0;
-+
-+	checked = 0;
- 
- 	if (!tst_sysfs_exists(PATH_CLASS_HWMON))
- 		tst_brk(TCONF, PATH_CLASS_HWMON ": not present");
-@@ -158,14 +190,25 @@ static void do_test(void)
- 		if (strncmp(ent->d_name, "hwmon", 5))
- 			continue;
- 
--		found = 1;
-+		devices++;
- 		check_hwmon_device(ent->d_name);
- 	}
- 
- 	SAFE_CLOSEDIR(d);
- 
--	if (!found)
-+	if (!devices) {
- 		tst_res(TCONF, "No hwmon device found");
-+		return;
-+	}
-+
-+	if (checked) {
-+		tst_res(TPASS, "Validated %u attributes on %d hwmon devices",
-+			checked, devices);
-+	} else {
-+		tst_res(TCONF,
-+			"%d hwmon devices present, but no checkable attributes",
-+			devices);
-+	}
- }
- 
- static struct tst_test test = {
 -- 
-2.56.0
+2.51.0
 
 
 -- 
