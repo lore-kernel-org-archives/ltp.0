@@ -4,96 +4,46 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DC60DCCF2DB
-	for <ltp@archiver.kernel.org>; Mon, 19 Oct 2026 06:32:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1792391569; h=mime-version :
- references : in-reply-to : date : message-id : to : subject : list-id
- : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=pUK3zq7+mb4PbukaVznjk0ceH0mXCZmRHe8Wx+XsnoQ=;
- b=FeTR5iVUw0eha/I1ixX59YSGapJM2nIy9zEZD02WIXPifJ+S9KOLtpCSRULFCExeDT52r
- MYhxcPMfShRLor9iwHii7M51iDNBXL5+56FDXNJeKeVcK9vfqSEUGyxMccl3lfWX6jkvHim
- zrZJhTl+7/TGGlEaibjqw/SXjxjBMLE=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EE97ACCF2DA
+	for <ltp@archiver.kernel.org>; Mon, 19 Oct 2026 08:46:10 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 812873E283B
-	for <ltp@archiver.kernel.org>; Mon, 19 Oct 2026 08:32:49 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 17BB53E61A6
+	for <ltp@archiver.kernel.org>; Mon, 19 Oct 2026 10:46:09 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id DDD5D3E283B
- for <ltp@lists.linux.it>; Mon, 19 Oct 2026 08:32:28 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id BC1723C0646
+ for <ltp@lists.linux.it>; Mon, 19 Oct 2026 10:45:52 +0200 (CEST)
+Received: from mta1.migadu.com (out-111.mta1.migadu.com
+ [IPv6:2001:41d0:203:375::6f])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 58FA5600058
- for <ltp@lists.linux.it>; Mon, 19 Oct 2026 08:32:27 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1792391546;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=5q/KF+kNDYBqeIY4gQ7F5WbCLGKxlUOBwUXMWnCRQAk=;
- b=b04c3eolVgwvUof6eTWMieEzJh82vMOoMFc8NOh743B3RxWYlNlwescs6jZRx55i46lx+d
- VfilhOrvfOQFFuWgz2byAZpmjKRB6/q62O99SmyqzK06ALQOtVtZVnkPysEJBkpiAZjUGU
- XyQW8J1W0CYA499Ofkx7t4KbkUn4Vf4=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-696-9s3rDDZwMVyQck9tpbWW7w-1; Mon, 19 Oct 2026 06:32:24 +0000
-X-MC-Unique: 9s3rDDZwMVyQck9tpbWW7w-1
-X-Mimecast-MFC-AGG-ID: 9s3rDDZwMVyQck9tpbWW7w_1792391543
-Received: by mail-wr1-f71.google.com with SMTP id
- ffacd0b85a97d-48dff112136so1146260f8f.1
- for <ltp@lists.linux.it>; Sun, 18 Oct 2026 23:32:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20260707; t=1792391543; x=1792996343;
- h=content-transfer-encoding:content-type:cc:to:subject:message-id
- :date:from:in-reply-to:references:mime-version:x-gm-gg
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
- :content-type;
- bh=5q/KF+kNDYBqeIY4gQ7F5WbCLGKxlUOBwUXMWnCRQAk=;
- b=UcOH+IdY/3+wELC23zT+xJoOyHRbzY7vI6sgWm0aJYmf4vS/Y/fsVKpCIM4ZyFRJKr
- I2g6cPjLInGXhOvg4Sw++u33LHYylkCgG4V34bxLsT/XeM+zVvbSmCFrOSakYJo2gCgJ
- tJqcBLMJMUB/8iH4WB8pCZX3M+vu/Phz11RLSpBaGxZJPx89FecIEHgzmVFJfxxn3Sm3
- wMOsuXHtma0vTB7XyO1EVjEuZKozWjtazUcTOEz/EFakCw+RBbE7zTsXa3L+fr3q3uNA
- +OZrz2z0IdjNQEOCSEhlTd58SO+Fa+Me/2SCeXZorQxY6O4KGwnFicG97unoLc0Qx2JQ
- BtmQ==
-X-Gm-Message-State: AFq9FYIauXm0y4tOgljbwauFItjJGSOdfdq/l01ioh11xOVhlOdWRN39
- FW5f35e0vZ/QiOzilNhXcgJViXXhv6vAvrxwntxST82xyG/QjGst/uKlHk/YbJugoOWTIf4peIQ
- /a4vcpojYBZspJvJEKw0JkZIqDT899KHWANk095q8kCcqybpxUt059L5kue8kknk4tAGwkPsisH
- ZWlkGwfNWwHmKAm1Hw2W2bKxI6lag=
-X-Gm-Gg: AYBFou3XNihpVrPy5tJNMQD3DflH8uMi+MetyAPJn9pG7ks3/T1S26prkBN2qx02nFi
- ricBSHMftyAxBu0/5lCojoVfkwfiC4yy/x5MR0KJydHvEYwecz3WgwQowW8WxaBy+5ACpTy53T2
- 0Ol25O2XjSKeMeqMDYBrfAkI6LcaGGEUDgOnMFXKhforDhvG5V4tGg1bg=
-X-Received: by 2002:a05:6000:2413:b0:48e:932:aefa with SMTP id
- ffacd0b85a97d-48e0932b129mr12271581f8f.26.1792391542971; 
- Sun, 18 Oct 2026 23:32:22 -0700 (PDT)
-X-Received: by 2002:a05:6000:2413:b0:48e:932:aefa with SMTP id
- ffacd0b85a97d-48e0932b129mr12271544f8f.26.1792391542464; Sun, 18 Oct 2026
- 23:32:22 -0700 (PDT)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 33B12600074
+ for <ltp@lists.linux.it>; Mon, 19 Oct 2026 10:45:51 +0200 (CEST)
+X-Envelope-To: ltp@lists.linux.it
+DKIM-Signature: a=rsa-sha256; bh=gsagyy9jpRuKzUq2NfPf1P9V08TtcoM5/VFwv+QtMZ0=; 
+ c=simple/simple; d=linux.dev;
+ h=from:to:subject:date:message-id:mime-version:content-type; s=key1;
+ t=1792399550; v=1; x=1793004350;
+ b=xFR42X1YBXzQwS+MM+OYS7xCO9T3nGT4sJPZaO7cfyyteGBUFUo7bmcElowaJkgt2j8CTxvC
+ xhBKTN/Tn8710MH3IGpTPUg3TMGICkKB8X1GkFGPg/UqaZ7+ccVPV+khItkcvqrYf8ytC++GesO
+ Efvdvo2s7D0BMiPGTPh7b4lc=
+X-Envelope-To: ltp@lists.linux.it
+Received: by mta11.migadu.com with ESMTPS id 76f2e0fef56cd6d5;
+ Mon, 19 Oct 2026 08:45:50 +0000
+X-Mizu-Trace-ID: 76f2e0fef56cd6d5
+X-Migadu-Flow: FLOW_OUT
+From: "Li Wang (Hieco)" <li.wang@linux.dev>
+To: ltp@lists.linux.it
+Date: Mon, 19 Oct 2026 16:45:33 +0800
+Message-ID: <20261019084533.70801-1-li.wang@linux.dev>
+X-Mailer: git-send-email 2.56.0
 MIME-Version: 1.0
-References: <d462c7ccea7e45f489e9f8d5a04ec786de2014b6.1791780763.git.jstancek@redhat.com>
- <b6d98d03422ec30d0bf5284cd094d2ecf688efe3.1791792065.git.jstancek@redhat.com>
- <20261012093357.GA191096@pevik>
-In-Reply-To: <20261012093357.GA191096@pevik>
-Date: Mon, 19 Oct 2026 08:32:04 +0200
-X-Gm-Features: AclHuK_pWBP0TpI5JGvoEA4qaOsGcEYA9BkZH9UCT1pRGOohSdpF1bJPv5ABaWs
-Message-ID: <CAASaF6x7RgYB_Mua_L=yQfwc7aHVV2uPMd5e44uoRt9hLfpcFA@mail.gmail.com>
-To: Petr Vorel <pvorel@suse.cz>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: qQAiIZx--RH7Jqu5XxIZyFRk_zTwAY1NGA8XUQ0uVIk_1792391543
-X-Mimecast-Originator: redhat.com
 X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v4] openposix: timers/twoevtimers: Wait for both
- timer signals
+Subject: [LTP] [PATCH] sys_hwmon01: always report a result
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -105,30 +55,215 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Jan Stancek via ltp <ltp@lists.linux.it>
-Reply-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gTW9uLCBPY3QgMTIsIDIwMjYgYXQgMTE6MzTigK9BTSBQZXRyIFZvcmVsIDxwdm9yZWxAc3Vz
-ZS5jej4gd3JvdGU6Cj4KPiBIaSBKYW4sCj4KPiB0aGFua3MsIExHVE0uCj4gUmV2aWV3ZWQtYnk6
-IFBldHIgVm9yZWwgPHB2b3JlbEBzdXNlLmN6PgoKUHVzaGVkIHdpdGggeW91ciBzdWdnZXN0aW9u
-cy4KClRoYW5rcywKSmFuCgo+Cj4gPiAtI2RlZmluZSBFWFBJUkVERUxUQSAzCj4gPiAtI2RlZmlu
-ZSBMT05HVElNRSA1Cj4gPiArI2RlZmluZSBFWFBJUkVERUxUQV9OUyA1MDAwMDAwMAo+Cj4gdmVy
-eSBuaXQ6IGhhdmluZyBFWFBJUkVERUxUQV9NUyA1MCBhbmQgdGhlbiB1c2UgRVhQSVJFREVMVEFf
-TVMgKiAxMDAwMDAwCj4gbWlnaHQgYmUgc2xpZ2h0bHkgbW9yZSByZWFkYWJsZS4KPgo+ID4gKyNk
-ZWZpbmUgTE9OR1RJTUUgMwo+ID4gKwo+ID4gKyNkZWZpbmUgUE9MTF9NUyA1MAo+ID4gKyNkZWZp
-bmUgUE9MTF9DT1VOVCAoTE9OR1RJTUUgKiAxMDAwIC8gUE9MTF9NUykKPgo+ID4gICNkZWZpbmUg
-Q0hJTERQQVNTIDEKPgo+ID4gLXN0YXRpYyBpbnQgY2F1Z2h0YWJvcnQgPSAwOwo+ID4gLXN0YXRp
-YyBpbnQgY2F1Z2h0YWxhcm0gPSAwOwo+ID4gK3N0YXRpYyB2b2xhdGlsZSBzaWdfYXRvbWljX3Qg
-Y2F1Z2h0YWJvcnQgPSAwOwo+ID4gK3N0YXRpYyB2b2xhdGlsZSBzaWdfYXRvbWljX3QgY2F1Z2h0
-YWxhcm0gPSAwOwo+IG5pdDogc3RhdGljIGlzIDAgYWxyZWFkeSAobWF5YmUgZHJvcCAiPSAwIj8p
-Cj4KPiA+IC1zdGF0aWMgdm9pZCBoYW5kbGVyX2FicnQoaW50IHNpZ25vKQo+ID4gK3N0YXRpYyB2
-b2lkIGhhbmRsZXJfYWJydChpbnQgc2lnbm8gUFRTX0FUVFJJQlVURV9VTlVTRUQpCj4gVGhhbmtz
-IGZvciBzaWxlbmNlIHNvbWUgb2YgdGhlIHdhcm5pbmdzLgo+Cj4gPiAgewo+ID4gLSAgICAgcHJp
-bnRmKCJDYXVnaHQgYWJvcnQgc2lnbmFsXG4iKTsKPiArMQo+Cj4gPiAgICAgICBjYXVnaHRhYm9y
-dCsrOwo+ID4gIH0KPgo+IEtpbmQgcmVnYXJkcywKPiBQZXRyCj4KCgotLSAKTWFpbGluZyBsaXN0
-IGluZm86IGh0dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGluZm8vbHRwCg==
+On machines where the only hwmon devices expose no checkable
+attributes (e.g. a VM or laptop where hwmon0 is just 'ACAD' with
+nothing but a name attribute), every *_SILENT assertion skips
+silently and the test finishes without reporting a single result,
+which the library turns into:
+
+    tst_test.c:1730: TBROK: Test haven't reported results!
+
+Fix this by counting the attributes that actually exist and get
+validated, then report a TPASS summary at the end, or TCONF when
+hwmon devices are present but expose nothing we can check.
+
+Signed-off-by: Li Wang (Hieco) <li.wang@linux.dev>
+---
+ .../kernel/sysfs/class/hwmon/sys_hwmon01.c    | 109 ++++++++++++------
+ 1 file changed, 76 insertions(+), 33 deletions(-)
+
+diff --git a/testcases/kernel/sysfs/class/hwmon/sys_hwmon01.c b/testcases/kernel/sysfs/class/hwmon/sys_hwmon01.c
+index 1bb574c23..8ecbd47d1 100644
+--- a/testcases/kernel/sysfs/class/hwmon/sys_hwmon01.c
++++ b/testcases/kernel/sysfs/class/hwmon/sys_hwmon01.c
+@@ -49,6 +49,8 @@
+ 
+ #include <string.h>
+ #include <dirent.h>
++#include <stdarg.h>
++#include <limits.h>
+ 
+ #include "tst_test.h"
+ #include "tst_sysfs_assert.h"
+@@ -56,39 +58,67 @@
+ 
+ #define MAX_CHANNELS 32
+ 
++static unsigned int checked;
++
++static int attr_exists(const char *fmt, ...)
++{
++	char path[PATH_MAX];
++	va_list va;
++
++	va_start(va, fmt);
++	vsnprintf(path, sizeof(path), fmt, va);
++	va_end(va);
++
++	return tst_sysfs_exists(path);
++}
++
++#define CHECK_RANGELL(lo, hi, ...) do { \
++	if (attr_exists(__VA_ARGS__)) { \
++		checked++; \
++		TST_SYSFS_ASSERT_RANGELL_SILENT(lo, hi, __VA_ARGS__); \
++	} \
++} while (0)
++
++#define CHECK_BOOL(...) do { \
++	if (attr_exists(__VA_ARGS__)) { \
++		checked++; \
++		TST_SYSFS_ASSERT_BOOL_SILENT(__VA_ARGS__); \
++	} \
++} while (0)
++
+ static void check_temp_channel(const char *hwmon, int idx)
+ {
+-	TST_SYSFS_ASSERT_RANGELL_SILENT(-55000, 200000,
+-					PATH_CLASS_HWMON "/%s/temp%d_input", hwmon, idx);
+-
+-	TST_SYSFS_ASSERT_BOOL_SILENT(PATH_CLASS_HWMON "/%s/temp%d_alarm", hwmon, idx);
+-	TST_SYSFS_ASSERT_BOOL_SILENT(PATH_CLASS_HWMON "/%s/temp%d_crit_alarm", hwmon, idx);
+-	TST_SYSFS_ASSERT_BOOL_SILENT(PATH_CLASS_HWMON "/%s/temp%d_min_alarm", hwmon, idx);
+-	TST_SYSFS_ASSERT_BOOL_SILENT(PATH_CLASS_HWMON "/%s/temp%d_max_alarm", hwmon, idx);
+-	TST_SYSFS_ASSERT_BOOL_SILENT(PATH_CLASS_HWMON "/%s/temp%d_fault", hwmon, idx);
++	CHECK_RANGELL(-55000, 200000,
++		      PATH_CLASS_HWMON "/%s/temp%d_input", hwmon, idx);
++
++	CHECK_BOOL(PATH_CLASS_HWMON "/%s/temp%d_alarm", hwmon, idx);
++	CHECK_BOOL(PATH_CLASS_HWMON "/%s/temp%d_crit_alarm", hwmon, idx);
++	CHECK_BOOL(PATH_CLASS_HWMON "/%s/temp%d_min_alarm", hwmon, idx);
++	CHECK_BOOL(PATH_CLASS_HWMON "/%s/temp%d_max_alarm", hwmon, idx);
++	CHECK_BOOL(PATH_CLASS_HWMON "/%s/temp%d_fault", hwmon, idx);
+ }
+ 
+ static void check_fan_channel(const char *hwmon, int idx)
+ {
+-	TST_SYSFS_ASSERT_RANGELL_SILENT(0, 100000,
+-					PATH_CLASS_HWMON "/%s/fan%d_input", hwmon, idx);
++	CHECK_RANGELL(0, 100000,
++		      PATH_CLASS_HWMON "/%s/fan%d_input", hwmon, idx);
+ 
+-	TST_SYSFS_ASSERT_BOOL_SILENT(PATH_CLASS_HWMON "/%s/fan%d_alarm", hwmon, idx);
+-	TST_SYSFS_ASSERT_BOOL_SILENT(PATH_CLASS_HWMON "/%s/fan%d_min_alarm", hwmon, idx);
+-	TST_SYSFS_ASSERT_BOOL_SILENT(PATH_CLASS_HWMON "/%s/fan%d_max_alarm", hwmon, idx);
+-	TST_SYSFS_ASSERT_BOOL_SILENT(PATH_CLASS_HWMON "/%s/fan%d_fault", hwmon, idx);
++	CHECK_BOOL(PATH_CLASS_HWMON "/%s/fan%d_alarm", hwmon, idx);
++	CHECK_BOOL(PATH_CLASS_HWMON "/%s/fan%d_min_alarm", hwmon, idx);
++	CHECK_BOOL(PATH_CLASS_HWMON "/%s/fan%d_max_alarm", hwmon, idx);
++	CHECK_BOOL(PATH_CLASS_HWMON "/%s/fan%d_fault", hwmon, idx);
+ }
+ 
+ static void check_in_channel(const char *hwmon, int idx)
+ {
+-	TST_SYSFS_ASSERT_RANGELL_SILENT(-100000, 100000,
+-					PATH_CLASS_HWMON "/%s/in%d_input", hwmon, idx);
+-
+-	TST_SYSFS_ASSERT_BOOL_SILENT(PATH_CLASS_HWMON "/%s/in%d_alarm", hwmon, idx);
+-	TST_SYSFS_ASSERT_BOOL_SILENT(PATH_CLASS_HWMON "/%s/in%d_min_alarm", hwmon, idx);
+-	TST_SYSFS_ASSERT_BOOL_SILENT(PATH_CLASS_HWMON "/%s/in%d_max_alarm", hwmon, idx);
+-	TST_SYSFS_ASSERT_BOOL_SILENT(PATH_CLASS_HWMON "/%s/in%d_crit_alarm", hwmon, idx);
+-	TST_SYSFS_ASSERT_BOOL_SILENT(PATH_CLASS_HWMON "/%s/in%d_lcrit_alarm", hwmon, idx);
++	CHECK_RANGELL(-100000, 100000,
++		      PATH_CLASS_HWMON "/%s/in%d_input", hwmon, idx);
++
++	CHECK_BOOL(PATH_CLASS_HWMON "/%s/in%d_alarm", hwmon, idx);
++	CHECK_BOOL(PATH_CLASS_HWMON "/%s/in%d_min_alarm", hwmon, idx);
++	CHECK_BOOL(PATH_CLASS_HWMON "/%s/in%d_max_alarm", hwmon, idx);
++	CHECK_BOOL(PATH_CLASS_HWMON "/%s/in%d_crit_alarm", hwmon, idx);
++	CHECK_BOOL(PATH_CLASS_HWMON "/%s/in%d_lcrit_alarm", hwmon, idx);
+ }
+ 
+ static void check_curr_channel(const char *hwmon, int idx)
+@@ -97,10 +127,10 @@ static void check_curr_channel(const char *hwmon, int idx)
+ 	 * Unlike fan/power, current can be negative on bidirectional sensors,
+ 	 * e.g. a battery charge/discharge current monitor.
+ 	 */
+-	TST_SYSFS_ASSERT_RANGELL_SILENT(-500000, 500000,
+-					PATH_CLASS_HWMON "/%s/curr%d_input", hwmon, idx);
++	CHECK_RANGELL(-500000, 500000,
++		      PATH_CLASS_HWMON "/%s/curr%d_input", hwmon, idx);
+ 
+-	TST_SYSFS_ASSERT_BOOL_SILENT(PATH_CLASS_HWMON "/%s/curr%d_alarm", hwmon, idx);
++	CHECK_BOOL(PATH_CLASS_HWMON "/%s/curr%d_alarm", hwmon, idx);
+ }
+ 
+ static void check_power_channel(const char *hwmon, int idx)
+@@ -110,13 +140,13 @@ static void check_power_channel(const char *hwmon, int idx)
+ 	 * sensor (CPU, GPU, PSU rail, ...) while still fitting within
+ 	 * LONG_MAX on 32bit architectures.
+ 	 */
+-	TST_SYSFS_ASSERT_RANGELL_SILENT(0, 2000000000,
+-					PATH_CLASS_HWMON "/%s/power%d_input", hwmon, idx);
++	CHECK_RANGELL(0, 2000000000,
++		      PATH_CLASS_HWMON "/%s/power%d_input", hwmon, idx);
+ }
+ 
+ static void check_pwm_channel(const char *hwmon, int idx)
+ {
+-	TST_SYSFS_ASSERT_RANGELL_SILENT(0, 255, PATH_CLASS_HWMON "/%s/pwm%d", hwmon, idx);
++	CHECK_RANGELL(0, 255, PATH_CLASS_HWMON "/%s/pwm%d", hwmon, idx);
+ }
+ 
+ static void check_hwmon_device(const char *hwmon)
+@@ -127,8 +157,8 @@ static void check_hwmon_device(const char *hwmon)
+ 	if (TST_SYSFS_READ_STR(name, sizeof(name), PATH_CLASS_HWMON "/%s/name", hwmon))
+ 		tst_res(TINFO, "%s: name = '%s'", hwmon, name);
+ 
+-	TST_SYSFS_ASSERT_RANGELL_SILENT(1, 3600000,
+-					PATH_CLASS_HWMON "/%s/update_interval", hwmon);
++	CHECK_RANGELL(1, 3600000,
++		      PATH_CLASS_HWMON "/%s/update_interval", hwmon);
+ 
+ 	/* inN channels are numbered from 0, per the hwmon ABI */
+ 	for (i = 0; i <= MAX_CHANNELS; i++)
+@@ -147,7 +177,9 @@ static void do_test(void)
+ {
+ 	DIR *d;
+ 	struct dirent *ent;
+-	int found = 0;
++	int devices = 0;
++
++	checked = 0;
+ 
+ 	if (!tst_sysfs_exists(PATH_CLASS_HWMON))
+ 		tst_brk(TCONF, PATH_CLASS_HWMON ": not present");
+@@ -158,14 +190,25 @@ static void do_test(void)
+ 		if (strncmp(ent->d_name, "hwmon", 5))
+ 			continue;
+ 
+-		found = 1;
++		devices++;
+ 		check_hwmon_device(ent->d_name);
+ 	}
+ 
+ 	SAFE_CLOSEDIR(d);
+ 
+-	if (!found)
++	if (!devices) {
+ 		tst_res(TCONF, "No hwmon device found");
++		return;
++	}
++
++	if (checked) {
++		tst_res(TPASS, "Validated %u attributes on %d hwmon devices",
++			checked, devices);
++	} else {
++		tst_res(TCONF,
++			"%d hwmon devices present, but no checkable attributes",
++			devices);
++	}
+ }
+ 
+ static struct tst_test test = {
+-- 
+2.56.0
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
