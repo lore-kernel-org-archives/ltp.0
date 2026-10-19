@@ -4,99 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 34AF3CCF2DB
-	for <ltp@archiver.kernel.org>; Mon, 19 Oct 2026 13:13:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0711CCCF2D6
+	for <ltp@archiver.kernel.org>; Mon, 19 Oct 2026 13:26:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1792416405; h=date :
+ in-reply-to : mime-version : references : message-id : to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-type :
+ content-transfer-encoding : sender : from;
+ bh=bTg9LpFb5pzFgr9jeJ+/Ch/c6xxCF80sBMICJMxNh4A=;
+ b=hOgavuxz+4/HGrHVV1jF+mAyg7emFwkLvK6jeDFoIfaBNmrX8rO9rRJVGjjSt7NvtFQzo
+ K0S+tRWjCGIZmxvHrY+s/R1cT9ptmOSrNS7smpW5vHc8dMWqpRt6NeOpEY+VwRBNQ3lFiVr
+ JSReB6E2pp7K7+Gr5O1Afz62uPcbxNc=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 12E893EA65E
-	for <ltp@archiver.kernel.org>; Mon, 19 Oct 2026 15:13:47 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id D53DA3EA646
+	for <ltp@archiver.kernel.org>; Mon, 19 Oct 2026 15:26:45 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2C2E83E61E5
- for <ltp@lists.linux.it>; Mon, 19 Oct 2026 15:13:31 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 6256E3E61E5
+ for <ltp@lists.linux.it>; Mon, 19 Oct 2026 15:26:26 +0200 (CEST)
+Received: from mail-pf1-x447.google.com (mail-pf1-x447.google.com
+ [IPv6:2607:f8b0:4864:20::447])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 9F6931A0071B
- for <ltp@lists.linux.it>; Mon, 19 Oct 2026 15:13:30 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id B18D721C3B;
- Mon, 19 Oct 2026 13:13:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1792415609;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=Wneeka+qCKgG4h7GQjGd6eWsjYciwdK8MVBGAQZXJLs=;
- b=Hcjn5hUZ5HSMkXQugWhIk3mLFaCNz1624yx88WZC0xBEcoGyf5QrOXl3CR6FwsuaQfOAO/
- odDdtvPpk6158LcjxhRR1gzMOhTjeqo6NbNM73nnyyHNiZcXna/i4LabsjQdDhE+Yk5ULN
- Ldq1fbdzUe3jV8sEhKEX9eynX0m1L2g=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1792415609;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=Wneeka+qCKgG4h7GQjGd6eWsjYciwdK8MVBGAQZXJLs=;
- b=t89xYEFy2t9qnnlBDy/8eHANN2KpSQBfnhqNlteRKJCE8tYxNgHqK9NKl/lJPzsH8PZ8sO
- LaYIGHzRvRNsJvBw==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1792415609;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=Wneeka+qCKgG4h7GQjGd6eWsjYciwdK8MVBGAQZXJLs=;
- b=Hcjn5hUZ5HSMkXQugWhIk3mLFaCNz1624yx88WZC0xBEcoGyf5QrOXl3CR6FwsuaQfOAO/
- odDdtvPpk6158LcjxhRR1gzMOhTjeqo6NbNM73nnyyHNiZcXna/i4LabsjQdDhE+Yk5ULN
- Ldq1fbdzUe3jV8sEhKEX9eynX0m1L2g=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1792415609;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=Wneeka+qCKgG4h7GQjGd6eWsjYciwdK8MVBGAQZXJLs=;
- b=t89xYEFy2t9qnnlBDy/8eHANN2KpSQBfnhqNlteRKJCE8tYxNgHqK9NKl/lJPzsH8PZ8sO
- LaYIGHzRvRNsJvBw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5D25C134B3;
- Mon, 19 Oct 2026 13:13:29 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id ibwCCHkX1mqyGQAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Mon, 19 Oct 2026 13:13:29 +0000
-Date: Mon, 19 Oct 2026 15:13:27 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Jan Stancek <jstancek@redhat.com>
-Message-ID: <20261019131327.GA63027@pevik>
-References: <89fe77f22e26d912865c8b8266b150ba7459bfae.1792413314.git.jstancek@redhat.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <89fe77f22e26d912865c8b8266b150ba7459bfae.1792413314.git.jstancek@redhat.com>
-X-Spamd-Result: default: False [-3.50 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MID_RHS_NOT_FQDN(0.50)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- RCPT_COUNT_TWO(0.00)[2]; TO_DN_SOME(0.00)[]; ARC_NA(0.00)[];
- MIME_TRACE(0.00)[0:+];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,suse.cz:email,imap1.dmz-prg2.suse.org:helo];
- RCVD_TLS_ALL(0.00)[]; MISSING_XM_UA(0.00)[];
- FROM_HAS_DN(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- FROM_EQ_ENVFROM(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- RCVD_COUNT_TWO(0.00)[2]; REPLYTO_EQ_FROM(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id B5F161400760
+ for <ltp@lists.linux.it>; Mon, 19 Oct 2026 15:26:25 +0200 (CEST)
+Received: by mail-pf1-x447.google.com with SMTP id
+ d2e1a72fcca58-8a0592d4539so2153315b3a.3
+ for <ltp@lists.linux.it>; Mon, 19 Oct 2026 06:26:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=google.com; s=20251104; t=1792416384; x=1793021184; darn=lists.linux.it;
+ h=content-type:cc:to:from:subject:message-id:references:mime-version
+ :in-reply-to:date:from:to:cc:subject:date:message-id:reply-to
+ :content-type; bh=B0nAAWt98gukQ+wX0mPUKQNRXDHJR/Pd7VrL0eqUXHY=;
+ b=YQmACw8ixLsXP183uheK5BWdcdBT0c/DMeK+llZBP4DmT+ld5NerQs1NYX2cGUhfxc
+ 4nZhqB+qbzaKTmuC9PJp9va7kktOyCNaYRjWE9NC5Jxwp+HTWWZA0hVKRR9lXKTQJgE1
+ SKNxYSyJIykiXM8+H9q25FPj6jCDGiqufh4cm/xGRXbwiBDs9GthFRoyVhvS5hOQZsLE
+ wCivSQwTSPRx+wAxDZdQj4B5FxJhbO5gs9FtOphxeRNCD1XTKs9msBpulF+9tP6exgJU
+ qQdyENMTWPV3Vvk6nK3rjgc0PSyxxICFDVbfMcs62MGx2W9ax34vzi+UeN+rVlEqw77i
+ LmBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20260707; t=1792416384; x=1793021184;
+ h=content-type:cc:to:from:subject:message-id:references:mime-version
+ :in-reply-to:date:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to:content-type;
+ bh=B0nAAWt98gukQ+wX0mPUKQNRXDHJR/Pd7VrL0eqUXHY=;
+ b=WUeKlYJzm3zlLaBuLW9HkQQd4BouS4r+fO6cOub3PdlHiuYljutSmJjNi3xd9hYAL6
+ 3RrF1thdiledSyTWkTPfaWl94akZrFj3f541yAyYMxyZfiJkDb/wAf/gP/rrl+zUcmjR
+ QTQD1Wq3b84z91a6af9pzjebPVxIpdAiOqStoiOuwSCTniz1uxaFfvpRGQgEXqAVG7sf
+ c21dMjmQ39Shx72DkfcdkGPxC44YslLtiHGt9SoS9Bqq8U0tCitiwnkJS6H1mr/ymF+c
+ QKBQ2dQ8mJlsXOPQMR66KVAcT/+d5PAhBBOz5O3hfMgusUSYpYLg9IVLOAt7BO84trVx
+ ywFA==
+X-Gm-Message-State: AFq9FYJsEjfZE5nnsieVXQPS75Hqta/OEmLVZgRe9owUSWh3EKqe6U3p
+ b04maHTVU4v2JkPCn5lzHIykZ7U0OrCFhs5Nl10LJTnZz+2x2jiSF2O9TxOo4n1cmKJ6d6BySFd
+ BjGX3gHfpI4CX7u7kQ8FrXzVuZAxpMxvfU3oAHq2I/SpBVFbRvwPofVF3bBK9hN/QLq0YjucJMy
+ N0KIymXMdEZXmacXcQaROcEwwQrw==
+X-Received: from pgby5-n2.prod.google.com
+ ([2002:a05:6a02:6505:20b0:cc7:bf05:917e])
+ (user=wakel job=prod-delivery.src-stubby-dispatcher) by
+ 2002:a05:6a20:7f9e:b0:3e1:8563:2a2c
+ with SMTP id adf61e73a8af0-3e22606ffb8mr6961782637.40.1792416383624; Mon, 19
+ Oct 2026 06:26:23 -0700 (PDT)
+Date: Mon, 19 Oct 2026 13:26:21 +0000
+In-Reply-To: <20261014093618.1475191-1-wakel@google.com>
+Mime-Version: 1.0
+References: <20261014093618.1475191-1-wakel@google.com>
+X-Mailer: git-send-email 2.56.0.176.g3575e65682-goog
+Message-ID: <20261019132621.3943362-1-wakel@google.com>
+To: ltp@lists.linux.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] nextafter01: Check exact results and convert to
- new API
+Subject: [LTP] [PATCH v2] swapon04: Report TCONF when SELinux denies loop
+ device I/O
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -108,55 +90,119 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it
+From: Wake Liu via ltp <ltp@lists.linux.it>
+Reply-To: Wake Liu <wakel@google.com>
+Cc: Wake Liu <wakel@google.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Jan,
+Kernels without commit f2fed441c69b ("loop: stop using
+vfs_iter_{read,write} for buffered I/O") access the loop backing file
+through vfs_iter_{read,write}(), which run the LSM file permission
+checks with the credentials of the loop worker kernel thread.
 
-> The test can hardly fail. Block 1 accepts nextafter(1.0, 1.1) whenever
-> (answer + 1.0) / 2 rounds to 1.0 as a float, which is also true when
-> nextafter() returns 1.0 unchanged. Block 2 never recomputes 'check'
-> and compares the stale value from block 1, which is exactly 1.0, so its
-> 'check != 1.0' condition is always false and any return value passes.
-> Only the x == y case in block 3 is really verified. The file header also
-> names the test "scalb".
+swapon04 backs the loop device with a file on the freshly formatted
+test filesystem. That file has no SELinux label, and strict policies
+such as Android's do not allow the kernel domain to access unlabeled
+files. Every I/O on the loop device then fails with EIO and the test
+breaks on the first mkswap call:
 
-> Compare the results with the exact next doubles instead: 1.0 + 2^-52
-> above and 1.0 - 2^-53 below. Both are exactly representable, so a plain
-> equality test is sufficient. Rewrite the test with the new API while at
-> it and fix the description.
+  tst_cmd.c:114: TBROK: 'mkswap' exited with a non-zero code 1
 
-Thanks!
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
+  avc: denied { read } for comm="kworker/u8:0" dev="loop52" ino=12
+    scontext=u:r:kernel:s0 tcontext=u:object_r:unlabeled:s0
+    tclass=file permissive=0
 
-...
-> -char *TCID = "nextafter01";
-> +static struct tcase {
-> +	double x;
-> +	double y;
-> +	double exp;
-> +} tcases[] = {
-> +	{1.0, 1.1, 1.0 + EPSILON},
-> +	{1.0, 0.9, 1.0 - EPSILON / 2},
-> +	{1.0, 1.0, 1.0},
-> +};
+This is a policy restriction rather than a swap bug, and it does not
+depend on how LTP is built: running the system's losetup and mkswap
+on such a file fails the same way. The test passes on the same 6.1
+kernel once SELinux is switched to permissive mode, and on a 6.18
+kernel in enforcing mode.
 
-...
-> +	if (ret == tc->exp) {
-Hm, we still does not have TST_EXP_EQ_* variant for double.
-Likely not worth of having it (not many tests comparing double).
+The commit was merged in v6.15, so v6.15 and newer are not affected.
+On older kernels the version alone does not tell whether the test can
+run: the commit has been backported to stable kernels such as v6.12.25
+and v6.14.4, and kernels without it still pass the test unless the
+policy gets in the way.
 
-Kind regards,
-Petr
+So on kernels older than v6.15 with SELinux in enforcing mode, read
+the first sector of the loop device in setup() and report TCONF if it
+fails with EIO. On the 6.1 kernel above, ext2, ext3 and ext4 are now
+skipped, while tmpfs, whose files the kernel domain is allowed to
+access, still passes.
 
-> +		tst_res(TPASS, "nextafter(%g, %g) == %.17g", tc->x, tc->y, ret);
-> +	} else {
-> +		tst_res(TFAIL, "nextafter(%g, %g) == %.17g, expected %.17g",
-> +			tc->x, tc->y, ret, tc->exp);
+Signed-off-by: Wake Liu <wakel@google.com>
+---
+Changes in v2:
+- Return early on v6.15 and newer and when SELinux is not enforcing,
+  so the loop device is only probed where the denial can happen
+  (Cyril).
+- Mention v6.15 and the stable backports in the comment and the
+  commit message.
+
+v1: https://lore.kernel.org/ltp/20261014093618.1475191-1-wakel@google.com/
+
+ testcases/kernel/syscalls/swapon/swapon04.c | 35 +++++++++++++++++++++
+ 1 file changed, 35 insertions(+)
+
+diff --git a/testcases/kernel/syscalls/swapon/swapon04.c b/testcases/kernel/syscalls/swapon/swapon04.c
+index de95849e3..5f5206d87 100644
+--- a/testcases/kernel/syscalls/swapon/swapon04.c
++++ b/testcases/kernel/syscalls/swapon/swapon04.c
+@@ -84,6 +84,39 @@ static struct tcase {
+ 	},
+ };
+ 
++/*
++ * Kernels without commit f2fed441c69b ("loop: stop using
++ * vfs_iter_{read,write} for buffered I/O"), merged in v6.15, access the
++ * backing file through vfs_iter_{read,write}(), which run LSM permission
++ * checks with the credentials of the loop worker kernel thread. Strict
++ * SELinux policies, such as Android's, do not allow the kernel to access
++ * the unlabeled files on the freshly formatted test filesystem, so any I/O
++ * on the loop device fails with EIO.
++ *
++ * The commit has been backported to some stable kernels (e.g. v6.12.25),
++ * so on older kernels the loop device has to be probed.
++ */
++static void check_loop_io(void)
++{
++	char buf[512];
++	int fd;
++
++	if (tst_kvercmp(6, 15, 0) >= 0 || !tst_selinux_enforcing())
++		return;
++
++	fd = SAFE_OPEN(loop_dev, O_RDONLY);
++	TEST(read(fd, buf, sizeof(buf)));
++	SAFE_CLOSE(fd);
++
++	if (TST_RET == (long)sizeof(buf))
++		return;
++
++	if (TST_RET == -1 && TST_ERR == EIO)
++		tst_brk(TCONF | TTERRNO, "I/O on %s is likely denied by SELinux", loop_dev);
++
++	tst_brk(TBROK | TTERRNO, "read(%s) returned %ld", loop_dev, TST_RET);
++}
++
+ static void setup(void)
+ {
+ 	char discard_path[PATH_MAX];
+@@ -114,6 +147,8 @@ static void setup(void)
+ 		tst_brk(TBROK, "Failed to attach %s to %s", loop_dev, BACKING_FILE);
+ 	loop_attached = 1;
+ 
++	check_loop_io();
++
+ 	snprintf(discard_path, sizeof(discard_path),
+ 		 "/sys/block/loop%d/queue/discard_max_bytes", loop_dev_id);
+ 	if (FILE_SCANF(discard_path, "%lu", &discard_max_bytes) != 0 || discard_max_bytes == 0) {
+-- 
+2.56.0.176.g3575e65682-goog
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
