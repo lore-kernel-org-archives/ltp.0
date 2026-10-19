@@ -4,97 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 873C0CCF2D6
-	for <ltp@archiver.kernel.org>; Mon, 19 Oct 2026 11:20:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A7AB3CCF2D6
+	for <ltp@archiver.kernel.org>; Mon, 19 Oct 2026 12:34:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1792413288; h=to : date :
+ message-id : mime-version : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : content-type : content-transfer-encoding : sender : from;
+ bh=WudffehV4r6VVIR2xoYnf7cVtPQ5j7ISvy8zyOjLfTM=;
+ b=C21QkekEiI3ZafGJ5quh0IS9hQCRNCHUuicvjlBAIM6Q4E+fhTWJGDZ3YCsKzVZEXN7Cd
+ nuIYSWl+KQOmPkXUxFNM9yaXwcX3PIM2lXzNJke+TiLr7NhNnmMwp2zcPOUprmw78Oezyth
+ UsKJE0OFvZSMmmUwYDZX109grww1qK8=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id CD3F53E9ADA
-	for <ltp@archiver.kernel.org>; Mon, 19 Oct 2026 13:20:40 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id C5C7D3EA64E
+	for <ltp@archiver.kernel.org>; Mon, 19 Oct 2026 14:34:48 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id F22163E28ED
- for <ltp@lists.linux.it>; Mon, 19 Oct 2026 13:20:24 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+ by picard.linux.it (Postfix) with ESMTPS id E39F23E9E12
+ for <ltp@lists.linux.it>; Mon, 19 Oct 2026 14:34:29 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 6FEF16007A2
- for <ltp@lists.linux.it>; Mon, 19 Oct 2026 13:20:23 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 20CE410007F7
+ for <ltp@lists.linux.it>; Mon, 19 Oct 2026 14:34:28 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1792413267;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=4EBv9P9nz6VtVQfMPCpQXZTgbPagCeORmVUL2qWaxiI=;
+ b=ViMV4+QxcemIztvqc0g4hWtI7sCbhqTuJT/rQ9gfHLzo6butz1sjoGL7CypT5rmhCi5cX1
+ YyzoEOrZBjH5l7OzWTmS2q3G0gRJWOuj6CyMsiFXVvtQ4NwPtPS3OFJuRHfUr2GlQ0tBxJ
+ B/N9vGEOiljZOVbGJ8B6NSrYKnhpO/0=
+Received: from mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-610-MMl8ENKtP6GbpH-UMzvFqQ-1; Mon,
+ 19 Oct 2026 12:34:26 +0000
+X-MC-Unique: MMl8ENKtP6GbpH-UMzvFqQ-1
+X-Mimecast-MFC-AGG-ID: MMl8ENKtP6GbpH-UMzvFqQ_1792413265
+Received: from mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com
+ (mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.111])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id C2D2221C15;
- Mon, 19 Oct 2026 11:20:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1792408822; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=mCrFonIXKnHaGzM6GTBFOmoSXUrE3vyHkhKoPOQ6fNk=;
- b=skPd4LMpGp1g1nrPGfU5Mc4Q02WG29hrTX9zjDS30iInIPB5wF5ptE3zj+rG8AerCAW6Zt
- 1K+jhN+rN8eY7b/ab5Z++gr6mscFVGzb4wAExXz7cq7PYaOEz42Dg2l9lpKtSfyPFERVUC
- F3bKd03233t2IYqBafINlr+r2es1EhE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1792408822;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=mCrFonIXKnHaGzM6GTBFOmoSXUrE3vyHkhKoPOQ6fNk=;
- b=L0mHXccGyx65b/kNEkdhbFOYGT9xY0rpFiuzPe+DUmp19nojW7m/ufyu+sCDpdY1eMLcFv
- yr0BdutxSzgkP8Bg==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1792408822; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=mCrFonIXKnHaGzM6GTBFOmoSXUrE3vyHkhKoPOQ6fNk=;
- b=skPd4LMpGp1g1nrPGfU5Mc4Q02WG29hrTX9zjDS30iInIPB5wF5ptE3zj+rG8AerCAW6Zt
- 1K+jhN+rN8eY7b/ab5Z++gr6mscFVGzb4wAExXz7cq7PYaOEz42Dg2l9lpKtSfyPFERVUC
- F3bKd03233t2IYqBafINlr+r2es1EhE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1792408822;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=mCrFonIXKnHaGzM6GTBFOmoSXUrE3vyHkhKoPOQ6fNk=;
- b=L0mHXccGyx65b/kNEkdhbFOYGT9xY0rpFiuzPe+DUmp19nojW7m/ufyu+sCDpdY1eMLcFv
- yr0BdutxSzgkP8Bg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 94ED4134B3;
- Mon, 19 Oct 2026 11:20:22 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id DPqvGvb81WrRIAAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Mon, 19 Oct 2026 11:20:22 +0000
-Date: Mon, 19 Oct 2026 13:20:38 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Wake Liu <wakel@google.com>
-Message-ID: <atX9BkzCNAyth6hm@yuki.lan>
-References: <20261014093618.1475191-1-wakel@google.com>
+ by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
+ id 02BC91955E97
+ for <ltp@lists.linux.it>; Mon, 19 Oct 2026 12:34:25 +0000 (UTC)
+Received: from jstancek-thinkpadt14gen5.redhat.corp
+ (headnet04.pony-001.prod.iad2.dc.redhat.com [10.2.32.116])
+ by mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP
+ id 4C2871800446
+ for <ltp@lists.linux.it>; Mon, 19 Oct 2026 12:34:23 +0000 (UTC)
+To: ltp@lists.linux.it
+Date: Mon, 19 Oct 2026 14:34:21 +0200
+Message-ID: <07c4ad10a95faf9318de23aa0fceafac1bc44bd6.1792413241.git.jstancek@redhat.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20261014093618.1475191-1-wakel@google.com>
-X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- ARC_NA(0.00)[]; MIME_TRACE(0.00)[0:+]; MISSING_XM_UA(0.00)[];
- TO_DN_SOME(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
- RCVD_TLS_ALL(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FROM_HAS_DN(0.00)[]; RCPT_COUNT_THREE(0.00)[4];
- FROM_EQ_ENVFROM(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- RCVD_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:email]
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.111
+X-Mimecast-Spam-Score: 0
+X-Mimecast-MFC-PROC-ID: ihlldm9Z2WkDXoUYynEGokfBL64s5UjacnsG2-DdFw0_1792413265
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] swapon04: Report TCONF when SELinux denies loop
- device I/O
+Subject: [LTP] [PATCH] float_exp_log: Fix ldexp exponents written by genldexp
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -106,52 +82,48 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+From: Jan Stancek via ltp <ltp@lists.linux.it>
+Reply-To: Jan Stancek <jstancek@redhat.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> +/*
-> + * Kernels without commit f2fed441c69b ("loop: stop using
-> + * vfs_iter_{read,write} for buffered I/O") access the backing file through
-> + * vfs_iter_{read,write}(), which run LSM permission checks with the
-> + * credentials of the loop worker kernel thread. Strict SELinux policies,
-> + * such as Android's, do not allow the kernel to access the unlabeled files
-> + * on the freshly formatted test filesystem, so any I/O on the loop device
-> + * fails with EIO.
-> + */
-> +static void check_loop_io(void)
-> +{
-> +	char buf[512];
-> +	int fd;
-> +
-> +	fd = SAFE_OPEN(loop_dev, O_RDONLY);
-> +	TEST(read(fd, buf, sizeof(buf)));
-> +	SAFE_CLOSE(fd);
-> +
-> +	if (TST_RET == (long)sizeof(buf))
-> +		return;
-> +
-> +	if (TST_RET == -1 && TST_ERR == EIO && tst_selinux_enforcing())
-> +		tst_brk(TCONF | TTERRNO, "I/O on %s is likely denied by SELinux", loop_dev);
+genldexp stores the ldexp() exponents in a double array but writes
+only sizeof(int) bytes of each element to ildexp_inp.ref. For a double
+holding a small integer the low 32 bits of the IEEE-754 encoding are
+zero, so on little-endian every exponent read back by the test is 0 and
+ldexp(x, 0) == x is the only thing float_exp_log ever checks. On
+big-endian the exponents are garbage from the high word instead.
 
-If nothing else we whould check for the selinux as a first thing in the
-function.
+Declare the exponent array as int so the intended 20000..1 exponents
+are written and the ldexp threads exercise real scaling. Large exponents
+overflow to inf for both the generated and computed value, which
+check_error() already treats as equal.
 
-	if (!tst_selinux_enforcing())
-		return;
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ testcases/misc/math/float/exp_log/genldexp.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-	fd = SAFE_OPEN(loop_dev, ...);
-	...
-
-And the check should be skipped on 6.15 and newer, where this problem
-does not happen.
-
+diff --git a/testcases/misc/math/float/exp_log/genldexp.c b/testcases/misc/math/float/exp_log/genldexp.c
+index fc81c9efa648..98a28edec3e7 100644
+--- a/testcases/misc/math/float/exp_log/genldexp.c
++++ b/testcases/misc/math/float/exp_log/genldexp.c
+@@ -102,8 +102,8 @@ static int create_Result_file(void)
+ 
+ static int create_Data_file(void)
+ {
+-	int i, nbVal;
+-	double tabDD[20000], tabDI[20000], Inc;
++	int i, nbVal, tabDI[20000];
++	double tabDD[20000], Inc;
+ 	char *F_named, *F_namei;
+ 	int fp, fpi;
+ 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.56.0
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
