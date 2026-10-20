@@ -1,93 +1,113 @@
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4EFE606A319
-	for <ltp@archiver.kernel.org>; Tue, 20 Oct 2026 19:05:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BAD9606A31B
+	for <ltp@archiver.kernel.org>; Tue, 20 Oct 2026 20:15:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20251104 header.b=UFh4sIIu
+	dkim=fail reason="signature verification failed" (1024-bit key, unprotected) header.d=suse.cz header.i=@suse.cz header.a=rsa-sha256 header.s=susede2_rsa header.b=DgAFRPnb;
+	dkim=fail reason="signature verification failed" header.d=suse.cz header.i=@suse.cz header.a=ed25519-sha256 header.s=susede2_ed25519 header.b=b0Al4Vbb;
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=suse.cz header.i=@suse.cz header.a=rsa-sha256 header.s=susede2_rsa header.b=F7TlES9a;
+	dkim=neutral header.d=suse.cz header.i=@suse.cz header.a=ed25519-sha256 header.s=susede2_ed25519 header.b=3453MQUT
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 3A9993E278D
-	for <ltp@archiver.kernel.org>; Tue, 20 Oct 2026 21:05:12 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id C72FB3E2D94
+	for <ltp@archiver.kernel.org>; Tue, 20 Oct 2026 22:15:49 +0200 (CEST)
 Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 91A153E7500
- for <ltp@lists.linux.it>; Tue, 20 Oct 2026 21:04:54 +0200 (CEST)
-Received: from mail-oo2-x06.google.com (mail-oo2-x06.google.com
- [IPv6:2607:f8b0:4864:31::6])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 8A0E63E0EA5
+ for <ltp@lists.linux.it>; Tue, 20 Oct 2026 22:15:34 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 0C4971400777
- for <ltp@lists.linux.it>; Tue, 20 Oct 2026 21:04:54 +0200 (CEST)
-Received: by mail-oo2-x06.google.com with SMTP id
- 46e09a7af769-8217177c5daso527279a34.0
- for <ltp@lists.linux.it>; Tue, 20 Oct 2026 12:04:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1792523092; x=1793127892; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to:content-type;
- bh=eI4Q+HWAcTj+eUNZBSUFMCIwzSq6lVslnwfdwj3PcUA=;
- b=UFh4sIIuRsHIgP/3KZczoeBcct5QE+JOUqohYUQ+bry2D0J+hmucKvBqMyAu+ARsHf
- gscjWamLWvMsHR15y5+QKOW2FoY1beJWRpYWOha0uFqHFMtWAgFsDp3TR7J3cYyDNtGO
- C9KWDFuxb8k/RSytdLaJVqU0lm85MSj1yjnM2BgScizsK5KEGXYpKrgnfW8s1Gmkd50z
- F/OZKfb51tlbYGW3eWhKLwBPgDhoZtaUXhmU6xh9QMKw6srjzyn5eBXdL+1MJpdOK7ZC
- dQhEfMEFSJQ0e/g6xzqQyy+AkxZT67BZsN9o8V4nTBoDlIqvYpV9te0PANp1zIcckLXA
- kF2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20260707; t=1792523092; x=1793127892;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to:content-type;
- bh=eI4Q+HWAcTj+eUNZBSUFMCIwzSq6lVslnwfdwj3PcUA=;
- b=YmlqjaW7VvnzJLd7bQvNY4AAq4jAhMtoUwJGjQXw+SpkI0Avr+ngXEeYC2pnfQ/TtR
- dI9Y3Fvz6IR3Rdu6WPhZ7wJFI0rCUE6NWfqR+rl1s7Df7V9FZNgUIqk7fdj+wuPjmCTy
- mcKshV8CpURHR8ugYjQK/NDmeUWXpG7QK/HPcU/+LOWu2oBvEF6ngJ41jFfD6KEj7HR7
- QqV0kz/GFfQeseYHb+sc/xoF897aerLx9YKE3dIacOeRkGNIQNAM6HBSxeZxd/PgsBlq
- lO86YZD1VtaKH/Ub99Q+INIGNMPVIO72QIxrT7mxlvMnXxwu2UMcDv71SADG3nRkTbfa
- N+og==
-X-Gm-Message-State: AFq9FYLrzgcA9t7NZ3yOxdAL5u3TfU8Zp+B8CIX8+6+Ypqvg5u/q/yi+
- bVOj4a/1eh4MCQwQgMDHqznrLPaJJ9Kl+ZeCIH1HSGUwAxB0wfXyQ++K
-X-Gm-Gg: AYBFou1m+5Tty4nV6x0GTdPQIEEXCpoG6r1rlA2w3txYA/c3eeHpZ+eddJWzWPWAJSq
- iebx3+n9/lwpozSSMrVzeNiuqQWfqZHGMBH0MPEv7IhwxHoXC+DvjIplVq3ZxhtJbMO7LIAsiEd
- KVJInKzaz8fhlAh0XRxE6Dl5kaN2T+I1d5eViV5cRCf40SZ9m0ZRvmJ/aav20iCInjiuuA2tutM
- pM4LhM97DCH7sEu9NMjLdYWpRM+QsjqyGe9LkLhea21GAzJcuNn2jhH3Qhy3KPkDZEkmd+Hoe42
- InPWfUqNyNCiZaJYZVJvag2WBxYoAEb70BeEK0OAvv75XoCdbq9YyRsj5EIwHSRvODpaLwHfxRQ
- BOL+p5XRyNjfRWYM0UWilBuy7NbOLv7d88gJYTKKfSuqRoKJIt2Jxd7T3sPDdXt6QtdK3wnJdHI
- e4x3oQSrh8fcdhN1gIB2UOffnat1V8PiF28l0itz8bKd2mqBLG6HazaQ2JAfgdYKvRHxYtE0vvs
- OrQNw7EwoluQKanYspiLqce9e9IsoKDg+IfPIc+yCnBB0FmVZaoXpps0YsfzpbMTFcI3BTGbLiG
- xd161o/fg5P5eCz+hlMwYw==
-X-Received: by 2002:a05:6870:ac20:b0:48f:e0f6:c467 with SMTP id
- 586e51a60fabf-4a757a7be61mr8719381fac.53.1792523091991; 
- Tue, 20 Oct 2026 12:04:51 -0700 (PDT)
-Received: from
- runnervm8k3b6.ubskotnc0ogejgnjnab5l43iwg.gx.internal.cloudapp.net
- ([132.196.83.39]) by smtp.gmail.com with ESMTPSA id
- 586e51a60fabf-4a7d61ce790sm254257fac.11.2026.10.20.12.04.51
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 20 Oct 2026 12:04:51 -0700 (PDT)
-From: linuxtestproject.agent@gmail.com
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id EFDE4140026A
+ for <ltp@lists.linux.it>; Tue, 20 Oct 2026 22:15:33 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id EFA2A1F807;
+ Tue, 20 Oct 2026 20:15:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1792527333;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=A1bSBpWNYKXEJbflU1WLoVHGbMuhM8Twp9Y30g5Qe3s=;
+ b=DgAFRPnbiEc+z/S7Zd2i6ZOqI6/my78plhIPrYAiWq9ID/1/BcLzcJMXqL20UrxZsPHH8x
+ cQW/BOzEs/6Hf117slxX0gP9gK3H1lpt5+yVG++YTcxYdrI6TSZVi1rGSku9iVsEUzZ+CL
+ yrAUGC/jVi97VHJXoRPel+VgDRDJlC4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1792527333;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=A1bSBpWNYKXEJbflU1WLoVHGbMuhM8Twp9Y30g5Qe3s=;
+ b=b0Al4VbbXAI40XmASoCCgGg1Cw9cYJJxAtFVKH8djgp/CCjNF8Wn4UqpUpezcpaXDr5Udq
+ VbYlZdMT5Xz/3gDA==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1792527332;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=A1bSBpWNYKXEJbflU1WLoVHGbMuhM8Twp9Y30g5Qe3s=;
+ b=F7TlES9aD4olSpcCq/FJLi+V/te+ZFzSd0V4xUqnFaCZ4ks6Tre6QWlOoBjz2cYQyIc5/+
+ VthTEh72P06wIkacV2HFAZjiAP1dYTPZO+IuAVj3zif3HRBd6/Bpj6jiLLsf9TFPjZF0kh
+ 3QaFSl6xREJKOimhaxFQMvbCTjtU6Dw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1792527332;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=A1bSBpWNYKXEJbflU1WLoVHGbMuhM8Twp9Y30g5Qe3s=;
+ b=3453MQUTJbp7k2Z88UQgnAbtVExpsoW9BYNKQO5zyRTtf29LqMgQZy3AP18FRpDMv9eD7v
+ 14nZoKmna5UbTKAA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id AEE9B136C6;
+ Tue, 20 Oct 2026 20:15:32 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id l0lWHuTL12ptLAAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Tue, 20 Oct 2026 20:15:32 +0000
+Date: Tue, 20 Oct 2026 22:15:31 +0200
+From: Petr Vorel <pvorel@suse.cz>
 To: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Tue, 20 Oct 2026 19:04:50 +0000
-Message-ID: <20261020190450.17534-1-linuxtestproject.agent@gmail.com>
-X-Mailer: git-send-email 2.55.0
-In-Reply-To: <20261020-build_system_optimize-v2-1-b527ac7cf835@suse.com>
-References: <20261020-build_system_optimize-v2-1-b527ac7cf835@suse.com>
+Message-ID: <20261020201531.GA154402@pevik>
+References: <20261020-build_system_optimize-v1-1-744f9fa88908@suse.com>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-8.6 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_INVALID,DKIM_SIGNED,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_PASS,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=4.0.1
+Content-Disposition: inline
+In-Reply-To: <20261020-build_system_optimize-v1-1-744f9fa88908@suse.com>
+X-Spamd-Result: default: False [-7.50 / 50.00]; REPLY(-4.00)[];
+ BAYES_HAM(-3.00)[100.00%]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ MID_RHS_NOT_FQDN(0.50)[]; HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; MISSING_XM_UA(0.00)[];
+ MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; RCPT_COUNT_TWO(0.00)[2];
+ RCVD_TLS_ALL(0.00)[]; TO_DN_ALL(0.00)[];
+ FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:replyto,imap1.dmz-prg2.suse.org:helo];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ REPLYTO_EQ_FROM(0.00)[]
+X-Spam-Score: -7.50
+X-Spam-Level: 
+X-Spam-Status: No, score=-13.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_PASS,SPF_PASS autolearn=ham
+	autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] build: Fix library prerequisites in testcases.mk
+Subject: Re: [LTP] [PATCH] build: Parallelize subdirectory recursion in
+ generic_trunk_target
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -97,39 +117,95 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: Linux Test Project <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi Andrea,
 
-On 20 October 2026, Andrea Cervesato wrote:
-> [PATCH 1/3] build: Fix library prerequisites in testcases.mk
+thanks for the speedup.
 
---- [PATCH 2/3] ---
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
+...
 
-> diff --git a/include/mk/generic_trunk_target.inc b/include/mk/generic_trunk_target.inc
-> +MAKE_DEPS += $(abs_top_builddir)/lib/libltp.a $(abs_top_builddir)/libs-all
+> +# Recurse into subdirectories in parallel instead of using a serial shell loop.
+> +# Each subdirectory is mapped to a phony target (<dir>-all, <dir>-install, etc.).
+> +# GNU Make can then schedule sibling directories concurrently under -jN.
+> +all:     $(addsuffix -all,$(SUBDIRS))
+> +install: $(addsuffix -install,$(SUBDIRS))
+> +check:   $(addsuffix -check,$(SUBDIRS))
+> +
+> +.PHONY: $(addsuffix -all,$(SUBDIRS)) $(addsuffix -install,$(SUBDIRS)) $(addsuffix -check,$(SUBDIRS))
+> +
+> +# For each target (e.g. 'open-all'), strip the suffix to get the directory name,
+> +# build trunk-local targets first, and ensure the subdirectory exists.
+> +$(addsuffix -all,$(SUBDIRS)): trunk-all | $(SUBDIRS) $(MAKE_DEPS)
+>  ifdef VERBOSE
+> -	@set -e; for dir in $(SUBDIRS); do \
+> -	    $(MAKE) -C $$dir -f "$(abs_srcdir)/$$dir/Makefile" $@; \
+> -	done
+Yeah, replacing shell for loop which is single process only to make processing
+makes sense.
 
-Medium: testcases/lib already has a per-library ujson prerequisite, so
-when ujson needs rebuilding, make -j4 -C testcases/lib tst_run_shell
-launches that builder alongside libs-all's ujson builder. Both write the
-same objects and libujson.a concurrently, allowing a corrupt archive or
-a failed link. Serialize or deduplicate these prerequisite paths so each
-library has only one builder.
+> +	$(MAKE) -C "$(patsubst %-all,%,$@)" -f "$(abs_srcdir)/$(patsubst %-all,%,$@)/Makefile" all
+>  else
+> -	@set -e; for dir in $(SUBDIRS); do \
+> -	    $(MAKE) --no-print-directory -C $$dir -f "$(abs_srcdir)/$$dir/Makefile" $@; \
+> -	done
+> +	@$(MAKE) --no-print-directory -C "$(patsubst %-all,%,$@)" -f "$(abs_srcdir)/$(patsubst %-all,%,$@)/Makefile" all
+> +endif
+> +
+> +$(addsuffix -install,$(SUBDIRS)): trunk-install | $(SUBDIRS) $(MAKE_DEPS)
+> +ifdef VERBOSE
+> +	$(MAKE) -C "$(patsubst %-install,%,$@)" -f "$(abs_srcdir)/$(patsubst %-install,%,$@)/Makefile" install
+> +else
+> +	@$(MAKE) --no-print-directory -C "$(patsubst %-install,%,$@)" -f "$(abs_srcdir)/$(patsubst %-install,%,$@)/Makefile" install
+> +endif
+> +
+> +$(addsuffix -check,$(SUBDIRS)): trunk-check | $(SUBDIRS) $(MAKE_DEPS)
+> +ifdef VERBOSE
+> +	$(MAKE) -C "$(patsubst %-check,%,$@)" -f "$(abs_srcdir)/$(patsubst %-check,%,$@)/Makefile" check
+> +else
+> +	@$(MAKE) --no-print-directory -C "$(patsubst %-check,%,$@)" -f "$(abs_srcdir)/$(patsubst %-check,%,$@)/Makefile" check
+>  endif
+>  endif
 
-Verdict - Needs revision
+> diff --git a/testcases/kernel/Makefile b/testcases/kernel/Makefile
+> index 29e26742d..3bf5e433e 100644
+> --- a/testcases/kernel/Makefile
+> +++ b/testcases/kernel/Makefile
+> @@ -54,3 +54,6 @@ FILTER_OUT_DIRS		+= containers controllers device-drivers fs io ipc mem \
+>  endif
 
----
-Note:
+>  include $(top_srcdir)/include/mk/generic_trunk_target.mk
+> +
+> +# libkerntest.a in lib/ must be built before syscalls and mem consumers
+> +syscalls-all mem-all: lib-all
 
-The agent can sometimes produce false positives although often its
-findings are genuine. If you find issues with the review, please
-comment this email or ignore the suggestions.
+I wonder if this can be autogenerated, because this was not needed before.
 
-Regards,
-LTP AI Reviewer
+I'm ok with this explicit definition. Probably in the future we should move it
+to libs/ (using it as LTPLIBS), which will solve the dependency.
+
+> diff --git a/testcases/network/rpc/Makefile b/testcases/network/rpc/Makefile
+> index 6ecb1a665..8d12bdf1e 100644
+> --- a/testcases/network/rpc/Makefile
+> +++ b/testcases/network/rpc/Makefile
+> @@ -9,3 +9,6 @@ include $(top_srcdir)/include/mk/env_pre.mk
+>  INSTALL_TARGETS		:= *.sh
+
+>  include $(top_srcdir)/include/mk/generic_trunk_target.mk
+> +
+> +# librpc-tirpc.a in rpc-tirpc/ must be built before basic_tests
+> +basic_tests-all: rpc-tirpc-all
+
+Also librpc-tirpc.a should be moved into libs/ (if we still keep this code and
+not move it to libtirpc project where it'd make more sense).
+
+Kind regards,
+Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
