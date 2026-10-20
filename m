@@ -2,119 +2,120 @@ Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA535606A31C
-	for <ltp@archiver.kernel.org>; Tue, 20 Oct 2026 10:19:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC8C0606A31A
+	for <ltp@archiver.kernel.org>; Tue, 20 Oct 2026 10:19:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key, unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256 header.s=susede2_rsa header.b=VXOGUMjn;
-	dkim=fail reason="signature verification failed" header.d=suse.de header.i=@suse.de header.a=ed25519-sha256 header.s=susede2_ed25519 header.b=QGzS6P3T;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=suse.de header.i=@suse.de header.a=rsa-sha256 header.s=susede2_rsa header.b=VXOGUMjn;
-	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256 header.s=susede2_ed25519 header.b=QGzS6P3T
+	dkim=fail reason="signature verification failed" (1024-bit key, unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256 header.s=susede2_rsa header.b=s2l9e7xp;
+	dkim=fail reason="signature verification failed" header.d=suse.de header.i=@suse.de header.a=ed25519-sha256 header.s=susede2_ed25519 header.b=eKvP6HpB;
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=suse.de header.i=@suse.de header.a=rsa-sha256 header.s=susede2_rsa header.b=dnNxiN5X;
+	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256 header.s=susede2_ed25519 header.b=b1UgXuyB
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 888553EA615
-	for <ltp@archiver.kernel.org>; Tue, 20 Oct 2026 12:19:20 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 690983EA612
+	for <ltp@archiver.kernel.org>; Tue, 20 Oct 2026 12:19:34 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 3E86E3EA609
+ by picard.linux.it (Postfix) with ESMTPS id 50E4E3EA604
  for <ltp@lists.linux.it>; Tue, 20 Oct 2026 12:16:36 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 997701A00917
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id C8C9E1400B73
  for <ltp@lists.linux.it>; Tue, 20 Oct 2026 12:16:35 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 508011F79E;
- Tue, 20 Oct 2026 10:16:34 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id A70A421DAF;
+ Tue, 20 Oct 2026 10:16:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1792491394; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=nJPi4/sr02veF32u+UKBymKwopGSCi64ZxKhQjA+VoM=;
- b=VXOGUMjnKZ52RApAqAgaYsS2K1hUUZzai4alsX1SE9TLU2OAr4dMYi/+0FYS1PvqiOq5JG
- RIsY2Umovkbrzl4irxYBxz2nn7oUdYrNcMqb5ghfwSucUAzybTbS5yiVfnrpJF+dUuLTcR
- b9vFsm3YsgNFlySMakFgHxz0u4nl6Gg=
+ bh=Zy4cFpy5rWx7oyc1dmN4U+7XvMdAdbGhIuS0kzWnD0s=;
+ b=s2l9e7xpCyrwPTukFk0CPfvchjfhqMgr5ztjblRiHDQXlx4IKkF2OQhks3k1M9BDAdm4l7
+ 7FhAt+7+8kfV1iO47jsDZFPRaDCblcUl9b3weHgcSL3Llv1ody5BgyTstz1heeViwQpxMg
+ RIXA5jD9WRQ28VMIovajLd5TahGzlQk=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1792491394;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=nJPi4/sr02veF32u+UKBymKwopGSCi64ZxKhQjA+VoM=;
- b=QGzS6P3TnzfBNr9+oPWm1LG6Q3SnnB/V40g8md18utguKYjZ9GTjJcND9C9Ch1NcYG+vyu
- G8TqmOVqZDUq1+Cw==
-Authentication-Results: smtp-out2.suse.de;
+ bh=Zy4cFpy5rWx7oyc1dmN4U+7XvMdAdbGhIuS0kzWnD0s=;
+ b=eKvP6HpBqWHfxdffKCW/O/TAZfexhujvqjUQsrdb///AEoNN2eeqRlh3h2ael/ScHpK+rg
+ xP+2fRqYtv1FTfAA==
+Authentication-Results: smtp-out1.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1792491394; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1792491393; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=nJPi4/sr02veF32u+UKBymKwopGSCi64ZxKhQjA+VoM=;
- b=VXOGUMjnKZ52RApAqAgaYsS2K1hUUZzai4alsX1SE9TLU2OAr4dMYi/+0FYS1PvqiOq5JG
- RIsY2Umovkbrzl4irxYBxz2nn7oUdYrNcMqb5ghfwSucUAzybTbS5yiVfnrpJF+dUuLTcR
- b9vFsm3YsgNFlySMakFgHxz0u4nl6Gg=
+ bh=Zy4cFpy5rWx7oyc1dmN4U+7XvMdAdbGhIuS0kzWnD0s=;
+ b=dnNxiN5X7PGO+4/AEykSEcyj/SrEDbZ66HKWmXiVmWvtQf0ITROZGDODpOf/tmx2mdzzW9
+ 5OIvdAx5AL9gcepWuq6Gtw7Y3HYQpnNxSgxV8iRd2FHaw0IMytv/TRB+w063xfs0rRVFlR
+ PUKk65EbmTmQNTWTLJSlDfdcwlCuZP4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1792491394;
+ s=susede2_ed25519; t=1792491393;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=nJPi4/sr02veF32u+UKBymKwopGSCi64ZxKhQjA+VoM=;
- b=QGzS6P3TnzfBNr9+oPWm1LG6Q3SnnB/V40g8md18utguKYjZ9GTjJcND9C9Ch1NcYG+vyu
- G8TqmOVqZDUq1+Cw==
+ bh=Zy4cFpy5rWx7oyc1dmN4U+7XvMdAdbGhIuS0kzWnD0s=;
+ b=b1UgXuyBoq/Nd7HC5rdfd08aS5ZckqHrxUPaukk6yUTxe4f2gMaIy2DZXQkvIUeGvObB/V
+ xQynMvHc9S9SNgDQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BD18D13865;
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3F4D413793;
  Tue, 20 Oct 2026 10:16:33 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id B2PKGIA/12rCMgAAD6G6ig:T8
+ by imap1.dmz-prg2.suse.org with ESMTPSA id B2PKGIA/12rCMgAAD6G6ig:T5
  (envelope-from <andrea.cervesato@suse.de>); Tue, 20 Oct 2026 10:16:33 +0000
 From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Tue, 20 Oct 2026 12:16:36 +0200
+Date: Tue, 20 Oct 2026 12:16:33 +0200
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-Message-Id: <20261020-fchroot-v5-7-63aa6faff503@suse.com>
+Message-Id: <20261020-fchroot-v5-4-63aa6faff503@suse.com>
 References: <20261020-fchroot-v5-0-63aa6faff503@suse.com>
 In-Reply-To: <20261020-fchroot-v5-0-63aa6faff503@suse.com>
 To: Linux Test Project <ltp@lists.linux.it>
 X-Mailer: b4 0.16.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1792491392; l=4686;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1792491392; l=3147;
  i=andrea.cervesato@suse.com; s=20251210; h=from:subject:message-id;
- bh=qrvneNZ8hoeF39zPGKbU1Sv5KLw3qBG972qOY2xQWOY=;
- b=n95Wy36Tzt52YiNWff9kEbl4+zl7525hlAlS5IV14lpnd47qtfqCg0w0IpsaFvVZ1+nuXt6Th
- 416oOUTILYqARy+OVHiPL1uzJRCq7k3thXsffvha3h/y8sGvRI+62G/
+ bh=dVXue2T+Y8q2Oqo/SBP7HTnsE8e5hD1l5KJMhKfmwr0=;
+ b=iBvFpsGPCU1mxbiAnjMtwEG7YDNUBHEyKBEBm11o8vaKh+xlAwIi1H3iAyutJ+AEjfxTiPwp/
+ Ywg+oRfaHqIBth7EmP9pQjmdEibcT7BtTldiqxg6gP89i4kymoBQAp3
 X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
  pk=zKY+6GCauOiuHNZ//d8PQ/UL4jFCTKbXrzXAOQSLevI=
+X-Spam-Score: -4.30
+X-Spam-Level: 
 X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
  NEURAL_HAM_LONG(-1.00)[-1.000];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- RCPT_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; RCVD_TLS_ALL(0.00)[];
+ ARC_NA(0.00)[]; MIME_TRACE(0.00)[0:+];
  DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
  TO_DN_ALL(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- FROM_HAS_DN(0.00)[]; MIME_TRACE(0.00)[0:+];
+ FROM_HAS_DN(0.00)[]; RCPT_COUNT_THREE(0.00)[3];
  FROM_EQ_ENVFROM(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email]
-X-Spam-Score: -4.30
-X-Spam-Level: 
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email, suse.com:email,
+ imap1.dmz-prg2.suse.org:helo]
 X-Spam-Status: No, score=-16.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
 	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_PASS,SPF_PASS,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v5 07/14] fchroot06: test path walks under failfs root
+Subject: [LTP] [PATCH v5 04/14] fchroot03: test fchroot() permission checks
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -130,166 +131,111 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-Verify that once the root is in failfs only lookups anchored at a
-file descriptor keep working: relative lookups from the working
-directory and from a pre-opened directory fd succeed, absolute
-symlinks fail with EOPNOTSUPP and ".." walks clamp at the top of the
-mount tree, landing on the real root.
+Verify that with a regular directory fd the kernel first checks the
+execute permission on the directory and then CAP_SYS_CHROOT: an
+unprivileged process with an accessible directory fails with EPERM and
+a process without execute permission fails with EACCES.
 
+Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
 Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
- runtest/syscalls                              |   1 +
- testcases/kernel/syscalls/fchroot/.gitignore  |   1 +
- testcases/kernel/syscalls/fchroot/fchroot06.c | 124 ++++++++++++++++++++++++++
- 3 files changed, 126 insertions(+)
+ runtest/syscalls                              |  1 +
+ testcases/kernel/syscalls/fchroot/.gitignore  |  1 +
+ testcases/kernel/syscalls/fchroot/fchroot03.c | 70 +++++++++++++++++++++++++++
+ 3 files changed, 72 insertions(+)
 
 diff --git a/runtest/syscalls b/runtest/syscalls
-index a5ed6792e..8b688cbe2 100644
+index c4070e970..3b05e15eb 100644
 --- a/runtest/syscalls
 +++ b/runtest/syscalls
-@@ -321,6 +321,7 @@ fchroot02 fchroot02
- fchroot03 fchroot03
- fchroot04 fchroot04
- fchroot05 fchroot05
-+fchroot06 fchroot06
+@@ -318,6 +318,7 @@ fchownat03 fchownat03
+ 
+ fchroot01 fchroot01
+ fchroot02 fchroot02
++fchroot03 fchroot03
  
  fcntl01 fcntl01
  fcntl01_64 fcntl01_64
 diff --git a/testcases/kernel/syscalls/fchroot/.gitignore b/testcases/kernel/syscalls/fchroot/.gitignore
-index 0697f10eb..12151270a 100644
+index fb3287612..235befd99 100644
 --- a/testcases/kernel/syscalls/fchroot/.gitignore
 +++ b/testcases/kernel/syscalls/fchroot/.gitignore
-@@ -3,3 +3,4 @@ fchroot02
- fchroot03
- fchroot04
- fchroot05
-+fchroot06
-diff --git a/testcases/kernel/syscalls/fchroot/fchroot06.c b/testcases/kernel/syscalls/fchroot/fchroot06.c
+@@ -1,2 +1,3 @@
+ fchroot01
+ fchroot02
++fchroot03
+diff --git a/testcases/kernel/syscalls/fchroot/fchroot03.c b/testcases/kernel/syscalls/fchroot/fchroot03.c
 new file mode 100644
-index 000000000..d7d7dfc50
+index 000000000..56ec7b8a3
 --- /dev/null
-+++ b/testcases/kernel/syscalls/fchroot/fchroot06.c
-@@ -0,0 +1,124 @@
++++ b/testcases/kernel/syscalls/fchroot/fchroot03.c
+@@ -0,0 +1,70 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
 + * Copyright (C) 2026 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
 + */
 +
 +/*\
-+ * Test path walks under the failfs root.
++ * Test the :manpage:`fchroot(2)` permission checks with a regular directory
++ * fd:
 + *
-+ * Once :manpage:`fchroot(2)` moved the process root into failfs, only
-+ * lookups anchored at a file descriptor keep working:
++ * - an unprivileged process with an accessible directory fails with ``EPERM``
++ * - a process without execute permission on the directory fails with ``EACCES``
 + *
-+ * - lookups relative to the working directory, which stays in the real
-+ *   filesystem, keep working
-+ * - lookups anchored at a pre-opened directory fd keep working, including
-+ *   resolution of relative symlinks
-+ * - absolute symlinks restart the walk at the failfs root and fail with
-+ *   ``EOPNOTSUPP``
-+ * - ".." walks clamp at the top of the mount tree, not at the failfs
-+ *   root, so walking up from the working directory lands on the real
-+ *   root
-+ *
-+ * Root is required because entering failfs with the ``FD_FAILFS_ROOT``
-+ * sentinel requires ``CAP_SYS_CHROOT``.
-+ *
-+ * The test runs in a forked child so the root of the parent process is
-+ * left untouched.
++ * Root is required to open the directory file descriptors before dropping
++ * to an unprivileged user in forked children.
 + */
 +
-+#define _GNU_SOURCE
 +#include <fcntl.h>
-+#include <string.h>
-+#include <sys/stat.h>
++#include <pwd.h>
 +#include "tst_test.h"
 +#include "lapi/fcntl.h"
 +#include "lapi/syscalls.h"
 +
-+#define RELDIR "rel"
-+#define ABSDIR "abs"
++static struct tcase {
++	const char *dir;
++	mode_t mode;
++	int exp_errno;
++	const char *desc;
++} tcases[] = {
++	{"pubdir", 0755, EPERM, "no CAP_SYS_CHROOT"},
++	{"privdir", 0600, EACCES, "no execute permission"},
++};
 +
-+static char upwards[PATH_MAX];
++static struct passwd *ltpuser;
 +
-+static void run(void)
++static void run(unsigned int i)
 +{
++	struct tcase *tc = &tcases[i];
++
 +	if (SAFE_FORK())
 +		return;
 +
-+	struct stat realroot, st;
-+	int dfd, fd;
++	int dfd = SAFE_OPEN(tc->dir, O_PATH | O_DIRECTORY);
 +
-+	SAFE_STAT("/", &realroot);
-+	dfd = SAFE_OPEN(".", O_RDONLY | O_DIRECTORY);
++	SAFE_SETRESUID(ltpuser->pw_uid, ltpuser->pw_uid,
++		ltpuser->pw_uid);
 +
-+	TST_EXP_PASS(tst_syscall(__NR_fchroot, FD_FAILFS_ROOT, 0),
-+		"fchroot() with the FD_FAILFS_ROOT sentinel");
-+
-+	fd = TST_EXP_FD(openat(AT_FDCWD, ".", O_RDONLY | O_DIRECTORY));
-+	if (fd != -1)
-+		SAFE_CLOSE(fd);
-+
-+	fd = TST_EXP_FD(openat(dfd, "canary", O_WRONLY | O_CREAT, 0600));
-+	if (fd != -1) {
-+		SAFE_WRITE(SAFE_WRITE_ALL, fd, "x", 1);
-+		SAFE_CLOSE(fd);
-+	}
-+
-+	fd = TST_EXP_FD(openat(dfd, RELDIR, O_RDONLY));
-+	if (fd != -1)
-+		SAFE_CLOSE(fd);
-+
-+	TST_EXP_FAIL2(openat(dfd, ABSDIR, O_RDONLY), EOPNOTSUPP,
-+		"resolution of an absolute symlink");
-+
-+	fd = TST_EXP_FD(openat(AT_FDCWD, upwards, O_PATH));
-+	if (fd != -1) {
-+		SAFE_FSTAT(fd, &st);
-+		SAFE_CLOSE(fd);
-+
-+		TST_EXP_EXPR(st.st_dev == realroot.st_dev &&
-+			st.st_ino == realroot.st_ino,
-+			"'..' walk clamps at the top of the mount tree");
-+	}
-+
-+	SAFE_CLOSE(dfd);
++	TST_EXP_FAIL(tst_syscall(__NR_fchroot, dfd, 0),
++		tc->exp_errno, "fchroot() with %s", tc->desc);
 +}
 +
 +static void setup(void)
 +{
-+	char *tmpdir;
-+	char abs_path[PATH_MAX];
-+	struct stat root_st, st;
-+	int off;
++	unsigned int i;
 +
-+	tmpdir = tst_tmpdir_path();
-+	snprintf(abs_path, sizeof(abs_path), "%s/%s", tmpdir, "target");
++	ltpuser = SAFE_GETPWNAM("nobody");
 +
-+	SAFE_TOUCH("target", 0644, NULL);
-+	SAFE_SYMLINK("target", RELDIR);
-+	SAFE_SYMLINK(abs_path, ABSDIR);
-+
-+	SAFE_STAT("/", &root_st);
-+
-+	strcpy(upwards, "..");
-+	off = 2;
-+	while (1) {
-+		SAFE_STAT(upwards, &st);
-+
-+		if (st.st_dev == root_st.st_dev && st.st_ino == root_st.st_ino)
-+			break;
-+
-+		if ((size_t)off + sizeof("/..") > sizeof(upwards))
-+			tst_brk(TBROK, "Path to root too long");
-+
-+		strcpy(upwards + off, "/..");
-+		off += 3;
++	for (i = 0; i < ARRAY_SIZE(tcases); i++) {
++		SAFE_MKDIR(tcases[i].dir, tcases[i].mode);
++		SAFE_CHMOD(tcases[i].dir, tcases[i].mode);
 +	}
 +}
 +
 +static struct tst_test test = {
++	.test = run,
++	.tcnt = ARRAY_SIZE(tcases),
 +	.setup = setup,
-+	.test_all = run,
 +	.needs_root = 1,
 +	.needs_tmpdir = 1,
 +	.forks_child = 1,
