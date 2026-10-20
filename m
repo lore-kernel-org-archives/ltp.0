@@ -1,95 +1,93 @@
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0729606A31A
-	for <ltp@archiver.kernel.org>; Tue, 20 Oct 2026 14:50:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D0A3606A31C
+	for <ltp@archiver.kernel.org>; Tue, 20 Oct 2026 14:51:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20251104 header.b=WqyTiDfW
+	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20251104 header.b=feDmw/1h
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 5DCFC3EB48D
-	for <ltp@archiver.kernel.org>; Tue, 20 Oct 2026 16:50:16 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 7D4F63EAF6F
+	for <ltp@archiver.kernel.org>; Tue, 20 Oct 2026 16:51:27 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 55DA63E20E6
- for <ltp@lists.linux.it>; Tue, 20 Oct 2026 16:50:01 +0200 (CEST)
-Received: from mail-dy2-x0a.google.com (mail-dy2-x0a.google.com
- [IPv6:2607:f8b0:4864:36::a])
+ by picard.linux.it (Postfix) with ESMTPS id 97FD73EA605
+ for <ltp@lists.linux.it>; Tue, 20 Oct 2026 16:51:12 +0200 (CEST)
+Received: from mail-qv2-x06.google.com (mail-qv2-x06.google.com
+ [IPv6:2607:f8b0:4864:33::6])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id ED5331000465
- for <ltp@lists.linux.it>; Tue, 20 Oct 2026 16:50:00 +0200 (CEST)
-Received: by mail-dy2-x0a.google.com with SMTP id
- 5a478bee46e88-366469e3569so348971eec.0
- for <ltp@lists.linux.it>; Tue, 20 Oct 2026 07:50:00 -0700 (PDT)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 2ECB11A00166
+ for <ltp@lists.linux.it>; Tue, 20 Oct 2026 16:51:12 +0200 (CEST)
+Received: by mail-qv2-x06.google.com with SMTP id
+ 6a1803df08f44-91ba7a52cd8so18822786d6.0
+ for <ltp@lists.linux.it>; Tue, 20 Oct 2026 07:51:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1792507799; x=1793112599; darn=lists.linux.it;
+ d=gmail.com; s=20251104; t=1792507871; x=1793112671; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to:content-type;
- bh=qbfZtsu1NiqtoJ0h/sj2O7OyqqrMgBPg71C36zOomlI=;
- b=WqyTiDfWYaAWzCWsBrODulvsi/T998p+CqLW7yDQ+707OI1xIY3zS2BpmLkHKuSL7P
- ygiRRyaj8kkjjJBIQ/dHldPjW5Pz/fRbN+rt183T/BoaDStiBpfvY24kSS5L0rtTXsA4
- IypCYWm9G9u1tkaGt7ZFZLmz9Br0N4B3IoyBjYGflICl7tkc9v3G2bRK/AEqipTO6pxy
- V1YSfqQd3poBXFJhTB7PvGUIrJ7wrh2afVYFPWF3RyjKokBt9aqtwJ1JRFRK4rWIB7Y6
- pwiKib1AbwN6gD7CyFU4VjmI3PRKddKDNsMNjuQ6h2RO3//a4vKFBp9DPoW9HzVvBeth
- BpyA==
+ bh=YgYjKQJSO4YN//U3ZLZ2ZupxOzi4CoHF/+saZOxJfUI=;
+ b=feDmw/1h42A3JSW9hvb7AVoa6alMj2y8wZ2Y63WUPu0HYKzrJszll2s1xItvckj5AT
+ JZ4S2hrjKa6jeqrhX25m4qIeIZzJHgIeBGtcjxzMlNNR4UuhY2xZk65QDySJ//M6tp5X
+ CWr9IM11HHlaqsMF1dNaEFewFQYw1lpk2Ruve5p+Ixz6UcqnEgEplQLijEDn0PbtxamF
+ 4zass9PAC2U1YAomPV4j/LhYazMkmBxdPxUo4Tb4l+nD2y/LpW2+nH0XSalQ/MWdoqP8
+ fq9hxm+5VDY0L8nsK6zcJlyvf4l1ddAhJ33YHXh0MyCgHL3j0PymEjnq+2HXHo62ielB
+ ZZMA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20260707; t=1792507799; x=1793112599;
+ d=1e100.net; s=20260707; t=1792507871; x=1793112671;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to:content-type;
- bh=qbfZtsu1NiqtoJ0h/sj2O7OyqqrMgBPg71C36zOomlI=;
- b=ygdWl39fdJ0bApG/AOZJJkyLrNFu9PLpuieQDNN0Yo+4yXUjjqcdSxRS9d/syS8mOe
- GNlx5ThYlxtZ3Kfbd8J1g/4iOZQVGkzhwga9M381Opyt41O7z/0anfMLgb0obqvsdCWi
- Vt0prWAEiipdxttiEK3lVI1avJifGdK0RzLQzMdj0CzUt2/QHSA8GPnXAugFPMmcx7IE
- GjQq0b2UUGNFS5K+krMM8EgtB+0+t/0YEcPV+AAFgslyJKZ+EgfsWVTkSKQvMaNjVbFj
- 3e08a7Zznm8k//a+Ka/VE0B4Knm4ZdvjMFoZ866RZE3qpYjSnN6qz6GJ4VWsFolOplj8
- 7ADg==
-X-Gm-Message-State: AFq9FYJnAyLeIucFFyo5fYD5ODO6py/5p4rSo7gHhu7tMKRR/45ftHpK
- lySAfR4C+JY9qiUFa59TJ72cl/S1ClVnEnePOanCtC3LE9EMRJboToLU
-X-Gm-Gg: AYBFou3bb8mbs3MNGnfL72RwX+zGM1FzbIoHEAM7+o7wS3HTbM6FfkwptOX9+PVa+/3
- rEqGCxERB6eZYGKbRqem0B94WhETt2Odn92vqYa//aRFfomOyQsEnYPiuI0KtN52XhPzzzJQGNk
- gQAuhKP6339b9e8sMRJeedZwHpGC0IbgbuuWit4wxuxy1VfuRG5sQLcZ+MAiDLjMj27iSThXlhx
- r5eksbxf3o2VCmF0BezLWmgJswoV5IoShMKpEnGDrw2m0lXRnLX/4I7eznBoT/t3RDyonLODHV3
- LiMttwcJM24VcIIHOzIf3qkAUTsRYhFuDDUEemmCvveBCRpbLbKq7NJw9HyZqy69POskVX/tkYk
- AAW8E//Nrr2+v1PxTwpfmeQi9aYcVfmjANC0yHj4q3ylm5PC35ISE0+EY+tIkcufgCTJbKt1a6c
- lryhX6S98p2205Zr5azPqG+B1ydedD+hEJhaKomZ4gcPpAY0F7V/bjUbjtOD/wGDXBl2oQqU9kC
- sQVssQHOekQasY14rSXvBmFZbwYhld5b4t4/awUVqVooYrIz3PMNeK0hi2UZ2UZp1mqtoJoZ8gq
- fQWeFHjx53uv/kmLjqfdmp2g
-X-Received: by 2002:a05:7300:7a99:b0:358:f678:46b6 with SMTP id
- 5a478bee46e88-361a2343165mr16368697eec.22.1792507798921; 
- Tue, 20 Oct 2026 07:49:58 -0700 (PDT)
+ bh=YgYjKQJSO4YN//U3ZLZ2ZupxOzi4CoHF/+saZOxJfUI=;
+ b=0ud0d/h48pgxESoWPzndDIWPd12mGi28mRneI+7OPF1/nCQ6rqsn1Qh8bCDUAuGVwV
+ rxNBJBH7o8Gi4fyK9uVgSQhDPCEr8Ge/KIbt3oPKBccc/h40slToMC0Yby4OrrwrIWHn
+ txjg/fM3gHmUd+LfijkhogulxB/8yB+Cve9fqrVGw5DmTac0sLQjnYVD5J6fw6MZHIob
+ FCHkx0cx3v6byeVqHvEQHvRZCF7EeIM1cFupPPpxyNskMN5i1t8dOqiET1WCSrZbbeou
+ zWFeZlQM9B530iHK+hlQSfj89qmLWY8g8z2STeuBma6nYrgwLI538GNHCEiloqh5uPxu
+ FeFA==
+X-Gm-Message-State: AFq9FYIfqAnon3NLnT+dUZxqejk/iXR2S8N7ohuI83rC4gprqHr3uoof
+ LQgdwYhVVvfrylxgKGnGw3G0a60OTV6Ze+lPWpKUjetMlGgyAyAo6Cxj
+X-Gm-Gg: AYBFou1Uj+Y7fmoQm9FT9RmEoD7G2FuRIeWsmfH4bOncfu8f0O36hGhLI46uZqNqAZS
+ fwTzlx95/yxc6FEO9M0WNTRYmY7J97leOezx1FdOb3eVqFC0ilUyTat/6fEnDqcPJOenSAy5rmo
+ Wj5MYX0p8fTlGBEwjoelGBaKcDh/bTuPP/9E8q5sMl0gzqe1VCzBreBeQrZCQoy82U6pEdvZSjZ
+ PCyaE6W1h3RMNQhpAhASBvmqBJ8qju8FHWqc8fw77KFfj5FeEOBSh24I6YM82LWFQHHviRI/yNq
+ Gqe1gokjcXsBWzZLobB86UQ3L1MSFDh9qcEt1qHbW6oIG4m8mSjlGmQz+OAOR4slySfXkGSyQG3
+ cX9c8EmBF1Vx6YWW7UQFhnAnRb4EXVaR6Rafr8ecsHc7NkUG1X1eQOElyLxoLx5Za7EoZo9p6DV
+ MGbk5sDLAnHGo4Moh98Y8EsNDE5+pmVQ3SBzTCHELeHebNSOjPudeyG0KZ78NLqPwWbSrH3Ppaz
+ SOCA0LIp+hxtoz0rTMDWOKqNK0nIOlrxMe6MT4WqntlivN4D/49QOTPU6MRFo/zIicYvtsB2t8u
+ oyuoryHWkB1W
+X-Received: by 2002:a05:6214:1bcd:b0:91b:8025:2d96 with SMTP id
+ 6a1803df08f44-91bdec1756cmr177403536d6.1.1792507870717; 
+ Tue, 20 Oct 2026 07:51:10 -0700 (PDT)
 Received: from
- runnervmxehtw.kjntne4dm0buthbq1dof10awsa.phxx.internal.cloudapp.net
- ([172.182.243.65]) by smtp.gmail.com with ESMTPSA id
- 5a478bee46e88-360820a02b8sm44717743eec.17.2026.10.20.07.49.57
+ runnervm8k3b6.nyrd5vg3dtdujdseofgcizl3sa.bx.internal.cloudapp.net
+ ([172.190.124.74]) by smtp.gmail.com with ESMTPSA id
+ 6a1803df08f44-91c040baa03sm28167616d6.30.2026.10.20.07.51.10
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 20 Oct 2026 07:49:58 -0700 (PDT)
+ Tue, 20 Oct 2026 07:51:10 -0700 (PDT)
 From: linuxtestproject.agent@gmail.com
 To: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Tue, 20 Oct 2026 14:49:56 +0000
-Message-ID: <20261020144956.6124-1-linuxtestproject.agent@gmail.com>
+Date: Tue, 20 Oct 2026 14:51:09 +0000
+Message-ID: <20261020145109.9255-1-linuxtestproject.agent@gmail.com>
 X-Mailer: git-send-email 2.55.0
-In-Reply-To: <20261020-build_system_optimize-v1-1-744f9fa88908@suse.com>
-References: <20261020-build_system_optimize-v1-1-744f9fa88908@suse.com>
+In-Reply-To: <20261020-pwnescape-v1-1-99e82e00fa36@suse.com>
+References: <20261020-pwnescape-v1-1-99e82e00fa36@suse.com>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-8.6 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+X-Spam-Status: No, score=-3.5 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
 	DKIM_INVALID,DKIM_SIGNED,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_PASS,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=4.0.1
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_PASS,
+	SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] build: Parallelize subdirectory recursion in
- generic_trunk_target
+Subject: Re: [LTP] cve: add pwnescape reproducer
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -107,17 +105,13 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 Hi Andrea,
 
 On 20 Oct 2026, Andrea Cervesato wrote:
-> build: Parallelize subdirectory recursion in generic_trunk_target
+> cve: add pwnescape reproducer
 
-> diff --git a/testcases/kernel/Makefile b/testcases/kernel/Makefile
-> +syscalls-all mem-all: lib-all
+> +	SAFE_FILE_PRINTF("/proc/sys/net/ipv4/ip_forward", "1");
 
-Medium: running make -j8 directly in testcases/kernel/syscalls or
-testcases/kernel/mem bypasses this parent dependency, allowing sibling
-leaves to rebuild the same missing libkerntest.a concurrently.
-This races object/archive writes and can cause intermittent link failures.
-Build shared prerequisites once at these subtree entry points before
-launching their children.
+Medium severity: CONFIG_TUN and the namespace dependencies allow
+CONFIG_SYSCTL=n. On that configuration this path is absent, so setup
+reports TBROK instead of TCONF; add CONFIG_SYSCTL=y to .needs_kconfigs.
 
 Verdict - Needs revision
 
