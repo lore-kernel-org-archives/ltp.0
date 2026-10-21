@@ -1,58 +1,103 @@
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71684606A905
-	for <ltp@archiver.kernel.org>; Wed, 21 Oct 2026 03:18:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5049F606A319
+	for <ltp@archiver.kernel.org>; Wed, 21 Oct 2026 06:11:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key, unprotected) header.d=linux.dev header.i=@linux.dev header.a=rsa-sha256 header.s=key1 header.b=nz2XLkyY
+	dkim=pass (1024-bit key, unprotected) header.d=lists.linux.it header.i=@lists.linux.it header.a=rsa-sha256 header.s=picard header.b=jD/tuhcY;
+	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=suse.com header.i=@suse.com header.a=rsa-sha256 header.s=google header.b=Nx8SLb7t
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1792563086; h=message-id :
+ to : in-reply-to : date : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : cc : mime-version : content-type :
+ content-transfer-encoding : sender : from;
+ bh=MiRS9ApHH+Vnpkx1Muvj5rrjCQu5nHx7/3EfvaukFSI=;
+ b=jD/tuhcYOpLKaKFqfc4NZFbU4eB2DR523jpQCW3dskcR3y8EJqPhV/ijOKVwgOTThfaJn
+ WEyxKD7jgQ7qG2rk1xRV5H1SRZGpjcfxvuoAmZfEFwSpAdqdmy5tAcXSb2DdKC+sVKQ5X04
+ X2JlVTz0sd015PZLfjqaj5JZhWADgqo=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 126953EA623
-	for <ltp@archiver.kernel.org>; Wed, 21 Oct 2026 05:18:51 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 030273E60E9
+	for <ltp@archiver.kernel.org>; Wed, 21 Oct 2026 08:11:26 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 15C233E2620
- for <ltp@lists.linux.it>; Wed, 21 Oct 2026 05:18:23 +0200 (CEST)
-Received: from mta0.migadu.com (out-31.mta0.migadu.com
- [IPv6:2001:41d0:1004:224b::1f])
+ by picard.linux.it (Postfix) with ESMTPS id 013FD3E2660
+ for <ltp@lists.linux.it>; Wed, 21 Oct 2026 08:11:06 +0200 (CEST)
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com
+ [IPv6:2a00:1450:4864:20::42a])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 982F22003A6
- for <ltp@lists.linux.it>; Wed, 21 Oct 2026 05:18:23 +0200 (CEST)
-X-Envelope-To: ltp@lists.linux.it
-DKIM-Signature: a=rsa-sha256; bh=IfRuHjUcbGf2pgyAUBh3ufz6ouNU2bGDARooThX8u4k=; 
- c=simple/simple; d=linux.dev;
- h=from:to:subject:date:message-id:mime-version:content-type; s=key1;
- t=1792552702; v=1; x=1793157502;
- b=nz2XLkyY+ZxQOKHKu1qFsw3ymvuxYiTuLXvbEXruHdPlciEIoGgC8NKRuDY5JyI6IExE33tV
- 5ZbpVcAsEx3E+ev6rYhn3wK9cRDvETwGHpa9WjN5Ze1o3UG3hAAVJ1X/JI2eul1Js3eDKKCDpdX
- 0v19ltE0Wut19XYKhj0ynJlc=
-X-Envelope-To: ltp@lists.linux.it
-Received: by mta11.migadu.com with ESMTPS id 1145be5184c6d6a6;
- Wed, 21 Oct 2026 03:18:22 +0000
-X-Mizu-Trace-ID: 1145be5184c6d6a6
-X-Migadu-Flow: FLOW_OUT
-From: "Li Wang (Hieco)" <li.wang@linux.dev>
-To: ltp@lists.linux.it
-Date: Wed, 21 Oct 2026 11:18:16 +0800
-Message-ID: <20261021031816.166499-2-li.wang@linux.dev>
-X-Mailer: git-send-email 2.56.0
-In-Reply-To: <20261021031816.166499-1-li.wang@linux.dev>
-References: <20261021031816.166499-1-li.wang@linux.dev>
-X-Archived-By: <archiver.kernel.org>
-MIME-Version: 1.0
-X-Spam-Status: No, score=-16.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_PASS,SPF_PASS,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 0AB6D1A0092A
+ for <ltp@lists.linux.it>; Wed, 21 Oct 2026 08:11:05 +0200 (CEST)
+Received: by mail-wr1-x42a.google.com with SMTP id
+ ffacd0b85a97d-48c4649b35bso281121f8f.3
+ for <ltp@lists.linux.it>; Tue, 20 Oct 2026 23:11:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1792563065; x=1793167865; darn=lists.linux.it;
+ h=date:content-transfer-encoding:content-type:in-reply-to:cc:to
+ :message-id:subject:from:from:to:cc:subject:date:message-id:reply-to
+ :content-type; bh=ajBnL71mDHoqU9DUuC+MT6TGaevCfinZLm9lAZmUo5M=;
+ b=Nx8SLb7tf6SJIW8rpxv1vS5vLnaFcdkcDxziyUs9GCAm/1tKKxwfM3Gf3m2hWet0qH
+ nwIVlDv+8XbTC4NXcqIkaqbzyZwzbaIERagw5+2oc6+XwIrmu2QCeOgIQBOtd98twTZx
+ gaigi7kLxEUSvYeSfJ0iU7xxUEH0er6wRBvCkGKhLn61ZdhtZHN6OG4wuKLkT2/QSH0V
+ vKSU8Cp1owtJVajHc+5l6UC50B0avL8rChRhWk2cZ/04tyOMoIrvVbYFGCwfWqeVVyeP
+ ldIucHjFeazdCPFG62ChFfDWbtX9PiLibNO3XpIEeKYkGQILioq4dwn0wDcJgMrDVPSu
+ 4Prw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20260707; t=1792563065; x=1793167865;
+ h=date:content-transfer-encoding:content-type:in-reply-to:cc:to
+ :message-id:subject:from:x-gm-gg:x-gm-message-state:from:to:cc
+ :subject:date:message-id:reply-to:content-type;
+ bh=ajBnL71mDHoqU9DUuC+MT6TGaevCfinZLm9lAZmUo5M=;
+ b=MpD5aZbFYFVRdL/lqOKt4MumuaJ2kfsmMlF6lZhhXBqydgCTH1DOknC68JICMgS5ea
+ Apw1fvOFG9rvM2rC4dDqry1B3Lghdr2M3uGsOLJa2wxjQqnBEOoZHJNd4AgPi5Ip7yEu
+ U54q3hdZ5f51dL9nXSxkwXYmqTjG8ZYpR3PTi+ohanndzcLm1E5xuAcPYBHJhzOY5AJQ
+ rRbgOedNEX0rOS/DEn6XuYv3ip5cdchKMNupXaI4n33SorO8psibqNXOqnf9OcxbUbOr
+ gHwD5F5v2zNpZEe51uFshc/gXx4/qm4NQNSu2LNwZwwh6PstgRANKXsLcklE0cAzKpl0
+ ufRA==
+X-Forwarded-Encrypted: i=1;
+ AKwUvBwxHziv8SC3egpAJvil6plpP+I20Rc4PRcOHjZRBlMRulj1GeUYQJcuk/Ki1zyQE1gTKxA=@lists.linux.it
+X-Gm-Message-State: AFq9FYLnza0I54tHVJOOacO7V6B2OToNiL+H7OEaOwE0LCREPIL0TDEJ
+ u/pObkXJe1RTpbwPxHTmSmMnhphHlO2m1ScJXq4BRlvFOzGkZl7iwbpryM9C3R9aGw0=
+X-Gm-Gg: AYBFou1plkUYT8ldERDze3sp4ZNqq5vLHKNLB15RNwJVTeNK526eTmsGaPCyTY3xGkJ
+ hYuARld9K2Al8bRpdkxWyEGAcBbmUy1Mfz2w3U8FYKeXtmqBz7DXf//5hzxr4IeWBw8mEBMXI8d
+ 3+Ws8BN9e0SMLT7DRRwAHV2qoDFqRmljQMg1DDmSSzZTZpyGr4nVbgoRr072S2eE9TQj9WEGmWh
+ fcEDRTG5HQI8y6hrdBMaEpMrAcfrsESQDoLFEJSENflBBdW3ZNWgZmW1liXvwON6C4629pL+miY
+ ZYGtLuxMu35pHjH+7jesq2F3ZV8Mu0hC1naFX8MZFuxPniMRIziWXYzWkBoGO9p5Lm42c2iIB0v
+ tV6Eri7QUW+CooQ9kMWf6MK5nFRpgSRR5J7JU4owIT6KQ0GI1jWLScphCsjL0pd3vbM0IYVz/sd
+ Fqt5c82mMKDavW9G587XuZGyo/wdL8wl25pFZB6hnEPvFFmfEynECQSFjSAbgRej0glcRhkGmFO
+ YXUa0wmOE/xlmtsJQSgYS4ovGHyTHCiA3Q3nA1rKl7+Dm0lUkSM7F4tCJjAl5aU0jTKpmtnmZFD
+ BsZ5hBkOE1Es/Jm1sO45BcOnhtT/MFUsHlzsVbMUB1AlezYITPCwh9C8i09dQhONXEl88NreucI
+ DuV8Q
+X-Received: by 2002:a5d:480b:0:b0:48d:c186:dcc6 with SMTP id
+ ffacd0b85a97d-48e264c49a5mr1102453f8f.57.1792563065289; 
+ Tue, 20 Oct 2026 23:11:05 -0700 (PDT)
+Received: from localhost.localdomain
+ (p200300ef2f310000926bd7eee21e6eee.dip0.t-ipconnect.de.
+ [2003:ef:2f31:0:926b:d7ee:e21e:6eee])
+ by smtp.gmail.com with ESMTPSA id
+ ffacd0b85a97d-48e25828e54sm3399906f8f.27.2026.10.20.23.11.04
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 20 Oct 2026 23:11:05 -0700 (PDT)
+Message-ID: <d7rm8UWo3R7KsAHmShS9oIyDEZ1qsD79XCNu@localhost.localdomain>
+To: "Petr Vorel" <pvorel@suse.cz>
+In-Reply-To: <20261020201531.GA154402@pevik>
+Date: Wed, 21 Oct 2026 06:11:04 +0000
+X-Spam-Status: No, score=-11.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_PASS,SPF_PASS autolearn=ham
+	autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v4 2/2] sys_hwmon01: always report a result
+Subject: Re: [LTP] [PATCH] build: Parallelize subdirectory recursion in
+ generic_trunk_target
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -62,103 +107,49 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Xiaochen Shen <shenxiaochen@open-hieco.net>
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Cc: Linux Test Project <ltp@lists.linux.it>
+X-Archived-By: <archiver.kernel.org>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On machines where the hwmon devices expose no checkable attributes
-(e.g. a VM or a laptop where hwmon0 is just 'ACAD' with nothing but
-a name attribute), every *_SILENT assertion skips silently and the
-test finishes without reporting a single result, which the library
-turns into:
+Hi Petr,
 
-    tst_test.c:1730: TBROK: Test haven't reported results!
+> >  include $(top_srcdir)/include/mk/generic_trunk_target.mk
+> > +
+> > +# libkerntest.a in lib/ must be built before syscalls and mem consumers
+> > +syscalls-all mem-all: lib-all
+> 
+> I wonder if this can be autogenerated, because this was not needed before.
+> 
+> I'm ok with this explicit definition. Probably in the future we should move it
+> to libs/ (using it as LTPLIBS), which will solve the dependency.
+> 
+> > diff --git a/testcases/network/rpc/Makefile b/testcases/network/rpc/Makefile
+> > index 6ecb1a665..8d12bdf1e 100644
+> > --- a/testcases/network/rpc/Makefile
+> > +++ b/testcases/network/rpc/Makefile
+> > @@ -9,3 +9,6 @@ include $(top_srcdir)/include/mk/env_pre.mk
+> >  INSTALL_TARGETS		:= *.sh
+> 
+> >  include $(top_srcdir)/include/mk/generic_trunk_target.mk
+> > +
+> > +# librpc-tirpc.a in rpc-tirpc/ must be built before basic_tests
+> > +basic_tests-all: rpc-tirpc-all
+> 
+> Also librpc-tirpc.a should be moved into libs/ (if we still keep this code and
+> not move it to libtirpc project where it'd make more sense).
 
-Fix this by using the new tst_sysfs_cnt_*() helpers to count the
-attributes that actually exist and get validated, then reporting a
-TPASS summary at the end, or TCONF when hwmon devices are present
-but expose nothing we can check.
+I'm also thinking about it. We should move all libraries in there.
+Let's see what Cyril says.
 
-While at it, fix a preexisting off-by-one in the inN channel loop:
-probe in0..in31 so that all channel types probe exactly MAX_CHANNELS
-indices.
-
-Suggested-by: Cyril Hrubis <chrubis@suse.cz>
-Signed-off-by: Li Wang (Hieco) <li.wang@linux.dev>
-Cc: Xiaochen Shen <shenxiaochen@open-hieco.net>
----
-
-Notes:
-    v4:
-        - no change.
-    v3:
-        - move the counter into the sysfs library as
-          tst_sysfs_cnt_reset()/tst_sysfs_cnt_get(), drop the CHECK_*
-          wrapper macros and the extra existence probe (Cyril)
-    v2:
-        - rename attr_exists() to sysfs_attr_exists() (Xiaochen)
-        - flatten the final result reporting with an early return (Xiaochen)
-        - fix a preexisting off-by-one in the inN channel loop (Xiaochen)
-
- .../kernel/sysfs/class/hwmon/sys_hwmon01.c    | 21 +++++++++++++++----
- 1 file changed, 17 insertions(+), 4 deletions(-)
-
-diff --git a/testcases/kernel/sysfs/class/hwmon/sys_hwmon01.c b/testcases/kernel/sysfs/class/hwmon/sys_hwmon01.c
-index 1bb574c23..482bd7a23 100644
---- a/testcases/kernel/sysfs/class/hwmon/sys_hwmon01.c
-+++ b/testcases/kernel/sysfs/class/hwmon/sys_hwmon01.c
-@@ -131,7 +131,7 @@ static void check_hwmon_device(const char *hwmon)
- 					PATH_CLASS_HWMON "/%s/update_interval", hwmon);
- 
- 	/* inN channels are numbered from 0, per the hwmon ABI */
--	for (i = 0; i <= MAX_CHANNELS; i++)
-+	for (i = 0; i < MAX_CHANNELS; i++)
- 		check_in_channel(hwmon, i);
- 
- 	for (i = 1; i <= MAX_CHANNELS; i++) {
-@@ -147,7 +147,9 @@ static void do_test(void)
- {
- 	DIR *d;
- 	struct dirent *ent;
--	int found = 0;
-+	int devices = 0;
-+
-+	tst_sysfs_cnt_reset();
- 
- 	if (!tst_sysfs_exists(PATH_CLASS_HWMON))
- 		tst_brk(TCONF, PATH_CLASS_HWMON ": not present");
-@@ -158,14 +160,25 @@ static void do_test(void)
- 		if (strncmp(ent->d_name, "hwmon", 5))
- 			continue;
- 
--		found = 1;
-+		devices++;
- 		check_hwmon_device(ent->d_name);
- 	}
- 
- 	SAFE_CLOSEDIR(d);
- 
--	if (!found)
-+	if (!devices) {
- 		tst_res(TCONF, "No hwmon device found");
-+		return;
-+	}
-+
-+	if (!tst_sysfs_cnt_get()) {
-+		tst_res(TCONF, "%d hwmon devices present, but no checkable attributes",
-+				devices);
-+		return;
-+	}
-+
-+	tst_res(TPASS, "Validated %u attributes on %d hwmon devices",
-+			tst_sysfs_cnt_get(), devices);
- }
- 
- static struct tst_test test = {
--- 
-2.56.0
-
+--
+Andrea Cervesato
+SUSE QE Automation Engineer Linux
+andrea.cervesato@suse.com
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
