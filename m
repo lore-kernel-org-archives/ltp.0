@@ -2,94 +2,94 @@ Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C1A5606A321
-	for <ltp@archiver.kernel.org>; Wed, 21 Oct 2026 15:43:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDFD660A263B
+	for <ltp@archiver.kernel.org>; Wed, 21 Oct 2026 15:43:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=lists.linux.it header.i=@lists.linux.it header.a=rsa-sha256 header.s=picard header.b=lk9+nKrp;
-	dkim=fail reason="signature verification failed" (1024-bit key, unprotected) header.d=redhat.com header.i=@redhat.com header.a=rsa-sha256 header.s=mimecast20190719 header.b=Y5oVoY5X
+	dkim=pass (1024-bit key, unprotected) header.d=lists.linux.it header.i=@lists.linux.it header.a=rsa-sha256 header.s=picard header.b=PSldDyOp;
+	dkim=fail reason="signature verification failed" (1024-bit key, unprotected) header.d=redhat.com header.i=@redhat.com header.a=rsa-sha256 header.s=mimecast20190719 header.b=BGruqeXF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1792597383; h=mime-version :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1792597402; h=mime-version :
  references : in-reply-to : date : message-id : to : subject : list-id
  : list-unsubscribe : list-archive : list-post : list-help :
  list-subscribe : from : reply-to : cc : content-type :
  content-transfer-encoding : sender : from;
- bh=/gQmIyJclHlgd3M1ya1pUzjJmMI0OQkKzZLV6YavvwU=;
- b=lk9+nKrpPlMbYcBlWWl1u/FXYYzmHRdtt7hDEn8eaosvEz87SOu99rA/MVlEJ8GShpKhT
- D5SB0s7CDgv44SS7s7xzvNjgvKGSIX+zBMBLYPNyCyay14Sg+mXj9cpbBIaq1cbxL6773Rd
- ytPLSqNEjT9B1cOIlj5xV0eMn62Sisk=
+ bh=/02WlbUIVqyoiiuHL06fyJ+xD4Y80LPnihpWHTVLXJc=;
+ b=PSldDyOp+m7iB5QzdsN5hrP2OHeU/LVgH/X9CYb+Xd/sw6kfSiJJV2ChRZ2IuNNqdXsJR
+ 5VDE78AIR5ApvP2NzoxCfWVMJ5Z/lrcu+RKHHJb0C5YBD7j99DZ0Bu48DHpndwZWctWtw6O
+ 5EaTSb5wHmH/7aWlZ0RV6v3ecADNjWI=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E91903CFD1D
-	for <ltp@archiver.kernel.org>; Wed, 21 Oct 2026 17:43:03 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 2D71F3CFD14
+	for <ltp@archiver.kernel.org>; Wed, 21 Oct 2026 17:43:22 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id BAB653CFD22
- for <ltp@lists.linux.it>; Wed, 21 Oct 2026 17:42:39 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id AD9DB3CFD00
+ for <ltp@lists.linux.it>; Wed, 21 Oct 2026 17:42:47 +0200 (CEST)
 Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 1D2DA14002D1
- for <ltp@lists.linux.it>; Wed, 21 Oct 2026 17:42:38 +0200 (CEST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 2396D200975
+ for <ltp@lists.linux.it>; Wed, 21 Oct 2026 17:42:46 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1792597357;
+ s=mimecast20190719; t=1792597365;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=a6D84ATBUkh0/lss4V0+XNxSQov4+c73xhRe6eGCgX8=;
- b=Y5oVoY5X8WjRHpx+As98zCCwhXWE4JJ4CMNsMYYOVFqFmxubfGc4k2mWf7aD+qDhvBBSJg
- YGvrh8TjXT+gboaGbM892lwNKsDEvGlw3p8PFRM0dd7g9of2+fbZN6iAoRaIS+ukvATSvr
- jn2jtVCu+cML3M7jBqSdtzLmjJM9Nrc=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ bh=czWOqYssCvV95S0y9bqpSx/gO6YZ0gEFZnqlMCyI0PE=;
+ b=BGruqeXFEi9+2J0mXgLezz2rMKkiQ2wDT9eHOKG91mUC3ndzhqv3bdahsPbxgtkqGQHlGt
+ Au0EZp8aKi/yTesXsejA8o8S8xTfMKvsLmj4S210Q1XoCXHof6e/lXKPY4wlvr2+ZNMGWV
+ sD+3yRjOx7xv8uq6Tet+TL8xuo8T00Y=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-37-pvWwokx3NmKDv6_KVV0HBw-1; Wed, 21 Oct 2026 11:42:35 -0400
-X-MC-Unique: pvWwokx3NmKDv6_KVV0HBw-1
-X-Mimecast-MFC-AGG-ID: pvWwokx3NmKDv6_KVV0HBw_1792597354
-Received: by mail-wr1-f71.google.com with SMTP id
- ffacd0b85a97d-48c430f0f01so744382f8f.1
- for <ltp@lists.linux.it>; Wed, 21 Oct 2026 08:42:35 -0700 (PDT)
+ us-mta-344-MPClLuKgNjyXyeySrSpGrQ-1; Wed, 21 Oct 2026 11:42:44 -0400
+X-MC-Unique: MPClLuKgNjyXyeySrSpGrQ-1
+X-Mimecast-MFC-AGG-ID: MPClLuKgNjyXyeySrSpGrQ_1792597363
+Received: by mail-wm1-f71.google.com with SMTP id
+ 5b1f17b1804b1-49cdc4080ddso130645e9.1
+ for <ltp@lists.linux.it>; Wed, 21 Oct 2026 08:42:44 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20260707; t=1792597354; x=1793202154;
+ d=1e100.net; s=20260707; t=1792597363; x=1793202163;
  h=content-transfer-encoding:content-type:cc:to:subject:message-id
  :date:from:in-reply-to:references:mime-version:x-gm-gg
  :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
  :content-type;
- bh=a6D84ATBUkh0/lss4V0+XNxSQov4+c73xhRe6eGCgX8=;
- b=iw9iY/0KS0CW1vJnZ8mBYJiR4kCQZD4wk5qOlVfQUXNs3BvxUE+jPekkIzYG6jWvDD
- 9Pc7c0hRNE7oJRsbHjla7AZgE+THhRuSUHu14krWe/TIFXwQWxjIJg2PTsBkvvij7ECb
- CkKVrG4EDZT0vwkdy2oCVwSrlQFoNXOEchS5F+xun0HXQh72vEN7wRiZaVF5liVslQfS
- 5vpI9eTlAKtZ6YdWHTLquSapQFH+PUzZAUa58z3LFPLR043XOPywa4twNhKvr4YgTw9Y
- wGhaKctGUWcbwP5CEQDVqvIW2CGAU9pgeReI+4+mpWNNNQkUpLyQXcbfLVAO2suxmHXq
- 4Pqw==
-X-Gm-Message-State: AFq9FYKfPME5/4JHz2xD1t66g35KHy4uIF44IlPdS8eoaNTUeJyGsFfk
- ngVSIC5D9k1UdKPx4BzdwxxoMRAxu123tY+UxtDHoeDztlNxylCyOwmZlHkuHLT5BHPX6C3U161
- THk8ly7tbVi7at6l3pY0CDq+7Llhk1nL+P/WrKmq31faMEMu6kDqVYMpsE0xUlo9HihLQ0f++5K
- GZPDEYZdwBS4khzzeA3kuDbi5AMJM=
-X-Gm-Gg: AYBFou0awFNle8Kcp55h8xSPRwMV3Ghzf6ZxMI9PixqfiscTKrlYA6LTWFWoIywb9iC
- ABQuYnCKE6/xd424t6Spv9r/ygLHAp8z7aoOoM1NH6aYEBzI3gt6SZ10mQTn7YYf1+lRtJSWJV5
- 1eQfDx6sne08g8qe2MtFk27YCekQqVgAuNq/TaA2FY7wKXqcY9oly9syg=
-X-Received: by 2002:a05:600c:3b22:b0:4a1:dade:f049 with SMTP id
- 5b1f17b1804b1-4a1fdd19f80mr53060245e9.15.1792597354425; 
- Wed, 21 Oct 2026 08:42:34 -0700 (PDT)
-X-Received: by 2002:a05:600c:3b22:b0:4a1:dade:f049 with SMTP id
- 5b1f17b1804b1-4a1fdd19f80mr53059755e9.15.1792597354007; Wed, 21 Oct 2026
- 08:42:34 -0700 (PDT)
+ bh=czWOqYssCvV95S0y9bqpSx/gO6YZ0gEFZnqlMCyI0PE=;
+ b=jTHFtLJ7I2ghKHf725KwIuTBVpYR4D2V8skl4ZNZhfhwF0ErKseeCInjy9RFOOJD8+
+ gxLLk9ecftIvIue9Sy+ti/OSv9FLadB8n4v7NF+6ucC0lftlmNTdxLiPiahbWaVW6RSf
+ Z7Un5/n8sB1eku5/0piWAMvvHUEhH7JA0xJM9fR2cr9BgO92ildz8mxgh4fEMS7+idYO
+ P17vlr1FOhivUF9EDqg8bKtXcYueJvDuMu83HgS0ItAHvtkz+b6XaPU9uQ9AIwh8BvxP
+ s69ro+6FRxfW4lvUMZlEyr4daaOvfxQnGzdradjG8nQ5Gf0445FroAArnvoN+SwpZeLQ
+ C5xg==
+X-Gm-Message-State: AFq9FYJSM7xY2i69yES89x83gqJSEOUIhig6kF+E70lohCaVX/eiNm0F
+ 3ah9iRFaDw08+U4ZUTrrgTp4yjbv2Z/uaufOm7Xy6t0sfhXr7Hot170f6vjvP+JivZ9pHoK/lA3
+ Q71bv0c3fr6g7wEht40dn5Dh3/BK1qr2X+PJelUO//zqZEE1FxxUInv9uCD1N/seHihXEQXNuCH
+ wuh1pd1Z2vHhaN7YYN6wBVdGGgLUkrkVimxhU=
+X-Gm-Gg: AYBFou3qOltUrYAW9xMHMgJSUUdJUD1vNXQpbk/95NROdO3QGdUpzmFAhOHKL9vJLMd
+ 4lcMSds69YcVK7gQAvJoHz6z/E13qxbnTTqiL6dJ8CotV9P+C5Dsour6zQYoQSDYg9p5tHhBa4N
+ +hy614uVUT4B5xmYsvLvRfucYSbiEmdZP0LHWJPMBhcVtzFnAvutyVGwg=
+X-Received: by 2002:a05:600c:1c09:b0:4a1:c6f5:2450 with SMTP id
+ 5b1f17b1804b1-4a1fdd3bb0fmr53300015e9.17.1792597363102; 
+ Wed, 21 Oct 2026 08:42:43 -0700 (PDT)
+X-Received: by 2002:a05:600c:1c09:b0:4a1:c6f5:2450 with SMTP id
+ 5b1f17b1804b1-4a1fdd3bb0fmr53299575e9.17.1792597362681; Wed, 21 Oct 2026
+ 08:42:42 -0700 (PDT)
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-References: <89fe77f22e26d912865c8b8266b150ba7459bfae.1792413314.git.jstancek@redhat.com>
- <49034ca7-baa3-40bc-801b-ee1e91908b9c@suse.com>
-In-Reply-To: <49034ca7-baa3-40bc-801b-ee1e91908b9c@suse.com>
-Date: Wed, 21 Oct 2026 17:42:17 +0200
-X-Gm-Features: AclHuK-WL1bqTazSp_3OigWRWRSuv3n2VHsaso-VL6stMUDPvYDwmjE0zb8D2CE
-Message-ID: <CAASaF6zciGtM4beMr10rtTXaopPsA5dak-HNHBJiLqL6sqdYBA@mail.gmail.com>
-To: Avinesh Kumar <avinesh.kumar@suse.com>
+References: <dc45087f4a5dd1700aae6df3a8181ae349f2bdfe.1792413269.git.jstancek@redhat.com>
+ <yvghh4rRtY35Af2DMzcAVGa6TqwKgHWf4amF@localhost.localdomain>
+In-Reply-To: <yvghh4rRtY35Af2DMzcAVGa6TqwKgHWf4amF@localhost.localdomain>
+Date: Wed, 21 Oct 2026 17:42:25 +0200
+X-Gm-Features: AclHuK_z_fQjbuqhf0Xb6chRKOYVUGV7G_uiWQilNHfm-vvwfyC0K2LDuDe57vk
+Message-ID: <CAASaF6zi+COFGNv6ojZ9Zmk2jhYZMsTbLsLfPQtLnPt46w0zGQ@mail.gmail.com>
+To: Andrea Cervesato <andrea.cervesato@suse.com>
 X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: SjJbq4IcEOFIfmARYGi9ICVp9k04DpekSpQ2Pk6IsWk_1792597354
+X-Mimecast-MFC-PROC-ID: OnbkMWIe0ms_bERdgyro1DAij9oAYaeRDLjNTMYm4Rk_1792597363
 X-Mimecast-Originator: redhat.com
 X-Spam-Status: No, score=-11.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,INCLUDES_CR_TRAILER,
@@ -97,10 +97,9 @@ X-Spam-Status: No, score=-11.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] nextafter01: Check exact results and convert to
- new API
+Subject: Re: [LTP] [PATCH] float_trigo: Fix acos/asin/atan input generation
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -117,10 +116,9 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gTW9uLCBPY3QgMTksIDIwMjYgYXQgMTE6MDjigK9QTSBBdmluZXNoIEt1bWFyIDxhdmluZXNo
-Lmt1bWFyQHN1c2UuY29tPiB3cm90ZToKPgo+IEhpLAo+Cj4gPiArLypcCj4gPiArICogVmVyaWZ5
-IHRoYXQgbmV4dGFmdGVyKCkgcmV0dXJucyB0aGUgbmV4dCByZXByZXNlbnRhYmxlIGRvdWJsZSBp
-biB0aGUKPiBuaXQ6Cj4gOm1hbnBhZ2U6YG5leHRhZnRlcigzKWAKClB1c2hlZCB3aXRoIHRoaXMg
-YWRkZWQuCgo+Cj4gUmV2aWV3ZWQtYnk6IEF2aW5lc2ggS3VtYXIgPGF2aW5lc2gua3VtYXJAc3Vz
-ZS5jb20+Cj4KPiBSZWdhcmRzLAo+IEF2aW5lc2gKPgoKCi0tIApNYWlsaW5nIGxpc3QgaW5mbzog
-aHR0cHM6Ly9saXN0cy5saW51eC5pdC9saXN0aW5mby9sdHAK
+UHVzaGVkLgoKT24gV2VkLCBPY3QgMjEsIDIwMjYgYXQgMTE6MzPigK9BTSBBbmRyZWEgQ2VydmVz
+YXRvCjxhbmRyZWEuY2VydmVzYXRvQHN1c2UuY29tPiB3cm90ZToKPgo+IFJldmlld2VkLWJ5OiBB
+bmRyZWEgQ2VydmVzYXRvIDxhbmRyZWEuY2VydmVzYXRvQHN1c2UuY29tPgo+Cj4gLS0KPiBBbmRy
+ZWEgQ2VydmVzYXRvCj4gU1VTRSBRRSBBdXRvbWF0aW9uIEVuZ2luZWVyIExpbnV4Cj4gYW5kcmVh
+LmNlcnZlc2F0b0BzdXNlLmNvbQo+CgoKLS0gCk1haWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xp
+c3RzLmxpbnV4Lml0L2xpc3RpbmZvL2x0cAo=
