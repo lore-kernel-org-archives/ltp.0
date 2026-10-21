@@ -2,57 +2,56 @@ Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BECC606A32D
-	for <ltp@archiver.kernel.org>; Wed, 21 Oct 2026 09:00:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7CF3606A31E
+	for <ltp@archiver.kernel.org>; Wed, 21 Oct 2026 09:00:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=KaV4kot6
+	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=FYAQvQ3n
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id BE63D3C9AC2
-	for <ltp@archiver.kernel.org>; Wed, 21 Oct 2026 11:00:14 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 627C73C265A
+	for <ltp@archiver.kernel.org>; Wed, 21 Oct 2026 11:00:29 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6D00C3C265A
- for <ltp@lists.linux.it>; Wed, 21 Oct 2026 10:59:46 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 39EE83C8C85
+ for <ltp@lists.linux.it>; Wed, 21 Oct 2026 10:59:47 +0200 (CEST)
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 5B7061000372
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id C5D3A1000953
  for <ltp@lists.linux.it>; Wed, 21 Oct 2026 10:59:45 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1792573185; x=1824109185;
+ t=1792573186; x=1824109186;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=ghJi4a2+iW5XD210qc7ND5RARziA0aS4oXp9THbQtrA=;
- b=KaV4kot6P9P5cFUK5JAnD1bB/pvEZn+ZdS4VMejoNPo+Oknn6AHA7uNy
- KyHmnMRUrFTd1SXJ7LxQ0EzbTmkvqMZAGBYm+eM0GO/eD2q7P4AHxK7/3
- 85dGyMBRt8zMajJgMXwAW7G0GQUFGBlKRlP25Qo9AJkXwUmiesrFb5mvZ
- zr1HidMLkQv2GpXJZwwRiDAjxh2aI77R+aE+eGXWM+09WJEuxpbQ2HLKo
- 5CYtMPO7M7UdEU/F/S8ygXYLPTEjo86M+5+tNeJOVEygRWK0AILDuRro9
- rWakkuROXR/pkyII0S7YcqPJBurvqLHmCkT+heeXs0TYbGSl2D4oMpb5Y w==;
-X-CSE-ConnectionGUID: VD7ahEOGRhWFfuGTNcwc9w==
-X-CSE-MsgGUID: qA7gd6kVRnejTH31pwB4cA==
-X-IronPort-AV: E=McAfee;i="6800,10657,11941"; a="1167133"
+ bh=1xJf6L8wC8al/hxHAmSeW/6II6hfJ/NCwpWQ8h2axEs=;
+ b=FYAQvQ3nu25UxpuNhEdD6DXiFZhLmpj8kvfuGA+m0tgDL5ZtEbZkO1h4
+ H6117BzgaRKQxxyq7o+8ZMgIrpy+eQ5ql8kx3Co/yBmHpR2Xpa7EjzRMX
+ XInDTxs8A80WL9ijG02aI0XvbfuD/e5w8IjWy5Slqa3fddr3SzDjywNeM
+ 8B2rk+Qd+TjFFVu/LuhTs9FQH1RjksY+U1/DzSSxhkZIzENp1/3L1Qxqq
+ jfZYkpreg1W40JgoMyQMOHTmro2t2jrYyud2kOv3cn1L3Ygn7ElCr4piF
+ fNgLegCrftccJ6AfZx+g1IaEnNTXFbd0cUdWlK7wube7otTCgR7GNQFau Q==;
+X-CSE-ConnectionGUID: pXQZGdOaTgGOaQAWVxv7Ag==
+X-CSE-MsgGUID: UeR/0bHESfCmt77EUUsXIA==
+X-IronPort-AV: E=McAfee;i="6800,10657,11941"; a="1167136"
 X-IronPort-AV: E=Sophos;i="6.27,169,1787036400"; 
-   d="scan'208";a="1167133"
+   d="scan'208";a="1167136"
 Received: from orviesa004.jf.intel.com ([10.64.159.144])
  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 21 Oct 2026 01:59:42 -0700
-X-CSE-ConnectionGUID: c3gf8nWHR+O/lgc613u79g==
-X-CSE-MsgGUID: hxgwXSR8Q9iKVnmQSCSDEQ==
+ 21 Oct 2026 01:59:44 -0700
+X-CSE-ConnectionGUID: Q46ZbpgOR9qxpAZx47SWxg==
+X-CSE-MsgGUID: SUrpdtswS8CCcYvOivByhg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.27,169,1787036400"; 
-   d="scan'208";a="3033336"
+   d="scan'208";a="3033342"
 Received: from pkubaj-desk.igk.intel.com (HELO intel.com) ([10.237.142.111])
  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 21 Oct 2026 01:59:40 -0700
+ 21 Oct 2026 01:59:42 -0700
 From: Piotr Kubaj <piotr.kubaj@intel.com>
 To: ltp@lists.linux.it
-Date: Wed, 21 Oct 2026 10:59:30 +0200
-Message-ID: <20261021085932.20557-2-piotr.kubaj@intel.com>
+Date: Wed, 21 Oct 2026 10:59:31 +0200
+Message-ID: <20261021085932.20557-3-piotr.kubaj@intel.com>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20261021085932.20557-1-piotr.kubaj@intel.com>
 References: <20261021085932.20557-1-piotr.kubaj@intel.com>
@@ -66,7 +65,7 @@ X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v5 1/3] lib: add tst_test.needs_debugfs flag
+Subject: [LTP] [PATCH v5 2/3] pmc_core: add test for pkgc_ltr_blocker_show
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -82,252 +81,367 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Tests reading debugfs files each carry the same statfs() and mount()
-dance, because /sys/kernel/debug exists as a plain sysfs directory even
-when debugfs is not mounted on it, so checking for the path is not
-enough.
+Cover the pkgc_ltr_blocker_show debugfs file added in kernel commit
+38c79dd63b72 ("platform/x86/intel/pmc: Enable PkgC LTR blocking
+counter"), released in v7.2. It reports how many times an LTR posted by
+each source blocked a package C-state entry.
 
-With needs_debugfs set the library mounts debugfs during setup, exits
-with TCONF if it cannot, and unmounts it at the end only if it did the
-mount. The flag implies needs_root. Add TST_DEBUGFS_PATH for tests to
-build their paths from, register the flag in the metadata parser and add
-a lib/newlib_tests self-test.
+The counter set is platform specific, so rather than matching a list of
+names the test samples the file twice and checks that it reads to EOF,
+that every line is a PKGC_PREVENT_LTR_<SOURCE> token followed by one u32
+value, that the counter set is stable, and that no counter advances by
+more entries than the package could have attempted over the interval.
+The last check is what catches a telemetry region read at the wrong
+offset: such a value overshoots the bound by orders of magnitude.
+
+Tested on Nova Lake running 7.3.0-rc1.
 
 Signed-off-by: Piotr Kubaj <piotr.kubaj@intel.com>
 ---
- doc/developers/writing_tests.rst     |  3 +++
- include/tst_fs.h                     |  6 +++++
- include/tst_test.h                   |  8 ++++++
- lib/newlib_tests/.gitignore          |  1 +
- lib/newlib_tests/runtest.sh          |  1 +
- lib/newlib_tests/tst_needs_debugfs.c | 32 +++++++++++++++++++++++
- lib/tst_test.c                       | 38 ++++++++++++++++++++++++++++
- metadata/metaparse.c                 |  1 +
- 8 files changed, 90 insertions(+)
- create mode 100644 lib/newlib_tests/tst_needs_debugfs.c
+ runtest/power_management_tests                |   1 +
+ testcases/kernel/power_management/.gitignore  |   1 +
+ .../power_management/pkgc_ltr_blocker_show.c  | 311 ++++++++++++++++++
+ 3 files changed, 313 insertions(+)
+ create mode 100644 testcases/kernel/power_management/pkgc_ltr_blocker_show.c
 
-diff --git a/doc/developers/writing_tests.rst b/doc/developers/writing_tests.rst
-index 9a56c0265..5d08cd907 100644
---- a/doc/developers/writing_tests.rst
-+++ b/doc/developers/writing_tests.rst
-@@ -448,6 +448,9 @@ shell API. For tests using the new shell loader library, see
-     * - .needs_cpu_vendor
-       - \-
- 
-+    * - .needs_debugfs
-+      - \-
-+
-     * - .needs_devfs
-       - \-
- 
-diff --git a/include/tst_fs.h b/include/tst_fs.h
-index 80eb1292e..278bbab17 100644
---- a/include/tst_fs.h
-+++ b/include/tst_fs.h
-@@ -8,6 +8,7 @@
- 
- /* man 2 statfs or kernel-source/include/uapi/linux/magic.h */
- #define TST_BTRFS_MAGIC    0x9123683E
-+#define TST_DEBUGFS_MAGIC  0x64626720
- #define TST_NFS_MAGIC      0x6969
- #define TST_RAMFS_MAGIC    0x858458f6
- #define TST_TMPFS_MAGIC    0x01021994
-@@ -58,6 +59,11 @@ enum {
- #define OVL_WORK	OVL_BASE_MNTPOINT"/work"
- #define OVL_MNT		OVL_BASE_MNTPOINT"/ovl"
- 
-+/**
-+ * TST_DEBUGFS_PATH - Where debugfs is mounted by tst_test.needs_debugfs.
-+ */
-+#define TST_DEBUGFS_PATH "/sys/kernel/debug"
-+
- /*
-  * @path: path is the pathname of any file within the mounted file system
-  * @mult: mult should be TST_KB, TST_MB or TST_GB
-diff --git a/include/tst_test.h b/include/tst_test.h
-index 80b46f9b1..9e464ea85 100644
---- a/include/tst_test.h
-+++ b/include/tst_test.h
-@@ -358,6 +358,13 @@ struct tst_fs {
-  *               needed for tests that need to create device files since tmpfs
-  *               at /tmp is usually mounted with 'nodev' option.
-  *
-+ * @needs_debugfs: If set debugfs is mounted at TST_DEBUGFS_PATH i.e.
-+ *                 /sys/kernel/debug, unless it is mounted there already, and
-+ *                 the test exits with TCONF if it cannot be. The library
-+ *                 unmounts it at the end of the test if it mounted it. Both
-+ *                 mounting debugfs and reading its content require root, so
-+ *                 the flag implies tst_test.needs_root.
-+ *
-  * @restore_wallclock: Saves wall clock at the start of the test and restores
-  *                     it at the end with the help of monotonic timers.
-  *                     Testcases that modify system wallclock use this to
-@@ -576,6 +583,7 @@ struct tst_fs {
- 	unsigned int child_needs_reinit:1;
- 	unsigned int runs_script:1;
- 	unsigned int needs_devfs:1;
-+	unsigned int needs_debugfs:1;
- 	unsigned int restore_wallclock:1;
- 
- 	unsigned int all_filesystems:1;
-diff --git a/lib/newlib_tests/.gitignore b/lib/newlib_tests/.gitignore
-index 3a6e1643c..24008fa5c 100644
---- a/lib/newlib_tests/.gitignore
-+++ b/lib/newlib_tests/.gitignore
-@@ -59,6 +59,7 @@ tst_needs_cmds05
- tst_needs_cmds06
- tst_needs_cmds07
- tst_needs_cmds08
-+tst_needs_debugfs
- test_runtime01
- test_runtime02
- test_children_cleanup
-diff --git a/lib/newlib_tests/runtest.sh b/lib/newlib_tests/runtest.sh
-index 71808ef8b..1a51d8b7a 100755
---- a/lib/newlib_tests/runtest.sh
-+++ b/lib/newlib_tests/runtest.sh
-@@ -27,6 +27,7 @@ tst_expiration_timer
- tst_filesystems01
- tst_fuzzy_sync0[1-3]
- tst_needs_cmds0[1-36-8]
-+tst_needs_debugfs
- tst_res_hexd
- tst_safe_sscanf
- tst_strstatus}"
-diff --git a/lib/newlib_tests/tst_needs_debugfs.c b/lib/newlib_tests/tst_needs_debugfs.c
+diff --git a/runtest/power_management_tests b/runtest/power_management_tests
+index 5a22283d6..7708d3fd4 100644
+--- a/runtest/power_management_tests
++++ b/runtest/power_management_tests
+@@ -2,6 +2,7 @@
+ cpufreq_intel cpufreq_intel
+ rfim01 rfim01
+ high_freq_hwp_cap_cppc high_freq_hwp_cap_cppc
++pkgc_ltr_blocker_show pkgc_ltr_blocker_show
+ runpwtests03 runpwtests03.sh
+ runpwtests04 runpwtests04.sh
+ runpwtests06 runpwtests06.sh
+diff --git a/testcases/kernel/power_management/.gitignore b/testcases/kernel/power_management/.gitignore
+index 766f07901..b96084eca 100644
+--- a/testcases/kernel/power_management/.gitignore
++++ b/testcases/kernel/power_management/.gitignore
+@@ -1,3 +1,4 @@
+ high_freq_hwp_cap_cppc
+ cpufreq_intel
+ rfim01
++pkgc_ltr_blocker_show
+diff --git a/testcases/kernel/power_management/pkgc_ltr_blocker_show.c b/testcases/kernel/power_management/pkgc_ltr_blocker_show.c
 new file mode 100644
-index 000000000..7689665a4
+index 000000000..49366b6bf
 --- /dev/null
-+++ b/lib/newlib_tests/tst_needs_debugfs.c
-@@ -0,0 +1,32 @@
++++ b/testcases/kernel/power_management/pkgc_ltr_blocker_show.c
+@@ -0,0 +1,311 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
++
 +/*
 + * Copyright (C) 2026 Piotr Kubaj <piotr.kubaj@intel.com>
 + */
 +
-+/*
-+ * Test that tst_test.needs_debugfs gets debugfs mounted for the test.
++/*\
++ * Verify that pkgc_ltr_blocker_show reports well-formed package C-state LTR
++ * blocker counters that advance at a plausible rate.
 + *
-+ * Run it both with debugfs mounted and with it unmounted, it has to pass either
-+ * way. In the latter case the library reports mounting debugfs and has to leave
-+ * it unmounted once the test is over.
++ * The intel_pmc_core driver prints one line per counter as "%-30s %-30u",
++ * where the name is a PKGC_PREVENT_LTR_<SOURCE> token and the value counts how
++ * many times an LTR posted by <SOURCE> blocked a package C-state entry.
++ *
++ * The counter set is platform specific, so instead of checking a hardcoded
++ * list the test samples the file twice and verifies that
++ *
++ * - the file can be read in full, so that a failing telemetry read in the
++ *   driver is not mistaken for a short counter list,
++ * - every line is a PKGC_PREVENT_LTR_<SOURCE> token followed by exactly one
++ *   unsigned value that fits in u32,
++ * - the set of counters does not change between the two reads,
++ * - no counter advances by more entries than the package could have attempted
++ *   over the interval.
++ *
++ * The last check is the one that catches a telemetry region read at the wrong
++ * offset. The values are u32 and wrap, so the advance has to be evaluated
++ * modulo 2^32, and a wrap is then indistinguishable from a bogus read unless
++ * the delta is bounded by the time the counter had to advance over. An
++ * arbitrary u32 read out of the wrong offset averages 2^31, orders of
++ * magnitude past what the bound allows.
++ *
++ * The debugfs file is only created for a PMC that exposes a package C-state
++ * telemetry endpoint (pc_guid in the driver's pmc_dev_info), so on platforms
++ * without one the test is not applicable.
++ *
++ * The test needs root because /sys/kernel/debug is mode 0700 and owned by
++ * root, so the counter file cannot be opened otherwise, and because the test
++ * library mounts debugfs if it is not mounted already.
 + */
 +
-+#include <sys/vfs.h>
++#include <time.h>
++#include "tst_clocks.h"
++#include "tst_safe_stdio.h"
 +#include "tst_test.h"
++#include "tst_timer.h"
++
++#define PATH TST_DEBUGFS_PATH "/pmc_core/pkgc_ltr_blocker_show"
++#define PREFIX "PKGC_PREVENT_LTR_"
++
++/* Nova Lake reports 5 counters, leave room for future platforms */
++#define MAX_COUNTERS 64
++#define NAME_LEN 64
++
++/*
++ * Cap, in seconds, on how long to poll for a second sample that differs from
++ * the first one. On an idle Nova Lake the counters advance in bursts a few
++ * seconds apart, because a blocked entry needs the package to attempt a C-state
++ * entry in the first place, so a window of a few seconds is what it takes for
++ * the delta check to have anything to look at. TST_RETRY_FN_EXP_BACKOFF() can
++ * end up sleeping up to about twice the cap in total, hence the modest value
++ * here.
++ */
++#define MAX_SAMPLE_DELAY 4
++
++/*
++ * Allowance for how stale the first sample can be. The PMC refreshes the
++ * telemetry region behind these counters asynchronously, so the first read can
++ * land just before a refresh and return a snapshot that is almost a whole
++ * refresh period old. The retry then observes a period worth of blocked entries
++ * after only microseconds of measured time, which the measured interval on its
++ * own does not account for.
++ *
++ * The allowance is the same window the test is willing to poll a refresh out
++ * of, which on Nova Lake is several times the observed refresh period.
++ */
++#define REFRESH_AGE_US (MAX_SAMPLE_DELAY * 1000000ULL)
++
++/*
++ * Blocked entries per microsecond the bound allows. Each count stands for one
++ * package C-state entry that was blocked, and entries can only be attempted as
++ * fast as the package can cycle between idle and running, which takes
++ * microseconds. Ten per microsecond is therefore already past what the hardware
++ * can produce - the counters were observed advancing by about 6 per second on
++ * an idle Nova Lake - and the headroom costs the check nothing, because the
++ * bogus read it exists to catch overshoots it by orders of magnitude anyway.
++ */
++#define MAX_BLOCKS_PER_US 10
++
++struct snapshot {
++	char names[MAX_COUNTERS][NAME_LEN];
++	uint32_t values[MAX_COUNTERS];
++	int cnt;
++};
++
++static struct snapshot first, second;
++static int fails;
++
++/*
++ * Largest advance a counter can plausibly show over two samples taken
++ * @elapsed_us microseconds apart.
++ *
++ * The interval the counter had to advance over is the measured one widened by
++ * REFRESH_AGE_US, because the sampled values come from a telemetry snapshot
++ * that is already up to a refresh period old, not from the instants the file
++ * was read.
++ */
++static unsigned long long max_plausible_delta(unsigned long long elapsed_us)
++{
++	return (elapsed_us + REFRESH_AGE_US) * MAX_BLOCKS_PER_US;
++}
++
++static void read_snapshot(struct snapshot *snap)
++{
++	char line[256];
++	FILE *fp;
++
++	snap->cnt = 0;
++	fp = SAFE_FOPEN(PATH, "r");
++
++	while (fgets(line, sizeof(line), fp)) {
++		char name[NAME_LEN], value[NAME_LEN], extra;
++		unsigned long long parsed;
++
++		line[strcspn(line, "\n")] = '\0';
++
++		/*
++		 * The value is scanned as a string rather than with %u so that
++		 * a signed or out of range value is rejected instead of being
++		 * quietly converted. The trailing %c rejects a third token; the
++		 * space in front of it skips the padding the driver emits.
++		 */
++		if (sscanf(line, "%63s %63s %c", name, value, &extra) != 2) {
++			tst_res(TFAIL, "malformed counter line: '%s'", line);
++			fails++;
++			continue;
++		}
++
++		if (strncmp(name, PREFIX, sizeof(PREFIX) - 1) ||
++		    !name[sizeof(PREFIX) - 1]) {
++			tst_res(TFAIL, "counter '%s' is not a " PREFIX "<SOURCE> token",
++				name);
++			fails++;
++			continue;
++		}
++
++		if (value[strspn(value, "0123456789")]) {
++			tst_res(TFAIL, "counter '%s' has a non-numeric value '%s'",
++				name, value);
++			fails++;
++			continue;
++		}
++
++		parsed = strtoull(value, NULL, 10);
++
++		if (parsed > UINT32_MAX) {
++			tst_res(TFAIL, "counter '%s' value '%s' does not fit in u32",
++				name, value);
++			fails++;
++			continue;
++		}
++
++		if (snap->cnt == MAX_COUNTERS)
++			tst_brk(TBROK, "more than %d counters reported", MAX_COUNTERS);
++
++		strcpy(snap->names[snap->cnt], name);
++		snap->values[snap->cnt] = parsed;
++		snap->cnt++;
++	}
++
++	/*
++	 * A telemetry read that fails in the driver aborts the seq_file read
++	 * instead of ending it at EOF, so without this the counters lost to the
++	 * error would look like a platform reporting fewer of them.
++	 */
++	if (ferror(fp))
++		tst_brk(TFAIL, "reading " PATH " failed after %d counters", snap->cnt);
++
++	SAFE_FCLOSE(fp);
++}
++
++static void setup(void)
++{
++	if (access(PATH, R_OK))
++		tst_brk(TCONF | TERRNO, "%s not available", PATH);
++}
++
++/*
++ * Take the second sample, reporting whether it differs from the first one.
++ *
++ * A blocked entry is a sporadic event and the counters are backed by a PMT
++ * telemetry region that the PMC refreshes asynchronously, so the second sample
++ * is retried until it observes a change instead of being taken after a fixed
++ * delay. A differing counter count also counts as a difference, so that the
++ * mismatch is reported rather than polled over.
++ */
++static int second_sample_differs(void)
++{
++	read_snapshot(&second);
++
++	if (first.cnt != second.cnt)
++		return 1;
++
++	for (int i = 0; i < first.cnt; i++) {
++		if (first.values[i] != second.values[i])
++			return 1;
++	}
++
++	return 0;
++}
 +
 +static void run(void)
 +{
-+	struct statfs sfs;
++	struct timespec start, end;
++	unsigned long long elapsed_us, max_delta;
++	int differs;
 +
-+	SAFE_STATFS(TST_DEBUGFS_PATH, &sfs);
++	fails = 0;
 +
-+	if (sfs.f_type == TST_DEBUGFS_MAGIC)
-+		tst_res(TPASS, "debugfs is mounted at %s", TST_DEBUGFS_PATH);
-+	else
-+		tst_res(TFAIL, "debugfs is not mounted at %s", TST_DEBUGFS_PATH);
++	tst_clock_gettime(CLOCK_MONOTONIC, &start);
++	read_snapshot(&first);
++
++	/*
++	 * The retry below re-reads the file until a counter moves, so a format
++	 * problem has to stop the test here rather than be reported again on
++	 * every retry, and the delta check has nothing to say about lines that
++	 * do not parse anyway.
++	 */
++	if (fails)
++		tst_brk(TFAIL, "%d malformed counter line(s), skipping the delta check",
++			fails);
++
++	if (!first.cnt)
++		tst_brk(TFAIL, "no LTR blocker counters reported");
++
++	differs = TST_RETRY_FN_EXP_BACKOFF(second_sample_differs(),
++					   TST_RETVAL_NOTNULL, MAX_SAMPLE_DELAY);
++
++	tst_clock_gettime(CLOCK_MONOTONIC, &end);
++
++	elapsed_us = tst_timespec_diff_us(end, start);
++	max_delta = max_plausible_delta(elapsed_us);
++
++	if (!differs) {
++		tst_res(TINFO, "no counter changed over %lluus, no entry was blocked",
++			elapsed_us);
++	}
++
++	if (first.cnt != second.cnt) {
++		tst_brk(TFAIL, "counter count changed between reads: %d -> %d",
++			first.cnt, second.cnt);
++	}
++
++	for (int i = 0; i < first.cnt; i++) {
++		uint32_t delta;
++
++		if (strcmp(first.names[i], second.names[i])) {
++			tst_res(TFAIL, "counter %d renamed between reads: %s -> %s",
++				i, first.names[i], second.names[i]);
++			fails++;
++			continue;
++		}
++
++		tst_res(TDEBUG, "%s: %u -> %u", first.names[i],
++			first.values[i], second.values[i]);
++
++		/*
++		 * The values are u32 and wrap, so the advance has to be
++		 * computed with modular arithmetic rather than by comparing the
++		 * second value against the first one. A delta of 0 is normal:
++		 * it means no entry was blocked by that source over the
++		 * interval, and most counters on an idle system read 0
++		 * permanently.
++		 */
++		delta = second.values[i] - first.values[i];
++
++		if (delta > max_delta) {
++			tst_res(TFAIL,
++				"%s advanced by %u over %lluus, at most %llu plausible: %u -> %u",
++				first.names[i], delta, elapsed_us, max_delta,
++				first.values[i], second.values[i]);
++			fails++;
++		}
++	}
++
++	if (!fails) {
++		tst_res(TPASS, "%d LTR blocker counters well-formed, advancing plausibly",
++			first.cnt);
++	}
 +}
 +
 +static struct tst_test test = {
++	.min_kver = "7.2",
 +	.needs_debugfs = 1,
-+	.test_all = run,
++	.needs_kconfigs = (const char *const []) {
++		"CONFIG_DEBUG_FS",
++		"CONFIG_INTEL_PMC_CORE",
++		NULL
++	},
++	.supported_archs = (const char *const []) {
++		"x86",
++		"x86_64",
++		NULL
++	},
++	.tags = (const struct tst_tag[]) {
++		{"linux-git", "38c79dd63b72e36919ef097d4e5025ca0fa17f34"},
++		{}
++	},
++	.setup = setup,
++	.test_all = run
 +};
-diff --git a/lib/tst_test.c b/lib/tst_test.c
-index 10ff73397..a42d3f462 100644
---- a/lib/tst_test.c
-+++ b/lib/tst_test.c
-@@ -15,6 +15,7 @@
- #include <errno.h>
- #include <sys/mount.h>
- #include <sys/types.h>
-+#include <sys/vfs.h>
- #include <sys/utsname.h>
- #include <sys/wait.h>
- #include <math.h>
-@@ -81,6 +82,7 @@ struct context {
- 	tst_atomic_t abort_flag;
- 	uint32_t mntpoint_mounted:1;
- 	uint32_t ovl_mounted:1;
-+	uint32_t debugfs_mounted:1;
- 	uint32_t tdebug;
- };
- 
-@@ -1224,6 +1226,31 @@ static void prepare_and_mount_dev_fs(const char *mntpoint)
- 	}
- }
- 
-+static void mount_debugfs(void)
-+{
-+	struct statfs sfs;
-+
-+	/*
-+	 * TST_DEBUGFS_PATH exists as a plain sysfs directory whenever
-+	 * CONFIG_DEBUG_FS is enabled, whether or not debugfs is mounted on it,
-+	 * so the filesystem type has to be checked rather than the directory
-+	 * being present.
-+	 */
-+	if (statfs(TST_DEBUGFS_PATH, &sfs))
-+		tst_brk(TCONF | TERRNO, "Can't statfs %s", TST_DEBUGFS_PATH);
-+
-+	if (sfs.f_type == TST_DEBUGFS_MAGIC)
-+		return;
-+
-+	if (mount("debugfs", TST_DEBUGFS_PATH, "debugfs", 0, NULL)) {
-+		tst_brk(TCONF | TERRNO, "Can't mount debugfs at %s",
-+			TST_DEBUGFS_PATH);
-+	}
-+
-+	tst_res(TINFO, "Mounted debugfs at %s", TST_DEBUGFS_PATH);
-+	context->debugfs_mounted = 1;
-+}
-+
- static void prepare_and_mount_hugetlb_fs(void)
- {
- 	if (access(PATH_MM_HUGEPAGES, F_OK))
-@@ -1474,6 +1501,9 @@ static void do_setup(int argc, char *argv[])
- 	if (tst_test->needs_kconfigs && tst_kconfig_check(tst_test->needs_kconfigs))
- 		tst_brk(TCONF, "Aborting due to unsuitable kernel config, see above!");
- 
-+	if (tst_test->needs_debugfs)
-+		tst_test->needs_root = 1;
-+
- 	if (tst_test->needs_root && geteuid() != 0)
- 		tst_brk(TCONF, "Test needs to be run as root");
- 
-@@ -1565,6 +1595,9 @@ static void do_setup(int argc, char *argv[])
- 			"Two or more of needs_{rofs, devfs, device, hugetlbfs} are set");
- 	}
- 
-+	if (tst_test->needs_debugfs)
-+		mount_debugfs();
-+
- 	if (tst_test->needs_devfs)
- 		prepare_and_mount_dev_fs(tst_test->mntpoint);
- 
-@@ -1676,6 +1709,11 @@ static void do_cleanup(void)
- 	if (context->mntpoint_mounted)
- 		tst_umount(tst_test->mntpoint);
- 
-+	if (context->debugfs_mounted) {
-+		tst_umount(TST_DEBUGFS_PATH);
-+		context->debugfs_mounted = 0;
-+	}
-+
- 	if (tst_test->needs_device && tdev.dev)
- 		tst_release_device(tdev.dev);
- 
-diff --git a/metadata/metaparse.c b/metadata/metaparse.c
-index cb141c383..7f2c09037 100644
---- a/metadata/metaparse.c
-+++ b/metadata/metaparse.c
-@@ -1169,6 +1169,7 @@ static struct typemap tst_test_typemap[] = {
- 	{.id = "child_needs_reinit", .type = DATA_BOOL},
- 	{.id = "runs_script", .type = DATA_BOOL},
- 	{.id = "needs_devfs", .type = DATA_BOOL},
-+	{.id = "needs_debugfs", .type = DATA_BOOL},
- 	{.id = "restore_wallclock", .type = DATA_BOOL},
- 	{.id = "all_filesystems", .type = DATA_BOOL},
- 	{.id = "skip_in_lockdown", .type = DATA_BOOL},
 -- 
 2.47.3
 
