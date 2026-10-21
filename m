@@ -2,100 +2,119 @@ Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B100606A31B
-	for <ltp@archiver.kernel.org>; Wed, 21 Oct 2026 08:06:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46D03606A319
+	for <ltp@archiver.kernel.org>; Wed, 21 Oct 2026 08:12:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=lists.linux.it header.i=@lists.linux.it header.a=rsa-sha256 header.s=picard header.b=CWEtRkXK;
-	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=suse.com header.i=@suse.com header.a=rsa-sha256 header.s=google header.b=KFulIGdE
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1792570009; h=message-id :
- to : in-reply-to : date : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : cc : mime-version : content-type :
- content-transfer-encoding : sender : from;
- bh=83upN1lituNvT9FcFBquOz8q0Rd2dSKGt9Vj6YrJXjQ=;
- b=CWEtRkXKDfNNulyOoVek0Ld0DYldyJWXLyItygIObewEm2ahzDLUzBgibhXK8Hrx/o+YO
- 4TtJLQZ46vajUuOIuKYc9Jgaaahkjygr3EDSehaOXJpVtj0LbkMJU9ibLCeDwQCjKTRwwch
- wsTCucv+86LrawW6UzIYDQv7hNWbk/Y=
+	dkim=fail reason="signature verification failed" (1024-bit key, unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256 header.s=susede2_rsa header.b=d43IKap2;
+	dkim=fail reason="signature verification failed" header.d=suse.de header.i=@suse.de header.a=ed25519-sha256 header.s=susede2_ed25519 header.b=ztBNFA/e;
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=suse.de header.i=@suse.de header.a=rsa-sha256 header.s=susede2_rsa header.b=d43IKap2;
+	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256 header.s=susede2_ed25519 header.b=ztBNFA/e
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B34353C05D7
-	for <ltp@archiver.kernel.org>; Wed, 21 Oct 2026 10:06:49 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id C65BC3CAA46
+	for <ltp@archiver.kernel.org>; Wed, 21 Oct 2026 10:12:22 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 97F323C01A8
- for <ltp@lists.linux.it>; Wed, 21 Oct 2026 10:06:31 +0200 (CEST)
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com
- [IPv6:2a00:1450:4864:20::432])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 9C5C23CA3ED
+ for <ltp@lists.linux.it>; Wed, 21 Oct 2026 10:12:04 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 1ED73200043
- for <ltp@lists.linux.it>; Wed, 21 Oct 2026 10:06:31 +0200 (CEST)
-Received: by mail-wr1-x432.google.com with SMTP id
- ffacd0b85a97d-48e0d885929so299315f8f.3
- for <ltp@lists.linux.it>; Wed, 21 Oct 2026 01:06:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1792569990; x=1793174790; darn=lists.linux.it;
- h=date:content-transfer-encoding:content-type:in-reply-to:cc:to
- :message-id:subject:from:from:to:cc:subject:date:message-id:reply-to
- :content-type; bh=VaOX3VJo3oPiGMA0Ofqy6GfiTYzYkpcqgCzsqOEpxX0=;
- b=KFulIGdEF07G7RyrRRTzxy618+utY99NdAiA3j0nuslTKiDWBnjXwcwz7sWrhFDvmg
- 7NRmKdnDDyUV3P7kV2rALQqJdI4TA+jXRbtTe5VSEUvGXH8WIDD9nbUpPtinEJEbWPsG
- q5dBFBBk8f8cYPAg43PBA8I/yIUxZm7FbHr4z4WBrtlKXBEUxBTewyruc6PzsP9mcqJF
- LagmdBiWyUqKcBKuBtktzKUlZT4MpxSBcUf2bF6F9k2UL0wEVaUJKw/cWp8TtcnJcsVA
- xKtPtBAKN/gZSp9tZq399/xNge0CzK8V78LE4E9xrjDkdaIGVQOaTZUkLliM0Yi9tlHG
- 6SCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20260707; t=1792569990; x=1793174790;
- h=date:content-transfer-encoding:content-type:in-reply-to:cc:to
- :message-id:subject:from:x-gm-gg:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to:content-type;
- bh=VaOX3VJo3oPiGMA0Ofqy6GfiTYzYkpcqgCzsqOEpxX0=;
- b=QTMNRAub8lzo1sg2NQ+tKKpoSzr/36qvmHZs+CHPqcSBz+hSfMXxQ6Vwyyta0MyqKz
- 4ujB+wPyuZn4aAEYQoi41Jt636r99xWi2/fMhh6ZPInvoW13vWT/p6N7jHzxp0OaXVMq
- lb6qbhbF2nm3Ysn+sm4togUM7rfV5nLXGXSN2kI8N5jw9yLnkMH8aetlMotqm5YPL9f3
- rzY8FIej71zLPurssIB0JjOTtAwchtNKIWlEHUM3jTIrmM8rONz3m+kVGZuruid1MMBO
- vkCOojp1jvZ6YYtew7qt+8DFv2bc/VbRmIOj5id3xCydlqmRb8DJ5oQb5mAwxYZgmT0P
- Oj2g==
-X-Forwarded-Encrypted: i=1;
- AKwUvBwROlsPp1YbqXh8jt2ndt6PDba5d/GpdvZCMEdnxdHOK2jE+QFWXSe9EdrAA6kN4en3qhM=@lists.linux.it
-X-Gm-Message-State: AFq9FYL20Pj6cnN5MqQmnftt6P7ZRRSVPZ651j+mo0d4D5+BbyVcyLJQ
- BCYVUViUQIiBoIT3Ap9dW+KJOJD225QjhJUZQGeUrqYMpR4X5m41qn8ei3BHTPKR/9k=
-X-Gm-Gg: AYBFou27v3w7ZuIy0Rqun7dpVaSnUzQoi8O4GLBJmLi970JWcvb4hle4pnNNkBr5+qg
- H+tZ1TZ4v/MyzKGNNpsBLbcdm3mCV5+hS+7BOAPsKdjxQUGVt+J1HE9Le7STWbDaJNHiKBWORWr
- BElay3kIRyz93AFmbgDuWKMa/PBtr4HTy2sZkyJgLR5LIMGIaiggb3/nDb/MRCuaOgsv1smRfau
- HJ2vOict/aDfDYEAgrGusJohJ3uoRAmndMaSlSJ2h2/Rcw9ZC8Tjg8zd0zmieMCGsbfbd810etJ
- esr4qFK2U3bQY5qxpR/WD7kKg+fQdocLU8tnSDmxBoK29rI5VCe6gM6kG2uoUq2eIOcByBv3eQR
- LNHhzSJnmGWZ2PQ2C/44bISgvgfBw/+xo061EplYrJlMeYXHXwmizgK/q4XfT7IVL76uAUzbi9B
- 3fUrC9xCvY6OeEtLVxMyCbqGAa/gnSuVfG/+VrXtbVA2FSgYxifKe6V/ExrkdDxBzCLJ1t1ehEI
- 3pFZ7pO7mUfCAIR5AAKZdgjEVrP4YvqsSUV4ocYTSKvDD5l7770SrN7JE0MDRBte3dLL3wm2aA+
- dUExQjEmtlAeR+dFniHGkQpnKt5g+V9Dgl8grYYdWbFnonfF551+R2vinlTyyN5Q10ceuGlOTwE
- ESQAw
-X-Received: by 2002:a05:6000:71c:b0:48c:4d74:d7d2 with SMTP id
- ffacd0b85a97d-48e264a1ce3mr2314048f8f.12.1792569990362; 
- Wed, 21 Oct 2026 01:06:30 -0700 (PDT)
-Received: from localhost.localdomain
- (p200300ef2f310000926bd7eee21e6eee.dip0.t-ipconnect.de.
- [2003:ef:2f31:0:926b:d7ee:e21e:6eee])
- by smtp.gmail.com with ESMTPSA id
- ffacd0b85a97d-48e2584afe1sm4142028f8f.56.2026.10.21.01.06.29
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 21 Oct 2026 01:06:30 -0700 (PDT)
-Message-ID: <EPvab57CtkZLXoP7Sk3thzPnDwJdsojXAOW5@localhost.localdomain>
-To: linuxtestproject.agent@gmail.com
-In-Reply-To: <20261020190450.17534-1-linuxtestproject.agent@gmail.com>
-Date: Wed, 21 Oct 2026 08:06:29 +0000
-X-Spam-Status: No, score=-11.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_PASS,SPF_PASS autolearn=ham
-	autolearn_force=no version=4.0.1
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id BCFB96006E2
+ for <ltp@lists.linux.it>; Wed, 21 Oct 2026 10:12:02 +0200 (CEST)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 29E771F457;
+ Wed, 21 Oct 2026 08:12:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1792570322; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=Lp7hqV1GNChdXHNCLXbUcHAlihtAOZn1bBUF8q7pmpk=;
+ b=d43IKap2T2XZbEK1MzUBbLuak6pa3gEbht61boAYkqSJ6UU8CJvAKxme0gnvICOec39Amg
+ YQvFsgDU1yoBHrpuNBjcbD3mDNm22DYjYFUDgYiqUmR+WrV5uhJv0Wo/wK1Wdix6bq70xb
+ SPvV3ZPZ2XgeqZgNpqL91za9mS7OZrs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1792570322;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=Lp7hqV1GNChdXHNCLXbUcHAlihtAOZn1bBUF8q7pmpk=;
+ b=ztBNFA/e9g4tN0CeMxfD8wxLpwieiStpTih1TrgyHlxCljyREBtCzgWh5oz+9+V/TUKh6B
+ bKiG1iP+G/KPovDw==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1792570322; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=Lp7hqV1GNChdXHNCLXbUcHAlihtAOZn1bBUF8q7pmpk=;
+ b=d43IKap2T2XZbEK1MzUBbLuak6pa3gEbht61boAYkqSJ6UU8CJvAKxme0gnvICOec39Amg
+ YQvFsgDU1yoBHrpuNBjcbD3mDNm22DYjYFUDgYiqUmR+WrV5uhJv0Wo/wK1Wdix6bq70xb
+ SPvV3ZPZ2XgeqZgNpqL91za9mS7OZrs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1792570322;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=Lp7hqV1GNChdXHNCLXbUcHAlihtAOZn1bBUF8q7pmpk=;
+ b=ztBNFA/e9g4tN0CeMxfD8wxLpwieiStpTih1TrgyHlxCljyREBtCzgWh5oz+9+V/TUKh6B
+ bKiG1iP+G/KPovDw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D4DF0134FD;
+ Wed, 21 Oct 2026 08:12:01 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id ggQsKtFz2Go9QgAAD6G6ig
+ (envelope-from <andrea.cervesato@suse.de>); Wed, 21 Oct 2026 08:12:01 +0000
+From: Andrea Cervesato <andrea.cervesato@suse.de>
+Date: Wed, 21 Oct 2026 10:11:27 +0200
+Message-Id: <20261021-build_system_optimize-v3-0-71a3c4c6f937@suse.com>
+X-Archived-By: <archiver.kernel.org>
+MIME-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIAK9z2GoC/42Nyw6CMBBFf4V0bU1bXsWV/2EMgTKVMfIIA41I+
+ Hcpbtzp8mTunLMwggGB2ClY2AAOCbt2g/AQMFMX7Q04VhszJVQihRK8nPBR5TTTCE3e9SM2+AK
+ emEqEUWiFBsm2334Ai8/de7l+mKbyDmb0Mr+okcZumPewk373q+EklzyNIpvZQutM6DNNBEfTN
+ cwnnPpLovh2ilVamNRYHcZfknVd3y2/N5sQAQAA
+X-Change-ID: 20261020-build_system_optimize-6cd0343f08e1
+To: Linux Test Project <ltp@lists.linux.it>
+X-Mailer: b4 0.16.0
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1792570321; l=1579;
+ i=andrea.cervesato@suse.com; s=20251210; h=from:subject:message-id;
+ bh=wzslq7FWaylgBLxfj8lTir4UPSPnWGYORF63yprjjNA=;
+ b=T36Cj2NE9W6i0/XnyKhyOd/g8xvA2ggj9+WhRnKzWZ7sXGY3tMRgDy9hobiB/lGM1KB2Nza6b
+ BnsmSxpqGlvD0DtTaXWaGp0pEmAym00VSFPBoKHp3Y7oYyJaDiXzeI+
+X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
+ pk=zKY+6GCauOiuHNZ//d8PQ/UL4jFCTKbXrzXAOQSLevI=
+X-Spam-Score: -4.30
+X-Spam-Level: 
+X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ NEURAL_HAM_SHORT(-0.20)[-0.998]; MIME_GOOD(-0.10)[text/plain];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; RCVD_TLS_ALL(0.00)[];
+ ARC_NA(0.00)[]; MIME_TRACE(0.00)[0:+];
+ DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ TO_DN_ALL(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ FROM_HAS_DN(0.00)[]; RCPT_COUNT_THREE(0.00)[4];
+ FROM_EQ_ENVFROM(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[testcases.mk:url,suse.com:email]
+X-Spam-Status: No, score=-16.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_PASS,SPF_PASS,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] build: Fix library prerequisites in testcases.mk
+Subject: [LTP] [PATCH v3 0/3] Speedup LTP compile time by ~20% on
+ multi-machine
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -105,38 +124,52 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Cc: ltp@lists.linux.it
-X-Archived-By: <archiver.kernel.org>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> Hi Andrea,
-> 
-> On 20 October 2026, Andrea Cervesato wrote:
-> > [PATCH 1/3] build: Fix library prerequisites in testcases.mk
-> 
-> --- [PATCH 2/3] ---
-> 
-> > diff --git a/include/mk/generic_trunk_target.inc b/include/mk/generic_trunk_target.inc
-> > +MAKE_DEPS += $(abs_top_builddir)/lib/libltp.a $(abs_top_builddir)/libs-all
-> 
-> Medium: testcases/lib already has a per-library ujson prerequisite, so
-> when ujson needs rebuilding, make -j4 -C testcases/lib tst_run_shell
-> launches that builder alongside libs-all's ujson builder. Both write the
-> same objects and libujson.a concurrently, allowing a corrupt archive or
-> a failed link. Serialize or deduplicate these prerequisite paths so each
-> library has only one builder.
+The following results show how this optimization moves compile times
+really far from what we have now. With a single threaded build, LTP
+would take approximately 12 minutes to compile. With a multi-threaded
+build on 16 CPUs, this drops down to ~46 seconds.
 
-Valid, I will fix it
+time make -j16
 
---
-Andrea Cervesato
-SUSE QE Automation Engineer Linux
-andrea.cervesato@suse.com
+Executed in   45.96 secs    fish           external
+   usr time  519.11 secs    0.24 millis  519.11 secs
+   sys time  167.13 secs    1.08 millis  167.13 secs
+
+Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+---
+Changes in v3:
+- added libs-all ordering to avoid races
+- Link to v2: https://lore.kernel.org/20261020-build_system_optimize-v2-0-b527ac7cf835@suse.com
+
+Changes in v2:
+- fix build race condition
+- Link to v1: https://lore.kernel.org/20261020-build_system_optimize-v1-1-744f9fa88908@suse.com
+
+---
+Andrea Cervesato (3):
+      build: Fix library prerequisites in testcases.mk
+      build: Build shared libs once on subtree make
+      build: Parallelize subdirectory recursion in generic_trunk_target
+
+ Makefile                            |  2 ++
+ include/mk/generic_trunk_target.inc | 58 ++++++++++++++++++++++++++++++++-----
+ include/mk/testcases.mk             | 14 +++++----
+ testcases/kernel/Makefile           |  3 ++
+ testcases/kernel/include/lib.mk     |  4 +--
+ testcases/network/rpc/Makefile      |  3 ++
+ 6 files changed, 69 insertions(+), 15 deletions(-)
+---
+base-commit: 121876b3da3ff59b0dd17b4798b2e4699ba431d1
+change-id: 20261020-build_system_optimize-6cd0343f08e1
+
+Best regards,
+--  
+Andrea Cervesato <andrea.cervesato@suse.com>
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
