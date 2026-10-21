@@ -1,120 +1,102 @@
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69D38606A319
-	for <ltp@archiver.kernel.org>; Wed, 21 Oct 2026 08:13:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AF6B606A31A
+	for <ltp@archiver.kernel.org>; Wed, 21 Oct 2026 08:49:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key, unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256 header.s=susede2_rsa header.b=WQ77A5gw;
-	dkim=fail reason="signature verification failed" header.d=suse.de header.i=@suse.de header.a=ed25519-sha256 header.s=susede2_ed25519 header.b=nmLAmx3d;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=suse.de header.i=@suse.de header.a=rsa-sha256 header.s=susede2_rsa header.b=WQ77A5gw;
-	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256 header.s=susede2_ed25519 header.b=nmLAmx3d
+	dkim=pass (1024-bit key, unprotected) header.d=lists.linux.it header.i=@lists.linux.it header.a=rsa-sha256 header.s=picard header.b=VyqTfcHo;
+	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=suse.com header.i=@suse.com header.a=rsa-sha256 header.s=google header.b=d5hM2yzD
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1792572598; h=to : date :
+ message-id : in-reply-to : references : mime-version : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : content-type :
+ content-transfer-encoding : sender : from;
+ bh=clABHNxApDan9GAdyD2tHgm/aOeKf4A+JscTdkxJnR8=;
+ b=VyqTfcHoh7TpIuIOtctjcljjsca+XKa7tlHlaZEZy6bNBVK+pA+Q++cz6fEQF+0CCLlYc
+ OC8wuhVHRy6ZL61T1bMaKBs76m0ZXGyXZGUsbjG/20mL1TU3x+X4b6x5VarwvTZpCaH9tQZ
+ FPGN+qHX/BI9JmLn1NYpDpKQ8pzqTrs=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 23CC53C20C2
-	for <ltp@archiver.kernel.org>; Wed, 21 Oct 2026 10:13:19 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 194A23C7A3B
+	for <ltp@archiver.kernel.org>; Wed, 21 Oct 2026 10:49:58 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C474A3CADF1
- for <ltp@lists.linux.it>; Wed, 21 Oct 2026 10:12:05 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id DD29D3C2313
+ for <ltp@lists.linux.it>; Wed, 21 Oct 2026 10:49:37 +0200 (CEST)
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com
+ [IPv6:2a00:1450:4864:20::42c])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id EA9EB1A001C7
- for <ltp@lists.linux.it>; Wed, 21 Oct 2026 10:12:04 +0200 (CEST)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 7DFB11F749;
- Wed, 21 Oct 2026 08:12:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1792570322; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=5/iGTPJZ2rBDz2hvAHNYM19Ft4WXz5UWzckDxLfVWvc=;
- b=WQ77A5gwjea0aerMGUsZZnVodnvTiKGpYOpdaQTcDoc2L2ztqgPGFGKCGvf9Qds9QDGyQq
- 1uhAprknUweeFrXAONf0PY9+EfvOnAd9k8qAnPQwazpdTT+WnWA4c7w042HxsnDeI7knFX
- XE6JVp85TN4lkPLDMeO7ESa4qBLs0Yg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1792570322;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=5/iGTPJZ2rBDz2hvAHNYM19Ft4WXz5UWzckDxLfVWvc=;
- b=nmLAmx3dA8gq1x9ct+1znNbDTu1Euxr3vRV6MQySrYeSyXt4u56WVkwAzTFcIAE6HVhI5h
- MNtiDgcukjLwsGCg==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1792570322; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=5/iGTPJZ2rBDz2hvAHNYM19Ft4WXz5UWzckDxLfVWvc=;
- b=WQ77A5gwjea0aerMGUsZZnVodnvTiKGpYOpdaQTcDoc2L2ztqgPGFGKCGvf9Qds9QDGyQq
- 1uhAprknUweeFrXAONf0PY9+EfvOnAd9k8qAnPQwazpdTT+WnWA4c7w042HxsnDeI7knFX
- XE6JVp85TN4lkPLDMeO7ESa4qBLs0Yg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1792570322;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=5/iGTPJZ2rBDz2hvAHNYM19Ft4WXz5UWzckDxLfVWvc=;
- b=nmLAmx3dA8gq1x9ct+1znNbDTu1Euxr3vRV6MQySrYeSyXt4u56WVkwAzTFcIAE6HVhI5h
- MNtiDgcukjLwsGCg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 373601351D;
- Wed, 21 Oct 2026 08:12:02 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id ggQsKtFz2Go9QgAAD6G6ig:T3
- (envelope-from <andrea.cervesato@suse.de>); Wed, 21 Oct 2026 08:12:02 +0000
-From: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Wed, 21 Oct 2026 10:11:29 +0200
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 9713720005A
+ for <ltp@lists.linux.it>; Wed, 21 Oct 2026 10:49:36 +0200 (CEST)
+Received: by mail-wr1-x42c.google.com with SMTP id
+ ffacd0b85a97d-48df8fe8513so475835f8f.0
+ for <ltp@lists.linux.it>; Wed, 21 Oct 2026 01:49:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1792572576; x=1793177376; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to:content-type;
+ bh=WbHT3zEpSzN1fS0oB5Z/UfGfgBA1jn6fyJ6JQFrE4/s=;
+ b=d5hM2yzDgnDRVlYSxA0ZWrfS0gcSbCQNjiS1AbIb0srCKWhiNt+mjhpIZS7BMdlrbZ
+ iut6mPuZ4wCaiy3eN2wkDixdKpXFqU+nYvSiqrg+8Hvt6xHaLYh/0Ny67BqGKi3xPMbw
+ QEYRrJMYruYEtMEA6kOcwAv4eq++ufaS9TAJAYfDJVkFxn+LvvkYB2isxfv5BEpOMBup
+ xK+p5BmoOAqROnPR8YPX09PVKCt/xWouUNccz8tD5ul6KuuVWq3gmN0EqqrEB8tfgR7i
+ fhTzGoj5eUtO0ceBrMc5HMVZWUFGfJWps1+xuZueiLB+dwMzwM5SJaPgSDwsJPUZHZyd
+ ENNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20260707; t=1792572576; x=1793177376;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to:content-type;
+ bh=WbHT3zEpSzN1fS0oB5Z/UfGfgBA1jn6fyJ6JQFrE4/s=;
+ b=xYqpQSJAhQZjVGOeDtQju9m7xtkm/ki7tXe8YySjkSgSgPzUGKoS8ZVTUISIHxJUG9
+ FCV0NLELMCuw4M1s4B2LBCUhMnCZRf6HJ+SDihL/gnu24Htjw5r6JCYFn3hu14gXkEgt
+ LiwnoHYlWFzbN0uadoNRxag6toEc+8CYoE4rQR8n9Fz1eW0OE8ZJ4VarOmOW/KustYjX
+ cbNUAa8t6YHSxRb0heATV1t8NE8sD7X7FF4RcpwUvOin48b3ceNmfPh+dDv3Ij971OvS
+ 8QstvYBV5jmOIlj2osRKjFASufZ0YFLa6QkfwKcijFKXP1dF4ODUzoLg2KO0kOAtt0nT
+ xCkA==
+X-Gm-Message-State: AFq9FYK2ZE2yy42hVpqvXAjluqV42o7/Hk532B/RecJMil/b5enzW5uR
+ Y1o8Qe0uoLTB7xPsVMr7jphuo1dRGHEbZocCfnb6t1Km0dTkGO1l62ODvOPB8rR0AGXmzACxkhF
+ TSyI=
+X-Gm-Gg: AYBFou11HcSu/N8Tgk3PbOFDG52yYTPckXFLUDUBnv1SBScoXWMaT4nZt+VZZPRrV5v
+ HMBYvrnDcUTBQ5Gt7nWHSPl/79VQvoFyCX8ezP/fQdLH897AmDxNU2D5/Ddskz72+kO1XS8RqJU
+ 2IOlDNjzEwBgA7vtRtlxbFnyMVmR0xsW8fIbJfwGqNAjYZCK8TFbezMtPPuZNItvEb8z4KYexQZ
+ g0mBn6Z3ueHOwk0Y/DIkT7X3akXWt5OTNilUVccSsY0t+quXc9TOPrqq7/3fmRoXc2gfmKVgcqC
+ 3vfnDgtfmqskYH+x61LUwEBPrO8EdDuBvIXTe/Id4mjycYOo2iaiKgrlxaorcssYTFK+TUIez7p
+ TACj0TFSOOv2LMQZROg3OCepUoICK1yDvJxSHchlnuiqjZ/JUKId7SIREHC0ampeQ781T6Ii+R1
+ JXuHu37o4FlJIIvtc5YFy1m9wpJVx9BvjFQ5Zz7DT3kmZ/gBtUyZWkBsrti2LAob37QEjYcqiBh
+ 6TFK3bo2hWIuXSYTD1yihVnO04j573pcbkqyrxrNREzZClfRtTgSr8vkGOGnI3kLQAv7irAZcnn
+ ZanR60dLe4BTxa58VCQODRIE
+X-Received: by 2002:a05:6000:4a15:b0:48e:a9:9e2e with SMTP id
+ ffacd0b85a97d-48e264a6338mr2617934f8f.14.1792572575908; 
+ Wed, 21 Oct 2026 01:49:35 -0700 (PDT)
+Received: from localhost ([2a07:de40:b240:0:2ad6:ed42:2ad6:ed42])
+ by smtp.gmail.com with UTF8SMTPSA id
+ ffacd0b85a97d-48e254f093asm4439698f8f.4.2026.10.21.01.49.35
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 21 Oct 2026 01:49:35 -0700 (PDT)
+To: ltp@lists.linux.it
+Date: Wed, 21 Oct 2026 08:49:12 +0000
+Message-ID: <20261021084933.19097-1-wegao@suse.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20260917024609.20527-1-wegao@suse.com>
+References: <20260917024609.20527-1-wegao@suse.com>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-Message-Id: <20261021-build_system_optimize-v3-2-71a3c4c6f937@suse.com>
-References: <20261021-build_system_optimize-v3-0-71a3c4c6f937@suse.com>
-In-Reply-To: <20261021-build_system_optimize-v3-0-71a3c4c6f937@suse.com>
-To: Linux Test Project <ltp@lists.linux.it>
-X-Mailer: b4 0.16.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1792570321; l=1744;
- i=andrea.cervesato@suse.com; s=20251210; h=from:subject:message-id;
- bh=EmK640FPkOSPklSuyWK3740fqiKvumEkGjHdiBfHYPc=;
- b=4PO0kW0Y+F6JQQlIkM+Bwri3+sKvroGexgGI/G1gtPxvpzl7qtXNcLPIKBeeypIiNNo/VW1My
- /4tIhjK486lDUEs04sghzSKMgiDP0axQGGG2JmDs7yzSh6vLaJ1SdYa
-X-Developer-Key: i=andrea.cervesato@suse.com; a=ed25519;
- pk=zKY+6GCauOiuHNZ//d8PQ/UL4jFCTKbXrzXAOQSLevI=
-X-Spamd-Result: default: False [-4.30 / 50.00]; BAYES_HAM(-3.00)[100.00%];
- NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-0.996]; MIME_GOOD(-0.10)[text/plain];
- TO_DN_ALL(0.00)[];
- DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- FROM_HAS_DN(0.00)[]; ARC_NA(0.00)[]; RCPT_COUNT_TWO(0.00)[2];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_TLS_ALL(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[]; MIME_TRACE(0.00)[0:+];
- FROM_EQ_ENVFROM(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email]
-X-Spam-Score: -4.30
-X-Spam-Level: 
-X-Spam-Status: No, score=-16.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_PASS,SPF_PASS,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
+X-Spam-Status: No, score=-24.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_PASS,
+	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3 2/3] build: Build shared libs once on subtree make
+Subject: [LTP] [PATCH v17] fsconfig04: Check FSCONFIG_SET_PATH
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -124,58 +106,226 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+From: Wei Gao via ltp <ltp@lists.linux.it>
+Reply-To: Wei Gao <wegao@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Andrea Cervesato <andrea.cervesato@suse.com>
+The fsconfig01.c does not test if FSCONFIG_SET_PATH has any effect;
+most of the calls there just set a dummy "sync" parameter. This test
+case aims to verify if the FSCONFIG_SET_PATH operation can be used
+to dynamically change the external journal device of an ext3 or ext4
+filesystem.
 
-When make is invoked directly in a trunk subdirectory (MAKELEVEL == 0),
-build shared prerequisites (libltp.a, libs, and libkerntest.a) once
-via MAKE_DEPS before launching parallel subdirectory builds.
-
-Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+Closes: https://github.com/linux-test-project/ltp/issues/1169
+Signed-off-by: Wei Gao <wegao@suse.com>
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
 ---
- include/mk/generic_trunk_target.inc | 23 +++++++++++++++++++++++
- 1 file changed, 23 insertions(+)
+ runtest/syscalls                              |   1 +
+ testcases/kernel/syscalls/fsconfig/.gitignore |   1 +
+ .../kernel/syscalls/fsconfig/fsconfig04.c     | 169 ++++++++++++++++++
+ 3 files changed, 171 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/fsconfig/fsconfig04.c
 
-diff --git a/include/mk/generic_trunk_target.inc b/include/mk/generic_trunk_target.inc
-index f9db7896a..aa8e500e1 100644
---- a/include/mk/generic_trunk_target.inc
-+++ b/include/mk/generic_trunk_target.inc
-@@ -36,6 +36,29 @@ RECURSIVE_TARGETS		?= all install check
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 2bdb4a9a2..1903f1ac6 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -452,6 +452,7 @@ fremovexattr02 fremovexattr02
+ fsconfig01 fsconfig01
+ fsconfig02 fsconfig02
+ fsconfig03 fsconfig03
++fsconfig04 fsconfig04
  
- $(eval $(get_make_dirs))
- 
-+ifeq ($(MAKELEVEL),0)
-+ifneq ($(filter $(abs_top_builddir)/testcases%,$(CURDIR)),)
-+MAKE_DEPS += $(abs_top_builddir)/lib/libltp.a $(abs_top_builddir)/libs-all
+ fsmount01 fsmount01
+ fsmount02 fsmount02
+diff --git a/testcases/kernel/syscalls/fsconfig/.gitignore b/testcases/kernel/syscalls/fsconfig/.gitignore
+index cfedae5f7..bd3754c34 100644
+--- a/testcases/kernel/syscalls/fsconfig/.gitignore
++++ b/testcases/kernel/syscalls/fsconfig/.gitignore
+@@ -1,3 +1,4 @@
+ /fsconfig01
+ /fsconfig02
+ /fsconfig03
++/fsconfig04
+diff --git a/testcases/kernel/syscalls/fsconfig/fsconfig04.c b/testcases/kernel/syscalls/fsconfig/fsconfig04.c
+new file mode 100644
+index 000000000..bd649717e
+--- /dev/null
++++ b/testcases/kernel/syscalls/fsconfig/fsconfig04.c
+@@ -0,0 +1,169 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2026 Wei Gao <wegao@suse.com>
++ */
 +
-+$(abs_top_builddir)/lib/libltp.a:
-+	mkdir -m 00755 -p "$(abs_top_builddir)/lib"
-+	$(MAKE) -C "$(abs_top_builddir)/lib" -f "$(abs_top_srcdir)/lib/Makefile" all
++/*\
++ * This test aims to validate :manpage:`fsconfig(2)` with the
++ * ``FSCONFIG_SET_PATH`` operation in dynamically altering the external
++ * journal device of an ext3 or ext4 filesystem.
++ *
++ * Root privileges are required because the test creates and formats loop
++ * devices, and configures filesystems.
++ *
++ * [Algorithm]
++ *
++ * - Acquire three loop devices (``tst_device->dev`` from framework, ``dev1``, ``dev2``).
++ * - Format ``dev1`` and ``dev2`` as external journal devices with the same UUID
++ *   (``-O journal_dev -U <uuid>``).
++ * - Format ``tst_device->dev`` three times to cycle journal associations:
++ *   ``dev1`` -> ``dev2`` -> ``dev1``, so both journal superblocks are consistent.
++ * - Open ``tst_device->dev`` via :manpage:`fsopen(2)` and set the source and journal_path using
++ *   :manpage:`fsconfig(2)` (``FSCONFIG_SET_STRING``) and
++ *   :manpage:`fsconfig(2)` (``FSCONFIG_SET_PATH``).
++ * - Apply ``FSCONFIG_CMD_CREATE`` and verify with ``tune2fs`` that ``tst_device->dev``'s
++ *   journal device is now ``dev2``.
++ *
++ * Implementation notes:
++ *
++ * - To avoid ``journal UUID does not match`` error when switching external
++ *   journal device, we have to assign the same UUID to ``dev1``/``dev2``.
++ * - Before the :manpage:`fsconfig(2)` test, we have to format ``tst_device->dev`` associating to
++ *   ``dev1`` -> ``dev2`` -> ``dev1``. This ensures that both ``dev1``/``dev2`` superblocks contain
++ *   correct content. Otherwise, you will encounter errors such as
++ *   ``EXT4-fs (loop0): External journal has more than one user (unsupported)``
++ *   when switching the external journal device using :manpage:`fsconfig(2)`.
++ */
 +
-+.PHONY: $(abs_top_builddir)/libs-all
-+$(abs_top_builddir)/libs-all: $(LTPLIBS_FILES)
-+	mkdir -m 00755 -p "$(abs_top_builddir)/libs"
-+	$(MAKE) -C "$(abs_top_builddir)/libs" -f "$(abs_top_srcdir)/libs/Makefile" all
-+endif
++#include <stdbool.h>
++#include <sys/stat.h>
++#include <sys/sysmacros.h>
++#include "tst_test.h"
++#include "tst_safe_stdio.h"
++#include "lapi/fsmount.h"
 +
-+ifneq ($(filter $(abs_top_builddir)/testcases/kernel/%,$(CURDIR)),)
-+MAKE_DEPS += $(abs_top_builddir)/testcases/kernel/lib/libkerntest.a
++#define LOOP_DEV_SIZE 10
++#define UUID "d73c9e5e-97e4-4a9c-b17e-75a931b02660"
 +
-+$(abs_top_builddir)/testcases/kernel/lib/libkerntest.a:
-+	mkdir -m 00755 -p "$(abs_top_builddir)/testcases/kernel/lib"
-+	$(MAKE) -C "$(abs_top_builddir)/testcases/kernel/lib" -f "$(abs_top_srcdir)/testcases/kernel/lib/Makefile" all
-+endif
-+endif
++static int fd = -1;
++static char dev1[PATH_MAX];
++static char dev2[PATH_MAX];
 +
- .PHONY: $(RECURSIVE_TARGETS) $(addprefix trunk-,$(RECURSIVE_TARGETS))
- 
- $(SUBDIRS): %:
-
++static const char *const mkfs_opts_set_UUID[] = {"-F", "-U", UUID, "-O", "journal_dev", NULL};
++
++static void cleanup(void)
++{
++	if (fd != -1)
++		SAFE_CLOSE(fd);
++
++	if (dev1[0])
++		tst_detach_device(dev1);
++
++	if (dev2[0])
++		tst_detach_device(dev2);
++}
++
++static void create_and_attach_loopdev(const char *filename, char *dev_path, size_t dev_path_len)
++{
++	if (tst_prealloc_file(filename, 1024 * 1024, LOOP_DEV_SIZE))
++		tst_brk(TBROK, "Failed to create %s", filename);
++
++	if (tst_find_free_loopdev(dev_path, dev_path_len) == -1)
++		tst_brk(TBROK, "No free loop device found for %s", filename);
++
++	if (tst_attach_device(dev_path, filename))
++		tst_brk(TBROK, "Failed to attach %s to %s", filename, dev_path);
++}
++
++static void format_journal_device(const char *dev, const char *journal)
++{
++	char journal_opt[PATH_MAX + 16];
++	const char *const opts[] = {"-F", "-J", journal_opt, NULL};
++
++	snprintf(journal_opt, sizeof(journal_opt), "device=%s", journal);
++	SAFE_MKFS(dev, tst_device->fs_type, opts, NULL);
++}
++
++static void setup(void)
++{
++	fsopen_supported_by_kernel();
++
++	create_and_attach_loopdev("dev1_file", dev1, sizeof(dev1));
++	create_and_attach_loopdev("dev2_file", dev2, sizeof(dev2));
++}
++
++static void run(void)
++{
++	/* Reset dev1, dev2 and tst_device->dev superblocks before each test run iteration */
++	SAFE_MKFS(dev1, tst_device->fs_type, mkfs_opts_set_UUID, NULL);
++	SAFE_MKFS(dev2, tst_device->fs_type, mkfs_opts_set_UUID, NULL);
++	format_journal_device(tst_device->dev, dev1);
++	format_journal_device(tst_device->dev, dev2);
++	format_journal_device(tst_device->dev, dev1);
++
++	TEST(fd = fsopen(tst_device->fs_type, 0));
++	if (fd == -1)
++		tst_brk(TBROK | TTERRNO, "fsopen() failed");
++
++	TEST(fsconfig(fd, FSCONFIG_SET_STRING, "source", tst_device->dev, 0));
++	if (TST_RET == -1)
++		tst_brk(TBROK | TTERRNO, "fsconfig(FSCONFIG_SET_STRING) failed");
++
++	TEST(fsconfig(fd, FSCONFIG_SET_PATH, "journal_path", dev2, AT_FDCWD));
++	if (TST_RET == -1) {
++		if (TST_ERR == EOPNOTSUPP)
++			tst_brk(TCONF, "fsconfig(FSCONFIG_SET_PATH) not supported");
++		else
++			tst_brk(TFAIL | TTERRNO, "fsconfig(FSCONFIG_SET_PATH) failed");
++	}
++
++	TEST(fsconfig(fd, FSCONFIG_CMD_CREATE, NULL, NULL, 0));
++	if (TST_RET == -1)
++		tst_brk(TFAIL | TTERRNO, "fsconfig(FSCONFIG_CMD_CREATE) failed");
++
++	SAFE_CLOSE(fd);
++
++	char path[PATH_MAX + 32];
++	char device_str[NAME_MAX];
++	bool found = false;
++	struct stat st;
++
++	SAFE_STAT(dev2, &st);
++	unsigned int device_num = (minor(st.st_rdev) & 0xff) | (major(st.st_rdev) << 8) |
++				  ((minor(st.st_rdev) & ~0xff) << 12);
++	snprintf(device_str, sizeof(device_str), "0x%04x", device_num);
++
++	char line[PATH_MAX];
++	FILE *tune2fs;
++
++	snprintf(path, sizeof(path), "tune2fs -l %s 2>&1", tst_device->dev);
++	tune2fs = SAFE_POPEN(path, "r");
++
++	while (fgets(line, PATH_MAX, tune2fs)) {
++		if (*line && strstr(line, "Journal device:") && strstr(line, device_str)) {
++			found = true;
++			break;
++		}
++	}
++
++	TST_EXP_EXPR(found, "Device found in journal");
++
++	pclose(tune2fs);
++}
++
++static struct tst_test test = {
++	.test_all = run,
++	.setup = setup,
++	.cleanup = cleanup,
++	.needs_root = 1,
++	.needs_device = 1,
++	.needs_cmds = (struct tst_cmd []) {
++		{.cmd = "tune2fs"},
++		{}
++	},
++	.filesystems = (struct tst_fs []) {
++		{.type = "ext3"},
++		{.type = "ext4"},
++		{}
++	},
++};
 -- 
-2.51.0
+2.55.0
 
 
 -- 
