@@ -1,71 +1,91 @@
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 145C3606A319
-	for <ltp@archiver.kernel.org>; Thu, 22 Oct 2026 11:50:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17E58606A319
+	for <ltp@archiver.kernel.org>; Thu, 22 Oct 2026 11:54:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=ghDqwvQE
+	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20251104 header.b=aHUc3y7H
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id CB4AA3D26A7
-	for <ltp@archiver.kernel.org>; Thu, 22 Oct 2026 13:50:25 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id CF08B3D25F9
+	for <ltp@archiver.kernel.org>; Thu, 22 Oct 2026 13:54:33 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A8ADD3C01BD
- for <ltp@lists.linux.it>; Thu, 22 Oct 2026 13:50:10 +0200 (CEST)
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 2FBBA3C52F3
+ for <ltp@lists.linux.it>; Thu, 22 Oct 2026 13:54:19 +0200 (CEST)
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com
+ [IPv6:2a00:1450:4864:20::333])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id A8D7F200ACD
- for <ltp@lists.linux.it>; Thu, 22 Oct 2026 13:50:08 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1792669809; x=1824205809;
- h=date:from:to:cc:subject:message-id:mime-version:
- content-transfer-encoding:in-reply-to;
- bh=2DrVNaultXTc1qQbNwuEhIGizd9g653dYUGKXABLVkM=;
- b=ghDqwvQE8IyLkUC4COzsgyzXwuP+CYMwd8u9jIWFPzM/eIZFy6C0rH6r
- vf6QTtN8WU44u8cg4fYK0ROSt/1ipLMoJl3bM58srCf73J6IkgRnSQYNR
- hSjM53/p5Uzm+a+U3BfxxwpunUjT3eTHltOFSFTfLCvT6QA9lNrXSOirT
- 55zmRB2lB1QZi29T25O7zWdrB1KlR0CAKa8b2pcuoKsLKrWXEHLkt+kUw
- 3+4ltvrsbG1gJBb6vJklTnyaBIdS+fIwx6n8Zv1wa71m+4bXvuUe+ozx+
- V/WqnwA+LomhUNlGxZMsHrWGkTDM5SBRaluymrEdpdvcxba8akXILx4z5 Q==;
-X-CSE-ConnectionGUID: FBoIZdepQA2yr19hm0UWqQ==
-X-CSE-MsgGUID: L/K3Wr30S6Os/OZnUxgG7w==
-X-IronPort-AV: E=McAfee;i="6800,10657,11942"; a="1424582"
-X-IronPort-AV: E=Sophos;i="6.27,172,1787036400"; 
-   d="scan'208";a="1424582"
-Received: from orviesa010.jf.intel.com ([10.64.159.150])
- by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 22 Oct 2026 04:50:06 -0700
-X-CSE-ConnectionGUID: f4ACdk9iSEKaX/l8gm+dSA==
-X-CSE-MsgGUID: rW4AbCNxTTqgfeKYUSIrrQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.27,172,1787036400"; 
-   d="scan'208";a="3734970"
-Received: from ly-workstation.sh.intel.com (HELO ly-workstation)
- ([10.239.182.64])
- by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 22 Oct 2026 04:50:03 -0700
-Date: Thu, 22 Oct 2026 19:50:00 +0800
-From: kernel test robot <yi1.lai@intel.com>
-To: Jackie Liu <liu.yun@linux.dev>
-Message-ID: <202610221936.40b4334f-lkp@intel.com>
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id E934360008A
+ for <ltp@lists.linux.it>; Thu, 22 Oct 2026 13:54:18 +0200 (CEST)
+Received: by mail-wm1-x333.google.com with SMTP id
+ 5b1f17b1804b1-4a1d75f2f11so13323405e9.3
+ for <ltp@lists.linux.it>; Thu, 22 Oct 2026 04:54:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20251104; t=1792670058; x=1793274858; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+ bh=U9dilShG9yxZ73/T13sz0SWvQL1Qy0D5GZaP+pAT0Vw=;
+ b=aHUc3y7HgTQZWh+ZrJvXCe43Z0uRUQwxBxtv3LgqgStxLz8vvsZAB/et5QPUdLVC9p
+ ygzDiPPZ8LdFJrnZdR9Z3wJEtzr4jJW2TSUT8hmrM1bsddxzI/rXCDb7rtVkqiu+vTaV
+ yu/a8En/0OWGD8KgLABBeIRUjkb265GRR7gwhOHyqipUNx7Gi6NnCm3bD/Ewx/aYHI6x
+ NPntnRK3Skz0TkHkq1bvNvGbzUaqkddNZcr9gw5tGtmD5hC18QL89838XU3mz9yes7FP
+ W6cZvAi+UlMwMhb4c85RHGlROM+Pbv7RnZbVAZLU/SA9neAPhYB6jJXHH98XuPX5MwK7
+ YEHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20260707; t=1792670058; x=1793274858;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to:content-type;
+ bh=U9dilShG9yxZ73/T13sz0SWvQL1Qy0D5GZaP+pAT0Vw=;
+ b=QapzbyaAeKpCr1O+wc47zyvqIZ+9kJG4WZFSQuqmULAnFL3OrXUZRhWJpIQEvA2eDF
+ j5KzXjiskfqCV33ceUFvkcBMnMtmbxJIgO0vrWrX6GnNP6UgZzoaK7Tf4nMyDeercX5W
+ NSET+mivSeq+E8Fv1XR/dsGbveCrKMD2mbAWCBnBUxt4GFoL7ER+GuOpVJkbzMIXMDYH
+ lDj3Q5bPU321PEnOKUqxjPx3ULeiYDjFbwxHdobiS7mIOvRe1ccpgwJFt5bVRK1MIsMh
+ qcmiuO6eN7cK5UhvHXY9Atn5BPJBLcgIcbll2XbWMA2or+NNIICmNgGuiBlUIh/5Awam
+ wrGA==
+X-Gm-Message-State: AFq9FYKP4BZmdETKZd6JV/6bsw84Gvv87sIOaQqBGcK2U+vodp6cU3RZ
+ uGEuspMv2UPrcy7x/wh3NJpz75BvCmS72y7BSONa613NKqXU07AY16wzbYf+hw==
+X-Gm-Gg: AYBFou3mIy0Db+7oiOJIkSQjCtt/YjeWMexoAwyAxhuLHoeJCOBFWaOIc+Fui77djx3
+ rgDkPVvS12m4WDVUpk+R76ITjH1l2oLkLvDuwqsjYEef6Lou3XgtDk80MebZjKbY8cv/toRQ5Zm
+ lzG2B/UXg/Hu0p7fmw/7ZVth92tc0ZPxIcR99Gw5T5E2HXKLa+9oUaoqgnquvV/kIg021RY5k3c
+ jkYAlG/YBg9vwxS/oEBDKgzwkcY/H/79rydQZyfTDz5ANMROLm7Yq4VZNcGTYv+BctSsT9QyswX
+ Haf3ovoROJ7X31sOin/rPHhRQV9/vyx4TBnxa/A1czfLVVhsvXHRia6rzbm/LwyI5LB4zDiZ46Y
+ bMeAdeE5qltAOIzTCZgSoQuk2fR3d/tKrLuUHLraOmMs39VJHVbqWwoKpJlZaTbpbCddPzN5lDX
+ 9kQd1odrYShys6kh4Q8W8ed02zSV6WyFQQnW0eL13YQ3lTd7L9IJaC6u6pNp6Tna9yofMbBlbfI
+ 1Kse5jt9yXe5kZX2amFYySfjumPH+PED0m0k+8apSUFTk5LL0+v5LdVHBB4vg2DxiXMQxOihUXF
+ Wj+g71mt8c7cJc9GbPkhhTD/hA==
+X-Received: by 2002:a05:600c:a48:b0:4a1:e0db:8cf8 with SMTP id
+ 5b1f17b1804b1-4a1fd8a7f8dmr104625645e9.3.1792670057375; 
+ Thu, 22 Oct 2026 04:54:17 -0700 (PDT)
+Received: from localhost.suse.org ([37.109.163.221])
+ by smtp.gmail.com with ESMTPSA id
+ 5b1f17b1804b1-4a2038ddb20sm60707055e9.0.2026.10.22.04.54.15
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Thu, 22 Oct 2026 04:54:16 -0700 (PDT)
+From: Sebastian Chlad <sebastianchlad@gmail.com>
+X-Google-Original-From: Sebastian Chlad <sebastian.chlad@suse.com>
+To: ltp@lists.linux.it
+Date: Thu, 22 Oct 2026 13:54:10 +0200
+Message-ID: <20261022115410.23845-1-sebastian.chlad@suse.com>
+X-Mailer: git-send-email 2.51.0
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20261019065358.66115-1-liu.yun@linux.dev>
-X-Spam-Status: No, score=-8.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_PASS,SPF_PASS autolearn=ham
-	autolearn_force=no version=4.0.1
+X-Spam-Status: No, score=-13.6 required=3.0 tests=BAYES_00,
+	DKIM_ADSP_CUSTOM_MED,DKIM_INVALID,DKIM_SIGNED,
+	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_PASS,
+	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] cpufreq: Avoid fallback values in cpuinfo_avg_freq
+Subject: [LTP] [PATCH] lib: tst_device: Scale loop device detach timeout
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -75,93 +95,56 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: x86@kernel.org, lkp@intel.com, linux-pm@vger.kernel.org,
- dave.hansen@linux.intel.com, linux-kernel@vger.kernel.org, mingo@redhat.com,
- bp@alien8.de, tglx@kernel.org, yi1.lai@intel.com, oe-lkp@lists.linux.dev,
- ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-CkhlbGxvLAoKa2VybmVsIHRlc3Qgcm9ib3Qgbm90aWNlZCAibHRwLnJ1bnB3dGVzdHMwMy5mYWls
-IiBvbjoKCmNvbW1pdDogZTVmOWQ5OTc2MmUyODU2NjRlZWE1ZWNiYWIwMDRjODQ0NDkzMGYyMiAo
-IltQQVRDSF0gY3B1ZnJlcTogQXZvaWQgZmFsbGJhY2sgdmFsdWVzIGluIGNwdWluZm9fYXZnX2Zy
-ZXEiKQp1cmw6IGh0dHBzOi8vZ2l0aHViLmNvbS9pbnRlbC1sYWItbGtwL2xpbnV4L2NvbW1pdHMv
-SmFja2llLUxpdS9jcHVmcmVxLUF2b2lkLWZhbGxiYWNrLXZhbHVlcy1pbi1jcHVpbmZvX2F2Z19m
-cmVxLzIwMjYxMDE5LTE0NTM1OApiYXNlOiBodHRwczovL2dpdC5rZXJuZWwub3JnL2NnaXQvbGlu
-dXgva2VybmVsL2dpdC9yYWZhZWwvbGludXgtcG0uZ2l0IGxpbnV4LW5leHQgcGF0Y2ggbGluazog
-aHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvYWxsLzIwMjYxMDE5MDY1MzU4LjY2MTE1LTEtbGl1Lnl1
-bkBsaW51eC5kZXYvCnBhdGNoIHN1YmplY3Q6IFtQQVRDSF0gY3B1ZnJlcTogQXZvaWQgZmFsbGJh
-Y2sgdmFsdWVzIGluIGNwdWluZm9fYXZnX2ZyZXEKCmluIHRlc3RjYXNlOiBsdHAKdmVyc2lvbjog
-bHRwLXg4Nl82NC0xMjU1YTNiZTUtMV8yMDI2MTAxNyB3aXRoIGZvbGxvd2luZyBwYXJhbWV0ZXJz
-OgoKCXRlc3Q6IHBvd2VyX21hbmFnZW1lbnRfdGVzdHMKCgpjb25maWc6IHg4Nl82NC1yaGVsLTku
-NC1sdHAKY29tcGlsZXI6IGdjYy0xNAp0ZXN0IG1hY2hpbmU6IDggdGhyZWFkcyAxIHNvY2tldHMg
-SW50ZWwoUikgQ29yZShUTSkgaTctNDc5MFQgQ1BVIEAgMi43MEdIeiAoSGFzd2VsbCkgd2l0aCAx
-NkcgbWVtb3J5CgoocGxlYXNlIHJlZmVyIHRvIGF0dGFjaGVkIGRtZXNnL2ttc2cgZm9yIGVudGly
-ZSBsb2cvYmFja3RyYWNlKQoKCgpJZiB5b3UgZml4IHRoZSBpc3N1ZSBpbiBhIHNlcGFyYXRlIHBh
-dGNoL2NvbW1pdCAoaS5lLiBub3QganVzdCBhIG5ldyB2ZXJzaW9uIG9mIHRoZSBzYW1lIHBhdGNo
-L2NvbW1pdCksIGtpbmRseSBhZGQgZm9sbG93aW5nIHRhZ3MKfCBSZXBvcnRlZC1ieToga2VybmVs
-IHRlc3Qgcm9ib3QgPHlpMS5sYWlAaW50ZWwuY29tPgp8IENsb3NlczogaHR0cHM6Ly9sb3JlLmtl
-cm5lbC5vcmcvb2UtbGtwLzIwMjYxMDIyMTkzNi40MGI0MzM0Zi1sa3BAaW50ZWwuY29tCgoKUEFU
-SD0vbGtwL2JlbmNobWFya3MvbHRwOi91c3IvbG9jYWwvc2JpbjovdXNyL2xvY2FsL2JpbjovdXNy
-L3NiaW46L3Vzci9iaW46L2xrcC9sa3Avc3JjL2JpbgoyMDI2LTEwLTIxIDE2OjI0OjAzIGNkIC9s
-a3AvYmVuY2htYXJrcy9sdHAKMjAyNi0xMC0yMSAxNjoyNDowMyBleHBvcnQgTFRQX1JVTlRJTUVf
-TVVMPTIKMjAyNi0xMC0yMSAxNjoyNDowMyBleHBvcnQgTFRQUk9PVD0vbGtwL2JlbmNobWFya3Mv
-bHRwCjIwMjYtMTAtMjEgMTY6MjQ6MDMga2lyayAtZiBwb3dlcl9tYW5hZ2VtZW50X3Rlc3RzIEhv
-c3QgaW5mb3JtYXRpb24KCUhvc3RuYW1lOiAgIGxrcC1oc3ctZDA1CglQeXRob246ICAgICAzLjEz
-LjUgKG1haW4sIEp1biAxMyAyMDI2LCAxNDoxODowMSkgW0dDQyAxNC4yLjBdCglEaXJlY3Rvcnk6
-ICAvdG1wL2tpcmsucm9vdC90bXBfMnMxbnMxMgoKQ29ubmVjdGluZyB0byBTVVQ6IGRlZmF1bHQK
-ClN1aXRlOiBwb3dlcl9tYW5hZ2VtZW50X3Rlc3RzCuKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKU
-gOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKU
-gOKUgAogWzE7MzdtY3B1ZnJlcV9pbnRlbDogIFswbSBbMTszMm1wYXNzIFswbSB8ICBbMTszM210
-YWludGVkIFswbSAgKDAuMjgycykKIFsxOzM3bXJmaW0wMTogIFswbSBbMTszNm1za2lwIFswbSB8
-ICBbMTszM210YWludGVkIFswbSAgKDAuMDE3cykKIFsxOzM3bWhpZ2hfZnJlcV9od3BfY2FwX2Nw
-cGM6ICBbMG0gWzE7MzZtc2tpcCBbMG0gfCAgWzE7MzNtdGFpbnRlZCBbMG0gICgwLjAxNXMpCiBb
-MTszN21ydW5wd3Rlc3RzMDM6ICBbMG0gWzE7MzFtZmFpbCBbMG0gfCAgWzE7MzNtdGFpbnRlZCBb
-MG0gICgwLjUzMnMpCiBbMTszN21ydW5wd3Rlc3RzMDQ6ICBbMG0gWzE7MzJtcGFzcyBbMG0gfCAg
-WzE7MzNtdGFpbnRlZCBbMG0gICgwLjAxMXMpCiBbMTszN21ydW5wd3Rlc3RzMDY6ICBbMG0gWzE7
-MzJtcGFzcyBbMG0gfCAgWzE7MzNtdGFpbnRlZCBbMG0gICgwLjA0OHMpCgpFeGVjdXRpb24gdGlt
-ZTogMS4xMDNzCgpEaXNjb25uZWN0aW5nIGZyb20gU1VUOiBkZWZhdWx0CgpUYXJnZXQgaW5mb3Jt
-YXRpb24K4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA
-4pSACktlcm5lbDogICBMaW51eCA3LjMuMC1yYzcrICMxIFNNUCBQUkVFTVBUX0RZTkFNSUMgVGh1
-IE9jdCAyMiAwMDowNDozNiBDU1QgMjAyNgpDbWRsaW5lOiAgaXA9Ojo6OmxrcC1oc3ctZDA1Ojpk
-aGNwCiAgICAgICAgICByb290PS9kZXYvcmFtMAogICAgICAgICAgUkVTVUxUX1JPT1Q9L3Jlc3Vs
-dC9sdHAvcG93ZXJfbWFuYWdlbWVudF90ZXN0cy9sa3AtaHN3LWQwNS9kZWJpYW4tMTMteDg2XzY0
-LTIwMjUwOTAyLmNnei94ODZfNjQtcmhlbC05LjQtbHRwL2djYy0xNC9lNWY5ZDk5NzYyZTI4NTY2
-NGVlYTVlY2JhYjAwNGM4NDQ0OTMwZjIyLzAKICAgICAgICAgIEJPT1RfSU1BR0U9L3BrZy9saW51
-eC94ODZfNjQtcmhlbC05LjQtbHRwL2djYy0xNC9lNWY5ZDk5NzYyZTI4NTY2NGVlYTVlY2JhYjAw
-NGM4NDQ0OTMwZjIyL3ZtbGludXotNy4zLjAtcmM3KwogICAgICAgICAgYnJhbmNoPWludGVybmFs
-LWRldmVsL2RldmVsLWhvdXJseS0yMDI2MTAyMC0wNjA5MTEKICAgICAgICAgIGpvYj0vbGtwL2pv
-YnMvc2NoZWR1bGVkL2xrcC1oc3ctZDA1L2x0cC1wb3dlcl9tYW5hZ2VtZW50X3Rlc3RzLWRlYmlh
-bi0xMy14ODZfNjQtMjAyNTA5MDIuY2d6LWU1ZjlkOTk3NjJlMi0yMDI2MTAyMi0xNTAzMS1kZHRn
-d3ItMS55YW1sCiAgICAgICAgICB1c2VyPWxrcAogICAgICAgICAgQVJDSD14ODZfNjQKICAgICAg
-ICAgIGtjb25maWc9eDg2XzY0LXJoZWwtOS40LWx0cAogICAgICAgICAgY29tbWl0PWU1ZjlkOTk3
-NjJlMjg1NjY0ZWVhNWVjYmFiMDA0Yzg0NDQ5MzBmMjIKICAgICAgICAgIGludHJlbWFwPXBvc3Rl
-ZF9tc2kKICAgICAgICAgIG1heF91cHRpbWU9NzIwMAogICAgICAgICAgTEtQX1NFUlZFUj1pbnRl
-cm5hbC1sa3Atc2VydmVyCiAgICAgICAgICBub2thc2xyCiAgICAgICAgICBzZWxpbnV4PTAKICAg
-ICAgICAgIGRlYnVnCiAgICAgICAgICBhcGljPWRlYnVnCiAgICAgICAgICBzeXNycV9hbHdheXNf
-ZW5hYmxlZAogICAgICAgICAgcmN1cGRhdGUucmN1X2NwdV9zdGFsbF90aW1lb3V0PTEwMAogICAg
-ICAgICAgbmV0LmlmbmFtZXM9MAogICAgICAgICAgcHJpbnRrLmRldmttc2c9b24KICAgICAgICAg
-IHBhbmljPS0xCiAgICAgICAgICBzb2Z0bG9ja3VwX3BhbmljPTEKICAgICAgICAgIG5taV93YXRj
-aGRvZz1wYW5pYwogICAgICAgICAgb29wcz1wYW5pYwogICAgICAgICAgbG9hZF9yYW1kaXNrPTIK
-ICAgICAgICAgIHByb21wdF9yYW1kaXNrPTAKICAgICAgICAgIGRyYmQubWlub3JfY291bnQ9OAog
-ICAgICAgICAgc3lzdGVtZC5sb2dfbGV2ZWw9ZXJyCiAgICAgICAgICBpZ25vcmVfbG9nbGV2ZWwK
-ICAgICAgICAgIGNvbnNvbGU9dHR5MAogICAgICAgICAgZWFybHlwcmludGs9dHR5UzAsMTE1MjAw
-CiAgICAgICAgICBjb25zb2xlPXR0eVMwLDExNTIwMAogICAgICAgICAgdmdhPW5vcm1hbAogICAg
-ICAgICAgcncKICAgICAgICAgIGtlZXBfaW5pdHJkcz0vb3NpbWFnZS9wa2cvZGViaWFuLTEzLXg4
-Nl82NC0yMDI1MDkwMi5jZ3ovbHRwLXg4Nl82NC0xMjU1YTNiZTUtMV8yMDI2MTAxNy5jZ3oKTWFj
-aGluZTogIHVua25vd24KQXJjaDogICAgIHg4Nl82NApSQU06ICAgICAgMTQwMzUwMjgga0IKU3dh
-cDogICAgIDAga0IKRGlzdHJvOiAgIGRlYmlhbiAxMwoK4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA
-4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSACiAgICAgIFRF
-U1QgU1VNTUFSWQrilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDi
-lIDilIDilIDilIDilIDilIDilIDilIDilIAKU3VpdGU6ICAgcG93ZXJfbWFuYWdlbWVudF90ZXN0
-cwpSdW50aW1lOiAwLjkwNXMKUnVuczogICAgNgoKUmVzdWx0czoKICAgIFBhc3NlZDogICAxOTQK
-ICAgIEZhaWxlZDogICAxCiAgICBCcm9rZW46ICAgMAogICAgU2tpcHBlZDogIDIKICAgIFdhcm5p
-bmdzOiAwCgogWzE7MzFtRmFpbHVyZXM6IFswbQogICAg4oCiIHJ1bnB3dGVzdHMwMwoKU2Vzc2lv
-biBzdG9wcGVkCkxUUCB0ZXN0IGRldGFpbHMKLS0tLS0tLS0tLS0tLS0tLQpydW5wd3Rlc3RzMDM6
-IFBvd2VyX01hbmFnZW1lbnQwMyAxIFRGQUlMOiBDUFVGUkVRIHN5c2ZzIHRlc3RzCgoKClRoZSBr
-ZXJuZWwgY29uZmlnIGFuZCBtYXRlcmlhbHMgdG8gcmVwcm9kdWNlIGFyZSBhdmFpbGFibGUgYXQ6
-Cmh0dHBzOi8vZG93bmxvYWQuMDEub3JnLzBkYXktY2kvYXJjaGl2ZS8yMDI2MTAyMi8yMDI2MTAy
-MjE5MzYuNDBiNDMzNGYtbGtwQGludGVsLmNvbQoKCgotLQowLURBWSBDSSBLZXJuZWwgVGVzdCBT
-ZXJ2aWNlCmh0dHBzOi8vZ2l0aHViLmNvbS9pbnRlbC9sa3AtdGVzdHMvd2lraQoKCgotLSAKTWFp
-bGluZyBsaXN0IGluZm86IGh0dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGluZm8vbHRwCg==
+From: Sebastian Chlad <sebastianchlad@gmail.com>
+
+detach_loop_fd() retries LOOP_CLR_FD 40 times in 50ms steps, a fixed
+2s timeout that ignores LTP_TIMEOUT_MUL. When another process still
+holds the loop device at cleanup for longer than that, e.g. on a
+loaded machine, the test ends with a spurious
+"ioctl(/dev/loopN, LOOP_CLR_FD, 0) no ENXIO for too long" TWARN.
+
+Scale the number of retries with tst_multiply_timeout(), which attach
+already uses since d90d20046 ("lib: Use backoff polling to wait for
+loop device nodes"). The default stays 2s, multiplied by 4 on kernels
+with slow kconfig options and by LTP_TIMEOUT_MUL. The 50ms polling
+step is kept, so the detach still finishes shortly after the device
+is released.
+
+Signed-off-by: Sebastian Chlad <sebastianchlad@gmail.com>
+---
+ lib/tst_device.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/lib/tst_device.c b/lib/tst_device.c
+index 00304711b..79e1fe0fb 100644
+--- a/lib/tst_device.c
++++ b/lib/tst_device.c
+@@ -251,7 +251,8 @@ uint64_t tst_get_device_size(const char *dev_path)
+ 
+ static int detach_loop_fd(const char *dev, int *dev_fd)
+ {
+-	int ret, i, retval = 1;
++	int ret, retval = 1;
++	unsigned int i, retries = tst_multiply_timeout(40);
+ 
+ 	/* keep trying to clear LOOPDEV until we get ENXIO, a quick succession
+ 	 * of attach/detach might not give udev enough time to complete
+@@ -259,7 +260,7 @@ static int detach_loop_fd(const char *dev, int *dev_fd)
+ 	 * Since 18048c1af783 ("loop: Fix a race between loop detach and loop open")
+ 	 * device is detached only after last close.
+ 	 */
+-	for (i = 0; i < 40; i++) {
++	for (i = 0; i < retries; i++) {
+ 		ret = ioctl(*dev_fd, LOOP_CLR_FD, 0);
+ 
+ 		if (ret && (errno == ENXIO)) {
+-- 
+2.51.0
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
