@@ -2,80 +2,81 @@ Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A138B606A31A
-	for <ltp@archiver.kernel.org>; Thu, 22 Oct 2026 13:35:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB251606A31D
+	for <ltp@archiver.kernel.org>; Thu, 22 Oct 2026 13:36:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20251104 header.b=mtC2tnGl
+	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20251104 header.b=B2FUZYee
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 629DF3D26C8
-	for <ltp@archiver.kernel.org>; Thu, 22 Oct 2026 15:35:37 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 820183D26C3
+	for <ltp@archiver.kernel.org>; Thu, 22 Oct 2026 15:36:20 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 009AF3CFE58
- for <ltp@lists.linux.it>; Thu, 22 Oct 2026 15:35:22 +0200 (CEST)
-Received: from mail-oi2-x08.google.com (mail-oi2-x08.google.com
- [IPv6:2607:f8b0:4864:32::8])
+ by picard.linux.it (Postfix) with ESMTPS id 309353CFE58
+ for <ltp@lists.linux.it>; Thu, 22 Oct 2026 15:36:03 +0200 (CEST)
+Received: from mail-qk2-x00.google.com (mail-qk2-x00.google.com
+ [IPv6:2607:f8b0:4864:34::])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 4F27F600840
- for <ltp@lists.linux.it>; Thu, 22 Oct 2026 15:35:22 +0200 (CEST)
-Received: by mail-oi2-x08.google.com with SMTP id
- 5614622812f47-5187c752f46so735364b6e.1
- for <ltp@lists.linux.it>; Thu, 22 Oct 2026 06:35:22 -0700 (PDT)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id CD8971401102
+ for <ltp@lists.linux.it>; Thu, 22 Oct 2026 15:36:02 +0200 (CEST)
+Received: by mail-qk2-x00.google.com with SMTP id
+ af79cd13be357-93e5da88874so63538885a.1
+ for <ltp@lists.linux.it>; Thu, 22 Oct 2026 06:36:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1792676121; x=1793280921; darn=lists.linux.it;
+ d=gmail.com; s=20251104; t=1792676161; x=1793280961; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to:content-type;
- bh=KV5CUGTV5lfc2CR8MneWtR8MLzewLkJ16kpt492PgyE=;
- b=mtC2tnGlS3du/KDFjonla4UZJ+BIR42xrT53j65+GqJEtOtG8VKhhi6XBYxS73Td0e
- 9hK5psfuWSmfng+KLvFstAvn458IJuhkknIW9xi0lQ4NVzQqWrAjEpzVopcSyUQFscua
- 0uk3SJxeF4d5PX9Fuwx0Faxu9EeGQzlbPQVzWFxzA9IYHmyjPAy4mc+Wrh+vgLQO/eQj
- fdHrRK2pLV77LwkX4ksjRjZnY8na/u2k7OiDsijvLTY3DM6I7PMmgJ0hpZWLLH+fbr9k
- t6+aJ3b3iDrGEaBUjaOPtX7m/sVBBzXyh/+y0a4wtHz5J6ASnn6U9GB2g5nMSVgg5ZLa
- wXQg==
+ bh=k4CQcbDMGDoetph1jMtbXRu55Vz8saN2IWPTQhD51qg=;
+ b=B2FUZYeerA50qu56A+N5Sum/RMNlCQKWGEoJ3bwXwy50RvV0zgg/navb9kAPYxLFd7
+ KxdlpSc15Xu46Ea7TVFaC1kcwJQGAXvhSPOk/M5TNz/vps85t+soGTDPsgKCt1FcPBoS
+ xfoU6Tjb+Fyfig8ZyuZMF1+jyNwWTGv6AoYl5W1KEFlf4v8OMkXW9VBbr2O8R44iDX+t
+ tby3Hzx6HxwK0/eB0OpudoxQh46Noni8Nu+zEfLbE6byQCX1DFpkeXn/WhYyqwG6XMZh
+ ML9kHgmwAUggLm2ZhtjoBqVaTL9MlgivX7qenz4Qpg4XZw+K4N2pDe1it/8xgQDi12zo
+ jKXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20260707; t=1792676121; x=1793280921;
+ d=1e100.net; s=20260707; t=1792676161; x=1793280961;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to:content-type;
- bh=KV5CUGTV5lfc2CR8MneWtR8MLzewLkJ16kpt492PgyE=;
- b=2NKYupED4/Zc3RX/MP4to99vp/B9ETcWloaOtPzquFROq9cHbjd+O1WbmZjeoUdAB2
- qnKk8JAlg5K8BVzlQA1UJgmrKLepyWzo6hhRa98Hcc/cQ8okMTLbokRJdVb6fFyAkGr6
- JGglbxY9Z9Dsrh8a81I33pjv3VW9h1vKHSJB5TUbur6H8xrz/ziujXEByQTBPUV9q1QO
- ZF7eaOkdHx2bW1DuWTO/PnEoFjPD4IIspxYced5kX/SKdFrS8Mq3/HMY0RhbYWfVeYTR
- QbP5iOmIQ1kF0E8an2P/U5FWz0R4CfZLJHeo3O0xMo9D8d6zid4CnNjP5vW+Fkgtne4t
- zP8w==
-X-Gm-Message-State: AFq9FYJn6xw4EpERv87X3+HGmQGGQ325+P0wQrd9M2VJ2ONxxVIvkVb6
- riJPa8+4iAE9bx6dOFq9QhlbrvT1zpGqzyK+eIz+d11IkfM5ldQOi2I1z1Buo2UNa5o=
-X-Gm-Gg: AYBFou2RhlvIrykCHtqBwqPalhk0pSsGKCqT2TRh5WU3+SKDN7fDUvVjQUdXQaP+B7l
- KA4HM3YmpTBEFWyGinXwt6+6MCX7RdnH6T7XVQX2BR4/H4Md6KuALUqo1dUnpfBDZrNCvY/9LIR
- XFbtUz4fLTSjhK4Xf3NSwuAR8iqjsAd5D3V/qICBQAEqevjax5zSnP9t6tPjTfF6j7Wg+w1Lv6d
- OBfv+tRvkgUoLE5x/0SJX4UFOMF1Y4oMbwttC7IMyDQfewbCft8aibsPakMktmKQVlrmJiMFE95
- 0tQZ+bvOUjLcqIlOK8PIqB7xYUlCdGewzEmq2IVRameBhnzwAUFi8aZ0/SC7i0tbKnlr9IQCrDr
- ZFDmx3zkwFe9zqKE3/fggTnzLqWV47eNF3ezoKD6Fw6ZMKiKqvEZlWr5CZNx14aOqHVAyy4+pfT
- AN+KwQmfVf7Kux9eTOyRRpKvfpVGKxPiPRQy44gc8HPXvym3bmgKw00ioZ8g0zScei4bSY6K45/
- 0Ii8HdQLnLypXhGKoA9yKGcEDzC9G1lZFQvWcgtq0RObN6xoIg5vis56tY/plH9WGLk4qcduPH6
- GIPXAjvRjcGkMK1RuVwlc2xpGc2xB783IGk54PfiVdQ6dh8e8WlEM29dHDeOQKzYeN1a
-X-Received: by 2002:a05:6808:67c8:b0:4f7:a3f2:d8b8 with SMTP id
- 5614622812f47-55357011c4bmr3404154b6e.29.1792676120830; 
- Thu, 22 Oct 2026 06:35:20 -0700 (PDT)
+ bh=k4CQcbDMGDoetph1jMtbXRu55Vz8saN2IWPTQhD51qg=;
+ b=GGDt+YgYlBAs5Xjpz86gOM6GlnIAd3f0GYRIBN3i7KJUm4JkKGu/Rkh+D8L1Yhwdaz
+ tkZ0w4TSntZhi2LPnd7nJu8LPGvbTlSwgNLAkcR9Jeq/5bfmoyWqScKXDBUfvA7yXSd1
+ sH+ktgMcMN5AbRBxTC9Hv3T7yngEWNuzPsngKQruRSA6rGxPmNsse5Ybcg+Yh4g16N2+
+ jZuxJljj6H9NqD+BtuBkUsjWCRIMaulf+4MZx5zCw2alMQCyW4RlD3mDtiuR3Z8RVihP
+ LkK920bf8yTIraOipYPyLriZ5Fe0jcGUm7VMDcQzeNUe5Q+8qcEV17WRqX2Ep5HhRH7b
+ FwyQ==
+X-Gm-Message-State: AFq9FYKpcHfjjE6XGgxSkwMrWYipn/2kRKXliZ9EuvGQsKZbHh7rto0b
+ 7Goi+hfnrBu7+5eu2GALVPISnr4L9xOIqgitsguXJpRWjbqMV7b1YjTj
+X-Gm-Gg: AYBFou1EjeuQv9vzrHGTJmZKkUyxC33OCbzezxfrSOn3ykK16K7jjfVwCcFS/qW+SNY
+ 9LyIe5k0bUK09PZmVBE/FccE6QBtaxJe3+swuS661lp63ItWRCddOqVLuRsvgUQPtMDScOr038r
+ J0RCu8z+VNbahorb1g6QJ2rZoOn/smsu4t7Rjc68qlNIlcnW9Nc5fmBA/1Sxb93y/phCIqdndMT
+ asDPod+reBqV9lshmokES6FHwGe9uy6rcmCZ4iiPTpP2Hb8rSpgtJtGIyNAUxisYtvhMOocg0L0
+ M6oQh/7ZdtRmuy/BRuE+xPTOMxqA45m1jdqTBXnk6jrpwFxV5SOBGKhaeYzaPZ3oJsu+J0zqxPC
+ EEXOaHh1UK53ucQdEWPbvuRP0UN1AgC26FJo3MSibSQKMiznF6yp152jAw2SD9KyBbgrbdQ+Cft
+ ZywAceR9EYxJZ7UKb3wO6sWmsEWy8HCmUKMqemLGmOvsBX8fJ9VQ4ukZB+fsXf9N3SvIf5XY1ye
+ X0RWKkBEQNgxc4M9kQiO0ec39ClQtypsQRUEHit9XakJqJpZgHQHddNakyiJO261s8TRP3L9YsB
+ +vMC246iStXftvVxgXf4ZKKTaxFJWnYTz4bK2cWl1yHJ7YF2cGxLtIwAmyO+onzKnl6p
+X-Received: by 2002:a05:620a:6f04:b0:93f:565f:e46 with SMTP id
+ af79cd13be357-93f57f936ecmr896433385a.52.1792676161380; 
+ Thu, 22 Oct 2026 06:36:01 -0700 (PDT)
 Received: from
- runnervmxehtw.nb0zx4alxyaezovrn2kcuna5zd.gx.internal.cloudapp.net
- ([52.173.221.47]) by smtp.gmail.com with ESMTPSA id
- 5614622812f47-552b7454fe5sm4902038b6e.13.2026.10.22.06.35.20
+ runnervm8k3b6.xoxzbnckc3tuvhtfp2zpexthsa.bx.internal.cloudapp.net
+ ([20.83.175.231]) by smtp.gmail.com with ESMTPSA id
+ af79cd13be357-93f56dfdb2esm520997685a.28.2026.10.22.06.36.01
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 22 Oct 2026 06:35:20 -0700 (PDT)
+ Thu, 22 Oct 2026 06:36:01 -0700 (PDT)
 From: linuxtestproject.agent@gmail.com
 To: Kuan-Ying Lee <kuan-ying.lee@canonical.com>
-Date: Thu, 22 Oct 2026 13:35:19 +0000
-Message-ID: <20261022133519.4037-1-linuxtestproject.agent@gmail.com>
+Date: Thu, 22 Oct 2026 13:36:00 +0000
+Message-ID: <20261022133600.4532-1-linuxtestproject.agent@gmail.com>
 X-Mailer: git-send-email 2.55.0
-In-Reply-To: <20261021024758.13541-1-kuan-ying.lee@canonical.com>
-References: <20261021024758.13541-1-kuan-ying.lee@canonical.com>
+In-Reply-To: <20261012060336.36147-1-kuan-ying.lee@canonical.com>
+References: <20261012060336.36147-1-kuan-ying.lee@canonical.com>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
 X-Spam-Status: No, score=-3.5 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
@@ -84,7 +85,7 @@ X-Spam-Status: No, score=-3.5 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
 	SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] binfmt_misc02.sh: Fix interpreter with uutils/coreutils
 X-BeenThere: ltp@lists.linux.it
@@ -103,26 +104,16 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi Kuan-Ying,
 
-On Wed, 21 Oct 2026, Kuan-Ying Lee wrote:
+On 12 Oct 2026, Kuan-Ying Lee wrote:
 > binfmt_misc02.sh: Fix interpreter with uutils/coreutils
 
-> +	interp_dir=$(mktemp -d "$TMPDIR/ltp_binfmt_miscXXXXXX")
-> +	[ -d "$interp_dir" ] || tst_brk TBROK "Failed to create interpreter dir"
-
-With TMPDIR on a noexec filesystem and the datafiles on an executable
-filesystem, open_exec() rejects this new interpreter with EACCES, causing
-subtests 1-4 to report TFAIL despite working binfmt_misc support. The
-previous system-cat interpreter did not depend on TMPDIR being executable.
-Detect a noexec TMPDIR during setup and report TCONF, or place the wrapper
-on an executable filesystem.
-
 > +	printf '#!/bin/sh\nexec %s "$1"\n' "$(command -v cat)" > "$interp" ||
+> +		tst_brk TBROK "Failed to write $interp"
 
-The resolved cat pathname is inserted unquoted into shell source: with
-cat in a PATH directory containing spaces, the generated exec command
-splits the pathname and exits 127 instead of running cat. Generate a
-literal exec cat "$1" command instead, letting the shell perform PATH
-lookup without reparsing the resolved pathname.
+The resolved cat pathname is inserted into the wrapper without shell
+quoting. With cat in a PATH directory containing a space, the wrapper
+executes a truncated pathname and subtests 1-4 incorrectly fail.
+Generate 'exec cat "$1"' instead, or shell-quote the resolved pathname.
 
 Verdict - Needs revision
 
