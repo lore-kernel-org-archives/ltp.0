@@ -1,112 +1,71 @@
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDDA9606A319
-	for <ltp@archiver.kernel.org>; Thu, 22 Oct 2026 08:59:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 145C3606A319
+	for <ltp@archiver.kernel.org>; Thu, 22 Oct 2026 11:50:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=lists.linux.it header.i=@lists.linux.it header.a=rsa-sha256 header.s=picard header.b=BMDlXv2C;
-	dkim=fail reason="signature verification failed" (4096-bit key, unprotected) header.d=canonical.com header.i=@canonical.com header.a=rsa-sha256 header.s=20251003 header.b=A3sp7JXx
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1792659549; h=to : date :
- message-id : mime-version : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : cc : content-type : content-transfer-encoding : sender :
- from; bh=+KZS4Uhovc+YHNMDuHCDwh+PXET9MFY1lpytNoAieQA=;
- b=BMDlXv2CCNZNpPhe5FqXge19Gtu47ePjcPcGM6rZPzsKjD+Ziqrq5lFGZvD56u5paCgeu
- 19tX+0h9uNJBosVj9yWJ/+LpT6oPmfEJV8aaVt3kHvBaRA9/uAzNALvVndiZ0kP/Xsgvcuf
- mRfnaGheM9fGcaXrI/fnINDr8k+D9N4=
+	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=ghDqwvQE
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B645D3D2293
-	for <ltp@archiver.kernel.org>; Thu, 22 Oct 2026 10:59:09 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id CB4AA3D26A7
+	for <ltp@archiver.kernel.org>; Thu, 22 Oct 2026 13:50:25 +0200 (CEST)
 Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id EE2873E4B30
- for <ltp@lists.linux.it>; Wed, 21 Oct 2026 04:46:43 +0200 (CEST)
-Received: from smtp-relay-internal-0.canonical.com
- (smtp-relay-internal-0.canonical.com [185.125.188.122])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id A8ADD3C01BD
+ for <ltp@lists.linux.it>; Thu, 22 Oct 2026 13:50:10 +0200 (CEST)
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 1DB582002AD
- for <ltp@lists.linux.it>; Wed, 21 Oct 2026 04:46:42 +0200 (CEST)
-Received: from mail-dy1-f197.google.com (mail-dy1-f197.google.com
- [74.125.82.197])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 58B743FC3F
- for <ltp@lists.linux.it>; Wed, 21 Oct 2026 02:46:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
- s=20251003; t=1792550802;
- bh=GZG9SmIYcAvWuQ37YdocwqT8qaJE+Y4wIGH8P2FLc/A=;
- h=From:To:Cc:Subject:Date:Message-ID:MIME-Version;
- b=A3sp7JXxKz1IzVk3h3mzo4rTYoWjmp24kemN/E/LjJOam+9gsjZLP90v68CBLm3M6
- 0ctmEvatcP5WzBc74/pD/9Tj5Z98BwGIryoV5tXp7bnatwUXz1c2cKVTW3cov1IVho
- 2/kJYvthEjOM/aHuyXPrHPTIGemHwbFWbAXgOpYP/WK2FZpzUGqQ559KltnIitqwOB
- jRN2HQGivv94K40prk2GMFWdoQOhw74kjLw+hVsYgz03kuWD4ZgiSGrT7UiFTJFIU+
- qJHjX17HaUVcSQNFG7zIT4jaDRxbD7/Ti8cBhOMkXvJyb6UA4//ji87LM7+mRm5lPl
- AOsfEBhE/ndPErx0yO5aEdtvIVDGRXI55UKGipULhBbN7uvOHCCk8W8XV7vkFAqwAY
- 7G333tBi4yF5hCTlD7f6o2bvLufxXZe2+kfoO9UmAjucpFjwj6FCRVzzwthCC8zSjm
- 09UDFK1adlBwEE3M+z8lkyIkFitz0s77juW8NPb1P42FjrkLGm9XbyXSEJ8McEwsz2
- gDo9x0E2nHDvIKeTALj9oodNysaMxbmZTYmUuwpIgv6EsZFcIpqb9E/22UYi+CzTr8
- 0kmHTQUgaHSzAWH5mI7OPzXHESTG9eH+QyFHfXRqOMDUAJPxHT7CeEMeg9Kiu9T9QN
- /IseleUElCTmEe+rxSR0Lrv4=
-Received: by mail-dy1-f197.google.com with SMTP id
- 5a478bee46e88-33713e5e6daso406963eec.0
- for <ltp@lists.linux.it>; Tue, 20 Oct 2026 19:46:42 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20260707; t=1792550801; x=1793155601;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
- :message-id:reply-to:content-type;
- bh=GZG9SmIYcAvWuQ37YdocwqT8qaJE+Y4wIGH8P2FLc/A=;
- b=n3bN+v1FCl4HxLYAlPHvksagfQ4QfzfKSeoUvTGxmW5cieZDc6D/gFehQys8klaCB8
- IPSq4/dHUG0mucnh+TzqDUFg2E9osfY1bQA4CCuFyX9gNT1piOsbOrBkrT1apHCh4v1h
- iiGMUnSfXiaeBKFVItAZcHvoS3eKY5CBgHJOCpXxwuQxBbFlgYFNJsf0/6r506zNBSDz
- JTS7XrcbPN5KVep5i46Mxw9uhjvj8OJeYhBgYEH/M1KDu0q5/lQhS0TSm3J8i6IaxNh6
- +9zDlLL2NAuVO0wHYsqH6iTAKjtHFJtDV2C2qWN0tcgj1D2l1LBi+cStgjc0mJA0Yahy
- 8FXQ==
-X-Gm-Message-State: AFq9FYL0j86mSIIBKR5Qitff+dgKT4KUAZFub/kPBRf0k2g5vdAtxC1O
- NCpbVXi4CEyVZaFPy4zdq+fDyId1/fWcnMLU5cszDm3/mt0FZeOeGas2W9ryrCFTOUtYATTI/hq
- FuK/myc3pzRRxS/fb7Pqdd2UqNRRIFaDgS/s+dHg17z5C4XLQXpelM/i72BkkuIxYjpT/ybRyyO
- BV
-X-Gm-Gg: AYBFou0P1sT3tq0FWIzIkgcQvigH3Ka8w73KvuBBz4iN6xv6mLTkj/cQajbl7enPyg9
- avMAPL8m5Gp7NbB3SH+qUp+XvGg+2nL5nGW+BCQJw3WJbj1iWIBxQ4JPUdPRjnGb+IaFLeG2b5C
- POBUK3jOjDlRYIB6+B3rmUqrz6Q56L1MEtV2GFRUXJVmq8U8Y85ppfZSyW1vu/H9+//+N97TFGT
- gWlka7wc2BXEBl+rsS7ggCOBPDLX6HRzo7eu9up3TYo494UDmHRm7Yk8yts+1UGG2IRqTQFVuRl
- ugeVAhYc3Kv1/MiEOU7QWx205Z4fPyRrInf3mIKoHxM4RbvePa7mKKBRCI9SmwxVjp3KedPshS3
- k3CWhWjYzRU8p0xlvfz+PFAAG8wzvifFIQUdHsan2BFP7SNRGBrifGii/Mz91qQOR
-X-Received: by 2002:a05:7300:4a93:b0:365:cdcc:9f57 with SMTP id
- 5a478bee46e88-3674a41b2ecmr1626037eec.4.1792550800567; 
- Tue, 20 Oct 2026 19:46:40 -0700 (PDT)
-X-Received: by 2002:a05:7300:4a93:b0:365:cdcc:9f57 with SMTP id
- 5a478bee46e88-3674a41b2ecmr1625937eec.4.1792550798466; 
- Tue, 20 Oct 2026 19:46:38 -0700 (PDT)
-Received: from kylee-ThinkPad-E16-Gen-1.. (118-163-61-247.hinet-ip.hinet.net.
- [118.163.61.247]) by smtp.gmail.com with ESMTPSA id
- 5a478bee46e88-36740cc8439sm3016560eec.11.2026.10.20.19.46.36
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 20 Oct 2026 19:46:37 -0700 (PDT)
-To: ltp@lists.linux.it
-Date: Wed, 21 Oct 2026 10:47:55 +0800
-Message-ID: <20261021024758.13541-1-kuan-ying.lee@canonical.com>
-X-Mailer: git-send-email 2.43.0
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id A8D7F200ACD
+ for <ltp@lists.linux.it>; Thu, 22 Oct 2026 13:50:08 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1792669809; x=1824205809;
+ h=date:from:to:cc:subject:message-id:mime-version:
+ content-transfer-encoding:in-reply-to;
+ bh=2DrVNaultXTc1qQbNwuEhIGizd9g653dYUGKXABLVkM=;
+ b=ghDqwvQE8IyLkUC4COzsgyzXwuP+CYMwd8u9jIWFPzM/eIZFy6C0rH6r
+ vf6QTtN8WU44u8cg4fYK0ROSt/1ipLMoJl3bM58srCf73J6IkgRnSQYNR
+ hSjM53/p5Uzm+a+U3BfxxwpunUjT3eTHltOFSFTfLCvT6QA9lNrXSOirT
+ 55zmRB2lB1QZi29T25O7zWdrB1KlR0CAKa8b2pcuoKsLKrWXEHLkt+kUw
+ 3+4ltvrsbG1gJBb6vJklTnyaBIdS+fIwx6n8Zv1wa71m+4bXvuUe+ozx+
+ V/WqnwA+LomhUNlGxZMsHrWGkTDM5SBRaluymrEdpdvcxba8akXILx4z5 Q==;
+X-CSE-ConnectionGUID: FBoIZdepQA2yr19hm0UWqQ==
+X-CSE-MsgGUID: L/K3Wr30S6Os/OZnUxgG7w==
+X-IronPort-AV: E=McAfee;i="6800,10657,11942"; a="1424582"
+X-IronPort-AV: E=Sophos;i="6.27,172,1787036400"; 
+   d="scan'208";a="1424582"
+Received: from orviesa010.jf.intel.com ([10.64.159.150])
+ by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 22 Oct 2026 04:50:06 -0700
+X-CSE-ConnectionGUID: f4ACdk9iSEKaX/l8gm+dSA==
+X-CSE-MsgGUID: rW4AbCNxTTqgfeKYUSIrrQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.27,172,1787036400"; 
+   d="scan'208";a="3734970"
+Received: from ly-workstation.sh.intel.com (HELO ly-workstation)
+ ([10.239.182.64])
+ by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 22 Oct 2026 04:50:03 -0700
+Date: Thu, 22 Oct 2026 19:50:00 +0800
+From: kernel test robot <yi1.lai@intel.com>
+To: Jackie Liu <liu.yun@linux.dev>
+Message-ID: <202610221936.40b4334f-lkp@intel.com>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-19.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_PASS,SPF_PASS,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
+Content-Disposition: inline
+In-Reply-To: <20261019065358.66115-1-liu.yun@linux.dev>
+X-Spam-Status: No, score=-8.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_PASS,SPF_PASS autolearn=ham
+	autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Mailman-Approved-At: Thu, 22 Oct 2026 10:58:13 +0200
-Subject: [LTP] [PATCH] binfmt_misc02.sh: Fix interpreter with
- uutils/coreutils
+Subject: Re: [LTP] [PATCH] cpufreq: Avoid fallback values in cpuinfo_avg_freq
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -116,130 +75,93 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Kuan-Ying Lee via ltp <ltp@lists.linux.it>
-Reply-To: Kuan-Ying Lee <kuan-ying.lee@canonical.com>
-Cc: po-hsu.lin@canonical.com, kuan-ying.lee@canonical.com
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: x86@kernel.org, lkp@intel.com, linux-pm@vger.kernel.org,
+ dave.hansen@linux.intel.com, linux-kernel@vger.kernel.org, mingo@redhat.com,
+ bp@alien8.de, tglx@kernel.org, yi1.lai@intel.com, oe-lkp@lists.linux.dev,
+ ltp@lists.linux.it
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-The test registers the system 'cat' directly as a binfmt_misc
-interpreter and expects executing the data files to echo their content
-back.
-
-This breaks on distributions shipping the Rust uutils/coreutils
-implementation (e.g. Ubuntu "Resolute"), where 'cat' is a hardlink to a
-single multi-call 'coreutils' binary:
-
-  $ readlink -f /usr/bin/cat
-  /usr/lib/cargo/bin/coreutils/cat
-  $ cat --version
-  cat (uutils coreutils) 0.8.0
-
-Such a binary has to work out which applet to run, and uutils does so
-from AT_EXECFN, i.e. the path the kernel actually exec'd, rather than
-from argv[0]. binfmt_misc sets argv[0] to the interpreter, but AT_EXECFN
-keeps naming the file passed to the original execve(), so the applet
-name is derived from the data file rather than from 'cat'. Renaming the
-very same data file to "cat.extension" makes it work, which confirms
-where the applet name comes from.
-
-Hence the exec fails (exit 1) and subtests 1-4 report:
-
-  binfmt_misc02 1 TFAIL: Fail to recognise a binary type
-
-Subtests 5-6 pass because they expect no recognition and never run the
-interpreter.
-
-Fix it by registering a small wrapper script as the interpreter. The
-shell execs cat itself, so argv[0] and AT_EXECFN name cat again and the
-right applet is picked.
-
-The interpreter path ends up in the binfmt_misc registration string,
-whose delimiter is ':', '.' or ',' depending on the subtest, so the
-path must contain none of them. That rules out $TST_TMPDIR, which
-carries a '.', hence create the wrapper in a directory of our own
-under $TMPDIR.
-
-Signed-off-by: Kuan-Ying Lee <kuan-ying.lee@canonical.com>
----
- .../kernel/fs/binfmt_misc/binfmt_misc02.sh    | 44 +++++++++++++++----
- 1 file changed, 35 insertions(+), 9 deletions(-)
-
-diff --git a/testcases/kernel/fs/binfmt_misc/binfmt_misc02.sh b/testcases/kernel/fs/binfmt_misc/binfmt_misc02.sh
-index 37c9b9e0f4e2..0d71f6a30ce9 100755
---- a/testcases/kernel/fs/binfmt_misc/binfmt_misc02.sh
-+++ b/testcases/kernel/fs/binfmt_misc/binfmt_misc02.sh
-@@ -18,8 +18,10 @@
- # We use various delimiteris to register a new binary type.
- 
- TST_CNT=6
-+TST_SETUP=binfmt_misc02_setup
-+TST_CLEANUP=binfmt_misc02_cleanup
- TST_TESTFUNC=do_test
--TST_NEEDS_CMDS="cat head"
-+TST_NEEDS_CMDS="cat chmod head mktemp"
- 
- 
- recognised_unrecognised()
-@@ -85,22 +87,46 @@ verify_binfmt_misc()
- 	remove_binary_type "$mntpoint/$name"
- }
- 
--do_test()
-+binfmt_misc02_setup()
- {
--	local cat="$(command -v cat)"
-+	# The interpreter path becomes a field of the registration string,
-+	# which is written with ':', '.' and ',' as delimiters below, so it
-+	# must not contain any of them.
-+	case "$TMPDIR" in
-+	*[:.,]*) tst_brk TCONF "TMPDIR '$TMPDIR' contains ':', '.' or ','";;
-+	esac
-+
-+	binfmt_misc_setup
-+
-+	interp_dir=$(mktemp -d "$TMPDIR/ltp_binfmt_miscXXXXXX")
-+	[ -d "$interp_dir" ] || tst_brk TBROK "Failed to create interpreter dir"
-+
-+	interp="$interp_dir/interp"
-+	printf '#!/bin/sh\nexec %s "$1"\n' "$(command -v cat)" > "$interp" ||
-+		tst_brk TBROK "Failed to write $interp"
-+	ROD chmod +x "$interp"
-+}
- 
-+binfmt_misc02_cleanup()
-+{
-+	[ -n "$interp_dir" ] && rm -rf "$interp_dir"
-+	binfmt_misc_cleanup
-+}
-+
-+do_test()
-+{
- 	case $1 in
--	1) verify_binfmt_misc ":textension:E::extension::$cat:" \
-+	1) verify_binfmt_misc ":textension:E::extension::$interp:" \
- 			      "$TST_DATAROOT/file.extension" "1";;
--	2) verify_binfmt_misc ":tmagic:M:1:This::$cat:" \
-+	2) verify_binfmt_misc ":tmagic:M:1:This::$interp:" \
- 			      "$TST_DATAROOT/file.magic" "1";;
--	3) verify_binfmt_misc ".textension.E..extension..$cat." \
-+	3) verify_binfmt_misc ".textension.E..extension..$interp." \
- 			      "$TST_DATAROOT/file.extension" "1";;
--	4) verify_binfmt_misc ",tmagic,M,1,This,,$cat," \
-+	4) verify_binfmt_misc ",tmagic,M,1,This,,$interp," \
- 			      "$TST_DATAROOT/file.magic" "1";;
--	5) verify_binfmt_misc ":textension:E::ltp::$cat:" \
-+	5) verify_binfmt_misc ":textension:E::ltp::$interp:" \
- 			      "$TST_DATAROOT/file.extension" "0";;
--	6) verify_binfmt_misc ":tmagic:M:0:This::$cat:" \
-+	6) verify_binfmt_misc ":tmagic:M:0:This::$interp:" \
- 			      "$TST_DATAROOT/file.magic" "0";;
- 	esac
- }
--- 
-2.43.0
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+CkhlbGxvLAoKa2VybmVsIHRlc3Qgcm9ib3Qgbm90aWNlZCAibHRwLnJ1bnB3dGVzdHMwMy5mYWls
+IiBvbjoKCmNvbW1pdDogZTVmOWQ5OTc2MmUyODU2NjRlZWE1ZWNiYWIwMDRjODQ0NDkzMGYyMiAo
+IltQQVRDSF0gY3B1ZnJlcTogQXZvaWQgZmFsbGJhY2sgdmFsdWVzIGluIGNwdWluZm9fYXZnX2Zy
+ZXEiKQp1cmw6IGh0dHBzOi8vZ2l0aHViLmNvbS9pbnRlbC1sYWItbGtwL2xpbnV4L2NvbW1pdHMv
+SmFja2llLUxpdS9jcHVmcmVxLUF2b2lkLWZhbGxiYWNrLXZhbHVlcy1pbi1jcHVpbmZvX2F2Z19m
+cmVxLzIwMjYxMDE5LTE0NTM1OApiYXNlOiBodHRwczovL2dpdC5rZXJuZWwub3JnL2NnaXQvbGlu
+dXgva2VybmVsL2dpdC9yYWZhZWwvbGludXgtcG0uZ2l0IGxpbnV4LW5leHQgcGF0Y2ggbGluazog
+aHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvYWxsLzIwMjYxMDE5MDY1MzU4LjY2MTE1LTEtbGl1Lnl1
+bkBsaW51eC5kZXYvCnBhdGNoIHN1YmplY3Q6IFtQQVRDSF0gY3B1ZnJlcTogQXZvaWQgZmFsbGJh
+Y2sgdmFsdWVzIGluIGNwdWluZm9fYXZnX2ZyZXEKCmluIHRlc3RjYXNlOiBsdHAKdmVyc2lvbjog
+bHRwLXg4Nl82NC0xMjU1YTNiZTUtMV8yMDI2MTAxNyB3aXRoIGZvbGxvd2luZyBwYXJhbWV0ZXJz
+OgoKCXRlc3Q6IHBvd2VyX21hbmFnZW1lbnRfdGVzdHMKCgpjb25maWc6IHg4Nl82NC1yaGVsLTku
+NC1sdHAKY29tcGlsZXI6IGdjYy0xNAp0ZXN0IG1hY2hpbmU6IDggdGhyZWFkcyAxIHNvY2tldHMg
+SW50ZWwoUikgQ29yZShUTSkgaTctNDc5MFQgQ1BVIEAgMi43MEdIeiAoSGFzd2VsbCkgd2l0aCAx
+NkcgbWVtb3J5CgoocGxlYXNlIHJlZmVyIHRvIGF0dGFjaGVkIGRtZXNnL2ttc2cgZm9yIGVudGly
+ZSBsb2cvYmFja3RyYWNlKQoKCgpJZiB5b3UgZml4IHRoZSBpc3N1ZSBpbiBhIHNlcGFyYXRlIHBh
+dGNoL2NvbW1pdCAoaS5lLiBub3QganVzdCBhIG5ldyB2ZXJzaW9uIG9mIHRoZSBzYW1lIHBhdGNo
+L2NvbW1pdCksIGtpbmRseSBhZGQgZm9sbG93aW5nIHRhZ3MKfCBSZXBvcnRlZC1ieToga2VybmVs
+IHRlc3Qgcm9ib3QgPHlpMS5sYWlAaW50ZWwuY29tPgp8IENsb3NlczogaHR0cHM6Ly9sb3JlLmtl
+cm5lbC5vcmcvb2UtbGtwLzIwMjYxMDIyMTkzNi40MGI0MzM0Zi1sa3BAaW50ZWwuY29tCgoKUEFU
+SD0vbGtwL2JlbmNobWFya3MvbHRwOi91c3IvbG9jYWwvc2JpbjovdXNyL2xvY2FsL2JpbjovdXNy
+L3NiaW46L3Vzci9iaW46L2xrcC9sa3Avc3JjL2JpbgoyMDI2LTEwLTIxIDE2OjI0OjAzIGNkIC9s
+a3AvYmVuY2htYXJrcy9sdHAKMjAyNi0xMC0yMSAxNjoyNDowMyBleHBvcnQgTFRQX1JVTlRJTUVf
+TVVMPTIKMjAyNi0xMC0yMSAxNjoyNDowMyBleHBvcnQgTFRQUk9PVD0vbGtwL2JlbmNobWFya3Mv
+bHRwCjIwMjYtMTAtMjEgMTY6MjQ6MDMga2lyayAtZiBwb3dlcl9tYW5hZ2VtZW50X3Rlc3RzIEhv
+c3QgaW5mb3JtYXRpb24KCUhvc3RuYW1lOiAgIGxrcC1oc3ctZDA1CglQeXRob246ICAgICAzLjEz
+LjUgKG1haW4sIEp1biAxMyAyMDI2LCAxNDoxODowMSkgW0dDQyAxNC4yLjBdCglEaXJlY3Rvcnk6
+ICAvdG1wL2tpcmsucm9vdC90bXBfMnMxbnMxMgoKQ29ubmVjdGluZyB0byBTVVQ6IGRlZmF1bHQK
+ClN1aXRlOiBwb3dlcl9tYW5hZ2VtZW50X3Rlc3RzCuKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKU
+gOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKU
+gOKUgAogWzE7MzdtY3B1ZnJlcV9pbnRlbDogIFswbSBbMTszMm1wYXNzIFswbSB8ICBbMTszM210
+YWludGVkIFswbSAgKDAuMjgycykKIFsxOzM3bXJmaW0wMTogIFswbSBbMTszNm1za2lwIFswbSB8
+ICBbMTszM210YWludGVkIFswbSAgKDAuMDE3cykKIFsxOzM3bWhpZ2hfZnJlcV9od3BfY2FwX2Nw
+cGM6ICBbMG0gWzE7MzZtc2tpcCBbMG0gfCAgWzE7MzNtdGFpbnRlZCBbMG0gICgwLjAxNXMpCiBb
+MTszN21ydW5wd3Rlc3RzMDM6ICBbMG0gWzE7MzFtZmFpbCBbMG0gfCAgWzE7MzNtdGFpbnRlZCBb
+MG0gICgwLjUzMnMpCiBbMTszN21ydW5wd3Rlc3RzMDQ6ICBbMG0gWzE7MzJtcGFzcyBbMG0gfCAg
+WzE7MzNtdGFpbnRlZCBbMG0gICgwLjAxMXMpCiBbMTszN21ydW5wd3Rlc3RzMDY6ICBbMG0gWzE7
+MzJtcGFzcyBbMG0gfCAgWzE7MzNtdGFpbnRlZCBbMG0gICgwLjA0OHMpCgpFeGVjdXRpb24gdGlt
+ZTogMS4xMDNzCgpEaXNjb25uZWN0aW5nIGZyb20gU1VUOiBkZWZhdWx0CgpUYXJnZXQgaW5mb3Jt
+YXRpb24K4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA
+4pSACktlcm5lbDogICBMaW51eCA3LjMuMC1yYzcrICMxIFNNUCBQUkVFTVBUX0RZTkFNSUMgVGh1
+IE9jdCAyMiAwMDowNDozNiBDU1QgMjAyNgpDbWRsaW5lOiAgaXA9Ojo6OmxrcC1oc3ctZDA1Ojpk
+aGNwCiAgICAgICAgICByb290PS9kZXYvcmFtMAogICAgICAgICAgUkVTVUxUX1JPT1Q9L3Jlc3Vs
+dC9sdHAvcG93ZXJfbWFuYWdlbWVudF90ZXN0cy9sa3AtaHN3LWQwNS9kZWJpYW4tMTMteDg2XzY0
+LTIwMjUwOTAyLmNnei94ODZfNjQtcmhlbC05LjQtbHRwL2djYy0xNC9lNWY5ZDk5NzYyZTI4NTY2
+NGVlYTVlY2JhYjAwNGM4NDQ0OTMwZjIyLzAKICAgICAgICAgIEJPT1RfSU1BR0U9L3BrZy9saW51
+eC94ODZfNjQtcmhlbC05LjQtbHRwL2djYy0xNC9lNWY5ZDk5NzYyZTI4NTY2NGVlYTVlY2JhYjAw
+NGM4NDQ0OTMwZjIyL3ZtbGludXotNy4zLjAtcmM3KwogICAgICAgICAgYnJhbmNoPWludGVybmFs
+LWRldmVsL2RldmVsLWhvdXJseS0yMDI2MTAyMC0wNjA5MTEKICAgICAgICAgIGpvYj0vbGtwL2pv
+YnMvc2NoZWR1bGVkL2xrcC1oc3ctZDA1L2x0cC1wb3dlcl9tYW5hZ2VtZW50X3Rlc3RzLWRlYmlh
+bi0xMy14ODZfNjQtMjAyNTA5MDIuY2d6LWU1ZjlkOTk3NjJlMi0yMDI2MTAyMi0xNTAzMS1kZHRn
+d3ItMS55YW1sCiAgICAgICAgICB1c2VyPWxrcAogICAgICAgICAgQVJDSD14ODZfNjQKICAgICAg
+ICAgIGtjb25maWc9eDg2XzY0LXJoZWwtOS40LWx0cAogICAgICAgICAgY29tbWl0PWU1ZjlkOTk3
+NjJlMjg1NjY0ZWVhNWVjYmFiMDA0Yzg0NDQ5MzBmMjIKICAgICAgICAgIGludHJlbWFwPXBvc3Rl
+ZF9tc2kKICAgICAgICAgIG1heF91cHRpbWU9NzIwMAogICAgICAgICAgTEtQX1NFUlZFUj1pbnRl
+cm5hbC1sa3Atc2VydmVyCiAgICAgICAgICBub2thc2xyCiAgICAgICAgICBzZWxpbnV4PTAKICAg
+ICAgICAgIGRlYnVnCiAgICAgICAgICBhcGljPWRlYnVnCiAgICAgICAgICBzeXNycV9hbHdheXNf
+ZW5hYmxlZAogICAgICAgICAgcmN1cGRhdGUucmN1X2NwdV9zdGFsbF90aW1lb3V0PTEwMAogICAg
+ICAgICAgbmV0LmlmbmFtZXM9MAogICAgICAgICAgcHJpbnRrLmRldmttc2c9b24KICAgICAgICAg
+IHBhbmljPS0xCiAgICAgICAgICBzb2Z0bG9ja3VwX3BhbmljPTEKICAgICAgICAgIG5taV93YXRj
+aGRvZz1wYW5pYwogICAgICAgICAgb29wcz1wYW5pYwogICAgICAgICAgbG9hZF9yYW1kaXNrPTIK
+ICAgICAgICAgIHByb21wdF9yYW1kaXNrPTAKICAgICAgICAgIGRyYmQubWlub3JfY291bnQ9OAog
+ICAgICAgICAgc3lzdGVtZC5sb2dfbGV2ZWw9ZXJyCiAgICAgICAgICBpZ25vcmVfbG9nbGV2ZWwK
+ICAgICAgICAgIGNvbnNvbGU9dHR5MAogICAgICAgICAgZWFybHlwcmludGs9dHR5UzAsMTE1MjAw
+CiAgICAgICAgICBjb25zb2xlPXR0eVMwLDExNTIwMAogICAgICAgICAgdmdhPW5vcm1hbAogICAg
+ICAgICAgcncKICAgICAgICAgIGtlZXBfaW5pdHJkcz0vb3NpbWFnZS9wa2cvZGViaWFuLTEzLXg4
+Nl82NC0yMDI1MDkwMi5jZ3ovbHRwLXg4Nl82NC0xMjU1YTNiZTUtMV8yMDI2MTAxNy5jZ3oKTWFj
+aGluZTogIHVua25vd24KQXJjaDogICAgIHg4Nl82NApSQU06ICAgICAgMTQwMzUwMjgga0IKU3dh
+cDogICAgIDAga0IKRGlzdHJvOiAgIGRlYmlhbiAxMwoK4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA
+4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSACiAgICAgIFRF
+U1QgU1VNTUFSWQrilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDi
+lIDilIDilIDilIDilIDilIDilIDilIDilIAKU3VpdGU6ICAgcG93ZXJfbWFuYWdlbWVudF90ZXN0
+cwpSdW50aW1lOiAwLjkwNXMKUnVuczogICAgNgoKUmVzdWx0czoKICAgIFBhc3NlZDogICAxOTQK
+ICAgIEZhaWxlZDogICAxCiAgICBCcm9rZW46ICAgMAogICAgU2tpcHBlZDogIDIKICAgIFdhcm5p
+bmdzOiAwCgogWzE7MzFtRmFpbHVyZXM6IFswbQogICAg4oCiIHJ1bnB3dGVzdHMwMwoKU2Vzc2lv
+biBzdG9wcGVkCkxUUCB0ZXN0IGRldGFpbHMKLS0tLS0tLS0tLS0tLS0tLQpydW5wd3Rlc3RzMDM6
+IFBvd2VyX01hbmFnZW1lbnQwMyAxIFRGQUlMOiBDUFVGUkVRIHN5c2ZzIHRlc3RzCgoKClRoZSBr
+ZXJuZWwgY29uZmlnIGFuZCBtYXRlcmlhbHMgdG8gcmVwcm9kdWNlIGFyZSBhdmFpbGFibGUgYXQ6
+Cmh0dHBzOi8vZG93bmxvYWQuMDEub3JnLzBkYXktY2kvYXJjaGl2ZS8yMDI2MTAyMi8yMDI2MTAy
+MjE5MzYuNDBiNDMzNGYtbGtwQGludGVsLmNvbQoKCgotLQowLURBWSBDSSBLZXJuZWwgVGVzdCBT
+ZXJ2aWNlCmh0dHBzOi8vZ2l0aHViLmNvbS9pbnRlbC9sa3AtdGVzdHMvd2lraQoKCgotLSAKTWFp
+bGluZyBsaXN0IGluZm86IGh0dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGluZm8vbHRwCg==
