@@ -1,103 +1,108 @@
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B91F606A31A
-	for <ltp@archiver.kernel.org>; Thu, 22 Oct 2026 02:37:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F38F7606A319
+	for <ltp@archiver.kernel.org>; Thu, 22 Oct 2026 06:21:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=lists.linux.it header.i=@lists.linux.it header.a=rsa-sha256 header.s=picard header.b=httkIm8q;
-	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=suse.com header.i=@suse.com header.a=rsa-sha256 header.s=google header.b=CfiBBgTs
+	dkim=pass (1024-bit key, unprotected) header.d=lists.linux.it header.i=@lists.linux.it header.a=rsa-sha256 header.s=picard header.b=TrAItubm;
+	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=suse.com header.i=@suse.com header.a=rsa-sha256 header.s=google header.b=cxcM7sij
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1792636667; h=to : date :
- message-id : in-reply-to : references : mime-version : subject :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1792650073; h=date : to :
+ message-id : references : mime-version : in-reply-to : subject :
  list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : content-type :
+ list-subscribe : from : reply-to : cc : content-type :
  content-transfer-encoding : sender : from;
- bh=tWuK76pCVlZBbYiDL9QRN+WZcpl0P2SD0AcSHlIv0xU=;
- b=httkIm8qclWclIQsE4VmoXiY+W2ecnUYno4Cpa3ULN35ufrWTGWRBZimGR1bPEVsKuvuG
- r4vb62zEsaBrw+WNqjEX2E3ptYP6yfzD75+y7y04zPIADgnFy53/PvCwzOglX7qB4+KjaW9
- mXNQ2aDx7+IrLPb8katzMTbeZ6b+QhQ=
+ bh=K40yTYJakcBy18DtnVqmQ9hbodVrTaf+POuJFsSrTew=;
+ b=TrAItubmyBjMdylX9stA6maBQQzRh4yvJY5LabYqqOk1TGWJIMkc+P133ZZXxG/QmHimq
+ 7gUwhvk5V7K29nRUvJ+IYaGsj0DF0zNu1wBtUOnw8IOpr884ahmMU/0GoPR0Jz22993qNrG
+ 8fwhq8UkKWthaPMkseiTPNih5AG3/Co=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 044B73CFDF3
-	for <ltp@archiver.kernel.org>; Thu, 22 Oct 2026 04:37:47 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 347BA3CFE46
+	for <ltp@archiver.kernel.org>; Thu, 22 Oct 2026 08:21:13 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 5172A3CFDC4
- for <ltp@lists.linux.it>; Thu, 22 Oct 2026 04:36:53 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 2C5503CFDCE
+ for <ltp@lists.linux.it>; Thu, 22 Oct 2026 08:20:53 +0200 (CEST)
 Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com
  [IPv6:2a00:1450:4864:20::335])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 8650D600A66
- for <ltp@lists.linux.it>; Thu, 22 Oct 2026 04:36:52 +0200 (CEST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id D97E02009DF
+ for <ltp@lists.linux.it>; Thu, 22 Oct 2026 08:20:52 +0200 (CEST)
 Received: by mail-wm1-x335.google.com with SMTP id
- 5b1f17b1804b1-4a1df4c0966so2290715e9.1
- for <ltp@lists.linux.it>; Wed, 21 Oct 2026 19:36:52 -0700 (PDT)
+ 5b1f17b1804b1-4a1b07c3c5fso13079085e9.1
+ for <ltp@lists.linux.it>; Wed, 21 Oct 2026 23:20:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1792636612; x=1793241412; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to:content-type;
- bh=uL5WFGP2/UGs3Abqa2gHkrKHstj2Ci+aQ5Yb6ElYNtM=;
- b=CfiBBgTskignKOXLx8CRf1iwtbAQzK/7Y0pCKZD+HAIwPzbqGyTxqSIY06flG5s3tf
- 0A7dNu4OsS1y61SQJ9W5FpkQm8nQlqOD1Ga8HqGP2oZe0TWI2eO3QoSDfWKjKcMEKWg+
- pFJRCjTijdxyOpIHvy22iZmM75zPvh0jXyAUorrMbBokXZ+zbz1iy3ilV0/lpkrjeo2I
- 5yL4EFFx4fq96xlJo/Sg2fWpZ6dDxoLZvlT3ssTovBnGhWO+tZ78ZguqpqWdCPy4MnsH
- hWpp7tozm8QqDRT9HQ7GJhsBxFDcHwpSFqqyIEU4kGCtN3UF4f26WpyukxMxKqHgPWYQ
- RkXA==
+ d=suse.com; s=google; t=1792650052; x=1793254852; darn=lists.linux.it;
+ h=in-reply-to:content-disposition:content-type:mime-version
+ :references:message-id:subject:cc:to:from:date:from:to:cc:subject
+ :date:message-id:reply-to:content-type;
+ bh=l/V6gDylsTD5NNC+wNb3joi7fitmY2bjhueVo0WNp/4=;
+ b=cxcM7sijZGuxcvJYEeF4UFtj3NpEqcK9TgfC122Y6wHKUPYFeNW7lePtgUwGySVzVX
+ k6VgNWoD9yoBmKC8KtflzJqSvywgss50+P8suO7bfsX16HlmKqTT/UkirtUAD+EqgspL
+ WaCncgzZJXqBNXyAvqh3yrvlCxTcrLHjbXNrLCZsa5lzyhfW3FBsd5AO0SH9FPTBe1AR
+ cVTN8Xf5OxNUoCVuiisiw3jGsqMtyVH1N64sl/3OUSLcrTDF4BZRxRLCC49h8QKD3l13
+ So6u2iHx/9VS41IRIbIYq+YK4R6VUxfTHluccjv1odRejtEB7aDYCox1fPpD0/whvtqf
+ EADg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20260707; t=1792636612; x=1793241412;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to:content-type;
- bh=uL5WFGP2/UGs3Abqa2gHkrKHstj2Ci+aQ5Yb6ElYNtM=;
- b=1rTzpNNN9h93h4SrzfecbkW6f05Z8zc3+ETLQG0s5sHnWb2wskFCfmYf2DNMLQ6gKd
- 976mzjitKTOo6jqMvg4krit2OPL9Me2klQgy0fpN45kqFgqx9drH8EWZ5eAZF67kzmmk
- xlkQBZbMv3wdtth0Hkw98/e7UJtG3p45ej3kedQJf+E2rtrr84EdQIf++z6EOn3m2e0I
- Yr5d96LqfHgHFMFKMo7jkyCySgsGk7Q69t73u7OZXzU67xionQsmQdjsuUbS4k2PPMUS
- fD4Z4tRNaiAERR462T5JKPCuk0uuT/svlZNqyAjU89CtkJjNcjt6UZj3UTrsgPUZ3Mw4
- UjCw==
-X-Gm-Message-State: AFq9FYK/Zn7fb3PmrTrhvnuiJ2L35eBmP5FA6mpOoxZKA6yWF0/HDLBu
- 6xt6ZLWIHJ9Tga/S20P+Zo+gvzXqcPKaNf1cq/jQD7kyXurR+gIWJTeLUyb6GMzuzgJ1fpJ+g1i
- HW3I=
-X-Gm-Gg: AYBFou2qiDk33ulERmi34WX+NZ7SVRFscoSd+MBkwSA38Q1xQwR+FqEV3bzgyxworaX
- VQ/t5SSMlrcE5ZXDU+cXrJM/NsbHonY+k2+8QgWubv+2dotZh0Iu/kh+fyH6uOipUwdfuIyf5I/
- CcMwyGs8i57fpVty92k7K2hx6htU8mhEJDJQiHwlg3N/b96gNde1rDDrkJaWfxaUw89MaFaldQO
- V05ks89n7RHr7yXZo+eXeweFGYB1RBPGGjX76aLtHnjgQ6NnhxvXK39JgwU3aUCPjj61EwgFt9v
- USZXbv1ug2B+0BV7OpN1Jgn5KL9c5rsYUnqTPueY1wG3ZjASM5dhBTQF90tnOzGUcbcQoIP7Tas
- 2aXPK8uwIiSLs4ZsbuJr529KhilbtlBWj7ygcecd6PFTKoWM/Xpp4P52rDUgeV+Ih7JeEiGgU70
- F455WovYt93DtmrBdh0C7iHdjKJYY2l7v5DBmB3Iz9hUJA5IriXQzjNOFFgU5bbkhkba4avj5vi
- ZIhJWtzxZlLbJSc3ETnmKqfQ5XhkBKMSJYmkzaXeBtGv9af7m63FtKyFb86ZjK2/9zcUfj1x/js
- CDVt2bHRtiZtbw0PvdaxbngzgBjNQEblqsO9TyC81OrZ7Q==
-X-Received: by 2002:a05:600d:864b:20b0:4a1:c6f5:2450 with SMTP id
- 5b1f17b1804b1-4a204bb595amr13948025e9.17.1792636611806; 
- Wed, 21 Oct 2026 19:36:51 -0700 (PDT)
-Received: from localhost ([2a07:de40:b240:0:2ad6:ed42:2ad6:ed42])
- by smtp.gmail.com with UTF8SMTPSA id
- 5b1f17b1804b1-4a1fcd59482sm66797015e9.4.2026.10.21.19.36.51
+ d=1e100.net; s=20260707; t=1792650052; x=1793254852;
+ h=in-reply-to:content-disposition:content-type:mime-version
+ :references:message-id:subject:cc:to:from:date:x-gm-gg
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+ :content-type;
+ bh=l/V6gDylsTD5NNC+wNb3joi7fitmY2bjhueVo0WNp/4=;
+ b=FAhG+dA5XR1vATWaXDmNFHFHm+GH1aSGOxQirZV6SNus+AybTcNp4wMEW5yPiFKjMM
+ sI/v6hy6mD+dT1fbEa0d4iCxPsTShFjAeZ0YcTyrMGVhLMvFq2NUUT8QHc+gn635iuwh
+ Udek1TbxCCc+daEhZ8w1Y/ZDK4lTQHpVqfrUBRY/tHLJAZG5a/59/BElBzxOGug4Skdv
+ 7ZrO+Exbpw30UxiPnkW1KS8nxvzdCrajBarUG4lpqnAUoGDlvLCW+Fui75/YSDKowfGg
+ 517cczZH1Z5pfzGk0KRClgXGwMi7cAdO94p/DeESTgsEm+J5BWJoWPhSBnWUyeMtkJPe
+ Ljaw==
+X-Gm-Message-State: AFq9FYJmjLh+jOQ0v6AXFbOQTz2cUGKSaRch1TH/49XCOjjlyk/v8BLF
+ 3DMhu05P+H8M0hTC9xN65IW7cQ2S5N3S3xqNMIDmfRgW4mJVF6jmuf7ZkIwFaiC00U68WksIiKB
+ qPr0=
+X-Gm-Gg: AYBFou1cof0ogicSBS5p0psP0yaYFusWTlay5h3gypVgXtCi7NYEtZGgIoveyEgcsRQ
+ THFKiTh1DOjrSvUnz5+JAMhrrJ5Pxeu6NtySsQmCFLoJA0DnHgr3laDXu/GvcjHm+864ZcEXFUj
+ ue2BVsljDWXnaONEkdv8AkUAFXqTbfzVn0tp+OnTJyzfLW7eRKadeE/PyO6qGX9qUh9AetIzYBl
+ bH4TEZE7Dalmk0mznC3FHMY1DckDbalXmX3lU9p9MQ6kcId2+Ht2EAHVlJ6bBmpF8RS0aJfRsEU
+ y+dpWhoa+RRelzjBLoZFmyxGwSYI7SaINTubZhNCT6MUM4K7qYEXZRHfC9YqksLDYfffS6z99I8
+ F5SYIwEdc+MUGw7C8kZPeJOGQyMaaBEiizezQ11DYHXXSygiW46RoVdponURVwtXTdx5CgOebAR
+ GRE0i4t7ZDKmmZyY+yfLJa8Eu0swEFhu9PFPy96MVNy8R+brv4922GORT7ZLWnx84lCOTZ8Unot
+ pl1NEqgPfCKsiyatfH6aFjVCAm/e+CBS96Ae9nR6UW3cIEDZFH4dnvTGUZYJidVgJ3W2exk9Zd6
+ ABvvhHSkui2WS3OY3A4W/R2VZt883+AtNaGnQPM/u6Y+/Q6u2jTK/g==
+X-Received: by 2002:a05:600c:4685:b0:4a2:a1b:dc6f with SMTP id
+ 5b1f17b1804b1-4a20a1bdcc7mr6432385e9.4.1792650052271; 
+ Wed, 21 Oct 2026 23:20:52 -0700 (PDT)
+Received: from autotest-wegao.qe.prg2.suse.org
+ ([2a07:de40:b240:0:2ad6:ed42:2ad6:ed42])
+ by smtp.gmail.com with ESMTPSA id
+ ffacd0b85a97d-48e25835f46sm10183860f8f.38.2026.10.21.23.20.51
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 21 Oct 2026 19:36:51 -0700 (PDT)
-To: ltp@lists.linux.it
-Date: Thu, 22 Oct 2026 02:28:21 +0000
-Message-ID: <20261022022824.19735-3-wegao@suse.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20261022022824.19735-1-wegao@suse.com>
-References: <20261022022824.19735-1-wegao@suse.com>
+ Wed, 21 Oct 2026 23:20:52 -0700 (PDT)
+Date: Thu, 22 Oct 2026 06:20:50 +0000
+To: ltp@lists.linux.it, Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+Message-ID: <atmrQp-ahBUw6x-W@autotest-wegao.qe.prg2.suse.org>
+References: <20260929022340.524-1-wegao@suse.com>
+ <20260930035332.3360-1-wegao@suse.com>
+ <20260930035332.3360-2-wegao@suse.com>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-19.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+Content-Disposition: inline
+In-Reply-To: <20260930035332.3360-2-wegao@suse.com>
+X-Spam-Status: No, score=-16.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_PASS,SPF_PASS,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_PASS,SPF_PASS autolearn=ham
+	autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v16 2/2] open16: allow restricted O_CREAT of FIFOs and
- regular files
+Subject: Re: [LTP] [PATCH v2 1/2] memcontrol: Add bind_to_current_cpu()
+ helper
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -109,216 +114,66 @@ List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 From: Wei Gao via ltp <ltp@lists.linux.it>
 Reply-To: Wei Gao <wegao@suse.com>
+Cc: Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Add LTP coverage for kernel commit 30aba6656f61 (Linux 4.19), which
-introduced protection against spoofing attacks via O_CREAT of FIFOs
-and regular files in world-writable or group-writable sticky
-directories.
+On Wed, Sep 30, 2026 at 03:53:14AM +0000, Wei Gao wrote:
+> Add bind_to_current_cpu() to memcontrol_common.h to allow memcg tests
+> to bind the test process to a single CPU.
+> 
+> Signed-off-by: Wei Gao <wegao@suse.com>
+> ---
+>  .../controllers/memcg/memcontrol_common.h     | 27 +++++++++++++++++++
+>  1 file changed, 27 insertions(+)
+> 
+> diff --git a/testcases/kernel/controllers/memcg/memcontrol_common.h b/testcases/kernel/controllers/memcg/memcontrol_common.h
+> index 495f924a0..0f5021c0d 100644
+> --- a/testcases/kernel/controllers/memcg/memcontrol_common.h
+> +++ b/testcases/kernel/controllers/memcg/memcontrol_common.h
+> @@ -52,4 +52,31 @@ static inline void alloc_anon(const size_t size)
+>  	free(buf);
+>  }
+>  
+> +static inline void bind_to_current_cpu(void)
+> +{
+> +	int cpu = sched_getcpu();
+> +	size_t mask_size;
+> +	cpu_set_t *mask;
+> +
+> +	if (cpu < 0)
+> +		tst_brk(TBROK | TERRNO, "sched_getcpu() failed");
+> +
+> +	tst_res(TINFO, "Binding test process to CPU %d", cpu);
+> +
+> +	mask = CPU_ALLOC(cpu + 1);
+> +	if (!mask)
+> +		tst_brk(TBROK | TERRNO, "CPU_ALLOC() failed");
+> +
+> +	mask_size = CPU_ALLOC_SIZE(cpu + 1);
+> +	CPU_ZERO_S(mask_size, mask);
+> +	CPU_SET_S(cpu, mask_size, mask);
+> +
+> +	if (sched_setaffinity(0, mask_size, mask) < 0) {
+> +		CPU_FREE(mask);
+> +		tst_brk(TBROK | TERRNO, "sched_setaffinity() failed");
+> +	}
+> +
+> +	CPU_FREE(mask);
+> +}
+> +
+>  #endif /* MEMCONTROL_COMMON_H__ */
+> -- 
+> 2.55.0
+> 
+Hi Michal
 
-This commit adds test cases to verify these security restrictions
-(values 1 and 2 for protected_fifos and protected_regular) for opening
-FIFOs and regular files in world-writable or group-writable sticky
-directories when the file is not owned by the opener.
+Could you help check this patch? I already change to pinning to the
+single CPU for all arch.
 
-Signed-off-by: Wei Gao <wegao@suse.com>
-Reviewed-by: Andrea Cervesato <andrea.cervesato@suse.com>
----
- include/tst_path_defs.h                   |   2 +
- runtest/syscalls                          |   1 +
- testcases/kernel/syscalls/open/.gitignore |   1 +
- testcases/kernel/syscalls/open/open16.c   | 143 ++++++++++++++++++++++
- 4 files changed, 147 insertions(+)
- create mode 100644 testcases/kernel/syscalls/open/open16.c
-
-diff --git a/include/tst_path_defs.h b/include/tst_path_defs.h
-index 1a60028d3..2995150be 100644
---- a/include/tst_path_defs.h
-+++ b/include/tst_path_defs.h
-@@ -47,6 +47,8 @@
- #define PATH_FS_PIPE_MAX_PAGES			"/proc/sys/fs/pipe-max-pages"
- #define PATH_FS_MAX_USER_GROUPS			"/proc/sys/fs/fanotify/max_user_groups"
- #define PATH_FS_MAX_USER_MARKS			"/proc/sys/fs/fanotify/max_user_marks"
-+#define PATH_FS_PROTECTED_REGULAR		"/proc/sys/fs/protected_regular"
-+#define PATH_FS_PROTECTED_FIFOS			"/proc/sys/fs/protected_fifos"
- 
- /* VM */
- #define PATH_VM_DROP_CACHES			"/proc/sys/vm/drop_caches"
-diff --git a/runtest/syscalls b/runtest/syscalls
-index a021c79da..4fd62efa8 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -1008,6 +1008,7 @@ open12 open12
- open13 open13
- open14 open14
- open15 open15
-+open16 open16
- 
- openat01 openat01
- openat02 openat02
-diff --git a/testcases/kernel/syscalls/open/.gitignore b/testcases/kernel/syscalls/open/.gitignore
-index af5997572..d2cacc02e 100644
---- a/testcases/kernel/syscalls/open/.gitignore
-+++ b/testcases/kernel/syscalls/open/.gitignore
-@@ -13,3 +13,4 @@
- /open13
- /open14
- /open15
-+/open16
-diff --git a/testcases/kernel/syscalls/open/open16.c b/testcases/kernel/syscalls/open/open16.c
-new file mode 100644
-index 000000000..a8d33870f
---- /dev/null
-+++ b/testcases/kernel/syscalls/open/open16.c
-@@ -0,0 +1,143 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2026 Wei Gao <wegao@suse.com>
-+ */
-+
-+/*\
-+ * Verify restricted opening (:manpage:`open(2)` and :manpage:`openat(2)`) of
-+ * FIFOs and regular files in sticky directories. This protection is controlled via
-+ * ``/proc/sys/fs/protected_fifos`` and ``/proc/sys/fs/protected_regular`` sysctl values:
-+ *
-+ * - When set to "0", writing/opening is unrestricted.
-+ * - When set to "1", O_CREAT open on FIFOs/regular files we don't own in world-writable
-+ *   sticky directories is disallowed, unless they are owned by the owner of the directory.
-+ * - When set to "2", the same restriction also applies to group-writable sticky directories.
-+ *
-+ * This test requires root to modify ``/proc/sys/fs/protected_*`` sysctls and
-+ * to manage file ownership and permissions in sticky directories.
-+ */
-+
-+#include <pwd.h>
-+#include <stdlib.h>
-+#include "tst_test.h"
-+#include "tst_safe_file_at.h"
-+#include "tst_uid.h"
-+
-+#define DIR "ltp_tmp_check1"
-+#define TEST_FILE "test_file_1"
-+#define TEST_FIFO "test_fifo_1"
-+#define TEST_FIFO_PATH DIR "/" TEST_FIFO
-+
-+static int dir_fd = -1;
-+static uid_t uid1, uid2;
-+static gid_t gid1;
-+
-+static struct tcase {
-+	int exp_errno;
-+	uid_t owner_uid;
-+	int use_nobody_gid;
-+	mode_t dir_mode;
-+} tcases[] = {
-+	{
-+		.dir_mode = 0777 | S_ISVTX,
-+	},
-+	{
-+		.exp_errno = EACCES,
-+		.dir_mode = 0777 | S_ISVTX,
-+	},
-+	{
-+		.exp_errno = EACCES,
-+		.owner_uid = -1,
-+		.use_nobody_gid = 1,
-+		.dir_mode = 0030 | S_ISVTX,
-+	},
-+};
-+
-+static void verify_open(unsigned int n)
-+{
-+	struct tcase *tc = &tcases[n];
-+
-+	SAFE_FILE_PRINTF(PATH_FS_PROTECTED_REGULAR, "%u", n);
-+	SAFE_FILE_PRINTF(PATH_FS_PROTECTED_FIFOS, "%u", n);
-+
-+	if (tc->owner_uid != (uid_t)-1 || tc->use_nobody_gid) {
-+		gid_t gid = tc->use_nobody_gid ? gid1 : 0;
-+
-+		SAFE_CHOWN(DIR, tc->owner_uid, gid);
-+	}
-+
-+	if (tc->dir_mode)
-+		SAFE_CHMOD(DIR, tc->dir_mode);
-+
-+	if (SAFE_FORK())
-+		return;
-+
-+	SAFE_SETGID(gid1);
-+	SAFE_SETUID(uid2);
-+
-+	TST_EXP_FD_OR_FAIL(openat(dir_fd, TEST_FILE, O_RDWR | O_CREAT, 0777),
-+			   tc->exp_errno, "openat %s (sysctl_val=%u)", TEST_FILE, n);
-+	if (TST_RET != -1)
-+		SAFE_CLOSE(TST_RET);
-+
-+	TST_EXP_FD_OR_FAIL(open(TEST_FIFO_PATH, O_RDWR | O_CREAT, 0777),
-+			   tc->exp_errno, "open %s (sysctl_val=%u)", TEST_FIFO, n);
-+	if (TST_RET != -1)
-+		SAFE_CLOSE(TST_RET);
-+
-+	exit(0);
-+}
-+
-+static void setup(void)
-+{
-+	struct passwd *pw;
-+
-+	pw = SAFE_GETPWNAM("nobody");
-+	uid1 = pw->pw_uid;
-+	gid1 = pw->pw_gid;
-+	uid2 = tst_get_free_uid(uid1);
-+
-+	umask(0);
-+	SAFE_MKDIR(DIR, 0777 | S_ISVTX);
-+	dir_fd = SAFE_OPEN(DIR, O_DIRECTORY);
-+
-+	int fd = SAFE_OPENAT(dir_fd, TEST_FILE, O_CREAT | O_RDWR, 0777);
-+
-+	SAFE_CLOSE(fd);
-+	SAFE_MKFIFO(TEST_FIFO_PATH, 0777);
-+	SAFE_CHOWN(TEST_FIFO_PATH, uid1, gid1);
-+	SAFE_CHOWN(DIR "/" TEST_FILE, uid1, gid1);
-+}
-+
-+static void cleanup(void)
-+{
-+	if (dir_fd != -1)
-+		SAFE_CLOSE(dir_fd);
-+}
-+
-+static struct tst_test test = {
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.needs_root = 1,
-+	.tcnt = ARRAY_SIZE(tcases),
-+	.test = verify_open,
-+	.needs_tmpdir = 1,
-+	.forks_child = 1,
-+	.save_restore = (const struct tst_path_val[]) {
-+		{PATH_FS_PROTECTED_REGULAR, NULL, TST_SR_TCONF},
-+		{PATH_FS_PROTECTED_FIFOS, NULL, TST_SR_TCONF},
-+		{}
-+	},
-+	.tags = (const struct tst_tag[]) {
-+		{"linux-git", "30aba6656f61"},
-+		{"CVE", "2000-1134"},
-+		{"CVE", "2007-3852"},
-+		{"CVE", "2008-0525"},
-+		{"CVE", "2009-0416"},
-+		{"CVE", "2011-4834"},
-+		{"CVE", "2015-1838"},
-+		{"CVE", "2015-7442"},
-+		{"CVE", "2016-7489"},
-+		{}
-+	}
-+};
--- 
-2.55.0
-
+Thanks
+Wei Gao
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
