@@ -2,58 +2,110 @@ Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 803B5606A31A
-	for <ltp@archiver.kernel.org>; Fri, 23 Oct 2026 13:57:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFCD6606A31D
+	for <ltp@archiver.kernel.org>; Fri, 23 Oct 2026 14:23:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key, unprotected) header.d=linux.dev header.i=@linux.dev header.a=rsa-sha256 header.s=key1 header.b=TE+KTUb5
+	dkim=pass (1024-bit key, unprotected) header.d=lists.linux.it header.i=@lists.linux.it header.a=rsa-sha256 header.s=picard header.b=j0DO45hV;
+	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=suse.com header.i=@suse.com header.a=rsa-sha256 header.s=google header.b=UAsL+GL9
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1792765405; h=date : to :
+ message-id : references : mime-version : in-reply-to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-type :
+ content-transfer-encoding : sender : from;
+ bh=Yfp0y6Q+bQuupoweoJVFepHhaJj7eRsTH3APHmSDm0k=;
+ b=j0DO45hVTP0QnEXkaywdW1tC2DS79yFL+a+Ex8cjxzWHlUMgwLDLGgfD2FVhpNbJCKqzD
+ y1aV7LPhKdQtPrW/UQpFVYhNEFTOJ2ktDI19/bg1tSE0AGUdKZTK8ZuAms4cRYniFDaAsjK
+ 7EXRhI2gPI3rS/p9CzQUsxugw+AM9BQ=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 1C0A23E9BD7
-	for <ltp@archiver.kernel.org>; Fri, 23 Oct 2026 15:57:35 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 62BF83E9BDB
+	for <ltp@archiver.kernel.org>; Fri, 23 Oct 2026 16:23:25 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 840AA3CFD24
- for <ltp@lists.linux.it>; Fri, 23 Oct 2026 15:57:20 +0200 (CEST)
-Received: from mta0.migadu.com (out-36.mta0.migadu.com
- [IPv6:2001:41d0:1004:224b::24])
+ by picard.linux.it (Postfix) with ESMTPS id E76FD3C6F6E
+ for <ltp@lists.linux.it>; Fri, 23 Oct 2026 16:23:05 +0200 (CEST)
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com
+ [IPv6:2a00:1450:4864:20::32e])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 8287814060A3
- for <ltp@lists.linux.it>; Fri, 23 Oct 2026 15:57:17 +0200 (CEST)
-X-Envelope-To: ltp@lists.linux.it
-DKIM-Signature: a=rsa-sha256; bh=wFbwdxPrVXVlIZIQ62YKRYfR/ouJmipcHDQwoB3a18g=; 
- c=simple/simple; d=linux.dev;
- h=from:to:subject:date:message-id:mime-version:content-type; s=key1;
- t=1792763836; v=1; x=1793368636;
- b=TE+KTUb5b8hI5L+EQhQOVZfEzwsUF3B4uNUHc6/RkYE2xEzLbvWvJJdZLEOUXuaWvRZ27nvA
- N3hF8eoDNYZpVTdqAJ58v18a0mYQmRMNhEl/XwEYc4t3wVpil24MzYVHfRA/CWrVLBqRJKEeFYI
- PUvLQkFZoGjCJrnBDr9+4T9g=
-X-Envelope-To: ltp@lists.linux.it
-Received: by smtp.migadu.com with ESMTPS id 9905dbf4ec18c8df;
- Fri, 23 Oct 2026 13:57:16 +0000
-X-Mizu-Trace-ID: 9905dbf4ec18c8df
-X-Migadu-Flow: FLOW_OUT
-From: Li Wang <li.wang@linux.dev>
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 5BD82605649
+ for <ltp@lists.linux.it>; Fri, 23 Oct 2026 16:23:05 +0200 (CEST)
+Received: by mail-wm1-x32e.google.com with SMTP id
+ 5b1f17b1804b1-4a218b13c4bso3626365e9.0
+ for <ltp@lists.linux.it>; Fri, 23 Oct 2026 07:23:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1792765385; x=1793370185; darn=lists.linux.it;
+ h=in-reply-to:content-disposition:content-type:mime-version
+ :references:message-id:subject:cc:to:from:date:from:to:cc:subject
+ :date:message-id:reply-to:content-type;
+ bh=ny1GKU7lQ0mqcyL3STgECLjO7ztsp2Lx9W/vrszapHk=;
+ b=UAsL+GL9Rm09Hv7/z8VoFKX3OfabGsV42M67J3T1NfKVTYHGStbmeFO4wdU+Hxjws1
+ I23W9/0qvbYxWqIEYe3koNRjfAyRr+RpDNfkcVDiRlsh3qtaDLtExtCO5LLXjtsy9p0E
+ w32raP+a34WffdCNA+Mxb9tcsarA9jqbPDilMXYWAjhcR24XE7K7ZCNfklozEsNrQ+va
+ le7K1zhM9dErmEchmaf6Vocjt7Tnb8vPZPn7r1W073yzBL2Qq54icpKlQIh1aTZ+fu5L
+ SBpeKXEjwoToKNRi5x9sZGrijmBgcLZDOMBSEGTzPzTPyxAZTi2qqR1nKk/xDPHibxE2
+ N5sQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20260707; t=1792765385; x=1793370185;
+ h=in-reply-to:content-disposition:content-type:mime-version
+ :references:message-id:subject:cc:to:from:date:x-gm-gg
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+ :content-type;
+ bh=ny1GKU7lQ0mqcyL3STgECLjO7ztsp2Lx9W/vrszapHk=;
+ b=Pvxj569icpL/sdflcGelEhcYN4R6aCLEBkj/DTZ1JtZG8yJsUZ66xDSbAtl5iU3enO
+ 9+uFX6dcRntzQXKYn9Oon+HEGyRtgo6KD2LrU138Gx/z+I2PLcP1PHNvAw4E11wRJo28
+ gM+5qswHK8agYvejv0vXOJHbsTV0zPQbTa+XYbt/pkWfj1pJMATwMzP00AjseQG6w5k5
+ i7idi47y+vVCkgRFYRj3dSbQBe8ZAQj1qLJxeie6lGevS43LKvny6VpkPVRKSip379FA
+ IdqJEen0AkKOJeWCoQXt2JytN+pxOfP7bylSAs/BWh1ImcBQHWYtMSyyhVcRFcEMP+cZ
+ k+/Q==
+X-Forwarded-Encrypted: i=1;
+ AKwUvByfol2CuY5xU3JfsCl9lKIGHkYOpSiY1B3L3ifHB9gIWD60lE6rZR7c4+XsuRQQrrIfnAU=@lists.linux.it
+X-Gm-Message-State: AFq9FYLchKgeYNCjSKvrpf8lfDpdu46cg4dTDZSz2n0fftMWT6xyyV6l
+ 10TwdmuTZTL9lsOvMiDqoOrZaTnU1etCRvQLGW/F52wQddHhug4LqSz1tYQr+rU9SwVBZ7J2jJc
+ a8UI=
+X-Gm-Gg: AYBFou0m5WxxdoooB+wxuk5dEZ/VFutlonBoiUgb5SOiWnTFAe5Rz9RvT7NsxGOSEgv
+ hPMxXevU6KvqhYz1OnMPGcUPrO/N4FtTFR4zgoHQHACjA8yGztFGhhLvAoYkaAhgbR+4HyKJnAC
+ 9gmHGdKooFRCAb7CYCr05BILmJphC01A5FWPQg318Fst9XMyvYht/KA0bHKXdF/TL8lkTvqzeyE
+ ReMPmxe+cxom6CzzDZZNuJ7MCXAT53udRd8jbrfV51pRFvRGONZCDNbKO0O1PbRuXAyoCbYOlqb
+ iWI0pyWewUjc2jVD1Xz05L8QoTzYG7//73YrbQBISwVb7UWrhXkTZiyWaapYdADg2azSCtuP0bl
+ p9OW70j512y5FDwOTifEd1dDyhbv7a20RAo1xs5EgJcVKDlCIXUOQ2ltfpxADQAp9NWh3ZkQcnC
+ Hrcoc05IdfUcQ3AO088nucmSgm9NEIW9ya/pXYjr4w7z3z8jzf2nl+3wJyGL2IbG8YHgaCvtUMO
+ h6ErrjNSP390TZlkRMPsa7W3qgZBFzO0k2ebAZugHY3iJnzPPIaBB+LM6o0AZfcKKxgYOEuEbZJ
+ WvXDcBGL49kQ1jULHrjmqp3l0zWoaayXLuoUmM3vZ2f/grxNPM9/fQ==
+X-Received: by 2002:a05:600c:1c09:b0:4a2:397:73f7 with SMTP id
+ 5b1f17b1804b1-4a211cd5b7bmr39573225e9.27.1792765384572; 
+ Fri, 23 Oct 2026 07:23:04 -0700 (PDT)
+Received: from autotest-wegao.qe.prg2.suse.org
+ ([2a07:de40:b240:0:2ad6:ed42:2ad6:ed42])
+ by smtp.gmail.com with ESMTPSA id
+ 5b1f17b1804b1-4a29cdc0d1dsm8498505e9.12.2026.10.23.07.23.04
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 23 Oct 2026 07:23:04 -0700 (PDT)
+Date: Fri, 23 Oct 2026 14:23:02 +0000
+To: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <atttxiDuoelkKaCo@autotest-wegao.qe.prg2.suse.org>
+References: <20261022022824.19735-1-wegao@suse.com>
+ <20261022022824.19735-3-wegao@suse.com>
+ <20261022154436.GA419745@pevik>
+ <atrKnXXqaislOimV@autotest-wegao.qe.prg2.suse.org>
+ <atsvLxoiVM-panPC@yuki.lan>
 X-Archived-By: <archiver.kernel.org>
-Mime-Version: 1.0 (1.0)
-Date: Fri, 23 Oct 2026 21:57:04 +0800
-Message-Id: <8FBE4389-E3C2-4BD3-843F-918B4C941996@linux.dev>
-References: <bfJVtsQDsGAU5UmB2dnOuGX3884EEwLe1KUm@localhost.localdomain>
-In-Reply-To: <bfJVtsQDsGAU5UmB2dnOuGX3884EEwLe1KUm@localhost.localdomain>
-To: Andrea Cervesato <andrea.cervesato@suse.com>
-X-Mailer: iPhone Mail (24A446)
-X-Spam-Status: No, score=-1.1 required=3.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_PASS,SPF_PASS,UNWANTED_DEVICE_2 autolearn=no
-	autolearn_force=no version=4.0.1
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <atsvLxoiVM-panPC@yuki.lan>
+X-Spam-Status: No, score=-6.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,MAILING_LIST_MULTI,
+	SPF_HELO_PASS,SPF_PASS autolearn=no autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] After release meeting
+Subject: Re: [LTP] [PATCH v16 2/2] open16: allow restricted O_CREAT of FIFOs
+ and regular files
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -63,20 +115,31 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: LTP List <ltp@lists.linux.it>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+From: Wei Gao via ltp <ltp@lists.linux.it>
+Reply-To: Wei Gao <wegao@suse.com>
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Cgo+IE9uIDIzIE9jdCAyMDI2LCBhdCAyMToyNiwgQW5kcmVhIENlcnZlc2F0byA8YW5kcmVhLmNl
-cnZlc2F0b0BzdXNlLmNvbT4gd3JvdGU6Cj4gCj4g77u/Cj4+IAo+PiBIaSBMaSwKPj4gCj4+Pj4+
-IFdlZG5lc2RheSAyOC4gT2N0IGlzIGJhbmsgaG9sbGlkYXkgaW4gQ3plY2ggcmVwdWJsaWMsIGFu
-IGluZGVwZW5kZW5jZSBkYXkuCj4+Pj4gCj4+Pj4gKzEKPj4+PiAKPj4+PiBJZiBpdCBuZWVkcyB0
-byBiZSBXZWRuZXNkYXksIHRoZW4gbmV4dCBvbmUgNHRoIE9jdCBmcm9tIDEwIHdvdWxkIHdvcmsg
-Zm9yIG1lLgo+Pj4gCj4+PiBJIGd1ZXNzIHlvdSBtZWFuIDR0aCBOb3YuIE9mIGNvdXJzZSwgdGhh
-dCdzIGZpbmUgd2l0aCBtZS4KPj4+IAo+Pj4+IE9yIHdlIGNhbiB0cnkgdG8gZmluZCBhbm90aGVy
-IGRheSBuZXh0IHdlZWsgKDI2dGgtMzB0aCBTZXApLCBlLmcuIFR1ZSAyN3RoIGZyb20KPj4+PiAx
-MS4wMCBhbSB3b3VsZCB3b3JrIGZvciBtZSAobWVldGluZyBmcm9tIDExLjAwIHNoaWZ0ZWQgdG8g
-MTAuMDApLgo+Pj4gCj4+PiBJIHZvdGUgdG8gMTBhbSBDRVQuCj4+IAo+IAo+IFNvIGRlY2lkZWQg
-dGhlIDR0aCBvZiBOb3ZlbWJlciBhdCAxMGFtPwoKeWVz77yBCgotLSAKTWFpbGluZyBsaXN0IGlu
-Zm86IGh0dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGluZm8vbHRwCg==
+On Fri, Oct 23, 2026 at 11:55:59AM +0200, Cyril Hrubis wrote:
+> Hi!
+> > > > +	exit(0);
+> > > 
+> > > Do we need this explicit exit?
+> > Yes i think exit(0) is necessary because only the child process reaches this point.
+> 
+> Any child that returns to the test library calls exit(0).
+Thanks Cyril and Petr for pointing this out, and sorry for the oversight on my part.
+For above case SAFE_FORK() returns early in the parent process, only the child reaches this
+last point and we do not need duplicate exit(0) since child will encounter
+run_tests check if (tst_getpid() != context->main_pid) and do exit(0).
+
+Will update it in next patch.
+> 
+> -- 
+> Cyril Hrubis
+> chrubis@suse.cz
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
