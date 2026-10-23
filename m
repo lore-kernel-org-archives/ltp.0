@@ -1,108 +1,103 @@
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFCD6606A31D
-	for <ltp@archiver.kernel.org>; Fri, 23 Oct 2026 14:23:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B8AB60A2600
+	for <ltp@archiver.kernel.org>; Fri, 23 Oct 2026 14:31:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=lists.linux.it header.i=@lists.linux.it header.a=rsa-sha256 header.s=picard header.b=j0DO45hV;
-	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=suse.com header.i=@suse.com header.a=rsa-sha256 header.s=google header.b=UAsL+GL9
+	dkim=pass (1024-bit key, unprotected) header.d=lists.linux.it header.i=@lists.linux.it header.a=rsa-sha256 header.s=picard header.b=jeMZ8iGP;
+	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=suse.com header.i=@suse.com header.a=rsa-sha256 header.s=google header.b=OAeIBPhL
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1792765405; h=date : to :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1792765865; h=date : to :
  message-id : references : mime-version : in-reply-to : subject :
  list-id : list-unsubscribe : list-archive : list-post : list-help :
  list-subscribe : from : reply-to : cc : content-type :
  content-transfer-encoding : sender : from;
- bh=Yfp0y6Q+bQuupoweoJVFepHhaJj7eRsTH3APHmSDm0k=;
- b=j0DO45hVTP0QnEXkaywdW1tC2DS79yFL+a+Ex8cjxzWHlUMgwLDLGgfD2FVhpNbJCKqzD
- y1aV7LPhKdQtPrW/UQpFVYhNEFTOJ2ktDI19/bg1tSE0AGUdKZTK8ZuAms4cRYniFDaAsjK
- 7EXRhI2gPI3rS/p9CzQUsxugw+AM9BQ=
+ bh=0h66IyhN973cL+ORAomqLBLEzw7B+5Knp62GxAtMkUk=;
+ b=jeMZ8iGPlsvA5PHYzAJAqWvHUMjJ4H0yI+3CgdIEWBFr97CsnR6RmoSjs1dsMCCc4s9HX
+ yLQHWc6smUiQfWuu0/LPtZvURDhzyzA6m31+27+7LoUX7BHnPQLMXjryrOZI0AdGnGexTjq
+ epGsbWFJr32ilHhctJEqycKnjypi1e8=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 62BF83E9BDB
-	for <ltp@archiver.kernel.org>; Fri, 23 Oct 2026 16:23:25 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 107973E9BE8
+	for <ltp@archiver.kernel.org>; Fri, 23 Oct 2026 16:31:05 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E76FD3C6F6E
- for <ltp@lists.linux.it>; Fri, 23 Oct 2026 16:23:05 +0200 (CEST)
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com
- [IPv6:2a00:1450:4864:20::32e])
+ by picard.linux.it (Postfix) with ESMTPS id DFAB73C6F6E
+ for <ltp@lists.linux.it>; Fri, 23 Oct 2026 16:30:45 +0200 (CEST)
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com
+ [IPv6:2a00:1450:4864:20::435])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 5BD82605649
- for <ltp@lists.linux.it>; Fri, 23 Oct 2026 16:23:05 +0200 (CEST)
-Received: by mail-wm1-x32e.google.com with SMTP id
- 5b1f17b1804b1-4a218b13c4bso3626365e9.0
- for <ltp@lists.linux.it>; Fri, 23 Oct 2026 07:23:05 -0700 (PDT)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id A18A11002057
+ for <ltp@lists.linux.it>; Fri, 23 Oct 2026 16:30:44 +0200 (CEST)
+Received: by mail-wr1-x435.google.com with SMTP id
+ ffacd0b85a97d-48e0d885929so601955f8f.3
+ for <ltp@lists.linux.it>; Fri, 23 Oct 2026 07:30:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1792765385; x=1793370185; darn=lists.linux.it;
+ d=suse.com; s=google; t=1792765844; x=1793370644; darn=lists.linux.it;
  h=in-reply-to:content-disposition:content-type:mime-version
  :references:message-id:subject:cc:to:from:date:from:to:cc:subject
  :date:message-id:reply-to:content-type;
- bh=ny1GKU7lQ0mqcyL3STgECLjO7ztsp2Lx9W/vrszapHk=;
- b=UAsL+GL9Rm09Hv7/z8VoFKX3OfabGsV42M67J3T1NfKVTYHGStbmeFO4wdU+Hxjws1
- I23W9/0qvbYxWqIEYe3koNRjfAyRr+RpDNfkcVDiRlsh3qtaDLtExtCO5LLXjtsy9p0E
- w32raP+a34WffdCNA+Mxb9tcsarA9jqbPDilMXYWAjhcR24XE7K7ZCNfklozEsNrQ+va
- le7K1zhM9dErmEchmaf6Vocjt7Tnb8vPZPn7r1W073yzBL2Qq54icpKlQIh1aTZ+fu5L
- SBpeKXEjwoToKNRi5x9sZGrijmBgcLZDOMBSEGTzPzTPyxAZTi2qqR1nKk/xDPHibxE2
- N5sQ==
+ bh=X4ki8me0AKdG5BMPkwD/GiFUlOruUUAScdVwergT3wU=;
+ b=OAeIBPhLiJN7wUaazPxmMwoKhzEtUdEbRTvBsXPJuADkFyoe9YRCC7+jYqEIKndh2L
+ Bcp/d3hLTby5BVwJYbZbxUpLvKmqZMTCcWQPK/MKdws4TyS5NrhIkNRxkJQLvb/lX/GZ
+ MUiC3Lm5X+9C5LC2c7xRgy1Hn4oiUMG0Hv/sut00SgK4cfoWXJskRrbEKYpsSJe7TErW
+ dxFCDrIrNdmEugs/xmNqBl+ZF0NeKRdSOW/BhnmaxRY+5CIR6k78DlPeRb4ODvqRLEk0
+ LrzcT34wsaiQXUjklHo3lAUnL7k+yZSv7zvsBlTO2Y4DaVYVkM30fFXWHPeVLDCUP4Ut
+ 9cbw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20260707; t=1792765385; x=1793370185;
+ d=1e100.net; s=20260707; t=1792765844; x=1793370644;
  h=in-reply-to:content-disposition:content-type:mime-version
  :references:message-id:subject:cc:to:from:date:x-gm-gg
  :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
  :content-type;
- bh=ny1GKU7lQ0mqcyL3STgECLjO7ztsp2Lx9W/vrszapHk=;
- b=Pvxj569icpL/sdflcGelEhcYN4R6aCLEBkj/DTZ1JtZG8yJsUZ66xDSbAtl5iU3enO
- 9+uFX6dcRntzQXKYn9Oon+HEGyRtgo6KD2LrU138Gx/z+I2PLcP1PHNvAw4E11wRJo28
- gM+5qswHK8agYvejv0vXOJHbsTV0zPQbTa+XYbt/pkWfj1pJMATwMzP00AjseQG6w5k5
- i7idi47y+vVCkgRFYRj3dSbQBe8ZAQj1qLJxeie6lGevS43LKvny6VpkPVRKSip379FA
- IdqJEen0AkKOJeWCoQXt2JytN+pxOfP7bylSAs/BWh1ImcBQHWYtMSyyhVcRFcEMP+cZ
- k+/Q==
-X-Forwarded-Encrypted: i=1;
- AKwUvByfol2CuY5xU3JfsCl9lKIGHkYOpSiY1B3L3ifHB9gIWD60lE6rZR7c4+XsuRQQrrIfnAU=@lists.linux.it
-X-Gm-Message-State: AFq9FYLchKgeYNCjSKvrpf8lfDpdu46cg4dTDZSz2n0fftMWT6xyyV6l
- 10TwdmuTZTL9lsOvMiDqoOrZaTnU1etCRvQLGW/F52wQddHhug4LqSz1tYQr+rU9SwVBZ7J2jJc
- a8UI=
-X-Gm-Gg: AYBFou0m5WxxdoooB+wxuk5dEZ/VFutlonBoiUgb5SOiWnTFAe5Rz9RvT7NsxGOSEgv
- hPMxXevU6KvqhYz1OnMPGcUPrO/N4FtTFR4zgoHQHACjA8yGztFGhhLvAoYkaAhgbR+4HyKJnAC
- 9gmHGdKooFRCAb7CYCr05BILmJphC01A5FWPQg318Fst9XMyvYht/KA0bHKXdF/TL8lkTvqzeyE
- ReMPmxe+cxom6CzzDZZNuJ7MCXAT53udRd8jbrfV51pRFvRGONZCDNbKO0O1PbRuXAyoCbYOlqb
- iWI0pyWewUjc2jVD1Xz05L8QoTzYG7//73YrbQBISwVb7UWrhXkTZiyWaapYdADg2azSCtuP0bl
- p9OW70j512y5FDwOTifEd1dDyhbv7a20RAo1xs5EgJcVKDlCIXUOQ2ltfpxADQAp9NWh3ZkQcnC
- Hrcoc05IdfUcQ3AO088nucmSgm9NEIW9ya/pXYjr4w7z3z8jzf2nl+3wJyGL2IbG8YHgaCvtUMO
- h6ErrjNSP390TZlkRMPsa7W3qgZBFzO0k2ebAZugHY3iJnzPPIaBB+LM6o0AZfcKKxgYOEuEbZJ
- WvXDcBGL49kQ1jULHrjmqp3l0zWoaayXLuoUmM3vZ2f/grxNPM9/fQ==
-X-Received: by 2002:a05:600c:1c09:b0:4a2:397:73f7 with SMTP id
- 5b1f17b1804b1-4a211cd5b7bmr39573225e9.27.1792765384572; 
- Fri, 23 Oct 2026 07:23:04 -0700 (PDT)
+ bh=X4ki8me0AKdG5BMPkwD/GiFUlOruUUAScdVwergT3wU=;
+ b=fBYmJNWJ5I1YWrkXTnqH1ybViEr/dFE6XlOQSm9gFCG66otGmW9KgSeBTMG2DmfP2S
+ NSSWSm8mIlAyjrBVb8jbUUu4+yaCTZEmAELEzQ9ZunwLR8FpszZcuzVin8Tvejbe4ouW
+ mmwS5YppBoZY+OQAwj84iSQtDVBoA9/MHB6/xjZQtndd815dfNe8DVyY469B/LC8/ED4
+ feAcv0FvNxQ7h846FB2NRK8V+KeHk1HjajGPmv9IBujADv8/fKHq+CQjzf+RzbOLBlmm
+ WeiK3LtQT6MVoffIYRTjhWsQPpYE6Js5UMUbAmZZrx8GQqKV20geECuwMgiDZvn361x8
+ axcw==
+X-Gm-Message-State: AFq9FYKHxQh+g5406aIY30mgQRPL4tYsN2QA3a16deYc9RCPvo7E9Xy0
+ pHxL7+ANPOfITPfy/YTFgtW7YlLMTUQQRkaCm9waJha8dxLYRQBD0kUvCTH/6WxLTKztl8Jyf8f
+ kyZQ=
+X-Gm-Gg: AYBFou15r5I91BO5gMm1918Mjud4utDSiL8i5A+kGhLunkDtdTPQJoHA3eWOqcbKQiP
+ RjKHtBmVnYt3eE/dZ5GZMTs3dNc4lYWJM4CZTeuP2sv/VrjDyyEB/wYbr0TMNAaqSl2Dabcm3gt
+ g1l3a/EU9XQthuw5nDmsUCO6IUtuWfL8I0kUsHuu7r3bJyoMuF2HgbqLjiM9A3O8jyaaUC5bGsj
+ 6Raf+WidbA7C+5gabtDFXz3wb+i9ZVazjz7LfDp3F3EGOhNBKc/FBOIWVcrcBCrQuqsQHdRaeE0
+ wrhVnB8xsW8TQlAiScpWpp8H2iH1/KS55EO7+Eocv01TcCFpH7+/HCDQmlvFJpoZlquhVZCIHtY
+ UTA7y6V8DSnkQG94YdIBQnnN4LYIdiXE29hXBtm4PziVrl4bQJIdhxa1+8OejTdxmOF3EA3uYwv
+ eFtIVibriW7N2wrqGLGwSJg2AKs3FErlgGCBgvu8ik4rpTHbbcWIpNYVMGPWpj/10D+2E7yccrw
+ nPhd/fdY/w30+UuZs5823/k9/OscH3uxGcnwePcDfkFgnoj/anGIrkS4+nAkJKyNPhd0O7QarjE
+ 2WG66rpmQG6f19gV38/mT8RkHpCZk/uj4hc7Xkw3NV/k55E2gH1akw==
+X-Received: by 2002:a5d:67c8:0:b0:48d:f014:63ee with SMTP id
+ ffacd0b85a97d-48e38594defmr2903062f8f.20.1792765843955; 
+ Fri, 23 Oct 2026 07:30:43 -0700 (PDT)
 Received: from autotest-wegao.qe.prg2.suse.org
  ([2a07:de40:b240:0:2ad6:ed42:2ad6:ed42])
  by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-4a29cdc0d1dsm8498505e9.12.2026.10.23.07.23.04
+ ffacd0b85a97d-48e3d412a04sm139661f8f.39.2026.10.23.07.30.43
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 23 Oct 2026 07:23:04 -0700 (PDT)
-Date: Fri, 23 Oct 2026 14:23:02 +0000
-To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <atttxiDuoelkKaCo@autotest-wegao.qe.prg2.suse.org>
-References: <20261022022824.19735-1-wegao@suse.com>
- <20261022022824.19735-3-wegao@suse.com>
- <20261022154436.GA419745@pevik>
- <atrKnXXqaislOimV@autotest-wegao.qe.prg2.suse.org>
- <atsvLxoiVM-panPC@yuki.lan>
+ Fri, 23 Oct 2026 07:30:43 -0700 (PDT)
+Date: Fri, 23 Oct 2026 14:30:41 +0000
+To: Andrea Cervesato <andrea.cervesato@suse.com>
+Message-ID: <attvkSUq_rqcpu6C@autotest-wegao.qe.prg2.suse.org>
+References: <20261022022824.19735-3-wegao@suse.com>
+ <nyxmYT58cq0uOlU7fpl6RzXmIEKsQXtL83EA@localhost.localdomain>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <atsvLxoiVM-panPC@yuki.lan>
-X-Spam-Status: No, score=-6.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,MAILING_LIST_MULTI,
-	SPF_HELO_PASS,SPF_PASS autolearn=no autolearn_force=no version=4.0.1
+In-Reply-To: <nyxmYT58cq0uOlU7fpl6RzXmIEKsQXtL83EA@localhost.localdomain>
+X-Spam-Status: No, score=-11.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_PASS,SPF_PASS autolearn=ham
+	autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH v16 2/2] open16: allow restricted O_CREAT of FIFOs
  and regular files
@@ -122,24 +117,29 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Fri, Oct 23, 2026 at 11:55:59AM +0200, Cyril Hrubis wrote:
-> Hi!
-> > > > +	exit(0);
-> > > 
-> > > Do we need this explicit exit?
-> > Yes i think exit(0) is necessary because only the child process reaches this point.
+On Fri, Oct 23, 2026 at 10:49:58AM +0000, Andrea Cervesato wrote:
+> Hi Wei,
 > 
-> Any child that returns to the test library calls exit(0).
-Thanks Cyril and Petr for pointing this out, and sorry for the oversight on my part.
-For above case SAFE_FORK() returns early in the parent process, only the child reaches this
-last point and we do not need duplicate exit(0) since child will encounter
-run_tests check if (tst_getpid() != context->main_pid) and do exit(0).
-
-Will update it in next patch.
+> > diff --git a/include/tst_path_defs.h b/include/tst_path_defs.h
+> > index 1a60028d3..2995150be 100644
+> > --- a/include/tst_path_defs.h
+> > +++ b/include/tst_path_defs.h
+> > @@ -47,6 +47,8 @@
+> >  #define PATH_FS_PIPE_MAX_PAGES			"/proc/sys/fs/pipe-max-pages"
+> >  #define PATH_FS_MAX_USER_GROUPS			"/proc/sys/fs/fanotify/max_user_groups"
+> >  #define PATH_FS_MAX_USER_MARKS			"/proc/sys/fs/fanotify/max_user_marks"
+> > +#define PATH_FS_PROTECTED_REGULAR		"/proc/sys/fs/protected_regular"
+> > +#define PATH_FS_PROTECTED_FIFOS			"/proc/sys/fs/protected_fifos"
 > 
-> -- 
-> Cyril Hrubis
-> chrubis@suse.cz
+> I just figured out that these were added in the same commit that is
+> modifying open16. They should be inside an another commit.
+Thanks for point this , will update in next patch :)
+> 
+> Kind Regards,
+> --
+> Andrea Cervesato
+> SUSE QE Automation Engineer Linux
+> andrea.cervesato@suse.com
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
