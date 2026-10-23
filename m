@@ -2,99 +2,90 @@ Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1885606A31A
-	for <ltp@archiver.kernel.org>; Fri, 23 Oct 2026 10:50:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C129A606A326
+	for <ltp@archiver.kernel.org>; Fri, 23 Oct 2026 12:35:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=lists.linux.it header.i=@lists.linux.it header.a=rsa-sha256 header.s=picard header.b=ksj/2CbM;
-	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=suse.com header.i=@suse.com header.a=rsa-sha256 header.s=google header.b=FQX/lgGT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1792752621; h=message-id :
- to : in-reply-to : date : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : cc : mime-version : content-type :
- content-transfer-encoding : sender : from;
- bh=OchFe3RrpH4VGPpUuxXjDIQpvGP5eTu428TPSeIPhvE=;
- b=ksj/2CbM8RhnRswUBX+wfFOIjHaUeNHfU8/DgYKKIelw4+C+lXSYm6m7x95jHM4UiInBp
- NRpJapVH1Z+Adobvzwc6Nn8AfmZAyBlJYtBpAYx40to1FFOkzJP5LOaCJde/gPf2AiHlqFA
- 2NE1EXaAGdenAXd3sUatU07xaKTafQw=
+	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256 header.s=google header.b=bKxhlFkf
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 16D903E9BE0
-	for <ltp@archiver.kernel.org>; Fri, 23 Oct 2026 12:50:21 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 050873E2550
+	for <ltp@archiver.kernel.org>; Fri, 23 Oct 2026 14:35:06 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D301F3D25F8
- for <ltp@lists.linux.it>; Fri, 23 Oct 2026 12:50:00 +0200 (CEST)
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com
- [IPv6:2a00:1450:4864:20::32d])
+ by picard.linux.it (Postfix) with ESMTPS id 208DC3D25F8
+ for <ltp@lists.linux.it>; Fri, 23 Oct 2026 14:34:46 +0200 (CEST)
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com
+ [IPv6:2a00:1450:4864:20::529])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id A04C6602783
- for <ltp@lists.linux.it>; Fri, 23 Oct 2026 12:49:59 +0200 (CEST)
-Received: by mail-wm1-x32d.google.com with SMTP id
- 5b1f17b1804b1-4a1fe9efc0eso7820085e9.2
- for <ltp@lists.linux.it>; Fri, 23 Oct 2026 03:49:59 -0700 (PDT)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 6FFAA1A01974
+ for <ltp@lists.linux.it>; Fri, 23 Oct 2026 14:34:46 +0200 (CEST)
+Received: by mail-ed1-x529.google.com with SMTP id
+ 4fb4d7f45d1cf-6aa046a99c6so198421a12.2
+ for <ltp@lists.linux.it>; Fri, 23 Oct 2026 05:34:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1792752599; x=1793357399; darn=lists.linux.it;
- h=date:content-transfer-encoding:content-type:in-reply-to:cc:to
- :message-id:subject:from:from:to:cc:subject:date:message-id:reply-to
- :content-type; bh=HQAdPl0ojKRQIUo9TvrEnntTMbksvwNwjYLKi85TDfc=;
- b=FQX/lgGTcOP+BFXFsM3Q1/MlSH8Ugmn83dZgzjU+hdhNM1jSO1KraOnEY9lAbof3lA
- cjGi39JzSqmztNqKGp+xOJtQwHKfVBy9ZMa/RwYrCYKWnMPOU4hS9uufFKphb5knQZk0
- prtHlgrc5CLkc+6XAVYzxZ12hkjq9N5XY73FkQETNvDB5+kVBYeoA9ZkG5F1W1SHcPD3
- ZCnlRjezUZ54Lsr+zizlEXsFcE9G8oEHpWJGtxfRX5nUNNBY3AfKWSHgEGEHXeZsnD2Q
- NDNm3FwcwfijmxaClAnjDCPrM6BUt23c40B8KF1fCJZppOQtSjoRf3Jedg4LeeUkbU/m
- RfHw==
+ d=linaro.org; s=google; t=1792758886; x=1793363686; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+ bh=xuhacqqS+/NCTaqpntAc8N4PHd57yuuqKo6hfOs1c80=;
+ b=bKxhlFkfMOVbc/A9U2r1DGD1d6xCPHxv7C8ltarNFAAMgSfrvnw4EaD9Y8OlS+odz9
+ mqezDqz6Qm9tXufCYstzA21hdl39vGEy67GOkLSd76pBVV+XFr9xSaII7VRKb6Wl1epN
+ uXduKUuVNnCaIQ2Y8MYjuHIlmOfMM1awE6B/pEL/htY5PKh8IwO2JOZQflJ8LIJ8Aab7
+ BWI6DzcFmkceyfxNPLToWxBUKpksaMBK4RlM/DDGvCNLzrhG3u/n3UdKmGgz3NbemEj2
+ MJaX7djZVIxagtRBadeT1oXBLdwXU4p+8lz0Ow7HFOnkG6nZw/MFTLIB1W8KsGPGYRRM
+ t/pg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20260707; t=1792752599; x=1793357399;
- h=date:content-transfer-encoding:content-type:in-reply-to:cc:to
- :message-id:subject:from:x-gm-gg:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to:content-type;
- bh=HQAdPl0ojKRQIUo9TvrEnntTMbksvwNwjYLKi85TDfc=;
- b=NxDGjmimJW55l9r7YhkJzAY4IXlPYhKa3+v8LnrFv1D8LuA2tYYsz8HYELuO6punX4
- Kj6+3PqGL9C9nfbhElfwFNLSYYSLTPokyKsNZ4oNJ9RjH4CdscXjbUFkk7YX6QjsYdbo
- bhFkBZcpp6D4Yj6ornFzX4xg4jxWrmnDDE7EQoEKCrYP1sjw5wHTqZAtTSGqxv9oXL+t
- 2J1o7TKbzf5QjeQ/7d/Ub6x8QpJTVhC6NNeuHyxalVWfUq7GH8i+0sxRN2ZglW07cgzv
- KJjy8SjZU3bHgRNyXG15gGsjHcgtEgslPwjMezCX8m4IBN7QYPhJy7KX2o6CJwlG31Et
- soyQ==
-X-Gm-Message-State: AFq9FYKlT6RkFkmUgA0ejIJCXhMMthATQIJOMaCGoZKLcRAJjgH4boVS
- 7hc175v8Q7delR/8S0jCAmjDSonlvOMF/YO/yXaODOtGEQ4kktqE0IQkbH+KCDgPXJw=
-X-Gm-Gg: AYBFou0i6p9/wB5UhbVxz1REqtkx1Yesubkq0B2UzvQYH0T+rQBjDMoYiQDgpD2aWO8
- t4orJ2UECyb1BmVdC8dSuIveozYIIcb1kJMhI54PzbFCr+LJf2+n0pbzM8Ix7ZCuAUrge9GKoIW
- bEBmnIT9RAQ8ug+QJDelB/hB/FtlIK+kLTJ3oy65/QvTut4XGNlx+Yf+9DSv++NFqbir8V7jYDI
- WH/ggqMd1baRWXEq0U6xtUFvl8hvmonutdr0ZLoUbjneiGj+X5CEcgE3U2Ao9e8ZbIDMYAXe4lP
- vxlrx1INbP6GQZzw/dCOELj3bZBCFjzt9xjDRZSezsDIHgKwemyiqPd0a4gjBT6t1MeswbOEzFA
- oT2O/rYru5OLMGAvPHrIUTcKvOu5/9uEnEeH5vRL75BvkXY5D3C+EIu1dG/YT4icYcNbgFjMpZu
- s6I/4wN5idObhd01IRFRPEyWx6kpkA3Hl9ke++UJgBgIu82LBiX8k3TRNpk7DVOL7R3fIT2e/30
- YH9LoPwwVvASBCuppmvQCwmSD3sfkioQcWT1wWjBfBVC2auGolJW/z614iAXoFHR1SIrJflLro9
- 1Lry1em0WSX9dUjfVMYEQ9WqL0SdqU6zsW23iURHsrBV/D0QWeim7MSQPGg=
-X-Received: by 2002:a05:600c:6099:b0:4a2:104b:93a0 with SMTP id
- 5b1f17b1804b1-4a211cb510dmr30806245e9.10.1792752598986; 
- Fri, 23 Oct 2026 03:49:58 -0700 (PDT)
-Received: from localhost.localdomain
- (p200300ef2f310000926bd7eee21e6eee.dip0.t-ipconnect.de.
- [2003:ef:2f31:0:926b:d7ee:e21e:6eee])
+ d=1e100.net; s=20260707; t=1792758886; x=1793363686;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to:content-type;
+ bh=xuhacqqS+/NCTaqpntAc8N4PHd57yuuqKo6hfOs1c80=;
+ b=1DUWq2houdxzKLErM8zp8VG5TpkQGBl6PqK6SriT91/Ld+fnreFGvpDasdK3doyBFx
+ dUjEyGdE28neVlIav1KBbauSLRzbydzCQITJieTpB93AxeMUMgCvhEha+AU7+ddpG2vD
+ RF/dM82iR+y6gJjOrVXrl/XPIzeSp4uimipAi3MuBfc5+5+XtCykDZT98gh6ivTNCVjH
+ RbXwbZ8pZpplKbendHxiTRrjl3IXEiBzkeXCgJXlUcRRmmDwGQqvZ/R+AoE2VDTy45S2
+ tFFZRc7FKyObTD3pkj+oqaZFtyXtAXvtDiODbfV07uPLRyWE+F5ZPrfkKT4e6HmToYM1
+ BfHQ==
+X-Gm-Message-State: AFq9FYKCCsUb6to/xXFLHRo0x7p1r3XrQBbgGVSqrpbto6waKEt8vGMR
+ IeYFbsdMOwEx7rg7df51RY2/SHGMpV5tvEQBOyheneHpoDsJQuiZda0pJftzNDTnZQQgQWcBSDd
+ BYUBO
+X-Gm-Gg: AYBFou0S6umoZc5ac5K30JpEXed8Ivc1Kpf8Ccx+wjh+flhQLydciFMQ31SXPZ/UlIW
+ Iy9kJ3tBxto2C21l6Mj99v6Rmn01K+bHc7xJkMw0+NngUI/wMj4nLJuqwug7MbSA2SZuOgbY72Y
+ 0QfAYSy1SA0J6G7njz2YjRAT55W4heZsFvJZE9cZgP20usL4ABZd9Vr1O4okwqMfaE6b6YQbBVP
+ 5AAgDS3yFGZsotMbbMCM5Knymf4jNekwaX+iZe8s8LyBJUWX9BLhq9FDCJ4xgr1Q7LfmbWXuRkA
+ hpWRNbjOuJnOwwTNv9qksWRziyg7kT2cgIP4oL8rJfPdiWltxwsifuUMr7Vxixd06zapWLxEMqT
+ eVT3kNU6lWpffVZUkT7vtglEnyX8XB5BK1c1Do3hykN5GKoKnmzzzQ5CJZP9c4GNZrvvU3vJzp/
+ WpP5S4LFL1DaxxImJqSDeqbnE4+EszYezeou41/CZ8Ciit3jva4+KWhMUHtczgyzdtz1IqSp/V5
+ 8BD2UEBmUI0YqUD4C7I4JSyPsWAPI5jk6o1UUWEZ66DleM37GR2aCsZX3+11lfRpjFwkQAIhVJ5
+ +5SStE1oWT7CNoBpMX65/mbypUt0UIo7U8Nw
+X-Received: by 2002:a05:6402:a207:10b0:6b1:bc2e:5d52 with SMTP id
+ 4fb4d7f45d1cf-6b432c0ead1mr3704575a12.3.1792758885666; 
+ Fri, 23 Oct 2026 05:34:45 -0700 (PDT)
+Received: from localhost (c-85-229-7-191.bbcust.telenor.se. [85.229.7.191])
  by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-4a21047b524sm68120165e9.14.2026.10.23.03.49.58
+ 4fb4d7f45d1cf-6b432c96badsm1007381a12.14.2026.10.23.05.34.45
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 23 Oct 2026 03:49:58 -0700 (PDT)
-Message-ID: <nyxmYT58cq0uOlU7fpl6RzXmIEKsQXtL83EA@localhost.localdomain>
-To: "Wei Gao" <wegao@suse.com>
-In-Reply-To: <20261022022824.19735-3-wegao@suse.com>
-Date: Fri, 23 Oct 2026 10:49:58 +0000
-X-Spam-Status: No, score=-11.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_PASS,SPF_PASS autolearn=ham
+ Fri, 23 Oct 2026 05:34:45 -0700 (PDT)
+From: Anders Roxell <anders.roxell@linaro.org>
+To: ltp@lists.linux.it,
+	pvorel@suse.cz
+Date: Fri, 23 Oct 2026 14:34:34 +0200
+Message-ID: <20261023123436.1274448-1-anders.roxell@linaro.org>
+X-Mailer: git-send-email 2.53.0
+X-Archived-By: <archiver.kernel.org>
+MIME-Version: 1.0
+X-Spam-Status: No, score=-11.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_PASS,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v16 2/2] open16: allow restricted O_CREAT of FIFOs
- and regular files
+Subject: [LTP] [PATCH 0/2] openposix: Run the Open POSIX tests with kirk
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -104,36 +95,41 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Cc: ltp@lists.linux.it
-X-Archived-By: <archiver.kernel.org>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Wei,
+Hi,
 
-> diff --git a/include/tst_path_defs.h b/include/tst_path_defs.h
-> index 1a60028d3..2995150be 100644
-> --- a/include/tst_path_defs.h
-> +++ b/include/tst_path_defs.h
-> @@ -47,6 +47,8 @@
->  #define PATH_FS_PIPE_MAX_PAGES			"/proc/sys/fs/pipe-max-pages"
->  #define PATH_FS_MAX_USER_GROUPS			"/proc/sys/fs/fanotify/max_user_groups"
->  #define PATH_FS_MAX_USER_MARKS			"/proc/sys/fs/fanotify/max_user_marks"
-> +#define PATH_FS_PROTECTED_REGULAR		"/proc/sys/fs/protected_regular"
-> +#define PATH_FS_PROTECTED_FIFOS			"/proc/sys/fs/protected_fifos"
+There are no runtest files for the Open POSIX tests, so kirk can not
+run them. Patch 1 installs the missing .args files.
 
-I just figured out that these were added in the same commit that is
-modifying open16. They should be inside an another commit.
+Patch 2 generates runtest/openposix-* at install time. Each line calls
+a small wrapper that maps the Open POSIX exit codes to the LTP ones.
 
-Kind Regards,
+Tested with kirk on arm64 in QEMU: 1735 tests, 1 failure
+(pthread_rwlock_unlock_3-1).
+
+Cheers,
+Anders
+
+Anders Roxell (2):
+  openposix: Install the .args files
+  openposix: Add runtest files for kirk
+
+ testcases/open_posix_testsuite/Makefile       | 13 ++++++++-
+ testcases/open_posix_testsuite/bin/Makefile   |  6 +++-
+ .../open_posix_testsuite/bin/openposix_run.sh | 29 +++++++++++++++++++
+ .../include/mk/config.mk.in                   |  3 ++
+ .../scripts/generate-makefiles.sh             |  1 +
+ .../scripts/generate-runtest.sh               | 29 +++++++++++++++++++
+ 6 files changed, 79 insertions(+), 2 deletions(-)
+ create mode 100755 testcases/open_posix_testsuite/bin/openposix_run.sh
+ create mode 100755 testcases/open_posix_testsuite/scripts/generate-runtest.sh
+
 --
-Andrea Cervesato
-SUSE QE Automation Engineer Linux
-andrea.cervesato@suse.com
+2.53.0
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
