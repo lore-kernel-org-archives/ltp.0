@@ -1,93 +1,107 @@
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F186D606A31A
-	for <ltp@archiver.kernel.org>; Fri, 23 Oct 2026 07:07:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80D1A606A31A
+	for <ltp@archiver.kernel.org>; Fri, 23 Oct 2026 07:51:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20251104 header.b=EKPeLi1N
+	dkim=pass (1024-bit key, unprotected) header.d=lists.linux.it header.i=@lists.linux.it header.a=rsa-sha256 header.s=picard header.b=fyU11lQS;
+	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=suse.com header.i=@suse.com header.a=rsa-sha256 header.s=google header.b=Rig7VEPV
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1792741892; h=date : to :
+ message-id : references : mime-version : in-reply-to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-type :
+ content-transfer-encoding : sender : from;
+ bh=WvZgLS1YmK6z1yg/KDDcKDISAkGzFPj3B/jaH3hEtHw=;
+ b=fyU11lQS67Fi6Fo3Nnv5RPNVo1KnmNT3rtqBFo+r2eo+p7v8zTwDXgHSoGK6cJwuPUpbQ
+ djSxTJhP6dJLmi+X99ioBlLN0wc/BjOYPQ/wZPdEEEJoCE6d6dw2IAnCPyCpFklP9pgShxL
+ 9mCc2/5165EqiWxtmMycEmjF/foadbQ=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 5C1753E25E9
-	for <ltp@archiver.kernel.org>; Fri, 23 Oct 2026 09:07:57 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 049BD3E6086
+	for <ltp@archiver.kernel.org>; Fri, 23 Oct 2026 09:51:32 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 06A003E256C
- for <ltp@lists.linux.it>; Fri, 23 Oct 2026 09:07:40 +0200 (CEST)
-Received: from mail-qv2-x02.google.com (mail-qv2-x02.google.com
- [IPv6:2607:f8b0:4864:33::2])
+ by picard.linux.it (Postfix) with ESMTPS id D2A883D2600
+ for <ltp@lists.linux.it>; Fri, 23 Oct 2026 09:51:11 +0200 (CEST)
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com
+ [IPv6:2a00:1450:4864:20::42d])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 665FB140162C
- for <ltp@lists.linux.it>; Fri, 23 Oct 2026 09:07:40 +0200 (CEST)
-Received: by mail-qv2-x02.google.com with SMTP id
- 6a1803df08f44-91b851030dcso3090106d6.0
- for <ltp@lists.linux.it>; Fri, 23 Oct 2026 00:07:40 -0700 (PDT)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id F00391A0123F
+ for <ltp@lists.linux.it>; Fri, 23 Oct 2026 09:51:10 +0200 (CEST)
+Received: by mail-wr1-x42d.google.com with SMTP id
+ ffacd0b85a97d-48e0d1c095dso365664f8f.1
+ for <ltp@lists.linux.it>; Fri, 23 Oct 2026 00:51:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1792739259; x=1793344059; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to:content-type;
- bh=1rZgw1gRgvsH5d8wlL/H1IvRsCzGu0UL/tdgzvO4DtM=;
- b=EKPeLi1NHRAi4B+xMu3yPa6iAQAVzWfs66yDWFKpMQjGDW9bFcY/8xITaecgHJ2VF9
- 4txChAgVlEiIVakvykA33nb8OzYzUhxEznJb3MWm8K98HQJ99wABu5HNpSxDl5GxEFG7
- /6G2p3UF12b/e6vjLPl9P/rAXDEExc8A/eEB1r7NO6q+DvHEy0IMhrXzqiiuMTR7t1Ni
- 7WV/58ef5z8BTvfZGiWzekkThyceN8jT5G4JLfAUJV0kJI0uCGb5BzmV3qdurBLNsZRI
- hsbTPHIRxaQZmAf0yTpaZv4P7aftIGcBh75FH5OYOYwg+a9EspM0arowJLTvu5xUXyxn
- xEKw==
+ d=suse.com; s=google; t=1792741870; x=1793346670; darn=lists.linux.it;
+ h=in-reply-to:content-disposition:content-type:mime-version
+ :references:message-id:subject:cc:to:from:date:from:to:cc:subject
+ :date:message-id:reply-to:content-type;
+ bh=GDqmUlsQWCrH4olb1dArvOwBBfUr7k4ft+u0R4NdpnU=;
+ b=Rig7VEPVR9cpb3hMfiSaOjbXoa0aML+MTJB7knDx8YAeXc5HE+UKdQQG1qzWxWO2Bp
+ Fg897lx2y7pta+RS23UcivdG8Ntqj4ZWTQxHgngPjojuv9OIUSz3sjof8sWR35MFengV
+ f0UyCmfwBdk4wHuU1s77LnM23op2pIJIwD6ywb4kgx8GR7ifGOph4V9lah3f6TL3lFJP
+ cOn/nYIYleMRDLD8lfIMvbcS44UYpqkIv3xruRtMvTVOGYDlWpdsBhsxJGolbTSPF2Pa
+ pn/kCf6TcYoe0URu6Ik1PBjekf/DlgF5Uk0NEMHXoo39Ey4ledGAvCDqYIfmrISCHKGR
+ dj3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20260707; t=1792739259; x=1793344059;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to:content-type;
- bh=1rZgw1gRgvsH5d8wlL/H1IvRsCzGu0UL/tdgzvO4DtM=;
- b=rX2nM4AcET7Mu2Pq8Zxe6kIxCmPs9V2IU2Q30XF53ApQb2bypxpkgPdCuvSM8u/UaT
- HOkzm2zIdwPP1q2ffuaAFV4EuN+e7dIljxv0FLruprxAGfV0Sot6d1t0kYiGbl5vEtVV
- xJenm3anIBk19jYJG9gFU5xKh8EDhVQuGLiIehLltH0vaG/1GvvJRVDiLrznyQhYQs7T
- OdKeqba7lF9oBHpd7aZPrsXoMITGEPRDtEOL6yWnDQxifrKOUuOyEqX11hcs5z0VMSQH
- qMZwL212kzK3vai2Bhrm3IIplx4MTCHIXLDgtMOcrHl3EUyDtOEVNqDf60/JYn+QJjNv
- lo3A==
-X-Gm-Message-State: AFq9FYKbedpTvfqQDnTGZLg7pYw7KEBIT3yt7uDb2+Jmvrmj+EVpX31s
- 3kXFY+5vTPCEhpXuDUZ4SB85oPRDjhy/x7w7dqNfO/zioPBlbsYLv99JdW2bhOeg
-X-Gm-Gg: AYBFou1LmKO14xUjgK+KgW/N58XlSVQUZqfEEAtplDuRKmeU+ZqKujfyDpyCZeD34Cl
- Z2PkBO00mP5vkGv0ULq/uQpnjfU+u2dog+Ltyedfs5Quykzsjruie+ZvKsO9bJQRbTyikj4aG4K
- 0nid32nSJPGXmhjpbw7tOzCknauLaDUgDLnckk0MrYKTyeCsxKgl5xSWhKaZJ2dG6eCNH250XBN
- hwaABz7A/Iazp3t4FP7lCqVwTjVjw6sVHp4wQ5TBTYLuUBP9y6TAtscZY3edejEgv9teoZQvG59
- zg5Df+B4RaQShpvOB0JWjIWrZYDm2DEGp8si17Wrmk7j3Swro/U3rWsp1xzHrYTursZDqWk811n
- fXef1+OQgHTatkV0msbVrl4Mkb1BsuSNc9q1/QR9zCaqh8qP9X7WQipMG2mEm2fLRADuOSbvTnO
- dIgFrLOCXfBp52bl5v6zhg/pivEh7gITvwIIf4u1NUtHRwAbzqhP01iC+l7NCPzY0QjxkspUdme
- RGyE9FGRIdbIT4lYUJpVQ6MQnDuMtmTG0eEYLYFhgWsFqqiu1V46RGw0TH/3QX7uYyzCQLPTRWY
- RgjMqNIZA2Dx65DXJeP0OLmKRss9ACWzF46tuWjFHWIPsc7ImrhPHUWppa6/lfjL8ahQ
-X-Received: by 2002:a05:6214:1c4c:b0:919:53ed:d225 with SMTP id
- 6a1803df08f44-91c3a9e6f0amr16960376d6.39.1792739258946; 
- Fri, 23 Oct 2026 00:07:38 -0700 (PDT)
-Received: from
- runnervm8k3b6.yxtqycod0cee5c3osj2c14abtb.bx.internal.cloudapp.net
- ([172.172.158.8]) by smtp.gmail.com with ESMTPSA id
- 6a1803df08f44-91c39507ff0sm13395236d6.4.2026.10.23.00.07.38
+ d=1e100.net; s=20260707; t=1792741870; x=1793346670;
+ h=in-reply-to:content-disposition:content-type:mime-version
+ :references:message-id:subject:cc:to:from:date:x-gm-gg
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+ :content-type;
+ bh=GDqmUlsQWCrH4olb1dArvOwBBfUr7k4ft+u0R4NdpnU=;
+ b=r/uSO7NFh/0JHo53BIM7Tye6IBhA4ZeYHt4AN1rLaWaQ93a0XAJqE/2/D7BHyAuioe
+ qpHlW//oJfyTqqyAdBHdgeACY6kE9yXhN75zsatM20VWLE64hdiSxEEUbiI+vqALMnXI
+ sXM2XHH+aFgzpijGAGCkKCCRhjGHVSjwYFec45skBQ/3OIv9EuHfQjCOavf496nrqBlB
+ hQDiAEy3uwhLMzS4WJGLcqsWbV5SRWuzFbLzPrQhMZNUzF5jJ1aXNMzSrhHaUL6KgeG9
+ asN2feWyLKYgATMUk3sxtNGnxkTdTLvnKhv9TgRZMLaG5dySH0k/Epof9/RJTO1bGxkH
+ ikKw==
+X-Gm-Message-State: AFq9FYKY1i/40LkX/ILu8aSBSeDJmcx/2CCXi8l4qGDsVT884HNNhUdR
+ 45iCCjqpYQQMitmiw9DkEDIAZYOiXuu5bZeBNWCXxACj7sWVk4XUxDgCZLivzwjiiLjnZ0hvH34
+ Eq10=
+X-Gm-Gg: AYBFou1QHgG1neSKHD+X8gNUHvuEea2sE0CYwmBC4qrSUNknfCbTwsV8f+kGhIABhw/
+ d12iFrBz9vn3hx6oS4cg363UNOAMBnZztyTm3sfcgr+l6laLvn3I1oxjAMlHvd+3BROeHWgnfkd
+ 9J2wPzhuA8MDipOWppgLvJadfmJ/i8grIZ9OpghsihchHhtN6gm9NjFXpm5LA1srtoxOrAxy0nO
+ XhUkLLrjyePyZ5sa4aq0i5FiuUmEe9Pvqz025wYFSwxbkqV3DTyRC7r2gpQlFBJgyqufyoD4NAS
+ aYQgF/2DeeSDclLug8eO7H8VVxeKAjTeiVHC94lrfHExYgmcF+Z542J6NunP5t6JPt0II9KbmIf
+ r9Jx4iA79+ClI887dJFqrcijIhYRJVwjqGdCwUPFhqwBkeXRMo5Y0Cz3hGzTolzR/S50vnzOrYp
+ AyTvoETMZ8mtLUh5r4kfBkqTdzxo1VEZPDcy2NaCADHiUUACm4yzyExMyW55JgDZJCNZ+n5MgZP
+ PQlStTwPV55I6to73lcpMs7JfFMVHRkMx4hwXQBhpru06YZmQOO/kVjAY5hMYQHOm5zsOkbS9cF
+ 74mFaxd1GEUceSg/x930q7NOiutpMp9juwVyrvdkpbZtHPM7sYBG8hILaLXIkfw/PiGpQhhp70U
+ =
+X-Received: by 2002:a05:6000:2085:b0:487:15a3:1cab with SMTP id
+ ffacd0b85a97d-48e3858b1cemr2255433f8f.18.1792741870246; 
+ Fri, 23 Oct 2026 00:51:10 -0700 (PDT)
+Received: from autotest-wegao.qe.prg2.suse.org
+ ([2a07:de40:b240:0:2ad6:ed42:2ad6:ed42])
+ by smtp.gmail.com with ESMTPSA id
+ ffacd0b85a97d-48e380314aesm3061914f8f.28.2026.10.23.00.51.09
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 23 Oct 2026 00:07:38 -0700 (PDT)
-From: linuxtestproject.agent@gmail.com
-To: Victor Cheng-Yen Yang <cyyang772@andestech.com>
-Date: Fri, 23 Oct 2026 07:07:38 +0000
-Message-ID: <20261023070738.8726-1-linuxtestproject.agent@gmail.com>
-X-Mailer: git-send-email 2.55.0
-In-Reply-To: <20261023024338.2056856-1-cyyang772@andestech.com>
-References: <20261023024338.2056856-1-cyyang772@andestech.com>
+ Fri, 23 Oct 2026 00:51:09 -0700 (PDT)
+Date: Fri, 23 Oct 2026 07:51:07 +0000
+To: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <atsR69ZkDkg5B2yx@autotest-wegao.qe.prg2.suse.org>
+References: <20260917024609.20527-1-wegao@suse.com>
+ <20261021084933.19097-1-wegao@suse.com> <atoJhAJSqByxqdeQ@yuki.lan>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-3.5 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_INVALID,DKIM_SIGNED,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_PASS,
-	SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no version=4.0.1
+Content-Disposition: inline
+In-Reply-To: <atoJhAJSqByxqdeQ@yuki.lan>
+X-Spam-Status: No, score=-21.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_PASS,
+	SPF_PASS autolearn=ham autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] Update call sites of SAFE_WRITE() to use the enum values
+Subject: Re: [LTP] [PATCH v17] fsconfig04: Check FSCONFIG_SET_PATH
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -97,27 +111,125 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+From: Wei Gao via ltp <ltp@lists.linux.it>
+Reply-To: Wei Gao <wegao@suse.com>
 Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Victor,
+On Thu, Oct 22, 2026 at 03:03:00PM +0200, Cyril Hrubis wrote:
+> On Wed, Oct 21, 2026 at 08:49:12AM +0000, Wei Gao via ltp wrote:
+> > The fsconfig01.c does not test if FSCONFIG_SET_PATH has any effect;
+> > most of the calls there just set a dummy "sync" parameter. This test
+> > case aims to verify if the FSCONFIG_SET_PATH operation can be used
+> > to dynamically change the external journal device of an ext3 or ext4
+> > filesystem.
+> > 
+> > Closes: https://github.com/linux-test-project/ltp/issues/1169
+> > Signed-off-by: Wei Gao <wegao@suse.com>
+> > Reviewed-by: Petr Vorel <pvorel@suse.cz>
+> > ---
+> >  runtest/syscalls                              |   1 +
+> >  testcases/kernel/syscalls/fsconfig/.gitignore |   1 +
+> >  .../kernel/syscalls/fsconfig/fsconfig04.c     | 169 ++++++++++++++++++
+> >  3 files changed, 171 insertions(+)
+> >  create mode 100644 testcases/kernel/syscalls/fsconfig/fsconfig04.c
+> > 
+> > diff --git a/runtest/syscalls b/runtest/syscalls
+> > index 2bdb4a9a2..1903f1ac6 100644
+> > --- a/runtest/syscalls
+> > +++ b/runtest/syscalls
+> > @@ -452,6 +452,7 @@ fremovexattr02 fremovexattr02
+> >  fsconfig01 fsconfig01
+> >  fsconfig02 fsconfig02
+> >  fsconfig03 fsconfig03
+> > +fsconfig04 fsconfig04
+> >  
+> >  fsmount01 fsmount01
+> >  fsmount02 fsmount02
+> > diff --git a/testcases/kernel/syscalls/fsconfig/.gitignore b/testcases/kernel/syscalls/fsconfig/.gitignore
+> > index cfedae5f7..bd3754c34 100644
+> > --- a/testcases/kernel/syscalls/fsconfig/.gitignore
+> > +++ b/testcases/kernel/syscalls/fsconfig/.gitignore
+> > @@ -1,3 +1,4 @@
+> >  /fsconfig01
+> >  /fsconfig02
+> >  /fsconfig03
+> > +/fsconfig04
+> > diff --git a/testcases/kernel/syscalls/fsconfig/fsconfig04.c b/testcases/kernel/syscalls/fsconfig/fsconfig04.c
+> > new file mode 100644
+> > index 000000000..bd649717e
+> > --- /dev/null
+> > +++ b/testcases/kernel/syscalls/fsconfig/fsconfig04.c
+> > @@ -0,0 +1,169 @@
+> > +// SPDX-License-Identifier: GPL-2.0-or-later
+> > +/*
+> > + * Copyright (c) 2026 Wei Gao <wegao@suse.com>
+> > + */
+> > +
+> > +/*\
+> > + * This test aims to validate :manpage:`fsconfig(2)` with the
+> > + * ``FSCONFIG_SET_PATH`` operation in dynamically altering the external
+> > + * journal device of an ext3 or ext4 filesystem.
+> > + *
+> > + * Root privileges are required because the test creates and formats loop
+> > + * devices, and configures filesystems.
+> > + *
+> > + * [Algorithm]
+> > + *
+> > + * - Acquire three loop devices (``tst_device->dev`` from framework, ``dev1``, ``dev2``).
+> > + * - Format ``dev1`` and ``dev2`` as external journal devices with the same UUID
+> > + *   (``-O journal_dev -U <uuid>``).
+> > + * - Format ``tst_device->dev`` three times to cycle journal associations:
+> > + *   ``dev1`` -> ``dev2`` -> ``dev1``, so both journal superblocks are consistent.
+> > + * - Open ``tst_device->dev`` via :manpage:`fsopen(2)` and set the source and journal_path using
+> > + *   :manpage:`fsconfig(2)` (``FSCONFIG_SET_STRING``) and
+> > + *   :manpage:`fsconfig(2)` (``FSCONFIG_SET_PATH``).
+> > + * - Apply ``FSCONFIG_CMD_CREATE`` and verify with ``tune2fs`` that ``tst_device->dev``'s
+> > + *   journal device is now ``dev2``.
+> > + *
+> > + * Implementation notes:
+> > + *
+> > + * - To avoid ``journal UUID does not match`` error when switching external
+> > + *   journal device, we have to assign the same UUID to ``dev1``/``dev2``.
+> > + * - Before the :manpage:`fsconfig(2)` test, we have to format ``tst_device->dev`` associating to
+> > + *   ``dev1`` -> ``dev2`` -> ``dev1``. This ensures that both ``dev1``/``dev2`` superblocks contain
+> > + *   correct content. Otherwise, you will encounter errors such as
+> > + *   ``EXT4-fs (loop0): External journal has more than one user (unsupported)``
+> > + *   when switching the external journal device using :manpage:`fsconfig(2)`.
+> > + */
+> > +
+> > +
+...
+> > +static void run(void)
+> > +{
+> > +	/* Reset dev1, dev2 and tst_device->dev superblocks before each test run iteration */
+> > +	SAFE_MKFS(dev1, tst_device->fs_type, mkfs_opts_set_UUID, NULL);
+> > +	SAFE_MKFS(dev2, tst_device->fs_type, mkfs_opts_set_UUID, NULL);
+> > +	format_journal_device(tst_device->dev, dev1);
+> > +	format_journal_device(tst_device->dev, dev2);
+> > +	format_journal_device(tst_device->dev, dev1);
+> 
+> I do not get why we have the dev1 and what errors are we working around
+> here. The dev1 is not used for anything, just formatted again and again.
 
-On Fri, 23 Oct 2026, Victor Cheng-Yen Yang wrote:
-> Update call sites of SAFE_WRITE() to use the enum values
+dev1 serves as the initial baseline journal, cycling through dev1 -> dev2 -> dev1 
+leaves tst_device->dev pointing to dev1 by default while ensuring both dev1 and dev2 
+superblocks are properly initialized so fsconfig() can successfully perform the dynamic 
+swap from dev1 to dev2.
 
-Verdict - Reviewed
+Cycling format_journal_device() three times pre-conditions the disk state:
+- Pass 1 (dev1): Registers tst_device->dev's UUID into dev1's superblock.
+- Pass 2 (dev2): Registers tst_device->dev's UUID into dev2's superblock.
+- Pass 3 (dev1): Resets tst_device->dev's default disk state back to dev1.
+This leaves both dev1 and dev2 superblocks populated with matching, valid UUID entries for tst_device->dev.
 
----
-Note:
-
-The agent can sometimes produce false positives although often its
-findings are genuine. If you find issues with the review, please
-comment this email or ignore the suggestions.
-
-Regards,
-LTP AI Reviewer
+> 
+> 
+> -- 
+> Cyril Hrubis
+> chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
