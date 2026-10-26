@@ -2,39 +2,38 @@ Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A09BA606A31A
-	for <ltp@archiver.kernel.org>; Mon, 26 Oct 2026 07:08:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 052F1606A320
+	for <ltp@archiver.kernel.org>; Mon, 26 Oct 2026 07:08:55 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 3BD293E216C
-	for <ltp@archiver.kernel.org>; Mon, 26 Oct 2026 08:08:40 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id BE3C93E21FF
+	for <ltp@archiver.kernel.org>; Mon, 26 Oct 2026 08:08:53 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 77EE13E217F
- for <ltp@lists.linux.it>; Mon, 26 Oct 2026 08:07:56 +0100 (CET)
-Received: from out28-169.mail.aliyun.com (out28-169.mail.aliyun.com
- [115.124.28.169])
+ by picard.linux.it (Postfix) with ESMTPS id 404073E223A
+ for <ltp@lists.linux.it>; Mon, 26 Oct 2026 08:08:00 +0100 (CET)
+Received: from out28-49.mail.aliyun.com (out28-49.mail.aliyun.com
+ [115.124.28.49])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 682546002E5
- for <ltp@lists.linux.it>; Mon, 26 Oct 2026 08:07:54 +0100 (CET)
-X-Alimail-AntiSpam: AC=CONTINUE; BC=0.07436264|-1; CH=green;
- DM=|CONTINUE|false|;
- DS=CONTINUE|ham_system_inform|0.0728574-0.00375129-0.923391;
- FP=8616006831914929659|0|0|0|0|-1|-1|-1; HT=maildocker-contentspam033032065030;
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id AAFB71400332
+ for <ltp@lists.linux.it>; Mon, 26 Oct 2026 08:07:56 +0100 (CET)
+X-Alimail-AntiSpam: AC=CONTINUE; BC=0.0743626|-1; CH=green; DM=|CONTINUE|false|;
+ DS=CONTINUE|ham_system_inform|0.00348382-1.87803e-05-0.996497;
+ FP=8005206424578315775|0|0|0|0|-1|-1|-1; HT=maildocker-contentspam033025068124;
  MF=yehuaisheng@open-hieco.net; NM=1; PH=DS; RN=5; RT=5; SR=0;
- TI=SMTPD_---.jpkJxXX_1792998470; 
+ TI=SMTPD_---.jpkJxY8_1792998471; 
 Received: from centos9p-03(mailfrom:yehuaisheng@open-hieco.net
- fp:SMTPD_---.jpkJxXX_1792998470 cluster:ay29) by smtp.aliyun-inc.com;
+ fp:SMTPD_---.jpkJxY8_1792998471 cluster:ay29) by smtp.aliyun-inc.com;
  Mon, 26 Oct 2026 15:07:51 +0800
 From: Huaisheng Ye <yehuaisheng@open-hieco.net>
 To: li.wang@linux.dev,
 	chrubis@suse.cz,
 	pvorel@suse.cz
-Date: Mon, 26 Oct 2026 15:07:31 +0800
-Message-ID: <20261026070732.74314-3-yehuaisheng@open-hieco.net>
+Date: Mon, 26 Oct 2026 15:07:32 +0800
+Message-ID: <20261026070732.74314-4-yehuaisheng@open-hieco.net>
 X-Mailer: git-send-email 2.52.0
 In-Reply-To: <20261026070732.74314-1-yehuaisheng@open-hieco.net>
 References: <20261026070732.74314-1-yehuaisheng@open-hieco.net>
@@ -46,9 +45,10 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v4 2/3] hugemmap10: Add private MAP_NORESERVE test mode
+Subject: [LTP] [PATCH v4 3/3] hugemmap10: Account for memory policy in
+ private fault checks
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -63,143 +63,115 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Add -n to apply MAP_NORESERVE only to private mappings. Shared
-mappings retain their original flags and reservation behavior.
-
-Use the private mapping flags for both the reservation probe and test
-mappings. This makes private_resv and its TDEBUG report reflect whether
-the mappings in use create a hugetlb reservation at mmap() time.
-
-The option lets the test exercise fault-time allocation for unreserved
-private mappings without booting a kernel that lacks private mmap-time
-reservations. MAP_NORESERVE faults allocate unreserved hugepages without
+Private mappings on kernels without private mmap-time reservations, and
+private mappings using MAP_NORESERVE, allocate hugepages at fault time.
+For MAP_NORESERVE mappings, faults allocate unreserved hugepages without
 creating a mapping reservation, so HugePages_Rsvd remains unchanged.
 
-Add hugemmap10 -n to runtest/hugetlb with the distinct identifier
-hugemmap10_noreserve so session restore and reboot recovery can track
-both invocations independently.
+With MPOL_BIND, globally free hugepages can be outside the allowed nodes,
+so a fault can allocate surplus pages even when the global counters
+appear sufficient.
 
-Use private_noreserve_opt directly as the option presence flag. Define
-MAP_TYPE in lapi/mmap.h for libc implementations that lack it.
+    $ numactl --cpunodebind=0 --membind=2 ./hugemmap10 -n
+    tst_hugepage.c:84: TINFO: 3 hugepage(s) reserved
+    tst_tmpdir.c:308: TINFO: Using /tmp/LTP_hugdeSTgL as tmpdir (xfs filesystem)
+    tst_test.c:1218: TINFO: Mounting none to /tmp/LTP_hugdeSTgL/hugetlbfs fstyp=hugetlbfs flags=0
+    tst_test.c:2048: TINFO: LTP version: 20260529-237-g132c8b0a8
+    tst_test.c:2051: TINFO: Tested kernel: 7.3.0-rc1-test-32+ #33 SMP PREEMPT Mon Sep  7 11:50:02 CST 2026 x86_64
+    tst_kconfig.c:90: TINFO: Parsing kernel config '/proc/config.gz'
+    tst_test.c:1876: TINFO: Overall timeout per run is 0h 00m 30s
+    hugemmap10.c:498: TINFO: Base pool size: 0
+    hugemmap10.c:425: TINFO: Clean...
+    hugemmap10.c:476: TINFO: OK
+    hugemmap10.c:425: TINFO: Untouched, shared...
+    hugemmap10.c:476: TINFO: OK
+    hugemmap10.c:425: TINFO: Untouched, private...
+    hugemmap10.c:476: TINFO: OK
+    hugemmap10.c:425: TINFO: Touched, shared...
+    hugemmap10.c:476: TINFO: OK
+    hugemmap10.c:425: TINFO: Touched, private...
+    hugemmap10.c:476: TINFO: OK
+    hugemmap10.c:498: TINFO: Base pool size: 1
+    hugemmap10.c:425: TINFO: Clean...
+    hugemmap10.c:448: TFAIL: While touching the addr after mmap private: Bad HugePages_Total: expected 1, actual 2
+    hugemmap10.c:448: TFAIL: While touching the addr after mmap private: Bad HugePages_Free: expected 0, actual 1
+    hugemmap10.c:448: TFAIL: While touching the addr after mmap private: Bad HugePages_Surp: expected 0, actual 1
+
+    Summary:
+    passed   0
+    failed   3
+    broken   0
+    skipped  0
+    warnings 0
+
+Get free hugepages on allowed nodes before touching an unreserved
+private mapping and use the maximum of the global and allowed-node
+shortfalls to calculate the expected counters.
 
 Signed-off-by: Huaisheng Ye <yehuaisheng@open-hieco.net>
 Reviewed-by: Li Wang (Hieco) <li.wang@linux.dev>
 ---
- include/lapi/mmap.h                           |  4 +++
- runtest/hugetlb                               |  1 +
- .../kernel/mem/hugetlb/hugemmap/hugemmap10.c  | 27 ++++++++++++++++---
- 3 files changed, 29 insertions(+), 3 deletions(-)
+ .../kernel/mem/hugetlb/hugemmap/hugemmap10.c  | 21 ++++++++++++-------
+ 1 file changed, 13 insertions(+), 8 deletions(-)
 
-diff --git a/include/lapi/mmap.h b/include/lapi/mmap.h
-index f20eb3bd5..12085ae27 100644
---- a/include/lapi/mmap.h
-+++ b/include/lapi/mmap.h
-@@ -14,6 +14,10 @@
- # define MAP_SHARED_VALIDATE 0x03
- #endif
- 
-+#ifndef MAP_TYPE
-+# define MAP_TYPE 0x0f
-+#endif
-+
- #ifndef MAP_HUGETLB
- # define MAP_HUGETLB 0x40000
- #endif
-diff --git a/runtest/hugetlb b/runtest/hugetlb
-index 621c9718a..5288449b7 100644
---- a/runtest/hugetlb
-+++ b/runtest/hugetlb
-@@ -13,6 +13,7 @@ hugemmap07 hugemmap07
- hugemmap08 hugemmap08
- hugemmap09 hugemmap09
- hugemmap10 hugemmap10
-+hugemmap10_noreserve hugemmap10 -n
- hugemmap11 hugemmap11
- hugemmap12 hugemmap12
- hugemmap13 hugemmap13
 diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap10.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap10.c
-index 7abda1182..08597049d 100644
+index 08597049d..3161bc425 100644
 --- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap10.c
 +++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap10.c
-@@ -25,6 +25,7 @@
- #include <sys/types.h>
+@@ -402,7 +402,7 @@ static int unmap_(int s, int hpages, int flags, char *desc, int line)
+ 	 * reservation.  If those pages were not touched, then they will
+ 	 * not have been freed by the code above.  Free them here.
+ 	 */
+-	if ((flags & MAP_SHARED) || private_resv) {
++	if (mapping_creates_reservation(flags)) {
+ 		int unused_surplus = MIN(hpages - touched[s], es);
  
- #include "hugetlb.h"
-+#include "lapi/mmap.h"
- #include "lapi/syscalls.h"
+ 		et -= unused_surplus;
+@@ -417,10 +417,16 @@ static int unmap_(int s, int hpages, int flags, char *desc, int line)
  
- #define MNTPOINT "hugetlbfs/"
-@@ -32,6 +33,7 @@
- 
- static long hpage_size;
- static int private_resv;
-+static char *private_noreserve_opt;
- 
- #define NR_SLOTS	2
- #define SL_SETUP	0
-@@ -125,6 +127,16 @@ static int mapping_creates_reservation(int flags)
- 	return (flags & MAP_SHARED) || private_resv;
- }
- 
-+/* Exercise fault-time allocation for unreserved private mappings. */
-+static int private_mmap_flags(int flags)
-+{
-+	if (private_noreserve_opt &&
-+	    (flags & MAP_TYPE) == MAP_PRIVATE)
-+		return flags | MAP_NORESERVE;
-+
-+	return flags;
-+}
-+
- static unsigned long read_allowed_free_hugepages(void)
+ static int touch_(int s, int hpages, int flags, char *desc, int line)
  {
- 	char path[PATH_MAX];
-@@ -194,7 +206,8 @@ static int kernel_has_private_reservations(void)
- 	read_meminfo_huge(&t, &f, &r, &s);
- 	fd = tst_creat_unlinked(MNTPOINT, 0, 0600);
++	unsigned long allowed_free = 0;
+ 	long et, ef, er, es;
++	int creates_reservation = mapping_creates_reservation(flags);
+ 	int nr;
+ 	char *c;
  
--	p = SAFE_MMAP(NULL, hpage_size, PROT_READ|PROT_WRITE, MAP_PRIVATE, fd, 0);
-+	p = SAFE_MMAP(NULL, hpage_size, PROT_READ|PROT_WRITE,
-+		      private_mmap_flags(MAP_PRIVATE), fd, 0);
- 
- 	read_meminfo_huge(&nt, &nf, &nr, &ns);
- 
-@@ -322,8 +335,9 @@ static int map_(int s, int hpages, int flags, char *desc, int line)
- 	map_size[s] = hpages * hpage_size;
- 	if (creates_reservation)
- 		allowed_free = read_allowed_free_hugepages();
--	map_addr[s] = SAFE_MMAP(NULL, map_size[s], PROT_READ|PROT_WRITE, flags,
--				map_fd[s], 0);
-+	map_addr[s] = SAFE_MMAP(NULL, map_size[s], PROT_READ|PROT_WRITE,
-+			private_mmap_flags(flags),
-+			map_fd[s], 0);
- 	touched[s] = 0;
- 
- 	et = prev_total;
-@@ -573,6 +587,8 @@ static void setup(void)
- 	hpage_size = SAFE_READ_MEMINFO(MEMINFO_HPAGE_SIZE)*1024;
- 	SAFE_FILE_PRINTF(PATH_VM_OVERCOMMIT_HPAGES, "%lu", tst_hugepages);
- 	private_resv = kernel_has_private_reservations();
-+	tst_res(TDEBUG, "MAP_PRIVATE mmap() %s a hugetlb reservation",
-+		private_resv ? "creates" : "does not create");
++	/* An unreserved private mapping allocates hugepages on fault. */
++	if (!creates_reservation)
++		allowed_free = read_allowed_free_hugepages();
++
+ 	for (c = map_addr[s], nr = hpages;
+ 			hpages && c < map_addr[s] + map_size[s];
+ 			c += hpage_size, nr--)
+@@ -442,19 +448,18 @@ static int touch_(int s, int hpages, int flags, char *desc, int line)
+ 	 * which could elevate total, free, and surplus counts.  resv is
+ 	 * unchanged but free must be decreased.
+ 	 */
+-	if (flags & MAP_SHARED || private_resv) {
++	if (creates_reservation) {
+ 		et = prev_total;
+ 		ef = prev_free - hpages;
+ 		er = prev_resv - hpages;
+ 		es = prev_surp;
+ 	} else {
+-		if (hpages + prev_resv > prev_free)
+-			et = prev_total + (hpages - prev_free + prev_resv);
+-		else
+-			et = prev_total;
++		unsigned long shortfall = surplus_pages_needed(hpages, allowed_free);
++
++		et = prev_total + shortfall;
+ 		er = prev_resv;
+-		es = prev_surp + et - prev_total;
+-		ef = prev_free - hpages + et - prev_total;
++		es = prev_surp + shortfall;
++		ef = prev_free - hpages + shortfall;
+ 	}
+ 	return verify_counters(line, desc, et, ef, er, es);
  }
- 
- static void cleanup(void)
-@@ -582,6 +598,11 @@ static void cleanup(void)
- 
- static struct tst_test test = {
- 	.needs_root = 1,
-+	.options = (struct tst_option[]) {
-+		{"n", &private_noreserve_opt,
-+		 "Map private VMAs with MAP_NORESERVE"},
-+		{}
-+	},
- 	.mntpoint = MNTPOINT,
- 	.needs_hugetlbfs = 1,
- 	.save_restore = (const struct tst_path_val[]) {
 -- 
 2.52.0
-
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
