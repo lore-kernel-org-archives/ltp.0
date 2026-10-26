@@ -2,93 +2,123 @@ Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAD62606A31D
-	for <ltp@archiver.kernel.org>; Mon, 26 Oct 2026 16:36:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8F90606A31A
+	for <ltp@archiver.kernel.org>; Mon, 26 Oct 2026 17:11:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20251104 header.b=qHJEEsa7
+	dkim=fail reason="signature verification failed" (1024-bit key, unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256 header.s=susede2_rsa header.b=ils+LQ9h;
+	dkim=fail reason="signature verification failed" header.d=suse.de header.i=@suse.de header.a=ed25519-sha256 header.s=susede2_ed25519 header.b=C2xKNFLX;
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=suse.de header.i=@suse.de header.a=rsa-sha256 header.s=susede2_rsa header.b=ils+LQ9h;
+	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256 header.s=susede2_ed25519 header.b=C2xKNFLX
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 5930C3EA3F3
-	for <ltp@archiver.kernel.org>; Mon, 26 Oct 2026 17:36:10 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 5447F3EA3FF
+	for <ltp@archiver.kernel.org>; Mon, 26 Oct 2026 18:11:31 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 374E53E2105
- for <ltp@lists.linux.it>; Mon, 26 Oct 2026 17:35:55 +0100 (CET)
-Received: from mail-qk2-x00.google.com (mail-qk2-x00.google.com
- [IPv6:2607:f8b0:4864:34::])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 7DB1B3CFD74
+ for <ltp@lists.linux.it>; Mon, 26 Oct 2026 18:11:14 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id C752F2005F5
- for <ltp@lists.linux.it>; Mon, 26 Oct 2026 17:35:54 +0100 (CET)
-Received: by mail-qk2-x00.google.com with SMTP id
- af79cd13be357-93e5da88874so118544685a.1
- for <ltp@lists.linux.it>; Mon, 26 Oct 2026 09:35:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20251104; t=1793032553; x=1793637353; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to:content-type;
- bh=ifKfkVJZS8K2o73cLZPpe+AS8PbTtT3EuEr5zSnD/iU=;
- b=qHJEEsa7OkwWgIOJ01CS59GyZ2oL17WtAPK68h2wgmtxt49cT/HjwX4+QLm3J79MGA
- NxIFQphsLvXA+KzAvqFkKtlZC3RwYl+ILDCsraMyB6L8ffBjK7+HhAQmfv4E0M58BjAa
- /3PUStDzS4taGZyVA6Ff9kbrwlCyET6HARTUGjz38uvUs/ThJQMMOZJWFSus9DIn38R5
- p1BSv6Bn2eg8BZESqvm5MMZX1N8NsGPHNU42G/aPy4iPby3yzj/GcRSo5EZnboFOGJTO
- ssnb3f/ORBEcfVAz0LXKoavCMLT/iOb5pwp1EkvyNhqNgT9iBhOwUqlzPc3gTpM6UOwg
- RuJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20260707; t=1793032553; x=1793637353;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to:content-type;
- bh=ifKfkVJZS8K2o73cLZPpe+AS8PbTtT3EuEr5zSnD/iU=;
- b=nNVKsphChe+hRRJsXWRTcDr1OdMDNEuzUq1FDMqzZMnmJxv51ACRajcptF+uYTJAi7
- x0hTecrw1ujkYRrjsGwcnTNbrytIZ1fJtExR1nWLqSD1rV5QIti/WV0nC3pyZA2G7c8t
- gBpprHgYYetn0LE/V5NXjmfk5FyxSleGSFtsfiHZ3lvixOqlEVHy/iuCH+wclz2P+s9j
- pnTp4RdyOose6WWIErdNcls9BNb2zP1c06Qs+o5uWP7rZU9CJqthq3I/cvYvdvx9hcoo
- gSNIw6xbWRlteFQtj2EAA3/WQ5dfCPQgpVqqicWOW3EXrxSzdG3F8wL7mLVoWEyl6OZv
- dy8A==
-X-Gm-Message-State: AFq9FYKH83TvSTS1ITcQiLGiR9PSVVUmYbMJffB2wxehjyE6CcjXWnd6
- xiZNgvHIhCsJ8hVbynXsyih08QVS8Bw8ka7OC9ImR9jeI6qVT1YjOMhg
-X-Gm-Gg: AYBFou0WcNNq6NPK20CJ+/Q+rb1C4+TZFjV4Cbrz4hBsKKv16mavm1KVl4B66cPhRH7
- UDZsQJpHmqjJPkRxfOLy3GD3l1496Or/IL1OXpy1VmfI15kYiqW84bDrDUlJsw221Bot6a0xkPP
- nOSgmojPdCTTCPd25JcHAtFcUcosvzMKgDFy8QQFegatV0T6akfczwItpeEcrWu96dh9YrvKFfV
- 0hLk0Raz5clW/+896oZBdx3pw0FYkNfThgB35qLXiRNYYPPMqqLCoWkh1ONC4LuVfNdk17Pas7i
- 6KwkDcCzakAdNO9oXnrv5GQqk5daY4OrMCvbwmAV/g2dUpbKNIn/dII7Wh54TJfxuvbsdFhWCJ3
- XuzQkrrPqySdUBgTK5LV1FXvhUOVEgk3tdjWVsn/9Hihvs1Qsf6ZxVI2MxiHKrOead5TUulQNYs
- r7o4sV0Qu0cst2rJUtFTsFad1Fxe+sp/oNZQDJdumvEl1wh819pql6n96ibTtESlTbZz6ixPorE
- qDAFiK9BCEM+24LZCjVv2NPRghzTq1WYH9hxAtQNTV21HpnZwOoTolAhiO0fPS8YgWkAtqjsgZ2
- nf1l0jDHioRurf7eWoPyd8ql3JlvuFhL/0POZpYU5VYyDlwt6o9hU4w6QEuimjGDlavmQMEKPsh
- 3FmKx+2Rj84xWBrsvnTLuOL40T8+BgrlKQkyX7R5GTrI=
-X-Received: by 2002:a05:620a:1a12:b0:93b:d7a2:dd32 with SMTP id
- af79cd13be357-940ef9add84mr1187849785a.66.1793032553330; 
- Mon, 26 Oct 2026 09:35:53 -0700 (PDT)
-Received: from
- runnervmtai0g.sgkjpevnbxlejplnkguq2c5fce.bx.internal.cloudapp.net
- ([172.214.97.233]) by smtp.gmail.com with ESMTPSA id
- af79cd13be357-940f078a762sm727645585a.30.2026.10.26.09.35.52
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 26 Oct 2026 09:35:53 -0700 (PDT)
-From: linuxtestproject.agent@gmail.com
-To: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 26 Oct 2026 16:35:52 +0000
-Message-ID: <20261026163552.4123-1-linuxtestproject.agent@gmail.com>
-X-Mailer: git-send-email 2.56.0
-In-Reply-To: <20261026151638.578859-1-pvorel@suse.cz>
-References: <20261026151638.578859-1-pvorel@suse.cz>
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id D347B200743
+ for <ltp@lists.linux.it>; Mon, 26 Oct 2026 18:11:13 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 3BCCC1F7D0;
+ Mon, 26 Oct 2026 17:11:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1793034673; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=0ekTMcjoixTmKgZjsYBuNE6ta9dVGT5hlkLPi3MBAGM=;
+ b=ils+LQ9h8q1vgdkf94rxTm5rcc0OQuMIL40M+PEdjBYoAIwR8BlgqByQhRXctYgcKZZIqp
+ Y6WRBz9kIhHbYjENR7OwS76Xc9z+QdP1/tcdY743OgAf7nYxaiv4zHV4vBnZMpmUVQTrRv
+ A+6voD9E48mkpILt5C24llkZMh+8Hjg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1793034673;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=0ekTMcjoixTmKgZjsYBuNE6ta9dVGT5hlkLPi3MBAGM=;
+ b=C2xKNFLXm91Ge2RRxSguY67EIoT6d+rkSl10tCxmXqjhkAULWSE5yiTGiOyyK+5XBW0mxq
+ rHJ/RabvwlLjMeCw==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1793034673; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=0ekTMcjoixTmKgZjsYBuNE6ta9dVGT5hlkLPi3MBAGM=;
+ b=ils+LQ9h8q1vgdkf94rxTm5rcc0OQuMIL40M+PEdjBYoAIwR8BlgqByQhRXctYgcKZZIqp
+ Y6WRBz9kIhHbYjENR7OwS76Xc9z+QdP1/tcdY743OgAf7nYxaiv4zHV4vBnZMpmUVQTrRv
+ A+6voD9E48mkpILt5C24llkZMh+8Hjg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1793034673;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=0ekTMcjoixTmKgZjsYBuNE6ta9dVGT5hlkLPi3MBAGM=;
+ b=C2xKNFLXm91Ge2RRxSguY67EIoT6d+rkSl10tCxmXqjhkAULWSE5yiTGiOyyK+5XBW0mxq
+ rHJ/RabvwlLjMeCw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E4D2F13408;
+ Mon, 26 Oct 2026 17:11:11 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id ef2PHK+J32rSYgAAD6G6ig
+ (envelope-from <gpathak@suse.de>); Mon, 26 Oct 2026 17:11:11 +0000
+From: Gaurav Pathak <gpathak@suse.de>
+To: ltp@lists.linux.it
+Date: Mon, 26 Oct 2026 22:40:55 +0530
+Message-ID: <20261026-statx-atomic-write-v9-1-8df127a863b5@suse.com>
+X-Mailer: git-send-email 2.51.0
+In-Reply-To: <20261019102835.371021-2-gpathak@suse.de>
+References: <20261019102835.371021-2-gpathak@suse.de>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-3.5 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_INVALID,DKIM_SIGNED,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_PASS,
-	SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no version=4.0.1
+X-Change-ID: 20261026-statx-atomic-write-d6ea01cbef34
+X-Mailer: b4 0.14.2
+X-Developer-Signature: v=1; a=openpgp-sha256; l=19964; i=gaurav.pathak@suse.com;
+ h=from:subject:message-id; bh=N/xFMQ44mV5YZTrQlsTiyc71vS+/cSkqPTlSvnrIIME=;
+ b=owGbwMvMwCUWE1e4+dFlWS3G02pJDFn3O91cTJ7/fdgzcavUH8td9x/sTspPXLFx59IjU/bsk
+ npXr/FJvqOUhUGMi0FWTJHFWKFZ3O8qc7WtpqYczBxWJpAhDFycAjCRd8sYGX75X7zqdmfjXS7f
+ NrYklXctcUukJbh9+v8+VYix4Smxc2FkuJXBOMv78ZXrZ9h+u/+oEdG/lDujjbv0VX2f7Vzb1vP
+ ruAE=
+X-Developer-Key: i=gaurav.pathak@suse.com; a=openpgp;
+ fpr=332083174ED5037B3D29291E5C5E71B3E2D31D2A
+X-Spam-Level: 
+X-Spamd-Result: default: False [-13.30 / 50.00]; SUSE_INTERNAL_BYPASS(-9.00)[];
+ BAYES_HAM(-3.00)[100.00%]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; RCVD_TLS_ALL(0.00)[];
+ DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ FROM_HAS_DN(0.00)[]; RCPT_COUNT_THREE(0.00)[3];
+ FROM_EQ_ENVFROM(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ RCVD_COUNT_TWO(0.00)[2];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email]
+X-Spam-Score: -13.30
+X-Spam-Status: No, score=-16.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_PASS,SPF_PASS,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] shmctl03: Fix shmall clamped to UINT32_MAX in 32bit
- compat mode
+Subject: [LTP] [PATCH v9] syscalls/statx13: Add test for STATX_WRITE_ATOMIC
+ on regular file
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -98,27 +128,507 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+Cc: gaurav.pathak@suse.com, Gaurav Pathak <gpathak@suse.de>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Petr,
+From: Gaurav Pathak <gaurav.pathak@suse.com>
 
-On Mon Oct 26 16:16:38 2026 +0100, Petr Vorel <pvorel@suse.cz> wrote:
-> shmctl03: Fix shmall clamped to UINT32_MAX in 32bit compat mode
+Add a test that verifies statx(2) correctly reports atomic write
+limits (STATX_WRITE_ATOMIC / STATX_ATTR_WRITE_ATOMIC and the
+stx_atomic_write_* fields) on a regular file, on both XFS and ext4.
 
-Verdict - Reviewed
+STATX_WRITE_ATOMIC was added in Linux v6.11 for block devices, and
+regular-file reporting on XFS and ext4 followed in v6.13. A filesystem
+can end up reporting atomic write support on a file through either of
+two independent mechanisms:
+
+- Hardware-backed: the underlying block device itself advertises
+  atomic write support (checked via statx(2) on the raw device before
+  formatting). Both XFS and ext4 propagate the device's reported
+  limits in this case. This requires LTP_DEV to point at a real
+  NVMe/SCSI device, or a scsi_debug-emulated one, since loop devices
+  never advertise hardware atomic write support.
+
+- Software-backed (XFS only, Linux v6.16+): XFS can also complete an
+  atomic write via CoW-based out-of-place writes
+  (xfs_inode_can_sw_atomic_write()), gated purely by xfs_has_reflink()
+  -- a filesystem feature rather than a device capability. Since
+  reflink is on by default for v5 (CRC-enabled) XFS filesystems, a
+  plain mkfs.xfs on top of a loop device reports working atomic write
+  limits on a v6.16+ kernel, with no special backing device required.
+  ext4 has no equivalent software fallback
+  (ext4_atomic_write_init() always requires bdev_can_atomic_write()),
+  so it only ever exercises the hardware-backed path.
+
+setup() queries the test device's own atomic write capability first.
+When the device supports hardware atomic writes, the filesystem block
+size (and, for ext4, bigalloc cluster size) is derived from the
+device's reported limits, capped to the 64KiB mkfs ceiling, and
+further capped to the page size unless the kernel/filesystem can use
+larger blocks (THP for XFS, blocksize_gt_pagesize for ext4). When the
+device lacks hardware atomic write support, ext4 TCONFs immediately,
+while XFS is still formatted with reflink explicitly enabled and
+mounted, relying on verify_statx() to TCONF on its own if the running
+kernel predates v6.16.
+
+verify_statx() checks that STATX_WRITE_ATOMIC/STATX_ATTR_WRITE_ATOMIC
+are set consistently, that stx_atomic_write_unit_min <=
+stx_atomic_write_unit_max, that stx_atomic_write_segments_max > 0,
+that both unit_min and unit_max are powers of two, and that
+stx_atomic_write_unit_max_opt (when nonzero) falls within
+[unit_min, unit_max] and is itself a power of two.
+
+Signed-off-by: Gaurav Pathak <gaurav.pathak@suse.com>
+---
+ include/lapi/stat.h                        |  17 +-
+ runtest/syscalls                           |   1 +
+ testcases/kernel/syscalls/statx/.gitignore |   1 +
+ testcases/kernel/syscalls/statx/statx13.c  | 363 +++++++++++++++++++++++++++++
+ 4 files changed, 381 insertions(+), 1 deletion(-)
+
+diff --git a/include/lapi/stat.h b/include/lapi/stat.h
+index 17b62ea98d6776fafc8713e710093f3c8cf41fc4..859e410ab5cd5560cda49594c77ca87522ae1143 100644
+--- a/include/lapi/stat.h
++++ b/include/lapi/stat.h
+@@ -93,7 +93,14 @@ struct statx_timestamp {
+ 	uint64_t	stx_mnt_id; \
+ 	uint32_t	stx_dio_mem_align; \
+ 	uint32_t	stx_dio_offset_align; \
+-	uint64_t	__spare3[12]; \
++	uint64_t	stx_subvol; \
++	uint32_t	stx_atomic_write_unit_min; \
++	uint32_t	stx_atomic_write_unit_max; \
++	uint32_t	stx_atomic_write_segments_max; \
++	uint32_t	stx_dio_read_offset_align; \
++	uint32_t	stx_atomic_write_unit_max_opt; \
++	uint32_t	__spare2[1]; \
++	uint64_t	__spare3[8]; \
+ };
+ 
+ LTP_DEFINE_STATX_STRUCT(statx_fallback);
+@@ -197,6 +204,10 @@ static inline int statx(int dirfd, const char *pathname, unsigned int flags,
+ # define STATX_DIOALIGN		0x00002000U
+ #endif
+ 
++#ifndef STATX_WRITE_ATOMIC
++#define STATX_WRITE_ATOMIC  0x00010000U
++#endif
++
+ #ifndef STATX__RESERVED
+ # define STATX__RESERVED	0x80000000U
+ #endif
+@@ -248,6 +259,10 @@ static inline int statx(int dirfd, const char *pathname, unsigned int flags,
+ # define STATX_MNT_ID_UNIQUE  0x00004000U
+ #endif
+ 
++#ifndef STATX_ATTR_WRITE_ATOMIC
++#define STATX_ATTR_WRITE_ATOMIC	0x00400000
++#endif
++
+ #define SAFE_FCHMODAT2(dfd, filename, mode, flags) \
+ 	safe_fchmodat2(__FILE__, __LINE__, (dfd), (filename), (mode), (flags))
+ 
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 2bdb4a9a2b4801d03d93efea686124530f5ce2d5..17b733732ce03aa7d82b68b4ba94cfadb7e979ad 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -1961,6 +1961,7 @@ statx09 statx09
+ statx10 statx10
+ statx11 statx11
+ statx12 statx12
++statx13 statx13
+ 
+ membarrier01 membarrier01
+ 
+diff --git a/testcases/kernel/syscalls/statx/.gitignore b/testcases/kernel/syscalls/statx/.gitignore
+index f6a423eed84dd67152e6f75809037c92ceb1e060..e601a46a352562fb67836a5f78e19e49323f9bf4 100644
+--- a/testcases/kernel/syscalls/statx/.gitignore
++++ b/testcases/kernel/syscalls/statx/.gitignore
+@@ -10,3 +10,4 @@
+ /statx10
+ /statx11
+ /statx12
++/statx13
+diff --git a/testcases/kernel/syscalls/statx/statx13.c b/testcases/kernel/syscalls/statx/statx13.c
+new file mode 100644
+index 0000000000000000000000000000000000000000..06abe7861f3a57afbbc711b1476f3c08803d6b75
+--- /dev/null
++++ b/testcases/kernel/syscalls/statx/statx13.c
+@@ -0,0 +1,363 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2026 SUSE LLC <gaurav.pathak@suse.com>
++ */
++
++/*\
++ * Test :manpage:`statx(2)` support for the ``STATX_WRITE_ATOMIC`` mask on a
++ * regular file.
++ *
++ * STATX_WRITE_ATOMIC was added in Linux v6.11, initially for block
++ * devices. Regular-file reporting of atomic write limits on XFS and ext4
++ * was added later, in Linux v6.13, which is what this test exercises.
++ *
++ * There are two independent ways a filesystem can end up reporting atomic
++ * write support on a regular file, and this test exercises both:
++ *
++ * - Hardware-backed: the underlying block device itself advertises atomic
++ *   write support (queried via statx(2) on the raw device before
++ *   formatting). Both XFS and ext4 propagate the device's limits in this
++ *   case. Loop devices never advertise this (the loop driver doesn't wire
++ *   up atomic-write queue limits at all), so this path requires LTP_DEV to
++ *   point at a real NVMe/SCSI device (or a scsi_debug-emulated one).
++ *
++ * - Software-backed (XFS only, Linux v6.16+): xfs_inode_can_sw_atomic_write()
++ *   lets XFS complete an atomic write via CoW-based out-of-place writes
++ *   instead of hardware support, gated purely by xfs_has_reflink() -- a
++ *   filesystem feature, not a device capability. reflink is on by default
++ *   for v5 (CRC-enabled) XFS filesystems, so a plain mkfs.xfs on top of a
++ *   loop device will report working atomic write limits on a v6.16+
++ *   kernel, with no special device needed. ext4 has no equivalent
++ *   software fallback, so it always needs the hardware-backed path.
++ *
++ * When the test device does support hardware atomic writes, the
++ * filesystem block size is derived at runtime from the device's own
++ * atomic write unit limits, capped to 64KiB -- the hard block size
++ * ceiling enforced by both mkfs.xfs and mkfs.ext4 regardless of kernel
++ * capability -- and otherwise handled differently per filesystem:
++ *
++ * - XFS: without CONFIG_TRANSPARENT_HUGEPAGE, the block size is capped to
++ *   the page size, since mkfs.xfs has no page-size pre-check and the
++ *   kernel would otherwise reject a larger block size with ENOSYS at
++ *   mount (mapping_max_folio_size_supported()). With THP available, the
++ *   device's own atomic write max is used directly, except that a
++ *   device reporting at least 64KiB is capped to exactly 16KiB rather
++ *   than its full max, to exercise a non-default block size without
++ *   nearing the 64KiB mkfs ceiling.
++ *
++ * - ext4: the block size always stays at or below the page size. A
++ *   larger atomic write unit is instead obtained via a bigalloc cluster
++ *   (ext4_atomic_write_init() reports stx_atomic_write_unit_max based on
++ *   the cluster size, not the block size), since mke2fs refuses
++ *   (without -F) a block size above the page size unless the kernel
++ *   advertises /sys/fs/ext4/features/blocksize_gt_pagesize, while its
++ *   cluster size (-C) has no such page-size restriction at all.
++ *
++ * When the test device does not support hardware atomic writes (e.g. the
++ * default loop-backed image LTP creates when LTP_DEV isn't set), ext4
++ * TCONFs immediately, while XFS is still formatted (with reflink forced
++ * on) and mounted, relying on verify_statx() to TCONF on its own if the
++ * running kernel predates the v6.16 software atomic write support.
++ *
++ * The test needs to run as root because it formats and mounts its own
++ * XFS and ext4 test filesystems.
++ */
++
++#define _GNU_SOURCE
++#include <sys/mount.h>
++#include "tst_test.h"
++#include "lapi/stat.h"
++
++#define MNTPOINT "mnt_point"
++#define TESTFILE MNTPOINT "/testfile"
++#define MODE 0644
++
++/*
++ * Both xfsprogs (XFS_MAX_BLOCKSIZE) and e2fsprogs (EXT2_MAX_BLOCK_SIZE) cap
++ * the mkfs block size at 64KiB regardless of kernel/THP capability; mkfs
++ * rejects anything larger with "invalid block size" before the kernel is
++ * even involved.
++ */
++#define MKFS_MAX_BLOCK_SIZE 65536
++
++static int file_fd = -1;
++static int mount_flag;
++static struct ltp_statx *buff;
++
++static void verify_statx(void)
++{
++	TST_EXP_PASS(statx(AT_FDCWD, TESTFILE, 0, STATX_BASIC_STATS | STATX_WRITE_ATOMIC, &buff->buff),
++			"statx(AT_FDCWD, %s, 0, STATX_BASIC_STATS | STATX_WRITE_ATOMIC, &buf)", TESTFILE);
++
++	if (!TST_PASS)
++		return;
++
++	/* Check if the kernel populated the atomic limit struct members */
++	if (!(buff->data.stx_mask & STATX_WRITE_ATOMIC))
++		tst_brk(TCONF, "Kernel may be too old to report atomic limits: STATX_WRITE_ATOMIC missing from stx_mask");
++
++	/* Check if the filesystem supports reporting the atomic write attribute */
++	if (!(buff->data.stx_attributes_mask & STATX_ATTR_WRITE_ATOMIC)) {
++		tst_res(TFAIL, "Inconsistent: stx_mask has STATX_WRITE_ATOMIC but stx_attributes_mask lacks STATX_ATTR_WRITE_ATOMIC");
++		return;
++	}
++
++	/* Check if the file/device actively supports atomic writes */
++	if (!(buff->data.stx_attributes & STATX_ATTR_WRITE_ATOMIC)) {
++		if (buff->data.stx_atomic_write_unit_min || buff->data.stx_atomic_write_unit_max ||
++				buff->data.stx_atomic_write_unit_max_opt || buff->data.stx_atomic_write_segments_max) {
++			tst_res(TFAIL,
++				"Inconsistent: STATX_ATTR_WRITE_ATOMIC unset but limits nonzero (min=%u max=%u opt=%u segs=%u)",
++				buff->data.stx_atomic_write_unit_min, buff->data.stx_atomic_write_unit_max,
++				buff->data.stx_atomic_write_unit_max_opt, buff->data.stx_atomic_write_segments_max);
++			return;
++		}
++
++		tst_brk(TCONF, "STATX_WRITE_ATOMIC unsupported by block dev or filesystem: STATX_ATTR_WRITE_ATOMIC missing from stx_attributes");
++	}
++
++	TST_EXP_EXPR(buff->data.stx_atomic_write_unit_min <= buff->data.stx_atomic_write_unit_max,
++			"stx_atomic_write_unit_min(%u) <= stx_atomic_write_unit_max(%u)",
++			buff->data.stx_atomic_write_unit_min, buff->data.stx_atomic_write_unit_max);
++
++	TST_EXP_EXPR(buff->data.stx_atomic_write_segments_max > 0,
++			"stx_atomic_write_segments_max(%u) > 0", buff->data.stx_atomic_write_segments_max);
++
++	TST_EXP_EXPR(buff->data.stx_atomic_write_unit_min > 0 &&
++			__builtin_popcount(buff->data.stx_atomic_write_unit_min) == 1,
++			"stx_atomic_write_unit_min(%u) is a power of 2",
++			buff->data.stx_atomic_write_unit_min);
++
++	TST_EXP_EXPR(buff->data.stx_atomic_write_unit_max > 0 &&
++			__builtin_popcount(buff->data.stx_atomic_write_unit_max) == 1,
++			"stx_atomic_write_unit_max(%u) is a power of 2",
++			buff->data.stx_atomic_write_unit_max);
++
++	if (buff->data.stx_atomic_write_unit_max_opt == 0) {
++		tst_res(TPASS, "stx_atomic_write_unit_max_opt is 0 (no optimized max reported)");
++	} else {
++		if (buff->data.stx_atomic_write_unit_max_opt > buff->data.stx_atomic_write_unit_max) {
++			tst_res(TFAIL, "stx_atomic_write_unit_max_opt (%u) exceeds max (%u)",
++					buff->data.stx_atomic_write_unit_max_opt,
++					buff->data.stx_atomic_write_unit_max);
++		} else if (buff->data.stx_atomic_write_unit_max_opt < buff->data.stx_atomic_write_unit_min) {
++			tst_res(TFAIL, "stx_atomic_write_unit_max_opt (%u) is less than min (%u)",
++					buff->data.stx_atomic_write_unit_max_opt,
++					buff->data.stx_atomic_write_unit_min);
++		} else {
++			tst_res(TPASS, "stx_atomic_write_unit_max_opt (%u) is within valid range [%u, %u]",
++					buff->data.stx_atomic_write_unit_max_opt,
++					buff->data.stx_atomic_write_unit_min,
++					buff->data.stx_atomic_write_unit_max);
++		}
++
++		TST_EXP_EXPR(__builtin_popcount(buff->data.stx_atomic_write_unit_max_opt) == 1,
++				"stx_atomic_write_unit_max_opt(%u) is a power of 2",
++				buff->data.stx_atomic_write_unit_max_opt);
++	}
++}
++
++#define PATH_EXT4_BS_GT_PS "/sys/fs/ext4/features/blocksize_gt_pagesize"
++
++static int has_thp(void)
++{
++	return access(PATH_MM_THP, F_OK) == 0;
++}
++
++/*
++ * Whether the running kernel can use a filesystem block size larger than
++ * PAGE_SIZE for the given fs_type.
++ *
++ * - xfs: gated by mapping_max_folio_size_supported(), which collapses to
++ *   PAGE_SIZE unless CONFIG_TRANSPARENT_HUGEPAGE is compiled in (see
++ *   xfs_fs_fill_super() in fs/xfs/xfs_super.c). mkfs.xfs itself has no
++ *   page-size pre-check, so THP availability is the right/only signal.
++ *
++ * - ext4: gated by its own dedicated kernel feature, independent of THP.
++ *   mke2fs itself refuses (without -F) a block size above the system page
++ *   size unless /sys/fs/ext4/features/blocksize_gt_pagesize exists (see
++ *   mke2fs.c), so that sysfs flag -- not THP -- is the correct signal.
++ */
++static int fs_supports_large_block(const char *fs_type)
++{
++	if (!strcmp(fs_type, "ext4"))
++		return access(PATH_EXT4_BS_GT_PS, F_OK) == 0;
++
++	return has_thp();
++}
++
++static void setup(void)
++{
++	struct ltp_statx dev_stx;
++	char *data_buff = NULL;
++	struct stat sb;
++	char opt_bsize[32];
++	char opt_cluster[32];
++	const char *fs_opts[8];
++	unsigned int min, max, bsize = 0;
++	int dev_has_atomic;
++
++	SAFE_STATX(AT_FDCWD, tst_device->dev, 0, STATX_WRITE_ATOMIC, &dev_stx);
++
++	/*
++	 * stx_mask only gains STATX_WRITE_ATOMIC when bdev_can_atomic_write()
++	 * is true (see block/bdev.c:bdev_statx()), i.e. this is a device
++	 * capability signal, not a kernel version one: .min_kver = "6.13"
++	 * above already guarantees the kernel is new enough for the field to
++	 * exist at all. So any of these three being unset simply means this
++	 * particular device (most commonly a loop device) has no atomic
++	 * write support to report.
++	 */
++	dev_has_atomic = (dev_stx.data.stx_mask & STATX_WRITE_ATOMIC) &&
++		(dev_stx.data.stx_attributes_mask & STATX_ATTR_WRITE_ATOMIC) &&
++		(dev_stx.data.stx_attributes & STATX_ATTR_WRITE_ATOMIC);
++
++	if (!dev_has_atomic && strcmp(tst_device->fs_type, "xfs")) {
++		/*
++		 * Unlike XFS, ext4 has no device-independent (software)
++		 * atomic write mechanism: ext4_atomic_write_init() always
++		 * requires bdev_can_atomic_write() to be true. So without
++		 * device support there is nothing for ext4 to exercise here.
++		 */
++		tst_brk(TCONF,
++			"%s does not support atomic writes (loop devices never do) and ext4 has no software atomic write fallback; set LTP_DEV to a real NVMe/SCSI device, or load scsi_debug",
++			tst_device->dev);
++	}
++
++	if (!dev_has_atomic) {
++		/*
++		 * No hardware atomic write support, but XFS can still
++		 * complete atomic writes via CoW-based out-of-place writes
++		 * (xfs_inode_can_sw_atomic_write()) as long as reflink is
++		 * enabled, independently of the backing device -- this
++		 * works even on a plain loop device, but only since Linux
++		 * v6.16. Force reflink on explicitly rather than relying on
++		 * mkfs.xfs defaults, and skip the device-limit-based block
++		 * size selection below entirely since it doesn't apply here.
++		 * If the running kernel predates v6.16, verify_statx() will
++		 * TCONF on its own once it sees STATX_WRITE_ATOMIC missing.
++		 */
++		tst_res(TINFO,
++			"%s has no atomic write support; relying on XFS's software (CoW-based, reflink) atomic writes instead (requires Linux v6.16+)",
++			tst_device->dev);
++
++		fs_opts[0] = "-f";
++		fs_opts[1] = "-m";
++		fs_opts[2] = "reflink=1";
++		fs_opts[3] = NULL;
++
++		SAFE_MKFS(tst_device->dev, tst_device->fs_type, fs_opts, NULL);
++		goto mount_fs;
++	}
++
++	min = dev_stx.data.stx_atomic_write_unit_min;
++	max = dev_stx.data.stx_atomic_write_unit_max;
++
++	if (!min || !max)
++		tst_brk(TCONF, "%s reports zero atomic write unit limits", tst_device->dev);
++
++	if (!strcmp(tst_device->fs_type, "xfs")) {
++		if (max >= 65536 && fs_supports_large_block(tst_device->fs_type))
++			bsize = 16384;
++		else if (fs_supports_large_block(tst_device->fs_type))
++			bsize = max;
++		else
++			bsize = MIN(max, (unsigned int)getpagesize());
++	} else {
++		bsize = MIN(max, (unsigned int)getpagesize());
++	}
++
++	bsize = MIN(bsize, (unsigned int)MKFS_MAX_BLOCK_SIZE);
++
++	if (bsize < min) {
++		tst_brk(TCONF,
++			"Device's minimum atomic write unit (%u) exceeds the largest block size this test can configure (%u)",
++			min, bsize);
++	}
++
++	if (!strcmp(tst_device->fs_type, "xfs")) {
++		tst_res(TINFO, "Device atomic write unit: [%u, %u], THP %s, using xfs block size %u",
++				min, max, has_thp() ? "available" : "unavailable", bsize);
++
++		snprintf(opt_bsize, sizeof(opt_bsize), "-bsize=%u", bsize);
++		fs_opts[0] = "-f";
++		fs_opts[1] = opt_bsize;
++		fs_opts[2] = NULL;
++	} else {
++		unsigned int cluster = MIN(max, 16 * bsize);
++
++		if (cluster < bsize)
++			cluster = bsize;
++
++		tst_res(TINFO, "Device atomic write unit: [%u, %u], using ext4 block size %u, cluster size %u",
++				min, max, bsize, cluster);
++
++		snprintf(opt_bsize, sizeof(opt_bsize), "%u", bsize);
++		snprintf(opt_cluster, sizeof(opt_cluster), "%u", cluster);
++		fs_opts[0] = "-O";
++		fs_opts[1] = "bigalloc";
++		fs_opts[2] = "-b";
++		fs_opts[3] = opt_bsize;
++		fs_opts[4] = "-C";
++		fs_opts[5] = opt_cluster;
++		fs_opts[6] = NULL;
++	}
++
++	SAFE_MKFS(tst_device->dev, tst_device->fs_type, fs_opts, NULL);
++
++mount_fs:
++
++	TEST(mount(tst_device->dev, MNTPOINT, tst_device->fs_type, 0, NULL));
++	if (TST_RET) {
++		if (TST_ERR == EINVAL || TST_ERR == ENOSYS || TST_ERR == EOPNOTSUPP) {
++			if (bsize)
++				tst_brk(TCONF | TERRNO, "mount() of %s with block size %u not supported",
++						tst_device->fs_type, bsize);
++			tst_brk(TCONF | TERRNO, "mount() of %s not supported",
++					tst_device->fs_type);
++		}
++		tst_brk(TBROK | TERRNO, "mount(%s, %s, %s, 0, NULL) failed",
++				tst_device->dev, MNTPOINT, tst_device->fs_type);
++	}
++	mount_flag = 1;
++
++	SAFE_STAT(MNTPOINT, &sb);
++
++	data_buff = SAFE_MEMALIGN(sb.st_blksize, sb.st_blksize);
++	memset(data_buff, '@', sb.st_blksize);
++
++	file_fd = SAFE_OPEN(TESTFILE, O_RDWR | O_CREAT | O_DIRECT, MODE);
++	SAFE_WRITE(SAFE_WRITE_ALL, file_fd, data_buff, sb.st_blksize);
++
++	free(data_buff);
++}
++
++static void cleanup(void)
++{
++	if (file_fd != -1) {
++		SAFE_CLOSE(file_fd);
++		file_fd = -1;
++	}
++	if (mount_flag)
++		tst_umount(MNTPOINT);
++}
++
++static struct tst_test test = {
++	.test_all = verify_statx,
++	.setup = setup,
++	.cleanup = cleanup,
++	.min_kver = "6.13",
++	.needs_root = 1,
++	.needs_device = 1,
++	.needs_tmpdir = 1,
++	.mntpoint = MNTPOINT,
++	.bufs = (struct tst_buffers []) {
++		{&buff, .size = sizeof(*buff)},
++		{}
++	},
++	.filesystems = (struct tst_fs[]) {
++		{.type = "xfs"},
++		{.type = "ext4"},
++		{}
++	},
++};
 
 ---
-Note:
+base-commit: af1ad307f998b7f381bab065225df17390b91f77
+change-id: 20261026-statx-atomic-write-d6ea01cbef34
 
-The agent can sometimes produce false positives although often its
-findings are genuine. If you find issues with the review, please
-comment this email or ignore the suggestions.
+Best regards,
+-- 
+Gaurav Pathak <gaurav.pathak@suse.com>
 
-Regards,
-LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
