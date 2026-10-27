@@ -1,94 +1,113 @@
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4E7B606A31F
-	for <ltp@archiver.kernel.org>; Tue, 27 Oct 2026 14:28:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48C14606A31D
+	for <ltp@archiver.kernel.org>; Tue, 27 Oct 2026 16:36:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=UkdnWs//
+	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=ibm.com header.i=@ibm.com header.a=rsa-sha256 header.s=pp1 header.b=sAy89wl/
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8B0643E9A14
-	for <ltp@archiver.kernel.org>; Tue, 27 Oct 2026 15:28:06 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id AAF253E9A6A
+	for <ltp@archiver.kernel.org>; Tue, 27 Oct 2026 17:36:08 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id DF3373E20C3
- for <ltp@lists.linux.it>; Tue, 27 Oct 2026 15:27:51 +0100 (CET)
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com
- [IPv6:2a00:1450:4864:20::430])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id CACAA3E9A04
+ for <ltp@lists.linux.it>; Tue, 27 Oct 2026 17:35:52 +0100 (CET)
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
+ [148.163.156.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id D67991A008A7
- for <ltp@lists.linux.it>; Tue, 27 Oct 2026 15:27:50 +0100 (CET)
-Received: by mail-wr1-x430.google.com with SMTP id
- ffacd0b85a97d-48bbb06e746so2244197f8f.3
- for <ltp@lists.linux.it>; Tue, 27 Oct 2026 07:27:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20260707; t=1793111270; x=1793716070; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to:content-type;
- bh=fvc+g5chQ7unKrQLNJ9BjdgsBZkY5SCuPiGiSkgMFg8=;
- b=UkdnWs//XgR15I5p2NRhbwL5sd4eQB4apiYVxIuIeSTe6ktvHF1y5SgLHZFa9NQBIZ
- wCv5UVxijglXZbM7Zd9h0oQjH0yeuj1001qHFJSUuDXzMI/NqSSzDMhOKpkG5jbScS/f
- qB395YonEFm07SSYKXGtphPp7RZfd581AEyv1zfUUoD7Wj76qSI3FQ3v+4SSdK1R0P8d
- jo7lX7sgNxVdMov2cCCJuVTvrzzFtMj2ZdrJQRJtUBmtnyse6vmi39SSuuvKS/SSaXz/
- U1EOrmykLp+KIgBopSqBGprWEBFzI5sD9/3ffB8pQxi53bWxHXfWDf3LFS/kMVMMidLj
- 6jww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20260707; t=1793111270; x=1793716070;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to:content-type;
- bh=fvc+g5chQ7unKrQLNJ9BjdgsBZkY5SCuPiGiSkgMFg8=;
- b=ypWRXQDUZOMBssjjUGpOqzalGFJ4siYndxnB4krRRTqJ2N/ntMfafBOxzNYeUZ+auI
- SEn6B1Wzjj1YfmzCPVO5U2s3pRp4fC2MnZBrfZahOlxntydy4mv5tKi37bvTDPQfINqi
- kglbSAd22aWSqYkRr5lfzuhCNOW/cR7An8Bho5Om+AxcVyPOEcVL+X01vZWdbKCCG2LL
- rjTy7vLHwSgLYJhkdF4NTG2TaQz9tQnn32kAabyt1c4by62VuhYzyCR3vJQ77+LVo/oI
- RgJ4rX+jdyvtmNnVziL07kc4S/HYN0atRgax3fSaPnYDZlGzHjKEEDl9B6YN0fsDTfGe
- qHrw==
-X-Gm-Message-State: AFq9FYLBUPRHd6ZzH/DIv5E1UZ8kc1lN1L3YkAqxuYL8ChLgUnrWbzWl
- EFgTETlwOmUNbBD4jJSDQHdWK9lZ/CUcm8FtLX6PTCZ0rm58fmYsLhdkkvjGhuto
-X-Gm-Gg: AYBFou2SM5gPGbEI7q2A25EuIRMPW8N5DCSnaB6Eiht2ZUGDPK9CXdnCCcAPEaccH8v
- 03sOkwbHBjImsZpIdlpvnx7n04BqeiI8gs71nogdFoPWVhdwdCK/PKA76Nj4WVClNFTLsfPBmBm
- 7RXMCLz9oV2a/VMvQt6MlzG4Eqrw41sxX9KijesLnE7bYQ8dCHqS8xBjHsGKQg9Mx4U1QabLLiJ
- E7jOAYFldaCbrKnCi0emYS1KYMRXJ6TA7du87T+Wr7DhkZi2XcNdhrlrjV23bNDBTDf3tAsb7sU
- AjWaD4sLDUw3UcTgAFSo9c//3KBks3+MRRXgnm/iKENarPY0hPsmrTRQmDXYRM6Fd3d7VvV3aJF
- Knr86LHgq+tK02VhqgQD0bA6KClDpv/0xlTPIczgk4cwgzElKkDZMdt0Cp3O875pGh/4Dc9sGJJ
- PUz03sE26mvNGWOzssNhkFbbZfCKGg+NwkZO8bC2rcF4pkdkz0gjkfFY2VUqT2b8EDEtPkhOOYq
- Yas+m1jzMIGvEOdn+U9R/R9xhkbB/Z31HAcXx1Zb4iQSdi4y/Ulk51VdyonLzEyC/FzFgnOg0mF
- /+Q1IIddOxr92Iu6Adls+xnfT0Okh0MS9qDGym1ehQQMNxP9J7kwbeHxsOSn5L9glaU=
-X-Received: by 2002:a05:6000:298d:10b0:48a:f404:695e with SMTP id
- ffacd0b85a97d-48e3eba0b4fmr13399496f8f.50.1793111269912; 
- Tue, 27 Oct 2026 07:27:49 -0700 (PDT)
-Received: from localhost.suse.org (apn-37-248-176-17.dynamic.gprs.plus.pl.
- [37.248.176.17]) by smtp.gmail.com with ESMTPSA id
- ffacd0b85a97d-48e3ebc4d76sm23647523f8f.12.2026.10.27.07.27.48
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 27 Oct 2026 07:27:49 -0700 (PDT)
-From: Sebastian Chlad <sebastianchlad@gmail.com>
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 14F00200970
+ for <ltp@lists.linux.it>; Tue, 27 Oct 2026 17:35:51 +0100 (CET)
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id
+ 69REEScF1051614
+ for <ltp@lists.linux.it>; Tue, 27 Oct 2026 16:35:50 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+ :content-transfer-encoding:date:from:message-id:mime-version
+ :subject:to; s=pp1; bh=tOpkC880dSGHaAS1paSjqbip549BXonnKL5i57xGK
+ I8=; b=sAy89wl/PO4pZsaaBAapiVivd6GDCo+wmxF3k4HDgGWIg7x2IMUDpeJN3
+ fPozm6A/WC9IPf2dcatPCavuDXEuSx5Odip4w2RUQvcrnpZzT1XtxIyqaAFo1QbJ
+ 497U2atIXcumJvZK3WZ+Wkcm2PCeASWB2W4BC+k1dORcESBefEIgZCqTT2ZnDUMr
+ ShGt7ly2x5rAUsLlm75xdDl4vXW4v1TRUroQwNKMSgNK1RFSqpkR2W9VvUl9Ab32
+ EIoEfdG/WuMwmOw3Wh419OOJ3iI4SsZ7CHJXBWqCEa4C7q/aiUzZ5rwHZ2l5abw4
+ Gd8ott0KMYcygNsTu4HfGNO57F7iw==
+Received: from ppma23.wdc07v.mail.ibm.com
+ (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4hgmbt0k3h-1
+ (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT)
+ for <ltp@lists.linux.it>; Tue, 27 Oct 2026 16:35:49 +0000 (GMT)
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+ by ppma23.wdc07v.mail.ibm.com (8.18.1.11/8.18.1.11) with ESMTP id
+ 69RDoQab097222
+ for <ltp@lists.linux.it>; Tue, 27 Oct 2026 16:35:48 GMT
+Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
+ by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4hh8gh3m74-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+ for <ltp@lists.linux.it>; Tue, 27 Oct 2026 16:35:48 +0000 (GMT)
+Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com
+ [10.20.54.103])
+ by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 69RGZidO38011346
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Tue, 27 Oct 2026 16:35:44 GMT
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id BB0752004D;
+ Tue, 27 Oct 2026 16:35:44 +0000 (GMT)
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id A30332004B;
+ Tue, 27 Oct 2026 16:35:44 +0000 (GMT)
+Received: from b315lp15.lnxne.boe (unknown [9.87.84.240])
+ by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
+ Tue, 27 Oct 2026 16:35:44 +0000 (GMT)
+From: Ramesh Chhetri <rameshch@linux.ibm.com>
 To: ltp@lists.linux.it
-Date: Tue, 27 Oct 2026 15:27:47 +0100
-Message-ID: <20261027142747.19192-1-sebastianchlad@gmail.com>
-X-Mailer: git-send-email 2.51.0
-In-Reply-To: <20261022115410.23845-1-sebastian.chlad@suse.com>
-References: <20261022115410.23845-1-sebastian.chlad@suse.com>
+Date: Tue, 27 Oct 2026 17:35:42 +0100
+Message-ID: <20261027163542.13514-1-rameshch@linux.ibm.com>
+X-Mailer: git-send-email 2.56.0
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-13.6 required=3.0 tests=BAYES_00,
-	DKIM_ADSP_CUSTOM_MED,DKIM_INVALID,DKIM_SIGNED,
-	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_PASS,
-	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
+X-TM-AS-GCONF: 00
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYxMDI3MDA2NCBTYWx0ZWRfX/1A/6MjoQ/Gk
+ 6SWqhDwpczBhT+3EtolURuYs7exn5zLL/QXXszAxn4nQQ1fBwM7nzXn8tIm0MPs34wHuamXPgFd
+ eijrXeQO/YCP/TBmpljkqAIlfhkPzHePwMKUp41v7/I2MfP6KX23mVLWWHU3KmqzRcOY3QZIR6O
+ A9WfCN06cYLuCLz/rNcAF1TEBC4F48aLqLdfkRC1TT/IvZDinxwtA2zi7xY1n8aUE2f52piCSty
+ 5zjAtGbUu2cdIRVtV+0qHsGlYiCCkOP0kFkRSqby9C8+YIJrVwyMBLBkpw3VS5AH1rCPzBGDUcd
+ JCA6VXETtxYNtIHc+Oipd0udt5RSrriK7F+o4vN9QisfdJeyM8Ik7OmBjPoo37a+Ay/TPRFfGas
+ QlmgW4irsZLi0wzdJqhPLd7SgP/2uLuBviZGvVQoOl26Qe8DDhDnLvhO+2wnorf4Gdu2APjH6LV
+ rWEl4mukp1ilFy3MG+w==
+X-Proofpoint-Spam-Info: AW1haW4tMjYxMDI3MDA2NCBTYWx0ZWRfXwHf+1fZZXCC6
+ FimBVLOfq3u6kh5rE24Ng2CAQI0VcqT4K1KPbckDwioYTIX+4A5FA41/pEzBnCy93T2hicBRJlh
+ vrhzVFACxZkI5L0Ia18+QEfr/l6KHpE=
+X-Proofpoint-ORIG-GUID: JAVBV7jWRzsyss40__ELLmbD6PRINd3_
+X-Proofpoint-GUID: JAVBV7jWRzsyss40__ELLmbD6PRINd3_
+X-Authority-Analysis: v=2.4 cv=CeKdd7rl c=1 sm=1 tr=0 ts=6ae0d2e5 cx=c_pps
+ a=3Bg1Hr4SwmMryq2xdFQyZA==:117 a=3Bg1Hr4SwmMryq2xdFQyZA==:17
+ a=660iZSQnnn4A:10 a=VkNPw1HP01LnGYTKEx00:22 a=RnoormkPH1_aCDwRdu11:22
+ a=uAbxVGIbfxUO_5tXvNgY:22 a=VnNF1IyMAAAA:8 a=t2BNN2mIXOUSv9GonhsA:9
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1176,Hydra:6.1.138,FMLib:17.12.100.49
+ definitions=2026-10-27_03,2026-10-21_02,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ spamscore=0 suspectscore=0 malwarescore=0 phishscore=0 clxscore=1015
+ adultscore=0 lowpriorityscore=0 priorityscore=1501 bulkscore=0
+ impostorscore=0 classifier=typeunknown authscore=0 authtc= authcc=
+ route=outbound adjust=0 reason=mlx scancount=1 engine=8.22.0-2610190000
+ definitions=main-2610270064
+X-Spam-Status: No, score=-16.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_PASS,SPF_PASS,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2] lib: tst_device: Use exponential backoff for loop
- device detach
+Subject: [LTP] [PATCH v2] syscalls/connect02: Handle IPV6_ADDRFORM removal
+ and listen() EINVAL
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -98,90 +117,84 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: rameshch@linux.ibm.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-detach_loop_fd() retries LOOP_CLR_FD 40 times in 50ms steps, a fixed
-2s timeout that ignores LTP_TIMEOUT_MUL. When another process still
-holds the loop device at cleanup for longer than that, e.g. on a
-loaded machine, the test ends with an unwanted
-"ioctl(/dev/loopN, LOOP_CLR_FD, 0) no ENXIO for too long" TWARN.
+Upstream kernel commit 31c5ea8a3296 ("ipv6: Remove IPV6_ADDRFORM.") completely
+removed IPV6_ADDRFORM socket option support from the Linux kernel, causing
+setsockopt(SOL_IPV6, IPV6_ADDRFORM, ...) to return -ENOPROTOOPT.
 
-Use TST_RETRY_FN_EXP_BACKOFF() instead, as attach already does since
-d90d20046 ("lib: Use backoff polling to wait for loop device nodes").
-The detach finishes quickly when the device is released right away,
-polling slows down when it is not, and the total timeout (about 2s by
-default) is scaled by tst_multiply_timeout().
+In addition, commit 8cc3aef0cb19 ("tcp: Do not allow buggy transitions between
+ehash and lhash2.") intentionally disallows converting an unhashed established
+socket into a listening socket by returning -EINVAL from listen().
 
-Suggested-by: Cyril Hrubis <chrubis@suse.cz>
-Signed-off-by: Sebastian Chlad <sebastianchlad@gmail.com>
+Update connect02 to:
+1. Probe getsockopt(IPV6_ADDRFORM) on ENOPROTOOPT failure to distinguish true
+   kernel removal from the known regression fixed by 82c9ae440857, reporting
+   TCONF only if the option is truly absent.
+2. Report TCONF when listen() returns EINVAL due to the unhashed socket
+   transition restriction.
+
+Signed-off-by: Ramesh Chhetri <rameshch@linux.ibm.com>
 ---
-Changes in v2:
-- Use TST_RETRY_FN_EXP_BACKOFF() instead of scaling the retry count
-  with tst_multiply_timeout() (Cyril).
-- Link to v1:
-  https://lore.kernel.org/ltp/20261022115410.23845-1-sebastian.chlad@suse.com/
+V1 -> V2:
+- Distinguish IPV6_ADDRFORM removal from CVE-2018-9568 regression (commit
+  b6f6118901d1) via getsockopt() probe to retain TFAIL on buggy kernels.
+- Report TCONF instead of TPASS when listen() returns EINVAL.
+- Initialize 'family' to 0 and ensure sockets are closed on exit paths.
 
- lib/tst_device.c | 32 +++++++++++++++++---------------
- 1 file changed, 17 insertions(+), 15 deletions(-)
+ testcases/kernel/syscalls/connect/connect02.c | 27 ++++++++++++++++++-
+ 1 file changed, 26 insertions(+), 1 deletion(-)
 
-diff --git a/lib/tst_device.c b/lib/tst_device.c
-index 00304711b..bf77c9ded 100644
---- a/lib/tst_device.c
-+++ b/lib/tst_device.c
-@@ -249,9 +249,14 @@ uint64_t tst_get_device_size(const char *dev_path)
- 	return size/1024/1024;
- }
- 
-+static int loop_clr_fd_busy(int dev_fd)
-+{
-+	return !ioctl(dev_fd, LOOP_CLR_FD, 0) || errno == EBUSY;
-+}
+diff --git a/testcases/kernel/syscalls/connect/connect02.c b/testcases/kernel/syscalls/connect/connect02.c
+index 079bc5bca..74e2022bb 100644
+--- a/testcases/kernel/syscalls/connect/connect02.c
++++ b/testcases/kernel/syscalls/connect/connect02.c
+@@ -91,6 +91,21 @@ static void run(void)
+ 			sizeof(optval)));
+
+ 		if (TST_RET == -1) {
++			if (TST_ERR == ENOPROTOOPT || TST_ERR == EOPNOTSUPP) {
++				int family = 0;
++				socklen_t optlen = sizeof(family);
 +
- static int detach_loop_fd(const char *dev, int *dev_fd)
- {
--	int ret, i, retval = 1;
-+	int ret, retval = 1;
- 
- 	/* keep trying to clear LOOPDEV until we get ENXIO, a quick succession
- 	 * of attach/detach might not give udev enough time to complete
-@@ -259,22 +264,19 @@ static int detach_loop_fd(const char *dev, int *dev_fd)
- 	 * Since 18048c1af783 ("loop: Fix a race between loop detach and loop open")
- 	 * device is detached only after last close.
- 	 */
--	for (i = 0; i < 40; i++) {
--		ret = ioctl(*dev_fd, LOOP_CLR_FD, 0);
-+	ret = TST_RETRY_FN_EXP_BACKOFF(loop_clr_fd_busy(*dev_fd),
-+				       TST_RETVAL_EQ0, 2);
- 
--		if (ret && (errno == ENXIO)) {
--			retval = 0;
--			goto exit;
--		}
--
--		if (ret && (errno != EBUSY)) {
--			tst_resm(TWARN,
--				 "ioctl(%s, LOOP_CLR_FD, 0) unexpectedly failed with: %s",
--				 dev, tst_strerrno(errno));
--			goto exit;
--		}
-+	if (!ret && (errno == ENXIO)) {
-+		retval = 0;
-+		goto exit;
-+	}
- 
--		usleep(50000);
-+	if (!ret) {
-+		tst_resm(TWARN,
-+			 "ioctl(%s, LOOP_CLR_FD, 0) unexpectedly failed with: %s",
-+			 dev, tst_strerrno(errno));
-+		goto exit;
- 	}
- 
- 	tst_resm(TWARN,
--- 
-2.51.0
++				if (getsockopt(fd, SOL_IPV6, IPV6_ADDRFORM,
++					&family, &optlen) == -1 && errno == ENOPROTOOPT) {
++					SAFE_CLOSE(confd1);
++					SAFE_CLOSE(fd);
++					tst_brk(TCONF | TTERRNO,
++						"IPV6_ADDRFORM is removed/unsupported by this kernel");
++				}
++			}
++
++			SAFE_CLOSE(confd1);
++			SAFE_CLOSE(fd);
+ 			tst_res(TFAIL | TTERRNO,
+ 				"setsockopt(IPV6_ADDRFORM) failed");
+ 			return;
+@@ -104,7 +119,17 @@ static void run(void)
+ 			sizeof(reset_addr));
+ 		SAFE_BIND(fd, (struct sockaddr *)&bind_addr4,
+ 			sizeof(bind_addr4));
+-		SAFE_LISTEN(fd, 5);
++		TEST(listen(fd, 5));
++		if (TST_RET == -1) {
++			SAFE_CLOSE(confd1);
++			SAFE_CLOSE(fd);
++
++			if (TST_ERR == EINVAL) {
++				tst_brk(TCONF,
++					"Transition from unhashed established socket to listening is disallowed");
++			}
++			tst_brk(TBROK | TTERRNO, "listen(fd,5) failed unexpectedly");
++		}
+
+ 		addrlen = tst_get_connect_address(fd, &client_addr2);
+ 		confd2 = SAFE_SOCKET(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+--
+2.56.0
 
 
 -- 
