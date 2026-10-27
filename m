@@ -1,66 +1,94 @@
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D71B4606A31A
-	for <ltp@archiver.kernel.org>; Tue, 27 Oct 2026 19:37:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 786DC606A31A
+	for <ltp@archiver.kernel.org>; Tue, 27 Oct 2026 23:20:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=lists.linux.it header.i=@lists.linux.it header.a=rsa-sha256 header.s=picard header.b=hJd3aWr3;
-	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=tuta.io header.i=@tuta.io header.a=rsa-sha256 header.s=s1 header.b=HXTS3UaB
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1793129843; h=date : to :
- message-id : mime-version : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : cc : content-type : content-transfer-encoding : sender :
- from; bh=pU5flZA6FuMksFH0mMiR9frw377/3+agB09EiEUfRpM=;
- b=hJd3aWr3ey9uZcRMUk2R8qw7ZjqiisHKDaeKRXNC5BKLdgFNYDf5rN06E9CuHPADu3s3J
- wTvXiNuYNwrrFpZKEoOKn2IehB96dzQg0XBpI/g7fQ92f4B56yVa104D/0AowkPYk+GLOaE
- 8L6AFdYBrMyGlcC21lPLQ/aZsjrZoio=
+	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=cVXqEZLs
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 699AB3EA3E2
-	for <ltp@archiver.kernel.org>; Tue, 27 Oct 2026 20:37:23 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id C8EC23E11AE
+	for <ltp@archiver.kernel.org>; Wed, 28 Oct 2026 00:20:49 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D3C033CFD4D
- for <ltp@lists.linux.it>; Tue, 27 Oct 2026 20:37:03 +0100 (CET)
-Received: from mail.w14.tutanota.de (mail.w14.tutanota.de [185.205.69.214])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 110283E11AE
+ for <ltp@lists.linux.it>; Wed, 28 Oct 2026 00:20:32 +0100 (CET)
+Received: from mail-oi2-x02.google.com (mail-oi2-x02.google.com
+ [IPv6:2607:f8b0:4864:32::2])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 2D44560084E
- for <ltp@lists.linux.it>; Tue, 27 Oct 2026 20:37:01 +0100 (CET)
-Received: from tutadb.w10.tutanota.de (w10.api.tuta.com [IPv6:fd:ac::d:10])
- by mail.w14.tutanota.de (Postfix) with ESMTP id 6988519D89BBE
- for <ltp@lists.linux.it>; Tue, 27 Oct 2026 20:37:01 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1793129821; 
- s=s1; d=tuta.io;
- h=From:From:To:To:Subject:Subject:Content-Description:Content-ID:Content-Type:Content-Type:Content-Transfer-Encoding:Content-Transfer-Encoding:Cc:Cc:Date:Date:In-Reply-To:MIME-Version:MIME-Version:Message-ID:Message-ID:Reply-To:References:Sender;
- bh=xabmCRSf2O54JcE5zMww+AfjUhpSt52iK10vkTCRmro=;
- b=HXTS3UaBgaCePPeQ418fH27a2tnj6gqpSbHPu9iNCiFEJq0zMgCvZ4gfH3+kxUQg
- MV5OlHpmbTlAY4ywpEvN6qK7+SScQms4Zh6+3ikzQULQgFwKGT4mFBKXniJvJAsl49O
- qFFoNJ6VxXVNrKS5o9vq7HsXi/Dz56tMXLsFkijv1R8C4W/MeZHWh9DiwqN8P1fSCWS
- gXk42zNETN5s6l6VyKv+BpZCSqb1r0PSsGj7v/UCedAF2MDvR16S84nRdqYyZePSIoG
- MVLoYn2J8z+lQiiux5Ytgfuj69yfxHWaTmh+94y84eSSw/icQVLHa/q7TYiBgMPctx8
- bArfuD8Kqg==
-Date: Tue, 27 Oct 2026 20:37:01 +0100 (CET)
-To: "ltp@lists.linux.it" <ltp@lists.linux.it>
-Message-ID: <P4yrQBp--N-9@tuta.io>
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 164362009CE
+ for <ltp@lists.linux.it>; Wed, 28 Oct 2026 00:20:32 +0100 (CET)
+Received: by mail-oi2-x02.google.com with SMTP id
+ 5614622812f47-533fe730856so151162b6e.1
+ for <ltp@lists.linux.it>; Tue, 27 Oct 2026 16:20:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20260707; t=1793143230; x=1793748030; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to:content-type;
+ bh=tx+71QVIXfIzzc0xyzrvoLlcVfeU4sT/1qnKz3TGMa0=;
+ b=cVXqEZLsV4J7fRlw+T/uuZlIDF1AoUBeE2yb1WtuoU5CFYBrEazfirkrmjtyc5JT0y
+ nZq+pEKldyFjrkq2eZGxAiWdFPk7lIy5erj04pnEubxxhbwLZaErTbt74FNY+uiZ8r0V
+ b9xYfcKH06xTMK7witLefNRfky2hy/hLJy0P8+mhZReo7IHwFaDZrdETtR7UdiF2z8OR
+ Ear2naqCsdQGZElM931j4hlBFhi+HXxOFMWydLtdbAGorLEOQQw6+a377F1gNniaM+0X
+ 3uP2EPpR4VMkW8FeFZzBzesH3nv6pCyBXF+0zvCm5k44uWRN23tf0QuUkPrdas7JiMFj
+ x20g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20260707; t=1793143230; x=1793748030;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to:content-type;
+ bh=tx+71QVIXfIzzc0xyzrvoLlcVfeU4sT/1qnKz3TGMa0=;
+ b=enQfFxfLXcPS5CShvIHhBPAklqIPfeI1YEPG6jQJ+zVJlhwzaAoLd5ZgwJsyDF5VtD
+ jf3UDeafRCEK5qjfBlkUqB4oqmoUQAdXGcRGI1b0ds6PxHilpx4faQYxYod/Thfiodnh
+ cRDJ1Zw7V35hdMKf7jRyvlgad29XNtW2JJS7nK7NAPaLFm1JdWkApQlynhte3+/LrSI4
+ gpf5HK0SiPElR9855EUQVetZV2VdL412zDOwezAOmrQh0kjygjNOZXXe8oapN44nMVJa
+ NcD7WtZJA/ID5qv03XU96BLjViCYXvGG5oV4FRg8rc34M5iVW0wz7C41touSVJfjDt/w
+ THiQ==
+X-Gm-Message-State: AFq9FYKSwlrAuwhg3RjfUtpn4RAgMS/SOblc7cMhtL0y93/2iZKrr300
+ E+rgsSV6JeUi8GdILliq8Jyar1N3+3TGO7nZ4KTWJsLVS2IVHkqHjGPA
+X-Gm-Gg: AYBFou3E/1+I4UH2e8Lpx6356eK6A1AWSBU4TgVPbTbX8RkQZyFLumIcu+Fa+bzjFbB
+ b2Vb5tHKERARW+9Vanujd8KVuEu6hiiAMfoU9IkpcMrQYnSA9UQsmaew8aQGowWAbSOey/JrL2j
+ 0FU/a48Wc9NI1R0BX/N0mbr2BQLXwO0a/A+OvlrUT6Ge0266XU0JdeUOs5CdJyQIhsOrIFoo2ZG
+ SlABmM83Y3uFgwAdfVYLWRfNItZQxpuWLryTmcKzDHNEPaUGJheuwcgMG+grFEyipknxl5UlVvA
+ ZjXAcqaX74sa0BPgJDDNbbL1cvFbJC9XL2ijId9O7FNFKGaTZ0aPRoGA/wvQpB5Rc9pbokfaloq
+ ZIw6vTOWX58wO9bGW6aZl3QBXBFWSTWsnQiK06OZAsyASBMN2meahAqfw5vK5pCJ2fh6JcdNSWq
+ YfT4M0qYtaCzaokhIwE/mZ1uoem3aPjVfT0YuwajmH5mgO+ElaeLjzCNUL9Z+VbwFS4tg+YlyUP
+ wZ6AqHxYuibg0HeRxT6S2CtFRqqeu3FInEMfiZ5ZpgMm5Cl/fJI1PtSl/nDKXqqsmFeZS/PRCDN
+ qRsVtAsros9zrNm480k7W8qr2cG1SZ7DNk64E8KexmwP9SPXLF2htr3sMJCZ9c2oSsDLkQ==
+X-Received: by 2002:a05:6808:c40a:b0:4b9:e5fa:8905 with SMTP id
+ 5614622812f47-56382681ba1mr513651b6e.24.1793143230380; 
+ Tue, 27 Oct 2026 16:20:30 -0700 (PDT)
+Received: from
+ runnervmtai0g.h4y5e5wkedoedp1mjwl0zuzagd.gx.internal.cloudapp.net
+ ([172.202.54.187]) by smtp.gmail.com with ESMTPSA id
+ 586e51a60fabf-4a8b793fe7csm1147029fac.15.2026.10.27.16.20.29
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 27 Oct 2026 16:20:29 -0700 (PDT)
+From: linuxtestproject.agent@gmail.com
+To: Edvard Conrad <edvard@tuta.io>
+Date: Tue, 27 Oct 2026 23:20:28 +0000
+Message-ID: <20261027232028.5693-1-linuxtestproject.agent@gmail.com>
+X-Mailer: git-send-email 2.56.0
+In-Reply-To: <P4yrQBp--N-9@tuta.io>
+References: <P4yrQBp--N-9@tuta.io>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-Feedback-ID: 0127f977f5e13e8051b46c6e7f57d0f95a0470d24b79d7c31d07fdf611cc427ab823e0f4692a810119c92d8768973a9281:TurnOnPrivacy!:tutamail
-X-Spam-Status: No, score=-16.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_PASS,SPF_PASS autolearn=ham
-	autolearn_force=no version=4.0.1
+X-Spam-Status: No, score=-8.6 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_INVALID,DKIM_SIGNED,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_PASS,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH][STAGING] syscalls/fanotify26: Add test for nested
- permission events
+Subject: Re: [LTP] syscalls/fanotify26: Add test for nested permission events
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -70,253 +98,108 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Edvard Conrad via ltp <ltp@lists.linux.it>
-Reply-To: Edvard Conrad <edvard@tuta.io>
-Cc: Amir Goldstein <amir73il@gmail.com>, Jan Kara <jack@suse.cz>,
- Edvard Conrad <edvard@tuta.io>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-The kernel creates the file descriptor it reports with a permission
-event by an open that must not generate further events. When the
-reported path is on a stacked filesystem, that open opens the real file
-on the backing filesystem, and since commit ebe559609d78 ("fs: get rid
-of __FMODE_NONOTIFY kludge") the backing file no longer inherits
-FMODE_NONOTIFY. A listener that also watches the backing filesystem is
-then sent a second permission event from inside its own read(2), which
-only the listener itself can answer, so a single reader never returns.
+Hi Edvard,
 
-Verify that a listener returns from read(2) and answers an open
-permission event for a file on an overlayfs mount. The first test case
-marks the overlay only and passes on any kernel, the second one also
-marks the backing filesystem, which is the shape an anti-malware
-scanner uses on an overlayfs root.
+On Tue, Oct 27, 2026 at 08:37:01PM +0100, Edvard Conrad wrote:
+> syscalls/fanotify26: Add test for nested permission events
 
-The second case fails on a kernel without the pending fix "fs: let
-backing files inherit FMODE_NONOTIFY from the user file", so the test
-is added to runtest/staging for now.
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/fanotify/fanotify26.c
+> @@ -0,0 +1,185 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*\
+> + * Check that a permission event on a stacked filesystem does not deadlock the
 
-Link: https://lore.kernel.org/all/P4wV1J9--F-9@tuta.io/
-Signed-off-by: Edvard Conrad <edvard@tuta.io>
+A copyright header block ("/* Copyright (c) 2026 Edvard Conrad
+<edvard@tuta.io> */") is missing after the SPDX license identifier.
+
+> +	if (tc->mark_backing && filesystem_mark_unsupported) {
+> +		tst_res(TCONF, "FAN_MARK_FILESYSTEM not supported");
+> +		return;
+> +	}
+> +
+> +	fd_notify = SAFE_FANOTIFY_INIT(FAN_CLASS_CONTENT, O_RDONLY);
+> +
+> +	SAFE_FANOTIFY_MARK(fd_notify, FAN_MARK_ADD | FAN_MARK_FILESYSTEM,
+> +			   FAN_OPEN_PERM, AT_FDCWD, OVL_MNT);
+
+Both test cases use FAN_MARK_FILESYSTEM on OVL_MNT, so gating
+filesystem_mark_unsupported on tc->mark_backing causes the first test case to
+fail with TBROK when FAN_MARK_FILESYSTEM is unsupported on overlayfs or in
+the kernel. Use REQUIRE_MARK_TYPE_SUPPORTED_ON_FS(FAN_MARK_FILESYSTEM,
+OVL_MNT) and REQUIRE_MARK_TYPE_SUPPORTED_ON_FS(FAN_MARK_FILESYSTEM,
+BACKING_MNT) in setup() and drop filesystem_mark_unsupported.
+
+> +		fd = open(OVL_FILE, O_RDONLY);
+> +		if (fd >= 0)
+> +			SAFE_CLOSE(fd);
+> +		exit(0);
+> +	}
+> +
+> +	/* The opener sleeps in the kernel once its event is queued. */
+> +	if (TST_PROCESS_STATE_WAIT(opener, 'D', WAIT_MSEC)) {
+> +		SAFE_CLOSE(fd_notify);
+> +		tst_brk(TBROK, "Open generated no permission event");
+> +	}
+
+Use "if (fd != -1)" to check file descriptor validity in opener. Also,
+SAFE_CLOSE(fd_notify) before tst_brk() is redundant because cleanup() already
+closes fd_notify.
+
+> +	reader = SAFE_FORK();
+> +	if (!reader) {
+> +		answer_one_event();
+> +		exit(0);
+> +	}
+> +
+> +	if (TST_PROCESS_STATE_WAIT(reader, 'Z', WAIT_MSEC)) {
+> +		tst_res(TFAIL,
+> +			"Listener blocked in read() by a nested event");
+> +		SAFE_KILL(reader, SIGKILL);
+> +	} else {
+> +		tst_res(TPASS, "Listener answered the event");
+> +	}
+> +
+> +	SAFE_WAITPID(reader, NULL, 0);
+
+Inferring TPASS from the child reaching 'Z' state and reaping it with
+SAFE_WAITPID(reader, NULL, 0) hides abnormal child termination. Call
+tst_res(TPASS, "Listener answered the event") at the end of
+answer_one_event() in the child, and only call SAFE_WAITPID(reader, NULL, 0)
+after SAFE_KILL(reader, SIGKILL), letting the library reap the children on
+the normal path.
+
+> +	/* Releases whatever is still queued, so the opener can finish. */
+> +	SAFE_CLOSE(fd_notify);
+> +	fd_notify = -1;
+
+Setting fd_notify = -1 is redundant because SAFE_CLOSE() already resets its
+argument to -1.
+
+> +static void cleanup(void)
+> +{
+> +	if (fd_notify >= 0)
+> +		SAFE_CLOSE(fd_notify);
+> +}
+
+Use "if (fd_notify != -1)" instead of "if (fd_notify >= 0)".
+
+Verdict - Needs revision
+
 ---
- runtest/staging                               |   1 +
- testcases/kernel/syscalls/fanotify/.gitignore |   1 +
- .../kernel/syscalls/fanotify/fanotify26.c     | 185 ++++++++++++++++++
- 3 files changed, 187 insertions(+)
- create mode 100644 testcases/kernel/syscalls/fanotify/fanotify26.c
+Note:
 
-diff --git a/runtest/staging b/runtest/staging
-index ef1cdea15..2ce76b119 100644
---- a/runtest/staging
-+++ b/runtest/staging
-@@ -1 +1,2 @@
- # Tests for features that are not yet in the stable kernel ABI
-+fanotify26 fanotify26
-diff --git a/testcases/kernel/syscalls/fanotify/.gitignore b/testcases/kernel/syscalls/fanotify/.gitignore
-index d6d0599f1..c13d9b33c 100644
---- a/testcases/kernel/syscalls/fanotify/.gitignore
-+++ b/testcases/kernel/syscalls/fanotify/.gitignore
-@@ -23,4 +23,5 @@
- /fanotify23
- /fanotify24
- /fanotify25
-+/fanotify26
- /fanotify_child
-diff --git a/testcases/kernel/syscalls/fanotify/fanotify26.c b/testcases/kernel/syscalls/fanotify/fanotify26.c
-new file mode 100644
-index 000000000..529d09e25
---- /dev/null
-+++ b/testcases/kernel/syscalls/fanotify/fanotify26.c
-@@ -0,0 +1,185 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*\
-+ * Check that a permission event on a stacked filesystem does not deadlock the
-+ * :manpage:`fanotify(7)` listener.
-+ *
-+ * When the kernel reports a permission event, it creates the event file
-+ * descriptor with an open that must not generate further events. If the
-+ * reported path is on a stacked filesystem, that open opens the real file on
-+ * the backing filesystem. Should the backing file not inherit "generate no
-+ * events", and the listener watch the backing filesystem as well, the kernel
-+ * queues a second permission event to the same group while the listener is
-+ * still inside :manpage:`read(2)`. Only the listener can answer it, so a
-+ * listener that reads with a single thread never returns, and every task that
-+ * touches a watched filesystem queues up behind it.
-+ *
-+ * The first test case marks the overlay only and must pass on any kernel. The
-+ * second one marks the backing filesystem as well, which is the shape an
-+ * anti-malware scanner uses on an overlayfs root.
-+ *
-+ * The test needs root to create permission events and to mount overlayfs.
-+ */
-+
-+#define _GNU_SOURCE
-+#include "config.h"
-+
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <unistd.h>
-+#include <errno.h>
-+#include <string.h>
-+#include <signal.h>
-+#include <sys/types.h>
-+#include <sys/wait.h>
-+#include "tst_test.h"
-+
-+#ifdef HAVE_SYS_FANOTIFY_H
-+#include "fanotify.h"
-+
-+#define BACKING_MNT	OVL_BASE_MNTPOINT
-+#define FNAME		"test_file"
-+#define OVL_FILE	OVL_MNT "/" FNAME
-+#define LOWER_FILE	OVL_LOWER "/" FNAME
-+
-+/*
-+ * The listener either answers the event at once or is blocked for good, so
-+ * this only has to outlast scheduling noise on a loaded machine.
-+ */
-+#define WAIT_MSEC	5000
-+
-+static int fd_notify = -1;
-+static int filesystem_mark_unsupported;
-+
-+static struct tcase {
-+	const char *tname;
-+	int mark_backing;
-+} tcases[] = {
-+	{"Mark on the overlay", 0},
-+	{"Mark on the overlay and on the backing filesystem", 1},
-+};
-+
-+static void answer_one_event(void)
-+{
-+	struct fanotify_event_metadata event;
-+	struct fanotify_response resp;
-+
-+	/* Blocks for good if the event fd generates a nested event. */
-+	SAFE_READ(1, fd_notify, &event, sizeof(event));
-+
-+	if (event.mask != FAN_OPEN_PERM) {
-+		tst_brk(TBROK, "Got unexpected event mask %llx",
-+			(unsigned long long)event.mask);
-+	}
-+
-+	resp.fd = event.fd;
-+	resp.response = FAN_ALLOW;
-+	SAFE_WRITE(SAFE_WRITE_ALL, fd_notify, &resp, sizeof(resp));
-+
-+	if (event.fd != FAN_NOFD)
-+		SAFE_CLOSE(event.fd);
-+}
-+
-+static void run(unsigned int n)
-+{
-+	struct tcase *tc = &tcases[n];
-+	pid_t opener, reader;
-+
-+	tst_res(TINFO, "Test #%d: %s", n, tc->tname);
-+
-+	if (tc->mark_backing && filesystem_mark_unsupported) {
-+		tst_res(TCONF, "FAN_MARK_FILESYSTEM not supported");
-+		return;
-+	}
-+
-+	fd_notify = SAFE_FANOTIFY_INIT(FAN_CLASS_CONTENT, O_RDONLY);
-+
-+	SAFE_FANOTIFY_MARK(fd_notify, FAN_MARK_ADD | FAN_MARK_FILESYSTEM,
-+			   FAN_OPEN_PERM, AT_FDCWD, OVL_MNT);
-+
-+	if (tc->mark_backing) {
-+		SAFE_FANOTIFY_MARK(fd_notify,
-+				   FAN_MARK_ADD | FAN_MARK_FILESYSTEM,
-+				   FAN_OPEN_PERM, AT_FDCWD, BACKING_MNT);
-+	}
-+
-+	opener = SAFE_FORK();
-+	if (!opener) {
-+		int fd;
-+
-+		/* Must not hold the group, it has to be released on close. */
-+		SAFE_CLOSE(fd_notify);
-+		/*
-+		 * The kernel denies the event when a listener that never
-+		 * answered it goes away, so a failure here is the fallout of
-+		 * the test tearing a blocked listener down, not a result.
-+		 */
-+		fd = open(OVL_FILE, O_RDONLY);
-+		if (fd >= 0)
-+			SAFE_CLOSE(fd);
-+		exit(0);
-+	}
-+
-+	/* The opener sleeps in the kernel once its event is queued. */
-+	if (TST_PROCESS_STATE_WAIT(opener, 'D', WAIT_MSEC)) {
-+		SAFE_CLOSE(fd_notify);
-+		tst_brk(TBROK, "Open generated no permission event");
-+	}
-+
-+	reader = SAFE_FORK();
-+	if (!reader) {
-+		answer_one_event();
-+		exit(0);
-+	}
-+
-+	if (TST_PROCESS_STATE_WAIT(reader, 'Z', WAIT_MSEC)) {
-+		tst_res(TFAIL,
-+			"Listener blocked in read() by a nested event");
-+		SAFE_KILL(reader, SIGKILL);
-+	} else {
-+		tst_res(TPASS, "Listener answered the event");
-+	}
-+
-+	SAFE_WAITPID(reader, NULL, 0);
-+
-+	/* Releases whatever is still queued, so the opener can finish. */
-+	SAFE_CLOSE(fd_notify);
-+	fd_notify = -1;
-+
-+	SAFE_WAITPID(opener, NULL, 0);
-+}
-+
-+static void setup(void)
-+{
-+	/* The file has to exist in the lower layer to be opened through it. */
-+	SAFE_UMOUNT(OVL_MNT);
-+	SAFE_TOUCH(LOWER_FILE, 0644, NULL);
-+	SAFE_MOUNT_OVERLAY();
-+
-+	require_fanotify_access_permissions_supported_on_fs(OVL_FILE);
-+
-+	filesystem_mark_unsupported =
-+		fanotify_mark_supported_on_fs(FAN_MARK_FILESYSTEM, OVL_FILE) ||
-+		fanotify_mark_supported_on_fs(FAN_MARK_FILESYSTEM, BACKING_MNT);
-+}
-+
-+static void cleanup(void)
-+{
-+	if (fd_notify >= 0)
-+		SAFE_CLOSE(fd_notify);
-+}
-+
-+static struct tst_test test = {
-+	.test = run,
-+	.tcnt = ARRAY_SIZE(tcases),
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.forks_child = 1,
-+	.needs_root = 1,
-+	.mount_device = 1,
-+	.needs_overlay = 1,
-+	.mntpoint = OVL_BASE_MNTPOINT,
-+};
-+
-+#else
-+	TST_TEST_TCONF("system doesn't have required fanotify support");
-+#endif
--- 
-2.56.0
+The agent can sometimes produce false positives although often its
+findings are genuine. If you find issues with the review, please
+comment this email or ignore the suggestions.
 
+Regards,
+LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
