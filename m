@@ -1,76 +1,77 @@
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E786606A31C
-	for <ltp@archiver.kernel.org>; Thu, 29 Oct 2026 15:26:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52FED606A320
+	for <ltp@archiver.kernel.org>; Thu, 29 Oct 2026 15:26:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=O5OORHcH
+	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=YuL8/ykI
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 88F293E5DDE
-	for <ltp@archiver.kernel.org>; Thu, 29 Oct 2026 16:26:19 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 0C4B23E98D8
+	for <ltp@archiver.kernel.org>; Thu, 29 Oct 2026 16:26:34 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6856A3CFD4D
- for <ltp@lists.linux.it>; Tue, 27 Oct 2026 20:20:21 +0100 (CET)
-Received: from mail-dl2-x07.google.com (mail-dl2-x07.google.com
- [IPv6:2607:f8b0:4864:38::7])
+ by picard.linux.it (Postfix) with ESMTPS id 55F663E9A5D
+ for <ltp@lists.linux.it>; Wed, 28 Oct 2026 06:15:44 +0100 (CET)
+Received: from mail-dy2-x0b.google.com (mail-dy2-x0b.google.com
+ [IPv6:2607:f8b0:4864:36::b])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 9F1411A00936
- for <ltp@lists.linux.it>; Tue, 27 Oct 2026 20:20:20 +0100 (CET)
-Received: by mail-dl2-x07.google.com with SMTP id
- a92af1059eb24-13985f8229aso110656c88.1
- for <ltp@lists.linux.it>; Tue, 27 Oct 2026 12:20:20 -0700 (PDT)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 795D76009D8
+ for <ltp@lists.linux.it>; Wed, 28 Oct 2026 06:15:43 +0100 (CET)
+Received: by mail-dy2-x0b.google.com with SMTP id
+ 5a478bee46e88-3535a54c09bso447190eec.0
+ for <ltp@lists.linux.it>; Tue, 27 Oct 2026 22:15:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20260707; t=1793128819; x=1793733619; darn=lists.linux.it;
+ d=gmail.com; s=20260707; t=1793164542; x=1793769342; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:message-id:date:subject:cc
  :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
- bh=HEI1beLFEji6JPrC/ny5Nsu6fz42d2/T2/6Fj2LaCcY=;
- b=O5OORHcHky9xaeohzTEQbOPg15WYC/VW0aQdjdXKlPGLBZyo11bDjYVT2rUBa9ce+w
- 2pm4IYGdj+xNO9DLsyExIFsVm7lzOXK1xL4mVm3xpnK3ua3YBd+idB77iC8foYi/NRpG
- Z2Pwv6bRoPDXkyZTF1xvuE3LqNTVqOTmrhKirq6L35Uwwk/8ncSQpegdl5EHYnb61adU
- wcAQeda22b0M4NZS3o5rgkPzbD1DN4TXhy6AOS3TnMNxPkfboPndwtRLtE/CaEr0kjlm
- VEtgRTWsmVIINAs29GYbEXzV+UVbzrWpE9RNxqMn+xOi166OJa3Hiz9W55AwAXdDmN6i
- Y33w==
+ bh=3Yj2icuvOpo7K2PUVpGV+n/piexMtVazEmDnEiQ20ik=;
+ b=YuL8/ykIGGoTAs3Resv74nQHhfPNmUXCJt0/HKjmF8rM0BXV8hUs9+xPYBi0zP7oKW
+ lmajftTLSrcDm9YYEZwHIKq6FZrOEnY/7Wm/K+tAs/KBe4B9+9i8y1waTimv3nJ+7QjU
+ 05Qmj8d+ncXL1O0anoXAIQVtyWyJSr/lWfCLT3gBmhJL2vRGuxyDzg1x7YSJFOGXKdkp
+ LvP8mI2myTHRC0tYST4Br3p3IF0VJnXdQRnWF9gmX4aFJn9EIoVvZ4fht/CBbZ7tiSP1
+ eLx9/tHzijqSTEPUstgz9KnDuSfCmwkGy5HtSkkQxT5vTpY+CB5GyWvNBxUrkbDgWIqo
+ nwow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20260707; t=1793128819; x=1793733619;
+ d=1e100.net; s=20260707; t=1793164542; x=1793769342;
  h=content-transfer-encoding:mime-version:message-id:date:subject:cc
  :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
  :message-id:reply-to:content-type;
- bh=HEI1beLFEji6JPrC/ny5Nsu6fz42d2/T2/6Fj2LaCcY=;
- b=s0Ht+/PdnRV1D1Tb43SEJPLjJDFU97pXVOHcockAyH4bz9TsszCUwIYzKELiiyeUcd
- uO3wRFoAJYVl0o2ZVLyJgbplcV5S0TZNJGw/uvjByJiXFBkH5G4HQfAYfTkL5s/jMizc
- 2G40n/duQiwtPdQVsB3gMujFpCJKxB2XdWIODqsMszTFwzcDHUcNVQr8EeB59GWJMrhy
- YhFGIqADrVgM974OIvYGtqwrIV5YSp16Sc2oliRcB5zVF3e2KFHALeYyAyTtGOwu8nEy
- A1IaHXlNI/qGC7YrSBGzZgQcx4wg43u7KIt78oXhVCRT84aTwTm3NPQUA9B+4LaEhmRm
- xl+Q==
-X-Gm-Message-State: AFq9FYILitoge/sYHTUiXHDn6n6uC0McEMwnMgDQ+CoP97r4TqLANMNV
- 2AGnHiq8hve7FmBr1MGSREPDZSdon934/+awGdGLjfE5/uVby6ypXq6TIhAY96pG
-X-Gm-Gg: AYBFou3ifGac8DvFDIoUjPMhTzmHpdXiCZWsCCi5NeLtn9EDyo5OYlPTljB1QErcebs
- awaA0l00UEq/lxdDDotu0RR7ac5HSHWjmXWb/mipHFKBIn8OgO1fYDsiXTl+YMlb42ZJoZmY3fU
- qKqNmbREvGDPRHcflo283TYDGhitbUtpTdWHeOu+mlA5V1YuYrI2hndN5+dxY4nKPwxw/P7VK0z
- Y5qbgcCnysXHohNZzwjT09JL0R/tVuhLOcOITE1JvpHMj5giOA4qbrWqvCpEYlehS7uOcVbfH9j
- 6KHPG6oKRXGkvvY9++Vstygbnm9yc+C0bx5TLB4Dza2Oubyh2OTqAG+QPK2tgKYrVK8jh9dUFon
- r60T3Dj0uWctJ57j6fZqyUMRPtkqLIjkoLfHsbbx10PnhUU1Tf3yrnalonZ8cd4spXKgaAEi9N5
- woFfUg4FiA9R0YNLuZLPTAeShAmtN7rq/hjtRFAm/WyQ82PyGZlMdPp4N5ZoSjG8vPdIEds8Y+f
- DcsCoQ8oaPVYbED39XwHbIbSx7pMPQSVPX3ILDyT/s8/N2ZNPkEY1uyHEYwF7ke2xTYeXm9q3H+
- 7flgADY=
-X-Received: by 2002:a05:701b:4309:b0:145:287:ce91 with SMTP id
- a92af1059eb24-1a6cc90e851mr255380c88.14.1793128818705; 
- Tue, 27 Oct 2026 12:20:18 -0700 (PDT)
+ bh=3Yj2icuvOpo7K2PUVpGV+n/piexMtVazEmDnEiQ20ik=;
+ b=21vo1gHpzjjT5innqWYv6X5Tn+8aPGUzpGyurxibVbc6V56+S/UlA6AYJ5iZx/Swrp
+ u1qK7Qig9rXo9fdCf7opaG2Q8hDHS1RPh2amnJrjsaNSiJmSoTP94PEp5/Ip/rSMow8y
+ YPlsHrNp7J0A170RB8QuPUf5/FbmlG1tmvUUTPxfuhstU073AgF/fR35SKVU5qATepu1
+ H/XhnNTIOjDR1z/9VkKMZ4EA7lV8Dinxdnlm1CToUe2k40m7vz5c7p4xs/YEX8HwxuGY
+ sQpbkPd3aIBRMJaJuq7QAVv0tx+JMpj9jYAMVqs2Ml1OPE2t+odJxkncYiJZReWzTSni
+ E7Pg==
+X-Gm-Message-State: AFq9FYJjMQLKt8vfzpmJc/pHQ6hQSSRWCCWeXq7QUWhIKC6Dxka71egp
+ J9tDYnHTu0n+zXaWItOuMtQwwMk+KGvc7FQk4HyJ0pA0+OOB2seQQphr2gHeBsFQ
+X-Gm-Gg: AYBFou25B+HlutV4MtwaDtPvrRzIA5AYZHBNTnhn57xgnn+J5HC9wy2636bmIKUVkiE
+ r4v+ibVeznxoCnzjuElITg5miRvlBxqUYOsoyqKUEXKLPLikP/pFZOCzoU7Tnqc39ec2PkPlKza
+ eXwoxK+J51ys4+FpCgUymzNgFrqc9LXYti4z+NgScxrw123WSccsPcDdWiBc3PNdkFuuZ0S//qx
+ DNVBnXlS4VAlxGEmZiIf2DPakqmqaYByI23gI655h7v3xM+sA16Rd5rar5RZyChJBbbMG7/eqx3
+ uKbFOo1ZuAUo2RSUphEo5UZB6bJmplgWgmXhebkz5iPBgzsJPsnjX/8+0HltB5DaM/NX4YmNKgK
+ tSVM/5J4mERY+6NMeyUrFwdebcyFaA1UB+yCTp4GUZ3js+GYu4XvFw9Y7g7ILVomP110WXCXiDM
+ JYqPA+rBwSfMlAtOTudXSYmLQM7d03+FeynDXaFChbWN/XpNmgzjd11ylhNqlEaQvtuA0oWyQDe
+ 9IMmc/FoG91j1OElXn8Ho3oM5ThquDMHSJuuWUH9OoAwQOGapguFiapuXgWwJ4VRrsVjbpax6AH
+ kkkurcJi+/Eo7CMW9rL3NO4ZhxOeA5q59DQzkRNAdaMA6WsGKENNlAi7
+X-Received: by 2002:a05:7301:52c8:b0:361:306f:c32a with SMTP id
+ 5a478bee46e88-36a2036d1ffmr2152593eec.11.1793164541601; 
+ Tue, 27 Oct 2026 22:15:41 -0700 (PDT)
 Received: from localhost.localdomain ([98.148.34.5])
  by smtp.gmail.com with ESMTPSA id
- a92af1059eb24-1a6da729ec9sm203115c88.20.2026.10.27.12.20.17
+ 5a478bee46e88-36a239644efsm3579812eec.23.2026.10.27.22.15.40
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 27 Oct 2026 12:20:18 -0700 (PDT)
+ Tue, 27 Oct 2026 22:15:41 -0700 (PDT)
 From: Hungyu Lin <dennylin0707@gmail.com>
 To: ltp@lists.linux.it
-Date: Tue, 27 Oct 2026 19:19:55 +0000
-Message-ID: <20261027191956.5015-1-dennylin0707@gmail.com>
+Date: Wed, 28 Oct 2026 05:15:18 +0000
+Message-ID: <20261028051518.22982-1-dennylin0707@gmail.com>
 X-Mailer: git-send-email 2.43.0
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
@@ -81,11 +82,11 @@ X-Spam-Status: No, score=-13.6 required=3.0 tests=BAYES_00,
 	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
 X-Mailman-Approved-At: Thu, 29 Oct 2026 16:26:03 +0100
-Subject: [LTP] [PATCH] inotify13: check rename cookie pairing after adjacent
- moves
+Subject: [LTP] [PATCH v2] inotify13: check rename cookie pairing after
+ adjacent moves
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -117,8 +118,8 @@ Signed-off-by: Hungyu Lin <dennylin0707@gmail.com>
 ---
  runtest/syscalls                              |   1 +
  testcases/kernel/syscalls/inotify/.gitignore  |   1 +
- testcases/kernel/syscalls/inotify/inotify13.c | 147 ++++++++++++++++++
- 3 files changed, 149 insertions(+)
+ testcases/kernel/syscalls/inotify/inotify13.c | 176 ++++++++++++++++++
+ 3 files changed, 178 insertions(+)
  create mode 100644 testcases/kernel/syscalls/inotify/inotify13.c
 
 diff --git a/runtest/syscalls b/runtest/syscalls
@@ -144,10 +145,10 @@ index f6e5c54..b597ea6 100644
 +/inotify13
 diff --git a/testcases/kernel/syscalls/inotify/inotify13.c b/testcases/kernel/syscalls/inotify/inotify13.c
 new file mode 100644
-index 0000000..4b172ba
+index 0000000..5b28e8d
 --- /dev/null
 +++ b/testcases/kernel/syscalls/inotify/inotify13.c
-@@ -0,0 +1,147 @@
+@@ -0,0 +1,176 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
 + * Copyright (c) 2026 Hungyu Lin <dennylin0707@gmail.com>
@@ -177,6 +178,12 @@ index 0000000..4b172ba
 +#define SAVED "unwatched/entry"
 +#define TARGET "target/entry"
 +
++struct event_t {
++	const char *name;
++	unsigned int mask;
++	int wd;
++};
++
 +static int fd_notify = -1;
 +
 +static void create_entry(int directory)
@@ -189,25 +196,31 @@ index 0000000..4b172ba
 +
 +static void verify_inotify(unsigned int directory)
 +{
++	const char *type = directory ? "directory" : "file";
++	unsigned int isdir = directory ? IN_ISDIR : 0;
++	struct event_t event_set[] = {
++		{ "entry", IN_MOVED_FROM | isdir, 0 },
++		{ "entry", IN_MOVED_FROM | isdir, 0 },
++		{ "entry", IN_MOVED_TO | isdir, 0 },
++	};
 +	union {
 +		struct inotify_event align;
 +		char data[4096];
 +	} buf;
-+	struct inotify_event *event, *events[3];
-+	unsigned int count = 0;
++	struct inotify_event *event;
++	const struct event_t *expected;
++	unsigned int cookies[ARRAY_SIZE(event_set)] = { 0 };
++	unsigned int count = 0, i;
 +	size_t pos = 0, len;
-+	unsigned int from = IN_MOVED_FROM, to = IN_MOVED_TO;
-+	int wd_source, wd_target;
-+	const char *type = directory ? "directory" : "file";
-+
-+	if (directory) {
-+		from |= IN_ISDIR;
-+		to |= IN_ISDIR;
-+	}
++	int wd_source, wd_target, failed = 0;
 +
 +	fd_notify = SAFE_MYINOTIFY_INIT1(O_NONBLOCK);
 +	wd_source = SAFE_MYINOTIFY_ADD_WATCH(fd_notify, "source", IN_MOVE);
 +	wd_target = SAFE_MYINOTIFY_ADD_WATCH(fd_notify, "target", IN_MOVE);
++
++	event_set[0].wd = wd_source;
++	event_set[1].wd = wd_source;
++	event_set[2].wd = wd_target;
 +
 +	create_entry(directory);
 +	SAFE_RENAME(SOURCE, SAVED);
@@ -218,6 +231,7 @@ index 0000000..4b172ba
 +	SAFE_CLOSE(fd_notify);
 +	fd_notify = -1;
 +
++	/* Reuse these paths for the next case and for -i iterations. */
 +	if (directory) {
 +		SAFE_RMDIR(SAVED);
 +		SAFE_RMDIR(TARGET);
@@ -228,47 +242,63 @@ index 0000000..4b172ba
 +
 +	while (pos < len) {
 +		if (len - pos < sizeof(*event))
-+			tst_brk(TBROK, "Incomplete inotify event");
++			tst_brk(TBROK, "Incomplete inotify event at offset %zu", pos);
 +
 +		event = (struct inotify_event *)(buf.data + pos);
 +		if (event->len > len - pos - sizeof(*event))
-+			tst_brk(TBROK, "Incomplete inotify event name");
++			tst_brk(TBROK, "Incomplete inotify event name at offset %zu", pos);
 +
-+		tst_res(TINFO, "%s: wd=%d mask=%#x cookie=%u name=%.*s",
-+			type, event->wd, event->mask, event->cookie,
-+			(int)event->len, event->name);
-+		if (event->len < sizeof("entry") ||
-+		    memcmp(event->name, "entry", sizeof("entry"))) {
-+			tst_res(TFAIL, "%s: unexpected rename event name", type);
-+			return;
++		if (count >= ARRAY_SIZE(event_set)) {
++			tst_res(TINFO, "%s: unexpected event %u: wd=%d mask=%#x cookie=%u len=%u name=\"%.*s\"",
++				type, count, event->wd, event->mask, event->cookie,
++				event->len, (int)event->len, event->name);
++			failed = 1;
++		} else {
++			expected = &event_set[count];
++			cookies[count] = event->cookie;
++			tst_res(TINFO, "%s: event %u: wd=%d (expected %d) mask=%#x (expected %#x) cookie=%u len=%u name=\"%.*s\" (expected \"%s\")",
++				type, count, event->wd, expected->wd,
++				event->mask, expected->mask, event->cookie,
++				event->len, (int)event->len, event->name,
++				expected->name);
++			if (event->wd != expected->wd ||
++			    event->mask != expected->mask ||
++			    event->len < strlen(expected->name) + 1 ||
++			    memcmp(event->name, expected->name,
++				   strlen(expected->name) + 1))
++				failed = 1;
 +		}
-+		if (count < ARRAY_SIZE(events))
-+			events[count] = event;
 +		count++;
 +		pos += sizeof(*event) + event->len;
 +	}
 +
-+	if (count != ARRAY_SIZE(events)) {
-+		tst_res(TFAIL, "%s: expected two FROM events and one TO, got %u",
-+			type, count);
++	for (i = count; i < ARRAY_SIZE(event_set); i++) {
++		expected = &event_set[i];
++		tst_res(TINFO, "%s: missing event %u: expected wd=%d mask=%#x name=\"%s\"", type, i, expected->wd,
++			expected->mask, expected->name);
++		failed = 1;
++	}
++
++	if (failed) {
++		tst_res(TFAIL, "%s: unexpected rename event sequence (%u events, expected %zu)",
++			type, count, ARRAY_SIZE(event_set));
 +		return;
 +	}
 +
-+	if (events[0]->wd != wd_source || events[0]->mask != from ||
-+	    events[1]->wd != wd_source || events[1]->mask != from ||
-+	    events[2]->wd != wd_target || events[2]->mask != to) {
-+		tst_res(TFAIL, "%s: unexpected rename event sequence", type);
++	if (cookies[0] == cookies[1]) {
++		tst_res(TFAIL, "%s: both FROM cookies are %u (expected different cookies)",
++			type, cookies[0]);
 +		return;
 +	}
 +
-+	if (events[0]->cookie == events[1]->cookie ||
-+	    events[1]->cookie != events[2]->cookie) {
-+		tst_res(TFAIL, "%s: rename cookies do not identify the later pair",
-+			type);
++	if (cookies[1] != cookies[2]) {
++		tst_res(TFAIL, "%s: second FROM cookie=%u, TO cookie=%u (expected equal cookies)",
++			type, cookies[1], cookies[2]);
 +		return;
 +	}
 +
-+	tst_res(TPASS, "%s: second FROM cookie matches the TO cookie", type);
++	tst_res(TPASS, "%s: second FROM cookie=%u matches TO cookie=%u",
++		type, cookies[1], cookies[2]);
 +}
 +
 +static void setup(void)
