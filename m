@@ -2,82 +2,81 @@ Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3299606A31A
-	for <ltp@archiver.kernel.org>; Thu, 29 Oct 2026 19:58:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44C26606A31F
+	for <ltp@archiver.kernel.org>; Thu, 29 Oct 2026 19:58:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=qoD+9CQ3
+	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=tVLcS9ni
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 857BB3C01CB
-	for <ltp@archiver.kernel.org>; Thu, 29 Oct 2026 20:58:12 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 031673E98D1
+	for <ltp@archiver.kernel.org>; Thu, 29 Oct 2026 20:58:39 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 5566A3C74CC
- for <ltp@lists.linux.it>; Thu, 29 Oct 2026 20:57:58 +0100 (CET)
-Received: from mail-oa2-x00.google.com (mail-oa2-x00.google.com
- [IPv6:2607:f8b0:4864:30::])
+ by picard.linux.it (Postfix) with ESMTPS id 2D5D93C01CB
+ for <ltp@lists.linux.it>; Thu, 29 Oct 2026 20:58:24 +0100 (CET)
+Received: from mail-dl2-x07.google.com (mail-dl2-x07.google.com
+ [IPv6:2607:f8b0:4864:38::7])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id F3CBE1000A0F
- for <ltp@lists.linux.it>; Thu, 29 Oct 2026 20:57:57 +0100 (CET)
-Received: by mail-oa2-x00.google.com with SMTP id
- 586e51a60fabf-4a86da07919so1087233fac.0
- for <ltp@lists.linux.it>; Thu, 29 Oct 2026 12:57:57 -0700 (PDT)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id CB97F600110
+ for <ltp@lists.linux.it>; Thu, 29 Oct 2026 20:58:23 +0100 (CET)
+Received: by mail-dl2-x07.google.com with SMTP id
+ a92af1059eb24-13985f8229aso445508c88.1
+ for <ltp@lists.linux.it>; Thu, 29 Oct 2026 12:58:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20260707; t=1793303876; x=1793908676; darn=lists.linux.it;
+ d=gmail.com; s=20260707; t=1793303902; x=1793908702; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to:content-type;
- bh=dR446zzEFoQeGTato6/W/Lglyx6fooU0rtErODNXK9Q=;
- b=qoD+9CQ3ndLoK3oRjNVJD0UPmMJmdMcD3ZVotSwAnVCpM16Hv5Qcp8LYhwJrw3bsxM
- VXJNz2zXgt8LS9GAuGF52X7EO0mCNHSWan06L0EzCLEbXVjcTfg9x4Y0VRDZVp0SNFfP
- noGViKmhWVGWVG9GDJa2UPb/4YrYjRGqCdYdvsb6nZNdQj/rp0ji3Nq1wvh6hMRgxJ92
- vl5Ti81rxeQ/zWPfDNxPR4SP8eDTszvrmmt381O81crvs+dRwj8HQulFKiyu0fdGenUc
- pdVYw2NMDjqI195ZbW4ZAFGdP64HMS12n/obiEgGlq9YZB+VrWRZoHNtcayoCHvJr/+/
- fxvw==
+ bh=47uzAUS+0qQvG1LHdxqO+d/8ShyiWDhY/yE+14LdNEY=;
+ b=tVLcS9niOnOSScq+vKA5+qm376OD8DGPk+PUs4JOJQbXEt0pwaFXdLq7pzFsOp+XdX
+ GUiUK/eYtIlltu8+/XyghvMwwQSCjQyZfKxMRb/cOFG7nDPCaTkUKbABmkFS8KaOMglZ
+ jlY7vdZiSXGhwZbVar5ZrYy34kgAlp4m04nak3txWjl0/SsujLqlGpOOPvzygFQt7laA
+ Kv0um3azJfmjrRuvh/XTDcBFiw/xm+ojAaUzOTSlVEljHnyoOJeUiimuN/2MuMJdtGjs
+ xWrajR3+qAWsO02QuMtSQ1aU4CvfRMY+2mu3/To4O3wgERbxQakl8fI3LVdv9WAjDkTV
+ mgSA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20260707; t=1793303876; x=1793908676;
+ d=1e100.net; s=20260707; t=1793303902; x=1793908702;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to:content-type;
- bh=dR446zzEFoQeGTato6/W/Lglyx6fooU0rtErODNXK9Q=;
- b=VZgT0OA8KNtGT/UkKTABGo64pINBV1PTls+8SJF7vpzs8cQeuZByPFwiI0IVci6Im8
- i9uwV5iG129Cj2q2bQ02BNI3TkyF0FiPxx8HGTZMasy0nEDXLH/SZ10qPoXncG36x/Vb
- VVbxg7836olGTGFHxCsNavAPGjIAe2JQRdATjrneOEgsCqDWQKOwdfZjVhrXHhwMXSmY
- usfwMNUbRg1qAai+JiL3y5MG9YX6wkxJWE56NoGIPt5M7aylbprXhFq5i2p/f8Ohoe26
- 6bbIE76bBVmo3lCqwj5yOhORgHS/QTxr66Mt4pxygRgb5AOGOgVXlvNqCEgQ7ldPI4w7
- jHjg==
-X-Gm-Message-State: AFq9FYJK96rs1aszXMQjvkd7wNoSsNldQfCu8cSEYVcph/pwxU+CHrC8
- T4czXVD8pxUeAx1/5aaXYTeZPOuaocOngfTYvtBGJHqiX3388ua700Ta
-X-Gm-Gg: AYBFou0yMv9q3rmnHHFjKfBrOfYNqsdrndqzVRq9FMOO1jNvwOjtNgG/gqFGnneNmos
- zkb2QImsxCVtMa05WJzPf3210YqWA6stz06pBn9sJPijkv/UQR0xDJI8bf+8TFTB/012JErklyU
- gRsrEXbhv7yOIa4ykRMWf1V9IAxUyMtsplq6lC1xjykomT7fU1QL63vzJq/UBbKc4QkSrUAmLr2
- LL949DG5G+DysnAV3UBj3Ae9i1sY7PypakjdHfPtgCe3zCjeav4ve3fq/YUl0cEM7BPE+OGNkeE
- /Pgid3dUHpo4oKm/e7PtR4YECAjl3ig+BYHMEAZP7CyiZ5hgSwMWjUw870DTujO9lh/ULt+JWFc
- KaN/QbjP6e7sO+Tc2QTdRXjLdVlujdM7qOdraHjLDVdJE/9x7R8Hxy+EsngIDDvKs5EDGeKAB95
- fUrJQl1rE5upRBfBrlWHQ7hcZtWAepO+BZC62reXxFqAIr8ip9n5P0UxQwWtoPXb7FlI7lYq2u8
- MfoXY0X9NzJsZpiOOCc3Fu8Izz3ORGztRF/gtjepIDvjODVY8SmNKs/WFAE3fCYuSfY5sWXii6i
- fpu7OLUSm7U55N1yMYYvYiDiIHuSXIbsq8AZrwc7cZEIk/L2XW0rqK+ceoBrnfc0I6RUHf9ZIX9
- 3nLdxpT9GzkUyvUyknNiAbWWLg3EQT+5O425LhMvoC2mb
-X-Received: by 2002:a05:6870:450:b0:4a6:a925:e13 with SMTP id
- 586e51a60fabf-4a90763f9a8mr132168fac.14.1793303876391; 
- Thu, 29 Oct 2026 12:57:56 -0700 (PDT)
+ bh=47uzAUS+0qQvG1LHdxqO+d/8ShyiWDhY/yE+14LdNEY=;
+ b=W2lw+J/tkQF9/H//vxyhDcG7k+dnbXowFmgBYYT2/26rcBm4N+YxkIFFDTxCsnoos4
+ tnDgcoLGyFUBEK6Mk1+CR9sUJ2AD3rd7+c9iC+HBvkcSUyR0I61u5QnBl7XYd7cZeetd
+ bW4A3fE4mjz4IPK44/2RU5HANQusfaDAVZq6QuqXkyeyzunZSo5L8TQ2Rt4w1o3VCyoo
+ knlKBhvDHdlzcujtW7boHMCc/Wq+4Y4LkpmmX5SSGRazGFRB/Bd+Y33yVcyg/ucnZZJ7
+ ucEjOQu+MyHuR/8HRLsNTBN2VtjcyO26GCzzss+GgG/l7TharIONJChxEeLb+b1cCeTq
+ KpWQ==
+X-Gm-Message-State: AFq9FYIuViDj7Qh+SkVbzGBnddhrrzwjRLkQ1R8LDVCkR3GxxFCnYpZK
+ mwn5soESqKXrjBzC/eaf/yPO5w5aK3CeB+HgwDpCVns8j9jbQV4ofTPJ
+X-Gm-Gg: AYBFou0xGAV194ru8dMoBw9zBN77fnv2xCfa/Io+vpSTtr7bIAaRVHoPv+eUx827l7i
+ q4hM7azeQELR2AoLWg62wTcjIXbGC/u5kQrg5jtslJmSj+NKwgtsFc8QULWVl7/2ZJqbdfPqaF0
+ xgsDbuHiAME2szXy5zjgk6Gv1nC+j7IUZ5UqQm9m5OPAC1wns4EjVxm7Tst84C7OeDgOeECy9RG
+ 0lPDFZdELV8q7dsW2pobYY3/GVoX09hSX5bHOThXKSMhRUmPcCh0bUJDSuvZvpZym20vkDyd4f0
+ /uTOKaeDm4tYl0Zda2V63Q2iHRp2qasKz/NHrhQAyR0Z6kyqAHPzpK9MZjUXhiz4dUIe0ACxiAT
+ XFH9DBd8Md5+2PVCKE8YLarL/xaN0hkk37zJwxH3B34dI9kfYEZQVG9o8FgukDabgibDdBQL7mO
+ kHkZWObbjpUQP32ASCjK8Y6X5FIrp7y4B7vd40STVyB5dUJjVnhds45wuHLvTtbY8rWqfvmKDpD
+ E4xMih7MmaToGyRD/BTHnO5wNU/wfqR1rO7L783lEL/R31oygHafc/EujQh53lWRGZ/vI1KPhag
+ Kk0+0mEpvxzAah+SlLASSsrELIRuXzs1YZ5mnxh7WuRLzAMwh7lhFzjsKKFNrl8o/VWhUwfMESZ
+ 1y6tbl9eUwd+/NSX/36pJd4p79yiRlra9Lmvq6tC1
+X-Received: by 2002:a05:7022:f517:b0:193:9aa3:4758 with SMTP id
+ a92af1059eb24-1ac55968b07mr109547c88.4.1793303901866; 
+ Thu, 29 Oct 2026 12:58:21 -0700 (PDT)
 Received: from
- runnervmnwato.rxxrvns4gc3e5ng4kbsxw1xzhf.qrox.internal.cloudapp.net
- ([158.23.147.98]) by smtp.gmail.com with ESMTPSA id
- 586e51a60fabf-4a9048e6ab1sm326669fac.8.2026.10.29.12.57.55
+ runnervmnwato.gpul2q2ne1je3mz5a1ebwezpna.yx.internal.cloudapp.net
+ ([13.71.228.196]) by smtp.gmail.com with ESMTPSA id
+ 5a478bee46e88-36a429018casm739145eec.14.2026.10.29.12.58.21
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 29 Oct 2026 12:57:55 -0700 (PDT)
+ Thu, 29 Oct 2026 12:58:21 -0700 (PDT)
 From: linuxtestproject.agent@gmail.com
 To: Hungyu Lin <dennylin0707@gmail.com>
-Date: Thu, 29 Oct 2026 19:57:53 +0000
-Message-ID: <20261029195753.3590-1-linuxtestproject.agent@gmail.com>
+Date: Thu, 29 Oct 2026 19:58:19 +0000
+Message-ID: <20261029195820.3869-1-linuxtestproject.agent@gmail.com>
 X-Mailer: git-send-email 2.56.0
-In-Reply-To: <20261027191956.5015-1-dennylin0707@gmail.com>
-References: <20261027191956.5015-1-dennylin0707@gmail.com>
+In-Reply-To: <20261029174907.98721-1-dennylin0707@gmail.com>
+References: <20261029174907.98721-1-dennylin0707@gmail.com>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
 X-Spam-Status: No, score=-3.5 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
@@ -86,7 +85,7 @@ X-Spam-Status: No, score=-3.5 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
 	SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] inotify13: check rename cookie pairing after adjacent
  moves
@@ -106,25 +105,10 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi Hungyu,
 
-On Tue Oct 27 19:19:55 2026 +0000, Hungyu Lin <dennylin0707@gmail.com> wrote:
+On Thu Oct 29 17:49:07 2026 +0000, Hungyu Lin <dennylin0707@gmail.com> wrote:
 > inotify13: check rename cookie pairing after adjacent moves
 
-> +	len = SAFE_READ(SAFE_READ_ANY, fd_notify, buf.data, sizeof(buf.data));
-> +	SAFE_CLOSE(fd_notify);
-> +	fd_notify = -1;
-
-SAFE_CLOSE() already sets fd_notify to -1, so the manual reset should be
-removed.
-
-> +static void cleanup(void)
-> +{
-> +	if (fd_notify >= 0)
-> +		SAFE_CLOSE(fd_notify);
-> +}
-
-Use if (fd_notify != -1) to check file descriptor validity in cleanup().
-
-Verdict - Needs revision
+Verdict - Reviewed
 
 ---
 Note:
