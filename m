@@ -2,89 +2,106 @@ Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6356A606A31A
-	for <ltp@archiver.kernel.org>; Thu, 29 Oct 2026 17:49:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D752E606A325
+	for <ltp@archiver.kernel.org>; Thu, 29 Oct 2026 18:50:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=O3HCYy9X
+	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=cYwbi2TF
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 970E83E98C5
-	for <ltp@archiver.kernel.org>; Thu, 29 Oct 2026 18:49:37 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 7181E3E99B7
+	for <ltp@archiver.kernel.org>; Thu, 29 Oct 2026 19:50:55 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 25A2E3E5B8D
- for <ltp@lists.linux.it>; Thu, 29 Oct 2026 18:49:22 +0100 (CET)
-Received: from mail-dy2-x0a.google.com (mail-dy2-x0a.google.com
- [IPv6:2607:f8b0:4864:36::a])
+ by picard.linux.it (Postfix) with ESMTPS id 364E43E1BEB
+ for <ltp@lists.linux.it>; Thu, 29 Oct 2026 19:50:37 +0100 (CET)
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com
+ [IPv6:2a00:1450:4864:20::536])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 5335B10007C3
- for <ltp@lists.linux.it>; Thu, 29 Oct 2026 18:49:21 +0100 (CET)
-Received: by mail-dy2-x0a.google.com with SMTP id
- 5a478bee46e88-33e5ae86ff2so1013244eec.0
- for <ltp@lists.linux.it>; Thu, 29 Oct 2026 10:49:21 -0700 (PDT)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id C6FF71A0049E
+ for <ltp@lists.linux.it>; Thu, 29 Oct 2026 19:50:36 +0100 (CET)
+Received: by mail-ed1-x536.google.com with SMTP id
+ 4fb4d7f45d1cf-6ae14eecc64so3511612a12.1
+ for <ltp@lists.linux.it>; Thu, 29 Oct 2026 11:50:36 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1793299836; cv=none;
+ d=google.com; s=arc-20260327;
+ b=ER6xe3daQIT0PQMPAg+TznGqBLanoK6phmLisGHjOrf+Xr02eqAUWJC5mWlBklan71
+ aU+K10P0C77eS6aZxI2wPMywCfCJFAzSPno9JHf2fAx4K1CDEbFrn+H9mcRltdUvsN0h
+ ONZVoUP3c7h/eYXcQlA6iisvQWwBADGLJRT2d2/edo0K9sfumv7GXSKb5hpRYQCZZiRL
+ y4rK1BlYp0zKbKMU7Tli3AEBnJ6JU2PVPnAjaqcLq0hcNlNYUfuM1NreCH3KM5FpHa06
+ QmOKRfUCG5VXffH+qm3H3o4800RDAlmPORg0U5jZn7zZPYhRRA5zUJSA8D5vZLgYUMIN
+ p+nQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com;
+ s=arc-20260327; 
+ h=content-transfer-encoding:cc:to:subject:message-id:date:from
+ :in-reply-to:references:mime-version:dkim-signature;
+ bh=AUyfqqPiDJWdIggtRHTM5d0W7pzNmk10GltpPPf5d3o=;
+ fh=1SMTeKbyfpNuEk3TwPSj8vXbEoYmXOn2pxbrRWEicG4=;
+ b=SC5FDB0BkYijN+oN5J7Y2Ul3OVHzbZYbjfH/q4nhj/FbJR0jzRRR1R45LDzNdhokZ5
+ VmuhfDxiupG9m1mk2nlf8D34/XAw9D4fBAEdc9mK7fT8E9EXCUa7canPsOlmrDQvoJyC
+ fimGQDowjLZymIz7tVqu7GxXFiJFMGajsqTTdL1bxgOp7qqY4p1zXvQhLNLm69uRiPJ/
+ cn4X64rWgn+Yu9rWrc8kLchwyaRDscnXPa37W9Mf93YmfdL6rA8h2nM0KDHEFP4fFFpu
+ 2xNw/CH6IlPBH1t3CdNq8zBLFIUlUZDSr7faNGcZHZoNyNw7S5mf1eEOnDcxQVuwqgOv
+ kH1g==; darn=lists.linux.it
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20260707; t=1793296159; x=1793900959; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
- bh=Ln9h95COh+dKENlOI1wGS5xr92jymKdKA0g3KaCC54g=;
- b=O3HCYy9XJ6oWj2Lh413I+EPAMlh1Co44c9VQBs/1OKD5ZMkQHFSzfXzopVJ3GQc/z2
- o/3MmY9gaad4YkCetC3DqgrWfPldfpXB8bCjMpmNZr6Qj6QPZpda0t9+KmiPA3uKDbI6
- Rk6c7Z9PfBZA9JhrK389aUxNkPwkmkw8GBXvS6viN62noFdD0jFpfqraFaTeZ/IJ7shn
- f+iZHLy/ili1rRnFhfOnGo/ZDBZELqAkMugpo8nYcfi5TsUQmU5iisCWAl9VVwNUU83O
- ZpNzjhgVaHF7qjOVERWtSG2Y3wuPQ2YqGjzLAWr2NUNG/+lx6NETv/KdgjxRldAJaH2o
- ItQA==
+ d=gmail.com; s=20260707; t=1793299836; x=1793904636; darn=lists.linux.it;
+ h=content-transfer-encoding:content-type:cc:to:subject:message-id
+ :date:from:in-reply-to:references:mime-version:from:to:cc:subject
+ :date:message-id:reply-to:content-type;
+ bh=AUyfqqPiDJWdIggtRHTM5d0W7pzNmk10GltpPPf5d3o=;
+ b=cYwbi2TFeuUP4SnpK95jkgVaiPDBHlVbS1aiLuB+I0PnCL5TpkMnZoz/igNmv17A9V
+ 7/9OqcY6ibsukcois7MrsFqL1qaRw9Ugxx0v3hA8P8Skon6DnPYgGMXAhScDMy/9CUtt
+ 69wP6FhJ2A+m6EwcPqnpa1x41iAYhlgEHMBWwOerGmzElzVONJGC621AsDiZOwHBFbCW
+ wo5oghArFzL1+BGRwsxQJpp3vl+x7wr7/ezGcpkhvY+YIX/zWgOhasnu/DTvuc9m3t2r
+ wWYArS5/y17eV0qN5BVqt5EzCK4Hq+Yu+4QJ8B83Wc1a7dTPizUaUCb9kjJdyt84BtDA
+ LxDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20260707; t=1793296159; x=1793900959;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
- :message-id:reply-to:content-type;
- bh=Ln9h95COh+dKENlOI1wGS5xr92jymKdKA0g3KaCC54g=;
- b=RIpL0OdqUZfn0/Ms1nD5PjZvESRW2NXeAy2NgOP7PIKsH52mxMgxIay94F17uQvesi
- KtfK08KpwQXH1vMb7M7PNvuGNuEfrgFnEKQZOz/MRolQcUa+xlbAw0yfHhbgjeFjMIGi
- RXrDMVTPZAfscoiSlUVgHN1+LeBDfLsVDViDnobkQg+97qqvPmWjgcch+3mrA5I8W3mE
- qft3JNYGUz98N3eonuUzvsuJ6WlymzDSvWEI+g70nc50Wk+Bp3WqSY7NdmSwA1M8nIv4
- 24NjfdDYA8etbk8zJUsKtSk8zIF0nglvkRvRf4VWfvGuAKHmfVbZPs+KWkDqUl+OExfi
- E2wg==
-X-Gm-Message-State: AFq9FYKwPc0ChNagl0Xbl8dVIGAWZlScnbDA1yIccKFhwOowV/SRBg9a
- zmYKl9oS0E6S5E8dJL1etzslARSzfGmG92lzC7KW0eIOkRKLCfz0mbYTUJgSKmP7MnI=
-X-Gm-Gg: AYBFou10T2m/XtQNZYfTm3trHBA7ewfSoYzP+mBf1RHc2jpdm7XgCKfLRFqV0GLqKET
- wyl//u2bvqlmVONqQ7Sk0rbVr+LZCV3sOz5Kh9E3sWB9Cl7s47sSCkC8UolbWyLEgBvovrUexL5
- 3kKS4w0DiGms06cVNXLEO99dea/TJw7SsMfxnQZ/B+lEZAYMJ21ziGFDOa8afnZSolNvWe3yWv8
- zSh6y6Q90sfzEV9zpc5zci22magK3++Mp0nfcDc2EBdT9toaJBEINjrz8gtV2mFtd6svX4i9j9E
- 4QPARjLKVLJUSVHlA3iCizag565CoFhNVzs2lhqhkc2755+Hbf7LRJ06fI6G0mVgiF1AeKaFwx5
- 68rZNRABkZDMWK33x1xEUV6sgGrfLVgA0OMqjptyV5Pv4ah2nm6EFdcWPHpwdcjK/+jf9V9CaNZ
- jsyWBorG5+jvO3lyiHp909FC8RGgrxAjK8yYWNlXynmV5YTG8XVaWnbJef13l3BFAIFoGJnTeLH
- 4aPCkDGgl8xr24XaF5+/S3wKTeeME+tR35hR1rNN5khazuIDSCIhhMwWZU4qMbpXXHqxwpyPDI5
- MutOcpX9vpsNBd7rjOPkHS7RkvSedk1MCraJmz7zmKKRDg208nH7BXYZFg==
-X-Received: by 2002:a05:693c:880c:10b0:35c:cd26:3066 with SMTP id
- 5a478bee46e88-36a424655bcmr123374eec.41.1793296159346; 
- Thu, 29 Oct 2026 10:49:19 -0700 (PDT)
-Received: from localhost.localdomain ([98.148.34.5])
- by smtp.gmail.com with ESMTPSA id
- 5a478bee46e88-36a42902649sm127504eec.11.2026.10.29.10.49.18
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 29 Oct 2026 10:49:18 -0700 (PDT)
-From: Hungyu Lin <dennylin0707@gmail.com>
-To: ltp@lists.linux.it
-Date: Thu, 29 Oct 2026 17:49:07 +0000
-Message-ID: <20261029174907.98721-1-dennylin0707@gmail.com>
-X-Mailer: git-send-email 2.43.0
+ d=1e100.net; s=20260707; t=1793299836; x=1793904636;
+ h=content-transfer-encoding:content-type:cc:to:subject:message-id
+ :date:from:in-reply-to:references:mime-version:x-gm-gg
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+ :content-type;
+ bh=AUyfqqPiDJWdIggtRHTM5d0W7pzNmk10GltpPPf5d3o=;
+ b=LJ88dRMAuFdPyMfH//WRmaU4qPSdY770vnHsHxreQN0IEDPEur8KfJINGULwHsfeUM
+ aRhLt8h3SbmRZJXDWhxLsa0aNMCmeAkUHDg5/oJLde0mJFN2boPFdKBFAW3OB/g0YObN
+ Y56jeGpdI6bSmiCwuw5PtQyYjiXJZxyphQxFKk2kQ4cPEld5tM9mE1bL/zMwklOcuUJ8
+ h8rITBRffWTTbeRgt9P+UgW4u1fSi0qd9GPOxdM1/eJxRAgWTSve/Cv/CT7I9dvLWJus
+ 6nQikoGB07sC7THGikC4abG47gnVtb/IdnssTYAu/LcxMa5gm8EDmoIXQV+CH5QiSNIU
+ Tq6Q==
+X-Gm-Message-State: AFq9FYKtI2WNwvx+RwdTg1Ug7hIRXS9HIUHgMhrA3FPT4D3XaLrwJRqi
+ Ji6iIegu5JLoVNyzDPAR0IEQN+enUT9ncQelPayP2RTjWvBg3TM7Q9LvrS16upqB49iNpPZzfIa
+ OJUeENSUljyPa6hFAEAMou3f4cmGVpUk7I5E7X5Q=
+X-Gm-Gg: AYBFou0R+ZESpf+qAY+wHr6Yl4Klecb1VJPz+WMxVmaOMLF49AUzfaknwc/vYUjLkXG
+ YbtBiMF/rmUkpNwYILGvrIYet/CieV1s7nY1mL9Di4ltJ9ClnQJZlVK90oxkJdegyPjDOzxO5rS
+ qQRTY/GwN0S682OWwyWhQst7dnwKLotkF8ycLHhN+0E1a0KOaQ0fotlwR746O4iNoyBQaJ2rWRa
+ RAwrBxJUZ3rEzP74+Je70O9/xqGhBd/pNXk8v6ZA4wExaPcmZJTpvfVuWS+2jPtIPQgUT9YeqV1
+ wpTXtvpN20NdoY8EIH41ex7DK56vZ4x0PWpd6njn1G5hPTepfJAbRGRNpN83FL1eziuxZ1y8fZp
+ tnylmOnDC0JrXHUGhuJEXAWvasreELYJw5K9YrXqEP/Ar01aqqRoEdqoiHxh8Ul3Pdhdesw==
+X-Received: by 2002:a05:6402:13d2:b0:6b3:f151:6a47 with SMTP id
+ 4fb4d7f45d1cf-6b49cc1ed63mr4687828a12.39.1793299835981; Thu, 29 Oct 2026
+ 11:50:35 -0700 (PDT)
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-13.6 required=3.0 tests=BAYES_00,
+References: <20261029174907.98721-1-dennylin0707@gmail.com>
+In-Reply-To: <20261029174907.98721-1-dennylin0707@gmail.com>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Thu, 29 Oct 2026 19:50:22 +0100
+X-Gm-Features: AclHuK-tVb8C5P3GdXH80okOHmeAtA-ahVavrGV8m2uWAylRsDnuMI9YJ4sfvck
+Message-ID: <CAOQ4uxhc6a5jdwj+o_pCByYpwOC20=uHj0mi4D5n3UgrTqR7uQ@mail.gmail.com>
+To: Hungyu Lin <dennylin0707@gmail.com>
+X-Spam-Status: No, score=-10.6 required=3.0 tests=BAYES_00,
 	DKIM_ADSP_CUSTOM_MED,DKIM_INVALID,DKIM_SIGNED,
 	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_PASS,
-	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
+	SPF_PASS autolearn=ham autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3] inotify13: check rename cookie pairing after
+Subject: Re: [LTP] [PATCH v3] inotify13: check rename cookie pairing after
  adjacent moves
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
@@ -95,296 +112,225 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: linux-fsdevel@vger.kernel.org, dennylin0707@gmail.com, amir73il@gmail.com,
- jack@suse.cz
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: linux-fsdevel@vger.kernel.org, jack@suse.cz, ltp@lists.linux.it
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Queue an unpaired IN_MOVED_FROM event, followed by an IN_MOVED_FROM and
-IN_MOVED_TO pair with the same source watch descriptor and name as the
-first event. Watch only IN_MOVE so creation of the replacement entry
-does not separate the two IN_MOVED_FROM events in the queue.
-
-Affected kernels coalesce the second IN_MOVED_FROM into the first,
-leaving the IN_MOVED_TO cookie without a matching IN_MOVED_FROM cookie.
-Check that all three events are retained, the two moves have distinct
-cookies, and the second IN_MOVED_FROM matches the IN_MOVED_TO cookie.
-Cover both regular files and directories.
-
-Suggested-by: Amir Goldstein <amir73il@gmail.com>
-Signed-off-by: Hungyu Lin <dennylin0707@gmail.com>
----
-Changes in v3:
-- Check event fields separately, starting with the mask, and report specific
-  TFAIL diagnostics with actual and expected values. Log correct events
-  with TINFO only.
-- Report missing and extra events directly instead of using a generic
-  failure flag.
-- Use delete_entry() for both cleanup paths, as suggested by Amir.
-- Use a file/directory test-case table and derive the test count from it.
-- Clarify the operation sequence and affected-kernel history, the truncated
-  payload diagnostic, and both cookie relations in the success message.
-- Handle an empty nonblocking queue as missing events rather than TBROK.
-
-Built with GCC 13.3.0 and checked with LTP checkpatch and sparse. On ARM64
-QEMU, the test reports 0 pass / 2 fail on the baseline kernel and 2 pass /
-0 fail with either kernel fix. With -i 20, the results are 0 pass / 40
-fail before the fix and 40 pass / 0 fail afterwards.
-
- runtest/syscalls                              |   1 +
- testcases/kernel/syscalls/inotify/.gitignore  |   1 +
- testcases/kernel/syscalls/inotify/inotify13.c | 217 ++++++++++++++++++++++++++
- 3 files changed, 219 insertions(+)
- create mode 100644 testcases/kernel/syscalls/inotify/inotify13.c
-
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 2bdb4a9a2b4801d03d93efea686124530f5ce2d5..e578bd92d7e7ded5c0ca2f95dc87fce814d733cc 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -677,6 +677,7 @@ inotify09 inotify09
- inotify10 inotify10
- inotify11 inotify11
- inotify12 inotify12
-+inotify13 inotify13
- 
- fanotify01 fanotify01
- fanotify02 fanotify02
-diff --git a/testcases/kernel/syscalls/inotify/.gitignore b/testcases/kernel/syscalls/inotify/.gitignore
-index f6e5c546ac4032766cee9f16b3689be5d0302d37..b597ea63f493b2da2a58017d3eb7b16a7b033fc5 100644
---- a/testcases/kernel/syscalls/inotify/.gitignore
-+++ b/testcases/kernel/syscalls/inotify/.gitignore
-@@ -10,3 +10,4 @@
- /inotify10
- /inotify11
- /inotify12
-+/inotify13
-diff --git a/testcases/kernel/syscalls/inotify/inotify13.c b/testcases/kernel/syscalls/inotify/inotify13.c
-new file mode 100644
-index 0000000000000000000000000000000000000000..2ea5b5d4aeff9b368e5fa79ec18207035567a34b
---- /dev/null
-+++ b/testcases/kernel/syscalls/inotify/inotify13.c
-@@ -0,0 +1,217 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2026 Hungyu Lin <dennylin0707@gmail.com>
-+ */
-+
-+/*\
-+ * Verify that two IN_MOVED_FROM events that differ only in their rename
-+ * cookie are not coalesced.
-+ *
-+ * inotify(7) allows coalescing only of events with identical wd, mask,
-+ * cookie and name. A regression introduced in v2.6.31 dropped the cookie
-+ * comparison. On affected kernels, the second IN_MOVED_FROM is coalesced
-+ * into the first, leaving the following IN_MOVED_TO without a matching
-+ * IN_MOVED_FROM cookie.
-+ *
-+ * With source/ and target/ watched for IN_MOVE, and without reading the queue:
-+ *
-+ * 1. Move source/entry to unwatched/ (IN_MOVED_FROM, cookie A).
-+ * 2. Recreate source/entry.
-+ * 3. Move source/entry to target/ (IN_MOVED_FROM and IN_MOVED_TO, cookie B).
-+ *
-+ * All three events must be queued, with A != B. IN_CREATE is not watched, so
-+ * the two IN_MOVED_FROM events are adjacent; the queue is not read in between,
-+ * because only the last unread event can be merged with a new one. Both a
-+ * regular file and a directory are tested.
-+ */
-+
-+#include "config.h"
-+#include <fcntl.h>
-+#include <string.h>
-+#include "tst_test.h"
-+#include "inotify.h"
-+
-+#ifdef HAVE_SYS_INOTIFY_H
-+#include <sys/inotify.h>
-+
-+#define SOURCE "source/entry"
-+#define UNWATCHED "unwatched/entry"
-+#define TARGET "target/entry"
-+
-+struct event_t {
-+	const char *name;
-+	unsigned int mask;
-+	int wd;
-+};
-+
-+static struct tcase {
-+	const char *type;
-+	unsigned int isdir;
-+} tcases[] = {
-+	{ "file", 0 },
-+	{ "directory", IN_ISDIR },
-+};
-+
-+static int fd_notify = -1;
-+
-+static void create_entry(unsigned int isdir, const char *path)
-+{
-+	if (isdir)
-+		SAFE_MKDIR(path, 0700);
-+	else
-+		SAFE_TOUCH(path, 0600, NULL);
-+}
-+
-+static void delete_entry(unsigned int isdir, const char *path)
-+{
-+	if (isdir)
-+		SAFE_RMDIR(path);
-+	else
-+		SAFE_UNLINK(path);
-+}
-+
-+static void verify_inotify(unsigned int n)
-+{
-+	const char *type = tcases[n].type;
-+	unsigned int isdir = tcases[n].isdir;
-+	struct event_t event_set[] = {
-+		{ "entry", IN_MOVED_FROM | isdir, 0 },
-+		{ "entry", IN_MOVED_FROM | isdir, 0 },
-+		{ "entry", IN_MOVED_TO | isdir, 0 },
-+	};
-+	union {
-+		struct inotify_event align;
-+		char data[4096];
-+	} buf;
-+	struct inotify_event *event;
-+	const struct event_t *expected;
-+	unsigned int cookies[ARRAY_SIZE(event_set)] = { 0 };
-+	unsigned int count = 0, i;
-+	size_t pos = 0, len;
-+	int wd_source, wd_target;
-+
-+	fd_notify = SAFE_MYINOTIFY_INIT1(O_NONBLOCK);
-+	wd_source = SAFE_MYINOTIFY_ADD_WATCH(fd_notify, "source", IN_MOVE);
-+	wd_target = SAFE_MYINOTIFY_ADD_WATCH(fd_notify, "target", IN_MOVE);
-+
-+	event_set[0].wd = wd_source;
-+	event_set[1].wd = wd_source;
-+	event_set[2].wd = wd_target;
-+
-+	create_entry(isdir, SOURCE);
-+	SAFE_RENAME(SOURCE, UNWATCHED);
-+	create_entry(isdir, SOURCE);
-+	SAFE_RENAME(SOURCE, TARGET);
-+
-+	len = SAFE_READ(SAFE_READ_ANY_EAGAIN, fd_notify, buf.data, sizeof(buf.data));
-+	SAFE_CLOSE(fd_notify);
-+
-+	/* Reuse these paths for the next case and for -i iterations. */
-+	delete_entry(isdir, UNWATCHED);
-+	delete_entry(isdir, TARGET);
-+
-+	while (pos < len) {
-+		if (len - pos < sizeof(*event))
-+			tst_brk(TBROK, "%s: event %u has %zu header bytes (expected at least %zu)",
-+				type, count, len - pos, sizeof(*event));
-+
-+		event = (struct inotify_event *)(buf.data + pos);
-+		if (event->len > len - pos - sizeof(*event))
-+			tst_brk(TBROK, "%s: event %u claims %u name bytes but only %zu are left in the buffer, wd=%d mask=%#x cookie=%u",
-+				type, count, event->len, len - pos - sizeof(*event),
-+				event->wd, event->mask, event->cookie);
-+
-+		if (count >= ARRAY_SIZE(event_set)) {
-+			tst_res(TFAIL, "%s: unexpected extra event %u: got wd=%d mask=%#x cookie=%u len=%u name=\"%.*s\", expected no event after %zu events",
-+				type, count, event->wd,
-+				event->mask, event->cookie, event->len,
-+				(int)event->len, event->name, ARRAY_SIZE(event_set));
-+			return;
-+		}
-+
-+		expected = &event_set[count];
-+		if (event->mask != expected->mask) {
-+			tst_res(TFAIL, "%s: event %u has wrong mask: got wd=%d mask=%#x cookie=%u name=\"%.*s\", expected wd=%d mask=%#x name=\"%s\"",
-+				type, count, event->wd, event->mask, event->cookie,
-+				(int)event->len, event->name, expected->wd,
-+				expected->mask, expected->name);
-+			return;
-+		}
-+
-+		if (event->wd != expected->wd) {
-+			tst_res(TFAIL, "%s: event %u has wrong wd: got wd=%d mask=%#x cookie=%u name=\"%.*s\", expected wd=%d mask=%#x name=\"%s\"",
-+				type, count, event->wd, event->mask, event->cookie,
-+				(int)event->len, event->name, expected->wd,
-+				expected->mask, expected->name);
-+			return;
-+		}
-+
-+		if (event->len < strlen(expected->name) + 1 ||
-+		    strncmp(expected->name, event->name, event->len)) {
-+			tst_res(TFAIL, "%s: event %u has wrong name: got wd=%d mask=%#x cookie=%u len=%u name=\"%.*s\", expected wd=%d mask=%#x name=\"%s\"",
-+				type, count, event->wd, event->mask, event->cookie,
-+				event->len, (int)event->len, event->name,
-+				expected->wd, expected->mask, expected->name);
-+			return;
-+		}
-+
-+		cookies[count] = event->cookie;
-+		tst_res(TINFO, "%s: event %u: wd=%d mask=%#x cookie=%u len=%u name=\"%.*s\"",
-+			type, count, event->wd, event->mask, event->cookie,
-+			event->len, (int)event->len, event->name);
-+		count++;
-+		pos += sizeof(*event) + event->len;
-+	}
-+
-+	for (i = count; i < ARRAY_SIZE(event_set); i++) {
-+		expected = &event_set[i];
-+		tst_res(TFAIL, "%s: missing event %u: got no event, expected wd=%d mask=%#x name=\"%s\"",
-+			type, i, expected->wd, expected->mask, expected->name);
-+	}
-+
-+	if (count < ARRAY_SIZE(event_set))
-+		return;
-+
-+	if (cookies[0] == cookies[1]) {
-+		tst_res(TFAIL, "%s: expected different FROM cookies for wd=%d mask=%#x name=\"%s\", got first=%u second=%u",
-+			type, event_set[0].wd, event_set[0].mask,
-+			event_set[0].name, cookies[0], cookies[1]);
-+		return;
-+	}
-+
-+	if (cookies[1] != cookies[2]) {
-+		tst_res(TFAIL, "%s: expected matching rename cookies: FROM wd=%d mask=%#x name=\"%s\" cookie=%u, TO wd=%d mask=%#x name=\"%s\" cookie=%u",
-+			type, event_set[1].wd, event_set[1].mask,
-+			event_set[1].name, cookies[1], event_set[2].wd,
-+			event_set[2].mask, event_set[2].name, cookies[2]);
-+		return;
-+	}
-+
-+	tst_res(TPASS, "%s: FROM cookies %u and %u differ, TO cookie %u matches the second",
-+		type, cookies[0], cookies[1], cookies[2]);
-+}
-+
-+static void setup(void)
-+{
-+	SAFE_MKDIR("source", 0700);
-+	SAFE_MKDIR("unwatched", 0700);
-+	SAFE_MKDIR("target", 0700);
-+}
-+
-+static void cleanup(void)
-+{
-+	if (fd_notify >= 0)
-+		SAFE_CLOSE(fd_notify);
-+}
-+
-+static struct tst_test test = {
-+	.test = verify_inotify,
-+	.tcnt = ARRAY_SIZE(tcases),
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.needs_tmpdir = 1,
-+};
-+
-+#else
-+TST_TEST_TCONF("system doesn't have required inotify support");
-+#endif
-
--- 
-2.43.0
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+T24gVGh1LCBPY3QgMjksIDIwMjYgYXQgNjo0OeKAr1BNIEh1bmd5dSBMaW4gPGRlbm55bGluMDcw
+N0BnbWFpbC5jb20+IHdyb3RlOgo+Cj4gUXVldWUgYW4gdW5wYWlyZWQgSU5fTU9WRURfRlJPTSBl
+dmVudCwgZm9sbG93ZWQgYnkgYW4gSU5fTU9WRURfRlJPTSBhbmQKPiBJTl9NT1ZFRF9UTyBwYWly
+IHdpdGggdGhlIHNhbWUgc291cmNlIHdhdGNoIGRlc2NyaXB0b3IgYW5kIG5hbWUgYXMgdGhlCj4g
+Zmlyc3QgZXZlbnQuIFdhdGNoIG9ubHkgSU5fTU9WRSBzbyBjcmVhdGlvbiBvZiB0aGUgcmVwbGFj
+ZW1lbnQgZW50cnkKPiBkb2VzIG5vdCBzZXBhcmF0ZSB0aGUgdHdvIElOX01PVkVEX0ZST00gZXZl
+bnRzIGluIHRoZSBxdWV1ZS4KPgo+IEFmZmVjdGVkIGtlcm5lbHMgY29hbGVzY2UgdGhlIHNlY29u
+ZCBJTl9NT1ZFRF9GUk9NIGludG8gdGhlIGZpcnN0LAo+IGxlYXZpbmcgdGhlIElOX01PVkVEX1RP
+IGNvb2tpZSB3aXRob3V0IGEgbWF0Y2hpbmcgSU5fTU9WRURfRlJPTSBjb29raWUuCj4gQ2hlY2sg
+dGhhdCBhbGwgdGhyZWUgZXZlbnRzIGFyZSByZXRhaW5lZCwgdGhlIHR3byBtb3ZlcyBoYXZlIGRp
+c3RpbmN0Cj4gY29va2llcywgYW5kIHRoZSBzZWNvbmQgSU5fTU9WRURfRlJPTSBtYXRjaGVzIHRo
+ZSBJTl9NT1ZFRF9UTyBjb29raWUuCj4gQ292ZXIgYm90aCByZWd1bGFyIGZpbGVzIGFuZCBkaXJl
+Y3Rvcmllcy4KPgo+IFN1Z2dlc3RlZC1ieTogQW1pciBHb2xkc3RlaW4gPGFtaXI3M2lsQGdtYWls
+LmNvbT4KPiBTaWduZWQtb2ZmLWJ5OiBIdW5neXUgTGluIDxkZW5ueWxpbjA3MDdAZ21haWwuY29t
+Pgo+IC0tLQo+IENoYW5nZXMgaW4gdjM6Cj4gLSBDaGVjayBldmVudCBmaWVsZHMgc2VwYXJhdGVs
+eSwgc3RhcnRpbmcgd2l0aCB0aGUgbWFzaywgYW5kIHJlcG9ydCBzcGVjaWZpYwo+ICAgVEZBSUwg
+ZGlhZ25vc3RpY3Mgd2l0aCBhY3R1YWwgYW5kIGV4cGVjdGVkIHZhbHVlcy4gTG9nIGNvcnJlY3Qg
+ZXZlbnRzCj4gICB3aXRoIFRJTkZPIG9ubHkuCj4gLSBSZXBvcnQgbWlzc2luZyBhbmQgZXh0cmEg
+ZXZlbnRzIGRpcmVjdGx5IGluc3RlYWQgb2YgdXNpbmcgYSBnZW5lcmljCj4gICBmYWlsdXJlIGZs
+YWcuCj4gLSBVc2UgZGVsZXRlX2VudHJ5KCkgZm9yIGJvdGggY2xlYW51cCBwYXRocywgYXMgc3Vn
+Z2VzdGVkIGJ5IEFtaXIuCj4gLSBVc2UgYSBmaWxlL2RpcmVjdG9yeSB0ZXN0LWNhc2UgdGFibGUg
+YW5kIGRlcml2ZSB0aGUgdGVzdCBjb3VudCBmcm9tIGl0Lgo+IC0gQ2xhcmlmeSB0aGUgb3BlcmF0
+aW9uIHNlcXVlbmNlIGFuZCBhZmZlY3RlZC1rZXJuZWwgaGlzdG9yeSwgdGhlIHRydW5jYXRlZAo+
+ICAgcGF5bG9hZCBkaWFnbm9zdGljLCBhbmQgYm90aCBjb29raWUgcmVsYXRpb25zIGluIHRoZSBz
+dWNjZXNzIG1lc3NhZ2UuCj4gLSBIYW5kbGUgYW4gZW1wdHkgbm9uYmxvY2tpbmcgcXVldWUgYXMg
+bWlzc2luZyBldmVudHMgcmF0aGVyIHRoYW4gVEJST0suCj4KPiBCdWlsdCB3aXRoIEdDQyAxMy4z
+LjAgYW5kIGNoZWNrZWQgd2l0aCBMVFAgY2hlY2twYXRjaCBhbmQgc3BhcnNlLiBPbiBBUk02NAo+
+IFFFTVUsIHRoZSB0ZXN0IHJlcG9ydHMgMCBwYXNzIC8gMiBmYWlsIG9uIHRoZSBiYXNlbGluZSBr
+ZXJuZWwgYW5kIDIgcGFzcyAvCj4gMCBmYWlsIHdpdGggZWl0aGVyIGtlcm5lbCBmaXguIFdpdGgg
+LWkgMjAsIHRoZSByZXN1bHRzIGFyZSAwIHBhc3MgLyA0MAo+IGZhaWwgYmVmb3JlIHRoZSBmaXgg
+YW5kIDQwIHBhc3MgLyAwIGZhaWwgYWZ0ZXJ3YXJkcy4KPgo+ICBydW50ZXN0L3N5c2NhbGxzICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgIDEgKwo+ICB0ZXN0Y2FzZXMva2VybmVsL3N5
+c2NhbGxzL2lub3RpZnkvLmdpdGlnbm9yZSAgfCAgIDEgKwo+ICB0ZXN0Y2FzZXMva2VybmVsL3N5
+c2NhbGxzL2lub3RpZnkvaW5vdGlmeTEzLmMgfCAyMTcgKysrKysrKysrKysrKysrKysrKysrKysr
+KysKPiAgMyBmaWxlcyBjaGFuZ2VkLCAyMTkgaW5zZXJ0aW9ucygrKQo+ICBjcmVhdGUgbW9kZSAx
+MDA2NDQgdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9pbm90aWZ5L2lub3RpZnkxMy5jCj4KPiBk
+aWZmIC0tZ2l0IGEvcnVudGVzdC9zeXNjYWxscyBiL3J1bnRlc3Qvc3lzY2FsbHMKPiBpbmRleCAy
+YmRiNGE5YTJiNDgwMWQwM2Q5M2VmZWE2ODYxMjQ1MzBmNWNlMmQ1Li5lNTc4YmQ5MmQ3ZTdkZWQ1
+YzBjYTJmOTVkYzg3ZmNlODE0ZDczM2NjIDEwMDY0NAo+IC0tLSBhL3J1bnRlc3Qvc3lzY2FsbHMK
+PiArKysgYi9ydW50ZXN0L3N5c2NhbGxzCj4gQEAgLTY3Nyw2ICs2NzcsNyBAQCBpbm90aWZ5MDkg
+aW5vdGlmeTA5Cj4gIGlub3RpZnkxMCBpbm90aWZ5MTAKPiAgaW5vdGlmeTExIGlub3RpZnkxMQo+
+ICBpbm90aWZ5MTIgaW5vdGlmeTEyCj4gK2lub3RpZnkxMyBpbm90aWZ5MTMKPgo+ICBmYW5vdGlm
+eTAxIGZhbm90aWZ5MDEKPiAgZmFub3RpZnkwMiBmYW5vdGlmeTAyCj4gZGlmZiAtLWdpdCBhL3Rl
+c3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvaW5vdGlmeS8uZ2l0aWdub3JlIGIvdGVzdGNhc2VzL2tl
+cm5lbC9zeXNjYWxscy9pbm90aWZ5Ly5naXRpZ25vcmUKPiBpbmRleCBmNmU1YzU0NmFjNDAzMjc2
+NmNlZTlmMTZiMzY4OWJlNWQwMzAyZDM3Li5iNTk3ZWE2M2Y0OTNiMmRhMmE1ODAxN2QzZWI3YjE2
+YTdiMDMzZmM1IDEwMDY0NAo+IC0tLSBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvaW5vdGlm
+eS8uZ2l0aWdub3JlCj4gKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9pbm90aWZ5Ly5n
+aXRpZ25vcmUKPiBAQCAtMTAsMyArMTAsNCBAQAo+ICAvaW5vdGlmeTEwCj4gIC9pbm90aWZ5MTEK
+PiAgL2lub3RpZnkxMgo+ICsvaW5vdGlmeTEzCj4gZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJu
+ZWwvc3lzY2FsbHMvaW5vdGlmeS9pbm90aWZ5MTMuYyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2Fs
+bHMvaW5vdGlmeS9pbm90aWZ5MTMuYwo+IG5ldyBmaWxlIG1vZGUgMTAwNjQ0Cj4gaW5kZXggMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMC4uMmVhNWI1ZDRhZWZmOWIzNjhl
+NWZhNzllYzE4MjA3MDM1NTY3YTM0Ygo+IC0tLSAvZGV2L251bGwKPiArKysgYi90ZXN0Y2FzZXMv
+a2VybmVsL3N5c2NhbGxzL2lub3RpZnkvaW5vdGlmeTEzLmMKPiBAQCAtMCwwICsxLDIxNyBAQAo+
+ICsvLyBTUERYLUxpY2Vuc2UtSWRlbnRpZmllcjogR1BMLTIuMC1vci1sYXRlcgo+ICsvKgo+ICsg
+KiBDb3B5cmlnaHQgKGMpIDIwMjYgSHVuZ3l1IExpbiA8ZGVubnlsaW4wNzA3QGdtYWlsLmNvbT4K
+PiArICovCj4gKwo+ICsvKlwKPiArICogVmVyaWZ5IHRoYXQgdHdvIElOX01PVkVEX0ZST00gZXZl
+bnRzIHRoYXQgZGlmZmVyIG9ubHkgaW4gdGhlaXIgcmVuYW1lCj4gKyAqIGNvb2tpZSBhcmUgbm90
+IGNvYWxlc2NlZC4KPiArICoKPiArICogaW5vdGlmeSg3KSBhbGxvd3MgY29hbGVzY2luZyBvbmx5
+IG9mIGV2ZW50cyB3aXRoIGlkZW50aWNhbCB3ZCwgbWFzaywKPiArICogY29va2llIGFuZCBuYW1l
+LiBBIHJlZ3Jlc3Npb24gaW50cm9kdWNlZCBpbiB2Mi42LjMxIGRyb3BwZWQgdGhlIGNvb2tpZQo+
+ICsgKiBjb21wYXJpc29uLiBPbiBhZmZlY3RlZCBrZXJuZWxzLCB0aGUgc2Vjb25kIElOX01PVkVE
+X0ZST00gaXMgY29hbGVzY2VkCj4gKyAqIGludG8gdGhlIGZpcnN0LCBsZWF2aW5nIHRoZSBmb2xs
+b3dpbmcgSU5fTU9WRURfVE8gd2l0aG91dCBhIG1hdGNoaW5nCj4gKyAqIElOX01PVkVEX0ZST00g
+Y29va2llLgo+ICsgKgo+ICsgKiBXaXRoIHNvdXJjZS8gYW5kIHRhcmdldC8gd2F0Y2hlZCBmb3Ig
+SU5fTU9WRSwgYW5kIHdpdGhvdXQgcmVhZGluZyB0aGUgcXVldWU6Cj4gKyAqCj4gKyAqIDEuIE1v
+dmUgc291cmNlL2VudHJ5IHRvIHVud2F0Y2hlZC8gKElOX01PVkVEX0ZST00sIGNvb2tpZSBBKS4K
+PiArICogMi4gUmVjcmVhdGUgc291cmNlL2VudHJ5Lgo+ICsgKiAzLiBNb3ZlIHNvdXJjZS9lbnRy
+eSB0byB0YXJnZXQvIChJTl9NT1ZFRF9GUk9NIGFuZCBJTl9NT1ZFRF9UTywgY29va2llIEIpLgo+
+ICsgKgo+ICsgKiBBbGwgdGhyZWUgZXZlbnRzIG11c3QgYmUgcXVldWVkLCB3aXRoIEEgIT0gQi4g
+SU5fQ1JFQVRFIGlzIG5vdCB3YXRjaGVkLCBzbwo+ICsgKiB0aGUgdHdvIElOX01PVkVEX0ZST00g
+ZXZlbnRzIGFyZSBhZGphY2VudDsgdGhlIHF1ZXVlIGlzIG5vdCByZWFkIGluIGJldHdlZW4sCj4g
+KyAqIGJlY2F1c2Ugb25seSB0aGUgbGFzdCB1bnJlYWQgZXZlbnQgY2FuIGJlIG1lcmdlZCB3aXRo
+IGEgbmV3IG9uZS4gQm90aCBhCj4gKyAqIHJlZ3VsYXIgZmlsZSBhbmQgYSBkaXJlY3RvcnkgYXJl
+IHRlc3RlZC4KPiArICovCj4gKwo+ICsjaW5jbHVkZSAiY29uZmlnLmgiCj4gKyNpbmNsdWRlIDxm
+Y250bC5oPgo+ICsjaW5jbHVkZSA8c3RyaW5nLmg+Cj4gKyNpbmNsdWRlICJ0c3RfdGVzdC5oIgo+
+ICsjaW5jbHVkZSAiaW5vdGlmeS5oIgo+ICsKPiArI2lmZGVmIEhBVkVfU1lTX0lOT1RJRllfSAo+
+ICsjaW5jbHVkZSA8c3lzL2lub3RpZnkuaD4KPiArCj4gKyNkZWZpbmUgU09VUkNFICJzb3VyY2Uv
+ZW50cnkiCj4gKyNkZWZpbmUgVU5XQVRDSEVEICJ1bndhdGNoZWQvZW50cnkiCj4gKyNkZWZpbmUg
+VEFSR0VUICJ0YXJnZXQvZW50cnkiCj4gKwo+ICtzdHJ1Y3QgZXZlbnRfdCB7Cj4gKyAgICAgICBj
+b25zdCBjaGFyICpuYW1lOwo+ICsgICAgICAgdW5zaWduZWQgaW50IG1hc2s7Cj4gKyAgICAgICBp
+bnQgd2Q7Cj4gK307Cj4gKwo+ICtzdGF0aWMgc3RydWN0IHRjYXNlIHsKPiArICAgICAgIGNvbnN0
+IGNoYXIgKnR5cGU7Cj4gKyAgICAgICB1bnNpZ25lZCBpbnQgaXNkaXI7Cj4gK30gdGNhc2VzW10g
+PSB7Cj4gKyAgICAgICB7ICJmaWxlIiwgMCB9LAo+ICsgICAgICAgeyAiZGlyZWN0b3J5IiwgSU5f
+SVNESVIgfSwKPiArfTsKPiArCj4gK3N0YXRpYyBpbnQgZmRfbm90aWZ5ID0gLTE7Cj4gKwo+ICtz
+dGF0aWMgdm9pZCBjcmVhdGVfZW50cnkodW5zaWduZWQgaW50IGlzZGlyLCBjb25zdCBjaGFyICpw
+YXRoKQo+ICt7Cj4gKyAgICAgICBpZiAoaXNkaXIpCj4gKyAgICAgICAgICAgICAgIFNBRkVfTUtE
+SVIocGF0aCwgMDcwMCk7Cj4gKyAgICAgICBlbHNlCj4gKyAgICAgICAgICAgICAgIFNBRkVfVE9V
+Q0gocGF0aCwgMDYwMCwgTlVMTCk7Cj4gK30KPiArCj4gK3N0YXRpYyB2b2lkIGRlbGV0ZV9lbnRy
+eSh1bnNpZ25lZCBpbnQgaXNkaXIsIGNvbnN0IGNoYXIgKnBhdGgpCj4gK3sKPiArICAgICAgIGlm
+IChpc2RpcikKPiArICAgICAgICAgICAgICAgU0FGRV9STURJUihwYXRoKTsKPiArICAgICAgIGVs
+c2UKPiArICAgICAgICAgICAgICAgU0FGRV9VTkxJTksocGF0aCk7Cj4gK30KPiArCj4gK3N0YXRp
+YyB2b2lkIHZlcmlmeV9pbm90aWZ5KHVuc2lnbmVkIGludCBuKQo+ICt7Cj4gKyAgICAgICBjb25z
+dCBjaGFyICp0eXBlID0gdGNhc2VzW25dLnR5cGU7Cj4gKyAgICAgICB1bnNpZ25lZCBpbnQgaXNk
+aXIgPSB0Y2FzZXNbbl0uaXNkaXI7Cj4gKyAgICAgICBzdHJ1Y3QgZXZlbnRfdCBldmVudF9zZXRb
+XSA9IHsKPiArICAgICAgICAgICAgICAgeyAiZW50cnkiLCBJTl9NT1ZFRF9GUk9NIHwgaXNkaXIs
+IDAgfSwKPiArICAgICAgICAgICAgICAgeyAiZW50cnkiLCBJTl9NT1ZFRF9GUk9NIHwgaXNkaXIs
+IDAgfSwKPiArICAgICAgICAgICAgICAgeyAiZW50cnkiLCBJTl9NT1ZFRF9UTyB8IGlzZGlyLCAw
+IH0sCj4gKyAgICAgICB9Owo+ICsgICAgICAgdW5pb24gewo+ICsgICAgICAgICAgICAgICBzdHJ1
+Y3QgaW5vdGlmeV9ldmVudCBhbGlnbjsKPiArICAgICAgICAgICAgICAgY2hhciBkYXRhWzQwOTZd
+Owo+ICsgICAgICAgfSBidWY7Cj4gKyAgICAgICBzdHJ1Y3QgaW5vdGlmeV9ldmVudCAqZXZlbnQ7
+Cj4gKyAgICAgICBjb25zdCBzdHJ1Y3QgZXZlbnRfdCAqZXhwZWN0ZWQ7Cj4gKyAgICAgICB1bnNp
+Z25lZCBpbnQgY29va2llc1tBUlJBWV9TSVpFKGV2ZW50X3NldCldID0geyAwIH07Cj4gKyAgICAg
+ICB1bnNpZ25lZCBpbnQgY291bnQgPSAwLCBpOwo+ICsgICAgICAgc2l6ZV90IHBvcyA9IDAsIGxl
+bjsKPiArICAgICAgIGludCB3ZF9zb3VyY2UsIHdkX3RhcmdldDsKPiArCj4gKyAgICAgICBmZF9u
+b3RpZnkgPSBTQUZFX01ZSU5PVElGWV9JTklUMShPX05PTkJMT0NLKTsKPiArICAgICAgIHdkX3Nv
+dXJjZSA9IFNBRkVfTVlJTk9USUZZX0FERF9XQVRDSChmZF9ub3RpZnksICJzb3VyY2UiLCBJTl9N
+T1ZFKTsKPiArICAgICAgIHdkX3RhcmdldCA9IFNBRkVfTVlJTk9USUZZX0FERF9XQVRDSChmZF9u
+b3RpZnksICJ0YXJnZXQiLCBJTl9NT1ZFKTsKPiArCj4gKyAgICAgICBldmVudF9zZXRbMF0ud2Qg
+PSB3ZF9zb3VyY2U7Cj4gKyAgICAgICBldmVudF9zZXRbMV0ud2QgPSB3ZF9zb3VyY2U7Cj4gKyAg
+ICAgICBldmVudF9zZXRbMl0ud2QgPSB3ZF90YXJnZXQ7Cj4gKwo+ICsgICAgICAgY3JlYXRlX2Vu
+dHJ5KGlzZGlyLCBTT1VSQ0UpOwo+ICsgICAgICAgU0FGRV9SRU5BTUUoU09VUkNFLCBVTldBVENI
+RUQpOwo+ICsgICAgICAgY3JlYXRlX2VudHJ5KGlzZGlyLCBTT1VSQ0UpOwo+ICsgICAgICAgU0FG
+RV9SRU5BTUUoU09VUkNFLCBUQVJHRVQpOwo+ICsKPiArICAgICAgIGxlbiA9IFNBRkVfUkVBRChT
+QUZFX1JFQURfQU5ZX0VBR0FJTiwgZmRfbm90aWZ5LCBidWYuZGF0YSwgc2l6ZW9mKGJ1Zi5kYXRh
+KSk7Cj4gKyAgICAgICBTQUZFX0NMT1NFKGZkX25vdGlmeSk7Cj4gKwo+ICsgICAgICAgLyogUmV1
+c2UgdGhlc2UgcGF0aHMgZm9yIHRoZSBuZXh0IGNhc2UgYW5kIGZvciAtaSBpdGVyYXRpb25zLiAq
+Lwo+ICsgICAgICAgZGVsZXRlX2VudHJ5KGlzZGlyLCBVTldBVENIRUQpOwo+ICsgICAgICAgZGVs
+ZXRlX2VudHJ5KGlzZGlyLCBUQVJHRVQpOwo+ICsKPiArICAgICAgIHdoaWxlIChwb3MgPCBsZW4p
+IHsKPiArICAgICAgICAgICAgICAgaWYgKGxlbiAtIHBvcyA8IHNpemVvZigqZXZlbnQpKQo+ICsg
+ICAgICAgICAgICAgICAgICAgICAgIHRzdF9icmsoVEJST0ssICIlczogZXZlbnQgJXUgaGFzICV6
+dSBoZWFkZXIgYnl0ZXMgKGV4cGVjdGVkIGF0IGxlYXN0ICV6dSkiLAo+ICsgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgdHlwZSwgY291bnQsIGxlbiAtIHBvcywgc2l6ZW9mKCpldmVudCkp
+Owo+ICsKPiArICAgICAgICAgICAgICAgZXZlbnQgPSAoc3RydWN0IGlub3RpZnlfZXZlbnQgKiko
+YnVmLmRhdGEgKyBwb3MpOwo+ICsgICAgICAgICAgICAgICBpZiAoZXZlbnQtPmxlbiA+IGxlbiAt
+IHBvcyAtIHNpemVvZigqZXZlbnQpKQo+ICsgICAgICAgICAgICAgICAgICAgICAgIHRzdF9icmso
+VEJST0ssICIlczogZXZlbnQgJXUgY2xhaW1zICV1IG5hbWUgYnl0ZXMgYnV0IG9ubHkgJXp1IGFy
+ZSBsZWZ0IGluIHRoZSBidWZmZXIsIHdkPSVkIG1hc2s9JSN4IGNvb2tpZT0ldSIsCj4gKyAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICB0eXBlLCBjb3VudCwgZXZlbnQtPmxlbiwgbGVuIC0g
+cG9zIC0gc2l6ZW9mKCpldmVudCksCj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBl
+dmVudC0+d2QsIGV2ZW50LT5tYXNrLCBldmVudC0+Y29va2llKTsKPiArCj4gKyAgICAgICAgICAg
+ICAgIGlmIChjb3VudCA+PSBBUlJBWV9TSVpFKGV2ZW50X3NldCkpIHsKPiArICAgICAgICAgICAg
+ICAgICAgICAgICB0c3RfcmVzKFRGQUlMLCAiJXM6IHVuZXhwZWN0ZWQgZXh0cmEgZXZlbnQgJXU6
+IGdvdCB3ZD0lZCBtYXNrPSUjeCBjb29raWU9JXUgbGVuPSV1IG5hbWU9XCIlLipzXCIsIGV4cGVj
+dGVkIG5vIGV2ZW50IGFmdGVyICV6dSBldmVudHMiLAo+ICsgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgdHlwZSwgY291bnQsIGV2ZW50LT53ZCwKPiArICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgIGV2ZW50LT5tYXNrLCBldmVudC0+Y29va2llLCBldmVudC0+bGVuLAo+ICsgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgKGludClldmVudC0+bGVuLCBldmVudC0+bmFtZSwg
+QVJSQVlfU0laRShldmVudF9zZXQpKTsKPiArICAgICAgICAgICAgICAgICAgICAgICByZXR1cm47
+Cj4gKyAgICAgICAgICAgICAgIH0KPiArCj4gKyAgICAgICAgICAgICAgIGV4cGVjdGVkID0gJmV2
+ZW50X3NldFtjb3VudF07Cj4gKyAgICAgICAgICAgICAgIGlmIChldmVudC0+bWFzayAhPSBleHBl
+Y3RlZC0+bWFzaykgewo+ICsgICAgICAgICAgICAgICAgICAgICAgIHRzdF9yZXMoVEZBSUwsICIl
+czogZXZlbnQgJXUgaGFzIHdyb25nIG1hc2s6IGdvdCB3ZD0lZCBtYXNrPSUjeCBjb29raWU9JXUg
+bmFtZT1cIiUuKnNcIiwgZXhwZWN0ZWQgd2Q9JWQgbWFzaz0lI3ggbmFtZT1cIiVzXCIiLAo+ICsg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgdHlwZSwgY291bnQsIGV2ZW50LT53ZCwgZXZl
+bnQtPm1hc2ssIGV2ZW50LT5jb29raWUsCj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAoaW50KWV2ZW50LT5sZW4sIGV2ZW50LT5uYW1lLCBleHBlY3RlZC0+d2QsCj4gKyAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICBleHBlY3RlZC0+bWFzaywgZXhwZWN0ZWQtPm5hbWUpOwo+
+ICsgICAgICAgICAgICAgICAgICAgICAgIHJldHVybjsKPiArICAgICAgICAgICAgICAgfQo+ICsK
+PiArICAgICAgICAgICAgICAgaWYgKGV2ZW50LT53ZCAhPSBleHBlY3RlZC0+d2QpIHsKPiArICAg
+ICAgICAgICAgICAgICAgICAgICB0c3RfcmVzKFRGQUlMLCAiJXM6IGV2ZW50ICV1IGhhcyB3cm9u
+ZyB3ZDogZ290IHdkPSVkIG1hc2s9JSN4IGNvb2tpZT0ldSBuYW1lPVwiJS4qc1wiLCBleHBlY3Rl
+ZCB3ZD0lZCBtYXNrPSUjeCBuYW1lPVwiJXNcIiIsCj4gKyAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICB0eXBlLCBjb3VudCwgZXZlbnQtPndkLCBldmVudC0+bWFzaywgZXZlbnQtPmNvb2tp
+ZSwKPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIChpbnQpZXZlbnQtPmxlbiwgZXZl
+bnQtPm5hbWUsIGV4cGVjdGVkLT53ZCwKPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+IGV4cGVjdGVkLT5tYXNrLCBleHBlY3RlZC0+bmFtZSk7Cj4gKyAgICAgICAgICAgICAgICAgICAg
+ICAgcmV0dXJuOwo+ICsgICAgICAgICAgICAgICB9Cj4gKwo+ICsgICAgICAgICAgICAgICBpZiAo
+ZXZlbnQtPmxlbiA8IHN0cmxlbihleHBlY3RlZC0+bmFtZSkgKyAxIHx8Cj4gKyAgICAgICAgICAg
+ICAgICAgICBzdHJuY21wKGV4cGVjdGVkLT5uYW1lLCBldmVudC0+bmFtZSwgZXZlbnQtPmxlbikp
+IHsKPiArICAgICAgICAgICAgICAgICAgICAgICB0c3RfcmVzKFRGQUlMLCAiJXM6IGV2ZW50ICV1
+IGhhcyB3cm9uZyBuYW1lOiBnb3Qgd2Q9JWQgbWFzaz0lI3ggY29va2llPSV1IGxlbj0ldSBuYW1l
+PVwiJS4qc1wiLCBleHBlY3RlZCB3ZD0lZCBtYXNrPSUjeCBuYW1lPVwiJXNcIiIsCj4gKyAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICB0eXBlLCBjb3VudCwgZXZlbnQtPndkLCBldmVudC0+
+bWFzaywgZXZlbnQtPmNvb2tpZSwKPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGV2
+ZW50LT5sZW4sIChpbnQpZXZlbnQtPmxlbiwgZXZlbnQtPm5hbWUsCj4gKyAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICBleHBlY3RlZC0+d2QsIGV4cGVjdGVkLT5tYXNrLCBleHBlY3RlZC0+
+bmFtZSk7Cj4gKyAgICAgICAgICAgICAgICAgICAgICAgcmV0dXJuOwo+ICsgICAgICAgICAgICAg
+ICB9CgpJIGFtIHNvcnJ5IGlmIG15IHJldmlldyBjb21tZW50cyBzZWVtIG5pdC1waWNraW5nIHRv
+IHlvdSBidXQgdGhlCmVycm9yIG1lc3NhZ2VzIGRvIG5vdCBmb2xsb3cgdGhlIG90aGVyIHRlc3Rz
+IHBhdHRlcm4uCgpUaGlzIGlzIHRoZSBwYXR0ZXJuIG9mIHRoZSBvdGhlciB0ZXN0czoKCiBnaXQg
+Z3JlcCBleHBlY3RlZFwgXCUKZmFub3RpZnkwMS5jOiAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICJnb3QgZXZlbnQ6IG1hc2s9JWxseCAoZXhwZWN0ZWQgJWxseCkgIgpmYW5vdGlmeTAxLmM6ICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgIihleHBlY3RlZCAldSkgZmQ9JWQiLApmYW5vdGlmeTAy
+LmM6ICAgICAgICAgICAgICAgICAgICAgICAgICAgImdvdCBldmVudDogbWFzaz0lbGx4IChleHBl
+Y3RlZCAlbGx4KSAiCmZhbm90aWZ5MDIuYzogICAgICAgICAgICAgICAgICAgICAgICAgICAiKGV4
+cGVjdGVkICV1KSBmZD0lZCIsCmZhbm90aWZ5MDMuYzogICAgICAgICAgIHRzdF9yZXMoVEZBSUws
+ICJyZWFkKCkgZ290IGVycm5vICVkIChleHBlY3RlZAolZCkiLCBlcnJubywgZXhwX2Vycm5vKTsK
+ZmFub3RpZnkwMy5jOiAgICAgICAgICAgdHN0X3JlcyhURkFJTCwgImV4ZWN2ZSgpIGdvdCBlcnJu
+byAlZAooZXhwZWN0ZWQgJWQpIiwgZXJybm8sIGV4cF9lcnJubyk7CmZhbm90aWZ5MDMuYzogICAg
+ICAgICAgICAgICAgICAgICAgICAgICAiZ290IGV2ZW50OiBtYXNrPSVsbHggKGV4cGVjdGVkICVs
+bHgpICIKZmFub3RpZnkwMy5jOiAgICAgICAgICAgICAgICAgICAgICAgICAgICIoZXhwZWN0ZWQg
+JXUpIGZkPSVkIiwKZmFub3RpZnkwNS5jOiAgICAgICAgICAgICAgICAgICAgICAgICAgICJnb3Qg
+ZXZlbnQ6IG1hc2s9JWxseAooZXhwZWN0ZWQgJWxseCkgcGlkPSV1IGZkPSVkIiwKZmFub3RpZnkw
+Ni5jOiAgICAgICAgICAgdHN0X3JlcyhURkFJTCwgImdyb3VwICVkIGdvdCBldmVudDogbWFzayAl
+bGx4CihleHBlY3RlZCAlbGx4KSAiCmZhbm90aWZ5MDYuYzogICAgICAgICAgICAgICAgICAgIihl
+eHBlY3RlZCAldSkgZmQ9JWQiLCBncm91cCwKZmFub3RpZnkwNy5jOiAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICJnb3QgZXZlbnQ6IG1hc2s9JWxseCAoZXhwZWN0ZWQgJWxseCkgIgpmYW5vdGlm
+eTA5LmM6ICAgICAgICAgICB0c3RfcmVzKFRGQUlMLCAiZ3JvdXAgJWQgZ290IGV2ZW50OiBtYXNr
+ICVsbHgKKGV4cGVjdGVkICVsbHgpIHBpZD0ldSBmZD0lZCBmaWxlbmFtZT0lcyIsCmZhbm90aWZ5
+MDkuYzogICAgICAgICAgIHRzdF9yZXMoVEZBSUwsICJncm91cCAlZCBnb3QgZXZlbnQ6IG1hc2sg
+JWxseApwaWQ9JXUgKGV4cGVjdGVkICV1KSBmZD0lZCBmaWxlbmFtZT0lcyIsCmZhbm90aWZ5MTAu
+YzogICAgICAgICAgIHRzdF9yZXMoVEZBSUwsICJncm91cCAlZCAoJXgpIGdvdCBldmVudDogbWFz
+awolbGx4IChleHBlY3RlZCAlbGx4KSAiCmZhbm90aWZ5MTAuYzogICAgICAgICAgICAgICAgICAg
+IihleHBlY3RlZCAldSkgZmQ9JXUiLCBncm91cCwgZmFub3RpZnlfY2xhc3NbcF0sCmZhbm90aWZ5
+MTIuYzogICAgICAgICAgICAgICAgICAgICAgICAgICAiUmVjZWl2ZWQgZXZlbnQ6IG1hc2s9JWxs
+eAooZXhwZWN0ZWQgJWxseCwgIgpmYW5vdGlmeTE1LmM6ICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgIkdvdCBldmVudDogbWFzaz0lbGx4IChleHBlY3RlZCAlbGx4KSAiCmZhbm90aWZ5MTUuYzog
+ICAgICAgICAgICAgICAgICAgICAgICAgICAiKGV4cGVjdGVkICV1KSBmZD0lZCIsCmZhbm90aWZ5
+MTYuYzogICAgICAgICAgICAgICAgICAgICAgICAgICAiZ290IGV2ZW50OiBtYXNrPSVsbHggKGV4
+cGVjdGVkICVsbHgpICIKZmFub3RpZnkxNi5jOiAgICAgICAgICAgICAgICAgICAgICAgICAgICJm
+c2lkPSV4LiV4IChleHBlY3RlZCAleC4leCkiLApmYW5vdGlmeTE2LmM6ICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgIihleHBlY3RlZCAldSkgZmQ9JWQgbmFtZT0nJXMnICIKZmFub3RpZnkxNi5j
+OiAgICAgICAgICAgICAgICAgICAgICAgICAgICJwaWQ9JXUgZmQ9JWQgbmFtZT0nJXMnCm51bV9p
+bmZvPSVkIChleHBlY3RlZCAlZCkgIgpmYW5vdGlmeTE5LmM6ICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgIm1hc2s9JWxseCBwaWQ9JXUgKGV4cGVjdGVkICV1KSBmZD0lZCIsCmZhbm90aWZ5MTku
+YzogICAgICAgICAgICAgICAgICAgICAgICAgICAibWFzaz0lbGx4IHBpZD0ldSBmZD0lZCAoZXhw
+ZWN0ZWQgJWQpIiwKZmFub3RpZnkyMy5jOiAgICAgICAgICAgICAgICAgICAgICAgICAgICJnb3Qg
+ZXZlbnQ6IG1hc2s9JWxseCAoZXhwZWN0ZWQgJWxseCkiLAoKSXQgaGlnaGxpZ2h0cyB0aGUgbWlz
+bWF0Y2ggd2l0aG91dCBjbHV0dGVyaW5nIHRoZSBsb2cgd2l0aCBtb3JlIGluZm9ybWF0aW9uLgoK
+QWdhaW4sIG5vdCBhIGJpZyBkZWFsLCBidXQgaXQgZ2l2ZXMgdGhlIGZlZWxpbmcgdGhhdCBteSBy
+ZXZpZXcgY29tbWVudHMKYXJlIGJlaW5nIHByb3hpZWQgdG8gYW4gYWdlbnQgd2l0aG91dCBwYXlp
+bmcgYXR0ZW50aW9uLgpJIGFtIHN1cmUgdGhpcyBpcyBqdXN0IGEgbWlzY29tbXVuaWNhdGlvbiBh
+bmQgSSBzaG91bGQgaGF2ZSBiZWVuCm1vcmUgc3BlY2lmaWMgaW4gbXkgcmVxdWVzdC4KClRoYW5r
+cywKQW1pci4KCi0tIApNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5saW51eC5pdC9s
+aXN0aW5mby9sdHAK
