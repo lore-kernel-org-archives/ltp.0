@@ -2,90 +2,65 @@ Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC1C5606A31C
-	for <ltp@archiver.kernel.org>; Thu, 29 Oct 2026 21:07:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33A75606A31A
+	for <ltp@archiver.kernel.org>; Thu, 29 Oct 2026 21:21:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=lmeqBWjE
+	dkim=pass (1024-bit key, unprotected) header.d=lists.linux.it header.i=@lists.linux.it header.a=rsa-sha256 header.s=picard header.b=l5+OuSGu;
+	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=tuta.io header.i=@tuta.io header.a=rsa-sha256 header.s=s1 header.b=c0Zq0php
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1793308907; h=date : to :
+ message-id : mime-version : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : cc : content-type : content-transfer-encoding : sender :
+ from; bh=dIBBSUmiuVLVaFqLVD680oLonwwfqKV9YqDGWsKsTH0=;
+ b=l5+OuSGuhTbN9TrGRZ0ndUiDmaLeDcemtW5h9Kbq62kVt5cy78lS0st4XqhjjaaPUJ5WK
+ aQ12u2CqiMIvWLozSEAKuOqLA15pORWXiEGtcbpp2sppk+xMM9XeZcgWwQR+8gM2p3ycHQ1
+ GDhRcMAf0rMJI8XccJ8rtZTG9QAXaPk=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 63D883E9A04
-	for <ltp@archiver.kernel.org>; Thu, 29 Oct 2026 22:07:33 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 57B233EA3BC
+	for <ltp@archiver.kernel.org>; Thu, 29 Oct 2026 22:21:47 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id DC6003E5DDE
- for <ltp@lists.linux.it>; Thu, 29 Oct 2026 22:07:16 +0100 (CET)
-Received: from mail-dl2-x07.google.com (mail-dl2-x07.google.com
- [IPv6:2607:f8b0:4864:38::7])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id B5FC93C25E8
+ for <ltp@lists.linux.it>; Thu, 29 Oct 2026 22:21:26 +0100 (CET)
+Received: from mail.w14.tutanota.de (mail.w14.tutanota.de [185.205.69.214])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 3BCF6200AF4
- for <ltp@lists.linux.it>; Thu, 29 Oct 2026 22:07:16 +0100 (CET)
-Received: by mail-dl2-x07.google.com with SMTP id
- a92af1059eb24-14345ae29c5so963c88.1
- for <ltp@lists.linux.it>; Thu, 29 Oct 2026 14:07:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20260707; t=1793308034; x=1793912834; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
- bh=0tz6UJO2BZhACEYM6ZFE2ekJAZW1YAXReqMb1KC2X0Y=;
- b=lmeqBWjEzRMxCPhE3NIFDTxN48ow2uQhtszU/WFpwZRwHLrFaUctBPnt+Zu+5YE2fK
- SVztXM5IYtKWeZqJnHmG3GEB4ct7oiD21teYwTZH6CncbnbL6WkoUAiEM4ly2r3/1ghK
- dtRSz4gD2KloJHx3CUHMk/bgC9peeZI58d/DbDPkVSs9+fq10iAwt/YqVFGCChv9j7k+
- raa2EG2hR2fsENxLMuo1XTaVBKlzwGssb0LAwQ7OQSyyOMa0NNNoVvu2XnDu7poSPmt0
- l6CeyXkHbFKpivkGMdD0OdN5xMvQZS4Iybi4TwEyI/bxGQf3jY9ajZOJQePz4OLTL8fW
- 3rug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20260707; t=1793308034; x=1793912834;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
- :message-id:reply-to:content-type;
- bh=0tz6UJO2BZhACEYM6ZFE2ekJAZW1YAXReqMb1KC2X0Y=;
- b=Jbxyu2dkv+ZZYvRQrZXB5Lv2bCSD5lhuIl5dCdBkIfGo9Wvl6PwrliIU1ZERDivs7a
- ctqOhaVlqRQL/CdMe8wBu8+JcN6wmXHXRjglqsZqOl9k83nZw1SYj07m2fzQ/JUrgtNP
- d1ztaSr9an9Z2/s1UNopd/Wdr7a9HGkC9tZULYn87v5ISCejjqQ9e74JRmfidUTB7zPi
- o8/TiYClgMfKm8Ct78ogEF9n/sz6jt0jya9E/83XC7pHiMQ2xTHg2HC2QFmRXygRzNIn
- ky6XosMYCuwhkLnd3Vg+4KNMIYzWSc51Gh7YvfazqoIMnLhKb4QsAo/M084Mr1iIXxAW
- +pEQ==
-X-Gm-Message-State: AFq9FYKliCjFMA5McUYlSsZ2IirxzNIPsCjLGLCL8GvZ/7u9X+GPb3dd
- wWdOPRTcqiSNBjfRb/3zTFxR7/d6sQ3esXHeFPWRWAKmbKf2D1TQ78A7pv4+vqd8J44=
-X-Gm-Gg: AYBFou1q8KnTkJ0BmQDdMoCDkRHeVh8mUntDX5lXmJ7R+zrYwJTHhsNMWL7+20lE2Dr
- AAmEj0ACAQEVaz0MlcAbU6GQa4ZN+UH1At90qtZKe0JKwUZAto1DAcml09A/QpD+7tvFC7AaS5a
- UalS8Li9BQAT4E79YZI40oiT7ZSp3BYCyJR89tiGEXcPwelXBnyM2GOerBgCfL2wEeoOzKXCQYG
- pQJLbxrSBhOYViZwVFcoUODfs7fWrKKfieieqFKkEfToksdzasAo8kvZv2V+YoStMB125zCuTFL
- 87g36BJ1nADLMgwF1qPA1c02MaMaTfDZFUzNlhRB+F23rXCKuzqYVqQGWmatpqAoF/WX+iOqXEP
- Y6jTXcsf6z2xFsnxfVwnZR2uABwrPkcBquyeDQ1Y5USXwwCdOr+k3kTJKX4X7Tk/JhLY1p/I4fU
- PElH2yLCZTHcHS/xRDFD/WkagN3IkCtaaKZYH1rc2W0bC+z2eI65eu3BW6n0A6mRpKgNJueuLsQ
- 3a2KERmC3dF5rT53aEAmDFVGgkes48ZWUfKA1sDmYHXpg5/1BLuwDZPqXo8aPPRKMfNuvfWItIm
- UIq0MSu6ylVbWHVaRxyENfRypeDRGbLisrV9e0XkNMZSLEVSZCrhcTok
-X-Received: by 2002:a05:7022:3c04:b0:1a9:c52f:655c with SMTP id
- a92af1059eb24-1ac5c555f7cmr258090c88.36.1793308034303; 
- Thu, 29 Oct 2026 14:07:14 -0700 (PDT)
-Received: from localhost.localdomain ([98.148.34.5])
- by smtp.gmail.com with ESMTPSA id
- a92af1059eb24-1ac1abcd6f1sm1089981c88.20.2026.10.29.14.07.13
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 29 Oct 2026 14:07:13 -0700 (PDT)
-From: Hungyu Lin <dennylin0707@gmail.com>
-To: ltp@lists.linux.it
-Date: Thu, 29 Oct 2026 21:07:01 +0000
-Message-ID: <20261029210701.80050-1-dennylin0707@gmail.com>
-X-Mailer: git-send-email 2.43.0
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 90F921A0098C
+ for <ltp@lists.linux.it>; Thu, 29 Oct 2026 22:21:25 +0100 (CET)
+Received: from tutadb.w10.tutanota.de (w10.api.tuta.com [IPv6:fd:ac::d:10])
+ by mail.w14.tutanota.de (Postfix) with ESMTP id 8FD3919EEF4AA
+ for <ltp@lists.linux.it>; Thu, 29 Oct 2026 22:21:24 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1793308884; 
+ s=s1; d=tuta.io;
+ h=From:From:To:To:Subject:Subject:Content-Description:Content-ID:Content-Type:Content-Type:Content-Transfer-Encoding:Content-Transfer-Encoding:Cc:Cc:Date:Date:In-Reply-To:MIME-Version:MIME-Version:Message-ID:Message-ID:Reply-To:References:Sender;
+ bh=/khCvL3k5j4Xv/cRlBywuKwEzg3E3yJlUO/He4xfUvU=;
+ b=c0Zq0php23StUyd8OLlIk1EGulP5Cx1MoqcAjY29C0UwIY6CnvraL2z5NhMhekNq
+ 3fteZXgbXjCUA595VoAQ7ZFnENbStf186h4q646im+p3V8yViWh65QKrQqH+I27wge+
+ J21CtbHKrxMr0DkjUxZtzCrlKaFy+qCNE38rlusNi8qIWYRnCf0mvyh4zFqbE7Mt8c6
+ rz0MpOXW2c2TUzk4kt3x9pS59+cXh/paUL9YMgGogkoyfQ2VvoQj84GMgEm4jZVTfM9
+ PbqsBD/vfbIsB4VdBXqyHuZVzMPv2/jZ5WsWl4IUMN9R1VPpTqscMIqVLmcHAq9/elI
+ i/8FfM41ug==
+Date: Thu, 29 Oct 2026 22:21:24 +0100 (CET)
+To: "ltp@lists.linux.it" <ltp@lists.linux.it>
+Message-ID: <P58XUlU--F-9@tuta.io>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-13.6 required=3.0 tests=BAYES_00,
-	DKIM_ADSP_CUSTOM_MED,DKIM_INVALID,DKIM_SIGNED,
-	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_PASS,
-	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
+Feedback-ID: 0127f977f5e13e8051b46c6e7f57d0f95a0470d24b79d7c31d07fdf611cc427ab823e0f4692a810119c92d8768973a9281:TurnOnPrivacy!:tutamail
+X-Spam-Status: No, score=-16.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_PASS,SPF_PASS autolearn=ham
+	autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v4] inotify13: check rename cookie pairing after
- adjacent moves
+Subject: [LTP] [PATCH v3][STAGING] syscalls/fanotify26: Add test for nested
+ permission events
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -95,286 +70,294 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: linux-fsdevel@vger.kernel.org, dennylin0707@gmail.com, amir73il@gmail.com,
- jack@suse.cz
+From: Edvard Conrad via ltp <ltp@lists.linux.it>
+Reply-To: Edvard Conrad <edvard@tuta.io>
+Cc: Amir Goldstein <amir73il@gmail.com>, Jan Kara <jack@suse.cz>,
+ Edvard Conrad <edvard@tuta.io>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Queue an unpaired IN_MOVED_FROM event, followed by an IN_MOVED_FROM and
-IN_MOVED_TO pair with the same source watch descriptor and name as the
-first event. Watch only IN_MOVE so creation of the replacement entry
-does not separate the two IN_MOVED_FROM events in the queue.
+The kernel creates the file descriptor it reports with a permission
+event by an open that must not generate further events. When the
+reported path is on a stacked filesystem, that open opens the real file
+on the backing filesystem, and since commit ebe559609d78 ("fs: get rid
+of __FMODE_NONOTIFY kludge") the backing file no longer inherits
+FMODE_NONOTIFY. A listener that also watches the backing filesystem is
+then sent a second permission event from inside its own read(2), which
+only the listener itself can answer, so a single reader never returns.
 
-Affected kernels coalesce the second IN_MOVED_FROM into the first,
-leaving the IN_MOVED_TO cookie without a matching IN_MOVED_FROM cookie.
-Check that all three events are retained, the two moves have distinct
-cookies, and the second IN_MOVED_FROM matches the IN_MOVED_TO cookie.
-Cover both regular files and directories.
+Verify that a listener returns from read(2) and answers an open
+permission event for a file on an overlayfs mount. The first test case
+marks the overlay only and passes on any kernel, the second one also
+marks the backing filesystem, which is the shape an anti-malware
+scanner uses on an overlayfs root.
 
-Suggested-by: Amir Goldstein <amir73il@gmail.com>
-Signed-off-by: Hungyu Lin <dennylin0707@gmail.com>
+The second case fails on a kernel without the pending fix "fs: let
+backing files inherit FMODE_NONOTIFY from the user file", so the test
+is added to runtest/staging for now.
+
+Link: https://lore.kernel.org/all/P58Wrer--F-9@tuta.io/
+Signed-off-by: Edvard Conrad <edvard@tuta.io>
 ---
-Changes in v4:
-- Put expected values immediately after the mismatched fields, following
-  the existing per-field diagnostic format.
-- Use the existing "got unnecessary event" and "didn't get event" wording.
-- Keep event context for extra events and mask, watch descriptor and
-  filename mismatches. Omit it from the two cookie-failure messages,
-  since it is already present in TINFO, as confirmed by Amir.
+v2: https://lore.kernel.org/ltp/P50G-yE--F-9@tuta.io/
 
-Built with GCC 13.3.0 and checked with LTP checkpatch and sparse. On ARM64
-QEMU, the test reports 0 pass / 2 fail on the baseline kernel and 2 pass /
-0 fail with the kernel fix. Local diagnostic controls also exercise both
-cookie failures and verify the preceding TINFO and concise TFAIL output.
-The controls are kept outside this patch.
+v3:
+- Scale both process-state waits through tst_multiply_timeout(). The
+  library scales all of its own deadlines, so on a KASAN or lockdep
+  kernel a healthy but unscheduled listener was reported as blocked.
+- Report TFAIL, not TBROK, for an unexpected event mask, and check the
+  event's pid, following fanotify03.c. Answer the event either way, or
+  the opener stays parked in the kernel.
+- Probe FAN_CLASS_CONTENT + FAN_MARK_FILESYSTEM + FAN_OPEN_PERM with
+  REQUIRE_FANOTIFY_EVENTS_SUPPORTED_ON_FS(), the combination run()
+  actually uses. The two previous probes checked neither class nor mask.
+- Use SAFE_READ_ALL rather than a literal 1, matching SAFE_WRITE_ALL.
+- Drop the explicit SAFE_WAITPID() for the opener. tst_reap_children()
+  runs after every iteration and checks the exit status this discarded.
+- Drop three unused includes.
 
- runtest/syscalls                              |   1 +
- testcases/kernel/syscalls/inotify/.gitignore  |   1 +
- testcases/kernel/syscalls/inotify/inotify13.c | 211 ++++++++++++++++++++++++++
- 3 files changed, 213 insertions(+)
- create mode 100644 testcases/kernel/syscalls/inotify/inotify13.c
+Amir's Reviewed-by from v2 is not carried over: the failure reporting
+and the support probe changed since, so it needs a fresh look.
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 2bdb4a9a2b4801d03d93efea686124530f5ce2d5..e578bd92d7e7ded5c0ca2f95dc87fce814d733cc 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -677,6 +677,7 @@ inotify09 inotify09
- inotify10 inotify10
- inotify11 inotify11
- inotify12 inotify12
-+inotify13 inotify13
- 
- fanotify01 fanotify01
- fanotify02 fanotify02
-diff --git a/testcases/kernel/syscalls/inotify/.gitignore b/testcases/kernel/syscalls/inotify/.gitignore
-index f6e5c546ac4032766cee9f16b3689be5d0302d37..b597ea63f493b2da2a58017d3eb7b16a7b033fc5 100644
---- a/testcases/kernel/syscalls/inotify/.gitignore
-+++ b/testcases/kernel/syscalls/inotify/.gitignore
-@@ -10,3 +10,4 @@
- /inotify10
- /inotify11
- /inotify12
-+/inotify13
-diff --git a/testcases/kernel/syscalls/inotify/inotify13.c b/testcases/kernel/syscalls/inotify/inotify13.c
+Not changed: the [STAGING] keyword stays in the patch subject rather
+than the commit subject, which is the form ground_rules.rst documents.
+Answered on the v2 thread.
+
+Tested on mainline v7.3-16259-g6b4b543fa18 with and without the pending
+fix: both cases pass with it, and the second fails without it.
+
+ runtest/staging                               |   1 +
+ testcases/kernel/syscalls/fanotify/.gitignore |   1 +
+ .../kernel/syscalls/fanotify/fanotify26.c     | 199 ++++++++++++++++++
+ 3 files changed, 201 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/fanotify/fanotify26.c
+
+diff --git a/runtest/staging b/runtest/staging
+index ef1cdea15..2ce76b119 100644
+--- a/runtest/staging
++++ b/runtest/staging
+@@ -1 +1,2 @@
+ # Tests for features that are not yet in the stable kernel ABI
++fanotify26 fanotify26
+diff --git a/testcases/kernel/syscalls/fanotify/.gitignore b/testcases/kernel/syscalls/fanotify/.gitignore
+index d6d0599f1..c13d9b33c 100644
+--- a/testcases/kernel/syscalls/fanotify/.gitignore
++++ b/testcases/kernel/syscalls/fanotify/.gitignore
+@@ -23,4 +23,5 @@
+ /fanotify23
+ /fanotify24
+ /fanotify25
++/fanotify26
+ /fanotify_child
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify26.c b/testcases/kernel/syscalls/fanotify/fanotify26.c
 new file mode 100644
-index 0000000000000000000000000000000000000000..9ee660e041435d16b63097ba8e2f86515d6bac57
+index 000000000..8741cd560
 --- /dev/null
-+++ b/testcases/kernel/syscalls/inotify/inotify13.c
-@@ -0,0 +1,211 @@
++++ b/testcases/kernel/syscalls/fanotify/fanotify26.c
+@@ -0,0 +1,199 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
-+ * Copyright (c) 2026 Hungyu Lin <dennylin0707@gmail.com>
++ * Copyright (c) 2026 Edvard Conrad <edvard@tuta.io>
 + */
 +
 +/*\
-+ * Verify that two IN_MOVED_FROM events that differ only in their rename
-+ * cookie are not coalesced.
++ * Check that a permission event on a stacked filesystem does not deadlock the
++ * :manpage:`fanotify(7)` listener.
 + *
-+ * inotify(7) allows coalescing only of events with identical wd, mask,
-+ * cookie and name. A regression introduced in v2.6.31 dropped the cookie
-+ * comparison. On affected kernels, the second IN_MOVED_FROM is coalesced
-+ * into the first, leaving the following IN_MOVED_TO without a matching
-+ * IN_MOVED_FROM cookie.
++ * When the kernel reports a permission event, it creates the event file
++ * descriptor with an open that must not generate further events. If the
++ * reported path is on a stacked filesystem, that open opens the real file on
++ * the backing filesystem. Should the backing file not inherit "generate no
++ * events", and the listener watch the backing filesystem as well, the kernel
++ * queues a second permission event to the same group while the listener is
++ * still inside :manpage:`read(2)`. Only the listener can answer it, so a
++ * listener that reads with a single thread never returns, and every task that
++ * touches a watched filesystem queues up behind it.
 + *
-+ * With source/ and target/ watched for IN_MOVE, and without reading the queue:
++ * The first test case marks the overlay only and must pass on any kernel. The
++ * second one marks the backing filesystem as well, which is the shape an
++ * anti-malware scanner uses on an overlayfs root.
 + *
-+ * 1. Move source/entry to unwatched/ (IN_MOVED_FROM, cookie A).
-+ * 2. Recreate source/entry.
-+ * 3. Move source/entry to target/ (IN_MOVED_FROM and IN_MOVED_TO, cookie B).
-+ *
-+ * All three events must be queued, with A != B. IN_CREATE is not watched, so
-+ * the two IN_MOVED_FROM events are adjacent; the queue is not read in between,
-+ * because only the last unread event can be merged with a new one. Both a
-+ * regular file and a directory are tested.
++ * The test needs root to create permission events and to mount overlayfs.
 + */
 +
++#define _GNU_SOURCE
 +#include "config.h"
-+#include <fcntl.h>
-+#include <string.h>
++
++#include <stdlib.h>
++#include <unistd.h>
++#include <signal.h>
++#include <sys/types.h>
++#include <sys/wait.h>
 +#include "tst_test.h"
-+#include "inotify.h"
 +
-+#ifdef HAVE_SYS_INOTIFY_H
-+#include <sys/inotify.h>
++#ifdef HAVE_SYS_FANOTIFY_H
++#include "fanotify.h"
 +
-+#define SOURCE "source/entry"
-+#define UNWATCHED "unwatched/entry"
-+#define TARGET "target/entry"
++#define BACKING_MNT	OVL_BASE_MNTPOINT
++#define FNAME		"test_file"
++#define OVL_FILE	OVL_MNT "/" FNAME
++#define LOWER_FILE	OVL_LOWER "/" FNAME
 +
-+struct event_t {
-+	const char *name;
-+	unsigned int mask;
-+	int wd;
-+};
-+
-+static struct tcase {
-+	const char *type;
-+	unsigned int isdir;
-+} tcases[] = {
-+	{ "file", 0 },
-+	{ "directory", IN_ISDIR },
-+};
++/*
++ * The listener either answers the event at once or is blocked for good, so
++ * this only has to outlast scheduling noise. Scaled through
++ * tst_multiply_timeout() at the call sites, or a slow kernel build would
++ * report a healthy but unscheduled listener as blocked.
++ */
++#define WAIT_MSEC	5000
 +
 +static int fd_notify = -1;
 +
-+static void create_entry(unsigned int isdir, const char *path)
++static struct tcase {
++	const char *tname;
++	int mark_backing;
++} tcases[] = {
++	{"Mark on the overlay", 0},
++	{"Mark on the overlay and on the backing filesystem", 1},
++};
++
++static void answer_one_event(pid_t opener)
 +{
-+	if (isdir)
-+		SAFE_MKDIR(path, 0700);
-+	else
-+		SAFE_TOUCH(path, 0600, NULL);
++	struct fanotify_event_metadata event;
++	struct fanotify_response resp;
++
++	/* Blocks for good if the event fd generates a nested event. */
++	SAFE_READ(SAFE_READ_ALL, fd_notify, &event, sizeof(event));
++
++	/*
++	 * A wrong mask or a stranger's event is a result, not harness
++	 * breakage, so report and still answer: the opener stays parked in
++	 * the kernel until something does.
++	 */
++	if (event.mask != FAN_OPEN_PERM) {
++		tst_res(TFAIL, "Got event mask %llx, expected %llx",
++			(unsigned long long)event.mask,
++			(unsigned long long)FAN_OPEN_PERM);
++	} else if (event.pid != opener) {
++		tst_res(TFAIL, "Got event from pid %u, expected %u",
++			(unsigned int)event.pid, (unsigned int)opener);
++	} else {
++		tst_res(TPASS, "Listener answered the event");
++	}
++
++	resp.fd = event.fd;
++	resp.response = FAN_ALLOW;
++	SAFE_WRITE(SAFE_WRITE_ALL, fd_notify, &resp, sizeof(resp));
++
++	if (event.fd != FAN_NOFD)
++		SAFE_CLOSE(event.fd);
 +}
 +
-+static void delete_entry(unsigned int isdir, const char *path)
++static void run(unsigned int n)
 +{
-+	if (isdir)
-+		SAFE_RMDIR(path);
-+	else
-+		SAFE_UNLINK(path);
-+}
++	struct tcase *tc = &tcases[n];
++	pid_t opener, reader;
 +
-+static void verify_inotify(unsigned int n)
-+{
-+	const char *type = tcases[n].type;
-+	unsigned int isdir = tcases[n].isdir;
-+	struct event_t event_set[] = {
-+		{ "entry", IN_MOVED_FROM | isdir, 0 },
-+		{ "entry", IN_MOVED_FROM | isdir, 0 },
-+		{ "entry", IN_MOVED_TO | isdir, 0 },
-+	};
-+	union {
-+		struct inotify_event align;
-+		char data[4096];
-+	} buf;
-+	struct inotify_event *event;
-+	const struct event_t *expected;
-+	unsigned int cookies[ARRAY_SIZE(event_set)] = { 0 };
-+	unsigned int count = 0, i;
-+	size_t pos = 0, len;
-+	int wd_source, wd_target;
++	tst_res(TINFO, "Test #%d: %s", n, tc->tname);
 +
-+	fd_notify = SAFE_MYINOTIFY_INIT1(O_NONBLOCK);
-+	wd_source = SAFE_MYINOTIFY_ADD_WATCH(fd_notify, "source", IN_MOVE);
-+	wd_target = SAFE_MYINOTIFY_ADD_WATCH(fd_notify, "target", IN_MOVE);
++	fd_notify = SAFE_FANOTIFY_INIT(FAN_CLASS_CONTENT, O_RDONLY);
 +
-+	event_set[0].wd = wd_source;
-+	event_set[1].wd = wd_source;
-+	event_set[2].wd = wd_target;
++	SAFE_FANOTIFY_MARK(fd_notify, FAN_MARK_ADD | FAN_MARK_FILESYSTEM,
++			   FAN_OPEN_PERM, AT_FDCWD, OVL_MNT);
 +
-+	create_entry(isdir, SOURCE);
-+	SAFE_RENAME(SOURCE, UNWATCHED);
-+	create_entry(isdir, SOURCE);
-+	SAFE_RENAME(SOURCE, TARGET);
++	if (tc->mark_backing) {
++		SAFE_FANOTIFY_MARK(fd_notify,
++				   FAN_MARK_ADD | FAN_MARK_FILESYSTEM,
++				   FAN_OPEN_PERM, AT_FDCWD, BACKING_MNT);
++	}
 +
-+	len = SAFE_READ(SAFE_READ_ANY_EAGAIN, fd_notify, buf.data, sizeof(buf.data));
++	opener = SAFE_FORK();
++	if (!opener) {
++		int fd;
++
++		/* Must not hold the group, it has to be released on close. */
++		SAFE_CLOSE(fd_notify);
++		/*
++		 * The kernel denies the event when a listener that never
++		 * answered it goes away, so a failure here is the fallout of
++		 * the test tearing a blocked listener down, not a result.
++		 */
++		fd = open(OVL_FILE, O_RDONLY);
++		if (fd != -1)
++			SAFE_CLOSE(fd);
++		exit(0);
++	}
++
++	/* The opener sleeps in the kernel once its event is queued. */
++	if (TST_PROCESS_STATE_WAIT(opener, 'D',
++				   tst_multiply_timeout(WAIT_MSEC)))
++		tst_brk(TBROK, "Open generated no permission event");
++
++	reader = SAFE_FORK();
++	if (!reader) {
++		answer_one_event(opener);
++		exit(0);
++	}
++
++	/*
++	 * The listener answers and exits, or is blocked for good. Only the
++	 * blocked case is handled here: the child reports its own success,
++	 * so a child that died some other way cannot be taken for one that
++	 * answered. The library reaps it on the normal path.
++	 */
++	if (TST_PROCESS_STATE_WAIT(reader, 'Z',
++				   tst_multiply_timeout(WAIT_MSEC))) {
++		tst_res(TFAIL,
++			"Listener blocked in read() by a nested event");
++		SAFE_KILL(reader, SIGKILL);
++		SAFE_WAITPID(reader, NULL, 0);
++	}
++
++	/*
++	 * Releases whatever is still queued, so the opener can finish. The
++	 * library reaps it and checks its exit status after this returns.
++	 */
 +	SAFE_CLOSE(fd_notify);
-+
-+	/* Reuse these paths for the next case and for -i iterations. */
-+	delete_entry(isdir, UNWATCHED);
-+	delete_entry(isdir, TARGET);
-+
-+	while (pos < len) {
-+		if (len - pos < sizeof(*event))
-+			tst_brk(TBROK, "%s: event %u has %zu header bytes (expected at least %zu)",
-+				type, count, len - pos, sizeof(*event));
-+
-+		event = (struct inotify_event *)(buf.data + pos);
-+		if (event->len > len - pos - sizeof(*event))
-+			tst_brk(TBROK, "%s: event %u claims %u name bytes but only %zu are left in the buffer, wd=%d mask=%#x cookie=%u",
-+				type, count, event->len, len - pos - sizeof(*event),
-+				event->wd, event->mask, event->cookie);
-+
-+		if (count >= ARRAY_SIZE(event_set)) {
-+			tst_res(TFAIL, "%s: got unnecessary event %u: mask=%#x wd=%d cookie=%u len=%u name=\"%.*s\"",
-+				type, count, event->mask, event->wd, event->cookie,
-+				event->len, (int)event->len, event->name);
-+			return;
-+		}
-+
-+		expected = &event_set[count];
-+		if (event->mask != expected->mask) {
-+			tst_res(TFAIL, "%s: got event %u: mask=%#x (expected %#x) wd=%d cookie=%u name=\"%.*s\"",
-+				type, count, event->mask, expected->mask, event->wd,
-+				event->cookie, (int)event->len, event->name);
-+			return;
-+		}
-+
-+		if (event->wd != expected->wd) {
-+			tst_res(TFAIL, "%s: got event %u: mask=%#x wd=%d (expected %d) cookie=%u name=\"%.*s\"",
-+				type, count, event->mask, event->wd, expected->wd,
-+				event->cookie, (int)event->len, event->name);
-+			return;
-+		}
-+
-+		if (event->len < strlen(expected->name) + 1 ||
-+		    strncmp(expected->name, event->name, event->len)) {
-+			tst_res(TFAIL, "%s: got event %u: mask=%#x wd=%d cookie=%u len=%u name=\"%.*s\" (expected \"%s\")",
-+				type, count, event->mask, event->wd, event->cookie,
-+				event->len, (int)event->len, event->name,
-+				expected->name);
-+			return;
-+		}
-+
-+		cookies[count] = event->cookie;
-+		tst_res(TINFO, "%s: event %u: wd=%d mask=%#x cookie=%u len=%u name=\"%.*s\"",
-+			type, count, event->wd, event->mask, event->cookie,
-+			event->len, (int)event->len, event->name);
-+		count++;
-+		pos += sizeof(*event) + event->len;
-+	}
-+
-+	for (i = count; i < ARRAY_SIZE(event_set); i++) {
-+		expected = &event_set[i];
-+		tst_res(TFAIL, "%s: didn't get event %u: mask=%#x wd=%d name=\"%s\"",
-+			type, i, expected->mask, expected->wd, expected->name);
-+	}
-+
-+	if (count < ARRAY_SIZE(event_set))
-+		return;
-+
-+	if (cookies[0] == cookies[1]) {
-+		tst_res(TFAIL, "%s: got second FROM cookie=%u (expected != %u)",
-+			type, cookies[1], cookies[0]);
-+		return;
-+	}
-+
-+	if (cookies[1] != cookies[2]) {
-+		tst_res(TFAIL, "%s: got TO cookie=%u (expected %u from second FROM)",
-+			type, cookies[2], cookies[1]);
-+		return;
-+	}
-+
-+	tst_res(TPASS, "%s: FROM cookies %u and %u differ, TO cookie %u matches the second",
-+		type, cookies[0], cookies[1], cookies[2]);
 +}
 +
 +static void setup(void)
 +{
-+	SAFE_MKDIR("source", 0700);
-+	SAFE_MKDIR("unwatched", 0700);
-+	SAFE_MKDIR("target", 0700);
++	/* The file has to exist in the lower layer to be opened through it. */
++	SAFE_UMOUNT(OVL_MNT);
++	SAFE_TOUCH(LOWER_FILE, 0644, NULL);
++	SAFE_MOUNT_OVERLAY();
++
++	/*
++	 * Probe the combination run() uses, not a weaker proxy for it. Every
++	 * case marks the overlay; the second also marks the base.
++	 */
++	REQUIRE_FANOTIFY_EVENTS_SUPPORTED_ON_FS(FAN_CLASS_CONTENT,
++						FAN_MARK_FILESYSTEM,
++						FAN_OPEN_PERM, OVL_MNT);
++	REQUIRE_MARK_TYPE_SUPPORTED_ON_FS(FAN_MARK_FILESYSTEM, BACKING_MNT);
 +}
 +
 +static void cleanup(void)
 +{
-+	if (fd_notify >= 0)
++	if (fd_notify != -1)
 +		SAFE_CLOSE(fd_notify);
 +}
 +
 +static struct tst_test test = {
-+	.test = verify_inotify,
++	.test = run,
 +	.tcnt = ARRAY_SIZE(tcases),
 +	.setup = setup,
 +	.cleanup = cleanup,
-+	.needs_tmpdir = 1,
++	.forks_child = 1,
++	.needs_root = 1,
++	.mount_device = 1,
++	.needs_overlay = 1,
++	.mntpoint = OVL_BASE_MNTPOINT,
 +};
 +
 +#else
-+TST_TEST_TCONF("system doesn't have required inotify support");
++	TST_TEST_TCONF("system doesn't have required fanotify support");
 +#endif
 -- 
-2.43.0
+2.56.0
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
