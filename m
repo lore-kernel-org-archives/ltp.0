@@ -1,94 +1,70 @@
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8BA0606A31A
-	for <ltp@archiver.kernel.org>; Fri, 30 Oct 2026 00:31:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 800AB606A31A
+	for <ltp@archiver.kernel.org>; Fri, 30 Oct 2026 00:58:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=00K/TyVJ
+	dkim=pass (1024-bit key, unprotected) header.d=lists.linux.it header.i=@lists.linux.it header.a=rsa-sha256 header.s=picard header.b=LlXEfq6z
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1793321905; h=to : date :
+ message-id : mime-version : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : content-type : content-transfer-encoding : sender : from;
+ bh=uTUHzTTzHly/Aq0t/04eu3yZ6dA5w9sYRGXKGfN5Mpw=;
+ b=LlXEfq6zAHIiUhUJqnjqaKWUjY/hHW4cdUQgtoKfpiAADwQydLsJAHpDU8GFuw7epOsq7
+ 6cLYjTrSt/ajaoBoUag1jBiFcpl/M34qnV7djBn8lXhJ9rvvcOQup15kLOpGMiujDbAE1IY
+ fUHV+NxDWtZH4eFBPGrOC46rZ7Peoaw=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 966373EA3C2
-	for <ltp@archiver.kernel.org>; Fri, 30 Oct 2026 01:31:48 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 245BA3EA3D0
+	for <ltp@archiver.kernel.org>; Fri, 30 Oct 2026 01:58:25 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id F30593E5255
- for <ltp@lists.linux.it>; Fri, 30 Oct 2026 01:31:32 +0100 (CET)
-Received: from mail-dy2-x0b.google.com (mail-dy2-x0b.google.com
- [IPv6:2607:f8b0:4864:36::b])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 3249F3E9BF0
+ for <ltp@lists.linux.it>; Fri, 30 Oct 2026 01:58:02 +0100 (CET)
+Received: from Atcsqr.andestech.com (atcsqr.andestech.com [220.128.198.184])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 62117200062
- for <ltp@lists.linux.it>; Fri, 30 Oct 2026 01:31:32 +0100 (CET)
-Received: by mail-dy2-x0b.google.com with SMTP id
- 5a478bee46e88-369fd8abd71so167678eec.1
- for <ltp@lists.linux.it>; Thu, 29 Oct 2026 17:31:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20260707; t=1793320291; x=1793925091; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to:content-type;
- bh=/iL5lMoQS6mkrpMzlswif/Ju4gY2n0p8pZopyO1Cg9M=;
- b=00K/TyVJ2dd6EKpSzj0bYWZ65A0ksYQQNzyjVygr7YPF9r15vbFdQEIZQ1T/404plg
- 5LC+Cynf5inHAyaK9jV2DzTRg4Z0zpEIhrMTZgSVntLkQEhlMQv6c0p9T/Z7FmOMBtL9
- 57E12yWvCuSnp5elFVr+s5oSqaFtrsdRfPCvus6yVVmQ19GSBqkEn1XGVJ4G15NeRaCW
- FRCoR7K1UzulDdOtjRgnSI9tBCE0UbGT8ul3iMpJFkYKddEDu6qY1OZszKTxIFyaG4vC
- t8cO2635IiyDIhWIPRT6v4M/R0K4Y2dTWjWEwzIxNJMfkKKysadiOu40kjJD+AC0ZFbS
- EKnQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20260707; t=1793320291; x=1793925091;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to:content-type;
- bh=/iL5lMoQS6mkrpMzlswif/Ju4gY2n0p8pZopyO1Cg9M=;
- b=uZ81LyLXtHqqQVbK5i/SXdJXrg5VlsUoJKme60jFaAWYUxsQJ0J0Q4Z7OgVlndkQii
- Ap1m7sryKBK1YcajVoqxgslqLh4AvDK6Y1uYgHmZVSGV2yoJfjt/qdZfWoZ2ebCdB0nQ
- bGM/eTBy5NcCcRL4oCLgw4Bktlx9KxhvnROb/pGfr4EvkUspjjhpHkHfKI/Mg1Z/uf4/
- 1Zl++boYjbOkvvQWRHmf0ve/o3IYOF5U/iEJg3t5WXM+CO5sWN9owfslDSG9ggAzwgFF
- TX76EKJDUxhH7EC+30XblR+ldLcQRBreLLVnuFqjyvRch9Kv0DYHKkkx0LRPa6SEbLzX
- cfKg==
-X-Gm-Message-State: AFq9FYIMRF9wrhLYtT0GiayIpedjlkCS1+oFiajIlvwzDr9Ps0FKktwc
- nOE+517Lf2IBmevcxP367UQPdPTkkXVTJys/REJCewmxcMVsTauhKwEOYin01KcO+A8=
-X-Gm-Gg: AYBFou2RpZg1c5uDFgDRbXzPCEv16qEXBN0EC03nVO+hvkm+7TkY/Qgb1g2Lw8JOS/u
- UH5g7+VKGE76pzmiKA8PcG2Z0r/STSRVbq3AJpK4r4In8QEvEVKsfQCkJtKgWut51C4PJOJy+jD
- lVQW9WT6S1ftlIDMe/pVJu2YtCZKNvw42shNNJngj6VIUVHHc6XRKwo+VLMtM0JVW72dw0w5mR+
- Nw40iMgdzbBAMfVJJ4DCQGu4/NaDgXPnju0Qm5gqWJ6mwHR0yHI0YeVO2UyHwn6pRIjyhXfUtg7
- 8IlhLNwc2E6PiWwXCyJNoz7eZllsTLCeq7yu3RcgkPprB6sPzuhm5UoM/Br5rbTVn2yoeZcmFcW
- 9WsLTAPlXXiRO80Whr49ILDi0NCpjdPdiX+6fSzXM8HwHijQuz2F47amyHeKdqkWUmIRlTHHl/q
- qxKAn0azSCLpYAN9UFt+fErinFuy2hI/q+DdQzyIRWKHFSsLi1KwJSsYIKI5Pguo1c/Y0qWjw7D
- 2JEhj19fjSxc9OG14OFq3o2M2Mf1kTxOkIGHcwyD/iRo/sogrCYFc1QdXvP0gpiNrXIlocygCCL
- 2YIWWrESsHLuDic92rifVCdL95Niz6UXB+CDAjHa9GJEVSo2bYQtdp7zffLfBxJbwwf+hKjfa00
- DTUxd1CJF21g+MCaHKn1xhPjm+cqJFioL244G1CuV
-X-Received: by 2002:a05:7022:3f04:b0:181:ccdd:ed2a with SMTP id
- a92af1059eb24-1ac5d5aaeb1mr959571c88.43.1793320290610; 
- Thu, 29 Oct 2026 17:31:30 -0700 (PDT)
-Received: from
- runnervmnwato.vxwubsvclilezgs3f1xfxeaexc.yx.internal.cloudapp.net
- ([52.161.51.69]) by smtp.gmail.com with ESMTPSA id
- a92af1059eb24-1ac1a9e2ed3sm1976486c88.19.2026.10.29.17.31.29
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 29 Oct 2026 17:31:30 -0700 (PDT)
-From: linuxtestproject.agent@gmail.com
-To: Hungyu Lin <dennylin0707@gmail.com>
-Date: Fri, 30 Oct 2026 00:31:28 +0000
-Message-ID: <20261030003128.3782-1-linuxtestproject.agent@gmail.com>
-X-Mailer: git-send-email 2.56.0
-In-Reply-To: <20261029210701.80050-1-dennylin0707@gmail.com>
-References: <20261029210701.80050-1-dennylin0707@gmail.com>
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id BA3901000A12
+ for <ltp@lists.linux.it>; Fri, 30 Oct 2026 01:57:57 +0100 (CET)
+Received: from mail.andestech.com (atcpcs54.andestech.com [10.0.1.154])
+ by Atcsqr.andestech.com with ESMTPS id 69U0vmTK044618
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL)
+ for <ltp@lists.linux.it>; Fri, 30 Oct 2026 08:57:48 +0800 (+08)
+ (envelope-from cyyang772@andestech.com)
+Received: from ATCPCS34.andestech.com (10.0.1.134) by atcpcs54.andestech.com
+ (10.0.1.154) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.2.2562.56; Fri, 30 Oct
+ 2026 08:57:48 +0800
+Received: from swlinux02.andestech.com (10.0.15.183) by ATCPCS34.andestech.com
+ (10.0.1.134) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.39; Fri, 30 Oct
+ 2026 08:57:47 +0800
+To: <ltp@lists.linux.it>
+Date: Fri, 30 Oct 2026 08:57:18 +0800
+Message-ID: <20261030005718.3343899-1-cyyang772@andestech.com>
+X-Mailer: git-send-email 2.55.0
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-3.5 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_INVALID,DKIM_SIGNED,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_PASS,
-	SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no version=4.0.1
+X-ClientProxiedBy: ATCPCS33.andestech.com (10.0.1.100) To
+ ATCPCS34.andestech.com (10.0.1.134)
+X-DKIM-Results: atcpcs54.andestech.com; dkim=none;
+X-DNSRBL: 
+X-SPAM-SOURCE-CHECK: pass
+X-MAIL: Atcsqr.andestech.com 69U0vmTK044618
+X-Spam-Status: No, score=-19.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_PASS,SPF_PASS,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] inotify13: check rename cookie pairing after adjacent
- moves
+Subject: [LTP] [PATCH] io_submit: Use TST_PTR_TO_UINT() for aio_buf
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -98,56 +74,57 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+From: Victor Cheng-Yen Yang via ltp <ltp@lists.linux.it>
+Reply-To: Victor Cheng-Yen Yang <cyyang772@andestech.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Hungyu,
+From: Victor Cheng-Yen Yang <cyyang772@andestech.com>
 
-On Thu Oct 29, 2026, Hungyu Lin <dennylin0707@gmail.com> wrote:
-> inotify13: check rename cookie pairing after adjacent moves
+GCC sign-extends a 32-bit pointer cast straight to a 64-bit integer, so
+a buffer at or above 0x80000000 is passed as 0xffffffff8xxxxxxx and
+io_submit() fails with EINVAL. The static buffer can land there in a
+PIE binary with ASLR, and io_submit02 and io_submit03 then fail
+intermittently.
 
-> +/*\
-> + * Verify that two IN_MOVED_FROM events that differ only in their rename
-> + * cookie are not coalesced.
-> + *
-> + * inotify(7) allows coalescing only of events with identical wd, mask,
-
-Use :manpage:`inotify(7)` in the RST doc comment so that the test catalog
-renders a link to the man page.
-
-> +static void cleanup(void)
-> +{
-> +	if (fd_notify >= 0)
-> +		SAFE_CLOSE(fd_notify);
-> +}
-
-Use "if (fd_notify != -1)" to check file descriptor validity in cleanup(),
-matching the -1 initialization convention.
-
-> +static struct tst_test test = {
-> +	.test = verify_inotify,
-> +	.tcnt = ARRAY_SIZE(tcases),
-> +	.setup = setup,
-> +	.cleanup = cleanup,
-> +	.needs_tmpdir = 1,
-> +};
-
-Since this is a kernel regression test, add .tags with the "linux-git" fix
-commit hash in struct tst_test once the kernel fix is merged.
-
-Verdict - Needs revision
-
+Fixes: 7fb2b884ae8f ("syscalls/io_submit: Add io_submit02 test for native AIO")
+Fixes: cd99e77be2ef ("syscalls/io_submit: Add io_submit03 test for native AIO")
+Signed-off-by: Victor Cheng-Yen Yang <cyyang772@andestech.com>
 ---
-Note:
+ testcases/kernel/syscalls/io_submit/io_submit02.c | 2 +-
+ testcases/kernel/syscalls/io_submit/io_submit03.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-The agent can sometimes produce false positives although often its
-findings are genuine. If you find issues with the review, please
-comment this email or ignore the suggestions.
+diff --git a/testcases/kernel/syscalls/io_submit/io_submit02.c b/testcases/kernel/syscalls/io_submit/io_submit02.c
+index 36e9c29f93..ab9d6ee35a 100644
+--- a/testcases/kernel/syscalls/io_submit/io_submit02.c
++++ b/testcases/kernel/syscalls/io_submit/io_submit02.c
+@@ -45,7 +45,7 @@ static inline void io_prep_option(struct iocb *cb, int fd, void *buf,
+ 	memset(cb, 0, sizeof(*cb));
+ 	cb->aio_fildes = fd;
+ 	cb->aio_lio_opcode = opcode;
+-	cb->aio_buf = (uint64_t)buf;
++	cb->aio_buf = TST_PTR_TO_UINT(buf);
+ 	cb->aio_offset = offset;
+ 	cb->aio_nbytes = count;
+ }
+diff --git a/testcases/kernel/syscalls/io_submit/io_submit03.c b/testcases/kernel/syscalls/io_submit/io_submit03.c
+index 45903107d7..dd7e7217de 100644
+--- a/testcases/kernel/syscalls/io_submit/io_submit03.c
++++ b/testcases/kernel/syscalls/io_submit/io_submit03.c
+@@ -71,7 +71,7 @@ static inline void io_prep_option(struct iocb *cb, int fd, void *buf,
+ 	memset(cb, 0, sizeof(*cb));
+ 	cb->aio_fildes = fd;
+ 	cb->aio_lio_opcode = opcode;
+-	cb->aio_buf = (uint64_t)buf;
++	cb->aio_buf = TST_PTR_TO_UINT(buf);
+ 	cb->aio_offset = offset;
+ 	cb->aio_nbytes = count;
+ }
+-- 
+2.55.0
 
-Regards,
-LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
