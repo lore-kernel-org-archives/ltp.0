@@ -2,63 +2,93 @@ Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51C7A606A31C
-	for <ltp@archiver.kernel.org>; Sat, 31 Oct 2026 17:31:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94123606A31A
+	for <ltp@archiver.kernel.org>; Sat, 31 Oct 2026 19:38:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=lists.linux.it header.i=@lists.linux.it header.a=rsa-sha256 header.s=picard header.b=p6cM9+fe;
-	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=tuta.io header.i=@tuta.io header.a=rsa-sha256 header.s=s1 header.b=WgPr5Ycd
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1793467902; h=date : to :
- message-id : mime-version : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : cc : content-type : content-transfer-encoding : sender :
- from; bh=/OfQOxJUdsdhnCGh9q5d9jFIWfFZpBg8UbzhpMWSr8g=;
- b=p6cM9+feHlfmuDAUvrDIw1cwenf9q/TrbG5WcULujx0kdvvo5gd5iJqCYc+xmyZSMyovo
- 5I6j2tyh5QCB3c4aE4VFtg4tfLiJt+kzV12NRz+g6THsj2E1vn0urejsBKP7iCNyFX3n5A0
- Vg6fkxgiiC5nzrFk6PA2g7ZM+NQOcw8=
+	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=INcpc2md
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8F0793E9856
-	for <ltp@archiver.kernel.org>; Sat, 31 Oct 2026 18:31:42 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id E6B613E982D
+	for <ltp@archiver.kernel.org>; Sat, 31 Oct 2026 20:38:03 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id BA0703D25FA
- for <ltp@lists.linux.it>; Sat, 31 Oct 2026 18:31:22 +0100 (CET)
-Received: from mail.w14.tutanota.de (mail.w14.tutanota.de [185.205.69.214])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 9FF0D3CFDCC
+ for <ltp@lists.linux.it>; Sat, 31 Oct 2026 20:37:49 +0100 (CET)
+Received: from mail-qk2-x00.google.com (mail-qk2-x00.google.com
+ [IPv6:2607:f8b0:4864:34::])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 280EA1000354
- for <ltp@lists.linux.it>; Sat, 31 Oct 2026 18:31:21 +0100 (CET)
-Received: from tutadb.w10.tutanota.de (w10.api.tuta.com [IPv6:fd:ac::d:10])
- by mail.w14.tutanota.de (Postfix) with ESMTP id 87B091A00DC5A
- for <ltp@lists.linux.it>; Sat, 31 Oct 2026 18:31:21 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1793467881; 
- s=s1; d=tuta.io;
- h=From:From:To:To:Subject:Subject:Content-Description:Content-ID:Content-Type:Content-Type:Content-Transfer-Encoding:Content-Transfer-Encoding:Cc:Cc:Date:Date:In-Reply-To:MIME-Version:MIME-Version:Message-ID:Message-ID:Reply-To:References:Sender;
- bh=vVyW9CQbrvw3Pf3ZuOnr7cXXXNxy/vxV0UJACKP+AsU=;
- b=WgPr5Ycd5GvHVludPQ9+ZOGeHVjfLGUaSiLyIz0n5XbV1BO26FRmv6t5iuhwiJfX
- qVk3EwXuNgySq5T2QPt1U69hMOPPi3KU7PzHfhLHk0+4oXXvSI96o55rV0kZoT13nGt
- SN8RlkWrLeYKFLlCuGRzkN5zjS8v55yyp7mTr6Yvov6Ptf1aurEszD3J9AJB2QlSnbM
- dOF/eaCM49E3hZxjtMlXdo1lhysohoBf+8TTmMNdFWqqMIzVik1s/1T3JUk4fMtWOml
- mMvTxNs6pft93uOJZCpxs+afSe7HHGycuPwskGj2E+O7wPLbVAGgs+2zZMSDIp0YbRH
- NhZXrgsT8Q==
-Date: Sat, 31 Oct 2026 18:31:21 +0100 (CET)
-To: "ltp@lists.linux.it" <ltp@lists.linux.it>
-Message-ID: <P5I00QE--F-9@tuta.io>
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id E70531400332
+ for <ltp@lists.linux.it>; Sat, 31 Oct 2026 20:37:48 +0100 (CET)
+Received: by mail-qk2-x00.google.com with SMTP id
+ af79cd13be357-93e5da88874so51212385a.1
+ for <ltp@lists.linux.it>; Sat, 31 Oct 2026 12:37:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20260707; t=1793475468; x=1794080268; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to:content-type;
+ bh=kFBupJ7zpdF1CZt77XaWTTM5VZs1TMZu10tQh8xNEEo=;
+ b=INcpc2mdsKiAFmeTB1FDjsIQj/Qo9zTf9PQnv6I+iJMFUThxRJWWHZf2dKnKUrQecd
+ FNlw+Wce5EGDho23CubdegDBrBbzNehDpIo/CHC6eFgVvUshuno4pfpu73LHr4E0P7su
+ cQwGRb2BqUe8C147BW5plD8illJ0H0ohTYFzDPGetf+dcqrxxN27B344hvqm1OXfjttx
+ OTqDRHLOUO+BHVlcUkRsu4xx405qPU+XN51fxmXkpPhPNZRboLK4QSe3bpJ+D/L7sq6k
+ 0wthQmpAeY4BfFozafcg9Fk5upL4tTAhW/aeNTCXzdNHoHWkBCB7wYmJ8+TTPSmuOzZh
+ 9etw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20260707; t=1793475468; x=1794080268;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to:content-type;
+ bh=kFBupJ7zpdF1CZt77XaWTTM5VZs1TMZu10tQh8xNEEo=;
+ b=Nh6HpjcSf4rOcU6fZeX/Dx7RuehroWvF3i8U0wFPZd4fe9wfUFj/mwnThiq1HwVhDZ
+ OrQEcy3NBnmJXDW7Z+8QtI8HUX10GzMf1+B8aONDQkWR/A968s4xYW1BbHzKchUq2Lun
+ W80BbzZCOZi/cbzm38ECDgszzAtl9wxPDdkawcyZHL5e+rUsTcFSpgM3/RiaPr2hf836
+ FMDNkRP6Qet1efoYi6fCxome66tROMKt31+pO7dXvzF608UGzyiJRRkkMEAETaHpAta3
+ R3pIMmumlifD6JpNqKp80jRrhNS6zPzqa9QABtKFTvOAuDeEvCZxaX29/tNtTN+IjiZw
+ 9fMQ==
+X-Gm-Message-State: AFq9FYJT8iDiPf/e5OQXSMSgeV6da71IBl3QmDBxg25bHJqVePD/WXu+
+ K/OT11aAfX/kS4iZwsQVXrPG0VTAV23or4ML2CS3Y5NRyfK2Bv8+kz/H
+X-Gm-Gg: AYBFou2dIeYPGJA2JmeHvfufeR5Q0LjsuiYBjS/Hs5ryHZWA8L6nUSJqbM2m3Unjjhe
+ TCDmB+aB6uaZj6UEzlRFfRZQQ3hlFc50R9t2YGFhgeDV2JJTKykSU6PyPLB0lY60w/SPjG6VWvc
+ 0STSwRkoKkals7RTwC33vfk+WawULYsxh5zcvjOYgFZTaoGfhkJoulTqXG1HQFzfdDO3BqgJM/h
+ NXIJ/yeVjvJmg7HyAkWRcyZI+JWCidNNUwVSTK+klR7N/KbCkI1TYSo1rOREyMn8xaCFo77fdek
+ K0m7z49dXspqYKVNgwhbGf3UEDCNGrk+p2jtoEVVnusS9d+Dyr4ae16mQKMSzc/zsgM4GQE6hAx
+ ffN/xq4eEhZDAKWmw4faCmaSiV0MlspJj60IAbxzlV+EQ1F3JQcB77cNLzgQwifYmTVpQnfdtEC
+ d35RN3VoOJT7UvOgVzskrZN9HySCmizQFk9pVAEb8CtqMbFgvfaYfUutFh9WVGKsUL3U5XdkVhR
+ MEDdxDLXjZftmR00VfPRPuchH2W8Xvse48DDkYzMb65jpuHS6A/TorIhS+YeyDOrnal2TUg7aVG
+ 9Yu0vv2cvzld+bCIYEDw422IIg6oc3O67E7GHqPJrIaxMqbd8Wx+DXqCCmLYX+VBlQKVfBH2GBg
+ IPXnByxvqofoOnp8TtYymaqVVI3hLFbwH01lHF6/q1I0=
+X-Received: by 2002:a05:620a:40d5:b0:93e:c12c:fbd7 with SMTP id
+ af79cd13be357-944217dc222mr935021585a.83.1793475467491; 
+ Sat, 31 Oct 2026 12:37:47 -0700 (PDT)
+Received: from
+ runnervmnwato.e5y4ld35i51udkqy5fdit0hc5g.bx.internal.cloudapp.net
+ ([48.217.228.129]) by smtp.gmail.com with ESMTPSA id
+ af79cd13be357-94425ac6bddsm445781285a.37.2026.10.31.12.37.47
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Sat, 31 Oct 2026 12:37:47 -0700 (PDT)
+From: linuxtestproject.agent@gmail.com
+To: Edvard Conrad <edvard@tuta.io>
+Date: Sat, 31 Oct 2026 19:37:46 +0000
+Message-ID: <20261031193746.6322-1-linuxtestproject.agent@gmail.com>
+X-Mailer: git-send-email 2.56.0
+In-Reply-To: <P5I00QE--F-9@tuta.io>
+References: <P5I00QE--F-9@tuta.io>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-Feedback-ID: 0127f977f5e13e8051b46c6e7f57d0f95a0470d24b79d7c31d07fdf611cc427ab823e0f4692a810119c92d8768973a9281:TurnOnPrivacy!:tutamail
-X-Spam-Status: No, score=-21.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_PASS,
-	SPF_PASS autolearn=ham autolearn_force=no version=4.0.1
+X-Spam-Status: No, score=-8.6 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_INVALID,DKIM_SIGNED,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_PASS,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] syscalls/fanotify26: Move from staging to syscalls
+Subject: Re: [LTP] syscalls/fanotify26: Move from staging to syscalls
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -68,79 +98,50 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Edvard Conrad via ltp <ltp@lists.linux.it>
-Reply-To: Edvard Conrad <edvard@tuta.io>
-Cc: Amir Goldstein <amir73il@gmail.com>, Jan Kara <jack@suse.cz>,
- Edvard Conrad <edvard@tuta.io>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-The kernel fix the second test case needs, commit c3d355f427ce ("fs:
-let backing files inherit FMODE_NONOTIFY from the user file"), was
-merged into Linus' tree on 2026-10-30 and will appear in v7.4-rc1.
+Hi Edvard,
 
-Move the test out of runtest/staging, and record the fix in a
-linux-git tag so that a failure points at the missing kernel commit
-rather than at the test.
+On Sat Oct 31 18:31:21 2026 +0100, Edvard Conrad <edvard@tuta.io> wrote:
+> syscalls/fanotify26: Move from staging to syscalls
 
-Signed-off-by: Edvard Conrad <edvard@tuta.io>
+> diff --git a/runtest/staging b/runtest/staging
+> index 2ce76b119..ef1cdea15 100644
+> --- a/runtest/staging
+> +++ b/runtest/staging
+> @@ -1,2 +1 @@
+>  # Tests for features that are not yet in the stable kernel ABI
+> -fanotify26 fanotify26
+> diff --git a/runtest/syscalls b/runtest/syscalls
+> index ff3de1b15..23d3e21ef 100644
+> --- a/runtest/syscalls
+> +++ b/runtest/syscalls
+> @@ -703,6 +703,7 @@ fanotify22 fanotify22
+>  fanotify23 fanotify23
+>  fanotify24 fanotify24
+>  fanotify25 fanotify25
+> +fanotify26 fanotify26
+
+Kernel commit c3d355f427ce targets v7.4-rc1, while the latest stable
+kernel release is v7.3. Tests that depend on kernel changes not yet in a
+finalized mainline release must remain in runtest/staging until v7.4 is
+released. Keep fanotify26 in runtest/staging until v7.4 is out, or split
+the linux-git tag addition into its own patch if needed now.
+
+Verdict - Needs revision
+
 ---
-The follow-up Petr asked for on the fanotify26 thread:
-  https://lore.kernel.org/ltp/20261030110233.GA66190@pevik/
+Note:
 
-The fix is in Linus' tree as of 2026-10-30, but v7.4-rc1 is not tagged
-yet, so if you would rather hold this until the rc is out, please do.
+The agent can sometimes produce false positives although often its
+findings are genuine. If you find issues with the review, please
+comment this email or ignore the suggestions.
 
-Kernel commit:
-  https://git.kernel.org/torvalds/c/c3d355f427cea70fbe31b49e21f1915dbf37f2e6
-
-Both test cases pass on a kernel carrying the fix, and the second one
-fails without it; that is unchanged by this patch, which only moves the
-runtest entry and adds the tag.
-
- runtest/staging                                 | 1 -
- runtest/syscalls                                | 1 +
- testcases/kernel/syscalls/fanotify/fanotify26.c | 4 ++++
- 3 files changed, 5 insertions(+), 1 deletion(-)
-
-diff --git a/runtest/staging b/runtest/staging
-index 2ce76b119..ef1cdea15 100644
---- a/runtest/staging
-+++ b/runtest/staging
-@@ -1,2 +1 @@
- # Tests for features that are not yet in the stable kernel ABI
--fanotify26 fanotify26
-diff --git a/runtest/syscalls b/runtest/syscalls
-index ff3de1b15..23d3e21ef 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -703,6 +703,7 @@ fanotify22 fanotify22
- fanotify23 fanotify23
- fanotify24 fanotify24
- fanotify25 fanotify25
-+fanotify26 fanotify26
- 
- ioperm01 ioperm01
- ioperm02 ioperm02
-diff --git a/testcases/kernel/syscalls/fanotify/fanotify26.c b/testcases/kernel/syscalls/fanotify/fanotify26.c
-index 8741cd560..63d7eea0f 100644
---- a/testcases/kernel/syscalls/fanotify/fanotify26.c
-+++ b/testcases/kernel/syscalls/fanotify/fanotify26.c
-@@ -192,6 +192,10 @@ static struct tst_test test = {
- 	.mount_device = 1,
- 	.needs_overlay = 1,
- 	.mntpoint = OVL_BASE_MNTPOINT,
-+	.tags = (const struct tst_tag[]) {
-+		{"linux-git", "c3d355f427cea70fbe31b49e21f1915dbf37f2e6"},
-+		{}
-+	}
- };
- 
- #else
--- 
-2.56.0
-
+Regards,
+LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
