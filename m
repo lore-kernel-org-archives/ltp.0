@@ -1,94 +1,95 @@
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70171606A326
-	for <ltp@archiver.kernel.org>; Mon,  2 Nov 2026 08:26:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21DF1606A324
+	for <ltp@archiver.kernel.org>; Mon,  2 Nov 2026 08:27:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=EReIFPXX
+	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=cH1ePIOF
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6A0ED3E2B74
-	for <ltp@archiver.kernel.org>; Mon,  2 Nov 2026 09:26:08 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id D41BE3E972A
+	for <ltp@archiver.kernel.org>; Mon,  2 Nov 2026 09:27:16 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2187E3E17E9
- for <ltp@lists.linux.it>; Mon,  2 Nov 2026 09:25:54 +0100 (CET)
-Received: from mail-dy2-x08.google.com (mail-dy2-x08.google.com
- [IPv6:2607:f8b0:4864:36::8])
+ by picard.linux.it (Postfix) with ESMTPS id 36E3C3E17E9
+ for <ltp@lists.linux.it>; Mon,  2 Nov 2026 09:27:01 +0100 (CET)
+Received: from mail-dy2-x0b.google.com (mail-dy2-x0b.google.com
+ [IPv6:2607:f8b0:4864:36::b])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id B732F600236
- for <ltp@lists.linux.it>; Mon,  2 Nov 2026 09:25:53 +0100 (CET)
-Received: by mail-dy2-x08.google.com with SMTP id
- 5a478bee46e88-36758ba1f01so1378967eec.1
- for <ltp@lists.linux.it>; Mon, 02 Nov 2026 00:25:53 -0800 (PST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id C5C29200741
+ for <ltp@lists.linux.it>; Mon,  2 Nov 2026 09:27:00 +0100 (CET)
+Received: by mail-dy2-x0b.google.com with SMTP id
+ 5a478bee46e88-369f126a526so3595272eec.0
+ for <ltp@lists.linux.it>; Mon, 02 Nov 2026 00:27:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20260707; t=1793607952; x=1794212752; darn=lists.linux.it;
+ d=gmail.com; s=20260707; t=1793608019; x=1794212819; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to:content-type;
- bh=WbGjY4t/2Flof9wOVIpOxiCbZUl9Kt1qmoVKNoEccdA=;
- b=EReIFPXXviD8j1lvrulJ0Vxd8l4tpFlB51Ja2grnmXTFMREJ22Xam7tfR3uPO3dmoZ
- 2P9RVsVZOeHJOhh8lSRiEvyHPmG1tys7NjvGZkwrtywgGHm6LBymfv/1VlFLKE83lQ08
- oaAQnIWqQ6DgfoV4JrEkXWSpL032duvLwnbsgbH5S3QTm2ctF1VGmYdR7hfg2yZR7xX1
- L9kJUiX5i9rdAOMVqJ4NSRyPgjyrC+Y8TB72R1yHKUyB2lp3HCz1dy6dgUsXpCHc9E/D
- pFt4+3F6omB6RvV7nypwAnfosauR8P3lEurCsV3QRK2ZJsxGt6A83RxgXRnV8RTzBkj0
- jg1Q==
+ bh=TIzHDspUzTdvWYrEaq1GYfeRj2sgG1J5eAqAChOkR+c=;
+ b=cH1ePIOFBaskeU18KU6xVJzIVh/6J0mZzK8q5blHmTSGwi1GP7NFJ2ttfP2CoYq7cQ
+ +hnzTDg2dLXWe35izXt19dn5EX8CziFUSitNAt7MAa3F1gwoz60mrxrVXjhkY5fLD2Ab
+ SvF9kpDwCf29WOF9cd1gWnUuSeqi9xR1SwViG1fqYBkEzAU93P9qoi/qYWqbtjdgGUY7
+ YAhU1VkEcdZN29QHCK9HdRhfBqH9o0m6dZMu58G0SzWP7a4E6qdVgcHHZ4OiQSrWMBS5
+ I6wAO9DICMr0MbaaKiZqNo8bsLq5Z6GWWboqdUjL2GhEcso09H5Q8P2KZOoTC0pbjjLL
+ kr+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20260707; t=1793607952; x=1794212752;
+ d=1e100.net; s=20260707; t=1793608019; x=1794212819;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to:content-type;
- bh=WbGjY4t/2Flof9wOVIpOxiCbZUl9Kt1qmoVKNoEccdA=;
- b=o20J2th390M2x7gBIlWtgPngpNZ+7ir3B23/ypMeg/vOZAoxXjnCx8dlrTbHDKCV8x
- Do36hq1u00xibPpcTlf3ogPhbj5FiCdn5U7iZRxhUmhE+e+GlWl7+6tzsX8LX/H0MEN+
- paW+WvQLnQCnh0k8Qgq/tj8rDxs3MHWsX6EC5wpmIgwHlOwisHAUoA/+V3ajQxlPvwhy
- mgkh3K8juLQXi4x2/wBkfeKU7ayeERUX4y3FJ5hK2lDiyvFCFA53gTeCXS+hJ/n7c6tX
- XyOxQsq0dqLL5S/VYqVD0K0MSFEc2dUIYsI2Of3usrHxXStMR3UZEn4dacvk0s27S3tS
- iDQA==
-X-Gm-Message-State: AFq9FYLLq44IWzIncB+DeLLjKxTTdraPulZ1laJHsxinh/Uk0hk/1ZSt
- H4oib32ibk4ES0pqxoImDVxQhN7e9/zpUV0RJds1yajHEr//P8Fk1h08
-X-Gm-Gg: AYBFou2h6wyTbtUaioPV+SpIZvoN4OErq4YhdPaF3DdDzM3WPEvzLg4MqOU7gAbGsx3
- h8PMmGxNnIP1wgWygClUJyQmXcD6WVyVdrHD9soQGlxtUOZvrHQThp7wWHpyWJ3MINFWZE2sQNm
- sbc3PoBmSd6vixkM3ad7idw90zrUpR4juBTHO+2Z2+Q8kG3Fyl9QmkRlnNS0CVRHMHd3flF4nR6
- bDUGmzdaxyfUO6QxcvFgrEqKJMBM+GWBJA0Ziu7y7A2WtiA0OKDug1XWSz26tL/JweBhEDYpnWb
- A5lPV0vFHoqB21rB+M5sJHEO5S9B4+C+vHPcMeBvlo5me5d+ws5R7T8EIcRDODxibdiH00FEG4d
- eEWU0yTdt1EHbMgHRxsoAOuw++oPPid8opk9ljCiwRWaSQucp8/Fmq5H+jmoufiOGX4gR8McZ4j
- LIBcoXN8ukvMrq0yP00kIQyRe7xtzzXuSN7bIZVo3IgDbjgk0TdQ6ODxwtaBwQUPYoX2Ti7VXtk
- AYHak/np6VudXQOtMKLtqbJZYeHwSsn8eRkv5UMbd86k318bhg8gS7ARf8V+Iqr+t4b5Pt52nGo
- hRlOF8fqd+TJ08C569rTJsqNLq0+tCUMVg66yz3AqQB2sNbERsSD0Nueb+xLHu37oSHT7pGoW/u
- AP8rzAS1Sp6N60tuKnuRhKMO/mshfFmvIjLr2ZWByyGi/1XnIBYgQ3FQPoK2i87I=
-X-Received: by 2002:a05:7301:1a15:b0:369:a113:756f with SMTP id
- 5a478bee46e88-36a423f980emr13706073eec.34.1793607951750; 
- Mon, 02 Nov 2026 00:25:51 -0800 (PST)
+ bh=TIzHDspUzTdvWYrEaq1GYfeRj2sgG1J5eAqAChOkR+c=;
+ b=V5+Hv1Yl/nybd4L03lZ62SU3Fv861BU9RlJ+NBsBo4lv6vUDt/d2CIGjesjfJf9nu7
+ ZnFcRZWm45ySvzYDOIigQiTFVM1pj5GxIJPhgyb58JNGGlTJoTOTEaWop7MmNldVOy6u
+ EPrK+MAsxjtnChLsr6Jtv7+BxRYGPAOSDqeZP6MFPNeQge4n6RBGYVWU3h0tD8EW0ZYf
+ d2BPavNRfBUEiinon/o8/yc9j/wHBnh0UKNJfnTpn8mw3rcN3V/MX2+fs9Vq93P8a4AN
+ wRVQK1pQQ77FJgXLDkdSOptOqQCzzCZqG7dnnm9EuBLMFu6xoXoFqNBnYMq81vocuuxy
+ Q7Gw==
+X-Gm-Message-State: APuU4Z/1E+PN/XXbOYhKeDBMRn+4aMqeVwtTanoSVTINTMNOepS/i6ZA
+ c8YAiTtVoW/SexyTLwTztskAw6Zg0ASpXHv6+IV7fkHwdv9F1/iK4Hy2Jz6KUhWn6+o=
+X-Gm-Gg: AYBFou1etQ11JFomQSo6JMdAmDSlh/ktZOshxbElyQI3Qo529JhhI+RVW2QdsmGas2L
+ Ym6U6DJwP/a3WwfxntPnZNuOn9qhAF+fVuOPkt1SZN+xQshP5uIxLfWxK2qisLkeLYlDMMgr0/f
+ /b3eQVNcBBatz7dwd1AsHI4btoHMOS+ViNWoJpWGp5c9tpwW3FMOzW3m8JUwL5jKlbEGToPp3Dd
+ F8czrlGDiW4ItA5Qy4hltme8DcVGY3JY44uoJGSdMaRdIlRSgyJ05EYrahOulVebXstZIoGRmn/
+ SXZhnLcPYjEVDwK3tXirWVHq1MLGf8kPkszl+sWE69zGQx9/B3qI0mXLrEHTV3wpsMqfTVRe88F
+ g2+HhYbp2Uzu/DUfuTCsk8PRRTdCJ14X9WPhPKtik5HrU+OB43zHJ+rZnoydUVYf1L7JgF1NnZQ
+ WMtxkh9xCw2zPKLcW9AjMPAs/8WsUK+xogSd9PRnce8QDo8t4Kscj1KJWEYNfwRq+we0DKk+Wzc
+ x7lVP9/SNLPcGFEL9Ys75ZrYbrWGrbWj4aFzFa0hiLEAcIAxQO+KLnyCxMQt2EY3y4sUaUn/aaV
+ mFHmamFp70PgjxHTBcBynChc0JdQeJ5EOXQBQapeT72N0kGVOWlJLuy0l6L4iPudiP1DzcZNwVQ
+ vg4BzWdyrlxEdPGgrGT5z0RQybh0XBcp1sJVU0UeGpg==
+X-Received: by 2002:a05:693c:4151:20b0:36a:f99:ae79 with SMTP id
+ 5a478bee46e88-36a4232f3f8mr16485894eec.7.1793608019023; 
+ Mon, 02 Nov 2026 00:26:59 -0800 (PST)
 Received: from
- runnervmnwato.wrt1uumabuyufaoiyhie0rxx1a.yx.internal.cloudapp.net
- ([128.24.162.176]) by smtp.gmail.com with ESMTPSA id
- 5a478bee46e88-36a4291e38fsm40674841eec.15.2026.11.02.00.25.51
+ runnervmnwato.qvihz0ilh3mutht1j52cuktbpc.phxx.internal.cloudapp.net
+ ([20.171.14.81]) by smtp.gmail.com with ESMTPSA id
+ 5a478bee46e88-36a42935b4asm47741716eec.16.2026.11.02.00.26.58
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 02 Nov 2026 00:25:51 -0800 (PST)
+ Mon, 02 Nov 2026 00:26:58 -0800 (PST)
 From: linuxtestproject.agent@gmail.com
-To: Wei Gao <wegao@suse.com>
-Date: Mon,  2 Nov 2026 08:25:50 +0000
-Message-ID: <20261102082550.3940-1-linuxtestproject.agent@gmail.com>
+To: Li Wang <li.wang@linux.dev>
+Date: Mon,  2 Nov 2026 08:26:57 +0000
+Message-ID: <20261102082657.3791-1-linuxtestproject.agent@gmail.com>
 X-Mailer: git-send-email 2.56.0
-In-Reply-To: <20261102022245.3922-2-wegao@suse.com>
-References: <20261102022245.3922-2-wegao@suse.com>
+In-Reply-To: <20261102024328.115105-2-li.wang@linux.dev>
+References: <20261102024328.115105-2-li.wang@linux.dev>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-3.5 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+X-Spam-Status: No, score=-8.6 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
 	DKIM_INVALID,DKIM_SIGNED,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_PASS,
-	SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no version=4.0.1
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_PASS,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] lib: Add tst_attach_loopdev()
+Subject: Re: [LTP] lib: add module is loaded check
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -103,12 +104,97 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Wei,
+Hi Li,
 
-On Mon Nov 2 02:22:39 2026 +0000, Wei Gao <wegao@suse.com> wrote:
-> lib: Add tst_attach_loopdev()
+On Mon Nov 2 10:43:25 2026 +0800, Li Wang (Hieco) <li.wang@linux.dev> wrote:
+> lib: add module is loaded check
 
-Verdict - Reviewed
+--- [PATCH 1/4] ---
+
+> --- a/include/tst_module.h
+> +++ b/include/tst_module.h
+> @@ -49,5 +49,6 @@ static inline void tst_requires_module_signature_disabled(void)
+>  
+>  void tst_modprobe(const char *mod_name, char *const argv[]);
+>  void tst_module_reload(const char *mod_name, char *const argv[]);
+> +bool tst_module_is_loaded(const char *mod_name);
+
+Add a kernel-doc comment (/** ... */) for tst_module_is_loaded() documenting
+@mod_name and Return:.
+
+--- [PATCH 2/4] ---
+
+> +static void kconfig_module_record(struct tst_kconfig_var *var)
+> +{
+> +	unsigned int i;
+> +	const char *mod = NULL;
+> +
+> +	if (var->choice != 'm')
+> +		return;
+> +
+> +	for (i = 0; config_module_maps[i].config; i++) {
+> +		if (!strcmp(config_module_maps[i].config, var->id)) {
+> +			mod = config_module_maps[i].module_name;
+> +			break;
+> +		}
+> +	}
+> +
+> +	if (!mod)
+> +		return;
+> +
+> +	if (tst_module_is_loaded(mod))
+> +		return;
+> +
+> +	for (i = 0; i < loaded_module_count; i++) {
+> +		if (!strcmp(loaded_modules[i], mod))
+> +			return;
+> +	}
+> +
+> +	if (loaded_module_count < MAX_LOADED_MODULES)
+> +		loaded_modules[loaded_module_count++] = mod;
+> +}
+
+Recording modules into loaded_modules[] inside kconfig_parse_line() happens
+even when geteuid() != 0, when tst_kconfig_check() fails with TCONF (e.g.
+CONFIG_X509_CERTIFICATE_PARSER=y on a =m kernel), or when tst_kconfig_read()
+is called later during the test. Consequently, tst_kconfig_module_unload() in
+do_cleanup() attempts to unload modules that were never loaded by
+tst_kconfig_module_load(), and fails with EPERM (emitting a spurious TWARN)
+when running unprivileged (such as vsock01). Only record modules in the
+unload list when tst_kconfig_module_load() actually loads them.
+
+> +		default:
+> +			tst_res(TWARN, "Failed to unload module '%s'", name);
+> +		}
+
+Use TWARN | TERRNO so the failure reason from delete_module() is printed.
+
+--- [PATCH 3/4] ---
+
+>  static struct tst_test test = {
+> +	.needs_root = 1,
+> +	.setup = setup,
+>  	.test_all = run,
+
+Document why root is required (loading the vsock/vsock_loopback modules) in
+the top-level /*\ ... */ test description block.
+
+--- [PATCH 4/4] ---
+
+>  /*\
+>   * Test ``KEYCTL_RESTRICT_KEYRING`` builtin_trusted of :manpage:`keyctl(2)`.
+>   *
+> - * Requires root (CAP_SYS_MODULE) to load the ``x509_key_parser`` module.
+> + * * Requires root (CAP_SYS_MODULE) so that the test library can load the
+> + * ``x509_key_parser`` module.
+
+Remove the extra asterisk in "* * Requires root", which creates a malformed
+reST bullet item. Also update .needs_kconfigs in keyctl23.c from
+"CONFIG_X509_CERTIFICATE_PARSER=y" to "CONFIG_X509_CERTIFICATE_PARSER",
+otherwise tst_kconfig_check() aborts with TCONF on =m kernels instead of
+loading x509_key_parser.
+
+Verdict - Needs revision
 
 ---
 Note:
