@@ -1,112 +1,64 @@
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AE50606A326
-	for <ltp@archiver.kernel.org>; Tue,  3 Nov 2026 11:44:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29242606A32F
+	for <ltp@archiver.kernel.org>; Tue,  3 Nov 2026 12:15:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key, unprotected) header.d=suse.cz header.i=@suse.cz header.a=rsa-sha256 header.s=susede2_rsa header.b=pEaNR8cX;
-	dkim=fail reason="signature verification failed" header.d=suse.cz header.i=@suse.cz header.a=ed25519-sha256 header.s=susede2_ed25519 header.b=1+47DkgJ;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=suse.cz header.i=@suse.cz header.a=rsa-sha256 header.s=susede2_rsa header.b=pEaNR8cX;
-	dkim=neutral header.d=suse.cz header.i=@suse.cz header.a=ed25519-sha256 header.s=susede2_ed25519 header.b=1+47DkgJ
+	dkim=pass (1024-bit key, unprotected) header.d=lists.linux.it header.i=@lists.linux.it header.a=rsa-sha256 header.s=picard header.b=op56NMKy;
+	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=tuta.io header.i=@tuta.io header.a=rsa-sha256 header.s=s1 header.b=ZmWh2HWu
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1793708103; h=date : to :
+ message-id : mime-version : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : cc : content-type : content-transfer-encoding : sender :
+ from; bh=cu+M1nHKGAzMUBNIx6atMdKi/7ebS1kMPLb21tgb+kE=;
+ b=op56NMKyOKRjo7/9HEM7lGBTNRATqwfPnNN0hbPXSRrBNHpJgFxI+WwV3gp+ba9C5jbpS
+ UxzcGy+DYs0+Q9TMYUwOJfyADOuIgbg2FjDDGkArzN7mA5EzZaFOKrG3ADsPE2BOJaAbNiO
+ pYINAHWi1CjKyIFO1NhKCF+XqWWt1IE=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id BF9C13C6BE6
-	for <ltp@archiver.kernel.org>; Tue,  3 Nov 2026 12:44:33 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id AFBAC3C7A69
+	for <ltp@archiver.kernel.org>; Tue,  3 Nov 2026 13:15:03 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id BDF613C5607
- for <ltp@lists.linux.it>; Tue,  3 Nov 2026 12:44:16 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ by picard.linux.it (Postfix) with ESMTPS id EB7843C716C
+ for <ltp@lists.linux.it>; Tue,  3 Nov 2026 13:14:42 +0100 (CET)
+Received: from mail.w14.tutanota.de (mail.w14.tutanota.de [185.205.69.214])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id D87F610006AB
- for <ltp@lists.linux.it>; Tue,  3 Nov 2026 12:44:15 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 110AA1FBB0;
- Tue,  3 Nov 2026 11:44:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1793706255; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=IpX4UXdQ05dxmVL1aW4Kcb+1Vk5zMEhudGw5OzlLn3c=;
- b=pEaNR8cXfkEkiQhWtB2S/+D/0YN4fiqi6btz3TE6B/riLhJ+07u3Oi8lybaQcUD8RLG3p6
- 8zRza8hL/4ryA9pk5+4sXfEHgwh+2QaXmkISjD4liK9kO+VWkGup2zvyNQBbkjXWxlePfN
- zHWFoSTtuyBrbJCNm6Y1ZK8Eie6EHIM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1793706255;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=IpX4UXdQ05dxmVL1aW4Kcb+1Vk5zMEhudGw5OzlLn3c=;
- b=1+47DkgJkwP7xCbWtJE/RzowvBJXFf2N3mv1NzJ9UMQ7rODnNbJEUirHNtsBiafuz+ZoZO
- CFN8j11D5HJU38Dg==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1793706255; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=IpX4UXdQ05dxmVL1aW4Kcb+1Vk5zMEhudGw5OzlLn3c=;
- b=pEaNR8cXfkEkiQhWtB2S/+D/0YN4fiqi6btz3TE6B/riLhJ+07u3Oi8lybaQcUD8RLG3p6
- 8zRza8hL/4ryA9pk5+4sXfEHgwh+2QaXmkISjD4liK9kO+VWkGup2zvyNQBbkjXWxlePfN
- zHWFoSTtuyBrbJCNm6Y1ZK8Eie6EHIM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1793706255;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=IpX4UXdQ05dxmVL1aW4Kcb+1Vk5zMEhudGw5OzlLn3c=;
- b=1+47DkgJkwP7xCbWtJE/RzowvBJXFf2N3mv1NzJ9UMQ7rODnNbJEUirHNtsBiafuz+ZoZO
- CFN8j11D5HJU38Dg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D6418134B8;
- Tue,  3 Nov 2026 11:44:14 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id xGsQLg7J6WriUgAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Tue, 03 Nov 2026 11:44:14 +0000
-Date: Tue, 3 Nov 2026 12:44:38 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Wenyuan Li <2063309626@qq.com>
-Message-ID: <aunJJv8EiUsMI2Dw@yuki.lan>
-References: <tencent_B786C5458553D16AB70F62E3AAC3C5C9B306@qq.com>
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 3B4AF60068C
+ for <ltp@lists.linux.it>; Tue,  3 Nov 2026 13:14:42 +0100 (CET)
+Received: from tutadb.w10.tutanota.de (w10.api.tuta.com [IPv6:fd:ac::d:10])
+ by mail.w14.tutanota.de (Postfix) with ESMTP id 6F0F31A1A7FD7
+ for <ltp@lists.linux.it>; Tue,  3 Nov 2026 13:14:11 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1793708051; 
+ s=s1; d=tuta.io;
+ h=From:From:To:To:Subject:Subject:Content-Description:Content-ID:Content-Type:Content-Type:Content-Transfer-Encoding:Content-Transfer-Encoding:Cc:Cc:Date:Date:In-Reply-To:MIME-Version:MIME-Version:Message-ID:Message-ID:Reply-To:References:Sender;
+ bh=4j2XNxx45o4KDQkvP9EN7OoWAbbNjVIZd/MrCqB7Vb4=;
+ b=ZmWh2HWuZS27mO/xBAgklSqJkKNC7tk9E/yhaEZjSEyF2xOdcDpTwftjSMAfh4A6
+ iRAqM07HfH6hGNk3/gPmM78D86ymAxwHrLD70fvCZAPuErtK+PsRDKgyqUKm66OE+LW
+ XKPpVwOBumZkxgzUa2lwcz1d7RFvrvFcqtC6UmrlUDMLlTauGGeZ4Tialc8NT/a5zrH
+ td7KRAHsxl+ydBLDsNWM/8PChLWZnb0/MxdsmuVUfVbyDHFiJ/s+llK51wWWsONPrHw
+ sti3LZcOFddmjJw2wGoRHyNVpz8Am8YrIvlHujCrk+Toq9x8m+qkV9NXk4Bs0TvMlRZ
+ hAmr0rPNUA==
+Date: Tue, 3 Nov 2026 13:14:11 +0100 (CET)
+To: "ltp@lists.linux.it" <ltp@lists.linux.it>
+Message-ID: <P5WKBbq--F-9@tuta.io>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <tencent_B786C5458553D16AB70F62E3AAC3C5C9B306@qq.com>
-X-Spamd-Result: default: False [-13.30 / 50.00]; SUSE_INTERNAL_BYPASS(-9.00)[];
- BAYES_HAM(-3.00)[100.00%]; NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- FREEMAIL_TO(0.00)[qq.com]; MIME_TRACE(0.00)[0:+];
- ARC_NA(0.00)[]; MISSING_XM_UA(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[]; RCPT_COUNT_TWO(0.00)[2];
- FREEMAIL_ENVRCPT(0.00)[qq.com];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- TO_DN_SOME(0.00)[]; RCVD_TLS_ALL(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:email]
-X-Spam-Score: -13.30
-X-Spam-Level: 
-X-Spam-Status: No, score=-13.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+Feedback-ID: 0127f977f5e13e8051b46c6e7f57d0f95a0470d24b79d7c31d07fdf611cc427ab823e0f4692a810119c92d8768973a9281:TurnOnPrivacy!:tutamail
+X-Spam-Status: No, score=-16.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,INCLUDES_CR_TRAILER,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_PASS,SPF_PASS autolearn=ham
 	autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [RFC PATCH] syscalls/madvise: Check DONTNEED across an
- unmapped hole
+Subject: [LTP] [PATCH] syscalls/fanotify26: Add cases that list the directory
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -116,231 +68,247 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+From: Edvard Conrad via ltp <ltp@lists.linux.it>
+Reply-To: Edvard Conrad <edvard@tuta.io>
+Cc: Amir Goldstein <amir73il@gmail.com>, Jan Kara <jack@suse.cz>,
+ Edvard Conrad <edvard@tuta.io>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> Link: https://man7.org/linux/man-pages/man2/madvise.2.html
-> Signed-off-by: Wenyuan Li <2063309626@qq.com>
-> ---
->  runtest/syscalls                              |   1 +
->  testcases/kernel/syscalls/madvise/.gitignore  |   1 +
->  testcases/kernel/syscalls/madvise/madvise13.c | 145 ++++++++++++++++++
->  3 files changed, 147 insertions(+)
->  create mode 100644 testcases/kernel/syscalls/madvise/madvise13.c
-> 
-> diff --git a/runtest/syscalls b/runtest/syscalls
-> index 4d3f53e..7e255c3 100644
-> --- a/runtest/syscalls
-> +++ b/runtest/syscalls
-> @@ -1094,6 +1094,7 @@ madvise09 madvise09
->  madvise10 madvise10
->  madvise11 madvise11
->  madvise12 madvise12
-> +madvise13 madvise13
->  
->  newuname01 newuname01
->  
-> diff --git a/testcases/kernel/syscalls/madvise/.gitignore b/testcases/kernel/syscalls/madvise/.gitignore
-> index 758e601..3e7dbe6 100644
-> --- a/testcases/kernel/syscalls/madvise/.gitignore
-> +++ b/testcases/kernel/syscalls/madvise/.gitignore
-> @@ -9,3 +9,4 @@
->  /madvise10
->  /madvise11
->  /madvise12
-> +/madvise13
-> diff --git a/testcases/kernel/syscalls/madvise/madvise13.c b/testcases/kernel/syscalls/madvise/madvise13.c
-> new file mode 100644
-> index 0000000..eed99dc
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/madvise/madvise13.c
-> @@ -0,0 +1,145 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (c) 2026 Wenyuan Li <2063309626@qq.com>
-> + */
-> +
-> +/*\
-> + * Verify MADV_DONTNEED on a private anonymous range containing an unmapped
-> + * page. The call must return ENOMEM but still discard the mapped pages on
-> + * both sides of the hole, without changing data outside the requested range.
-> + * Also test the same request with the middle page mapped.
-> + *
-> + * madvise(2), VERSIONS/Linux, specifies that Linux applies the advice to
-> + * the mapped parts of a range containing holes, even though it returns
-> + * ENOMEM.
-> + */
-> +
-> +#include <sys/mman.h>
-> +#include "tst_test.h"
-> +#include "lapi/mmap.h"
-> +
-> +#define PAGES 8
-> +#define HOLE_PAGE 3
-> +#define FIRST_PAGE 2
-> +#define LAST_PAGE 4
-> +
-> +static unsigned char *addr;
-> +static size_t page_size;
-> +
-> +static void cleanup(void)
-> +{
-> +	if (addr) {
-> +		SAFE_MUNMAP(addr, PAGES * page_size);
-> +		addr = NULL;
-> +	}
-> +}
-> +
-> +static void check_page(unsigned int page, unsigned char expected, int prepare)
-> +{
-> +	unsigned char vec;
-> +	unsigned char *ptr = addr + page * page_size;
-> +	size_t i;
-> +
-> +	TEST(mincore(ptr, page_size, &vec));
-> +	if (TST_RET == -1) {
-> +		if (prepare || TST_ERR != ENOMEM)
-> +			tst_brk(TBROK | TTERRNO, "mincore() on page %u", page);
-> +
-> +		tst_res(TFAIL, "Page %u is no longer mapped", page);
-> +		return;
-> +	}
-> +
-> +	for (i = 0; i < page_size; i++) {
-> +		if (ptr[i] == expected)
-> +			continue;
-> +
-> +		if (prepare)
-> +			tst_brk(TBROK, "Page %u was not initialized", page);
-> +
-> +		tst_res(TFAIL, "Page %u byte %zu: expected %#x, got %#x",
-> +			page, i, expected, ptr[i]);
-> +		return;
-> +	}
-> +
-> +	if (!prepare)
-> +		tst_res(TPASS, "Page %u contains only %#x", page, expected);
-> +}
-> +
-> +static void check_hole(int prepare)
-> +{
-> +	unsigned char vec;
-> +
-> +	TEST(mincore(addr + HOLE_PAGE * page_size, page_size, &vec));
-> +	if (TST_RET == -1 && TST_ERR == ENOMEM) {
-> +		if (!prepare)
-> +			tst_res(TPASS, "The hole remains unmapped");
-> +		return;
-> +	}
-> +
-> +	if (TST_RET == -1)
-> +		tst_brk(TBROK | TTERRNO, "mincore() on the hole");
-> +
-> +	if (prepare)
-> +		tst_brk(TBROK, "The hole was not created");
-> +
-> +	tst_res(TFAIL, "The hole is mapped after MADV_DONTNEED");
-> +}
+Listing a directory through the event file descriptor makes overlayfs
+open its layers again, after the event fd exists: every layer of a
+merged directory in ovl_dir_read_merged(), and the upper directory of
+an impure one in ovl_dir_read_impure(). Unless those opens inherit
+FMODE_NONOTIFY from the event fd, a listener that marks the backing
+filesystem and lists the directory before it answers is sent a nested
+permission event and blocks in getdents64().
 
-I find these functions with prepare parameter rather confusing to read.
-I guess that it would make more sense to return if the page is
-mapped/unmapped and produce the TPASS/TFAIL in the caller.
+Add a case for each. The impure directory is made by renaming a lower
+file into a directory created on the overlay. The case reports TCONF
+when the overlay cannot record the file's origin and so does not mark
+the directory impure. The impure listing is cached with the inode, so
+the case moves the entry out and back first; otherwise a later
+iteration would read the cache instead of the layer.
 
-> +static void run(unsigned int hole)
-> +{
-> +	unsigned int page;
-> +	unsigned char expected;
-> +
-> +	tst_res(TINFO, "MADV_DONTNEED %s a hole", hole ? "across" : "without");
-> +	addr = SAFE_MMAP(NULL, PAGES * page_size, PROT_READ | PROT_WRITE,
-> +			MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-> +
-> +	/* EINVAL is also returned when THP support is not configured. */
-> +	if (madvise(addr, PAGES * page_size, MADV_NOHUGEPAGE) &&
-> +	    errno != EINVAL)
-> +		tst_brk(TBROK | TERRNO, "madvise(MADV_NOHUGEPAGE)");
+Both cases fail on a kernel without the pending overlayfs fix for
+directory opens.
 
-Why do we need this? I suppose that even if kernel allocated a hugepage
-it will be broken apart once we modify the middle. The THP stays for
-transparent huge pages, hence it shouldn't be visible to the userspace
-in any way.
+Signed-off-by: Edvard Conrad <edvard@tuta.io>
+---
+Applies on top of "syscalls/fanotify26: Add directory cases for the
+nested event":
+  https://lore.kernel.org/ltp/P5Iny41--F-9@tuta.io/
 
-> +	for (page = 0; page < PAGES; page++) {
-> +		memset(addr + page * page_size, 0x40 + page, page_size);
-> +		check_page(page, 0x40 + page, 1);
-> +	}
-> +
-> +	if (hole) {
-> +		SAFE_MUNMAP(addr + HOLE_PAGE * page_size, page_size);
-> +		check_hole(1);
-> +		TST_EXP_FAIL(madvise(addr + FIRST_PAGE * page_size,
-> +			3 * page_size, MADV_DONTNEED), ENOMEM);
-> +	} else {
-> +		TST_EXP_PASS(madvise(addr + FIRST_PAGE * page_size,
-> +			3 * page_size, MADV_DONTNEED));
+Asked for by Amir on the kernel thread, where both paths came up:
+  https://lore.kernel.org/all/CAOQ4uxh67+vs0mr-Lxmwz9-N+F8m29WUNz+8qFLLDpOVYB7=vg@mail.gmail.com/
 
-Here we hardcode 3 as a number of pages to drop, but we define both
-FIRST_PAGE and LAST_PAGE. It would make sense to define it as:
+Tested in a VM on 6b4b543fa18, each kernel run once and with -i 2,
+with the backing filesystem marked:
 
-#define MADV_FIRST 2
-#define MADV_LAST 4
-#define MADV_LEN (MADV_LAST-MADV_FIRST+1)
+                                file  dir   merged dir  impure dir
+                                            listed      listed
+  no fix                        FAIL  FAIL  FAIL        FAIL
+  + c3d355f427ce                PASS  FAIL  FAIL        FAIL
+  + ovl directory fix, v1       PASS  PASS  FAIL        FAIL
+  + ovl directory fix, v2       PASS  PASS  PASS        FAIL
+  + v2 and the follow-up on     PASS  PASS  PASS        PASS
+    the kernel thread
 
-> +	}
-> +
-> +	for (page = 0; page < PAGES; page++) {
-> +		if (hole && page == HOLE_PAGE)
-> +			continue;
-> +
-> +		expected = 0x40 + page;
-> +		if (page >= FIRST_PAGE && page <= LAST_PAGE)
-> +			expected = 0;
-> +		check_page(page, expected, 0);
-> +	}
-> +
-> +	if (hole)
-> +		check_hole(0);
-> +
-> +	cleanup();
-> +}
-> +
-> +static void setup(void)
-> +{
-> +	page_size = SAFE_SYSCONF(_SC_PAGESIZE);
-> +	if (!page_size)
-> +		tst_brk(TBROK, "Invalid page size");
+The overlay-only cases pass on all of them. Without the fix the impure
+case fails in both iterations of -i 2, which is what moving the entry
+out and back is for.
 
-This hardening should go directly into the safe_sysconf() in the
-library. There are at least 30 tests that call SAFE_SYSCONF() with
-_SC_PAGESIZE and it does not make sense to add these kind of checks into
-each of them. And when we are at it we should probably check that the
-page size is power of two as well.
+ .../kernel/syscalls/fanotify/fanotify26.c     | 92 ++++++++++++++++---
+ 1 file changed, 79 insertions(+), 13 deletions(-)
 
-Also safe_sysconf() should check for negative values other than -1.
-
-> +}
-> +
-> +static struct tst_test test = {
-> +	.test = run,
-> +	.tcnt = 2,
-> +	.setup = setup,
-> +	.cleanup = cleanup,
-> +};
-> -- 
-> 2.43.0
-> 
-> base-commit: 46688815513714a28fd2ae300adae6b6e68b838b
-> 
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
-
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify26.c b/testcases/kernel/syscalls/fanotify/fanotify26.c
+index 3f6b525ef..f6a56821f 100644
+--- a/testcases/kernel/syscalls/fanotify/fanotify26.c
++++ b/testcases/kernel/syscalls/fanotify/fanotify26.c
+@@ -23,6 +23,11 @@
+  * backing filesystem as well, which is the shape an anti-malware scanner uses
+  * on an overlayfs root.
+  *
++ * Listing a directory through the event file descriptor can make overlayfs
++ * open its layers again: every layer of a merged directory, and the upper
++ * directory of an impure one, which holds entries moved in from below. The
++ * last two test cases have the listener do that before it answers.
++ *
+  * The test needs root to create permission events and to mount overlayfs.
+  */
+ 
+@@ -34,7 +39,9 @@
+ #include <signal.h>
+ #include <sys/types.h>
+ #include <sys/wait.h>
++#include <sys/xattr.h>
+ #include "tst_test.h"
++#include "lapi/syscalls.h"
+ 
+ #ifdef HAVE_SYS_FANOTIFY_H
+ #include "fanotify.h"
+@@ -42,10 +49,21 @@
+ #define BACKING_MNT	OVL_BASE_MNTPOINT
+ #define FNAME		"test_file"
+ #define DNAME		"test_dir"
++#define MNAME		"merged_dir"
++#define INAME		"impure_dir"
++#define MOVED		"moved_file"
+ #define OVL_FILE	OVL_MNT "/" FNAME
+ #define OVL_DIR		OVL_MNT "/" DNAME
++#define OVL_MDIR	OVL_MNT "/" MNAME
++#define OVL_IDIR	OVL_MNT "/" INAME
++#define OVL_MOVED	OVL_MNT "/" MOVED
++#define OVL_IDIR_MOVED	OVL_IDIR "/" MOVED
+ #define LOWER_FILE	OVL_LOWER "/" FNAME
+ #define LOWER_DIR	OVL_LOWER "/" DNAME
++#define LOWER_MDIR	OVL_LOWER "/" MNAME
++#define LOWER_MOVED	OVL_LOWER "/" MOVED
++#define UPPER_MDIR	OVL_UPPER "/" MNAME
++#define UPPER_IDIR	OVL_UPPER "/" INAME
+ 
+ /*
+  * The listener either answers the event at once or is blocked for good, so
+@@ -56,19 +74,41 @@
+ #define WAIT_MSEC	5000
+ 
+ static int fd_notify = -1;
++static int idir_is_impure;
+ 
+ static struct tcase {
+ 	const char *tname;
++	const char *path;
+ 	int mark_backing;
+ 	int ondir;
++	int list;
++	int impure;
+ } tcases[] = {
+-	{"Overlay mark, file", 0, 0},
+-	{"Overlay and backing mark, file", 1, 0},
+-	{"Overlay mark, directory", 0, 1},
+-	{"Overlay and backing mark, directory", 1, 1},
++	{"Overlay mark, file", OVL_FILE, 0, 0, 0, 0},
++	{"Overlay and backing mark, file", OVL_FILE, 1, 0, 0, 0},
++	{"Overlay mark, directory", OVL_DIR, 0, 1, 0, 0},
++	{"Overlay and backing mark, directory", OVL_DIR, 1, 1, 0, 0},
++	{"Overlay and backing mark, merged directory, listed",
++	 OVL_MDIR, 1, 1, 1, 0},
++	{"Overlay and backing mark, impure directory, listed",
++	 OVL_IDIR, 1, 1, 1, 1},
+ };
+ 
+-static void answer_one_event(pid_t opener)
++static void list_dir(int fd)
++{
++	char buf[1024];
++	long ret;
++
++	/* Blocks for good if reading a layer generates a nested event. */
++	do {
++		ret = tst_syscall(__NR_getdents64, fd, buf, sizeof(buf));
++	} while (ret > 0);
++
++	if (ret == -1)
++		tst_brk(TBROK | TERRNO, "getdents64() on the event fd failed");
++}
++
++static void answer_one_event(pid_t opener, int list)
+ {
+ 	struct fanotify_event_metadata event;
+ 	struct fanotify_response resp;
+@@ -76,6 +116,9 @@ static void answer_one_event(pid_t opener)
+ 	/* Blocks for good if the event fd generates a nested event. */
+ 	SAFE_READ(SAFE_READ_ALL, fd_notify, &event, sizeof(event));
+ 
++	if (list && event.fd != FAN_NOFD)
++		list_dir(event.fd);
++
+ 	/*
+ 	 * A wrong mask or a stranger's event is a result, not harness
+ 	 * breakage, so report and still answer: the opener stays parked in
+@@ -110,6 +153,20 @@ static void run(unsigned int n)
+ 
+ 	tst_res(TINFO, "Test #%d: %s", n, tc->tname);
+ 
++	if (tc->impure) {
++		if (!idir_is_impure) {
++			tst_res(TCONF, "Overlay did not mark the directory impure");
++			return;
++		}
++		/*
++		 * The impure listing is cached with the inode and reused, so
++		 * a later iteration would not open the layer at all. Moving
++		 * an entry with an origin out and back invalidates it.
++		 */
++		SAFE_RENAME(OVL_IDIR_MOVED, OVL_MOVED);
++		SAFE_RENAME(OVL_MOVED, OVL_IDIR_MOVED);
++	}
++
+ 	fd_notify = SAFE_FANOTIFY_INIT(FAN_CLASS_CONTENT, O_RDONLY);
+ 
+ 	SAFE_FANOTIFY_MARK(fd_notify, FAN_MARK_ADD | FAN_MARK_FILESYSTEM,
+@@ -132,10 +189,7 @@ static void run(unsigned int n)
+ 		 * answered it goes away, so a failure here is the fallout of
+ 		 * the test tearing a blocked listener down, not a result.
+ 		 */
+-		if (tc->ondir)
+-			fd = open(OVL_DIR, O_RDONLY | O_DIRECTORY);
+-		else
+-			fd = open(OVL_FILE, O_RDONLY);
++		fd = open(tc->path, O_RDONLY | (tc->ondir ? O_DIRECTORY : 0));
+ 		if (fd != -1)
+ 			SAFE_CLOSE(fd);
+ 		exit(0);
+@@ -148,7 +202,7 @@ static void run(unsigned int n)
+ 
+ 	reader = SAFE_FORK();
+ 	if (!reader) {
+-		answer_one_event(opener);
++		answer_one_event(opener, tc->list);
+ 		exit(0);
+ 	}
+ 
+@@ -160,8 +214,7 @@ static void run(unsigned int n)
+ 	 */
+ 	if (TST_PROCESS_STATE_WAIT(reader, 'Z',
+ 				   tst_multiply_timeout(WAIT_MSEC))) {
+-		tst_res(TFAIL,
+-			"Listener blocked in read() by a nested event");
++		tst_res(TFAIL, "Listener blocked by a nested event");
+ 		SAFE_KILL(reader, SIGKILL);
+ 		SAFE_WAITPID(reader, NULL, 0);
+ 	}
+@@ -175,12 +228,25 @@ static void run(unsigned int n)
+ 
+ static void setup(void)
+ {
+-	/* Both have to exist in the lower layer to be opened through it. */
++	/* These have to exist in the layers to be opened through them. */
+ 	SAFE_UMOUNT(OVL_MNT);
+ 	SAFE_TOUCH(LOWER_FILE, 0644, NULL);
+ 	SAFE_MKDIR(LOWER_DIR, 0755);
++	SAFE_MKDIR(LOWER_MDIR, 0755);
++	SAFE_MKDIR(UPPER_MDIR, 0755);
++	SAFE_TOUCH(LOWER_MOVED, 0644, NULL);
+ 	SAFE_MOUNT_OVERLAY();
+ 
++	/*
++	 * A directory made through the overlay is upper only. Moving a lower
++	 * file into it records the file's origin and marks the directory
++	 * impure, unless the layers cannot carry an origin.
++	 */
++	SAFE_MKDIR(OVL_IDIR, 0755);
++	SAFE_RENAME(OVL_MOVED, OVL_IDIR_MOVED);
++	idir_is_impure =
++		getxattr(UPPER_IDIR, "trusted.overlay.impure", NULL, 0) != -1;
++
+ 	/*
+ 	 * Probe the widest combination run() uses, not a weaker proxy for
+ 	 * it. Every case marks the overlay; the second of each pair also
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.56.0
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
