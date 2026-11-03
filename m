@@ -1,64 +1,110 @@
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29242606A32F
-	for <ltp@archiver.kernel.org>; Tue,  3 Nov 2026 12:15:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDCC0606A32E
+	for <ltp@archiver.kernel.org>; Tue,  3 Nov 2026 14:45:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=lists.linux.it header.i=@lists.linux.it header.a=rsa-sha256 header.s=picard header.b=op56NMKy;
-	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=tuta.io header.i=@tuta.io header.a=rsa-sha256 header.s=s1 header.b=ZmWh2HWu
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1793708103; h=date : to :
- message-id : mime-version : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : cc : content-type : content-transfer-encoding : sender :
- from; bh=cu+M1nHKGAzMUBNIx6atMdKi/7ebS1kMPLb21tgb+kE=;
- b=op56NMKyOKRjo7/9HEM7lGBTNRATqwfPnNN0hbPXSRrBNHpJgFxI+WwV3gp+ba9C5jbpS
- UxzcGy+DYs0+Q9TMYUwOJfyADOuIgbg2FjDDGkArzN7mA5EzZaFOKrG3ADsPE2BOJaAbNiO
- pYINAHWi1CjKyIFO1NhKCF+XqWWt1IE=
+	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=zRy2QjVr
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id AFBAC3C7A69
-	for <ltp@archiver.kernel.org>; Tue,  3 Nov 2026 13:15:03 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id BCC593C8F47
+	for <ltp@archiver.kernel.org>; Tue,  3 Nov 2026 15:45:26 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id EB7843C716C
- for <ltp@lists.linux.it>; Tue,  3 Nov 2026 13:14:42 +0100 (CET)
-Received: from mail.w14.tutanota.de (mail.w14.tutanota.de [185.205.69.214])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 3CD923C83FB
+ for <ltp@lists.linux.it>; Tue,  3 Nov 2026 15:45:10 +0100 (CET)
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com
+ [IPv6:2a00:1450:4864:20::52c])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 3B4AF60068C
- for <ltp@lists.linux.it>; Tue,  3 Nov 2026 13:14:42 +0100 (CET)
-Received: from tutadb.w10.tutanota.de (w10.api.tuta.com [IPv6:fd:ac::d:10])
- by mail.w14.tutanota.de (Postfix) with ESMTP id 6F0F31A1A7FD7
- for <ltp@lists.linux.it>; Tue,  3 Nov 2026 13:14:11 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1793708051; 
- s=s1; d=tuta.io;
- h=From:From:To:To:Subject:Subject:Content-Description:Content-ID:Content-Type:Content-Type:Content-Transfer-Encoding:Content-Transfer-Encoding:Cc:Cc:Date:Date:In-Reply-To:MIME-Version:MIME-Version:Message-ID:Message-ID:Reply-To:References:Sender;
- bh=4j2XNxx45o4KDQkvP9EN7OoWAbbNjVIZd/MrCqB7Vb4=;
- b=ZmWh2HWuZS27mO/xBAgklSqJkKNC7tk9E/yhaEZjSEyF2xOdcDpTwftjSMAfh4A6
- iRAqM07HfH6hGNk3/gPmM78D86ymAxwHrLD70fvCZAPuErtK+PsRDKgyqUKm66OE+LW
- XKPpVwOBumZkxgzUa2lwcz1d7RFvrvFcqtC6UmrlUDMLlTauGGeZ4Tialc8NT/a5zrH
- td7KRAHsxl+ydBLDsNWM/8PChLWZnb0/MxdsmuVUfVbyDHFiJ/s+llK51wWWsONPrHw
- sti3LZcOFddmjJw2wGoRHyNVpz8Am8YrIvlHujCrk+Toq9x8m+qkV9NXk4Bs0TvMlRZ
- hAmr0rPNUA==
-Date: Tue, 3 Nov 2026 13:14:11 +0100 (CET)
-To: "ltp@lists.linux.it" <ltp@lists.linux.it>
-Message-ID: <P5WKBbq--F-9@tuta.io>
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 561901000497
+ for <ltp@lists.linux.it>; Tue,  3 Nov 2026 15:45:09 +0100 (CET)
+Received: by mail-ed1-x52c.google.com with SMTP id
+ 4fb4d7f45d1cf-6ae305e3bd9so7318982a12.0
+ for <ltp@lists.linux.it>; Tue, 03 Nov 2026 06:45:09 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1793717109; cv=none;
+ d=google.com; s=arc-20260327;
+ b=DKrInLyXgebPbEPYe4E1ixMHds7iVyIuklCuctGc/pWyhym9TIoDht2JhbAJboM7dj
+ m0oBCl3iHk614NENCQrQ+RGehzB8Go3KmavZcde5XNZbl5kzJn2/wtJh+/DXNmYqEnVs
+ PFqwRGC66jmShmnnZsMew0EKPxpon3Iw87wMt0k7CZyvdomj2YCIaK7DQLJGO7VF5OqY
+ 9hl5G5QQWHnqMNKUHsq8XRhdw7N3UWd6KePxHKxEYFRUt55aMz5VM1lXlcFNO0quoYKI
+ CzfLaxqhaHXEoH0TKRim9kj13SijlH4uNHBPjN00o+z9jgeOvdPUln393W8NpU5wYiDn
+ U8eQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com;
+ s=arc-20260327; 
+ h=content-transfer-encoding:cc:to:subject:message-id:date:from
+ :in-reply-to:references:mime-version:dkim-signature;
+ bh=pvaESwZsd1dJROo0BbtJsow6JRsqOFe+I4sE4aJ3cU8=;
+ fh=uEtJhRULKvLSYzZ7YMUoa2ORjJFpzsYg86OmxpJ9RKU=;
+ b=gcnzzGB7rwjAFH/SdgvCFXfm4/c+4LvwUR4R6lvxH4h8vUzzu9zvYsa3s600xprw6E
+ jHYeOaXcTL/vD/CMLGmVliy1OTg7vnXjtdRNLkma11gjn+AFxiLFxo9tgsEMHME/GGzr
+ U8OmwFHyaQNHOP9FQLpQG4jtsfell32Uj4CM6rfgfWnsrjvPZoV9nDNjcmoEcdb70zWL
+ a93512ucXWYaMFrMiN59b7cZ4OrtxX99aQ8TGdnGHKYG/bbMikm3LWceTT3ABrDYVRqI
+ mP7+wc3z5vW8re63axznOmHbD43jUDgIGKST3Wnhw2YVuHRdBeR+oD3S1eCkswLFL4Ju
+ RqWA==; darn=lists.linux.it
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20260707; t=1793717109; x=1794321909; darn=lists.linux.it;
+ h=content-transfer-encoding:content-type:cc:to:subject:message-id
+ :date:from:in-reply-to:references:mime-version:from:to:cc:subject
+ :date:message-id:reply-to:content-type;
+ bh=pvaESwZsd1dJROo0BbtJsow6JRsqOFe+I4sE4aJ3cU8=;
+ b=zRy2QjVr0mISjBvwe+O37Kdg/yLvKBJxi8qlh1BBluaWWfe9+E4R2DkiMSk1UTDWjS
+ qHGN6pmRrzl8liGdfPrcnhS65FEDnDY/pTAXEDhBBV25ijY5zlLFJocupd+1eGMYYdtm
+ snkqQMUk/AI6RW6CmDJJFy8KjxIh3g4wABGBjLFV19FjCH9/5X+X3zkhImb50bhcuCvQ
+ vF1098NSCrhbDeGIcj++/DrLD594pBxMQiySC5dfjogO4DjgumRwL33u6C4eEd/oH2DR
+ pTvZmYS9g4A/sEBdyPhsaXYp3fj4XM8Q38sAC7SHlTR4vEM36/xJ7iqmv1ccTYPkLx4N
+ KpNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20260707; t=1793717109; x=1794321909;
+ h=content-transfer-encoding:content-type:cc:to:subject:message-id
+ :date:from:in-reply-to:references:mime-version:x-gm-gg
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+ :content-type;
+ bh=pvaESwZsd1dJROo0BbtJsow6JRsqOFe+I4sE4aJ3cU8=;
+ b=nvn5Ygfm97WgVrVKRmHRGqPLKAWxyjUzb7kz4FMhJEdqnuWhq0xGMpXmBurgE5HxXK
+ vGlmi8rbIggncxKNUZepBf7yUsiElA+62TS/T1zOY5gadFh05kOCYBdVt47+svxO2Dw1
+ +4u7akrAPavvj7Z/lu685YOxVpiTvO2+LBNDfz7XLVKPtXQrWzORnAtRE5k33fic4aZ8
+ lj/nsrqOithtosLrowBvnhjh51YlFgZYX5ZL7e4Rx7sk0mg9boK6znz09U0cdQ0IMGmr
+ FpgzZm04r/RoXBQ3HgsSlQ4iL42TlJ6VKmcrXk+Oys5zX+UJL1MmrBGaALMse7QM8ECg
+ uDtA==
+X-Gm-Message-State: APuU4Z/r1N8gorHzZXgeJKDgjcZrwX7TdpwCSZ3jt1kp1ZgLdT8GCE9K
+ Z4Z3/cK9B372+IZaxQppXX9kHS6BUL8IigLnP5brShUxo/naJA4j/q3YNtubwFOHHb0DvIGZXFH
+ B0MfgZcPHIf4K5rH0/DMMyxBeslZWWVI=
+X-Gm-Gg: AYBFou3e/4A+h7QDRCCgB01vGA69EQoOI7K66a0as3BgOZ6L2T7GQtsFWvHZnEcnwKe
+ 70mihUUPMpAtFhxmhxPM0NzL6BxFYrNSj1vVS0bpSIWRGYyaCVOpL+VKelDyNqGMxZ/GZ9kyscH
+ GFCW+AMsBp2Y/lqjnwyGgOaAYAm5TBMoTtgcsJMHZAPRIlsYKCV4d2bMzlVWiJ2UyiTFaHcX/na
+ oX0qKO3lN2PBoGStpIaL9w6n5S4CDMjKQqlGIdgfR0bPK9xi0EB3IU42ed97r2RpQJfkc1SkIqM
+ fcNF6ZXzK7mYWOKNHUQnolQ7pAb405IwOsQKDWzpDmN6eWQcVBJpeZV5wLPA/WU6YMOsRiBbfz5
+ ZeOWF+oGa2zV2G3EFE2ESLoPvWB+0P9pJrn3M1T1YqkeWyG78vfAyBbXuLDNcTNCU2+UCV/XWat
+ a4574qscuEXEoCcgg=
+X-Received: by 2002:aa7:d594:0:b0:6b4:16fb:b9be with SMTP id
+ 4fb4d7f45d1cf-6b4d4d6f9a4mr6583069a12.37.1793717108202; Tue, 03 Nov 2026
+ 06:45:08 -0800 (PST)
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-Feedback-ID: 0127f977f5e13e8051b46c6e7f57d0f95a0470d24b79d7c31d07fdf611cc427ab823e0f4692a810119c92d8768973a9281:TurnOnPrivacy!:tutamail
-X-Spam-Status: No, score=-16.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,INCLUDES_CR_TRAILER,
+References: <P5WKBbq--F-9@tuta.io>
+In-Reply-To: <P5WKBbq--F-9@tuta.io>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Tue, 3 Nov 2026 15:44:56 +0100
+X-Gm-Features: AclHuK9c1rDmhc-68VdcVxQpRq3DDNE7EbFYPitlj3PdGKx_aeMhSAAKttKCBp8
+Message-ID: <CAOQ4uxiDYt9HtpZ7XDHdYJZKfPo0ACT4bOXKfGTwPe0WXsmNLQ@mail.gmail.com>
+To: Edvard Conrad <edvard@tuta.io>
+X-Spam-Status: No, score=-9.6 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_INVALID,DKIM_SIGNED,FORGED_GMAIL_RCVD,FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_PASS,SPF_PASS autolearn=ham
 	autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] syscalls/fanotify26: Add cases that list the directory
+Subject: Re: [LTP] [PATCH] syscalls/fanotify26: Add cases that list the
+ directory
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -68,247 +114,204 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Edvard Conrad via ltp <ltp@lists.linux.it>
-Reply-To: Edvard Conrad <edvard@tuta.io>
-Cc: Amir Goldstein <amir73il@gmail.com>, Jan Kara <jack@suse.cz>,
- Edvard Conrad <edvard@tuta.io>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: Jan Kara <jack@suse.cz>, "ltp@lists.linux.it" <ltp@lists.linux.it>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Listing a directory through the event file descriptor makes overlayfs
-open its layers again, after the event fd exists: every layer of a
-merged directory in ovl_dir_read_merged(), and the upper directory of
-an impure one in ovl_dir_read_impure(). Unless those opens inherit
-FMODE_NONOTIFY from the event fd, a listener that marks the backing
-filesystem and lists the directory before it answers is sent a nested
-permission event and blocks in getdents64().
-
-Add a case for each. The impure directory is made by renaming a lower
-file into a directory created on the overlay. The case reports TCONF
-when the overlay cannot record the file's origin and so does not mark
-the directory impure. The impure listing is cached with the inode, so
-the case moves the entry out and back first; otherwise a later
-iteration would read the cache instead of the layer.
-
-Both cases fail on a kernel without the pending overlayfs fix for
-directory opens.
-
-Signed-off-by: Edvard Conrad <edvard@tuta.io>
----
-Applies on top of "syscalls/fanotify26: Add directory cases for the
-nested event":
-  https://lore.kernel.org/ltp/P5Iny41--F-9@tuta.io/
-
-Asked for by Amir on the kernel thread, where both paths came up:
-  https://lore.kernel.org/all/CAOQ4uxh67+vs0mr-Lxmwz9-N+F8m29WUNz+8qFLLDpOVYB7=vg@mail.gmail.com/
-
-Tested in a VM on 6b4b543fa18, each kernel run once and with -i 2,
-with the backing filesystem marked:
-
-                                file  dir   merged dir  impure dir
-                                            listed      listed
-  no fix                        FAIL  FAIL  FAIL        FAIL
-  + c3d355f427ce                PASS  FAIL  FAIL        FAIL
-  + ovl directory fix, v1       PASS  PASS  FAIL        FAIL
-  + ovl directory fix, v2       PASS  PASS  PASS        FAIL
-  + v2 and the follow-up on     PASS  PASS  PASS        PASS
-    the kernel thread
-
-The overlay-only cases pass on all of them. Without the fix the impure
-case fails in both iterations of -i 2, which is what moving the entry
-out and back is for.
-
- .../kernel/syscalls/fanotify/fanotify26.c     | 92 ++++++++++++++++---
- 1 file changed, 79 insertions(+), 13 deletions(-)
-
-diff --git a/testcases/kernel/syscalls/fanotify/fanotify26.c b/testcases/kernel/syscalls/fanotify/fanotify26.c
-index 3f6b525ef..f6a56821f 100644
---- a/testcases/kernel/syscalls/fanotify/fanotify26.c
-+++ b/testcases/kernel/syscalls/fanotify/fanotify26.c
-@@ -23,6 +23,11 @@
-  * backing filesystem as well, which is the shape an anti-malware scanner uses
-  * on an overlayfs root.
-  *
-+ * Listing a directory through the event file descriptor can make overlayfs
-+ * open its layers again: every layer of a merged directory, and the upper
-+ * directory of an impure one, which holds entries moved in from below. The
-+ * last two test cases have the listener do that before it answers.
-+ *
-  * The test needs root to create permission events and to mount overlayfs.
-  */
- 
-@@ -34,7 +39,9 @@
- #include <signal.h>
- #include <sys/types.h>
- #include <sys/wait.h>
-+#include <sys/xattr.h>
- #include "tst_test.h"
-+#include "lapi/syscalls.h"
- 
- #ifdef HAVE_SYS_FANOTIFY_H
- #include "fanotify.h"
-@@ -42,10 +49,21 @@
- #define BACKING_MNT	OVL_BASE_MNTPOINT
- #define FNAME		"test_file"
- #define DNAME		"test_dir"
-+#define MNAME		"merged_dir"
-+#define INAME		"impure_dir"
-+#define MOVED		"moved_file"
- #define OVL_FILE	OVL_MNT "/" FNAME
- #define OVL_DIR		OVL_MNT "/" DNAME
-+#define OVL_MDIR	OVL_MNT "/" MNAME
-+#define OVL_IDIR	OVL_MNT "/" INAME
-+#define OVL_MOVED	OVL_MNT "/" MOVED
-+#define OVL_IDIR_MOVED	OVL_IDIR "/" MOVED
- #define LOWER_FILE	OVL_LOWER "/" FNAME
- #define LOWER_DIR	OVL_LOWER "/" DNAME
-+#define LOWER_MDIR	OVL_LOWER "/" MNAME
-+#define LOWER_MOVED	OVL_LOWER "/" MOVED
-+#define UPPER_MDIR	OVL_UPPER "/" MNAME
-+#define UPPER_IDIR	OVL_UPPER "/" INAME
- 
- /*
-  * The listener either answers the event at once or is blocked for good, so
-@@ -56,19 +74,41 @@
- #define WAIT_MSEC	5000
- 
- static int fd_notify = -1;
-+static int idir_is_impure;
- 
- static struct tcase {
- 	const char *tname;
-+	const char *path;
- 	int mark_backing;
- 	int ondir;
-+	int list;
-+	int impure;
- } tcases[] = {
--	{"Overlay mark, file", 0, 0},
--	{"Overlay and backing mark, file", 1, 0},
--	{"Overlay mark, directory", 0, 1},
--	{"Overlay and backing mark, directory", 1, 1},
-+	{"Overlay mark, file", OVL_FILE, 0, 0, 0, 0},
-+	{"Overlay and backing mark, file", OVL_FILE, 1, 0, 0, 0},
-+	{"Overlay mark, directory", OVL_DIR, 0, 1, 0, 0},
-+	{"Overlay and backing mark, directory", OVL_DIR, 1, 1, 0, 0},
-+	{"Overlay and backing mark, merged directory, listed",
-+	 OVL_MDIR, 1, 1, 1, 0},
-+	{"Overlay and backing mark, impure directory, listed",
-+	 OVL_IDIR, 1, 1, 1, 1},
- };
- 
--static void answer_one_event(pid_t opener)
-+static void list_dir(int fd)
-+{
-+	char buf[1024];
-+	long ret;
-+
-+	/* Blocks for good if reading a layer generates a nested event. */
-+	do {
-+		ret = tst_syscall(__NR_getdents64, fd, buf, sizeof(buf));
-+	} while (ret > 0);
-+
-+	if (ret == -1)
-+		tst_brk(TBROK | TERRNO, "getdents64() on the event fd failed");
-+}
-+
-+static void answer_one_event(pid_t opener, int list)
- {
- 	struct fanotify_event_metadata event;
- 	struct fanotify_response resp;
-@@ -76,6 +116,9 @@ static void answer_one_event(pid_t opener)
- 	/* Blocks for good if the event fd generates a nested event. */
- 	SAFE_READ(SAFE_READ_ALL, fd_notify, &event, sizeof(event));
- 
-+	if (list && event.fd != FAN_NOFD)
-+		list_dir(event.fd);
-+
- 	/*
- 	 * A wrong mask or a stranger's event is a result, not harness
- 	 * breakage, so report and still answer: the opener stays parked in
-@@ -110,6 +153,20 @@ static void run(unsigned int n)
- 
- 	tst_res(TINFO, "Test #%d: %s", n, tc->tname);
- 
-+	if (tc->impure) {
-+		if (!idir_is_impure) {
-+			tst_res(TCONF, "Overlay did not mark the directory impure");
-+			return;
-+		}
-+		/*
-+		 * The impure listing is cached with the inode and reused, so
-+		 * a later iteration would not open the layer at all. Moving
-+		 * an entry with an origin out and back invalidates it.
-+		 */
-+		SAFE_RENAME(OVL_IDIR_MOVED, OVL_MOVED);
-+		SAFE_RENAME(OVL_MOVED, OVL_IDIR_MOVED);
-+	}
-+
- 	fd_notify = SAFE_FANOTIFY_INIT(FAN_CLASS_CONTENT, O_RDONLY);
- 
- 	SAFE_FANOTIFY_MARK(fd_notify, FAN_MARK_ADD | FAN_MARK_FILESYSTEM,
-@@ -132,10 +189,7 @@ static void run(unsigned int n)
- 		 * answered it goes away, so a failure here is the fallout of
- 		 * the test tearing a blocked listener down, not a result.
- 		 */
--		if (tc->ondir)
--			fd = open(OVL_DIR, O_RDONLY | O_DIRECTORY);
--		else
--			fd = open(OVL_FILE, O_RDONLY);
-+		fd = open(tc->path, O_RDONLY | (tc->ondir ? O_DIRECTORY : 0));
- 		if (fd != -1)
- 			SAFE_CLOSE(fd);
- 		exit(0);
-@@ -148,7 +202,7 @@ static void run(unsigned int n)
- 
- 	reader = SAFE_FORK();
- 	if (!reader) {
--		answer_one_event(opener);
-+		answer_one_event(opener, tc->list);
- 		exit(0);
- 	}
- 
-@@ -160,8 +214,7 @@ static void run(unsigned int n)
- 	 */
- 	if (TST_PROCESS_STATE_WAIT(reader, 'Z',
- 				   tst_multiply_timeout(WAIT_MSEC))) {
--		tst_res(TFAIL,
--			"Listener blocked in read() by a nested event");
-+		tst_res(TFAIL, "Listener blocked by a nested event");
- 		SAFE_KILL(reader, SIGKILL);
- 		SAFE_WAITPID(reader, NULL, 0);
- 	}
-@@ -175,12 +228,25 @@ static void run(unsigned int n)
- 
- static void setup(void)
- {
--	/* Both have to exist in the lower layer to be opened through it. */
-+	/* These have to exist in the layers to be opened through them. */
- 	SAFE_UMOUNT(OVL_MNT);
- 	SAFE_TOUCH(LOWER_FILE, 0644, NULL);
- 	SAFE_MKDIR(LOWER_DIR, 0755);
-+	SAFE_MKDIR(LOWER_MDIR, 0755);
-+	SAFE_MKDIR(UPPER_MDIR, 0755);
-+	SAFE_TOUCH(LOWER_MOVED, 0644, NULL);
- 	SAFE_MOUNT_OVERLAY();
- 
-+	/*
-+	 * A directory made through the overlay is upper only. Moving a lower
-+	 * file into it records the file's origin and marks the directory
-+	 * impure, unless the layers cannot carry an origin.
-+	 */
-+	SAFE_MKDIR(OVL_IDIR, 0755);
-+	SAFE_RENAME(OVL_MOVED, OVL_IDIR_MOVED);
-+	idir_is_impure =
-+		getxattr(UPPER_IDIR, "trusted.overlay.impure", NULL, 0) != -1;
-+
- 	/*
- 	 * Probe the widest combination run() uses, not a weaker proxy for
- 	 * it. Every case marks the overlay; the second of each pair also
--- 
-2.56.0
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+T24gVHVlLCBOb3YgMywgMjAyNiBhdCAxOjE04oCvUE0gRWR2YXJkIENvbnJhZCA8ZWR2YXJkQHR1
+dGEuaW8+IHdyb3RlOgo+Cj4gTGlzdGluZyBhIGRpcmVjdG9yeSB0aHJvdWdoIHRoZSBldmVudCBm
+aWxlIGRlc2NyaXB0b3IgbWFrZXMgb3ZlcmxheWZzCj4gb3BlbiBpdHMgbGF5ZXJzIGFnYWluLCBh
+ZnRlciB0aGUgZXZlbnQgZmQgZXhpc3RzOiBldmVyeSBsYXllciBvZiBhCj4gbWVyZ2VkIGRpcmVj
+dG9yeSBpbiBvdmxfZGlyX3JlYWRfbWVyZ2VkKCksIGFuZCB0aGUgdXBwZXIgZGlyZWN0b3J5IG9m
+Cj4gYW4gaW1wdXJlIG9uZSBpbiBvdmxfZGlyX3JlYWRfaW1wdXJlKCkuIFVubGVzcyB0aG9zZSBv
+cGVucyBpbmhlcml0Cj4gRk1PREVfTk9OT1RJRlkgZnJvbSB0aGUgZXZlbnQgZmQsIGEgbGlzdGVu
+ZXIgdGhhdCBtYXJrcyB0aGUgYmFja2luZwo+IGZpbGVzeXN0ZW0gYW5kIGxpc3RzIHRoZSBkaXJl
+Y3RvcnkgYmVmb3JlIGl0IGFuc3dlcnMgaXMgc2VudCBhIG5lc3RlZAo+IHBlcm1pc3Npb24gZXZl
+bnQgYW5kIGJsb2NrcyBpbiBnZXRkZW50czY0KCkuCj4KPiBBZGQgYSBjYXNlIGZvciBlYWNoLiBU
+aGUgaW1wdXJlIGRpcmVjdG9yeSBpcyBtYWRlIGJ5IHJlbmFtaW5nIGEgbG93ZXIKPiBmaWxlIGlu
+dG8gYSBkaXJlY3RvcnkgY3JlYXRlZCBvbiB0aGUgb3ZlcmxheS4gVGhlIGNhc2UgcmVwb3J0cyBU
+Q09ORgo+IHdoZW4gdGhlIG92ZXJsYXkgY2Fubm90IHJlY29yZCB0aGUgZmlsZSdzIG9yaWdpbiBh
+bmQgc28gZG9lcyBub3QgbWFyawo+IHRoZSBkaXJlY3RvcnkgaW1wdXJlLiBUaGUgaW1wdXJlIGxp
+c3RpbmcgaXMgY2FjaGVkIHdpdGggdGhlIGlub2RlLCBzbwo+IHRoZSBjYXNlIG1vdmVzIHRoZSBl
+bnRyeSBvdXQgYW5kIGJhY2sgZmlyc3Q7IG90aGVyd2lzZSBhIGxhdGVyCj4gaXRlcmF0aW9uIHdv
+dWxkIHJlYWQgdGhlIGNhY2hlIGluc3RlYWQgb2YgdGhlIGxheWVyLgo+Cj4gQm90aCBjYXNlcyBm
+YWlsIG9uIGEga2VybmVsIHdpdGhvdXQgdGhlIHBlbmRpbmcgb3ZlcmxheWZzIGZpeCBmb3IKPiBk
+aXJlY3Rvcnkgb3BlbnMuCj4KPiBTaWduZWQtb2ZmLWJ5OiBFZHZhcmQgQ29ucmFkIDxlZHZhcmRA
+dHV0YS5pbz4KPiAtLS0KPiBBcHBsaWVzIG9uIHRvcCBvZiAic3lzY2FsbHMvZmFub3RpZnkyNjog
+QWRkIGRpcmVjdG9yeSBjYXNlcyBmb3IgdGhlCj4gbmVzdGVkIGV2ZW50IjoKPiAgIGh0dHBzOi8v
+bG9yZS5rZXJuZWwub3JnL2x0cC9QNUlueTQxLS1GLTlAdHV0YS5pby8KPgo+IEFza2VkIGZvciBi
+eSBBbWlyIG9uIHRoZSBrZXJuZWwgdGhyZWFkLCB3aGVyZSBib3RoIHBhdGhzIGNhbWUgdXA6Cj4g
+ICBodHRwczovL2xvcmUua2VybmVsLm9yZy9hbGwvQ0FPUTR1eGg2Nyt2czBtci1MeG13ejktTitG
+OG0yOVdVTnorOHFGTExEcE9WWUI3PXZnQG1haWwuZ21haWwuY29tLwo+Cj4gVGVzdGVkIGluIGEg
+Vk0gb24gNmI0YjU0M2ZhMTgsIGVhY2gga2VybmVsIHJ1biBvbmNlIGFuZCB3aXRoIC1pIDIsCj4g
+d2l0aCB0aGUgYmFja2luZyBmaWxlc3lzdGVtIG1hcmtlZDoKPgo+ICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgZmlsZSAgZGlyICAgbWVyZ2VkIGRpciAgaW1wdXJlIGRpcgo+ICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgbGlzdGVkICAgICAgbGlzdGVk
+Cj4gICBubyBmaXggICAgICAgICAgICAgICAgICAgICAgICBGQUlMICBGQUlMICBGQUlMICAgICAg
+ICBGQUlMCj4gICArIGMzZDM1NWY0MjdjZSAgICAgICAgICAgICAgICBQQVNTICBGQUlMICBGQUlM
+ICAgICAgICBGQUlMCj4gICArIG92bCBkaXJlY3RvcnkgZml4LCB2MSAgICAgICBQQVNTICBQQVNT
+ICBGQUlMICAgICAgICBGQUlMCj4gICArIG92bCBkaXJlY3RvcnkgZml4LCB2MiAgICAgICBQQVNT
+ICBQQVNTICBQQVNTICAgICAgICBGQUlMCj4gICArIHYyIGFuZCB0aGUgZm9sbG93LXVwIG9uICAg
+ICBQQVNTICBQQVNTICBQQVNTICAgICAgICBQQVNTCj4gICAgIHRoZSBrZXJuZWwgdGhyZWFkCj4K
+PiBUaGUgb3ZlcmxheS1vbmx5IGNhc2VzIHBhc3Mgb24gYWxsIG9mIHRoZW0uIFdpdGhvdXQgdGhl
+IGZpeCB0aGUgaW1wdXJlCj4gY2FzZSBmYWlscyBpbiBib3RoIGl0ZXJhdGlvbnMgb2YgLWkgMiwg
+d2hpY2ggaXMgd2hhdCBtb3ZpbmcgdGhlIGVudHJ5Cj4gb3V0IGFuZCBiYWNrIGlzIGZvci4KPgo+
+ICAuLi4va2VybmVsL3N5c2NhbGxzL2Zhbm90aWZ5L2Zhbm90aWZ5MjYuYyAgICAgfCA5MiArKysr
+KysrKysrKysrKysrLS0tCj4gIDEgZmlsZSBjaGFuZ2VkLCA3OSBpbnNlcnRpb25zKCspLCAxMyBk
+ZWxldGlvbnMoLSkKPgo+IGRpZmYgLS1naXQgYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2Zh
+bm90aWZ5L2Zhbm90aWZ5MjYuYyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvZmFub3RpZnkv
+ZmFub3RpZnkyNi5jCj4gaW5kZXggM2Y2YjUyNWVmLi5mNmE1NjgyMWYgMTAwNjQ0Cj4gLS0tIGEv
+dGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9mYW5vdGlmeS9mYW5vdGlmeTI2LmMKPiArKysgYi90
+ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2Zhbm90aWZ5L2Zhbm90aWZ5MjYuYwo+IEBAIC0yMyw2
+ICsyMywxMSBAQAo+ICAgKiBiYWNraW5nIGZpbGVzeXN0ZW0gYXMgd2VsbCwgd2hpY2ggaXMgdGhl
+IHNoYXBlIGFuIGFudGktbWFsd2FyZSBzY2FubmVyIHVzZXMKPiAgICogb24gYW4gb3ZlcmxheWZz
+IHJvb3QuCj4gICAqCj4gKyAqIExpc3RpbmcgYSBkaXJlY3RvcnkgdGhyb3VnaCB0aGUgZXZlbnQg
+ZmlsZSBkZXNjcmlwdG9yIGNhbiBtYWtlIG92ZXJsYXlmcwo+ICsgKiBvcGVuIGl0cyBsYXllcnMg
+YWdhaW46IGV2ZXJ5IGxheWVyIG9mIGEgbWVyZ2VkIGRpcmVjdG9yeSwgYW5kIHRoZSB1cHBlcgo+
+ICsgKiBkaXJlY3Rvcnkgb2YgYW4gaW1wdXJlIG9uZSwgd2hpY2ggaG9sZHMgZW50cmllcyBtb3Zl
+ZCBpbiBmcm9tIGJlbG93LiBUaGUKPiArICogbGFzdCB0d28gdGVzdCBjYXNlcyBoYXZlIHRoZSBs
+aXN0ZW5lciBkbyB0aGF0IGJlZm9yZSBpdCBhbnN3ZXJzLgo+ICsgKgo+ICAgKiBUaGUgdGVzdCBu
+ZWVkcyByb290IHRvIGNyZWF0ZSBwZXJtaXNzaW9uIGV2ZW50cyBhbmQgdG8gbW91bnQgb3Zlcmxh
+eWZzLgo+ICAgKi8KPgo+IEBAIC0zNCw3ICszOSw5IEBACj4gICNpbmNsdWRlIDxzaWduYWwuaD4K
+PiAgI2luY2x1ZGUgPHN5cy90eXBlcy5oPgo+ICAjaW5jbHVkZSA8c3lzL3dhaXQuaD4KPiArI2lu
+Y2x1ZGUgPHN5cy94YXR0ci5oPgo+ICAjaW5jbHVkZSAidHN0X3Rlc3QuaCIKPiArI2luY2x1ZGUg
+ImxhcGkvc3lzY2FsbHMuaCIKPgo+ICAjaWZkZWYgSEFWRV9TWVNfRkFOT1RJRllfSAo+ICAjaW5j
+bHVkZSAiZmFub3RpZnkuaCIKPiBAQCAtNDIsMTAgKzQ5LDIxIEBACj4gICNkZWZpbmUgQkFDS0lO
+R19NTlQgICAgT1ZMX0JBU0VfTU5UUE9JTlQKPiAgI2RlZmluZSBGTkFNRSAgICAgICAgICAidGVz
+dF9maWxlIgo+ICAjZGVmaW5lIEROQU1FICAgICAgICAgICJ0ZXN0X2RpciIKPiArI2RlZmluZSBN
+TkFNRSAgICAgICAgICAibWVyZ2VkX2RpciIKPiArI2RlZmluZSBJTkFNRSAgICAgICAgICAiaW1w
+dXJlX2RpciIKPiArI2RlZmluZSBNT1ZFRCAgICAgICAgICAibW92ZWRfZmlsZSIKPiAgI2RlZmlu
+ZSBPVkxfRklMRSAgICAgICBPVkxfTU5UICIvIiBGTkFNRQo+ICAjZGVmaW5lIE9WTF9ESVIgICAg
+ICAgICAgICAgICAgT1ZMX01OVCAiLyIgRE5BTUUKPiArI2RlZmluZSBPVkxfTURJUiAgICAgICBP
+VkxfTU5UICIvIiBNTkFNRQo+ICsjZGVmaW5lIE9WTF9JRElSICAgICAgIE9WTF9NTlQgIi8iIElO
+QU1FCj4gKyNkZWZpbmUgT1ZMX01PVkVEICAgICAgT1ZMX01OVCAiLyIgTU9WRUQKPiArI2RlZmlu
+ZSBPVkxfSURJUl9NT1ZFRCBPVkxfSURJUiAiLyIgTU9WRUQKPiAgI2RlZmluZSBMT1dFUl9GSUxF
+ICAgICBPVkxfTE9XRVIgIi8iIEZOQU1FCj4gICNkZWZpbmUgTE9XRVJfRElSICAgICAgT1ZMX0xP
+V0VSICIvIiBETkFNRQo+ICsjZGVmaW5lIExPV0VSX01ESVIgICAgIE9WTF9MT1dFUiAiLyIgTU5B
+TUUKPiArI2RlZmluZSBMT1dFUl9NT1ZFRCAgICBPVkxfTE9XRVIgIi8iIE1PVkVECj4gKyNkZWZp
+bmUgVVBQRVJfTURJUiAgICAgT1ZMX1VQUEVSICIvIiBNTkFNRQo+ICsjZGVmaW5lIFVQUEVSX0lE
+SVIgICAgIE9WTF9VUFBFUiAiLyIgSU5BTUUKPgo+ICAvKgo+ICAgKiBUaGUgbGlzdGVuZXIgZWl0
+aGVyIGFuc3dlcnMgdGhlIGV2ZW50IGF0IG9uY2Ugb3IgaXMgYmxvY2tlZCBmb3IgZ29vZCwgc28K
+PiBAQCAtNTYsMTkgKzc0LDQxIEBACj4gICNkZWZpbmUgV0FJVF9NU0VDICAgICAgNTAwMAo+Cj4g
+IHN0YXRpYyBpbnQgZmRfbm90aWZ5ID0gLTE7Cj4gK3N0YXRpYyBpbnQgaWRpcl9pc19pbXB1cmU7
+Cj4KPiAgc3RhdGljIHN0cnVjdCB0Y2FzZSB7Cj4gICAgICAgICBjb25zdCBjaGFyICp0bmFtZTsK
+PiArICAgICAgIGNvbnN0IGNoYXIgKnBhdGg7Cj4gICAgICAgICBpbnQgbWFya19iYWNraW5nOwo+
+ICAgICAgICAgaW50IG9uZGlyOwo+ICsgICAgICAgaW50IGxpc3Q7Cj4gKyAgICAgICBpbnQgaW1w
+dXJlOwo+ICB9IHRjYXNlc1tdID0gewo+IC0gICAgICAgeyJPdmVybGF5IG1hcmssIGZpbGUiLCAw
+LCAwfSwKPiAtICAgICAgIHsiT3ZlcmxheSBhbmQgYmFja2luZyBtYXJrLCBmaWxlIiwgMSwgMH0s
+Cj4gLSAgICAgICB7Ik92ZXJsYXkgbWFyaywgZGlyZWN0b3J5IiwgMCwgMX0sCj4gLSAgICAgICB7
+Ik92ZXJsYXkgYW5kIGJhY2tpbmcgbWFyaywgZGlyZWN0b3J5IiwgMSwgMX0sCj4gKyAgICAgICB7
+Ik92ZXJsYXkgbWFyaywgZmlsZSIsIE9WTF9GSUxFLCAwLCAwLCAwLCAwfSwKPiArICAgICAgIHsi
+T3ZlcmxheSBhbmQgYmFja2luZyBtYXJrLCBmaWxlIiwgT1ZMX0ZJTEUsIDEsIDAsIDAsIDB9LAo+
+ICsgICAgICAgeyJPdmVybGF5IG1hcmssIGRpcmVjdG9yeSIsIE9WTF9ESVIsIDAsIDEsIDAsIDB9
+LAo+ICsgICAgICAgeyJPdmVybGF5IGFuZCBiYWNraW5nIG1hcmssIGRpcmVjdG9yeSIsIE9WTF9E
+SVIsIDEsIDEsIDAsIDB9LAo+ICsgICAgICAgeyJPdmVybGF5IGFuZCBiYWNraW5nIG1hcmssIG1l
+cmdlZCBkaXJlY3RvcnksIGxpc3RlZCIsCj4gKyAgICAgICAgT1ZMX01ESVIsIDEsIDEsIDEsIDB9
+LAo+ICsgICAgICAgeyJPdmVybGF5IGFuZCBiYWNraW5nIG1hcmssIGltcHVyZSBkaXJlY3Rvcnks
+IGxpc3RlZCIsCj4gKyAgICAgICAgT1ZMX0lESVIsIDEsIDEsIDEsIDF9LAo+ICB9Owo+Cj4gLXN0
+YXRpYyB2b2lkIGFuc3dlcl9vbmVfZXZlbnQocGlkX3Qgb3BlbmVyKQo+ICtzdGF0aWMgdm9pZCBs
+aXN0X2RpcihpbnQgZmQpCj4gK3sKPiArICAgICAgIGNoYXIgYnVmWzEwMjRdOwo+ICsgICAgICAg
+bG9uZyByZXQ7Cj4gKwo+ICsgICAgICAgLyogQmxvY2tzIGZvciBnb29kIGlmIHJlYWRpbmcgYSBs
+YXllciBnZW5lcmF0ZXMgYSBuZXN0ZWQgZXZlbnQuICovCj4gKyAgICAgICBkbyB7Cj4gKyAgICAg
+ICAgICAgICAgIHJldCA9IHRzdF9zeXNjYWxsKF9fTlJfZ2V0ZGVudHM2NCwgZmQsIGJ1Ziwgc2l6
+ZW9mKGJ1ZikpOwo+ICsgICAgICAgfSB3aGlsZSAocmV0ID4gMCk7Cj4gKwo+ICsgICAgICAgaWYg
+KHJldCA9PSAtMSkKPiArICAgICAgICAgICAgICAgdHN0X2JyayhUQlJPSyB8IFRFUlJOTywgImdl
+dGRlbnRzNjQoKSBvbiB0aGUgZXZlbnQgZmQgZmFpbGVkIik7Cj4gK30KPiArCj4gK3N0YXRpYyB2
+b2lkIGFuc3dlcl9vbmVfZXZlbnQocGlkX3Qgb3BlbmVyLCBpbnQgbGlzdCkKPiAgewo+ICAgICAg
+ICAgc3RydWN0IGZhbm90aWZ5X2V2ZW50X21ldGFkYXRhIGV2ZW50Owo+ICAgICAgICAgc3RydWN0
+IGZhbm90aWZ5X3Jlc3BvbnNlIHJlc3A7Cj4gQEAgLTc2LDYgKzExNiw5IEBAIHN0YXRpYyB2b2lk
+IGFuc3dlcl9vbmVfZXZlbnQocGlkX3Qgb3BlbmVyKQo+ICAgICAgICAgLyogQmxvY2tzIGZvciBn
+b29kIGlmIHRoZSBldmVudCBmZCBnZW5lcmF0ZXMgYSBuZXN0ZWQgZXZlbnQuICovCj4gICAgICAg
+ICBTQUZFX1JFQUQoU0FGRV9SRUFEX0FMTCwgZmRfbm90aWZ5LCAmZXZlbnQsIHNpemVvZihldmVu
+dCkpOwo+Cj4gKyAgICAgICBpZiAobGlzdCAmJiBldmVudC5mZCAhPSBGQU5fTk9GRCkKPiArICAg
+ICAgICAgICAgICAgbGlzdF9kaXIoZXZlbnQuZmQpOwo+ICsKPiAgICAgICAgIC8qCj4gICAgICAg
+ICAgKiBBIHdyb25nIG1hc2sgb3IgYSBzdHJhbmdlcidzIGV2ZW50IGlzIGEgcmVzdWx0LCBub3Qg
+aGFybmVzcwo+ICAgICAgICAgICogYnJlYWthZ2UsIHNvIHJlcG9ydCBhbmQgc3RpbGwgYW5zd2Vy
+OiB0aGUgb3BlbmVyIHN0YXlzIHBhcmtlZCBpbgo+IEBAIC0xMTAsNiArMTUzLDIwIEBAIHN0YXRp
+YyB2b2lkIHJ1bih1bnNpZ25lZCBpbnQgbikKPgo+ICAgICAgICAgdHN0X3JlcyhUSU5GTywgIlRl
+c3QgIyVkOiAlcyIsIG4sIHRjLT50bmFtZSk7Cj4KPiArICAgICAgIGlmICh0Yy0+aW1wdXJlKSB7
+Cj4gKyAgICAgICAgICAgICAgIGlmICghaWRpcl9pc19pbXB1cmUpIHsKPiArICAgICAgICAgICAg
+ICAgICAgICAgICB0c3RfcmVzKFRDT05GLCAiT3ZlcmxheSBkaWQgbm90IG1hcmsgdGhlIGRpcmVj
+dG9yeSBpbXB1cmUiKTsKPiArICAgICAgICAgICAgICAgICAgICAgICByZXR1cm47Cj4gKyAgICAg
+ICAgICAgICAgIH0KPiArICAgICAgICAgICAgICAgLyoKPiArICAgICAgICAgICAgICAgICogVGhl
+IGltcHVyZSBsaXN0aW5nIGlzIGNhY2hlZCB3aXRoIHRoZSBpbm9kZSBhbmQgcmV1c2VkLCBzbwo+
+ICsgICAgICAgICAgICAgICAgKiBhIGxhdGVyIGl0ZXJhdGlvbiB3b3VsZCBub3Qgb3BlbiB0aGUg
+bGF5ZXIgYXQgYWxsLiBNb3ZpbmcKPiArICAgICAgICAgICAgICAgICogYW4gZW50cnkgd2l0aCBh
+biBvcmlnaW4gb3V0IGFuZCBiYWNrIGludmFsaWRhdGVzIGl0Lgo+ICsgICAgICAgICAgICAgICAg
+Ki8KPiArICAgICAgICAgICAgICAgU0FGRV9SRU5BTUUoT1ZMX0lESVJfTU9WRUQsIE9WTF9NT1ZF
+RCk7Cj4gKyAgICAgICAgICAgICAgIFNBRkVfUkVOQU1FKE9WTF9NT1ZFRCwgT1ZMX0lESVJfTU9W
+RUQpOwo+ICsgICAgICAgfQo+ICsKPiAgICAgICAgIGZkX25vdGlmeSA9IFNBRkVfRkFOT1RJRllf
+SU5JVChGQU5fQ0xBU1NfQ09OVEVOVCwgT19SRE9OTFkpOwo+Cj4gICAgICAgICBTQUZFX0ZBTk9U
+SUZZX01BUksoZmRfbm90aWZ5LCBGQU5fTUFSS19BREQgfCBGQU5fTUFSS19GSUxFU1lTVEVNLAo+
+IEBAIC0xMzIsMTAgKzE4OSw3IEBAIHN0YXRpYyB2b2lkIHJ1bih1bnNpZ25lZCBpbnQgbikKPiAg
+ICAgICAgICAgICAgICAgICogYW5zd2VyZWQgaXQgZ29lcyBhd2F5LCBzbyBhIGZhaWx1cmUgaGVy
+ZSBpcyB0aGUgZmFsbG91dCBvZgo+ICAgICAgICAgICAgICAgICAgKiB0aGUgdGVzdCB0ZWFyaW5n
+IGEgYmxvY2tlZCBsaXN0ZW5lciBkb3duLCBub3QgYSByZXN1bHQuCj4gICAgICAgICAgICAgICAg
+ICAqLwo+IC0gICAgICAgICAgICAgICBpZiAodGMtPm9uZGlyKQo+IC0gICAgICAgICAgICAgICAg
+ICAgICAgIGZkID0gb3BlbihPVkxfRElSLCBPX1JET05MWSB8IE9fRElSRUNUT1JZKTsKPiAtICAg
+ICAgICAgICAgICAgZWxzZQo+IC0gICAgICAgICAgICAgICAgICAgICAgIGZkID0gb3BlbihPVkxf
+RklMRSwgT19SRE9OTFkpOwo+ICsgICAgICAgICAgICAgICBmZCA9IG9wZW4odGMtPnBhdGgsIE9f
+UkRPTkxZIHwgKHRjLT5vbmRpciA/IE9fRElSRUNUT1JZIDogMCkpOwo+ICAgICAgICAgICAgICAg
+ICBpZiAoZmQgIT0gLTEpCj4gICAgICAgICAgICAgICAgICAgICAgICAgU0FGRV9DTE9TRShmZCk7
+Cj4gICAgICAgICAgICAgICAgIGV4aXQoMCk7Cj4gQEAgLTE0OCw3ICsyMDIsNyBAQCBzdGF0aWMg
+dm9pZCBydW4odW5zaWduZWQgaW50IG4pCj4KPiAgICAgICAgIHJlYWRlciA9IFNBRkVfRk9SSygp
+Owo+ICAgICAgICAgaWYgKCFyZWFkZXIpIHsKPiAtICAgICAgICAgICAgICAgYW5zd2VyX29uZV9l
+dmVudChvcGVuZXIpOwo+ICsgICAgICAgICAgICAgICBhbnN3ZXJfb25lX2V2ZW50KG9wZW5lciwg
+dGMtPmxpc3QpOwo+ICAgICAgICAgICAgICAgICBleGl0KDApOwo+ICAgICAgICAgfQo+Cj4gQEAg
+LTE2MCw4ICsyMTQsNyBAQCBzdGF0aWMgdm9pZCBydW4odW5zaWduZWQgaW50IG4pCj4gICAgICAg
+ICAgKi8KPiAgICAgICAgIGlmIChUU1RfUFJPQ0VTU19TVEFURV9XQUlUKHJlYWRlciwgJ1onLAo+
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgdHN0X211bHRpcGx5X3RpbWVvdXQo
+V0FJVF9NU0VDKSkpIHsKPiAtICAgICAgICAgICAgICAgdHN0X3JlcyhURkFJTCwKPiAtICAgICAg
+ICAgICAgICAgICAgICAgICAiTGlzdGVuZXIgYmxvY2tlZCBpbiByZWFkKCkgYnkgYSBuZXN0ZWQg
+ZXZlbnQiKTsKPiArICAgICAgICAgICAgICAgdHN0X3JlcyhURkFJTCwgIkxpc3RlbmVyIGJsb2Nr
+ZWQgYnkgYSBuZXN0ZWQgZXZlbnQiKTsKPiAgICAgICAgICAgICAgICAgU0FGRV9LSUxMKHJlYWRl
+ciwgU0lHS0lMTCk7Cj4gICAgICAgICAgICAgICAgIFNBRkVfV0FJVFBJRChyZWFkZXIsIE5VTEws
+IDApOwo+ICAgICAgICAgfQo+IEBAIC0xNzUsMTIgKzIyOCwyNSBAQCBzdGF0aWMgdm9pZCBydW4o
+dW5zaWduZWQgaW50IG4pCj4KPiAgc3RhdGljIHZvaWQgc2V0dXAodm9pZCkKPiAgewo+IC0gICAg
+ICAgLyogQm90aCBoYXZlIHRvIGV4aXN0IGluIHRoZSBsb3dlciBsYXllciB0byBiZSBvcGVuZWQg
+dGhyb3VnaCBpdC4gKi8KPiArICAgICAgIC8qIFRoZXNlIGhhdmUgdG8gZXhpc3QgaW4gdGhlIGxh
+eWVycyB0byBiZSBvcGVuZWQgdGhyb3VnaCB0aGVtLiAqLwo+ICAgICAgICAgU0FGRV9VTU9VTlQo
+T1ZMX01OVCk7Cj4gICAgICAgICBTQUZFX1RPVUNIKExPV0VSX0ZJTEUsIDA2NDQsIE5VTEwpOwo+
+ICAgICAgICAgU0FGRV9NS0RJUihMT1dFUl9ESVIsIDA3NTUpOwo+ICsgICAgICAgU0FGRV9NS0RJ
+UihMT1dFUl9NRElSLCAwNzU1KTsKPiArICAgICAgIFNBRkVfTUtESVIoVVBQRVJfTURJUiwgMDc1
+NSk7Cj4gKyAgICAgICBTQUZFX1RPVUNIKExPV0VSX01PVkVELCAwNjQ0LCBOVUxMKTsKPiAgICAg
+ICAgIFNBRkVfTU9VTlRfT1ZFUkxBWSgpOwo+Cj4gKyAgICAgICAvKgo+ICsgICAgICAgICogQSBk
+aXJlY3RvcnkgbWFkZSB0aHJvdWdoIHRoZSBvdmVybGF5IGlzIHVwcGVyIG9ubHkuIE1vdmluZyBh
+IGxvd2VyCj4gKyAgICAgICAgKiBmaWxlIGludG8gaXQgcmVjb3JkcyB0aGUgZmlsZSdzIG9yaWdp
+biBhbmQgbWFya3MgdGhlIGRpcmVjdG9yeQo+ICsgICAgICAgICogaW1wdXJlLCB1bmxlc3MgdGhl
+IGxheWVycyBjYW5ub3QgY2FycnkgYW4gb3JpZ2luLgo+ICsgICAgICAgICovCj4gKyAgICAgICBT
+QUZFX01LRElSKE9WTF9JRElSLCAwNzU1KTsKPiArICAgICAgIFNBRkVfUkVOQU1FKE9WTF9NT1ZF
+RCwgT1ZMX0lESVJfTU9WRUQpOwo+ICsgICAgICAgaWRpcl9pc19pbXB1cmUgPQo+ICsgICAgICAg
+ICAgICAgICBnZXR4YXR0cihVUFBFUl9JRElSLCAidHJ1c3RlZC5vdmVybGF5LmltcHVyZSIsIE5V
+TEwsIDApICE9IC0xOwo+ICsKPiAgICAgICAgIC8qCj4gICAgICAgICAgKiBQcm9iZSB0aGUgd2lk
+ZXN0IGNvbWJpbmF0aW9uIHJ1bigpIHVzZXMsIG5vdCBhIHdlYWtlciBwcm94eSBmb3IKPiAgICAg
+ICAgICAqIGl0LiBFdmVyeSBjYXNlIG1hcmtzIHRoZSBvdmVybGF5OyB0aGUgc2Vjb25kIG9mIGVh
+Y2ggcGFpciBhbHNvCj4gLS0KPiAyLjU2LjAKPgoKTG9va3MgZ29vZCEKCk9ubHkgcHJvYmxlbSBJ
+IGdvdDoKCnRzdF9zdXBwb3J0ZWRfZnNfdHlwZXMuYzo2NzogVElORk86IG1rZnMuZXh0MiBkb2Vz
+IGV4aXN0CnRzdF90ZXN0LmM6MTMwNTogVElORk86IEZvcm1hdHRpbmcgL2Rldi9sb29wMCB3aXRo
+IGV4dDIgb3B0cz0nJyBleHRyYSBvcHRzPScnCm1rZTJmcyAxLjQ3LjIgKDEtSmFuLTIwMjUpClsg
+IDEwNy4yNzExMDVdIG9wZXJhdGlvbiBub3Qgc3VwcG9ydGVkIGVycm9yLCBkZXYgbG9vcDAsIHNl
+Y3RvciA2MTQyNzIKb3AgMHg5OihXUklURV9aRVJPRVMpIGZsYWdzIDB4MjA4MDA4MDAgcGh5c19z
+ZWcgMCBwcmlvIGNsYXNzIDIKdHN0X3Rlc3QuYzoxMzE3OiBUSU5GTzogTW91bnRpbmcgL2Rldi9s
+b29wMCB0bwovdG1wL0xUUF9mYW5mSDdkV3IvbW50cG9pbnQgZnN0eXA9ZXh0MiBmbGFncz0wClsg
+IDEwNy4zNTkzOTFdIGV4dDIgZmlsZXN5c3RlbSBiZWluZyBtb3VudGVkIGF0Ci90bXAvTFRQX2Zh
+bmZIN2RXci9tbnRwb2ludCBzdXBwb3J0cyB0aW1lc3RhbXBzIHVudGlsIDIwMzgtMDEtMTkKKDB4
+N2ZmZmZmZmYpClsgIDEwNy4zNjc5NDNdIG92ZXJsYXlmczogdXBwZXIgZnMgZG9lcyBub3Qgc3Vw
+cG9ydCBSRU5BTUVfV0hJVEVPVVQuCnRzdF90ZXN0LmM6MTg5NTogVElORk86IE92ZXJhbGwgdGlt
+ZW91dCBwZXIgcnVuIGlzIDBoIDAybSAwMHMKZmFub3RpZnkyNi5jOjIzMjogVElORk86IFVtb3Vu
+dGluZyAvdG1wL0xUUF9mYW5mSDdkV3IvbW50cG9pbnQvb3ZsClsgIDEwNy4zODMyNjFdIG92ZXJs
+YXlmczogdXBwZXIgZnMgZG9lcyBub3Qgc3VwcG9ydCBSRU5BTUVfV0hJVEVPVVQuCmZhbm90aWZ5
+MjYuYzoyNDY6IFRCUk9LOiByZW5hbWUobW50cG9pbnQvb3ZsL21vdmVkX2ZpbGUsCm1udHBvaW50
+L292bC9pbXB1cmVfZGlyL21vdmVkX2ZpbGUpIGZhaWxlZDogRUlOVkFMICgyMikKClNvIEkgYWRk
+ZWQgdG8gdGhlIHRlc3Q6CgotLS0gYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2Zhbm90aWZ5
+L2Zhbm90aWZ5MjYuYworKysgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2Zhbm90aWZ5L2Zh
+bm90aWZ5MjYuYwpAQCAtMjc1LDYgKzI3NSwxMSBAQCBzdGF0aWMgc3RydWN0IHRzdF90ZXN0IHRl
+c3QgPSB7CiAgICAgICAgLm1vdW50X2RldmljZSA9IDEsCiAgICAgICAgLm5lZWRzX292ZXJsYXkg
+PSAxLAogICAgICAgIC5tbnRwb2ludCA9IE9WTF9CQVNFX01OVFBPSU5ULAorICAgICAgIC8qIFRl
+c3QgcmVxdWlyZXMgYSBiYXNlIGZpbGVzeXN0ZW0gdGhhdCBzdXBwb3J0cyBSRU5BTUVfV0hJVEVP
+VVQgKi8KKyAgICAgICAuZmlsZXN5c3RlbXMgPSAoc3RydWN0IHRzdF9mc1tdKSB7CisgICAgICAg
+ICAgICAgICB7LnR5cGUgPSAiZXh0NCJ9LAorICAgICAgICAgICAgICAge30KKyAgICAgICB9LAog
+fTsKCgpPdGhlciB0aGFuIHRoYXQ6CgpSZXZpZXdlZC1ieTogQW1pciBHb2xkc3RlaW4gPGFtaXI3
+M2lsQGdtYWlsLmNvbT4KClRoYW5rcywKQW1pci4KCi0tIApNYWlsaW5nIGxpc3QgaW5mbzogaHR0
+cHM6Ly9saXN0cy5saW51eC5pdC9saXN0aW5mby9sdHAK
