@@ -1,58 +1,75 @@
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49EB6606A324
-	for <ltp@archiver.kernel.org>; Tue,  3 Nov 2026 07:58:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key, unprotected) header.d=linux.dev header.i=@linux.dev header.a=rsa-sha256 header.s=key1 header.b=DOV2TbrK
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0920606EE8D
+	for <ltp@archiver.kernel.org>; Tue,  3 Nov 2026 09:59:52 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D755F3C6F9F
-	for <ltp@archiver.kernel.org>; Tue,  3 Nov 2026 08:58:43 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 93F5B3C730C
+	for <ltp@archiver.kernel.org>; Tue,  3 Nov 2026 10:59:51 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 7EDE73C72DE
- for <ltp@lists.linux.it>; Tue,  3 Nov 2026 08:57:38 +0100 (CET)
-Received: from mta1.migadu.com (out-253.mta1.migadu.com [95.215.58.253])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 973CE3C701B
+ for <ltp@lists.linux.it>; Tue,  3 Nov 2026 10:59:36 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 9B3801A003EC
- for <ltp@lists.linux.it>; Tue,  3 Nov 2026 08:57:36 +0100 (CET)
-X-Envelope-To: ltp@lists.linux.it
-DKIM-Signature: a=rsa-sha256; bh=kdyGctRz4X8PBAYbnkG+RAhSdeu3Enrh7Ba6GTkN+VI=; 
- c=simple/simple; d=linux.dev;
- h=from:to:subject:date:message-id:mime-version:content-type; s=key1;
- t=1793692655; v=1; x=1794297455;
- b=DOV2TbrKQBFwhFbhixjECyqShaPkIbTGOT/xfkJzKMOR4A+3038Npki1vv3+v89M1sOCvvV1
- UiwQTypqccWWRzmZE8GgVHYI+nKJeqNpVTQqR9pXwwt68/BXUTyNYiKxRiHX9Wwr9MHSu3chUPd
- /WUA2SEMEq/HvdqYVAXKUR+U=
-X-Envelope-To: ltp@lists.linux.it
-Received: by mta12.migadu.com with ESMTPS id 6aca3d9da70c8449;
- Tue, 03 Nov 2026 07:57:35 +0000
-X-Mizu-Trace-ID: 6aca3d9da70c8449
-X-Migadu-Flow: FLOW_OUT
-From: "Li Wang (Hieco)" <li.wang@linux.dev>
-To: ltp@lists.linux.it
-Date: Tue,  3 Nov 2026 15:57:22 +0800
-Message-ID: <20261103075722.181317-5-li.wang@linux.dev>
-X-Mailer: git-send-email 2.56.0
-In-Reply-To: <20261103075722.181317-1-li.wang@linux.dev>
-References: <20261103075722.181317-1-li.wang@linux.dev>
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id F0A6310009B6
+ for <ltp@lists.linux.it>; Tue,  3 Nov 2026 10:59:35 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 2DE572215A;
+ Tue,  3 Nov 2026 09:59:35 +0000 (UTC)
+Authentication-Results: smtp-out1.suse.de;
+	none
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E614F134B8;
+ Tue,  3 Nov 2026 09:59:34 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id jeJwLYaw6WrQZgAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Tue, 03 Nov 2026 09:59:34 +0000
+Date: Tue, 3 Nov 2026 10:59:29 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: Amir Goldstein <amir73il@gmail.com>
+Message-ID: <20261103095929.GA48588@pevik>
+References: <P5Iny41--F-9@tuta.io>
+ <CAOQ4uxgqZANVT8wi_hCJX6Ym5Ea9XMCo3eSRwp-aujf767NbeA@mail.gmail.com>
+ <20261103072455.GA35831@pevik>
+ <CAOQ4uxiL2ZKcr-V=NsJX5A2zse0YFX+gSyi7Y5Yb51NPJ5s1+A@mail.gmail.com>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-16.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_PASS,SPF_PASS,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
+Content-Disposition: inline
+In-Reply-To: <CAOQ4uxiL2ZKcr-V=NsJX5A2zse0YFX+gSyi7Y5Yb51NPJ5s1+A@mail.gmail.com>
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Rspamd-Queue-Id: 2DE572215A
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spam-Level: 
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	REPLY(-4.00)[]
+X-Spam-Score: -4.00
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
+	SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v7 4/4] testcases: drop manual tst_modprobe() now
- handled by tst_kconfig
+Subject: Re: [LTP] [PATCH] syscalls/fanotify26: Add directory cases for the
+ nested event
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -62,164 +79,64 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: wakel@google.com
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: Jan Kara <jack@suse.cz>, "ltp@lists.linux.it" <ltp@lists.linux.it>,
+ Edvard Conrad <edvard@tuta.io>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Now that tst_kconfig loads the modules for every CONFIG_*=m entry
-listed in config_module_maps[] and unloads them again at cleanup
-time, tests no longer have to call tst_modprobe() from setup().
-
-Drop the explicit tst_modprobe() calls, and the now unused
-tst_module.h includes, from:
-
-- cve-2026-46331.c: sch_ingress, cls_matchall, act_pedit
-- sctphantom.c: sctp
-- keyctl23.c: x509_key_parser
-- keyctl29.c: x509_key_parser
-- keyctl30.c: pkcs8_key_parser
-
-All tests already declare the matching configs in .needs_kconfigs,
-so tst_kconfig takes care of loading the modules before setup()
-runs and unloading them once the test finishes.
-
-BTW, with KCONFIG_SKIP_CHECK=1 the config check returns early,
-so the automatic module loading is skipped as well. Users who set
-that variable are expected to ensure the required modules are
-loaded themselves.
-
-Signed-off-by: Li Wang (Hieco) <li.wang@linux.dev>
----
- testcases/cve/cve-2026-46331.c              | 7 -------
- testcases/cve/sctphantom.c                  | 3 ---
- testcases/kernel/syscalls/keyctl/keyctl23.c | 6 ++----
- testcases/kernel/syscalls/keyctl/keyctl29.c | 3 ---
- testcases/kernel/syscalls/keyctl/keyctl30.c | 3 ---
- 5 files changed, 2 insertions(+), 20 deletions(-)
-
-diff --git a/testcases/cve/cve-2026-46331.c b/testcases/cve/cve-2026-46331.c
-index 439b1280a..e5a81c833 100644
---- a/testcases/cve/cve-2026-46331.c
-+++ b/testcases/cve/cve-2026-46331.c
-@@ -44,7 +44,6 @@
- #include <linux/rtnetlink.h>
- 
- #include "tst_test.h"
--#include "tst_module.h"
- #include "tst_net.h"
- #include "tst_netdevice.h"
- #include "lapi/if_ether.h"
-@@ -136,12 +135,6 @@ static void setup(void)
- {
- 	struct sockaddr_in addr;
- 	struct passwd *pw;
--	static const char *const mods[] = {
--		"sch_ingress", "cls_matchall", "act_pedit"
--	};
--
--	for (unsigned int i = 0; i < ARRAY_SIZE(mods); i++)
--		tst_modprobe(mods[i], NULL);
- 
- 	/* Drop privileges so the reproducer runs as an unprivileged user */
- 	pw = SAFE_GETPWNAM("nobody");
-diff --git a/testcases/cve/sctphantom.c b/testcases/cve/sctphantom.c
-index 83834b848..bdbe40286 100644
---- a/testcases/cve/sctphantom.c
-+++ b/testcases/cve/sctphantom.c
-@@ -50,7 +50,6 @@
-  */
- 
- #include "tst_test.h"
--#include "tst_module.h"
- #include "tst_checksum.h"
- #include "tst_safe_net.h"
- 
-@@ -205,8 +204,6 @@ static void setup(void)
- 	};
- 	const struct tst_path_val *sysctl;
- 
--	tst_modprobe("sctp", NULL);
--
- 	for (sysctl = sysctls; sysctl->path; sysctl++)
- 		tst_sys_conf_save(sysctl);
- 
-diff --git a/testcases/kernel/syscalls/keyctl/keyctl23.c b/testcases/kernel/syscalls/keyctl/keyctl23.c
-index cf90210d2..adfb1197a 100644
---- a/testcases/kernel/syscalls/keyctl/keyctl23.c
-+++ b/testcases/kernel/syscalls/keyctl/keyctl23.c
-@@ -6,7 +6,8 @@
- /*\
-  * Test ``KEYCTL_RESTRICT_KEYRING`` builtin_trusted of :manpage:`keyctl(2)`.
-  *
-- * Requires root (CAP_SYS_MODULE) to load the ``x509_key_parser`` module.
-+ * Requires root (CAP_SYS_MODULE) so that the test library can load the
-+ * ``x509_key_parser`` module.
-  *
-  * [Algorithm]
-  *
-@@ -16,7 +17,6 @@
-  */
- 
- #include "keyctl_common.h"
--#include "tst_module.h"
- 
- #define PAYLOAD		"payload"
- 
-@@ -89,8 +89,6 @@ static void setup(void)
- {
- 	SAFE_KEYCTL(KEYCTL_JOIN_SESSION_KEYRING, 0, 0, 0, 0);
- 
--	tst_modprobe("x509_key_parser", NULL);
--
- 	ring_builtin = SAFE_NEW_RING("ltpkeyctl23_builtin");
- 
- 	user_key = SAFE_NEW_USER_KEY("k", PAYLOAD, sizeof(PAYLOAD),
-diff --git a/testcases/kernel/syscalls/keyctl/keyctl29.c b/testcases/kernel/syscalls/keyctl/keyctl29.c
-index afc0a093c..e66b39bcb 100644
---- a/testcases/kernel/syscalls/keyctl/keyctl29.c
-+++ b/testcases/kernel/syscalls/keyctl/keyctl29.c
-@@ -23,7 +23,6 @@
- 
- #include "keyctl_common.h"
- #include "keyctl_pkey_data.h"
--#include "tst_module.h"
- 
- static key_serial_t cert_key;
- static struct keyctl_pkey_query *query_buf;
-@@ -32,8 +31,6 @@ static void setup(void)
- {
- 	SAFE_KEYCTL(KEYCTL_JOIN_SESSION_KEYRING, 0, 0, 0, 0);
- 
--	tst_modprobe("x509_key_parser", NULL);
--
- 	cert_key = add_asymmetric_key_or_tconf("cert", rsa2048_cert,
- 					       sizeof(rsa2048_cert),
- 					       "CONFIG_X509_CERTIFICATE_PARSER");
-diff --git a/testcases/kernel/syscalls/keyctl/keyctl30.c b/testcases/kernel/syscalls/keyctl/keyctl30.c
-index ef51bba33..4f43007e0 100644
---- a/testcases/kernel/syscalls/keyctl/keyctl30.c
-+++ b/testcases/kernel/syscalls/keyctl/keyctl30.c
-@@ -20,7 +20,6 @@
- 
- #include "keyctl_common.h"
- #include "keyctl_pkey_data.h"
--#include "tst_module.h"
- 
- static key_serial_t priv_key;
- static struct keyctl_pkey_query *query_buf;
-@@ -29,8 +28,6 @@ static void setup(void)
- {
- 	SAFE_KEYCTL(KEYCTL_JOIN_SESSION_KEYRING, 0, 0, 0, 0);
- 
--	tst_modprobe("pkcs8_key_parser", NULL);
--
- 	priv_key = add_asymmetric_key_or_tconf("priv", rsa2048_pkcs8,
- 					       sizeof(rsa2048_pkcs8),
- 					       "CONFIG_PKCS8_PRIVATE_KEY_PARSER");
--- 
-2.56.0
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+PiBPbiBUdWUsIE5vdiAzLCAyMDI2IGF0IDg6MjTigK9BTSBQZXRyIFZvcmVsIDxwdm9yZWxAc3Vz
+ZS5jej4gd3JvdGU6Cgo+ID4gSGkgQW1pciwgRWR2YXJkLAoKPiA+ID4gT24gU2F0LCBPY3QgMzEs
+IDIwMjYgYXQgMTA6MTPigK9QTSBFZHZhcmQgQ29ucmFkIDxlZHZhcmRAdHV0YS5pbz4gd3JvdGU6
+Cgo+ID4gPiA+IEEgZGlyZWN0b3J5IG9uIG92ZXJsYXlmcyByZWFjaGVzIGl0cyByZWFsIGRpcmVj
+dG9yeSB0aHJvdWdoCj4gPiA+ID4gb3ZsX2Rpcl9vcGVuX3JlYWxmaWxlKCkgcmF0aGVyIHRoYW4g
+YmFja2luZ19maWxlX29wZW4oKSwgc28gdGhlIGZpeAo+ID4gPiA+IGZvciByZWd1bGFyIGZpbGVz
+LCBjb21taXQgYzNkMzU1ZjQyN2NlICgiZnM6IGxldCBiYWNraW5nIGZpbGVzCj4gPiA+ID4gaW5o
+ZXJpdCBGTU9ERV9OT05PVElGWSBmcm9tIHRoZSB1c2VyIGZpbGUiKSwgZG9lcyBub3QgY292ZXIg
+aXQ6IGEKPiA+ID4gPiBsaXN0ZW5lciB0aGF0IG1hcmtzIHRoZSBiYWNraW5nIGZpbGVzeXN0ZW0g
+d2l0aCBGQU5fT1BFTl9QRVJNIHwKPiA+ID4gPiBGQU5fT05ESVIgaXMgc3RpbGwgc2VudCBhIG5l
+c3RlZCBwZXJtaXNzaW9uIGV2ZW50IGZyb20gaXRzIG93bgo+ID4gPiA+IHJlYWQoMikgd2hlbiB0
+aGUgcmVwb3J0ZWQgcGF0aCBpcyBhbiBvdmVybGF5IGRpcmVjdG9yeS4KCj4gPiA+ID4gQWRkIHRo
+ZSBkaXJlY3RvcnkgY291bnRlcnBhcnRzIG9mIHRoZSB0d28gZXhpc3RpbmcgY2FzZXMuIFRoZQo+
+ID4gPiA+IGxpc3RlbmVyJ3MgZXhwZWN0ZWQgZXZlbnQgbWFzayBzdGF5cyBGQU5fT1BFTl9QRVJN
+OiBGQU5fT05ESVIgaXMgbm90Cj4gPiA+ID4gcmVwb3J0ZWQgdG8gYSBncm91cCB3aXRob3V0IEZB
+Tl9SRVBPUlRfRklELgoKPiA+ID4gPiBUaGUgZm91cnRoIGNhc2UgZmFpbHMgb24gYSBrZXJuZWwg
+d2l0aG91dCB0aGUgcGVuZGluZyBmaXggIm92bDoKPiA+ID4gPiBpbmhlcml0IEZNT0RFX05PTk9U
+SUZZIHdoZW4gb3BlbmluZyBkaXJlY3RvcnkgcmVhbGZpbGVzIi4KCj4gPiA+ID4gU2lnbmVkLW9m
+Zi1ieTogRWR2YXJkIENvbnJhZCA8ZWR2YXJkQHR1dGEuaW8+Cgo+ID4gPiBSZXZpZXdlZC1ieTog
+QW1pciBHb2xkc3RlaW4gPGFtaXI3M2lsQGdtYWlsLmNvbT4KCj4gPiA+ID4gLS0tCj4gPiA+ID4g
+RGVwZW5kcyBvbiB0aGUgcGVuZGluZyBvdmVybGF5ZnMgZml4LCBwb3N0ZWQgYnkgQW1pciBvbiB0
+aGUga2VybmVsCj4gPiA+ID4gdGhyZWFkOgo+ID4gPiA+ICAgaHR0cHM6Ly9sb3JlLmtlcm5lbC5v
+cmcvYWxsL0NBT1E0dXhqbT1jR1BudWcxOFZ1aEtxaU12a1d3TFBOTE9fVEUzS3hPOGlMWkcrdmVZ
+UUBtYWlsLmdtYWlsLmNvbS8KPiA+ID4gPiBXaXRob3V0IGl0IHRoZSBmb3VydGggY2FzZSBmYWls
+cyBvbiBjdXJyZW50IG1haW5saW5lLCBzbyB0aGlzIHNob3VsZAo+ID4gPiA+IHdhaXQgaW4gdGhl
+IHF1ZXVlIHVudGlsIHRoYXQgZml4IGlzIGluIExpbnVzJyB0cmVlOyBhIGxpbnV4LWdpdCB0YWcg
+Zm9yCj4gPiA+ID4gaXQgY2FuIHRoZW4gYmUgYWRkZWQuIFRoZSBmaXJzdCB0aHJlZSBjYXNlcyBw
+YXNzIG9uIHY3LjQtcmMxIG1hdGVyaWFsCj4gPiA+ID4gdG9kYXkuCgo+ID4gPiA+IFRlc3RlZCBp
+biBhIFZNLCBlYWNoIGtlcm5lbCBydW4gb25jZSBhbmQgd2l0aCAtaSAyOgoKPiA+ID4gPiAgIGtl
+cm5lbCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGZpbGUrYmFja2luZyAgZGlyK2JhY2tp
+bmcKPiA+ID4gPiAgIHY2LjEzICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFBBU1MgICAg
+ICAgICAgRkFJTAo+ID4gPiA+ICAgNmI0YjU0M2ZhMTggKG5vIGZpeCkgICAgICAgICAgICAgICAg
+RkFJTCAgICAgICAgICBGQUlMCj4gPiA+ID4gICArIGMzZDM1NWY0MjdjZSAoZmlsZXMsIGluIExp
+bnVzJykgICBQQVNTICAgICAgICAgIEZBSUwKPiA+ID4gPiAgICsgdGhlIHBlbmRpbmcgb3ZsIGZp
+eCAgICAgICAgICAgICAgIFBBU1MgICAgICAgICAgUEFTUwoKPiA+ID4gPiBUaGUgIm92ZXJsYXkg
+bWFyayBvbmx5IiBjYXNlcyBwYXNzIGV2ZXJ5d2hlcmUuIFRoZSBkaXJlY3RvcnkgY2FzZQo+ID4g
+PiA+IGZhaWxzIG9uIHY2LjEzIHRvbzogb3ZlcmxheWZzIG5ldmVyIHBhc3NlZCB0aGUgbm9ub3Rp
+Znkgc3RhdGUgb24gdG8KPiA+ID4gPiB0aGUgcmVhbCBkaXJlY3RvcnksIHNvIGl0IHByZWRhdGVz
+IHRoZSA2LjE0IGNoYW5nZSB0aGF0IGJyb2tlIGZpbGVzLgoKPiA+ID4gQXMgZmFyIGFzIEkgY2Fu
+IHRlbGwgaXRzIGEgcmVncmVzc2lvbiBmcm9tCj4gPiA+IDEzMGZkYmMzZDFmOTkgKCJvdmw6IHBh
+c3MgY29ycmVjdCBmbGFncyBmb3Igb3BlbmluZyByZWFsIGRpcmVjdG9yeSIpCgo+ID4gPiBUaGFu
+a3MgZm9yIGFkZGluZyB0aGlzIHRlc3QuCj4gPiA+IEkgYWRkZWQgeW91ciBUZXN0ZWQtYnkgdG8g
+dGhlIGZpeCBwYXRjaC4KCj4gPiBJJ20gZ29pbmcgdG8gbWVyZ2UgdG9kYXkuIFNvIHRoZXJlIHdp
+bGwgYmUgaGFzaCBmb3IgZml4aW5nIGtlcm5lbCBjb21taXQsCj4gPiB0aGFua3MgZm9yIGluZm8u
+CgoKPiBGWUksIEVkdmFyZCBmb3VuZCBhbm90aGVyIGJ1ZyBhbmQgaGFzIHdyaXR0ZW4gYW4gZXh0
+cmEgdGVzdCBjYXNlIHRvIGNvdmVyIGl0Cj4gdGhlIGV4cGVjdGVkIGtlcm5lbCBmaXggaXMgZ29p
+bmcgdG8gY292ZXIgdGhlIGRpcmVjdG9yeSB0ZXN0IGNhc2VzIGluIHRoaXMgcGF0Y2gKPiBhcyB3
+ZWxsIGFzIHRoZSBleHRyYSB0ZXN0IGNhc2U6Cgo+IGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2xp
+bnV4LXVuaW9uZnMvUDVRdTNjby0tTi05QHR1dGEuaW8vCgpUaGFua3MgYSBsb3QgZm9yIGluZm8h
+Cgo+IFVwIHRvIHlvdSBpZiB5b3Ugd2FudCB0byBtZXJnZSBub3cgb3Igd2FpdCBmb3IgdGhlIGV4
+dHJhIHRlc3QgY2FzZS4KCkkgbWVyZ2VkIHRoYXQgb25lLCBJIHN1cHBvc2UgdGhlcmUgd2lsbCBi
+ZSBtb3JlIHBhdGNoZXMgKG1vcmUgdGVzdGNhc2VzLApnaXQgaGFzaCBvZiB0aGUgZml4KS4KCktp
+bmQgcmVnYXJkcywKUGV0cgoKPiBUaGFua3MsCj4gQW1pci4KCi0tIApNYWlsaW5nIGxpc3QgaW5m
+bzogaHR0cHM6Ly9saXN0cy5saW51eC5pdC9saXN0aW5mby9sdHAK
