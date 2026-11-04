@@ -2,94 +2,111 @@ Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE4A3606A332
-	for <ltp@archiver.kernel.org>; Wed,  4 Nov 2026 03:30:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C27E6606A329
+	for <ltp@archiver.kernel.org>; Wed,  4 Nov 2026 07:19:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=W+3rtJMn
+	dkim=pass (1024-bit key, unprotected) header.d=lists.linux.it header.i=@lists.linux.it header.a=rsa-sha256 header.s=picard header.b=KUaAmd4g;
+	dkim=fail reason="signature verification failed" (4096-bit key, unprotected) header.d=canonical.com header.i=@canonical.com header.a=rsa-sha256 header.s=20251003 header.b=SqbamBJA
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1793776780; h=to : date :
+ message-id : mime-version : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : cc : content-type : content-transfer-encoding : sender :
+ from; bh=ENqEk9rvxg3Wfu1cHS3Vr+D0LSNd9CbHCEbsHB7r82A=;
+ b=KUaAmd4gqeTwKNnE1E8cOS6qbsr231K73LiyNaD0AicOEMFk00emw3rzYygz+OfFUqd5n
+ MAo/pGxll6N3FMMhPjJF4KF6cmcRIFKrB9HLVCQiXZjf1JARRO1N1739SOROHSvkEe83qFe
+ xuvSlNyxDK4XhO6Ye5TnYlA8sji0LlU=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 2084F3CA2D5
-	for <ltp@archiver.kernel.org>; Wed,  4 Nov 2026 04:30:58 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 2505F3CAEC4
+	for <ltp@archiver.kernel.org>; Wed,  4 Nov 2026 08:19:40 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 58B183C8F47
- for <ltp@lists.linux.it>; Wed,  4 Nov 2026 04:30:43 +0100 (CET)
-Received: from mail-dy2-x09.google.com (mail-dy2-x09.google.com
- [IPv6:2607:f8b0:4864:36::9])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 8190A3CABB3
+ for <ltp@lists.linux.it>; Wed,  4 Nov 2026 08:19:18 +0100 (CET)
+Received: from smtp-relay-internal-0.canonical.com
+ (smtp-relay-internal-0.canonical.com [185.125.188.122])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id E074B2003B5
- for <ltp@lists.linux.it>; Wed,  4 Nov 2026 04:30:42 +0100 (CET)
-Received: by mail-dy2-x09.google.com with SMTP id
- 5a478bee46e88-36c9b5c6faaso86962eec.0
- for <ltp@lists.linux.it>; Tue, 03 Nov 2026 19:30:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20260707; t=1793763041; x=1794367841; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to:content-type;
- bh=VvT2PfhHjravMzGBaSkeKaphbY12PIOjpuMYagJmsvc=;
- b=W+3rtJMnO8w6ef9vNlbb894Y0j2yJWfelXHJBSY9cpIsli97JMRir6bsSxv3L4icXZ
- z7JbyP+kz0epyrxhXlLdzgFaowqiJc3KbjZxFz21Lo7KpSfaaIemLktSkoDSYP/1CQEE
- yRPVAqTeD+QVdVaa66kYn8GwTc11SMsmU8/IgrzuKenDQgbfB4ZEW8QI1KXy3bRvt69J
- CmpzBdlzKfp+InoqFxdwy1x287I+0iRhYEFJNBaXmTmNun5PFsveqSBDcYwl0doisPJe
- 7ezH48bFmy0zLdFHFV/JnRbD7d9wAiEvwGZ+1JIAnuzDqMG0GyGgm2wKlARU7bEB+j2+
- Hj8g==
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 38FD31000965
+ for <ltp@lists.linux.it>; Wed,  4 Nov 2026 08:19:17 +0100 (CET)
+Received: from mail-pg1-f200.google.com (mail-pg1-f200.google.com
+ [209.85.215.200])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 622C53F2A0
+ for <ltp@lists.linux.it>; Wed,  4 Nov 2026 07:19:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+ s=20251003; t=1793776757;
+ bh=WZWp/B6G5sbr8OLAeA+nNPK32C1td9X3z4G3x5TGV/M=;
+ h=From:To:Cc:Subject:Date:Message-ID:MIME-Version;
+ b=SqbamBJAQ9tfr5+zZaMIH8d/KMPR6NPnTKhvaoXg9Q+Ln37FIJyw5UbI8VHxuRKOQ
+ L2KD9GuWeLCvD4OcPIeKEgR6mIxMgcRv3ywlyR3IvC8rS//spTfGRvQ96orfD+bscj
+ /XM6yS05kJbUKdHfnogjODm197U5JD2yGYzNj8aq7Tvs70Kj0RPrmVD5FZysKm3+Ui
+ W0NGCbWpW6Q1C0QzSTAbTTaHKzZX57J/XsRIR8So/kz2ewO3/pGlN3rGwXWv5Oa/En
+ EkUwynp6qBfkfnRLvCV5CgUYp823MdC9hT6ZvnMafAv9iq+pwfJKLsusGSZT1oORuQ
+ fjuOh5s5L2i+XkRg0FHfLLPKrDIvskgNf8QjDes+0XRmt/Utqo+1T84tBpBJhie91g
+ P30gRQJYKgYPRi3GKfBh/vOVLtF/csuOHqmtSegVOLRWte3w58EvXcIDihXRZcc0WA
+ fiK85qOEMhrXy7fgwugbSyZRFSUjyeBC0G0ZyScvefyAFXsa8j1xBfUWNlTr0nTiNe
+ 8EgjNN+5xDSVyPiZt8hAUKWSvwmb/V8L+AH2fnzeaGubtNY8IyGhjB/B0cnAn5/RbI
+ uTiC8TUkxOm1PvHmSNqBR5MbmITl+nkqhOLJ/nA1V4+vYiPMxm1FFluJjcgEAuBezG
+ Ise97RUc/FCPvq6abY3GyKEE=
+Received: by mail-pg1-f200.google.com with SMTP id
+ 41be03b00d2f7-cd6969473a4so297347a12.0
+ for <ltp@lists.linux.it>; Tue, 03 Nov 2026 23:19:17 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20260707; t=1793763041; x=1794367841;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to:content-type;
- bh=VvT2PfhHjravMzGBaSkeKaphbY12PIOjpuMYagJmsvc=;
- b=uj3GaEW3lNFe2u5uiggT3FoA0fVTSaP55jtlDhuDvW3rG+UuGnvTJzOM9YOuHOvsmk
- GYvOv0b/sKogScJlGfpf4/QVaz3BYVRQ5WWEOGrOO2lK/viWl3xT8XasWsmcfyqGve+5
- 2Tg0tL5Ebs3aE4kQh/F/jJxewVYwyRtoA/mZBd/ECc8x6q80MdtYxUpynNWR0WWG6iK+
- DXn2PqA8bsFDs+WrWoOLkE+yyQcVLeDMqKR6WbnzoGO9XD5CGZKI6HyNfqYlnMrpPDJD
- N5F0AGfq7CXJFTpS8AIuT0OsmjBHPzli1uxM8EqFN89zeiDm6TbvkCXEwLgxv98C7FcY
- V6XA==
-X-Gm-Message-State: APuU4Z9IUUCv1SneXMqxGCeDxQ8hG8wk/BL53XR7wjv+wDzjH7tKs/Ic
- NMmjnpgvaG6T3cpDX8hkAKRR89QD6YML82s1rGTJ+g3wTRfkYQiEtrr9
-X-Gm-Gg: AYBFou2AbpdeBXNV9lr2l95yRvu4uwS3+pKYkks+W9htReAEdQszRH52U8hCpLw8rbi
- LVjJxfX1HcmoKcQzRD5sg9ZanNtPHovoOdqaApFE9jKd4BqYpCaEJfxlV7ymMiMgdNT3sNP2fSd
- dGmdcXVbY2Ns4vyK/OD9SGEmt9gHTgGHiY32R+e/uB/jvoBWk7G7WqJY+U3Bt2o+C3WbtZ1bQ25
- vgY20tcYLoXOr7YzeiEZb2FoMZZpVhISGPuHGXMAjGAjzRxMdWVG0npyNk3j4KLwaWXprVyH8L+
- EV8OHYAMKE9C1x24loTMFMu5Mc0vEaNbDwu96VuKf0dcFikhf7cQ0IF5WiHpEHhJ2kS/mhL18dz
- 0V78+vjgTeAxH3EDiPaRlWPJMfQAiHdkpNKNn9xHvYwedFhPc/wNlBqMjYQFdFbkdSEwDEnCZCJ
- UkVYgZhlOTcKhptvlI3AMrcQ2bTLcmHbPzKQWwDzufjirBHC/2CSNgvN/TTSUmpK28ykR8KBbPZ
- t92FjBtH52toVz3BAvD1vtZVo2NQKtXamkcvgh56qvYs4UMVMS3RQF8vrlIyS++hjZRKpEa6WnN
- rHu8LmzaMqSzftPSgcjygFSEoGAkojthgGx4u4gmhvqEqgM7Xzf84ScYK/UebZbi+osZQaSaTRJ
- cH82rbbD7rY7TV9foLOSc9H9dkZ1BCGp8Ts1i4HIBQ7GZTQ==
-X-Received: by 2002:a05:693c:42d9:b0:369:f18f:3492 with SMTP id
- 5a478bee46e88-36a423fbc3amr23140987eec.35.1793763040956; 
- Tue, 03 Nov 2026 19:30:40 -0800 (PST)
-Received: from
- runnervmnwato.buumwhvxvqyupaxsrmke3llhkg.phxx.internal.cloudapp.net
- ([172.182.245.131]) by smtp.gmail.com with ESMTPSA id
- 5a478bee46e88-36ca3966daasm3550550eec.23.2026.11.03.19.30.40
+ d=1e100.net; s=20260707; t=1793776756; x=1794381556;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to:content-type;
+ bh=WZWp/B6G5sbr8OLAeA+nNPK32C1td9X3z4G3x5TGV/M=;
+ b=QmC1xKtzfHm9v30Ccxx1CDqzFclaLobBWqpuckGWv9kmxlSuEUNoXjOQ8BDOI/1f6M
+ pPQ2aIxz8C0VuLNflVRjw555qPPmV49csA0ZBl+VsaSKzrrNsVgnHQOEJQRVRoQf3uHK
+ 55t8zfjiC3/KqOMTmT6XNcb8TJSJOxV5RZWD8nkCHX65WJM7EkK4qUR7+3zC0SiMFxoT
+ xF+RtGEx7HcF0G2x23TgUbYnSnEc822Ut0zpXCLrlSwz2ZRybU1jETWK1eEEPpUt9Hlm
+ QCBl/tPO/bxB2lljFpud+i7wqubKuQRMo7ZM/BiSwXCJ0P1NAy5DJJExfbhA1xg+QVgt
+ AnhA==
+X-Gm-Message-State: APuU4Z83VfCEHLG++LZfvIep1SwE6S7+wqukKYZfL1steEK9FQ10tRpj
+ 6OanWUptRLL2ByfrwEd6BACRIOaL5X/mM63wH4sazA69Z+dASW8BU4pCHgPhSHma0mILODxIjkO
+ sbpHgPpIB8UCKKwTJNwQ/HAcjMn10i+K9meKBG6c33itarZviNMsxKOpk4tJM88jMi+lR/+DGto
+ toAfs=
+X-Gm-Gg: AYBFou2zSG+q/x5ArqB5PrxS1ejYAOBtWbR0+S8+MEGf9C+MkfHF9SOCHWemCZsk31h
+ K5i3bspPgH9QIfoejGm/Mr9UnlFraLATdiwwtzmTuq/LkoYkvEOx3zF7JhQFVELv9yhriJo2TfC
+ 1WG1e65qM/ZfjHSTkBKhESWewCKXIb2EUuaZFT9LSSuJzupUgKNaBLva17cxCZgCWjguKPSYs6M
+ KQv5vvKSpHrz8t41zESt+76vw+o8LcutDkeef7qQB0ILLlNvtBeJLYYOv8ljTBkIBmN9aFKwbCZ
+ 553FgMT3NXyEQ5wR1h9ifQ9vFIc/4uwLwlHA/1d7WVCH84++nRj3ffkt/iM0oMz++JEq06Hx56o
+ x382zEURExrWA8JfIZghENl6Qi4L5U+XDAXWQqRCSMmJLFVLARl5hHcJ3gEs=
+X-Received: by 2002:a05:6a21:a88:b0:3e2:8a3b:98 with SMTP id
+ adf61e73a8af0-3e928953953mr12239574637.27.1793776755820; 
+ Tue, 03 Nov 2026 23:19:15 -0800 (PST)
+X-Received: by 2002:a05:6a21:a88:b0:3e2:8a3b:98 with SMTP id
+ adf61e73a8af0-3e928953953mr12239554637.27.1793776755410; 
+ Tue, 03 Nov 2026 23:19:15 -0800 (PST)
+Received: from ZBook.gateway ([123.208.39.53])
+ by smtp.gmail.com with ESMTPSA id
+ 41be03b00d2f7-cdb469282cbsm641400a12.14.2026.11.03.23.19.12
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 03 Nov 2026 19:30:40 -0800 (PST)
-From: linuxtestproject.agent@gmail.com
-To: Changwei Zou <changwei.zou@canonical.com>
-Date: Wed,  4 Nov 2026 03:30:39 +0000
-Message-ID: <20261104033039.3895-1-linuxtestproject.agent@gmail.com>
-X-Mailer: git-send-email 2.56.0
-In-Reply-To: <20261104002400.56841-2-changwei.zou@canonical.com>
-References: <20261104002400.56841-2-changwei.zou@canonical.com>
+ Tue, 03 Nov 2026 23:19:14 -0800 (PST)
+To: ltp@lists.linux.it
+Date: Wed,  4 Nov 2026 18:19:07 +1100
+Message-ID: <20261104071908.128726-1-changwei.zou@canonical.com>
+X-Mailer: git-send-email 2.53.0
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-3.6 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_INVALID,DKIM_SIGNED,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_PASS,
-	SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no version=4.0.1
+X-Spam-Status: No, score=-14.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_PASS,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] cpuset_memory_spread: rewrite as a C test using the LTP
- cgroup library
+Subject: [LTP] [PATCH v8 0/1] cpuset_memory_spread: rewrite as a C test
+ using the LTP cgroup library
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -99,112 +116,73 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+From: Changwei Zou via ltp <ltp@lists.linux.it>
+Reply-To: Changwei Zou <changwei.zou@canonical.com>
+Cc: Changwei Zou <changwei.zou@canonical.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Changwei,
+The cpuset_memory_spread test (from 2009) was split between a shell script
+that mounted /dev/cpuset by hand and a C helper (cpuset_mem_hog) driven over
+a FIFO and SIGUSR1/SIGUSR2. It checked the cpuset.memory_spread_page policy
+by comparing the global per-node FilePages counters in
+/sys/devices/system/node/nodeX/meminfo, which also account for unrelated
+page-cache activity, so on large or busy NUMA machines the empirical
+thresholds became unreliable and the test failed spuriously.
 
-On Wed Nov 4 11:24:00 2026 +1100, Changwei Zou wrote:
-> cpuset_memory_spread: rewrite as a C test using the LTP cgroup library
+This series rewrites it as a single C test on the new LTP test API and the
+LTP cgroup library (tst_cgroup.h), dropping the shell script, the
+FIFO/signal handshake and the manual /dev/cpuset management. It now accounts
+for only DATAFILE's own page-cache pages via move_pages(2) (NULL node array,
+so nothing is migrated), so unrelated page-cache activity can no longer
+perturb the result.
 
-> + * where the file's pages landed. Instead of looking at the noisy global
-> + * per-node page-cache counters in ``/sys``, it accounts for only the data
-> + * file's own pages: after reading the file it mmaps it, faults every page
-> + * in and uses ``move_pages()`` (with a NULL node array, so nothing is
+cpuset.memory_spread_page only exists in the cgroup v1 cpuset controller, so
+the test requires a v1 cpuset hierarchy (.needs_cgroup_ver = TST_CG_V1) and
+is skipped (TCONF) on a unified (v2) hierarchy. The patch also registers
+cpuset.memory_spread_page in the LTP cgroup library's cpuset file table so
+it can be driven through the SAFE_CG_* helpers.
 
-Use :manpage:`move_pages(2)` instead of ``move_pages()`` in the doc comment.
+Tested on a 2-node NUMA machine with a v1 cpuset hierarchy: all six subtests
+pass.
 
-> +/* Build the cpuset.cpus string listing all online CPUs of node 'nd'. */
-> +static void node_cpus(int nd, char *cpus, size_t size)
-> +{
-> +	int ncpus = 0, i;
-> +	long online;
-> +	char path[PATH_MAX], buf[32];
-> +
-> +	while (tst_path_exists(PATH_SYS_SYSTEM "/cpu/cpu%d", ncpus))
-> +		ncpus++;
+Changes in v8 (addresses the v7 review):
+  - Doc comment: use :manpage:`move_pages(2)` instead of ``move_pages()``.
+  - Drop the local node_cpus() helper; bind the task's CPUs with the
+    existing write_node_cpusets() from numa_helper.h.
+  - Read DATAFILE with SAFE_READ() instead of a raw read() loop.
+  - Replace the repeated do_spread_test() calls in .test_all with a
+    struct tcase array driven via .test + .tcnt. CPUs now stay on the
+    local node for every case and only cpuset.mems varies, restoring the
+    original non-local memory-node allocation check (cases 3 and 4).
+  - Check tst_fill_file()'s return value and TBROK on failure.
+  - Pass a literal string to TST_TEST_TCONF() without leading indentation.
 
-numa_helper.h (linked via testcases/kernel/include/lib.mk) already provides
-write_node_cpusets(), which gathers a node's online CPUs and sets
-cpuset.cpus and cpuset.mems. Use write_node_cpusets() instead of duplicating
-this helper.
+v7:
+https://lore.kernel.org/ltp/20261104002400.56841-1-changwei.zou@canonical.com/
 
-> +	fd = SAFE_OPEN(DATAFILE, O_RDONLY);
-> +	while ((ret = read(fd, buf, sizeof(buf))) > 0)
-> +		;
-> +	if (ret < 0)
-> +		tst_brk(TBROK | TERRNO, "read %s", DATAFILE);
-> +	SAFE_CLOSE(fd);
+v6:
+https://lore.kernel.org/ltp/20260905125041.27985-1-changwei.zou@canonical.com/
 
-Use SAFE_READ(0, fd, buf, sizeof(buf)) in the loop instead of raw read() and
-a manual error check.
+Changwei Zou (1):
+  cpuset_memory_spread: rewrite as a C test using the LTP cgroup library
 
-> +static void run(void)
-> +{
-> +	int a = nodes[0];
-> +	int b = nodes[1];
-> +	const int expect_a[] = { a };
-> +	const int expect_b[] = { b };
-> +	const int expect_ab[] = { a, b };
-> +
-> +	do_spread_test(a, -1, 0, expect_a, 1,
-> +		       "spread off, single node: local allocation");
-> +	do_spread_test(a, -1, 1, expect_a, 1,
-> +		       "spread on, single node: all on that node");
-> +	do_spread_test(b, -1, 0, expect_b, 1,
-> +		       "spread off, single node: local allocation");
-> +	do_spread_test(b, -1, 1, expect_b, 1,
-> +		       "spread on, single node: all on that node");
-> +	do_spread_test(a, b, 0, expect_a, 1,
-> +		       "spread off, two nodes: local allocation");
-> +	do_spread_test(a, b, 1, expect_ab, 2,
-> +		       "spread on, two nodes: even spread");
-> +}
+ lib/tst_cgroup.c                              |   1 +
+ runtest/controllers                           |   2 +-
+ .../kernel/controllers/cpuset/.gitignore      |   2 +-
+ .../cpuset/cpuset_memory_spread_test/Makefile |   2 +-
+ .../cpuset_mem_hog.c                          | 126 ------
+ .../cpuset_memory_spread01.c                  | 355 +++++++++++++++++
+ .../cpuset_memory_spread_testset.sh           | 362 ------------------
+ 7 files changed, 359 insertions(+), 491 deletions(-)
+ delete mode 100644 testcases/kernel/controllers/cpuset/cpuset_memory_spread_test/cpuset_mem_hog.c
+ create mode 100644 testcases/kernel/controllers/cpuset/cpuset_memory_spread_test/cpuset_memory_spread01.c
+ delete mode 100755 testcases/kernel/controllers/cpuset/cpuset_memory_spread_test/cpuset_memory_spread_testset.sh
 
-Define a struct tcase array and use .test + .tcnt = ARRAY_SIZE(tcases) in
-struct tst_test instead of calling do_spread_test() multiple times from
-.test_all. Also, in the original test_spread_page1(), cases 3 and 4 kept
-cpuset.cpus on node a while setting cpuset.mems to node b to verify
-non-local memory node allocation, whereas passing b as cpus_node here binds
-both cpuset.cpus and cpuset.mems to node b and repeats cases 1 and 2.
+-- 
+2.43.0
 
-> +	counts = SAFE_MALLOC(MAXNODES * sizeof(*counts));
-> +
-> +	tst_fill_file(DATAFILE, 0, 1024 * 1024, FILE_MB);
-> +
-> +	SAFE_CG_PRINTF(tst_cg, "cgroup.procs", "%d", getpid());
-
-tst_fill_file() does not call tst_brk() on failure; it unlinks DATAFILE and
-returns -1, which later causes SAFE_OPEN(DATAFILE, O_RDONLY) to fail with
-ENOENT. Check the return value of tst_fill_file() and call tst_brk(TBROK |
-TERRNO, ...) on non-zero return.
-
-> +	.test_all = run,
-> +	.needs_cgroup_ctrls = (const char *const []){ "cpuset", NULL },
-> +	.needs_cgroup_ver = TST_CG_V1,
-> +};
-> +
-> +#else
-> +	TST_TEST_TCONF(NUMA_ERROR_MSG);
-> +#endif
-
-Pass a literal string to TST_TEST_TCONF() (e.g.
-TST_TEST_TCONF("test requires libnuma >= 2")) without leading indentation
-instead of the NUMA_ERROR_MSG macro.
-
-Verdict - Needs revision
-
----
-Note:
-
-The agent can sometimes produce false positives although often its
-findings are genuine. If you find issues with the review, please
-comment this email or ignore the suggestions.
-
-Regards,
-LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
