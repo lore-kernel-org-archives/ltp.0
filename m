@@ -1,95 +1,83 @@
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22E6E606A31B
-	for <ltp@archiver.kernel.org>; Thu,  5 Nov 2026 07:31:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87DFB606A328
+	for <ltp@archiver.kernel.org>; Thu,  5 Nov 2026 08:03:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=ATmFoiE3
+	dkim=pass (1024-bit key, unprotected) header.d=lists.linux.it header.i=@lists.linux.it header.a=rsa-sha256 header.s=picard header.b=g7dkE76X;
+	dkim=fail reason="signature verification failed" (1024-bit key, unprotected) header.d=redhat.com header.i=@redhat.com header.a=rsa-sha256 header.s=mimecast20190719 header.b=HYijDeaW
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1793865827; h=to : date :
+ message-id : mime-version : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : cc : content-type : content-transfer-encoding : sender :
+ from; bh=725fyercWX2VJqzq3OJzD88kiKEe2VW+qsKD+tJhIVU=;
+ b=g7dkE76XaLn8ON3GYoJBMsjbgZwK/VYAfOA4w0U+JBJBjLFyOrMvgxIB9iGWOpe9GUY4q
+ MqktHYCP9+bSFwQ9VeK0wrcNqz2bsNNo2V3Redsx2sLW0sqeljYHWXq5DFTTforhDPo4foq
+ BdmKyn2Mz5gATPhZFa6YOYIXKgGn2NA=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 27DB43CD7E6
-	for <ltp@archiver.kernel.org>; Thu,  5 Nov 2026 08:31:45 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 2086F3CDA2B
+	for <ltp@archiver.kernel.org>; Thu,  5 Nov 2026 09:03:47 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 3381A3CBE3E
- for <ltp@lists.linux.it>; Thu,  5 Nov 2026 08:31:29 +0100 (CET)
-Received: from mail-dy2-x0a.google.com (mail-dy2-x0a.google.com
- [IPv6:2607:f8b0:4864:36::a])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 063FC3C01A0
+ for <ltp@lists.linux.it>; Thu,  5 Nov 2026 09:03:27 +0100 (CET)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id C52372009FF
- for <ltp@lists.linux.it>; Thu,  5 Nov 2026 08:31:28 +0100 (CET)
-Received: by mail-dy2-x0a.google.com with SMTP id
- 5a478bee46e88-33e5ae86ff2so706580eec.0
- for <ltp@lists.linux.it>; Wed, 04 Nov 2026 23:31:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20260707; t=1793863887; x=1794468687; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to:content-type;
- bh=fJpN6gewcEpM0ruw62aRtk1qibJpu/Pj8aWmkF9kcDs=;
- b=ATmFoiE3PwA18zhU1cIZ8VIuWJDxGqDXSUN3RIw69ChIZ8PwdHqPsXhq4LOYHoAN1M
- 4LcLKt8DU9IJJwyepuIIlqWxX2nJGCCdiReG0LoQ/QkRH8uC/m9MBVFlSpWUESRZlOlT
- L5geao/Qk3O1iFTyeGEN7nO/q1eahcJtSZJm1Mf7kA3a8c74JIYbDfbbGUVC1WV792c+
- ehz2qPJDo7lGJlNOht/BK1EGkwxuASt0Vj1SWu97yVtURX5+PpyKZmx3xxh+M3H4QWe6
- 6jIMZ2bvW2fhfdNvKrOmpYgyT3+NumK1CpMgXjdOmc3BodvfokJclylEBsTQSaNV3yh/
- Qikg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20260707; t=1793863887; x=1794468687;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to:content-type;
- bh=fJpN6gewcEpM0ruw62aRtk1qibJpu/Pj8aWmkF9kcDs=;
- b=DYLiJhWX7HU1COiUxWbVDrVnT4BjKYW7Rz/pTXYtYa8EYYyU0q9skLbiYhTuYKUyJ6
- si7q14MQktbT+luMpzhlhmzxl8ihakGZ9QKzH/KzU4kl6mU4C1sXhbfPp5LgqW5uVibK
- isj80eGInLBzNdog8etbdnAMcC/uAA5eVAwv18Z3cer9VWyH6cXhHRpbcvNj+ReggUSG
- NkdDLdAEoSq9yjPR0AnDP823sKe0Od09MPHU50WB4PHwm0Z385+0c3Q7H3IVYVLot8d8
- jZoTIdGYXqbBzSbH6Mo13OMRERQEAtbghoflaA5xGR1TctOcO7OhnLIe6Jtobqrb1Hs2
- rqFQ==
-X-Gm-Message-State: APuU4Z8BLFxRO1Dr8+8m49PHUQ0ECBV9J3hbSGjb/K25jFbptsrrxMr0
- ADTNBTRJ9fwkSGkZPjyDOG1giIOkyQdMqYZR9V8TnWSXNg652aDRefnw
-X-Gm-Gg: AYBFou3rs6jVM4/KcR7Vpw8rK4FUF7o8Poz/0C6J/pgDnFL0ZO5Bryna/4W/GbvlQWh
- ArOYRnHYDQfaSU4bcwy36ab3rFgRYYniLHC5zHLu8kgoJizsvhLZo4ChzNnRBMzh75X7vZx+qsN
- R/1AynU9H3kTU2h7HIeLf+gFbUZ13SI7aO+5d6cMPkTbHyy8IClBdKtYho1eR0ycUtJ3Ikr8DfS
- NiIFIl5kJGDq411q3MbIdw1bbYNeGaLRWEa6sCgmM5c60fW4pnwsmS4HqtBogeyP4I2wyIFh8dS
- slkPtTFqYodo7gn59cfXI27ITQMc3YyQa/Ciluks2cF5tjOymCm3e1VVsnHEfrCm2zoz1HjSBNO
- DaPq3UkpIpZHe3unIQaAkSxuRX1qcVUmHn77wijnr/LgO68JzxriKeRPan2JFpyaVzsjDpz9KKx
- sNO5TPL6cvc36r2B+KrtzrSWIUrYHvVxKrKI7PEcfFn2RvpNLkDiV/+25tTzbWYry9JtOigoxOd
- Nl4jy6FrPtRJ90Zwm8QzvHsdzhRzciq8k2ZFBQRdg+emMHxmEsvDN/h/y+6KaXprkR83pWN6MDs
- hzfWSXlhaspXhKjM5NELErZIKXOekcdKcvdOXdM3IrsjDvDA3CHMug9DTmB047/U2Q9bA9rsFxQ
- bdepCGNuInmiKg4aT+DRYdBFSWm0/F09QMxrTLZeLREomzwSLNMoo7T2WBgYkPJg=
-X-Received: by 2002:a05:693c:894f:20b0:369:d992:e3 with SMTP id
- 5a478bee46e88-36a4242b2ebmr26266614eec.32.1793863886917; 
- Wed, 04 Nov 2026 23:31:26 -0800 (PST)
-Received: from
- runnervmnwato.a5ptdsnimkhexhujicmmq541ee.phxx.internal.cloudapp.net
- ([20.169.99.53]) by smtp.gmail.com with ESMTPSA id
- 5a478bee46e88-36ca394f297sm16179778eec.21.2026.11.04.23.31.25
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 04 Nov 2026 23:31:26 -0800 (PST)
-From: linuxtestproject.agent@gmail.com
-To: Changwei Zou <changwei.zou@canonical.com>
-Date: Thu,  5 Nov 2026 07:31:24 +0000
-Message-ID: <20261105073125.3672-1-linuxtestproject.agent@gmail.com>
-X-Mailer: git-send-email 2.56.0
-In-Reply-To: <20261105005506.76889-2-changwei.zou@canonical.com>
-References: <20261105005506.76889-2-changwei.zou@canonical.com>
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 5EDEC200A08
+ for <ltp@lists.linux.it>; Thu,  5 Nov 2026 09:03:26 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1793865805;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=9zu0l/pyE4JPSDMkpK+p2RHg+GFpJNbACxqSMCykLGY=;
+ b=HYijDeaWBrYadjCtbjfrUZO1R1WPHrIQJRwqeh+VGyzVyLE2fIi1tVUEQpWzrbNH0KdQsw
+ LCHKVRz1JOOepfwdLiV0l7/2xWODKh8ZLF+j+BpyvnEAQA20AmGHpEF4ETQ7HWOsO2eSZt
+ 4rK3X0YGbtEfvjPzAr6c9xtlP71mtYg=
+Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-35-aEwOM43RP-WTr_yiU26bBA-1; Thu,
+ 05 Nov 2026 03:03:24 -0500
+X-MC-Unique: aEwOM43RP-WTr_yiU26bBA-1
+X-Mimecast-MFC-AGG-ID: aEwOM43RP-WTr_yiU26bBA_1793865803
+Received: from mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com
+ (mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.12])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
+ id E822B18002C3
+ for <ltp@lists.linux.it>; Thu,  5 Nov 2026 08:03:22 +0000 (UTC)
+Received: from intrepid.redhat.corp
+ (headnet04.pony-001.prod.iad2.dc.redhat.com [10.2.32.116])
+ by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP
+ id E0BF21956041; Thu,  5 Nov 2026 08:03:21 +0000 (UTC)
+To: ltp@lists.linux.it
+Date: Thu,  5 Nov 2026 09:02:45 +0100
+Message-ID: <20261105080245.2067876-1-afazekas@redhat.com>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-3.6 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_INVALID,DKIM_SIGNED,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_PASS,
-	SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no version=4.0.1
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.12
+X-Mimecast-Spam-Score: 0
+X-Mimecast-MFC-PROC-ID: JZliMo7VEZTA82L3Hz5KhHiOXH9cJD6e1ce6yESshec_1793865803
+X-Mimecast-Originator: redhat.com
+X-Spam-Status: No, score=-16.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_PASS,SPF_PASS autolearn=ham
+	autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] cpuset_memory_spread: rewrite as a C test using the LTP
- cgroup library
+Subject: [LTP] [PATCH v2] mmap22: Bound child memory allocation to avoid OOM
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -99,27 +87,67 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+From: Attila Fazekas via ltp <ltp@lists.linux.it>
+Reply-To: Attila Fazekas <afazekas@redhat.com>
+Cc: Attila Fazekas <afazekas@redhat.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Changwei,
+Currently, stress_child() allocates memory in an infinite loop without
+bounds. Under memory pressure, once the cgroup memory limit is reached
+and the parent's droppable pages are reclaimed, the child continues
+allocating non-droppable heap memory. This eventually exhausts the cgroup
+limit and triggers the cgroup OOM killer, terminating either the child or
+the test parent process.
 
-On Thu Nov 5 11:55:05 2026 +1100, Changwei Zou wrote:
-> cpuset_memory_spread: rewrite as a C test using the LTP cgroup library
+Fix this by bounding the child's allocation to CHILD_ALLOC_MAX.
+The total requested memory (128MB parent + 160MB
+child = 288MB) exceeds the 256MB cgroup limit by 32MB, which reliably
+forces the kernel to reclaim MAP_DROPPABLE pages. Once CHILD_ALLOC_MAX is
+reached, the child calls pause() to keep memory resident. Since 160MB is
+well below the 256MB cgroup limit, non-droppable memory alone cannot
+trigger an OOM.
 
-Verdict - Reviewed
-
+Assisted-by: Gemini CLI
+Signed-off-by: Attila Fazekas <afazekas@redhat.com>
 ---
-Note:
+ testcases/kernel/syscalls/mmap/mmap22.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-The agent can sometimes produce false positives although often its
-findings are genuine. If you find issues with the review, please
-comment this email or ignore the suggestions.
+diff --git a/testcases/kernel/syscalls/mmap/mmap22.c b/testcases/kernel/syscalls/mmap/mmap22.c
+index 0b95c578f..31acefdba 100644
+--- a/testcases/kernel/syscalls/mmap/mmap22.c
++++ b/testcases/kernel/syscalls/mmap/mmap22.c
+@@ -26,6 +26,7 @@
+ 
+ #define MEM_LIMIT (256 * TST_MB)
+ #define ALLOC_SIZE (128 * TST_MB)
++#define CHILD_ALLOC_MAX (MEM_LIMIT - ALLOC_SIZE + 32 * TST_MB)
+ 
+ static struct tst_cg_group *cg_child;
+ static pid_t child;
+@@ -33,13 +34,15 @@ static int page_size;
+ 
+ static void stress_child(void)
+ {
+-	for (;;) {
++	for (size_t sz = 0; sz < CHILD_ALLOC_MAX; sz += page_size) {
+ 		char *buf = malloc(page_size);
+ 
+ 		if (!buf)
+-			exit(1);
++			break;
+ 		memset(buf, 'B', page_size);
+ 	}
++
++	pause();
+ }
+ 
+ static void test_mmap(void)
+-- 
+2.56.0
 
-Regards,
-LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
