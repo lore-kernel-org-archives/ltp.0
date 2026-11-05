@@ -1,82 +1,83 @@
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 582D6606B475
-	for <ltp@archiver.kernel.org>; Thu,  5 Nov 2026 15:54:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49C4D606A619
+	for <ltp@archiver.kernel.org>; Thu,  5 Nov 2026 15:58:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=YecN7+cs
+	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=IXuoNgU0
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 14A3A3CF037
-	for <ltp@archiver.kernel.org>; Thu,  5 Nov 2026 16:54:35 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id B4B3F3CF603
+	for <ltp@archiver.kernel.org>; Thu,  5 Nov 2026 16:58:51 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A6DD23CEC3E
- for <ltp@lists.linux.it>; Thu,  5 Nov 2026 16:54:19 +0100 (CET)
-Received: from mail-pj2-x0b.google.com (mail-pj2-x0b.google.com
- [IPv6:2607:f8b0:4864:39::b])
+ by picard.linux.it (Postfix) with ESMTPS id 351513CEC3E
+ for <ltp@lists.linux.it>; Thu,  5 Nov 2026 16:58:37 +0100 (CET)
+Received: from mail-pz2-x03.google.com (mail-pz2-x03.google.com
+ [IPv6:2607:f8b0:4864:3b::3])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 340BE1000A16
- for <ltp@lists.linux.it>; Thu,  5 Nov 2026 16:54:19 +0100 (CET)
-Received: by mail-pj2-x0b.google.com with SMTP id
- 98e67ed59e1d1-3ada6c66964so556600a91.0
- for <ltp@lists.linux.it>; Thu, 05 Nov 2026 07:54:19 -0800 (PST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id B7A221400BEF
+ for <ltp@lists.linux.it>; Thu,  5 Nov 2026 16:58:36 +0100 (CET)
+Received: by mail-pz2-x03.google.com with SMTP id
+ 41be03b00d2f7-cd5f0803c1eso688593a12.1
+ for <ltp@lists.linux.it>; Thu, 05 Nov 2026 07:58:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20260707; t=1793894057; x=1794498857; darn=lists.linux.it;
+ d=gmail.com; s=20260707; t=1793894315; x=1794499115; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to:content-type;
- bh=06UPoRFAVt/yCLTa8BGYsZ7OavAjXVlkkp/p60xHOUc=;
- b=YecN7+cs1WCM3ZWdRWiC388TJSNJ4KQMUCey4w+F1XI/0RcK5MXYIsmjuzVTZCVyKc
- AnjzB8pHVbhMHhrg6kmBrMSDsvCxhHsPDelwLlXnFs3+qWoW7KjkAfl+Eul9KOFCphTP
- sGRp6TaVymDnzN7lE3WagfEN6piyHthLICIhLbj05db0XXh3Te+5fHUZb8dIkOo8A2Uj
- bGmfD851XzBgeOI3AQKwuhXInvh/s/YODHsG+RQxd3etRZjErC66MV4wpgL3v6km6cn4
- FY2DVCWFjESIQFUUzyQmsjEL4nLnp/SwB6zoUYoJaQ/r2Vd3viJIY2L3K4jSi66uctCu
- cxvA==
+ bh=+kD6CWNN8x0fQ4NJP512GDdDIqBOQRcDFw3k9EdgEMU=;
+ b=IXuoNgU0XGRCTFcPkabXwE8BrD5vFX2imXWneR9jYsAi0/bhtjl2fP9/Aat+PdJgor
+ UJUrJ1fI1HdwnMIa06K+DOhqc4pAiYZIT6S9XhF6xnJpCO2LBaNGnWlJRHnWcd4hlnib
+ l7GJkaN2v7y7qTlM2jvq4IQzkQwMjnvCxBHhn8QKl4BzX9U0TtI9jkR/sZ9lfQxIWueM
+ SepHYco+LC/kiNOKfTXOAJPNUeAZfWe3VM2Y4nheJCQNkRA+IN95/fZ6kjcPtPAg3NZz
+ xd9WKOYz/Xtmnkeskz2lStM5P3uq8F0rG/7RAEPjATeciudS83h9JaLR+YfoiYlgLZVj
+ B8Og==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20260707; t=1793894057; x=1794498857;
+ d=1e100.net; s=20260707; t=1793894315; x=1794499115;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to:content-type;
- bh=06UPoRFAVt/yCLTa8BGYsZ7OavAjXVlkkp/p60xHOUc=;
- b=2BLruL5oU2OCcm81AAqT2gIZcCejkELP9M48ufLDYnxsge/LJ/dD+zqVzgHaYjdhm9
- LGy7YMp6ZzaETx5kHnYWPbPCB7W/mf12/zr+CI53Cnme6pEHPv9/pFKfVRdpWUqW2fS7
- VJzbo044OJTd+3daP2wEmvRLCeusvXX3d2naomxOScof8q4CKERrrsOnSM8Cy8EXMFfo
- utzbmt3Ekcv0o1Rl7rKBwLPEu6zh5I+4HEmE89XrSYbQcOGXDLJtijbatGt4pZb4sC/u
- 60f5oSnWqXEmMCWpy3kP6SdUTkDfANDKhH38z+d2XP5ZvSbbr+csu/an/h8lEIUNin65
- lzfw==
-X-Gm-Message-State: APuU4Z/jQIDyxLZJR2YoBjkUF8EVT1q4p8S/xtZtncfHP0LlkI3meHUF
- bMZsa468rUuSAP6cHzJqexLsFL5j4R/akwSj3ptBRq0iIBwtsngU1/1F
-X-Gm-Gg: AYBFou1g4U1cw+QoFwAYndjXLVW/Yvd8pXiTymMXc5+k4KSmqcPNhCF7NvpCiYTpG+h
- 4skJsJk9Z8t4ga3jCXHEdbbfUuiQwz5HvVhmLaS64WoeaKF4iRSRBP+70ZC6s0bKnAYKDsN1pFX
- SpeXdJSWLxnyOpVD6hW1klDz0vNdq97jvUtw+PnbUP8KucyDHNiv0yaFilWKI67hYI5wgRaVC78
- sV0LwRqALSUit0G8ISm2i8ODTVhm1QUrqTLXE4ANVHj1jt7CTkLIgZlLPlcBUJDnrP7iI/Ck8WQ
- qK1kLSzYXwcHtxxlW1N7blnMKrRWKOOYpObTyvKBDbNqyOalOYIEEad4xb79/B4ex41QPzwreTN
- tRyPl4LfZ0azXKo+ULCkfJnMRh8nC/A+KOkGjJpbgX+LQxAA01VaPH46Sy98ub1yhtbkL4El2sd
- dyhNZt7agVn7H4qnQ2QcODhgeWFWDb4Qd9OIjcTeCFA8ATnRAZCc4JleGI/MEyhnHCHWsske32H
- ccBxiOdZ5eU9hg9spU33ufPVq1LrM8aA6UOjEHJiNhRhO2gGMvrVhiynqgx9d519k7cgU0PLMhf
- r8kCCT14LbX5wJjb4x5U7KJ01v7q/LPTx3/dJ6XR4fEVy3Z42IBz9Lo4V23++oy/zV2GTrb446+
- 9SvB5sfdPobru7xO5J8DSGj96x55F2GBkxeOieFOzfw==
-X-Received: by 2002:a17:90a:bb83:b0:3b0:bc3c:3e7 with SMTP id
- 98e67ed59e1d1-3b0bc4b4857mr1494060a91.10.1793894057023; 
- Thu, 05 Nov 2026 07:54:17 -0800 (PST)
+ bh=+kD6CWNN8x0fQ4NJP512GDdDIqBOQRcDFw3k9EdgEMU=;
+ b=sH/D4Fz4Rx4fteU43LF4zd0mUoUADGcpG8sGJ5CkZ46zLCuWrGhHm1qcHpyxqcC/HS
+ vD/Rmf7aj+rJGqFMZJULkTTsDc5oaUJAtKBu7tFhhTKk913kUEB010l5PW39C3Ed/06O
+ igQTUGwm2bIQ1+y9s4VAeyzZmA8+lYgomXTg5wTJVoqmsLLSi2s9wGdQvM1S2kJ+c8rn
+ ZW+hYM7yxLdGbJso6GS3SPRiMBnEdCFo2bx9UGstIL+ME/GMhoj0hrN3DhjBh0r7fhZs
+ Q+8JtadL0FYEvpWsmEXkgn6BewPS2Ckcw13IMihbKkUQ07O2Y+WKBbtsJiVOLwKuT56q
+ wplg==
+X-Gm-Message-State: APuU4Z8E6ntfk05n/cpnlM1bAOvsfqdXAgi5V6Uo7XAu6d9WvPr+e42A
+ cQ8QjMvnfrWG67/hz24nPP5QT5ovgJj9Ole8gbXZTraD2ITTLBEmYF+woGANjfB+kVQ=
+X-Gm-Gg: AYBFou00RjLvZBHc5c9Q4zS4Px0lWahU41IxbbVSvtPzS1mX1ZSRkt3nTqDBw+5WApH
+ +JlObP58jMCR0NNuUBxxgs4nC0y/bS7YYVql8uS2gwsopWJRsdMgpe49+LjhLC02mOXOgdvjDxB
+ Ndi9923Zc6PzRHLj9z52ziSnj9n94E2ZTvJ1X37ppyyb1Hbs428CzIbcfv1yLZTYlol9UaisI5V
+ iP6d01X7ndpq5/vegYFiiPfmI4GVbPQWiB9p2kivFq9w/4qQ+8mhCg+HFL/J/xSvi4mq5MILNJX
+ g242sAXGwYP+dRSTF/M2k5EhrdfwF1yMAtqmm7HtkJsNR8h3IMNJNVv4dUEaxU2GTRbfX3gSn0a
+ zODIDJf+Nn9sVfji98VwJnBIgSqNGT4HuXrXIOkFKLSHc1P85CIKFEXuuw8n4lvtzZx5jUvc3zX
+ PhUn56LpK5HINVQMAavjpLrUOblJbD6duLY5GufoTZk988Za6Czbtt1Bp9tNppcScz9Kr6pJNax
+ dT7NcDXrRhhz48yw4CCG5s2FSm+wXeLHFgFKe5VsQN8H62u9MMa7QwqqS2+wC9C7jbIAkKCRKxG
+ hRjc9OY/swiL2Kr+1E2WEVzBstoL0ozZya3B8pFCGz0BoFBjYaTN41Ftd6d3Q5HeE8AIG5kvurw
+ BkNBxtn7yUpnjvF5AX32fAl2g86pCA7APTOK6cBhu
+X-Received: by 2002:a05:6a00:c0c4:10b0:8b1:d612:e945 with SMTP id
+ d2e1a72fcca58-8b1d612eeb3mr2065644b3a.52.1793894314721; 
+ Thu, 05 Nov 2026 07:58:34 -0800 (PST)
 Received: from
- runnervmnwato.2baunt4tlemezmxix0wvdxtwza.xx.internal.cloudapp.net
- ([4.242.29.133]) by smtp.gmail.com with ESMTPSA id
- 98e67ed59e1d1-3b0b32b2b57sm4683428a91.15.2026.11.05.07.54.16
+ runnervmnwato.nnnncg5mxsqethhd2lfabujhpb.xx.internal.cloudapp.net
+ ([4.154.239.87]) by smtp.gmail.com with ESMTPSA id
+ d2e1a72fcca58-8b097fdf387sm2184519b3a.5.2026.11.05.07.58.34
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 05 Nov 2026 07:54:16 -0800 (PST)
+ Thu, 05 Nov 2026 07:58:34 -0800 (PST)
 From: linuxtestproject.agent@gmail.com
-To: Attila Fazekas <afazekas@redhat.com>
-Date: Thu,  5 Nov 2026 15:54:15 +0000
-Message-ID: <20261105155415.3529-1-linuxtestproject.agent@gmail.com>
+To: Xuewen Wang <wangxuewen_ky@163.com>
+Date: Thu,  5 Nov 2026 15:58:33 +0000
+Message-ID: <20261105155833.3675-1-linuxtestproject.agent@gmail.com>
 X-Mailer: git-send-email 2.56.0
-In-Reply-To: <20261105080245.2067876-1-afazekas@redhat.com>
-References: <20261105080245.2067876-1-afazekas@redhat.com>
+In-Reply-To: <20261105104639.996329-1-wangxuewen_ky@163.com>
+References: <20261105104639.996329-1-wangxuewen_ky@163.com>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
 X-Spam-Status: No, score=-3.6 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
@@ -85,9 +86,9 @@ X-Spam-Status: No, score=-3.6 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
 	SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] mmap22: Bound child memory allocation to avoid OOM
+Subject: Re: [LTP] testcases: sysfs: Add sys_thp02
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -102,12 +103,53 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Attila,
+Hi Xuewen,
 
-On Thu Nov 5 09:02:45 2026 +0100, Attila Fazekas <afazekas@redhat.com> wrote:
-> mmap22: Bound child memory allocation to avoid OOM
+On Thu, Nov 5, 2026 at 6:46 PM, Xuewen Wang <wangxuewen@kylinos.cn> wrote:
+> testcases: sysfs: Add sys_thp02
 
-Verdict - Reviewed
+> +/*\
+> + * Sanity checks for the multi-size Transparent HugePage (mTHP) attributes
+> + * exported under /sys/kernel/mm/transparent_hugepage/hugepages-*kB/.
+
+The unescaped '*kB' after '-' in the reStructuredText doc comment is parsed
+as an unclosed emphasis start-string. Use 'hugepages-<size>kB/' (matching the
+next paragraph) or wrap the path in double backticks.
+
+> +	if (is_anon)
+> +		TST_SYSFS_ASSERT_CHOICE(enabled_allowed, NULL, 0,
+> +					PATH_MM_THP "/%s/enabled", dir);
+> +
+> +	if (is_shmem)
+> +		TST_SYSFS_ASSERT_CHOICE(shmem_allowed, NULL, 0,
+> +					PATH_MM_THP "/%s/shmem_enabled", dir);
+> +
+> +	for (i = 0; any_stats[i]; i++) {
+> +		TST_SYSFS_ASSERT_RANGEUU_SILENT(0, ULONG_MAX,
+> +						PATH_MM_THP "/%s/stats/%s",
+> +						dir, any_stats[i]);
+> +	}
+> +
+> +	if (is_anon) {
+
+These two 'if' statements have multi-line bodies without curly braces and
+duplicate the 'if (is_anon)' and 'if (is_shmem)' blocks immediately below.
+Move the TST_SYSFS_ASSERT_CHOICE() calls into the braced 'if (is_anon)' and
+'if (is_shmem)' blocks below (or add curly braces).
+
+> +static void run(void)
+> +{
+> +	DIR *d;
+> +	struct dirent *ent;
+> +	int found = 0;
+> +
+> +	d = TST_SYSFS_TRY_OPENDIR(PATH_MM_THP);
+
+'found_pmd' is a file-scope static variable that is set to 1 in check_size()
+and never reset at the start of run(), so it stays set across '-i'
+iterations. Reset 'found_pmd = 0;' at the beginning of run().
+
+Verdict - Needs revision
 
 ---
 Note:
