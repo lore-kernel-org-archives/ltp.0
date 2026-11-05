@@ -2,81 +2,81 @@ Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 003C1606A326
-	for <ltp@archiver.kernel.org>; Thu,  5 Nov 2026 00:38:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D236606A326
+	for <ltp@archiver.kernel.org>; Thu,  5 Nov 2026 00:39:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=daSuMZOe
+	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=vJDzP5Xk
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B9C083CDE26
-	for <ltp@archiver.kernel.org>; Thu,  5 Nov 2026 01:38:46 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id A109F3CDB24
+	for <ltp@archiver.kernel.org>; Thu,  5 Nov 2026 01:39:26 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 8124D3CD6FA
- for <ltp@lists.linux.it>; Thu,  5 Nov 2026 01:38:19 +0100 (CET)
-Received: from mail-oo2-x03.google.com (mail-oo2-x03.google.com
- [IPv6:2607:f8b0:4864:31::3])
+ by picard.linux.it (Postfix) with ESMTPS id 7363D3CD79F
+ for <ltp@lists.linux.it>; Thu,  5 Nov 2026 01:39:13 +0100 (CET)
+Received: from mail-oo2-x06.google.com (mail-oo2-x06.google.com
+ [IPv6:2607:f8b0:4864:31::6])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 1CE55600058
- for <ltp@lists.linux.it>; Thu,  5 Nov 2026 01:38:19 +0100 (CET)
-Received: by mail-oo2-x03.google.com with SMTP id
- 006d021491bc7-6f436312596so542911eaf.1
- for <ltp@lists.linux.it>; Wed, 04 Nov 2026 16:38:19 -0800 (PST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 074941400123
+ for <ltp@lists.linux.it>; Thu,  5 Nov 2026 01:39:13 +0100 (CET)
+Received: by mail-oo2-x06.google.com with SMTP id
+ 46e09a7af769-8217177c5daso318202a34.0
+ for <ltp@lists.linux.it>; Wed, 04 Nov 2026 16:39:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20260707; t=1793839098; x=1794443898; darn=lists.linux.it;
+ d=gmail.com; s=20260707; t=1793839151; x=1794443951; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to:content-type;
- bh=cRK/AWUZFfrfc63HFvB2uHlEPdHGfG7DyGcoaMcp3d0=;
- b=daSuMZOedeOvHyffgMeJ4C9imghjmPyRLC/36xwJUTPFSUOMHOk4GccPlYTwomEXnF
- 2gMsnma2EBdA+OalIdkOKOIgG+lE2Dux83LcqWQ+pml6bh98LNIKDHUnNUU+WONadFvH
- 0j6a9TQi4CijGFeVJAdGCnkAooH9gaJ0IvX2/IydBZlRVkSNtJJsAKA4PtjUilq9m0cw
- JGnITW4yr8zezHdp93rgvXW9Cv8Sd/+r9l42GbpcxrGW3PKlOIBcw3zVlwJTer5GB+pV
- w9AJltx6AID5qv6N17hUOHp+RPEPRx30fEINEYzEXCctCbs6IAZ93W0be8VglPOmTdfB
- FBTQ==
+ bh=zBZGjvhuv7kI2zhD6kHbCZOhSsXnxwdODO0hJ5YuNeE=;
+ b=vJDzP5Xksj+bta29TWHlXQ9oZEZY+GQDcrTNZ2Riduxkrt8L5jNqeV+vRY875oXlwX
+ XMlDqRlHPOfuR/NBn0EQy4zNODrmNtvmnDk6vvKtiYRGh5KZJSoc8lArkH0tUe+ii52B
+ WsQeINU8TteuV5Q1AjKLn8+bcPb5tqAS4lVSZNwnryqUtWf3YfASGiaA4WaQ3B/mY55l
+ V69HTQOVo5dnvYi6xA/LUr+o7WGDs6EWAHu1Xmy5i/kWy5HmtLP4phWfabNqcvRAg2nI
+ s8nw9BCo4dMasbwZQ1SaWKLeInfBk0g0jdjWy7E0LfUo6ch0jJlTtcwvCoGtgojsVSZG
+ dx5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20260707; t=1793839098; x=1794443898;
+ d=1e100.net; s=20260707; t=1793839151; x=1794443951;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to:content-type;
- bh=cRK/AWUZFfrfc63HFvB2uHlEPdHGfG7DyGcoaMcp3d0=;
- b=xDALsY78fuu1uOo6YMPany05xKB5dLfBVnkLbdTEMuww402l7tBhSrCNKNCFQypqt4
- e78FTynyK0Ln8tC4QO22Qa7v58ehl/4TBCb7Gztirg84pNyQyPa+3ZAx6RwtXRny5R5h
- npkp6gLl3GHHaC01Y6OOocdWsapGgCM6A7QuW9rqsWby7kFMyiyvQQvJ5O5KrYrmksNZ
- FBWxkAdMaSVPYmKH/rebkcYkpW/7s7OddToVzPKx3umsV9x/QSFJ2c026wBSCpKvC0np
- tZNsMD4nAgzp94I/MoCaovamZBNmojInqkFoE6ZF35XScHP4fgan76bHACgctF0A7oXg
- 3p+w==
-X-Gm-Message-State: APuU4Z+19PR2cTjTgBTWetDvshR1hYGWIXTmZ9QxpAzM83JnK4egvjTC
- sCfW31qJB/7HgQlvRGGMpkj5kOA7SjoN+w5vbbzgBOCQok0W9WmTVkuS
-X-Gm-Gg: AYBFou2bR7uk1E2P34IWc6tTVcl0vo0gay6ej0dKlNPljcQfJnMM/pvi9NW2Z7Isk+B
- dAFsaFAXroxea9iIKIIzJ9Y8/gJFXbReLCdBSEtMP8/3UJdTeuhy9Imox9s64KnzPHOdptME3Mj
- 6j4QL+7x314C2YGMJAgf42kCDDlMkF6HC5NA/V8oHWCsGiaSS5VV9UP6fZ9NyS5lrSyqmtZmanZ
- rSq08BppD8FAY/L3CaSWLLAqMdjVOLiqX2MmiCM3D2ZeKe5x9AAKhDJ0BiYt8JcNuLSJrpoI8V0
- +gAdAtAFDff8X8nvTb4QDgDpr4+kLLW0Q6Cve09qCsdSMOdbIAaEOScmem2MadlcG4IdL8gvAIh
- JDljerhV4XD30Y891Y7NBi9mslJi/kKuDCkOoD68bE+UGUoLUAoVkkffpQet1/HvRu8Te6mNFUP
- 5VecsnTBeirX7umrnpy94S8TmBRtIz1AYm7fvh1cPspDyJC4eycBlwcz19Z9sNPWb4Rk7K6/gY4
- Z1TjK3JBvt1dJxNJOB2ipb4FfPR7lauk5DZby+YaOEEmj8wM/zS7+Do3lL/gVkt0t7mELsRb+/c
- UMhZhOV+yw3NbavCJOgEkldwaPyJpaZSBivdPqdqhXwdmdpm+N+yh1G9PWC3TnXJ6TC3sjM+0i5
- wWpJqFGOtpyGDlZU4FErkP+4jlCkHWgTiM9i9g3/sVkJl
-X-Received: by 2002:a05:6820:3387:10b0:716:cd2c:e43e with SMTP id
- 006d021491bc7-716cd2ce519mr1106818eaf.33.1793839097601; 
- Wed, 04 Nov 2026 16:38:17 -0800 (PST)
+ bh=zBZGjvhuv7kI2zhD6kHbCZOhSsXnxwdODO0hJ5YuNeE=;
+ b=2JSw+FRjb4hYZ4FKG0Fd4Y3qOwCkeShk0aVXWzsc5ZW7w68frBg21GXLDgNE11YxC9
+ KQhIC5oXF6ZWumUNPdKXJI/CQgcLflHzJL00xKGeY0+CnyiMgEAXKt+tj175WIHF9LFf
+ rlRDpV3ROTACbiToRqDr0SZKRBDTZHH9muiIRxzay1NsS0g6qbMpbf/1d9rGLF+SK4Fn
+ DQn9pRCbODFrVt+zKQwVft7A0r5tKjXkYK9x7olWb5atv+ivLd5ZVvAQL4fs5BbHXb9r
+ NcqnXVYwQMeN96OPsbPuF9bEmY9aYHnWkihjFhvoP19zlbQDAfbaPAp9z9vMzulttfdd
+ Rt5g==
+X-Gm-Message-State: APuU4Z+ggm7C+/ToSd9p8BoZSPyydnuF6wdlb600CdXRzIXqwN60jp26
+ FDIcaHV1BdciQEIOA6TXFWtVe18BXZj7dp7dl6stgC4KvEyZGzrVJO3KwfekhajkZ+A=
+X-Gm-Gg: AYBFou1II6ejjOoUUfmTHAmfiTy8h169iPkX/rKsZk49HwyrcpkY2RQRsRgBFgSF/r/
+ 9FaKtIcAmw/OaS2eCIO5qQio5rIbejx2mgocIvFOZ52z/dkjV9TuXUrRswm7GoBYVuS1lD8k2Ym
+ EXknI9tcL9QE48R8Mcvy1P5b+dy+3Jxs9iaYwMj+RApoGWiCUAVts6yWIUwt9+uvtveeI9avasF
+ BVVgsCKM4gSOISLh/gm+NoKrcptG9Uv+f6y2+OBB9/rzyuhzXFqiqBfebiZghzA+2ldTcoFTnuw
+ om/f8h0sXdGiHfXziA96Mu+11cTzlnDrxhNYN7Pil2LZcPzB2FmN1/MBHoVklfnXujkJyyWXpOS
+ fbMBOIZiEZ2FToWSd7AR6gSzs+nVT8Gl2Wfb14TnOpWhuJsbGyNf8CEqhyNEvGoRvHKKKsDH7nr
+ VjtJY9Gr+WJKGSHyEWsKDZUxvElH+Z9kv8rAoVjwWFPlnZJU31jkuJTxG9qwr0TpJDAqDk0203Q
+ QsrcG1m5i4VB5ewazVNaleq7Yh5GXGOl7blKEBtJ/v7pyOJKdYkbJaZLHiE1qdJtqyQRGIckIhY
+ CxGnfJXwif8fj6Eov+dv55S+jQTw9r49yy7dVZQQgE6DudXddUbzflgq2S8Wu2whQuUstih9qCk
+ nCN+KI1l1D+d92/rSqwc8+3rqgkYVXAHCXnWuoXGxorAt
+X-Received: by 2002:a05:6870:3b15:b0:475:e0a7:9f2b with SMTP id
+ 586e51a60fabf-4a9076a5287mr10921099fac.25.1793839151204; 
+ Wed, 04 Nov 2026 16:39:11 -0800 (PST)
 Received: from
  runnervmwuk1x.y3en5ldd3b2ebobdorhaggvslg.jx.internal.cloudapp.net
- ([172.202.174.102]) by smtp.gmail.com with ESMTPSA id
- 006d021491bc7-716c12d1f36sm2726662eaf.8.2026.11.04.16.38.14
+ ([172.202.174.104]) by smtp.gmail.com with ESMTPSA id
+ 586e51a60fabf-4acea56853dsm3208577fac.8.2026.11.04.16.39.09
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 04 Nov 2026 16:38:15 -0800 (PST)
+ Wed, 04 Nov 2026 16:39:10 -0800 (PST)
 From: linuxtestproject.agent@gmail.com
-To: Avinesh Kumar <avinesh.kumar@suse.com>
-Date: Thu,  5 Nov 2026 00:38:13 +0000
-Message-ID: <20261105003813.3577-1-linuxtestproject.agent@gmail.com>
+To: Anders Roxell <anders.roxell@linaro.org>
+Date: Thu,  5 Nov 2026 00:39:08 +0000
+Message-ID: <20261105003908.3796-1-linuxtestproject.agent@gmail.com>
 X-Mailer: git-send-email 2.56.0
-In-Reply-To: <20261104221453.1076748-1-avinesh.kumar@suse.com>
-References: <20261104221453.1076748-1-avinesh.kumar@suse.com>
+In-Reply-To: <20261104225051.402911-2-anders.roxell@linaro.org>
+References: <20261104225051.402911-2-anders.roxell@linaro.org>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
 X-Spam-Status: No, score=-3.6 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
@@ -85,10 +85,9 @@ X-Spam-Status: No, score=-3.6 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
 	SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] syscalls/ioctl_loop0[23]: TCONF when LOOP_CHANGE_FD is
- not supported
+Subject: Re: [LTP] openposix: Install the .args files
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -103,10 +102,10 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Avinesh,
+Hi Anders,
 
-On Wed Nov 4 23:14:50 2026 +0100, Avinesh Kumar <avinesh.kumar@suse.com> wrote:
-> syscalls/ioctl_loop0[23]: TCONF when LOOP_CHANGE_FD is not supported
+On Wed Nov 4 23:50:50 2026 +0100, Anders Roxell <anders.roxell@linaro.org> wrote:
+> openposix: Install the .args files
 
 Verdict - Reviewed
 
