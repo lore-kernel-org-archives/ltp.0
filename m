@@ -2,72 +2,93 @@ Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87DFB606A328
-	for <ltp@archiver.kernel.org>; Thu,  5 Nov 2026 08:03:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E451606A32E
+	for <ltp@archiver.kernel.org>; Thu,  5 Nov 2026 08:05:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=lists.linux.it header.i=@lists.linux.it header.a=rsa-sha256 header.s=picard header.b=g7dkE76X;
-	dkim=fail reason="signature verification failed" (1024-bit key, unprotected) header.d=redhat.com header.i=@redhat.com header.a=rsa-sha256 header.s=mimecast20190719 header.b=HYijDeaW
+	dkim=pass (1024-bit key, unprotected) header.d=lists.linux.it header.i=@lists.linux.it header.a=rsa-sha256 header.s=picard header.b=ZuMf+sAM;
+	dkim=fail reason="signature verification failed" (1024-bit key, unprotected) header.d=redhat.com header.i=@redhat.com header.a=rsa-sha256 header.s=mimecast20190719 header.b=X/XY9+l0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1793865827; h=to : date :
- message-id : mime-version : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
- reply-to : cc : content-type : content-transfer-encoding : sender :
- from; bh=725fyercWX2VJqzq3OJzD88kiKEe2VW+qsKD+tJhIVU=;
- b=g7dkE76XaLn8ON3GYoJBMsjbgZwK/VYAfOA4w0U+JBJBjLFyOrMvgxIB9iGWOpe9GUY4q
- MqktHYCP9+bSFwQ9VeK0wrcNqz2bsNNo2V3Redsx2sLW0sqeljYHWXq5DFTTforhDPo4foq
- BdmKyn2Mz5gATPhZFa6YOYIXKgGn2NA=
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1793865933; h=mime-version :
+ references : in-reply-to : date : message-id : to : subject : list-id
+ : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-type :
+ content-transfer-encoding : sender : from;
+ bh=ZdpzrNeEIsBpE8Bi7l4ivpxwe9aTZY1ZC0czH3hs+ZA=;
+ b=ZuMf+sAMWsqMybGAv0WEqaMIxwXaUdtfiqiUByx673l+tf4ecUdXESQuZdKDXiW/adva3
+ Pre/v88bsasOFgoqXLe3+p9CXEL0KxCk93ktsbqEQf3VAnlHjvGehL9Y5A5rT8MqLVB9GtB
+ 4ZBI2fG+vCCshWbU46nlG8T+YmUssDE=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 2086F3CDA2B
-	for <ltp@archiver.kernel.org>; Thu,  5 Nov 2026 09:03:47 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 7B6773CB27C
+	for <ltp@archiver.kernel.org>; Thu,  5 Nov 2026 09:05:33 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 063FC3C01A0
- for <ltp@lists.linux.it>; Thu,  5 Nov 2026 09:03:27 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 247033C22F5
+ for <ltp@lists.linux.it>; Thu,  5 Nov 2026 09:05:14 +0100 (CET)
 Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 5EDEC200A08
- for <ltp@lists.linux.it>; Thu,  5 Nov 2026 09:03:26 +0100 (CET)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 78F281400DA3
+ for <ltp@lists.linux.it>; Thu,  5 Nov 2026 09:05:12 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1793865805;
+ s=mimecast20190719; t=1793865911;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=9zu0l/pyE4JPSDMkpK+p2RHg+GFpJNbACxqSMCykLGY=;
- b=HYijDeaWBrYadjCtbjfrUZO1R1WPHrIQJRwqeh+VGyzVyLE2fIi1tVUEQpWzrbNH0KdQsw
- LCHKVRz1JOOepfwdLiV0l7/2xWODKh8ZLF+j+BpyvnEAQA20AmGHpEF4ETQ7HWOsO2eSZt
- 4rK3X0YGbtEfvjPzAr6c9xtlP71mtYg=
-Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-35-aEwOM43RP-WTr_yiU26bBA-1; Thu,
- 05 Nov 2026 03:03:24 -0500
-X-MC-Unique: aEwOM43RP-WTr_yiU26bBA-1
-X-Mimecast-MFC-AGG-ID: aEwOM43RP-WTr_yiU26bBA_1793865803
-Received: from mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com
- (mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.12])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS
- id E822B18002C3
- for <ltp@lists.linux.it>; Thu,  5 Nov 2026 08:03:22 +0000 (UTC)
-Received: from intrepid.redhat.corp
- (headnet04.pony-001.prod.iad2.dc.redhat.com [10.2.32.116])
- by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP
- id E0BF21956041; Thu,  5 Nov 2026 08:03:21 +0000 (UTC)
-To: ltp@lists.linux.it
-Date: Thu,  5 Nov 2026 09:02:45 +0100
-Message-ID: <20261105080245.2067876-1-afazekas@redhat.com>
+ in-reply-to:in-reply-to:references:references;
+ bh=AD9gjD5Q4Qnxfm4TZtQlJGuyS1cnoIziGVo78c1dIyI=;
+ b=X/XY9+l06JyYMnFjnC4gTggfy7ZQN2bXOCJIzf5o8MA/W5SKBtXSIInXLDIG48S+RTrrOc
+ tXHH/ggRPOFiXi1BsihYuJUdYPbnVENOR32aDTC9q6Au8IA99JPMjodZ7QFEg8Q5/n6rD3
+ +JiFla09zvIrsBSnVuMDKZc+063lmSA=
+Received: from mail-yw1-f198.google.com (mail-yw1-f198.google.com
+ [209.85.128.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-246-hikif8lXOWiK4aNSRgphbg-1; Thu, 05 Nov 2026 03:05:10 -0500
+X-MC-Unique: hikif8lXOWiK4aNSRgphbg-1
+X-Mimecast-MFC-AGG-ID: hikif8lXOWiK4aNSRgphbg_1793865909
+Received: by mail-yw1-f198.google.com with SMTP id
+ 00721157ae682-8b0cd41e7aaso25540277b3.3
+ for <ltp@lists.linux.it>; Thu, 05 Nov 2026 00:05:10 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20260707; t=1793865909; x=1794470709;
+ h=content-type:cc:to:subject:message-id:date:from:in-reply-to
+ :references:mime-version:x-gm-gg:x-gm-message-state:from:to:cc
+ :subject:date:message-id:reply-to:content-type;
+ bh=AD9gjD5Q4Qnxfm4TZtQlJGuyS1cnoIziGVo78c1dIyI=;
+ b=igD48nDE3GqiVWsElMbsMAofHZjZtH5pCn5WG+Ku1Lt7/yzDLodWQJvcsCylsEdaY6
+ n705r6ddSHtOAdcGKN3SekNgM6zkeVlv1dJY9F225DNQOatYCbFqmChZHTp90NjIOvdK
+ oFedPzRlDPuv/gsqIvQAojTOZCD3ReH8mapzqI/SqnrtnSvXLIorLgkQDgD/K5l+UZz5
+ lDopeGffsCXbc3kkotMNSuWcWQuXlBipqdn7Zu8u0A6WRdPStoYAFYOOf7Ng/rHZSUvO
+ Bnh+XBxrnY1dWcL1cfQAvRZLJC5QG8qkjG63407gfH3hsqRS9y+uhjFVZScg+cFnN+AK
+ B4sQ==
+X-Gm-Message-State: APuU4Z9BRr6CU5ou3rxtZMMCoc9gbpTBYvkkgM/8DR7jRsGf2xSo9yXT
+ ZmC1IRxjGgiTlgP1pBkOAyQAu1QqsR2wtxw/M3AsHFakwiO5Me+m5kfZipwqsNoIa8HfEEM+Ozm
+ 9us9sXFTNGFZbEwA0CTNbJ6m+7QBQdJZ7fcGpPrthFDsWYEICv13CqjDCbrxXz3wwUPdltjwcbK
+ AuNgAMORx+SjGUZjga/KKvi+yMTrbr9BAo1dc=
+X-Gm-Gg: AYBFou2Xr78FieVQI+Uv6A9MCsfUF7jMLojP/IJDAIfPhZD0zBoOtN/L99/XfV+50QM
+ oyPq1OH7RJLmBf+fSDrwi2L8emu67/jw0xkDt6gEp34vLBlPuMWYlHKYfIpn+tXGUROJqzYyAjQ
+ Mw5F/QycUrwpdTHozEwQ6rTiyDP9oP8Gb7imwUYwFtAWBRmaOd2KS1u0rXadCD+E+IjeT2Ta2DT
+ P7twxlu8ZJcNBAkajvB3CxEFRD432q8oWfAqOhvNmVctEerHW0=
+X-Received: by 2002:a05:690c:c6d1:b0:8b0:cc41:a12b with SMTP id
+ 00721157ae682-8b2b6740d19mr82887867b3.38.1793865909432; 
+ Thu, 05 Nov 2026 00:05:09 -0800 (PST)
+X-Received: by 2002:a05:690c:c6d1:b0:8b0:cc41:a12b with SMTP id
+ 00721157ae682-8b2b6740d19mr82887797b3.38.1793865908830; Thu, 05 Nov 2026
+ 00:05:08 -0800 (PST)
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.12
+References: <20261102105704.1577364-1-afazekas@redhat.com>
+ <auteByNCMzYWA5uV@yuki.lan>
+In-Reply-To: <auteByNCMzYWA5uV@yuki.lan>
+Date: Thu, 5 Nov 2026 09:04:57 +0100
+X-Gm-Features: AclHuK_3LeczrA99JkK2gK7X8xdqKGAWnpxRWEKXyt7mCB1-kp9b8-PrEc4V2hg
+Message-ID: <CAMTxPK0ZBX8gRmpWNfbQ+8jYhZuzKnSxCN3yefdROA+dw4da0g@mail.gmail.com>
+To: Cyril Hrubis <chrubis@suse.cz>
 X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: JZliMo7VEZTA82L3Hz5KhHiOXH9cJD6e1ce6yESshec_1793865803
+X-Mimecast-MFC-PROC-ID: ptSqE5I_nzcM8yGKtsv96sQhZaVWhG9OfoyEblu9EAI_1793865909
 X-Mimecast-Originator: redhat.com
 X-Spam-Status: No, score=-16.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,INCLUDES_CR_TRAILER,
@@ -75,9 +96,10 @@ X-Spam-Status: No, score=-16.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2] mmap22: Bound child memory allocation to avoid OOM
+X-Content-Filtered-By: Mailman/MimeDel 2.1.29
+Subject: Re: [LTP] [PATCH] mmap22: Bound child memory allocation to avoid OOM
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -89,65 +111,28 @@ List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 From: Attila Fazekas via ltp <ltp@lists.linux.it>
 Reply-To: Attila Fazekas <afazekas@redhat.com>
-Cc: Attila Fazekas <afazekas@redhat.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Currently, stress_child() allocates memory in an infinite loop without
-bounds. Under memory pressure, once the cgroup memory limit is reached
-and the parent's droppable pages are reclaimed, the child continues
-allocating non-droppable heap memory. This eventually exhausts the cgroup
-limit and triggers the cgroup OOM killer, terminating either the child or
-the test parent process.
-
-Fix this by bounding the child's allocation to CHILD_ALLOC_MAX.
-The total requested memory (128MB parent + 160MB
-child = 288MB) exceeds the 256MB cgroup limit by 32MB, which reliably
-forces the kernel to reclaim MAP_DROPPABLE pages. Once CHILD_ALLOC_MAX is
-reached, the child calls pause() to keep memory resident. Since 160MB is
-well below the 256MB cgroup limit, non-droppable memory alone cannot
-trigger an OOM.
-
-Assisted-by: Gemini CLI
-Signed-off-by: Attila Fazekas <afazekas@redhat.com>
----
- testcases/kernel/syscalls/mmap/mmap22.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
-
-diff --git a/testcases/kernel/syscalls/mmap/mmap22.c b/testcases/kernel/syscalls/mmap/mmap22.c
-index 0b95c578f..31acefdba 100644
---- a/testcases/kernel/syscalls/mmap/mmap22.c
-+++ b/testcases/kernel/syscalls/mmap/mmap22.c
-@@ -26,6 +26,7 @@
- 
- #define MEM_LIMIT (256 * TST_MB)
- #define ALLOC_SIZE (128 * TST_MB)
-+#define CHILD_ALLOC_MAX (MEM_LIMIT - ALLOC_SIZE + 32 * TST_MB)
- 
- static struct tst_cg_group *cg_child;
- static pid_t child;
-@@ -33,13 +34,15 @@ static int page_size;
- 
- static void stress_child(void)
- {
--	for (;;) {
-+	for (size_t sz = 0; sz < CHILD_ALLOC_MAX; sz += page_size) {
- 		char *buf = malloc(page_size);
- 
- 		if (!buf)
--			exit(1);
-+			break;
- 		memset(buf, 'B', page_size);
- 	}
-+
-+	pause();
- }
- 
- static void test_mmap(void)
--- 
-2.56.0
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+T24gV2VkLCBOb3YgNCwgMjAyNiBhdCA1OjQx4oCvUE0gQ3lyaWwgSHJ1YmlzIDxjaHJ1YmlzQHN1
+c2UuY3o+IHdyb3RlOgoKPiBIaSEKPiA+IEFzc2lzdGVkLWJ5OiBHZW1pbmkgQ0xJCj4gPiBTaWdu
+ZWQtb2ZmLWJ5OiBBdHRpbGEgRmF6ZWthcyA8YWZhemVrYXNAcmVkaGF0LmNvbT4KPiA+IC0tLQo+
+ID4gIHRlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvbW1hcC9tbWFwMjIuYyB8IDcgKysrKystLQo+
+ID4gIDEgZmlsZSBjaGFuZ2VkLCA1IGluc2VydGlvbnMoKyksIDIgZGVsZXRpb25zKC0pCj4gPgo+
+ID4gZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvbW1hcC9tbWFwMjIuYwo+
+IGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9tbWFwL21tYXAyMi5jCj4gPiBpbmRleCAwYjk1
+YzU3OGYuLjE2ZmNiNmRkOCAxMDA2NDQKPiA+IC0tLSBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2Fs
+bHMvbW1hcC9tbWFwMjIuYwo+ID4gKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9tbWFw
+L21tYXAyMi5jCj4gPiBAQCAtMjYsNiArMjYsNyBAQAo+ID4KPiA+ICAjZGVmaW5lIE1FTV9MSU1J
+VCAoMjU2ICogVFNUX01CKQo+ID4gICNkZWZpbmUgQUxMT0NfU0laRSAoMTI4ICogVFNUX01CKQo+
+ID4gKyNkZWZpbmUgQ0hJTERfQUxMT0NfTUFYIChBTExPQ19TSVpFICsgMzIgKiBUU1RfTUIpCj4g
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICBeCj4gICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICBXb3VsZG4ndCB0aGlzIGJlIGJldHRlcjoKPiAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgIChNRU1fTElNSVQgLSBBTExPQ19TSVpFICsgMzIqVFNUX01CKQo+Cj4gVGhpcyBpcyBiZXR0
+ZXIsIEkgc2VudCB2Mi4KVGhhbmtzIGZvciB0aGUgcmV2aWV3LgoKCj4gVGhhdCB3YXkgdGhpcyB3
+b3VsZCBzdGlsIHdvcmsgaWYgd2UgY2hhbmdlIGVpdGhlciBNRU1fTElNSVQgb3IKPiBBTExPQ19T
+SVpFLgo+Cj4gT3RoZXJ3aXNlIHRoZSBjaGFuZ2UgbG9va3MgZ29vZC4KPgo+IC0tCj4gQ3lyaWwg
+SHJ1YmlzCj4gY2hydWJpc0BzdXNlLmN6Cj4KPgoKLS0gCk1haWxpbmcgbGlzdCBpbmZvOiBodHRw
+czovL2xpc3RzLmxpbnV4Lml0L2xpc3RpbmZvL2x0cAo=
