@@ -2,114 +2,93 @@ Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B88A606A328
-	for <ltp@archiver.kernel.org>; Fri,  6 Nov 2026 08:58:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0657F6082BFE
+	for <ltp@archiver.kernel.org>; Fri,  6 Nov 2026 11:35:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key, unprotected) header.d=suse.cz header.i=@suse.cz header.a=rsa-sha256 header.s=susede2_rsa header.b=iClYCQVV;
-	dkim=fail reason="signature verification failed" header.d=suse.cz header.i=@suse.cz header.a=ed25519-sha256 header.s=susede2_ed25519 header.b=q6uGa+Ks;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=suse.cz header.i=@suse.cz header.a=rsa-sha256 header.s=susede2_rsa header.b=dFYWK8rO;
-	dkim=neutral header.d=suse.cz header.i=@suse.cz header.a=ed25519-sha256 header.s=susede2_ed25519 header.b=rVy5pdB2
+	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=uohELTUQ
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 93E813CE1B0
-	for <ltp@archiver.kernel.org>; Fri,  6 Nov 2026 09:58:37 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 0F6893CFD9B
+	for <ltp@archiver.kernel.org>; Fri,  6 Nov 2026 12:34:59 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 345AC3C0069
- for <ltp@lists.linux.it>; Fri,  6 Nov 2026 09:58:23 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 33B4C3C281A
+ for <ltp@lists.linux.it>; Fri,  6 Nov 2026 12:34:43 +0100 (CET)
+Received: from mail-qk2-x05.google.com (mail-qk2-x05.google.com
+ [IPv6:2607:f8b0:4864:34::5])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 04592600045
- for <ltp@lists.linux.it>; Fri,  6 Nov 2026 09:58:22 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 3DF0722160;
- Fri,  6 Nov 2026 08:58:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1793955502;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=1HrLhGPbJ+wSzh8rUMZxKziVYfp5OFEvgbGtPnI/qRw=;
- b=iClYCQVV0xyYrd67iO+uUuu2q6Ef3Z6reGJyBfe6pj/VrCIPIc+863ZIFzjjrN24pWzewz
- l/UYdzk4DCs5mW7dtmRiCYesjnZwjqTb892DRaUrAkikiW1mdO1Q1WRukrLUxbcqHb8/gy
- uuTkEwm9c0EjctG7x9mMXueQiplRmtI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1793955502;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=1HrLhGPbJ+wSzh8rUMZxKziVYfp5OFEvgbGtPnI/qRw=;
- b=q6uGa+KsbInzgpCScoUvPpLl0V7Bg7lp6YHl2UDOle4jBDLZ+0ffC/8ZbkCUf/FXAat2Ns
- uw+1/Z3k/er7HICA==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1793955501;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=1HrLhGPbJ+wSzh8rUMZxKziVYfp5OFEvgbGtPnI/qRw=;
- b=dFYWK8rON9y9qO5U40LLU0LHE4ihe0X52B2N1bu6ZDdMB0sswaVHdf+Bt2psttzyNIz5O3
- luvc/Iwj5tgauRXkrFSSu5S40RVmXs/nqIbncIDFushCIIugfJm0SO+b3U0MhagAhtg5kc
- jlf8ErnQFSwiyIM8QHRFCjaJ2yMwMqE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1793955501;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=1HrLhGPbJ+wSzh8rUMZxKziVYfp5OFEvgbGtPnI/qRw=;
- b=rVy5pdB2swdiak78SKIRY1Hm1RXRUEr2G0PD4LwYIZzkMxzb1VRX+07Y8ZnnaNnFi5j1zd
- sztnEsEZ+Z7T1GCQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 01206134E9;
- Fri,  6 Nov 2026 08:58:20 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id ChxmMqyW7WpZGQAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Fri, 06 Nov 2026 08:58:20 +0000
-Date: Fri, 6 Nov 2026 09:58:15 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: Avinesh Kumar <avinesh.kumar@suse.com>
-Message-ID: <20261106085815.GA561900@pevik>
-References: <20261104221453.1076748-1-avinesh.kumar@suse.com>
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id EE3151000A1D
+ for <ltp@lists.linux.it>; Fri,  6 Nov 2026 12:34:42 +0100 (CET)
+Received: by mail-qk2-x05.google.com with SMTP id
+ d75a77b69052e-5337b59ef7fso2731641cf.0
+ for <ltp@lists.linux.it>; Fri, 06 Nov 2026 03:34:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20260707; t=1793964882; x=1794569682; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to:content-type;
+ bh=udyiG03BCfsdTRdo4htRicdk3CwCt8trw2c8cbJVdq4=;
+ b=uohELTUQ1EywQixEejDUCNooFGDk4UKVnIGuOVa8Jtbte6vBDSck2WTn8lvHfPFwNR
+ KrOk29ypK7jJCjo2+77E9DKM3CBlgyX5UlSc5HBWqT43mMt2PuPnm9/QGnB42d3ZbQZo
+ 7ipd0FQ9cCzNvH6hFpY/3Tl3OBXfNEed2+n09ySh/Q0ZG8N3mujCz7UJX/M7JcnDDzNZ
+ Pp8QHd7Xt1U38oNron2A94Tl2rRhdKvhKL2NjqLvY3IRYDBxG8j6S2mRwcXx156jYIr7
+ D9HDPDx5271Eglzspq/lMi8oldP00/TVWORuIhUM93syp7VKbdhozX91s+j6+4712Qi6
+ Kt4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20260707; t=1793964882; x=1794569682;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to:content-type;
+ bh=udyiG03BCfsdTRdo4htRicdk3CwCt8trw2c8cbJVdq4=;
+ b=mGc3RgA+ULrbVYONHcraljb7I0C2tUo0ISB3fJM14IKauKKqx3s37ia6Ml2sua9sJB
+ NoARI1/i0l6rhghQcN4JEw7K/JikX05vAoCVlORsM2JuOfpzcB3TdmKGYewhpk13xUvy
+ cqxv0UTur5jj1aDroHrJB1adguePRbAgceEYbbSMkzy/XDLJU9jOTv63vNM0aVc+6uLZ
+ eLfxRZN13xjotqQfW7zsaIIBYAvBkAKaLobFMEV7bXTxn8HwIynkYzt+igkPyyysNqX+
+ 1KaPSSqnwiLbK3/CctB1scpuXhZLwuSO5MPl5vVZOPgcubKtEfrPaBFAaV+/PVtc6+kE
+ FNwg==
+X-Gm-Message-State: APuU4Z+xcvlc3uM9K8wsOcbMIdzg1azVX8OrMyl+SeFIFzhE8zR/TRMz
+ QqTcWm2ysiJQw5L2ulmGOsZqRGXoMc1gpdsyH2H9CrMdOYgP6L5P1EFC
+X-Gm-Gg: AYBFou0o3ri08+5dlwwyaNlNcwvU/flltfxPTN4Mp/BAeuoxPyu88MsD7t3pIEo7wKo
+ jf6/KD5Z67LbS9NwCZxQDI/0224NF1hzw3O4Umj5dItdRQB3sEH7eBHEw+6dhRkmudLU8PaSQL1
+ ZJdhNYkw/O2wQzM51xaBF7dOySVpPYowNTTQtdJUinDz9X5FQitXzdUOnXY/ZararTyAhyqofxI
+ IcMOiOdXVafILKYsTtWWGEskJazRLEj5nMvdNI7gXc75JJVYe4i1uq2HfNTuOSnYX+BbVKgZTne
+ ZbqwsQZEGpylG5MpJjFyP6wlWmzEbReNNxFnQ7MNnYiY1Yt/d82JlTCohDro5lrSfZnbyJxpTXV
+ NKFssZcQw+ghYXrKshEBmlHzEjqM/Y7FOXNCYPKru+aFcqDWBpNt+QdJKiXsUfvG6piIk5y+TOI
+ 3tjxmDoM6xVp42hTy6PiRdy3XDKp0ZOvQ/kRy2Oe8uN9FIKa9vjMcs30PlhT/8KqRmJO5fPHd3n
+ pTb6DrLptcasJWiONRBuYwam3+aQKux5sTnJOcqlaYM++kxjKilfIdt2MXey0UUrAAYP20s9gLT
+ ZXBDLtzBzAzwfvXc8/4soDa1L369zWngQNDS1xrS1Il4JwWv0arFGLhi7auvc7SSzq9JvIlNXXw
+ u7IF6D7fLjvmBvMm966WDUqG7psjYrRLTVsyqPsmdQw==
+X-Received: by 2002:ac8:6545:0:b0:537:b9f5:4682 with SMTP id
+ d75a77b69052e-54e15170c9dmr30839611cf.61.1793964881373; 
+ Fri, 06 Nov 2026 03:34:41 -0800 (PST)
+Received: from
+ runnervmwuk1x.12xziortip3ehm5r4a2ohvh4oa.cx.internal.cloudapp.net
+ ([20.109.38.171]) by smtp.gmail.com with ESMTPSA id
+ d75a77b69052e-54e2750172csm18008041cf.29.2026.11.06.03.34.40
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 06 Nov 2026 03:34:41 -0800 (PST)
+From: linuxtestproject.agent@gmail.com
+To: Xuewen Wang <wangxuewen_ky@163.com>
+Date: Fri,  6 Nov 2026 11:34:40 +0000
+Message-ID: <20261106113440.3874-1-linuxtestproject.agent@gmail.com>
+X-Mailer: git-send-email 2.56.0
+In-Reply-To: <20261106032251.62288-1-wangxuewen_ky@163.com>
+References: <20261106032251.62288-1-wangxuewen_ky@163.com>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20261104221453.1076748-1-avinesh.kumar@suse.com>
-X-Spamd-Result: default: False [-12.50 / 50.00]; SUSE_INTERNAL_BYPASS(-9.00)[];
- BAYES_HAM(-3.00)[100.00%]; NEURAL_HAM_LONG(-1.00)[-1.000];
- MID_RHS_NOT_FQDN(0.50)[]; HAS_REPLYTO(0.30)[pvorel@suse.cz];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
- MIME_TRACE(0.00)[0:+]; MISSING_XM_UA(0.00)[];
- TO_DN_SOME(0.00)[]; RCVD_TLS_ALL(0.00)[];
- RCPT_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- FROM_HAS_DN(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FROM_EQ_ENVFROM(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,imap1.dmz-prg2.suse.org:helo]; 
- RCVD_COUNT_TWO(0.00)[2]; REPLYTO_EQ_FROM(0.00)[]
-X-Spam-Score: -12.50
-X-Spam-Level: 
-X-Spam-Status: No, score=-8.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_PASS,SPF_PASS autolearn=ham
-	autolearn_force=no version=4.0.1
+X-Spam-Status: No, score=-2.6 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_INVALID,DKIM_SIGNED,FORGED_GMAIL_RCVD,FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_PASS,SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no
+	version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] syscalls/ioctl_loop0[23]: TCONF when
- LOOP_CHANGE_FD is not supported
+Subject: Re: [LTP] testcases: sysfs: Add sys_thp02
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -119,71 +98,27 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
 Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Avinesh,
+Hi Xuewen,
 
-> LOOP_CHANGE_FD was removed by d4fabede1da0 ("loop: remove support for
-> swapping loop fds") n v7.4-rc1 and it fails with EOPNOTSUPP.
+On Fri Nov 6 11:22:51 2026 +0800, Xuewen Wang <wangxuewen@kylinos.cn> wrote:
+> testcases: sysfs: Add sys_thp02
 
-> ioctl_loop02.c:85: TFAIL: LOOP_CHANGE_FD failed: EOPNOTSUPP (95)
-> ioctl_loop02.c:97: TFAIL: LOOP_CHANGE_FD failed expected EINVAL got: EOPNOTSUPP (95)
+Verdict - Reviewed
 
-> ioctl_loop03.c:34: TFAIL: LOOP_CHANGE_FD failed expected EINVAL got: EOPNOTSUPP (95)
+---
+Note:
 
-> Report TCONF for these checks.
+The agent can sometimes produce false positives although often its
+findings are genuine. If you find issues with the review, please
+comment this email or ignore the suggestions.
 
-Thanks, merged!
-
-> -	TEST(ioctl(dev_fd, LOOP_CHANGE_FD, file_fd_invalid));
-> -	if (TST_RET) {
-> -		if (TST_ERR == EINVAL)
-> -			tst_res(TPASS | TTERRNO, "LOOP_CHANGE_FD failed as expected");
-> -		else
-> -			tst_res(TFAIL | TTERRNO, "LOOP_CHANGE_FD failed expected EINVAL got");
-> -	} else {
-> -		tst_res(TFAIL, "LOOP_CHANGE_FD succeeded");
-> +		TEST(ioctl(dev_fd, LOOP_CHANGE_FD, file_change_fd));
-> +		if (TST_RET) {
-> +			tst_res(TFAIL | TTERRNO, "LOOP_CHANGE_FD failed");
-> +		} else {
-> +			tst_res(TPASS, "LOOP_CHANGE_FD succeeded");
-> +			TST_ASSERT_INT(loop_ro_path, 1);
-> +			TST_ASSERT_STR(backing_path, backing_file_change_path);
-> +		}
-> +
-> +		TEST(ioctl(dev_fd, LOOP_CHANGE_FD, file_fd_invalid));
-> +		if (TST_RET) {
-> +			if (TST_ERR == EINVAL)
-> +				tst_res(TPASS | TTERRNO, "LOOP_CHANGE_FD failed as expected");
-> +			else
-> +				tst_res(TFAIL | TTERRNO, "LOOP_CHANGE_FD failed expected EINVAL got");
-> +		} else {
-> +			tst_res(TFAIL, "LOOP_CHANGE_FD succeeded");
-> +		}
->  	}
-
->  	SAFE_CLOSE(file_fd);
-> @@ -134,6 +140,13 @@ static void setup(void)
->  		tst_res(TINFO | TERRNO, "LOOP_CONFIGURE is not supported");
->  		loop_configure_sup = 0;
->  	}
-> +
-> +	ret = ioctl(dev_fd, LOOP_CHANGE_FD, -1);
-> +	if (ret && errno == EOPNOTSUPP) {
-> +		tst_res(TINFO | TERRNO, "LOOP_CHANGE_FD is not supported");
-I dared to remove this TINFO | TERRNO message. Since there is only one errno,
-it's not important to print it, later TCONF is enough.
-
-Kind regards,
-Petr
-
-> +		loop_change_fd_sup = 0;
-> +	}
+Regards,
+LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
