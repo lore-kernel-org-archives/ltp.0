@@ -1,94 +1,111 @@
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43E42606A32D
-	for <ltp@archiver.kernel.org>; Sat,  7 Nov 2026 10:52:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F36E6606A326
+	for <ltp@archiver.kernel.org>; Sat,  7 Nov 2026 12:06:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=pPoRAvcP
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=ibm.com header.i=@ibm.com header.a=rsa-sha256 header.s=pp1 header.b=r4f4ZuK8
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 4CB783D0706
-	for <ltp@archiver.kernel.org>; Sat,  7 Nov 2026 11:52:04 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id A29D73D0C02
+	for <ltp@archiver.kernel.org>; Sat,  7 Nov 2026 13:06:11 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2998D3C08A6
- for <ltp@lists.linux.it>; Sat,  7 Nov 2026 11:51:47 +0100 (CET)
-Received: from mail-qk2-x00.google.com (mail-qk2-x00.google.com
- [IPv6:2607:f8b0:4864:34::])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 4FB173D0641
+ for <ltp@lists.linux.it>; Sat,  7 Nov 2026 13:05:54 +0100 (CET)
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
+ [148.163.158.5])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 6B80560063B
- for <ltp@lists.linux.it>; Sat,  7 Nov 2026 11:51:47 +0100 (CET)
-Received: by mail-qk2-x00.google.com with SMTP id
- af79cd13be357-93f184dad7aso112530785a.0
- for <ltp@lists.linux.it>; Sat, 07 Nov 2026 02:51:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20260707; t=1794048706; x=1794653506; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to:content-type;
- bh=AaZ4QVgJG5ZKHaWp8yKYY17+tWJ8tKadTbmeMYP4uUg=;
- b=pPoRAvcP3WU8X13jG7wkElbQT8J6s+7YABgJHEKODZi3mUI0JHfFo2WUj52CORayj9
- QP89s0nBM+fDMUpVyx8802h48OHQcvHeRpDfVtMY6vHoKWzgQhrh1OF2lbFKbLBbVmvF
- ZwzbGaiaEHLIZGx+W02xidusFpkxBr7IJg4B5duyrGQLTFCRd2yFdhyyAcJJjZ+LOQFW
- QPMo7SVCivkwWboRbm4OWVphLkEhCWwg9dWniEymWIsI6bXtfN08xDC+4hPYEgX72/pm
- hb4twfFvVgEagZOeK0iD4ia3fSf9cwYNJp8BQEAx6sMCODtiDvomyLMD9UHH+rEflJ0l
- qNfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20260707; t=1794048706; x=1794653506;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to:content-type;
- bh=AaZ4QVgJG5ZKHaWp8yKYY17+tWJ8tKadTbmeMYP4uUg=;
- b=KuyZ8SbJFXw6gxAY3YPRcAnKCY3PQFU8hjxUSKo2FqM6UiOiNnSBnIHZLtKMhwQP2/
- gxjW9EGPW7+gcDxxCieoMUTiOeUe+rQPaGLd7DHZLFMOHUae3mob4pyqV8IyLPwMOQyv
- F5kupIdAKBAZz4rIoRn666apCCAz97T28hdZPNI6x29fTJYK2gUdfs1+6dukp0cL7Jsx
- xhvbJVueaCosgytCccCx+hTq/XD3ee+vvjAf394euFGHeppWix8VmKHjTgupf6pOI+2g
- B2NeeKfrOeNGsPJuUp6pcIgKkaQiwciz00jVzh0fwtdotSqccq+M9Tfg/Omla1F96AOd
- EeEw==
-X-Gm-Message-State: APuU4Z/9YmpXv26Y7wtHZuBGoqkXEtr9EIp56XFXDQZFsXRUfXQrlPa5
- Kr0sUZGnQ8N8/baH7UqSlAA7b6aSQh6CyJXqOVwM096VZdj8Hl8/ar3u
-X-Gm-Gg: AYBFou0FOehDP4E8AMfMJx8E4mqWX6H8bR3H5uPEVICkD4Of8QfMB1rbNJOMGBLF93s
- qSbw7+RLX9gLsN3OLPQQLo5CBjp6XbhAp4Mjqeq/cyG3jlS7WzgAorKXGlp9aTUIzMp0CXrMDIu
- t9DpbHxZAIq6hd5xopqoZL6y7R/aYMChGA1ldbuU3FyLADbupjfjkJ1hbgq1H+8cSFMSe2f/E26
- L/PEr0BAXhpOzRa8TxJjOhLV8MNZ8QgGnD4bT6w3gjPyr8xIejN9hy4kz/PNTFdil0bnArFWHfs
- lAJI3O/OmcIwr6A23KP5yahQR9R6lY+P4QEpCDhbicNC3dpE9lwGrTb4IyRjtYLC9KPivPZ2qtr
- jlWSrmczX9RowzTYbTr56tQoatvxD27eeZzkRNzQZoA2ZIgOsQrngvVp926pSo1LmzwnFnaAnf9
- YpKML1qfGAR9goH0rRP28i4omD50cqtbRaXWvmrm58nWlC+tZyL6h+mPI5zXLY6ytCILuLA8a1z
- AlNtHsTxYVbBtWfhSaAqlC1uJn2jTdRLLJ/MgDWUv3rXfF6lqg4Mb8YsvY0tUxZcJESPlhXhXYM
- NC1hWas+9i/pR4Bio6hm7n1V1ETTU1/Cw84O9IiUXYjfTa8d0ZfELwe7BXZhvMEDzS0RlU0Lb11
- 5vgcao8fmhsfCt0GZoE8Gtw3jV457rtW1ioZeyc1M5Xw=
-X-Received: by 2002:a05:620a:6085:b0:93c:2c15:e510 with SMTP id
- af79cd13be357-945f353374bmr705917585a.37.1794048706159; 
- Sat, 07 Nov 2026 02:51:46 -0800 (PST)
-Received: from
- runnervmwuk1x.pymbk4rosloebn1wbs3h1bjgzg.bx.internal.cloudapp.net
- ([57.154.217.185]) by smtp.gmail.com with ESMTPSA id
- af79cd13be357-945f5c0445bsm342620185a.34.2026.11.07.02.51.45
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sat, 07 Nov 2026 02:51:45 -0800 (PST)
-From: linuxtestproject.agent@gmail.com
-To: Pavithra <pavrampu@linux.ibm.com>
-Date: Sat,  7 Nov 2026 10:51:45 +0000
-Message-ID: <20261107105145.4103-1-linuxtestproject.agent@gmail.com>
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 678B2600729
+ for <ltp@lists.linux.it>; Sat,  7 Nov 2026 13:05:53 +0100 (CET)
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id
+ 6A78i6to1085999; Sat, 7 Nov 2026 12:05:51 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+ :content-transfer-encoding:date:from:message-id:mime-version
+ :subject:to; s=pp1; bh=2F7xqWCNCjPbBum7PFHExlixcUICgTqaJalHdg4mH
+ dU=; b=r4f4ZuK8RtKavp1+lCvEIyknvtUNJDzBmjBGj6dT4rnl8uabuL8b4Ax1f
+ qNgv/uuqUObZJTLRt6QwIazaA9CUUZEx/rrbN7hq8+3idSMXpy3Ed/1vgxtPcbw6
+ Yq0fBEKBUD6gkxa4TsEYhXyyfr5fREXp/SYrdYF8iF9L1YIJyNveR0nzM3XA89ye
+ PnAPdMy+jmi/5KEc8TnK+CBNiw7e7VyR17v9m3tVi1W5tRxsTYIvWbFCWn6Vn5k3
+ uCcK1O5zjt2iF7nIMcb8NwUcvf7al6kkXoS9aVHxEgkGpJ3hDAf/NsyG4m9mzMfO
+ eEM4bT5G7pBYKJH3MmF9feqLdqESQ==
+Received: from ppma12.dal12v.mail.ibm.com
+ (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4hsumu9yst-1
+ (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+ Sat, 07 Nov 2026 12:05:51 +0000 (GMT)
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+ by ppma12.dal12v.mail.ibm.com (8.18.1.11/8.18.1.11) with ESMTP id
+ 6A7C4u6I942383; Sat, 7 Nov 2026 12:05:50 GMT
+Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
+ by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 4hsw2yhpc3-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Sat, 07 Nov 2026 12:05:50 +0000 (GMT)
+Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com
+ [10.20.54.100])
+ by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 6A7C5lbn46203204
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Sat, 7 Nov 2026 12:05:47 GMT
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 279E020043;
+ Sat,  7 Nov 2026 12:05:47 +0000 (GMT)
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id DA57120040;
+ Sat,  7 Nov 2026 12:05:45 +0000 (GMT)
+Received: from li-49acbccc-2994-11b2-a85c-d51b89e344f1.ibm.com.com (unknown
+ [9.43.34.10]) by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTP;
+ Sat,  7 Nov 2026 12:05:45 +0000 (GMT)
+From: Pavithra <pavrampu@linux.ibm.com>
+To: ltp@lists.linux.it
+Date: Sat,  7 Nov 2026 17:35:42 +0530
+Message-ID: <20261107120542.109078-1-pavrampu@linux.ibm.com>
 X-Mailer: git-send-email 2.56.0
-In-Reply-To: <20261107062811.79329-1-pavrampu@linux.ibm.com>
-References: <20261107062811.79329-1-pavrampu@linux.ibm.com>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-3.6 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_INVALID,DKIM_SIGNED,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_PASS,
-	SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no version=4.0.1
+X-TM-AS-GCONF: 00
+X-Proofpoint-Spam-Info: AW1haW4tMjYxMTA3MDA0NiBTYWx0ZWRfXyqz8Nbsxg8DD
+ hAV0GEIEjSDFDtSUrVeh1hFMMg0Jzm+DKr1rgH1zLTx8cuV1OVY9arvYe5q89h+FKr/B1URoat0
+ f/+BT0JB8ghaqz2XBvGtxTy2eSGLLcE=
+X-Authority-Analysis: v=2.4 cv=GISdgeNK c=1 sm=1 tr=0 ts=6aef141f cx=c_pps
+ a=bLidbwmWQ0KltjZqbj+ezA==:117 a=bLidbwmWQ0KltjZqbj+ezA==:17
+ a=zJRp6_cAMcgA:10 a=VkNPw1HP01LnGYTKEx00:22 a=RnoormkPH1_aCDwRdu11:22
+ a=RzCfie-kr_QcCd8fBx8p:22 a=VwQbUJbxAAAA:8 a=VnNF1IyMAAAA:8
+ a=5o72t8uOPyOTwoCe14IA:9
+X-Proofpoint-GUID: hvMFIz7l0VxzWIqs7hF76ex4yKqfqxbp
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYxMTA3MDA0NiBTYWx0ZWRfX0MLnyxC31bIr
+ efIeQu4lSO+2En2Hj573NAhSC58mwixaImwF0nj8rJc/oTHZzlndZrcWDFcFxyHAyiWEzOAH3Fo
+ fhTVUaMZj6AYAwSunm/J+PwkEkdWhZV6JhOWAQ+LO5m67LUH83phwlFmeOmZglA8zVYEJeQXh2c
+ M2/hMn9ipx28JfpskjUDa8ye7UtxpDzKZMOoNzDAbPAroKgRRdXhck/0zwJcNvsicmPWOz8VxFQ
+ iGnDHzTVQGcHE4u7lw8z2vQ8wCB/vMElci+P28uoyf3y4hseWY55X+oxdC2N+NlH9qgjV+cgYzz
+ 1A+mH3V7tsVhO1ozKf7UQgjCwKhabmMoW/XYMKhIHI0T5t+hqhdhocq1uR16rqtvCdne63JHbkD
+ 2TkbyppXIr38+EIR5kGuFstid9TTPj8ccF1I36kWNMN8loYJXsztOPfOLy8wrPzhB+Sq9cZBdQN
+ 4exm0Asl1G/YQMi7/sQ==
+X-Proofpoint-ORIG-GUID: hvMFIz7l0VxzWIqs7hF76ex4yKqfqxbp
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1176,Hydra:6.1.138,FMLib:17.12.100.49
+ definitions=2026-11-07_03,2026-11-06_01,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ suspectscore=0 bulkscore=0 impostorscore=0 clxscore=1015 adultscore=0
+ priorityscore=1501 phishscore=0 spamscore=0 malwarescore=0 lowpriorityscore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.22.0-2611040001 definitions=main-2611070046
+X-Spam-Status: No, score=-16.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_PASS,SPF_PASS,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] hugetlb/hugefallocate: Add hugefallocate03 to stress test
- fallocate on hugetlbfs
+Subject: [LTP] [PATCH v11] hugetlb/hugefallocate: Add hugefallocate03 to
+ stress test fallocate on hugetlbfs
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -98,80 +115,277 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+Cc: pavrampu@linux.ibm.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Pavithra,
+Stress test fallocate() on hugetlbfs with three concurrent threads:
+one continuously punches and fills holes, one faults in hugepages,
+and one continuously mmaps and munmaps the same file range.
+Verify no hugepage leak occurs after the stress run.
 
-On Sat Nov 7, 2026, Pavithra <pavrampu@linux.ibm.com> wrote:
-> hugetlb/hugefallocate: Add hugefallocate03 to stress test fallocate on hugetlbfs
-
-> +#include <pthread.h>
-> +#include <signal.h>
-> +#include <setjmp.h>
-> +#include <time.h>
-> +
-> +#include "hugetlb.h"
-> +#include "lapi/fallocate.h"
-> +#include "tst_safe_pthread.h"
-
-testcases/kernel/mem/hugetlb/hugefallocate/Makefile is missing
-"hugefallocate03: CFLAGS += -pthread" (or "LDLIBS += -lpthread"). On
-supported distributions with glibc < 2.34, linking fails with undefined
-references to pthread_create and pthread_join.
-
-> +	for (i = 0; i < FALLOCATE_ITERATIONS; i++) {
-> +		tpage = ((long long)random()) % (max_hpages);
-> +		err = fallocate(fd,
-> +				FALLOC_FL_PUNCH_HOLE | FALLOC_FL_KEEP_SIZE,
-> +				tpage * hpage_size, hpage_size);
-> +		if (err) {
-> +			tst_res(TFAIL | TERRNO, "fallocate(PUNCH_HOLE) failed at page %ld", tpage);
-> +			return NULL;
-> +		}
-> +		err = fallocate(fd, 0, tpage * hpage_size, hpage_size);
-> +		if (err) {
-> +			tst_res(TFAIL | TERRNO, "fallocate(fill) failed at page %ld", tpage);
-> +			return NULL;
-> +		}
-> +	}
-
-Each iteration punches and refills a hugepage, which zeroes a full hugepage in
-the kernel (e.g. 200 GB total for 2 MB hugepages, or 1.6 TB for 16 MB
-hugepages on ppc64le) and can exceed the default 30s timeout. Set .runtime in
-struct tst_test and check tst_remaining_runtime() in the loop condition.
-
-> +	nr_hpages_free = SAFE_READ_MEMINFO(MEMINFO_HPAGE_FREE);
-> +	max_hpages = MIN(nr_hpages_free, MAX_PAGES_TO_USE);
-> +	free_before = nr_hpages_free;
-> +	rsvd_before = SAFE_READ_MEMINFO(MEMINFO_HPAGE_RSVD);
-> +
-> +	/* First preallocate file with max_hpages pages */
-> +	err = fallocate(fd, 0, 0, hpage_size * max_hpages);
-> +	if (err) {
-> +		if (errno == EOPNOTSUPP)
-> +			tst_brk(TCONF, "fallocate() Operation is not supported");
-> +		tst_brk(TBROK | TERRNO, "fallocate() failed to preallocate");
-> +	}
-
-Because .hugepages uses TST_REQUEST, tst_hugepages and nr_hpages_free can be 0
-when the system cannot allocate hugepages. In that case max_hpages is 0 and
-fallocate(fd, 0, 0, 0) fails with EINVAL, triggering TBROK instead of TCONF;
-check "if (!tst_hugepages || !nr_hpages_free) tst_brk(TCONF, ...);" first.
-
-Verdict - Needs revision
-
+Signed-off-by: Pavithra <pavrampu@linux.ibm.com>
 ---
-Note:
+v10 -> v11:
+- Set .runtime and stop the fallocate loop via tst_remaining_runtime() to avoid
+  exceeding the default timeout with large hugepage sizes.
+- Report TCONF instead of TBROK when no huge pages can be reserved/are free.
+- Makefile: add -pthread for hugefallocate03 (needed to link on glibc < 2.34).
+Link to v10: https://lore.kernel.org/ltp/20261107062811.79329-1-pavrampu@linux.ibm.com/
+---
+ runtest/hugetlb                               |   1 +
+ testcases/kernel/mem/.gitignore               |   1 +
+ .../kernel/mem/hugetlb/hugefallocate/Makefile |   1 +
+ .../hugetlb/hugefallocate/hugefallocate03.c   | 204 ++++++++++++++++++
+ 4 files changed, 207 insertions(+)
+ create mode 100644 testcases/kernel/mem/hugetlb/hugefallocate/hugefallocate03.c
 
-The agent can sometimes produce false positives although often its
-findings are genuine. If you find issues with the review, please
-comment this email or ignore the suggestions.
+diff --git a/runtest/hugetlb b/runtest/hugetlb
+index fd687a14e..2e7bd1779 100644
+--- a/runtest/hugetlb
++++ b/runtest/hugetlb
+@@ -1,5 +1,6 @@
+ hugefallocate01 hugefallocate01
+ hugefallocate02 hugefallocate02
++hugefallocate03 hugefallocate03
+ 
+ hugefork01 hugefork01
+ hugefork02 hugefork02
+diff --git a/testcases/kernel/mem/.gitignore b/testcases/kernel/mem/.gitignore
+index 763f134dd..f4d5a6dae 100644
+--- a/testcases/kernel/mem/.gitignore
++++ b/testcases/kernel/mem/.gitignore
+@@ -2,6 +2,7 @@
+ /cpuset/cpuset02
+ /hugetlb/hugefallocate/hugefallocate01
+ /hugetlb/hugefallocate/hugefallocate02
++/hugetlb/hugefallocate/hugefallocate03
+ /hugetlb/hugefork/hugefork01
+ /hugetlb/hugefork/hugefork02
+ /hugetlb/hugemmap/hugemmap01
+diff --git a/testcases/kernel/mem/hugetlb/hugefallocate/Makefile b/testcases/kernel/mem/hugetlb/hugefallocate/Makefile
+index 77ebb0aef..0d3e61ec7 100644
+--- a/testcases/kernel/mem/hugetlb/hugefallocate/Makefile
++++ b/testcases/kernel/mem/hugetlb/hugefallocate/Makefile
+@@ -8,3 +8,4 @@ include $(top_srcdir)/include/mk/testcases.mk
+ include $(abs_srcdir)/../Makefile.inc
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+ 
++hugefallocate03: CFLAGS+=-pthread
+diff --git a/testcases/kernel/mem/hugetlb/hugefallocate/hugefallocate03.c b/testcases/kernel/mem/hugetlb/hugefallocate/hugefallocate03.c
+new file mode 100644
+index 000000000..6db6160eb
+--- /dev/null
++++ b/testcases/kernel/mem/hugetlb/hugefallocate/hugefallocate03.c
+@@ -0,0 +1,204 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2026 Pavithra <pavrampu@linux.ibm.com>
++ */
++
++/*\
++ * Stress test :manpage:`fallocate(2)`. This test starts three threads:
++ *
++ * - Thread one will continually punch/fill holes via :manpage:`fallocate(2)`.
++ * - Thread two will continually fault in those same pages.
++ * - Thread three will continually :manpage:`mmap(2)` / :manpage:`munmap(2)` that page range.
++ *
++ * Requires root to mount hugetlbfs.
++ */
++
++#define _GNU_SOURCE
++#include <stdio.h>
++#include <sys/mount.h>
++#include <limits.h>
++#include <sys/param.h>
++#include <sys/types.h>
++#include <pthread.h>
++#include <signal.h>
++#include <setjmp.h>
++#include <time.h>
++
++#include "hugetlb.h"
++#include "lapi/fallocate.h"
++#include "tst_safe_pthread.h"
++
++#define MNTPOINT "hugetlbfs/"
++#define MAX_PAGES_TO_USE 100
++#define FALLOCATE_ITERATIONS 100000
++
++static int fd = -1;
++static unsigned long max_hpages;
++static long hpage_size;
++static void *thread_fallocate(void *arg)
++{
++	int i, err;
++	long tpage;
++
++	(void)arg;
++
++	for (i = 0; i < FALLOCATE_ITERATIONS && tst_remaining_runtime(); i++) {
++		tpage = ((long long)random()) % (max_hpages);
++		err = fallocate(fd,
++				FALLOC_FL_PUNCH_HOLE | FALLOC_FL_KEEP_SIZE,
++				tpage * hpage_size, hpage_size);
++		if (err) {
++			tst_res(TFAIL | TERRNO, "fallocate(PUNCH_HOLE) failed at page %ld", tpage);
++			return NULL;
++		}
++		err = fallocate(fd, 0, tpage * hpage_size, hpage_size);
++		if (err) {
++			tst_res(TFAIL | TERRNO, "fallocate(fill) failed at page %ld", tpage);
++			return NULL;
++		}
++	}
++	return NULL;
++}
++
++static volatile int run;
++static sigjmp_buf fault_jmp;
++
++static void sigbus_handler(int signum LTP_ATTRIBUTE_UNUSED)
++{
++	siglongjmp(fault_jmp, 1);
++}
++
++static void *thread_fault(void *arg)
++{
++	long tpage;
++	char foo;
++	void *addr;
++	struct sigaction sa = {
++		.sa_handler = sigbus_handler,
++	};
++	struct sigaction old_sa;
++
++	(void)arg;
++
++	SAFE_SIGACTION(SIGBUS, &sa, &old_sa);
++
++	addr = SAFE_MMAP(NULL, max_hpages * hpage_size,
++			PROT_READ | PROT_WRITE, MAP_SHARED,
++			fd, 0);
++
++	while (run) {
++		tpage = ((long long)random()) % (max_hpages);
++
++		if (sigsetjmp(fault_jmp, 1) == 0) {
++			foo = *((char *)(addr + (tpage * hpage_size)));
++			*((volatile char *)(addr + (tpage * hpage_size))) = foo;
++		}
++	}
++
++	SAFE_MUNMAP(addr, max_hpages * hpage_size);
++
++	/* fault_jmp is no longer valid once this thread exits */
++	SAFE_SIGACTION(SIGBUS, &old_sa, NULL);
++
++	return NULL;
++}
++
++static void *thread_mmap_munmap(void *arg)
++{
++	void *addr;
++
++	(void)arg;
++
++	while (run) {
++		addr = mmap(NULL, max_hpages * hpage_size,
++				PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
++		if (addr != MAP_FAILED)
++			SAFE_MUNMAP(addr, max_hpages * hpage_size);
++	}
++
++	return NULL;
++}
++
++static void run_test(void)
++{
++	int err;
++	long nr_hpages_free;
++	unsigned long free_before, free_after;
++	unsigned long rsvd_before, rsvd_after;
++	pthread_t falloc_th, fault_th, mmap_munmap_th;
++
++	fd = tst_creat_unlinked(MNTPOINT, 0, 0600);
++
++	unsigned int seed = (unsigned int)getpid() * time(NULL);
++
++	srandom(seed);
++	tst_res(TINFO, "Seed = %u", seed);
++	nr_hpages_free = SAFE_READ_MEMINFO(MEMINFO_HPAGE_FREE);
++	if (!tst_hugepages || !nr_hpages_free)
++		tst_brk(TCONF, "No huge pages available");
++
++	max_hpages = MIN(nr_hpages_free, MAX_PAGES_TO_USE);
++	free_before = nr_hpages_free;
++	rsvd_before = SAFE_READ_MEMINFO(MEMINFO_HPAGE_RSVD);
++
++	/* First preallocate file with max_hpages pages */
++	err = fallocate(fd, 0, 0, hpage_size * max_hpages);
++	if (err) {
++		if (errno == EOPNOTSUPP)
++			tst_brk(TCONF, "fallocate() Operation is not supported");
++		tst_brk(TBROK | TERRNO, "fallocate() failed to preallocate");
++	}
++
++	free_after = SAFE_READ_MEMINFO(MEMINFO_HPAGE_FREE);
++	if (free_before - free_after != max_hpages) {
++		tst_brk(TBROK, "fallocate did not preallocate %lu huge pages",
++				max_hpages);
++	}
++
++	run = 1;
++
++	SAFE_PTHREAD_CREATE(&falloc_th, NULL, thread_fallocate, NULL);
++
++	SAFE_PTHREAD_CREATE(&fault_th, NULL, thread_fault, NULL);
++
++	SAFE_PTHREAD_CREATE(&mmap_munmap_th, NULL, thread_mmap_munmap, NULL);
++
++	SAFE_PTHREAD_JOIN(falloc_th, NULL);
++
++	run = 0;
++
++	SAFE_PTHREAD_JOIN(fault_th, NULL);
++
++	SAFE_PTHREAD_JOIN(mmap_munmap_th, NULL);
++
++	SAFE_CLOSE(fd);
++
++	free_after = SAFE_READ_MEMINFO(MEMINFO_HPAGE_FREE);
++	rsvd_after = SAFE_READ_MEMINFO(MEMINFO_HPAGE_RSVD);
++
++	TST_EXP_EQ_LU(free_after, free_before);
++	TST_EXP_EQ_LU(rsvd_after, rsvd_before);
++}
++
++static void setup(void)
++{
++	hpage_size = tst_get_hugepage_size();
++}
++
++static void cleanup(void)
++{
++	if (fd != -1)
++		SAFE_CLOSE(fd);
++}
++
++static struct tst_test test = {
++	.needs_root = 1,
++	.mntpoint = MNTPOINT,
++	.needs_hugetlbfs = 1,
++	.needs_tmpdir = 1,
++	.setup = setup,
++	.cleanup = cleanup,
++	.test_all = run_test,
++	.runtime = 60,
++	.hugepages = {MAX_PAGES_TO_USE, TST_REQUEST},
++};
+-- 
+2.56.0
 
-Regards,
-LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
