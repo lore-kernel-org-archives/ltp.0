@@ -1,94 +1,94 @@
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D521E606A7DA
-	for <ltp@archiver.kernel.org>; Tue, 10 Nov 2026 13:06:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50675606BFEE
+	for <ltp@archiver.kernel.org>; Tue, 10 Nov 2026 13:07:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=pIpnr3Ru
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=RNLMLTvy
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 1E3723EA18A
-	for <ltp@archiver.kernel.org>; Tue, 10 Nov 2026 14:06:00 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 6CA2E3EA14C
+	for <ltp@archiver.kernel.org>; Tue, 10 Nov 2026 14:07:09 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D6D8F3E1B79
- for <ltp@lists.linux.it>; Tue, 10 Nov 2026 14:05:44 +0100 (CET)
-Received: from mail-oa2-x00.google.com (mail-oa2-x00.google.com
- [IPv6:2607:f8b0:4864:30::])
+ by picard.linux.it (Postfix) with ESMTPS id 6A97B3E1B79
+ for <ltp@lists.linux.it>; Tue, 10 Nov 2026 14:06:54 +0100 (CET)
+Received: from mail-oo2-x02.google.com (mail-oo2-x02.google.com
+ [IPv6:2607:f8b0:4864:31::2])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 34D1660018D
- for <ltp@lists.linux.it>; Tue, 10 Nov 2026 14:05:44 +0100 (CET)
-Received: by mail-oa2-x00.google.com with SMTP id
- 586e51a60fabf-4a86da07919so898219fac.0
- for <ltp@lists.linux.it>; Tue, 10 Nov 2026 05:05:44 -0800 (PST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 23A5820097C
+ for <ltp@lists.linux.it>; Tue, 10 Nov 2026 14:06:54 +0100 (CET)
+Received: by mail-oo2-x02.google.com with SMTP id
+ 46e09a7af769-849c2965b9eso890600a34.1
+ for <ltp@lists.linux.it>; Tue, 10 Nov 2026 05:06:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20260707; t=1794315942; x=1794920742; darn=lists.linux.it;
+ d=gmail.com; s=20260707; t=1794316013; x=1794920813; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to:content-type;
- bh=gY4UJ0gn0pXtOMywYoU0if+oYafZBT17FhZr/zzSCXE=;
- b=pIpnr3RuxyR987Br5wOAPQseK0dWAVoRZPSg98sFXI2CKX2HY6/P65XilSTomHPdjX
- pgZ+upeWZcTxh8TBzH4vTcDMaqhPpV3qvTEWZeo7CT7BYImQ03rWGu4AnSzkXnq6sQLy
- RUxlpsgGA62AHpPLYCV8eo7nAtK0YJ8qOSZ1dv0jrXQpqEsINnVnjyIDx+4f/XXP92zp
- HU2bOOQpj/BkqDY8dl/jAz+/t5+1zyCxtm0UU0kp0mjAS/il2I73ZMg3zrMOOAOssesY
- 2LwJI2ZeAw8dxCM4RWh7HSd/bu/R/YcgaqWAjSLi31PBwR17eC/KILNoAIC0c6D1O4iH
- FOeg==
+ bh=RFjBMg0giLR1uetTRkudwb05Bf8iLuE/0T3Q8YVvvoY=;
+ b=RNLMLTvykpyXN3BL0AhXtE+kXq/fRaCGLRvpaq7vj/K8uaPptUwJTo4Mw9s4ksKtUi
+ MfhUOV4NI+Ub/zAg6dgLNvwwegGEzLZUdMiGchq6W5H3dqCJnFMF5PwpwCzNmaKDgnWC
+ lBzp18kmTCPZ5hvutlI5CxQsNhw8aW+Cjk4fr+Old4wcfLLBJ9C4PQV9iqm3B9w+VWYS
+ FRWqUN76peTOASFQkBoP4DQITGPHfb/Jv9h7fmGy2CllUzyMq50tKftnpVF4CZKB/bSN
+ 0rnnjXzhusCsdRe+wOZlPOUuNfhRgEyjjDISn+S4bhmf9Z1D2QoQWvPO8g+fQWDC5I7E
+ 833Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20260707; t=1794315942; x=1794920742;
+ d=1e100.net; s=20260707; t=1794316013; x=1794920813;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to:content-type;
- bh=gY4UJ0gn0pXtOMywYoU0if+oYafZBT17FhZr/zzSCXE=;
- b=tUjFfMp6F4F+foMYQ2w531NtZ/BNtFCqn/7aROgIzePZP0KB8YQRA4rzElBm3hFSXS
- VKLwbdpJDgGZpIaZVC6Kj16+3ekFbmljZTAUuONmDupk6efMALJYv9Uv+c+4cDstfZ9M
- CWcz7GVX90d6dHDRP6NboQqhvPp1KSmkmBbkNuVH3W4v1TxeX8EiUCTr6iqgumroZBvV
- Yieyf6ZjN/A4kB7QMEa/53lgkVXjjBKZU6rbzxhtw41a6nzny6hFj16NSueW240zRZcT
- W9PSLQODnHprZc4QycTzMVBuQ4jPAm06qen8qtf0e9qQ2nSxujFQAsrww9SGOZz/u+IK
- J3LQ==
-X-Gm-Message-State: APuU4Z8NEZK7sTYXdYJm9XXTxTu5ZvGcIFaYpDdtNOsPwNO3UhUKXyve
- E6tFVcdM1d5K7fyDW1SQuOFN2iMAGn5S+ClgPAXwGwl4la4u/VWngm3M
-X-Gm-Gg: AYBFou1rj5+oOIdnAs74yithXdXfPAyLye3KFSXH9tSvtk/+7aYPxk90mab5T7Jy/d5
- 0LT6vcyvUSVApfSO7aQg2UY+MFLXAiGoFwR/OPOlG3IhJOooC5shxMt1JRuURN4T2REzp4Ru8Po
- Mlo7I9B7NmLinIZk7jclJGeuu/aLF1s/3dwnOGDcftQ0DazF4IgpXY0dLfGtwx/b8Mnr4a7K6go
- mJ6a3eMwgug3SKqhqgr68UXoDYs9Hk5FhyyO4gubXEpHELytScKgUNGY8+B7mMzLcRb6D5GtbIf
- uuQmpp/LQMKS32EKM+cRdlDdSYl7niv5NEgR7OWhck1JE7CK0FfTKGi2vlKiUW2kWFFCbXM57Se
- nW/R6pPHgFqtq4CoP/nmix1VBU9cvlmUCofPd2EKsLxmTRpxSVr/NB8jco3PgkMweCEL0EwNZVS
- jVqWnDkrk4nWHZ8TPBPAtBO7RDn868KMphD0V2pFbYd1H+1VKG8GgYwypgnFZoTRxve2eebte66
- WgLbdckWWf3G8sg6q5CiEMGTXI2YKHKPdHQfnOyQ6yFWMkAxRRv3/PwE5auVL+zJR4172kl9xeq
- qI1PKSqX72FqW5gN5N7Q2czy2aA1wuNo7ZLZYofSyyvxe8sC9CMckNKvbTfLhxBEWV74eMLIn+J
- r3pcqAPF9MwU3ckpkU0VWrC+q+rO3Gv+0Y7/XTTE=
-X-Received: by 2002:a05:6809:11c:10b0:56a:dc07:f222 with SMTP id
- 5614622812f47-56adc080617mr321347b6e.4.1794315942380; 
- Tue, 10 Nov 2026 05:05:42 -0800 (PST)
+ bh=RFjBMg0giLR1uetTRkudwb05Bf8iLuE/0T3Q8YVvvoY=;
+ b=SY/qmCLKXJhlEQBFyFm49OwibbxRFWPUoQkjboqvqNtqwa3AoeAt61V0UQ/JSmkoAZ
+ xeRPZHErqh3X9YpzfaK+t8HljrFkbqRpGy8IOyJf6R6aj0sK6U+32mKRtTgMO8c7ayoS
+ m/pIgxMpl23xpMOo9HzsfBRJ6G2KdT+LNO32xzxH1s/IWXLvMMTd+Ye0ju8b8rQvh3bS
+ dhf6opb4eFu36r/ScIaO2aqzt/Pnsi+laLmU43yKDnzg6tHW+HbhXwqk4roMnpb1YOtb
+ 3yUna2TfjQOqShtzfGRIOO7zrmeEZUBgGCiW3kJhNMOOYxipYqECXE3b0obXdo6quDzl
+ bSZg==
+X-Gm-Message-State: APuU4Z/ZN7HLSXoQee4aE7Yv/hs0GI+jbfe9Rurz+y74h6CGKYox4NMj
+ U8ROCsX4V0BFGEgubb2ZkjDc+Vd46Hvn+wl1u73B2SrP6ZqvyqGnxAy6tZFjB1k0svE=
+X-Gm-Gg: AYBFou1tZkgxWeCXpkENo1VNWkXj4kbMck2gxH8UiFtGGtFjP6WWI9Vv1BEOPc687vA
+ NYIynH4bB3d3T7Gz39QJLXnNQbn5jKT+y3C6Vyu24i9LjIEjoZqjsA+BUBWgB4iCsDl0VJ62giL
+ bYSWczM6WFKiAH/A4jeG359MszbMN4lM38c1ShLVqXMfAcNnjyQbFfeK+dKfpXX9R7i+O+hISLO
+ vQfVeGpAJtEmlSquAaCaJtWxsoNFjL+N1DFp2qHb9etdePfRFcVep4mgngRMabiohBYLDpe45TF
+ uN5FhFKFXoNiGtmUc5dSy8I0qPkW1i38KY+LkSkMQdjejl9uTOPtjlkXF/dtWdmZ9s1aqfC3Q4I
+ hkYAhj3x8DIu60I6qEexbgDNR82H8pSAiqnc/hVQWIQTbn4g/ilv2PFAAR7ozHgB9/I3aHdNYtJ
+ JKdKRqwQN4s7EfWLJA9xXqsQ9eaKYhjD6VeusSgyBbmTZ2FYFKU6uX72F7Fs345aEWqG1LlrEkT
+ iPJP2qmXGlDflyv/Ms6gHDLH1N5oheqRqVN2eCLT4Zqa9MbOZ3XJ3BRLEC9ws9O+3BezV7+rJcV
+ DH4QHtHoEbjY22F7GnPhXqwKV1lXv/UH34gtDLMqQJnKI2qa/U/SoHwn8XV+p/hsVKOtyahHxN5
+ ZJRqdXp+umiSEh4dxlX0Mgd+qXj5uWtv0CGclpyaCxzeHWR/n4VF6Ii03biaJFS8=
+X-Received: by 2002:a05:6830:4108:b0:81d:54f9:d6a3 with SMTP id
+ 46e09a7af769-860dc6362cbmr1997089a34.4.1794316012434; 
+ Tue, 10 Nov 2026 05:06:52 -0800 (PST)
 Received: from
- runnervmwuk1x.3jql0x250rbu1ccdxgzqpxunja.gx.internal.cloudapp.net
- ([172.171.7.1]) by smtp.gmail.com with ESMTPSA id
- 5614622812f47-56905735edasm2022053b6e.7.2026.11.10.05.05.41
+ runnervmwuk1x.y3en5ldd3b2ebobdorhaggvslg.jx.internal.cloudapp.net
+ ([40.124.227.64]) by smtp.gmail.com with ESMTPSA id
+ 46e09a7af769-860dcbc7eecsm1986990a34.15.2026.11.10.05.06.51
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 10 Nov 2026 05:05:41 -0800 (PST)
+ Tue, 10 Nov 2026 05:06:51 -0800 (PST)
 From: linuxtestproject.agent@gmail.com
-To: Wake Liu <wakel@google.com>
-Date: Tue, 10 Nov 2026 13:05:40 +0000
-Message-ID: <20261110130540.4085-1-linuxtestproject.agent@gmail.com>
+To: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 10 Nov 2026 13:06:50 +0000
+Message-ID: <20261110130650.3722-1-linuxtestproject.agent@gmail.com>
 X-Mailer: git-send-email 2.56.0
-In-Reply-To: <20261110112100.1594353-1-wakel@google.com>
-References: <20261110112100.1594353-1-wakel@google.com>
+In-Reply-To: <20261109163222.1488772-1-chrubis@suse.cz>
+References: <20261109163222.1488772-1-chrubis@suse.cz>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-3.6 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+X-Spam-Status: No, score=-8.6 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
 	DKIM_INVALID,DKIM_SIGNED,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_PASS,
-	SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no version=4.0.1
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_PASS,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] tse_swap: Fill swapfile with zeroes on exFAT
+Subject: Re: [LTP] lib: ujson: Update to ujson 1.0
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -103,32 +103,185 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Wake,
+Hi Cyril,
 
-On Tue Nov 10, 2026, Wake Liu wrote:
-> tse_swap: Fill swapfile with zeroes on exFAT
+On Mon Nov 9 17:32:22 2026 +0100, Cyril Hrubis <chrubis@suse.cz> wrote:
+> lib: ujson: Update to ujson 1.0
 
-> -	/* Fill the file if needed (specific to old xfs filesystems) */
-> -	if (tst_fs_type(swapfile) == TST_XFS_MAGIC) {
-> +	/*
-> +	 * Fill the file if needed: swapon() rejects preallocated but
-> +	 * unwritten blocks on old XFS and on exFAT.
-> +	 */
-> +	fs_type = tst_fs_type(swapfile);
-> +	if (fs_type == TST_XFS_MAGIC || fs_type == TST_EXFAT_MAGIC) {
->  		if (tst_fill_file(swapfile, 0, blk_size, blocks) != 0)
->  			tst_brk_(file, lineno, TBROK, "Failed to fill swapfile");
+> diff --git a/include/ujson_common.h b/include/ujson_common.h
+> index 1eaf3fc72..ed31c090d 100644
+> --- a/include/ujson_common.h
+> +++ b/include/ujson_common.h
+> @@ -8,12 +8,12 @@
+>   * @brief Common JSON reader/writer definitions.
+>   */
+>  
+> -#ifndef UJSON_COMMON_H__
+> -#define UJSON_COMMON_H__
+> +#ifndef UJSON_COMMON_H
+> +#define UJSON_COMMON_H
+>  
+>  /** @brief Maximal error message length. */
+>  #define UJSON_ERR_MAX 128
+> -/** @brief Maximal id string length including terminating null element. */
+> +/** @brief Maximal id string lenght including terminating null element. */
+
+This hunk (along with the comment changes in include/ujson_reader.h,
+include/ujson_utf.h, and include/ujson_writer.h) reverts the spelling fixes
+from commit f6933a16f304 ("include: Fix API comment spelling and style"),
+reintroducing "lenght", "intializer", "An user", "An union", and
+"an unicode".
+
+> diff --git a/include/ujson_reader.h b/include/ujson_reader.h
+> index 3722fffea..273fe624a 100644
+> --- a/include/ujson_reader.h
+> +++ b/include/ujson_reader.h
+> @@ -540,4 +540,4 @@ static inline int ujson_reader_consumed(ujson_reader *self)
+>  	return self->off >= self->len;
+>  }
+>  
+> -#endif /* UJSON_H__ */
+> +#endif /* UJSON_H */
+
+The closing guard comment should be /* UJSON_READER_H */ to match the
+#ifndef UJSON_READER_H guard at the top of the file.
+
+> diff --git a/libs/ujson/ujson_common.c b/libs/ujson/ujson_common.c
+> index 639955229..c9cada9a9 100644
+> --- a/libs/ujson/ujson_common.c
+> +++ b/libs/ujson/ujson_common.c
+> @@ -35,3 +35,4 @@ const char *ujson_type_name(enum ujson_type type)
+>  		return "invalid";
+>  	}
+>  }
+> +
+
+This adds a trailing blank line at EOF (also in libs/ujson/ujson_writer.c).
+
+> diff --git a/libs/ujson/ujson_reader.c b/libs/ujson/ujson_reader.c
+> index 9f86f25b7..964878b51 100644
+> --- a/libs/ujson/ujson_reader.c
+> +++ b/libs/ujson/ujson_reader.c
+> @@ -229,31 +258,15 @@ static int copy_str(ujson_reader *buf, char *str, size_t len)
+>  
+>  static int copy_id_str(ujson_reader *buf, char *str, size_t len)
+>  {
+> -	size_t pos = 0;
+> -
+>  	if (eatws(buf))
+>  		goto err0;
+>  
+> -	if (!eatb(buf, '"'))
+> +	if (peekb(buf) != '"')
+>  		goto err0;
+>  
+> -	for (;;) {
+> -		if (buf_empty(buf)) {
+> -			ujson_err(buf, "Unterminated ID string");
+> -			return 1;
+> -		}
+> -
+> -		if (eatb(buf, '"')) {
+> -			str[pos] = 0;
+> -			break;
+> -		}
+> -
+> -		if (pos >= len-1) {
+> -			ujson_err(buf, "ID string too long");
+> -			return 1;
+> -		}
+> -
+> -		str[pos++] = getb(buf);
+> +	if (copy_str(buf, str, len)) {
+> +		ujson_err(buf, "Unterminated ID string");
+> +		return 1;
 >  	}
 
-The swapon() failure on fallocate()-preallocated exFAT swapfiles in v7.2 is a
-kernel regression that was fixed in v7.4 by kernel commit 4483ab85d1e0
-("exfat: map allocated extents for swap activation"), which suppresses
-IOMAP_REPORT during swap activation so preallocated blocks beyond valid_size
-are mapped as IOMAP_UNWRITTEN instead of IOMAP_HOLE. Filling the swapfile with
-zeroes on exFAT works around this kernel bug in LTP and masks the failure on
-kernels missing that fix, so this change should be dropped.
+Every error path in copy_str() already sets a specific error via
+ujson_err() (such as "String buffer too short!" when the ID exceeds
+UJSON_ID_MAX, or "Invalid escape \\%c"). Calling ujson_err(buf,
+"Unterminated ID string") here overwrites that error message even when the
+ID string is properly terminated; drop the extra ujson_err() call.
+
+> @@ -299,17 +312,28 @@ static int get_int(ujson_reader *buf, struct ujson_val *res)
+>  		return 1;
+>  	}
+>  
+> +	unsigned long max = LONG_MAX;
+> +
+> +	if (sign < 0)
+> +		max++;
+> +
+>  	while (is_digit(peekb(buf))) {
+> -		val *= 10;
+> -		val += getb(buf) - '0';
+> -		//TODO: overflow?
+> +		unsigned int d = getb(buf) - '0';
+> +
+> +		if (val > (max - d) / 10) {
+> +			ujson_err(buf, "Integer overflow");
+> +			return 1;
+> +		}
+> +
+> +		val = val * 10 + d;
+>  	}
+>  
+>  	if (sign < 0)
+> -		val = -val;
+> +		res->val_int = -(long)val;
+> +	else
+> +		res->val_int = (long)val;
+
+When parsing LONG_MIN, val is (unsigned long)LONG_MAX + 1, so -(long)val
+casts to LONG_MIN first and then negates LONG_MIN in signed long
+arithmetic, which is signed integer overflow UB. Negate before casting
+with (long)-val to perform the negation in unsigned long arithmetic.
+
+> diff --git a/libs/ujson/ujson_writer.c b/libs/ujson/ujson_writer.c
+> index c86a3b2af..214e20846 100644
+> --- a/libs/ujson/ujson_writer.c
+> +++ b/libs/ujson/ujson_writer.c
+> @@ -389,15 +396,25 @@ struct json_writer_file {
+>  
+>  static int out_writer_file_write(ujson_writer *self, int fd, const char *buf, ssize_t buf_len)
+>  {
+> +	if (!buf_len)
+> +		return 0;
+> +
+>  	do {
+>  		ssize_t ret = write(fd, buf, buf_len);
+> -		if (ret <= 0) {
+> +		if (ret < 0) {
+>  			err(self, "Failed to write to a file");
+>  			return 1;
+>  		}
+>  
+> +		if (ret == 0) {
+> +			err(self, "The write() syscall returned 0");
+> +			errno = EAGAIN;
+> +			return 1;
+> +		}
+> +
+>  		if (ret > buf_len) {
+>  			err(self, "Wrote more bytes than requested?!");
+> +			errno = EIO;
+>  			return 1;
+>  		}
+>  
+>  		buf_len -= ret;
+>  	} while (buf_len);
+
+If write() completes a partial write (0 < ret < buf_len), buf is not
+advanced before the next iteration, so the loop writes the start of buf
+again instead of the remaining bytes. Advance buf += ret alongside
+buf_len -= ret.
 
 Verdict - Needs revision
+
+Pre-existing issues:
+- In libs/ujson/ujson_writer.c, ujson_writer_file_open() checks
+  if (!writer_file->fd) instead of if (writer_file->fd < 0), which fails
+  to detect open() returning -1 and treats valid fd 0 as an error.
 
 ---
 Note:
