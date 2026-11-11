@@ -1,125 +1,114 @@
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01DE7606A324
-	for <ltp@archiver.kernel.org>; Wed, 11 Nov 2026 13:24:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FF0C606A885
+	for <ltp@archiver.kernel.org>; Wed, 11 Nov 2026 13:57:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=suse.cz header.i=@suse.cz header.a=rsa-sha256 header.s=susede2_rsa header.b=T0JOk6DK;
-	dkim=fail reason="signature verification failed" header.d=suse.cz header.i=@suse.cz header.a=ed25519-sha256 header.s=susede2_ed25519 header.b=w93j5jK1;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=suse.cz header.i=@suse.cz header.a=rsa-sha256 header.s=susede2_rsa header.b=T0JOk6DK;
-	dkim=neutral header.d=suse.cz header.i=@suse.cz header.a=ed25519-sha256 header.s=susede2_ed25519 header.b=w93j5jK1
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=suse.cz header.i=@suse.cz header.a=rsa-sha256 header.s=susede2_rsa header.b=iuKM5WuL;
+	dkim=fail reason="signature verification failed" header.d=suse.cz header.i=@suse.cz header.a=ed25519-sha256 header.s=susede2_ed25519 header.b=o8nBMOEu;
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=suse.cz header.i=@suse.cz header.a=rsa-sha256 header.s=susede2_rsa header.b=iuKM5WuL;
+	dkim=neutral header.d=suse.cz header.i=@suse.cz header.a=ed25519-sha256 header.s=susede2_ed25519 header.b=o8nBMOEu
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8DD713EA0DA
-	for <ltp@archiver.kernel.org>; Wed, 11 Nov 2026 14:24:42 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id B6D373EAC5E
+	for <ltp@archiver.kernel.org>; Wed, 11 Nov 2026 14:57:52 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C4A393E265B
- for <ltp@lists.linux.it>; Wed, 11 Nov 2026 14:24:26 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+ by picard.linux.it (Postfix) with ESMTPS id D4AD93EA0D8
+ for <ltp@lists.linux.it>; Wed, 11 Nov 2026 14:57:38 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 3360E10000EA
- for <ltp@lists.linux.it>; Wed, 11 Nov 2026 14:24:26 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id E929D1400B6B
+ for <ltp@lists.linux.it>; Wed, 11 Nov 2026 14:57:37 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 7ED862249D;
- Wed, 11 Nov 2026 13:24:24 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id F1D28349FB;
+ Wed, 11 Nov 2026 13:57:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1794403464;
+ t=1794405457;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=VW9OjBW/8VeXY9vqqPx5fZ6bLoHXDqcnqvy9QXjSecQ=;
- b=T0JOk6DKDj7TbzwjSRlMyTpjPUeSo9TygvVGd+d1/nDBcIgR22Ec3ls5F2L+w4gsLq9wSB
- AcyA9pFrw4PWNl2tGHk9p36pUReMa4gjGf/eoyNYu3f6K6Q8533R/znJHKifavCF6AHSy7
- 13xKTyhxWe0C+rX4R2ty4AzAz8RcqvQ=
+ bh=2EyAgH8CDMRF1/huCcO82BaiQyFna2Q1DoLc5N5xlnQ=;
+ b=iuKM5WuLOh1FP7xUNruG/5VyoCBnNZySMMN/9jLkeqfu64x1qu5xQomBonIUzOZsWbVxcf
+ hG9AGLpgiziEpxWet2AXKwPTL/rC3J7hsh1BNb1FiyO8Jl8ODgMQjroRAMfeSJZs6nKgjg
+ Ji+4My8SGnlutxt2uViw/p5HXxPpado=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1794403464;
+ s=susede2_ed25519; t=1794405457;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=VW9OjBW/8VeXY9vqqPx5fZ6bLoHXDqcnqvy9QXjSecQ=;
- b=w93j5jK1PBofk8tH4lxk5STfOwERWt18u/tD3Fmd9YoBOa+9Co8hvg5+l08G0pP+hVspbN
- zNBZM2z8JGazBiAQ==
+ bh=2EyAgH8CDMRF1/huCcO82BaiQyFna2Q1DoLc5N5xlnQ=;
+ b=o8nBMOEu66AxplsrOVb/ywV7bnjPMEWKE7GbLVkYczlPdkdbSr/myPrttfieVo5ga/JJ7G
+ h7Hc+GxzWJotFlDQ==
 Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=T0JOk6DK;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=w93j5jK1
+	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1794403464;
+ t=1794405457;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=VW9OjBW/8VeXY9vqqPx5fZ6bLoHXDqcnqvy9QXjSecQ=;
- b=T0JOk6DKDj7TbzwjSRlMyTpjPUeSo9TygvVGd+d1/nDBcIgR22Ec3ls5F2L+w4gsLq9wSB
- AcyA9pFrw4PWNl2tGHk9p36pUReMa4gjGf/eoyNYu3f6K6Q8533R/znJHKifavCF6AHSy7
- 13xKTyhxWe0C+rX4R2ty4AzAz8RcqvQ=
+ bh=2EyAgH8CDMRF1/huCcO82BaiQyFna2Q1DoLc5N5xlnQ=;
+ b=iuKM5WuLOh1FP7xUNruG/5VyoCBnNZySMMN/9jLkeqfu64x1qu5xQomBonIUzOZsWbVxcf
+ hG9AGLpgiziEpxWet2AXKwPTL/rC3J7hsh1BNb1FiyO8Jl8ODgMQjroRAMfeSJZs6nKgjg
+ Ji+4My8SGnlutxt2uViw/p5HXxPpado=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1794403464;
+ s=susede2_ed25519; t=1794405457;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=VW9OjBW/8VeXY9vqqPx5fZ6bLoHXDqcnqvy9QXjSecQ=;
- b=w93j5jK1PBofk8tH4lxk5STfOwERWt18u/tD3Fmd9YoBOa+9Co8hvg5+l08G0pP+hVspbN
- zNBZM2z8JGazBiAQ==
+ bh=2EyAgH8CDMRF1/huCcO82BaiQyFna2Q1DoLc5N5xlnQ=;
+ b=o8nBMOEu66AxplsrOVb/ywV7bnjPMEWKE7GbLVkYczlPdkdbSr/myPrttfieVo5ga/JJ7G
+ h7Hc+GxzWJotFlDQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3A39F1339F;
- Wed, 11 Nov 2026 13:24:24 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 77CE7134E5;
+ Wed, 11 Nov 2026 13:57:36 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id thzABIhs9Gr/SwAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Wed, 11 Nov 2026 13:24:24 +0000
-Date: Wed, 11 Nov 2026 14:24:18 +0100
+ by imap1.dmz-prg2.suse.org with ESMTPSA id Gx2DElB09GrnbQAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Wed, 11 Nov 2026 13:57:36 +0000
+Date: Wed, 11 Nov 2026 14:57:30 +0100
 From: Petr Vorel <pvorel@suse.cz>
-To: berringtoni36@gmail.com
-Message-ID: <20261111132418.GA747242@pevik>
-References: <20261019-research-select-time64-rk3576-v1-1-a65d6b72e21f@gmail.com>
+To: Changwei Zou <changwei.zou@canonical.com>
+Message-ID: <20261111135730.GA748268@pevik>
+References: <20261105005506.76889-1-changwei.zou@canonical.com>
+ <20261105005506.76889-2-changwei.zou@canonical.com>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20261019-research-select-time64-rk3576-v1-1-a65d6b72e21f@gmail.com>
-X-Rspamd-Queue-Id: 7ED862249D
+In-Reply-To: <20261105005506.76889-2-changwei.zou@canonical.com>
 X-Spam-Level: 
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-12.71 / 50.00]; SUSE_INTERNAL_BYPASS(-9.00)[];
+X-Spamd-Result: default: False [-12.50 / 50.00]; SUSE_INTERNAL_BYPASS(-9.00)[];
  BAYES_HAM(-3.00)[100.00%]; NEURAL_HAM_LONG(-1.00)[-1.000];
  MID_RHS_NOT_FQDN(0.50)[]; HAS_REPLYTO(0.30)[pvorel@suse.cz];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MX_GOOD(-0.01)[]; FREEMAIL_TO(0.00)[gmail.com];
- MIME_TRACE(0.00)[0:+]; TO_DN_SOME(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; ARC_NA(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]; 
- FREEMAIL_ENVRCPT(0.00)[gmail.com]; DKIM_TRACE(0.00)[suse.cz:+];
- RCPT_COUNT_THREE(0.00)[3]; RCVD_COUNT_TWO(0.00)[2];
+ MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[]; TO_DN_SOME(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; MISSING_XM_UA(0.00)[];
+ RCVD_TLS_ALL(0.00)[]; RCPT_COUNT_FIVE(0.00)[5];
  FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- RCVD_TLS_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
- TAGGED_RCPT(0.00)[berringtoni36.gmail.com];
- RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
- MISSING_XM_UA(0.00)[]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ RCVD_COUNT_TWO(0.00)[2]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:replyto]; 
  REPLYTO_EQ_FROM(0.00)[]
-X-Spam-Score: -12.71
-X-Spam-Status: No, score=-18.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_PASS,
-	SPF_PASS autolearn=ham autolearn_force=no version=4.0.1
+X-Spam-Score: -12.50
+X-Spam-Status: No, score=-3.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_PASS,SPF_PASS autolearn=no autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] syscalls/select: use kernel timeval for _newselect
+Subject: Re: [LTP] [PATCH v9 1/1] cpuset_memory_spread: rewrite as a C test
+ using the LTP cgroup library
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -130,86 +119,37 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: Wenqiang Zhao via B4 Relay <devnull+berringtoni36.gmail.com@kernel.org>,
- Linux Test Project <ltp@lists.linux.it>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Wenqiang Zhao,
+Hi Changwei Zou,
 
-> With _TIME_BITS=64, struct timeval has 64-bit fields on 32-bit ARM,
-> but _newselect still expects the old kernel timeval layout. Passing
-> the libc structure directly makes a subsecond timeout appear as zero.
+...
+> +static struct tst_test test = {
+> +	.needs_root = 1,
+> +	.needs_tmpdir = 1,
+> +	.skip_filesystems = (const char *const []){ "tmpfs", "ramfs", NULL },
+> +	.setup = setup,
+> +	.cleanup = cleanup,
+> +	.test = run,
+> +	.tcnt = ARRAY_SIZE(tcases),
+> +	.needs_cgroup_ctrls = (const char *const []){ "cpuset", NULL },
+> +	.needs_cgroup_ver = TST_CG_V1,
+> +};
+> +
+> +#else
+> +TST_TEST_TCONF("test requires libnuma >= 2");
+IMHO at least this suggestion by agent in v7 was wrong. You should have kept
+using:
+TST_TEST_TCONF(NUMA_ERROR_MSG);
 
-> Convert valid timeouts to struct __kernel_old_timeval before the syscall
-> and copy the remaining time back afterwards. Pass NULL and deliberately
-> faulty timeout pointers through unchanged.
-
-> On an RK3576 running a 6.1.118-rt36 aarch64 kernel with CONFIG_COMPAT=y,
-> the unmodified ARM32 time64 select02 reports 22 passes and 6 failures.
-> With this change it reports 28 passes and no failures. Both runs skip
-> the unsupported SYS_select variant.
-
-> Tested select01-select04 on the same board with ARM32 time32, ARM32
-> time64 and AArch64 static builds: 250 passes, 55 configuration skips,
-> no failures or broken tests. Additional local checks cover timeout
-> copy-back, ready fds, NULL, EFAULT, EINVAL and EINTR.
-
-> Closes: https://github.com/linux-test-project/ltp/issues/1314
-
-LGTM, thanks!
-
-Suggested-by: Cyril Hrubis <chrubis@suse.cz>
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
+BTW on which Ubuntu version do you test which still uses v1 and have libnuma2?
 
 Kind regards,
 Petr
-
-> Signed-off-by: Wenqiang Zhao <berringtoni36@gmail.com>
-> ---
-> syscalls/select: use kernel timeval for _newselect
-> ---
->  testcases/kernel/syscalls/select/select_var.h | 20 ++++++++++++++++++--
->  1 file changed, 18 insertions(+), 2 deletions(-)
-
-> diff --git a/testcases/kernel/syscalls/select/select_var.h b/testcases/kernel/syscalls/select/select_var.h
-> index a945fa6..e23f1fa 100644
-> --- a/testcases/kernel/syscalls/select/select_var.h
-> +++ b/testcases/kernel/syscalls/select/select_var.h
-> @@ -84,14 +84,30 @@ static int do_select_faulty_to(int nfds, fd_set *readfds, fd_set *writefds,
->  #endif
->  		return ret;
->  	}
-> -	case 4:
-> +	case 4: {
->  #ifdef __NR__newselect
-> -		return tst_syscall(__NR__newselect, nfds, readfds, writefds, exceptfds, timeout);
-> +		struct __kernel_old_timeval _tv;
-> +		void *tv = timeout;
-> +		int ret;
-> +
-> +		if (timeout && !faulty_to) {
-> +			_tv.tv_sec = timeout->tv_sec;
-> +			_tv.tv_usec = timeout->tv_usec;
-> +			tv = &_tv;
-> +		}
-> +
-> +		ret = tst_syscall(__NR__newselect, nfds, readfds, writefds, exceptfds, tv);
-> +		if (timeout && !faulty_to) {
-> +			timeout->tv_sec = _tv.tv_sec;
-> +			timeout->tv_usec = _tv.tv_usec;
-> +		}
-> +		return ret;
->  #else
->  		tst_brk(TCONF, "__NR__newselect not implemented");
->  #endif
->  	break;
->  	}
-> +	}
-
->  	return -1;
->  }
+> +#endif
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
