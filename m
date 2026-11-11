@@ -1,89 +1,83 @@
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27D12606A321
-	for <ltp@archiver.kernel.org>; Wed, 11 Nov 2026 09:33:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EE9B606A324
+	for <ltp@archiver.kernel.org>; Wed, 11 Nov 2026 12:01:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=lists.linux.it header.i=@lists.linux.it header.a=rsa-sha256 header.s=picard header.b=Cqgt+yY0;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.a=rsa-sha256 header.s=20260707 header.b=TNtKxR0N
+	dkim=pass (1024-bit key, unprotected) header.d=lists.linux.it header.i=@lists.linux.it header.a=rsa-sha256 header.s=picard header.b=Y32jZv8c;
+	dkim=fail reason="signature verification failed" (1024-bit key, unprotected) header.d=qq.com header.i=@qq.com header.a=rsa-sha256 header.s=s201512 header.b=PXJKvtG7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1794389618; h=date :
- in-reply-to : mime-version : references : message-id : to : subject :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1794398461; h=message-id :
+ to : date : in-reply-to : references : mime-version : subject :
  list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
+ list-subscribe : from : reply-to : content-type :
  content-transfer-encoding : sender : from;
- bh=dK9kNcC9IqaWKahnUWmEiNqg5oIG+QMV/4RkxFFEYdk=;
- b=Cqgt+yY0JPBOmMEWW5GQnbRYnKZahaHc7lXtnJIwhjjPkaAfBJUiFaEp9ZIEwXyXh5lT2
- PvzSAHk9DX5LfhetgvNL3Ux94QvzZhEBY7V+g4IRSPpPg7tGkam3YDMX33naiOvDcubZmpT
- XyAwj6qpAHDYxbbsk9dtoeTJCvdPSmE=
+ bh=FKzLNUskMav1U9ytSzKEmAwBjE/troMme586qsauyYs=;
+ b=Y32jZv8cjwMoevU0e0TkR+2rPPEKE8hfI3k2q/ztpx3iFV3UPP1B3ngTvU84ZK7D/cfvF
+ eIqkqHjfsrCDvSlUXqI2f7kj1pTPAYt0lf4AUEz0z7Ij8UA2UAytRSQHIGGuiEtFjdSZEr8
+ PniXgmWjdWVg2e5EGlxHesJnpZioMYk=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 4C4993E94FE
-	for <ltp@archiver.kernel.org>; Wed, 11 Nov 2026 10:33:38 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 9CBD23EA0D7
+	for <ltp@archiver.kernel.org>; Wed, 11 Nov 2026 13:01:01 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id F40A03EA0BB
- for <ltp@lists.linux.it>; Wed, 11 Nov 2026 10:32:07 +0100 (CET)
-Received: from mail-pl1-x645.google.com (mail-pl1-x645.google.com
- [IPv6:2607:f8b0:4864:20::645])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 7A1913CD699
+ for <ltp@lists.linux.it>; Wed, 11 Nov 2026 13:00:41 +0100 (CET)
+Received: from out162-62-57-87.mail.qq.com (out162-62-57-87.mail.qq.com
+ [162.62.57.87])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 78CF22009B3
- for <ltp@lists.linux.it>; Wed, 11 Nov 2026 10:32:07 +0100 (CET)
-Received: by mail-pl1-x645.google.com with SMTP id
- d9443c01a7336-2eaae8d29e0so39605005ad.2
- for <ltp@lists.linux.it>; Wed, 11 Nov 2026 01:32:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=google.com; s=20260707; t=1794389526; x=1794994326; darn=lists.linux.it;
- h=content-type:cc:to:from:subject:message-id:references:mime-version
- :in-reply-to:date:from:to:cc:subject:date:message-id:reply-to
- :content-type; bh=e+J5l3lV6RZH/HMpBFMGQZ/01IIrXF4vkvUwcdEoRtA=;
- b=TNtKxR0N1doS/nxC4MCtn4ssy8rN8cKAhbEAxm8QWN2SeI6Nut2YzPSnI6ERvvl/sG
- BI1vJ6cys3BbZp6jZuS+z4vuEJfd44i3BCzdOkTeB2UHY4RwgkT9eBMEr3qBZ8HKWclE
- mbECkg72+7OMWxVUrM3OPhhHVK5y3ADfBr637KFz5CHoj8h4xgfbd5x1VkfB5RvIXGAC
- /24V8MOoTTqCfWJEbnUldmR0LNI1cQ3zxlL9APKtcOgCQVH0Ihr3zoTTfgBTkFbX1SBn
- 3p1dt8430gJ7WQLNGTFf7W/9lFzwFzciBSxZ/ctwhAxMGOYneAkaHqjFBamS47RRyMFC
- nbHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20260707; t=1794389526; x=1794994326;
- h=content-type:cc:to:from:subject:message-id:references:mime-version
- :in-reply-to:date:x-gm-message-state:from:to:cc:subject:date
- :message-id:reply-to:content-type;
- bh=e+J5l3lV6RZH/HMpBFMGQZ/01IIrXF4vkvUwcdEoRtA=;
- b=GBrgHe/3/sTz4Q4S6S/7qPdeXUbVkVCWckYOsZOkZ3joFv0bZTsDPDI783SxQ7A6h2
- dIj8DXjCKI+NUAKdsHAdNn3VZpzaibArSAqLywKuMlLyPh6tOXuCFYVRm2eu1JkNrO+d
- LLvz6VKW8vk3MNLZuVNY28NEP37vjU4D3WItHRtNP3R2Zoyh81jrw5G590N4P7IL0lC/
- qo21nWDhn12wXqFIDFBN9yJN3glsN8qALqqE2LOuJdQ7W8VxunkW9f/p1h+l8CofRicH
- WjKkQbbHlN8bZgCAXWlhZ1ONNrRTsLGz3A8u74Ll+xpShB2q8H0aACJ0MkFeesRvzzN2
- Ywvw==
-X-Gm-Message-State: APuU4Z9UTJ7Md2y0y9f4mYtGqmp7HhPjENZAjNcfUTPc1oCl+wqh/agR
- CEL3qW9VFRC2Ufer6b3dAGf5Dk0VsBFVP4Q3tOBGoSFIJaj1a4TmOszyRII7/YBwf6s264DT7yH
- FJgCkqgXmWKZ0atOZOHqBEPo93S4WCgJi6corP5MSDnBMWujUyuk6fhocoisyepWBIdJcMlXMrC
- QmdvnLBkV9gS+49Cxzr8Tf6AiGvw==
-X-Received: from plqt12.prod.google.com ([2002:a17:902:a5cc:b0:2e5:379c:9ba6])
- (user=wakel job=prod-delivery.src-stubby-dispatcher) by
- 2002:a17:903:4690:b0:2e9:5b20:1c2b
- with SMTP id d9443c01a7336-2edd7474df1mr19386375ad.5.1794389525367; Wed, 11
- Nov 2026 01:32:05 -0800 (PST)
-Date: Wed, 11 Nov 2026 09:31:51 +0000
-In-Reply-To: <20261111093151.374731-1-wakel@google.com>
-X-Archived-By: <archiver.kernel.org>
-Mime-Version: 1.0
-References: <20261111093151.374731-1-wakel@google.com>
-X-Mailer: git-send-email 2.56.0.567.gdb80ae8cd5-goog
-Message-ID: <20261111093151.374731-5-wakel@google.com>
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 27D741A00A3C
+ for <ltp@lists.linux.it>; Wed, 11 Nov 2026 13:00:38 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+ t=1794398433; bh=aJOQ2W+BscF0muZsVlXBC3BsjahHGdLqHoNrZQWeBOo=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References;
+ b=PXJKvtG7NoJ3VhYtnqRea1Xw4fWxf8E3TVKrm/K8SGsFPILZM561JGGgt7KsYNaPN
+ lsm5I25omiuEhBNjpSQZIXf7OLbQbMfgdj0Oy9vGgSmBqnif7+p6wR3RCdKPbIrrn1
+ bcsTXAtjkUPuvoZb7aiwaOlaII3PaQMsLkigeCUg=
+Received: from LAPTOP-KQCD4QBN.localdomain ([123.121.144.196])
+ by newxmesmtplogicsvrszc50-0.qq.com (NewEsmtp) with SMTP
+ id 1FB9807; Wed, 11 Nov 2026 20:00:31 +0800
+X-QQ-mid: xmsmtpt1794398431t9pqpfc81
+Message-ID: <tencent_31DCAB3A1723CF1E1623155B4571DD5F8808@qq.com>
+X-QQ-XMAILINFO: NxKoLLhE22aTyTPlNyxciKNdU5e+DDHH/GLhGp6Ufnv/jhtL5ksLMy4BwojNbG
+ 24dbdAoGwXn8+HppD9RDVvj5OtnXFONK/uJXXC7+qv6z+loK57Jzi3rKX/JB7Uw5mg+G6UQ6As0D
+ 6TkRykBt2OCAiOjgRr9W4j0qfi4IMh8wGDyfTC98Asv5Ga0DP3dGNHD2cdl+v1hr9x4g+YotPA8s
+ UW4vQlN2c4RP3889iNXfHA9uYLT3jggiTs51m77DbXIAFqVDqxvpPX1w8akvUmiYfzy/wYlMGYKK
+ ZYc0pSoJI+sgR1MNcCxxR3s6DxvmNVsL1IBjYP5hkE90MxI3xr3oxu1bLI6BpUyqHUdUAdYyjXni
+ KW2i9Ax6EmKbxT78/toZ3CJiiTw5qDLKsdf1LYWd4wfdSgn3kqRj69z0uJf40prfh0Jnaqmvq1Pd
+ HlUu+dPwbvISI/5NGx1Q+ZK6V4RhA9EUN8WxbiV0lSdoq6S8FyE4BxIzOx1K76EDrK+ErRvzd9tr
+ 7VLpeGipo7PjEYjJy5dKCh/0e9YN6TaJ4kauXbYU9MFSrQ+fXzcZYMmr6XEpB67sRNcWo59mdclZ
+ U286ZasLoQT6BWGmCgZScAYMsD5Np1/pfTmyXfHvjwqX8R1xJcnSoyMFdh9jS40kpppeL7kACFst
+ m4isBTK2UblAJR+QL066ezRCOhufsfIFixBmUslU9UvvUaAXImUn6BHRjgTvZgFg6NJcovD294qC
+ FnRXjyQPvjo0LptDH/ofcx7BXwIpiXEDOspdBP6r2T5BHranlqk9/BfUNRpqXqZWCdhaUUkhxAdC
+ HKHtuUrH1WqFS2hLlTdlWgTiWcsKHoHV7287/6yuzPfVbDnYaGpKHYiux4+I4EdznbY0jVJd1K2w
+ DrleYsMpnMK7+JV8gMzcttPGEaSgw3jZEuf3Vy3Taf2Q6o5j4ew6n6KwGV6QGUn8e64ydcO6K0rS
+ JjaOzsmHpG6P2x88F7ANPxySt0rTrM0kXOhwv5HGlHbnbnE3dV46lT+exzPQFqX7bfAq+iRteUFB
+ iADH6uBGrpqYDBJuaV4QhKp1SETJZmHwQLLYqa4Ht2kJeHej2QsJ+cfmxPS74mp+qX15Tsmgh1al
+ 2bzn4AaHs5JxVCXVs=
+X-QQ-XMRINFO: OD9hHCdaPRBwH5bRRRw8tsiH4UAatJqXfg==
 To: ltp@lists.linux.it
-X-Spam-Status: No, score=-19.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_PASS,SPF_PASS,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
+Date: Wed, 11 Nov 2026 20:00:31 +0800
+X-OQ-MSGID: <20261111120031.726-1-2063309626@qq.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20261104110021.7870-1-2063309626@qq.com>
+References: <20261104110021.7870-1-2063309626@qq.com>
+X-Archived-By: <archiver.kernel.org>
+MIME-Version: 1.0
+X-Spam-Status: No, score=-7.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_REPLYTO_END_DIGIT,
+	MAILING_LIST_MULTI,SPF_HELO_PASS,SPF_PASS,USER_AGENT_GIT autolearn=no
+	autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
-Subject: [LTP] [PATCH 4/4] signal06: Allocate the alternate signal stack
- with mmap()
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+X-Virus-Status: Clean
+Subject: Re: [LTP] [PATCH v2 0/2] Harden safe_sysconf() and add madvise13
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -93,92 +87,23 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Wake Liu via ltp <ltp@lists.linux.it>
-Reply-To: Wake Liu <wakel@google.com>
-Cc: kaleshsingh@google.com
+From: Wenyuan Li via ltp <ltp@lists.linux.it>
+Reply-To: Wenyuan Li <2063309626@qq.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-The test mprotect()s the alternate signal stack, which is a statically
-allocated array of 4096 * 10 bytes aligned to 4096 bytes. That only
-works if the page size is 4096 bytes. With a larger page size,
-mprotect() either fails with EINVAL because the stack is not page
-aligned or, since the length gets rounded up to the page size, also
-write protects the variables placed after the array. The main thread
-then faults on them over and over again and the test hangs until it
-times out.
+Hi,
 
-That happens with the 16K page size emulation that Android uses on
-x86_64. With the stack at 0x53c000, mprotect() of its 40960 bytes
-covers memory up to 0x548000 and the main thread keeps faulting right
-after the end of the stack:
+A gentle ping on this series. Both patches were Reviewed-by Cyril on
+Nov 4 and the CI checks came back green. I noticed they are not in
+master yet (as of Nov 11, HEAD 0ee0ca54).
 
-  --- SIGSEGV {si_signo=SIGSEGV, si_code=SEGV_ACCERR, si_addr=0x546008}
+Is there anything blocking them, or anything you would like me to
+change? I'm happy to rebase on current master if that helps.
 
-Allocate the stack with mmap() and size it based on getpagesize().
-Nothing changes with a 4096 byte page size.
-
-Signed-off-by: Wake Liu <wakel@google.com>
----
- testcases/kernel/syscalls/signal/signal06.c | 15 +++++++++++----
- 1 file changed, 11 insertions(+), 4 deletions(-)
-
-diff --git a/testcases/kernel/syscalls/signal/signal06.c b/testcases/kernel/syscalls/signal/signal06.c
-index cf0706ea4..e464fc661 100644
---- a/testcases/kernel/syscalls/signal/signal06.c
-+++ b/testcases/kernel/syscalls/signal/signal06.c
-@@ -48,6 +48,7 @@
- #include <errno.h>
- 
- #include "test.h"
-+#include "tso_safe_macros.h"
- #include "lapi/syscalls.h"
- 
- char *TCID = "signal06";
-@@ -61,7 +62,8 @@ int TST_TOTAL = 5;
- volatile double D;
- volatile int FLAGE;
- 
--char altstack[4096 * 10] __attribute__((aligned(4096)));
-+static char *altstack;
-+static size_t altstack_size;
- 
- void test(void)
- {
-@@ -99,12 +101,12 @@ void *tfunc(void *arg LTP_ATTRIBUTE_UNUSED)
- 
- 	for (i = -1; ; i *= -1) {
- 		if (i == -1) {
--			TEST(mprotect(altstack, sizeof(altstack), PROT_READ));
-+			TEST(mprotect(altstack, altstack_size, PROT_READ));
- 			if (TEST_RETURN == -1)
- 				tst_brkm(TBROK | TTERRNO, NULL, "mprotect failed");
- 		}
- 
--		TEST(mprotect(altstack, sizeof(altstack), PROT_READ | PROT_WRITE));
-+		TEST(mprotect(altstack, altstack_size, PROT_READ | PROT_WRITE));
- 		if (TEST_RETURN == -1)
- 			tst_brkm(TBROK | TTERRNO, NULL, "mprotect failed");
- 
-@@ -120,9 +122,14 @@ int main(int ac, char **av)
- 
- 	tst_parse_opts(ac, av, NULL, NULL);
- 
-+	/* mprotect() needs the stack to be aligned to the runtime page size */
-+	altstack_size = getpagesize() * 10;
-+	altstack = SAFE_MMAP(NULL, NULL, altstack_size, PROT_READ | PROT_WRITE,
-+			     MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-+
- 	stack_t st = {
- 		.ss_sp = altstack,
--		.ss_size = sizeof(altstack),
-+		.ss_size = altstack_size,
- 		.ss_flags = SS_ONSTACK,
- 	};
- 
--- 
-2.56.0.567.gdb80ae8cd5-goog
+Thanks,
+Wenyuan Li
 
 
 -- 
