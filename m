@@ -1,115 +1,111 @@
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CAB0606A327
-	for <ltp@archiver.kernel.org>; Thu, 12 Nov 2026 10:01:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F19E6606A32E
+	for <ltp@archiver.kernel.org>; Thu, 12 Nov 2026 10:21:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=lists.linux.it header.i=@lists.linux.it header.a=rsa-sha256 header.s=picard header.b=N2HDvLEE;
-	dkim=fail reason="signature verification failed" (4096-bit key, unprotected) header.d=canonical.com header.i=@canonical.com header.a=rsa-sha256 header.s=20251003 header.b=sn6A276U
+	dkim=pass (1024-bit key, unprotected) header.d=lists.linux.it header.i=@lists.linux.it header.a=rsa-sha256 header.s=picard header.b=R6dUt1f4;
+	dkim=fail reason="signature verification failed" (4096-bit key, unprotected) header.d=canonical.com header.i=@canonical.com header.a=rsa-sha256 header.s=20251003 header.b=omHGrbve
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1794477662; h=to : date :
- message-id : in-reply-to : references : mime-version : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=VFwLj5HEqK/yaZzBpNOQ6eL4OERv0KmCgvGEsENaQ0U=;
- b=N2HDvLEEvs7+el0Pb47A1lnd9V5tqVlnr5QBWtB1to9wYfIPuFvJP4zw3iTNXtLSvYSNV
- 1IJFpt/inDVTQbEperKOvLlzonFZsJcP8ynutOb02CeK103kWIXAFD8cfVHOCt/yLgZx2p/
- JoaiKTJGD5XLwj3pUp0vaNVAxBAbL24=
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1794478880; h=to : date :
+ message-id : mime-version : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : cc : content-type : content-transfer-encoding : sender :
+ from; bh=g0mMp/E+jHm5G88OQKYU+bS2h3qhudz5iEtdeb0L1dk=;
+ b=R6dUt1f4q3F8Sf75kxceQzKC5L4c2IvjFn3+EEPOOZNOfZ+iAKU//tSJqpQNgbICrKURh
+ Gf1Q9HvoXO4gLqwet1gXHfPnDBsz6lvKb20r0Ym0ZD6WEDsKV9mWA+oJKna3d7nOJU8pYBr
+ 0v4494jn+1DLLvVm2tx+2r73ZW2rcOA=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 13CF73EA094
-	for <ltp@archiver.kernel.org>; Thu, 12 Nov 2026 11:01:02 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 99CCA3EA098
+	for <ltp@archiver.kernel.org>; Thu, 12 Nov 2026 11:21:20 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 8420E3E1DAF
- for <ltp@lists.linux.it>; Thu, 12 Nov 2026 11:00:43 +0100 (CET)
-Received: from smtp-relay-internal-0.canonical.com
- (smtp-relay-internal-0.canonical.com [185.125.188.122])
+ by picard.linux.it (Postfix) with ESMTPS id C1FDA3E94DA
+ for <ltp@lists.linux.it>; Thu, 12 Nov 2026 11:21:00 +0100 (CET)
+Received: from smtp-relay-internal-1.canonical.com
+ (smtp-relay-internal-1.canonical.com [185.125.188.123])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id C828E1A00CC7
- for <ltp@lists.linux.it>; Thu, 12 Nov 2026 11:00:42 +0100 (CET)
-Received: from mail-pl1-f199.google.com (mail-pl1-f199.google.com
- [209.85.214.199])
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id C7C711A00CAB
+ for <ltp@lists.linux.it>; Thu, 12 Nov 2026 11:20:59 +0100 (CET)
+Received: from mail-pf1-f197.google.com (mail-pf1-f197.google.com
+ [209.85.210.197])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id B6B7940293
- for <ltp@lists.linux.it>; Thu, 12 Nov 2026 10:00:41 +0000 (UTC)
+ by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id AF4893FB76
+ for <ltp@lists.linux.it>; Thu, 12 Nov 2026 10:20:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
- s=20251003; t=1794477641;
- bh=Pyh2SnpRedB1/72/GjjWkAT5bFImwPGIbrsjH5PxLq4=;
- h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
- MIME-Version;
- b=sn6A276UH30JbpYpmLK4cbGTVbHkv1cl7pS+I5JaizgSowtgnl6jO7HwpMctwTwIj
- 39DZg1AYIu4DdzC0GEUjNbLvL6xml9pC8v3pUspFBU8qJ4e3fbQCE3q5xIIBAbrHyA
- tQgdDEs00afepnn0BNT6eF7wZmejHTTnzn0tw1hKDWWoS2DCv9NkuDa1BFWCCxniC1
- 14RKKxF8Y3HbPzrYThcW+5v8u3PBUm9OVm5AyxU6V0TTLvkFnnlVONzL5QifOqALuQ
- p+0hGpf9j8xBY7mjUdsfMCbqvqatzgTCmInXLMm166YW6x09bOfQX+ujzGuOFfyDJJ
- 4muEMZni2UKVT32UeduoR7IctC3jWFck2d4dP/W1ze/V5da9dyOOYTFNghJ82ndfZL
- vuF08sWTpIuUcS52w5nJ3c5Q4qvH8uy7lFCJliJPLxu9F1B1dUsCYfuqoZd+XJSuE0
- dCT1sKYVgdxtFAMLEO4/spzV9RIiSEeRegG+zcfiCl3wlDadhLpUKnoDf7VhP+9RRr
- UVODgl0w2lbYTbK8o26VRJiXd7QyOZHlbEWIBZYnS7yL0U+DZOElzWeI1K0CMwJnLO
- cWeni1HRtuQ6qAcxjOMJ+e/WjzhTbS8jn+lxIQfHIQRu3G23h0zbjdsJNx+9UdkXPn
- KnQYmsF9sw0HvzEYE7LtS/JI=
-Received: by mail-pl1-f199.google.com with SMTP id
- d9443c01a7336-2ed2c307e62so61651445ad.0
- for <ltp@lists.linux.it>; Thu, 12 Nov 2026 02:00:41 -0800 (PST)
+ s=20251003; t=1794478858;
+ bh=Ak7pHWMRWO233TPonobhPJG+xYZOwWVAccWpgLWLBgE=;
+ h=From:To:Cc:Subject:Date:Message-ID:MIME-Version;
+ b=omHGrbvenqvC+lL7j7tilquIILh4f8ccWq/yFBg3k3KJI0CAj6xFsWAcOo2EURjxF
+ sBxJG3tnaLG2dXJR+aDqZ07Wb/+uLaDFVfq1xAibRAZLyDVbrQ6x7Os9Y9IhrHqL2q
+ vvrUEAIorqMFARiMZv/hCTEhkqoQDliWRcpfXowrCcQ445Ztw1THGMpDtknl3aOuTB
+ Yo3NXfx8rCOdysZjkxF0azNzWTUD2T03o3ykSEU5jYk17UX91/bOQrurj+6AbKlLKd
+ boookIww9K0lftT31Sqj8BLXuCWTWcK9zwI8cGGj25DVJal1I5bVksQFPK9kvemAVK
+ sAlxtTQKQOtnlZla7+volmIoy+g2g1R8Gd2wupW1dJuHCVEgVCr1J0FCWJJdSfclUO
+ Bu8SSPriVSYtFlJE0fFWX5cSpkU3E5UeNeWhVJbUfrKieOKr9N1AU5Oovdqw2e9f8Z
+ cb/shLAPM8Y24AIhMqOp/iHDey4elRFy2GK/xgrnelNQtrJCvW3Zbgl3hLwXSqwiP7
+ wrM91TuOm8AOwao2Er7j35nnP1vvhtv/C4/0P8E0fRlZ8ZHAKKzb4Tlk0Q6eu6Ss90
+ A+aVpoETnBToR4Ebr03GI917PoyHanbOqIwIO3Lbo3xwO0BEEU2O/I793i9BKGiAS4
+ JsheTIQbwtbRXUXRn0YMz4CY=
+Received: by mail-pf1-f197.google.com with SMTP id
+ d2e1a72fcca58-89e96c03cd0so3749971b3a.1
+ for <ltp@lists.linux.it>; Thu, 12 Nov 2026 02:20:58 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20260707; t=1794477639; x=1795082439;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to:content-type;
- bh=Pyh2SnpRedB1/72/GjjWkAT5bFImwPGIbrsjH5PxLq4=;
- b=E1+gfpSTDhByUWZwhxoaKhyWWwrUVods1nASMtMmvkxig2XrEdHIbJKI5yvqZfdf2D
- xXbsD0G045nt5eDBYJjtq/GkEoG7Hey2c/VYH3kgAubvoST1h8I1c2eIPN7MPmN4Tgeg
- 3dxz7MzYXhpLqExwXC5jDWCN1v6w7JCkJPiuT71bVa+TP0ioBiBGFicp+x+Ot6l8LlMQ
- KsUz7W1vI68HSkP7Ri3WkgvRYprkt6YK2lVEgYaxc8OdjfqS9MAqFO2z57/cGh3lTf3k
- i70S3oMCLSQASMeQRMkwuJqMnt/9tCWlTlecoPcRk4aBImi5LiOd8il3eC+oMmSvC8hF
- 8USg==
-X-Forwarded-Encrypted: i=1;
- AL+hErEayolou/0kcapZKAe+egV6F0Ym3Qh1VXQqyz2nBMZEEwNHucvP7Ro1jxYKI6h3xW+EKXY=@lists.linux.it
-X-Gm-Message-State: APuU4Z9fnsn1BKM1fXYCK1cE7lHnnSyajKQncGvS5wVOKuPZ9rIcvwpK
- YvORUZeyzS8Yq5XTOkIh71DKeA1MgEkAaytEndYYQ0+TDtEUITA5+GHYFGW/FJVRb9+lAx0BAz1
- nSb3noLTRHwFI2hfNVwkAL/4pgediQ/JBsVArcTs1kpTDW+c5oZ8wbTAWaR7YbZojVx1o
-X-Gm-Gg: AYBFou2hP3xJyjcunfyQI4otPQwmCW+ql/z2ARCITVTXJafF7kS+PkR2NghXtoHJCy8
- HiXNOmyus94vvdTTr6lpAPGtma9qPbhZsmA0hThz9zLwMd63esVhTrnz5nwhjKfjq+xBmJpcm25
- 99+DtnZaVEHIwL8THLu3L3mCAd8utnTezgypCBYGxvMa4/qupdcfu0GQxuHJCHh7AFsrvWHTmgz
- HKYd14e1Wm7fHx9RF+H9ifoGR8lpEtVmXtJGExKksbwGUbMd2WEGZs6dj6qLXwrkZH77zl/tYJR
- SJ6ccClahI3JuGYknV5d5krF/d0myWQD+mt+iFdyIO7l9X/QOxU7rKcSKUvg9YrUHKxSz5Ebagu
- 9owRXPiWbu2yyTPs5SupsSYxkzfjcmm30NTksI+QkdgWo9+UJ3XuZz38ss4k=
-X-Received: by 2002:a17:903:acf:b0:2e9:4175:3077 with SMTP id
- d9443c01a7336-2edd76d2530mr56596545ad.15.1794477638898; 
- Thu, 12 Nov 2026 02:00:38 -0800 (PST)
-X-Received: by 2002:a17:903:acf:b0:2e9:4175:3077 with SMTP id
- d9443c01a7336-2edd76d2530mr56596325ad.15.1794477638527; 
- Thu, 12 Nov 2026 02:00:38 -0800 (PST)
+ d=1e100.net; s=20260707; t=1794478856; x=1795083656;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to:content-type;
+ bh=Ak7pHWMRWO233TPonobhPJG+xYZOwWVAccWpgLWLBgE=;
+ b=o4yaljMPKmp4P2YCRfqLXlyfK5yNaKS37nz01ULk3kkRuYUQjJ0Ve00/zdICX/gqTk
+ 3idjoxGygDgzhQBCkcNGF2HxgOewXMHPS5ZG/FpxyPZVCC43UzE9ZrN9/fl5rYUxKcPn
+ 5B+PsL9KwaOWtcApC4Pk20zQX/rUC4aHwijQrdsjzM4biR1eLvY5HVUUZ9oI9KIi1fWG
+ zQ+fEx1jdQtIAE7F6oI1wft/EcJHeLtaXCUbwPHdH1cXsftZcghHcAFVbpEk3RrgTYCm
+ 2QlzyvQ3Upcwev7dakrzIKKsveTq4wIazVx7o2fyZN6ZLwXea4fyXk7v0OWVWFvfQ3DW
+ vs3g==
+X-Gm-Message-State: APuU4Z/mwp7nW+MXYMyNP63sN5M9oSXrKXTnVQMgNF3wqB/ZXioUBGOm
+ p8zuZbQWQDCW6NDKZw03+lTN6NaBxvi7cideXdjFe3iWx5+BmiaD6F07vQi3JVwTXfC3vDJG0pi
+ tZmt/+EO+z9UuP8b99bjUCPi6m05Ns91Nc7G3n8CY3D/ztFf+5i0y3s9uYggfdQS+5VcGv14NzM
+ DGzjI=
+X-Gm-Gg: AYBFou2fgJvVsIHXOOHO9HH4gW9tUmc99v0TIYNYfkOwFtCUtRiYfFt6jWGkV5e77Yh
+ r0JmqjzQN6ddOWfJqjIdgXKBhrVXPW2uIInjFjPxMkC4JCpfy/+lPwe3e6wq/Uv9YII9jYujr+h
+ B/NsGSv9CZgVTt4VcCNySxgKxXOSaeFzKZL+57Nl9K6flAtmpwQwsgjsnqZOUUKX+tphdN0IRTI
+ +GD2tXffTCans89h1M/2UP+uTCSDqm3oUyYAWPqSgXx79GJQU+rM31tLaq7Wq2JBZAbOGAp9H2H
+ tGm6SG61U1OWtmxLMYepGOEf9C+Hnf5nMbZCQFVJFxQ3iIs6MbCquNPWEqJ1yVT+YgOz/kOM11n
+ T03ovSd8iIQ6f1wFxr1GdS1K+PCqyfULOf9c6D4tWr6hjO8zaagLD97lnKD0=
+X-Received: by 2002:aa7:8884:0:b0:898:f575:7bd0 with SMTP id
+ d2e1a72fcca58-8bc1cb715bdmr5212051b3a.22.1794478856463; 
+ Thu, 12 Nov 2026 02:20:56 -0800 (PST)
+X-Received: by 2002:aa7:8884:0:b0:898:f575:7bd0 with SMTP id
+ d2e1a72fcca58-8bc1cb715bdmr5212026b3a.22.1794478856040; 
+ Thu, 12 Nov 2026 02:20:56 -0800 (PST)
 Received: from ZBook.gateway ([123.208.39.53])
  by smtp.gmail.com with ESMTPSA id
- d9443c01a7336-2edb6a412acsm30545105ad.4.2026.11.12.02.00.35
+ d2e1a72fcca58-8baaa2a6c51sm3259468b3a.14.2026.11.12.02.20.53
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 12 Nov 2026 02:00:38 -0800 (PST)
-To: pvorel@suse.cz
-Date: Thu, 12 Nov 2026 21:00:31 +1100
-Message-ID: <20261112100031.66668-1-changwei.zou@canonical.com>
+ Thu, 12 Nov 2026 02:20:55 -0800 (PST)
+To: ltp@lists.linux.it
+Date: Thu, 12 Nov 2026 21:20:49 +1100
+Message-ID: <20261112102050.76434-1-changwei.zou@canonical.com>
 X-Mailer: git-send-email 2.53.0
-In-Reply-To: <20261111135730.GA748268@pevik>
-References: <20261111135730.GA748268@pevik>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-9.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,MAILING_LIST_MULTI,
-	SPF_HELO_PASS,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=4.0.1
+X-Spam-Status: No, score=-14.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_PASS,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v9 1/1] cpuset_memory_spread: rewrite as a C test
+Subject: [LTP] [PATCH v10 0/1] cpuset_memory_spread: rewrite as a C test
  using the LTP cgroup library
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
@@ -122,54 +118,72 @@ List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 From: Changwei Zou via ltp <ltp@lists.linux.it>
 Reply-To: Changwei Zou <changwei.zou@canonical.com>
-Cc: Changwei Zou <changwei.zou@canonical.com>, ltp@lists.linux.it
+Cc: Changwei Zou <changwei.zou@canonical.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Petr,
+The cpuset_memory_spread test (from 2009) was split between a shell script
+that mounted /dev/cpuset by hand and a C helper (cpuset_mem_hog) driven over
+a FIFO and SIGUSR1/SIGUSR2. It checked the cpuset.memory_spread_page policy
+by comparing the global per-node FilePages counters in
+/sys/devices/system/node/nodeX/meminfo, which also account for unrelated
+page-cache activity, so on large or busy NUMA machines the empirical
+thresholds became unreliable and the test failed spuriously.
 
-Thanks for the review.
+This series rewrites it as a single C test on the new LTP test API, the LTP
+cgroup library (tst_cgroup.h) and the NUMA helpers from tse_numa.h, dropping
+the shell script, the FIFO/signal handshake and the manual /dev/cpuset
+management.
 
-> +#else
-> +TST_TEST_TCONF("test requires libnuma >= 2");
-> IMHO at least this suggestion by agent in v7 was wrong. You should have kept
-> using:
-> TST_TEST_TCONF(NUMA_ERROR_MSG);
+For each case the test pins itself to the local node, sets cpuset.mems and
+cpuset.memory_spread_page, faults a file-backed shared mapping and uses
+tse_nodemap_count_pages() (get_mempolicy(2)) to learn the NUMA node of each
+of the mapping's pages. Only the test mapping's own pages are counted, so
+unrelated page-cache activity can no longer perturb the result.
 
-Agreed, that was a mistake on my side. I've restored
+cpuset.memory_spread_page exists only in the cgroup v1 cpuset controller, so
+the test checks for the control file in setup() and is skipped (TCONF) when
+cpuset is mounted on the unified (v2) hierarchy. The patch also registers
+cpuset.memory_spread_page in the LTP cgroup library's cpuset file table so
+it can be driven through the SAFE_CG_* helpers.
 
-    TST_TEST_TCONF(NUMA_ERROR_MSG);
+Tested on a 2-node NUMA machine with a v1 cpuset hierarchy: all six subtests
+pass.
 
-in v10.
+Changes in v10 (addresses Petr's v9 review):
+  - Drop .needs_cgroup_ver = TST_CG_V1; the setup() SAFE_CG_HAS() check on
+    cpuset.memory_spread_page already skips (TCONF) on a v2 hierarchy.
+  - Restore TST_TEST_TCONF(NUMA_ERROR_MSG) (the v7 switch to a literal
+    string was wrong).
 
-While at it I also dropped ".needs_cgroup_ver = TST_CG_V1". The
-SAFE_CG_HAS() check on cpuset.memory_spread_page in setup() already skips
-the test with TCONF when cpuset is mounted on the unified (v2) hierarchy,
-so forcing the controller version is redundant.
+v9:
+https://lore.kernel.org/ltp/20261105005506.76889-1-changwei.zou@canonical.com/
 
-> BTW on which Ubuntu version do you test which still uses v1 and have
-> libnuma2?
+v8:
+https://lore.kernel.org/ltp/20261104071908.128726-1-changwei.zou@canonical.com/
 
-I tested on an AWS instance running Ubuntu with the 6.8.0-1069-aws kernel
-(2 NUMA memory nodes, 96 CPUs, libnuma present).
+v7:
+https://lore.kernel.org/ltp/20261104002400.56841-1-changwei.zou@canonical.com/
 
-To be precise, the system does not use cgroup v1 by default -- /sys/fs/cgroup
-is cgroup v2 (cgroup2fs). However, systemd does not use the cpuset
-controller on the v2 hierarchy there, so cpuset is idle and the LTP cgroup
-library is able to mount a v1 cpuset hierarchy on the fly:
+Changwei Zou (1):
+  cpuset_memory_spread: rewrite as a C test using the LTP cgroup library
 
-    tst_cgroup.c:793: TINFO: Mounted V1 cpuset CGroup on /tmp/cgroup_cpuset
+ lib/tst_cgroup.c                              |   1 +
+ runtest/controllers                           |   2 +-
+ .../kernel/controllers/cpuset/.gitignore      |   2 +-
+ .../cpuset/cpuset_memory_spread_test/Makefile |   7 +-
+ .../cpuset_mem_hog.c                          | 126 ------
+ .../cpuset_memory_spread01.c                  | 213 +++++++++++
+ .../cpuset_memory_spread_testset.sh           | 362 ------------------
+ 7 files changed, 222 insertions(+), 491 deletions(-)
+ delete mode 100644 testcases/kernel/controllers/cpuset/cpuset_memory_spread_test/cpuset_mem_hog.c
+ create mode 100644 testcases/kernel/controllers/cpuset/cpuset_memory_spread_test/cpuset_memory_spread01.c
+ delete mode 100755 testcases/kernel/controllers/cpuset/cpuset_memory_spread_test/cpuset_memory_spread_testset.sh
 
-cpuset.memory_spread_page then exists in that v1 cpuset and the test runs;
-all six subtests pass. On a host where cpuset is actively bound to the v2
-hierarchy the test simply skips with TCONF, which is the expected behaviour
-since cpuset.memory_spread_page is a cgroup v1 only knob.
+-- 
+2.43.0
 
-I'll submit v10 with these changes later.
-
-Thanks,
-Changwei
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
