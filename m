@@ -2,86 +2,85 @@ Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4BF7606A331
-	for <ltp@archiver.kernel.org>; Thu, 12 Nov 2026 19:35:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 774DF606A32D
+	for <ltp@archiver.kernel.org>; Thu, 12 Nov 2026 21:49:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=lists.linux.it header.i=@lists.linux.it header.a=rsa-sha256 header.s=picard header.b=WjNBjwOK;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=suse.com header.i=@suse.com header.a=rsa-sha256 header.s=google header.b=G2jKviiG
+	dkim=pass (1024-bit key, unprotected) header.d=lists.linux.it header.i=@lists.linux.it header.a=rsa-sha256 header.s=picard header.b=lTHSByQx;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=suse.com header.i=@suse.com header.a=rsa-sha256 header.s=google header.b=YPoE94nu
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1794512124; h=to : date :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1794520194; h=to : date :
  message-id : mime-version : subject : list-id : list-unsubscribe :
  list-archive : list-post : list-help : list-subscribe : from :
  reply-to : content-type : content-transfer-encoding : sender : from;
- bh=sgGYMaS0cxfYuHYKtv7cAxzwfGmcX36EA4+h71pnUgs=;
- b=WjNBjwOK7tmV2d8E/4D1cN8e4KRlBloAPJeAmQ6tcsCkpPRRqOhdc0XfE9VQCp0ol/XIv
- IYtXZJg4c408B8iZAXJnZPaE3RoGklW+6wlyDNi3DduEC1eRgVdAMCWOlsVgUcfeLEWqv11
- Et0BtLOjds79YafXS52hW0dYKsr5NNg=
+ bh=TStCUgolQJPWUDEUH68jtVB/1cgNTdVFc1Ig6WX8S10=;
+ b=lTHSByQxmKHx8/yXhTP9s0r3e9CM5qianvXM6rpTYVDoA3y/2YEfo1/sYUv6CAYb/uk2B
+ MYeV/CyarFjYd0Kb1kMea0qIzzZ6PaiwVK6B5HfHyo+RK7G1iYFLUwV+tzS1xEza7ircL/A
+ G9VJCAqMX4Q3JeYbFgyhpPzizZQe53k=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 5C5253EABAE
-	for <ltp@archiver.kernel.org>; Thu, 12 Nov 2026 20:35:24 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 892E33EB4F5
+	for <ltp@archiver.kernel.org>; Thu, 12 Nov 2026 22:49:54 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 4DCB93CFEFD
- for <ltp@lists.linux.it>; Thu, 12 Nov 2026 20:35:04 +0100 (CET)
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com
- [IPv6:2a00:1450:4864:20::331])
+ by picard.linux.it (Postfix) with ESMTPS id CA0153EAC93
+ for <ltp@lists.linux.it>; Thu, 12 Nov 2026 22:49:33 +0100 (CET)
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com
+ [IPv6:2a00:1450:4864:20::335])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 7B6E1600A5B
- for <ltp@lists.linux.it>; Thu, 12 Nov 2026 20:35:03 +0100 (CET)
-Received: by mail-wm1-x331.google.com with SMTP id
- 5b1f17b1804b1-4bb55cda775so206575e9.0
- for <ltp@lists.linux.it>; Thu, 12 Nov 2026 11:35:03 -0800 (PST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 43DCD1A00661
+ for <ltp@lists.linux.it>; Thu, 12 Nov 2026 22:49:33 +0100 (CET)
+Received: by mail-wm1-x335.google.com with SMTP id
+ 5b1f17b1804b1-4a2000d5fb1so1436395e9.1
+ for <ltp@lists.linux.it>; Thu, 12 Nov 2026 13:49:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1794512103; x=1795116903; darn=lists.linux.it;
+ d=suse.com; s=google; t=1794520173; x=1795124973; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:message-id:date:subject:to
  :from:from:to:cc:subject:date:message-id:reply-to:content-type;
- bh=YBUcwShaeCr9Dz007ukqBFE8GEy8eR+5qwlQJnGZtRU=;
- b=G2jKviiGAeqHPUKBMI1ZChwU22cRJcAq5QICM9KcfIJTqVeWRuACFb5zBdo2fRRnAu
- N7BN9aBfD4edWdSPycQgKBPCf5KyuXN5BYuT9qMexMOrkJr4HnlNRI08zvi4spnfzTJf
- rnlYrRFcp6hyw8h0h/MzdUvyGIxEwJKvRZgoJT+YFooF4oKBTRtAFeF1ZtDmwnZXjoE3
- NYbMbYK5wr7DF5z/0ttgCjuOpFwSl4Z5toAHH+6veEKaFCiCzLoOCs5Sf1UlNl6jjt09
- oBb5uKAkUWOwzyDML7mBPpy7SoQQqUkurjzehC0aiii6v7cS1xyd7amNApntLgAixWNq
- UOtQ==
+ bh=zUytcArwYft42yI5fAGTTaE7PTH2ElBsf7FRxoWCuy8=;
+ b=YPoE94nuNiDtLl2AOu9tTI/eKbW8o0TLBIyunv62S5nPqZ54wHoYTeT6HmsjkzFtot
+ N+UyBhyQFe7MrbAHBu7uq2HFPrh4sJTiVan4A1G9PMC/6Vuxem3d19wKT8Ijb0Rr0Jd9
+ 482JO0fRb1BD/rrAqWsEx0UTn+qkwvsD7qlE1sIPcfiCpk0HGR4xi6YrEBUpR+lYa3IL
+ 3yBHt8Q9pzp3DG3e0orBP1ecROzkR4/zhIXbecrgPsp6BTAFwIem1yrZW2bFR88028x+
+ puvW8wVcsvJbaQS4JR++0oEbbR7O0iFmiyiDF0Hn0AVqGmpctUOk5k9zKffQ4dHlj2fV
+ ACcA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20260707; t=1794512103; x=1795116903;
+ d=1e100.net; s=20260707; t=1794520173; x=1795124973;
  h=content-transfer-encoding:mime-version:message-id:date:subject:to
  :from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
  :reply-to:content-type;
- bh=YBUcwShaeCr9Dz007ukqBFE8GEy8eR+5qwlQJnGZtRU=;
- b=TnguVeqoCLwood0Yd4pbvQPP0S9t7UDflyzxBHZKI33wwvFDMOlh1MDF2S1L3tZPAK
- h5bYqf+atBUSXpZ84B0GAF4XAZQqc8zj2vu72XAW4wIV52GoUdwl9bnQBE5Ssp4kCP5N
- WvKbVML4cgk4pG0nzmZ0DoMVrRmTVWxkFn057hXg2Vinf8t5d4YGV+w2MI8JVObxOhgd
- FvMbjy6b6vkZRRpvEd3EiN7JkX/sEruPJeKi6I4NzH5tHtJozpWDXe9xjjlO0X1UjLeo
- bNksY9gYM/60hgxKEabgG+MWU3Ku1XTV/Nu6L2JGC/DJaGvGwgZH4O/vDWisOOMQgEcM
- Hb5g==
-X-Gm-Message-State: APuU4Z/qD8TJDpbbfxJU6C9pA4CQ3CFHIS9TmER1Jfodzr0Dl9By+Joa
- BNHA8NchkWxg3pjOJbIGAYgY7uLx3L25UQgGEcepqYX7lr+bPuqNZgpg4SMGzpmU4otJu0C6ry1
- qwJrwcFs=
-X-Gm-Gg: AYBFou1BNLYn+OA8FQl1JEw1Xv7oFREJxm2gUi8QmidQzdst5LOqO0+96SEY0lZwSLn
- 7f2mhwzmZ6SqcawVmtnUNCFEsKwFonks0PCPsOroaNP5pe54ZuPA12ZATci3VkU5l0LLTG+RaND
- nvO8J1lgjO4mT93vG3EMtapKeQRkRBFCkGIwtVTwPLyrtA57rVwnUaQ+R3OU1MzdYXbWobDwLTm
- YtWiY/7ateMwgvayle774bpXdE7InAUpyHH1szNwLiTcrXSEvgn9aXzpIA3DSNBXFv/EnCn7AQY
- zlTUr2Q32lrYpGmxn81xeje+u9oapP86307J/eeaPj+x8j6cOVaF31pxy+DVOTVQV8lY0aEd8aI
- 0LE3PQTkWOzMIJO5ZbpMnZSAygFFTA6CT5SUV0hcTPBID6WpqU7KvBrnARX3s9hd+jrPjzNJkpb
- xoaG1Q2BwQwrOIO215buvV+b8JvOQDZjEI5pcfip50QzFgs0tg+ikBVOKyQYLF6krQBU7/N5Iwc
- P4OdL3IMM8ue9lo8MUfUU6Vu+7FatHLt23WMdOnJqEJXIhuJazmPjhUIJqSkcjmI21G/pNTLMTk
- 2x2TNtfWmGNkIouhM2WgsYlZV+U6mZ6ZlLlPLah81UCfgCPjEA==
-X-Received: by 2002:a05:600c:a596:b0:4b5:d95c:2380 with SMTP id
- 5b1f17b1804b1-4bb55a86fb2mr2819015e9.11.1794512102804; 
- Thu, 12 Nov 2026 11:35:02 -0800 (PST)
+ bh=zUytcArwYft42yI5fAGTTaE7PTH2ElBsf7FRxoWCuy8=;
+ b=uxsUZQxjwAfKEad2wFDJv/Xf8LSnGpE+kNv76b7bRWTs2WidRjrNtl3oMiROn7MjHj
+ KWpogrkSWG02Y/IN7hSQQ6/j9Jmrho1UbjKVff7cadYB9VJjEXuJV+CEu9c2CvRdD7JI
+ za6pSl7QfbNbmtJqwq8uV7UJKVPpwklAQhbWcQd10cXgyGvUx0R0sQkK+srGCpwiQ003
+ mrAkGCZlJxDHJiyLqiJREUh6UUaG+Vb834SGR9MTu0qmGWDdZN/oNgjZKsB9iZHUuicm
+ OLqmc7Bxq2KcM/M2kVAv7n0c1YQ2wlqkklk5kyNDIQW0wamDerRZrMibcccJpb6hFNrU
+ Z3Tg==
+X-Gm-Message-State: APuU4Z/P38SV11c2XScU2DjkH2muieJxSdSgPEgRwyn9zUYCBWJ7XDyO
+ t8Xkawn0fmhjpOHJEX8VucpVdsD69/s5qEbssDA4gQxqUght62RckaTm/xYco4LEHW4YA2JnvUJ
+ VnAq8e1Q=
+X-Gm-Gg: AYBFou2NzRG/sKhFGJ+CeTwW+o2X7ucRCrLUSIt1mQlPIpocj0fsTixR0l4701/c/WA
+ 6su6I9RA3irI6IBxeVzw7hQYfF37IUyadHjYC0Rc3htxPWbSZRVGeWpLVTMtyr4o/n+Dk1d5NZB
+ ZooEYbKSX+jjyukMwZ4m0Kg1naPsyr9DSV2awZZyybeaq39tL29LMwPEIjr3eKOaRlWjERF5RO2
+ HR/eeqTWrUsRoCbbmaOx9ht1pbaehdWYOjjGkmy1WCJBFgSsE7oD+yDxTAxVDITjtryQ5yc+dyl
+ DHFr34/qacfRCYXC67eRRei0l9LOt93RNtd8SoyRHrg7rwOMsGuBL88mAJG8F9Tzw5W7evgnslI
+ nQMvF+qzEG+DvLE9p+3Tz/tKjYTKils6t8T48MbdwFoMV93Je20lUrpB29wX5gwrfabxBifAiAk
+ rM2YoJjGa95hH0DVoiF+doHMl34LT8sVr+jJ7RVhqlZU7Kpk2ACzYNpyip7DJDbIwFFp/ucu0uo
+ djmA+0jebRiOVvBALrTzfGC7xUL+9VKWAYMyP+1cgpGoDjEhY6FSbRF2J/MVCwzHe2DKxFbhjvy
+ UlRLrnUF9Na3RnR2qqwlCj1+wHiP
+X-Received: by 2002:a5d:588b:0:b0:48e:202:6718 with SMTP id
+ ffacd0b85a97d-49c71b5d3cemr1589660f8f.25.1794520172612; 
+ Thu, 12 Nov 2026 13:49:32 -0800 (PST)
 Received: from localhost ([176.114.240.8]) by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-4bb4e2adf53sm90488185e9.15.2026.11.12.11.35.02
+ ffacd0b85a97d-49c5f1c1797sm1631992f8f.11.2026.11.12.13.49.32
  for <ltp@lists.linux.it>
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 12 Nov 2026 11:35:02 -0800 (PST)
+ Thu, 12 Nov 2026 13:49:32 -0800 (PST)
 To: ltp@lists.linux.it
-Date: Thu, 12 Nov 2026 20:34:57 +0100
-Message-ID: <20261112193501.420658-1-avinesh.kumar@suse.com>
+Date: Thu, 12 Nov 2026 22:49:30 +0100
+Message-ID: <20261112214931.442129-1-avinesh.kumar@suse.com>
 X-Mailer: git-send-email 2.56.0
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
@@ -91,9 +90,10 @@ X-Spam-Status: No, score=-19.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] cve/ghostlock: Skip the test in 32-bit compat mode
+Subject: [LTP] [PATCH] openposix: pthread_join/speculative/6-1: Fix race
+ with detached thread exit
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -111,31 +111,84 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 From: Avinesh Kumar <avinesh.kumar@suse.com>
 
-struct prctl_mm_map has a pointer member (auxv) and PR_SET_MM_MAP has no
-compat handling, so a 64-bit kernel rejects the 32-bit layout with EINVAL:
+The test creates a detached thread whose body returns immediately, then
+expects pthread_join() on its ID to fail with EINVAL. Once the thread has
+exited, its ID is no longer valid and the behavior is undefined. The
+outcome depends on scheduling, so the test fails sporadically, mostly
+on single CPU machines.
 
-  ghostlock.c:202: TBROK: PR_SET_MM_MAP failed for all auxv sizes: EINVAL (22)
-
-native 64-bit run covers the generic rtmutex/futex PI code, hence skip on
-compat mode.
+Keep the thread blocked on a semaphore until pthread_join() has returned.
 
 Signed-off-by: Avinesh Kumar <avinesh.kumar@suse.com>
 ---
- testcases/cve/ghostlock.c | 1 +
- 1 file changed, 1 insertion(+)
+ .../interfaces/pthread_join/speculative/6-1.c | 27 +++++++++++++++++++
+ 1 file changed, 27 insertions(+)
 
-diff --git a/testcases/cve/ghostlock.c b/testcases/cve/ghostlock.c
-index b37d6e9ca4e1..f0f84c8fbd90 100644
---- a/testcases/cve/ghostlock.c
-+++ b/testcases/cve/ghostlock.c
-@@ -265,6 +265,7 @@ static struct tst_test test = {
- 	.test_all = run,
- 	.runtime = 180,
- 	.needs_checkpoints = 1,
-+	.skip_in_compat = 1,
- 	.needs_kconfigs = (const char *[]) {
- 		"CONFIG_CHECKPOINT_RESTORE=y",
- 		"CONFIG_FUTEX_PI=y",
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/pthread_join/speculative/6-1.c b/testcases/open_posix_testsuite/conformance/interfaces/pthread_join/speculative/6-1.c
+index 127b724c69e4..232fd4cc33ac 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_join/speculative/6-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/pthread_join/speculative/6-1.c
+@@ -25,18 +25,30 @@
+  * Steps:
+  * 1.  Create a new thread that is non-joinable (i.e. detached state
+  *     attribute is PTHREAD_CREATE_DETACHED.
++ *     The thread blocks until released.
+  * 2.  Call pthread_join() in main.  It should return EINVAL.
+  *     If not, the test fails.
++ * 3.  Release the thread.
++ *
++ * The thread must still be running while pthread_join() is called. Once a
++ * detached thread has exited its ID is no longer valid and the behavior of
++ * pthread_join() is then undefined.
+  */
+ 
+ #include <pthread.h>
++#include <semaphore.h>
+ #include <stdio.h>
+ #include <unistd.h>
+ #include <errno.h>
+ #include "posixtest.h"
+ 
++static sem_t gate;
++
+ static void *a_thread_func()
+ {
++	if (sem_wait(&gate) != 0)
++		perror("sem_wait()");
++
+ 	pthread_exit(0);
+ 	return NULL;
+ }
+@@ -47,6 +59,11 @@ int test_main(int argc PTS_ATTRIBUTE_UNUSED, char **argv PTS_ATTRIBUTE_UNUSED)
+ 	pthread_attr_t attr;
+ 	int ret;
+ 
++	if (sem_init(&gate, 0, 0) != 0) {
++		perror("sem_init()");
++		return PTS_UNRESOLVED;
++	}
++
+ 	pthread_attr_init(&attr);
+ 	pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
+ 
+@@ -55,7 +72,17 @@ int test_main(int argc PTS_ATTRIBUTE_UNUSED, char **argv PTS_ATTRIBUTE_UNUSED)
+ 		return PTS_UNRESOLVED;
+ 	}
+ 
++	/*
++	 * The thread cannot get past sem_wait() before the post below,
++	 * so it is alive and detached.
++	 */
+ 	ret = pthread_join(new_th, NULL);
++
++	if (sem_post(&gate) != 0) {
++		perror("sem_post()");
++		return PTS_UNRESOLVED;
++	}
++
+ 	if (ret != EINVAL) {
+ 		printf("Test FAILED: Return code should be EINVAL, "
+ 		       "but is: %d instead.\n", ret);
 -- 
 2.56.0
 
