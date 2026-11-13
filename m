@@ -2,89 +2,88 @@ Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76675606A323
-	for <ltp@archiver.kernel.org>; Fri, 13 Nov 2026 04:12:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C770D606A321
+	for <ltp@archiver.kernel.org>; Fri, 13 Nov 2026 04:12:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=lists.linux.it header.i=@lists.linux.it header.a=rsa-sha256 header.s=picard header.b=rGrHJ7rk;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=suse.com header.i=@suse.com header.a=rsa-sha256 header.s=google header.b=dMgcRkLZ
+	dkim=pass (1024-bit key, unprotected) header.d=lists.linux.it header.i=@lists.linux.it header.a=rsa-sha256 header.s=picard header.b=W4RdnWjo;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=suse.com header.i=@suse.com header.a=rsa-sha256 header.s=google header.b=QcUzNRKc
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1794543156; h=to : date :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1794543173; h=to : date :
  message-id : in-reply-to : references : mime-version : subject :
  list-id : list-unsubscribe : list-archive : list-post : list-help :
  list-subscribe : from : reply-to : content-type :
  content-transfer-encoding : sender : from;
- bh=lZBrx5101oDRk74px3WWaOSjK7k8RIv4xczapkbZ6nw=;
- b=rGrHJ7rkiaSyrctzR4ZA5FRia5V1/Gb1Wm5BOcHDC6Kpa93E2/HQPsHUHXOGYY8w2/JBX
- 1u5ph4nPWx5zW0L8GctEqhM4+4PHM63/am+Rw04SARh+nKmoScMfwdjEdY5Sv2EAqXgAKs4
- XMwmZYjWm789r2/x5EGQutpb7A04I+k=
+ bh=qCLJzXNiBUu3kPUpyPAgKA4pcYg6pHARBvM0zVrPoXI=;
+ b=W4RdnWjo65xxbQs0R6D8no7hmu/7d/4NJPiUR8w2iyNcLdhHtCi4kDLYYp3v9kQB01X+4
+ Yzlrqqvr1t2BBzURpoePjFcgAEQ0v1Uj0exEDZFVGoRpmu02WjsGeE3IaLpXEER7I1xCTqQ
+ lgK6GJYfKpf7lYauWg2VcORXli6q3/o=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 1D7683EBC4D
-	for <ltp@archiver.kernel.org>; Fri, 13 Nov 2026 05:12:36 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 6EC4A3EBC5E
+	for <ltp@archiver.kernel.org>; Fri, 13 Nov 2026 05:12:53 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E7D0E3EB501
- for <ltp@lists.linux.it>; Fri, 13 Nov 2026 05:11:43 +0100 (CET)
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com
- [IPv6:2a00:1450:4864:20::42e])
+ by picard.linux.it (Postfix) with ESMTPS id 3D93E3EB526
+ for <ltp@lists.linux.it>; Fri, 13 Nov 2026 05:11:47 +0100 (CET)
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com
+ [IPv6:2a00:1450:4864:20::336])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id ABDE46005D4
- for <ltp@lists.linux.it>; Fri, 13 Nov 2026 05:11:42 +0100 (CET)
-Received: by mail-wr1-x42e.google.com with SMTP id
- ffacd0b85a97d-490f38e9688so308260f8f.0
- for <ltp@lists.linux.it>; Thu, 12 Nov 2026 20:11:42 -0800 (PST)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id AB89F600A6F
+ for <ltp@lists.linux.it>; Fri, 13 Nov 2026 05:11:46 +0100 (CET)
+Received: by mail-wm1-x336.google.com with SMTP id
+ 5b1f17b1804b1-4a2000d5fb1so2112705e9.1
+ for <ltp@lists.linux.it>; Thu, 12 Nov 2026 20:11:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1794543102; x=1795147902; darn=lists.linux.it;
+ d=suse.com; s=google; t=1794543106; x=1795147906; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to:content-type;
- bh=bMLCGc+cDh7zAe3aLju+NdJ7JWmgclMgsi7dciBffhA=;
- b=dMgcRkLZUb3D/yoh7uup2uDPWWYLgnIvjtlRBvlGF0hVKbZJM8+1IvaA1WA23sSOBj
- vFO9ACljXOU3lUa76EDiV41vzL8/J/QPII17K/L0XdKuVhUYX28QWM68EJUJlhAn5fE0
- hrbj6U8nxCdcn4QIuDFaShHiq1k6sHIMdCk3efy/5lMKYrKOqGosULq9JZhEbLFez8Fa
- cKohzLqmOK+8cCoxUVjDlP87OXblDixDPqcVKl1xvjLuIGNnIA9hdH8UqUKggU9G5jsF
- gE8eT8IpAFclT0Bkoyve7pnSKbLzmrj0hZi9QYDzmrZfVytYjaUqoxa13sjZUQ537WbY
- WAAg==
+ bh=v/FdyncgoipjzsDXLSERwt/Woqd7ZoasLCzFYUmivCk=;
+ b=QcUzNRKc8mhUku/riaB+GztabAYx7HV/1TJXMVhBxhbsBf3A0msz89yVoj3vFcbn3W
+ u7Q2J7YdQJPmM/QCXzSOOjlsQMysunTVTMK2WKm0G+cX5hCuCDUbErnn0oIyc46VLL0E
+ 48Azic9nqHAHZnkXwCSnkuq7n13nLn0+sO2p11uwmwDErLCq43jhM73pXfLxfdXvOvz6
+ hujhQvd1Ftj1H4zo+3Q506NuqTCdxQqV+PiXNzN4OAxS2lpSn5jL7JnPYVvaKGqatka4
+ vVApHPSxO11RcDpOpFDTe+W2eMa0HyOzQesjry4lwQZtAmFGORwJR3Nrmj8s/7qSe5NU
+ iWeA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20260707; t=1794543102; x=1795147902;
+ d=1e100.net; s=20260707; t=1794543106; x=1795147906;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to:content-type;
- bh=bMLCGc+cDh7zAe3aLju+NdJ7JWmgclMgsi7dciBffhA=;
- b=iAxKpBUJKZGlWPyNMmNVyLarjP62jYOCX50NTt/ozMU+xggYSXd818GJ/snMwphH4r
- O0EVhy+GWjKT8/giY6qDQ3qlljL6KOeAajQ1XvblXRDLjTs5oKd0NnXiquZpzgZQJgfE
- jFOPW6sAHmVO1NqH+FNyW2C72UglsskMm61ZR9ku1+55jwf6MMwGBnoVEy5c7oTd00tb
- cbK3pWnmsc44Z8j2/J5VlMDT2oZDd5Is/82m9XIbFipmWljWDOBIp/6TY+lJzrel8WFV
- jKzLcM40RoMpC37w6zNBLfMo8DpLLEh7mPZO50w4iVleL1nxdFA69+ltD0tUkoO0bdor
- k93Q==
-X-Gm-Message-State: APuU4Z9KxSAvJe9ICd0yMnWK6no6MYoYjjGpjU5PWH26jBABaFck4S7Q
- KHU+Wj36eISH88pFhL+eihxsi8cPf3WYUK1tfm632oBoec+YOO1SmKA0XAVnZ/3c+APizqAoWkd
- UzOhaGw==
-X-Gm-Gg: AYBFou28kn3Qls8ws72decJ23Jt42YU2IptJWc+00LbCJdPSCHGPRZP9Fcd+2pvxgqy
- 4bBQeaElcb4ITFQQQebRD8B4+ICGhpyrBZDA7nBnV90NCOsv7ZDLxXrnwcFzuv0Du82PEu2QjCp
- DKtdV6How6eXPjLxrpdiXsvUbyiYhkp+N8iRyZf4RpmdLDsQy771G5yNrxHAGIJ6XloxnWqPfPT
- MHKlPy3NmPfs48+jSBc0CThMN8KyZKXaml772mqhYujimnHC3RIvOmqLo9taxDCZNUE7n9WwuAm
- cw+jHqmbrRsjdWqtmKQFBw4D3jEjeZjCMezOQrJic4CmEf3QBxlt9jqwd9LyvlvNHjOeC7aRBgm
- 8JkdGdi/W3NyPfQ+n63ey13/hWx2NmLW/Co1FqlP/Mvla6VPf8+Tju2I7DmfC0bTTAnnncgD96J
- EL1PsFY7EVvefP6k8Gl4QqN7WbnVVkASNj4kcG1Ktgd6xst+xJyPFCqFnDvYEa/TeecARd0TQ+u
- 4KGRQ566nIbZMZHrrW023IOBTkYoc19/BeZzcTIPOes32z3o7OAA3ZUzlj9mylwd23PPOKisY9e
- J9aWbqona6zBA8bTKOKluefnAC7oMawgSOjLRZApuuJsCPuS4tz888+OiKdNyuRJ/FhtkTmEGww
- 4KGYe8ZZ0rnaD4ZzSReOv8QdWcbAU/DjEZw==
-X-Received: by 2002:a5d:584e:0:b0:491:cd7:e96b with SMTP id
- ffacd0b85a97d-49b021bf3d3mr10265406f8f.15.1794543102056; 
- Thu, 12 Nov 2026 20:11:42 -0800 (PST)
+ bh=v/FdyncgoipjzsDXLSERwt/Woqd7ZoasLCzFYUmivCk=;
+ b=RAXrH0EzKDiLvAi5ZSSf+tW6Y59I62Um/4rgSzA3aKE6wa0Nrqo6i7ir6aUk3kFdNc
+ XyyT2N/y8rUu6RLNJ4bBulycC0yWGJwQ5+kFlajkEkb6Dl3aGxQg1ZJoDziX9yqCHO65
+ 69x36d72VMBfMxy1MN1Pm3Di3GXKoxDYn1SP9cw2Hu21JIltB+xpo1Ip/PRGd7uesctb
+ 6ASephXj197cFPJm96le+GRTIZ46lvzcBZ/uDPv9ztoJ4xdLWOFV1bRwNS9wWCevl5uw
+ quyBfha4LnWerhELYiK/kHfArIigWS7QS3jf5wE83DDsvvuLOTAexPN3+cwqzDtTK2pa
+ t2cQ==
+X-Gm-Message-State: APuU4Z92jm7NqJkLLXt7j+lAMo6uwjGwU6/SsmsikpbwF6WsGbVSOsbI
+ b4+1ntLsN1ybPQ4dum+dsboUmp+krepCD+2V02cMfFkEhzweMw+T/b3pB0mg7L9fbv2otUn+qZy
+ jpfpdxg==
+X-Gm-Gg: AYBFou070WI+Z1+ekaGBsiJIdk5fPxMAVAfO4VogI+ntsIM/543/pYfTkDE8k5e8xVK
+ YA2BahZtClaRSGmIcmezxRqbdqv5Tc5aSOcd9ovE6aElHf8fCNfPvXmtEKdipYrenP83ZmT4Ito
+ fSD3MgfwFAoWRkC8qoiWko0nbecB9Bz4CFceTBcKUiaxaZr9v46QeWByC7NQQE2PU7H1Fd2ss7G
+ g6VoXOv50dRPAdga5b0flBJ96Odo2wDuXMqr4//8gOQiRGiPBEOYG9sLIFURd94BNJVvUPUe7H7
+ s8Jt87CxFDaV20feNwF7bZacLqn37Z8qa9k5QifqiH9e0BMMAR1AFwDSXVYyDYyh+v4kDN+3jUr
+ e/wDkHa7rE62qDGkIziWq8sIHC9Ti6SjqSf5e3oklk1he5iOxRbNs2OyxJlGffHYObppXgRrE5H
+ IEfxwrnLUsS9YD75ygV69Q3JSZw1itiAsMOE4sYcvRIonmtNU9m/snBtPA1pDz40Tg1BRZFtqnE
+ 1aZ9M3UfRUIe6vn4KAjU7BdpMLh7bQV2j42PsagOYcQTP7DRljy2QVV2OWbgRfow4pwrb4bXmYC
+ 8WLo967BWOvEB/3EFP/8ytKaKhIyO8eU9q2kGN2xGz3swDXDrdvu96RZMKzdiFXH+0+/BYncIFT
+ xvZmk6kWaoygrBk6nechEts9wrTMCY6PPGQ==
+X-Received: by 2002:a05:600c:870f:b0:4ba:495c:3798 with SMTP id
+ 5b1f17b1804b1-4bb55af1377mr23494115e9.35.1794543106186; 
+ Thu, 12 Nov 2026 20:11:46 -0800 (PST)
 Received: from localhost ([2a07:de40:b240:0:2ad6:ed42:2ad6:ed42])
  by smtp.gmail.com with UTF8SMTPSA id
- ffacd0b85a97d-49c608d10b2sm3981292f8f.44.2026.11.12.20.11.41
+ 5b1f17b1804b1-4bb55a68c5asm28014025e9.1.2026.11.12.20.11.45
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 12 Nov 2026 20:11:41 -0800 (PST)
+ Thu, 12 Nov 2026 20:11:45 -0800 (PST)
 To: ltp@lists.linux.it
-Date: Fri, 13 Nov 2026 04:11:31 +0000
-Message-ID: <20261113041136.17102-3-wegao@suse.com>
+Date: Fri, 13 Nov 2026 04:11:33 +0000
+Message-ID: <20261113041136.17102-5-wegao@suse.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20261113041136.17102-1-wegao@suse.com>
 References: <20261113041136.17102-1-wegao@suse.com>
@@ -96,10 +95,10 @@ X-Spam-Status: No, score=-19.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3 2/4] perf_event_open02: Use
- tst_bind_to_current_cpu() helper
+Subject: [LTP] [PATCH v3 4/4] memcontrol03,
+ memcontrol04: Bind test process to a single CPU
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -115,54 +114,62 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Replace the local duplicate bind_to_current_cpu() implementation
-with the tst_bind_to_current_cpu() library helper.
+On multi-CPU systems, memcontrol03 and memcontrol04 can intermittently
+fail with over-reclaim of protected pagecache under trunk_B:
+
+  memcontrol03.c:104: TINFO: Child 142113 in trunk_G: Allocating anon: 150994944
+  memcontrol03.c:121: TPASS: Child 142113 exited
+  memcontrol03.c:214: TPASS: Expect: (A/B memory.current=54394880) ~= 52428800
+  ...
+  memcontrol03.c:104: TINFO: Child 142114 in trunk_G: Allocating anon: 174063616
+  memcontrol03.c:116: TPASS: Child 142114 killed by OOM
+  memcontrol03.c:230: TFAIL: Expect: (A/B memory.current=43319296) ~= 52428800
+
+In the kernel, per-CPU charge batching (MEMCG_CHARGE_BATCH = 64 pages)
+caches charges in per-CPU memcg_stock. On multi-CPU systems (especially
+with large page sizes like 64KB on ppc64le where each CPU caches up to
+4MB), allocating memory across CPUs allows cached stock charges to
+accumulate in ancestor trunk_A. Because trunk_A has memory.max = 200M,
+this extra stock pressure forces the reclaimer to evict pagecache in
+trunk_B down to ~35-43MB instead of the expected ~50MB.
+
+Set .setup = tst_bind_to_current_cpu in both tests. Since child processes
+inherit CPU affinity on fork(), this confines stock batching to a
+single CPU across all test children, preventing multi-CPU stock
+accumulation and ensuring reproducible reclaim behavior.
 
 Signed-off-by: Wei Gao <wegao@suse.com>
 ---
- .../perf_event_open/perf_event_open02.c       | 22 +------------------
- 1 file changed, 1 insertion(+), 21 deletions(-)
+ testcases/kernel/controllers/memcg/memcontrol03.c | 2 ++
+ testcases/kernel/controllers/memcg/memcontrol04.c | 2 ++
+ 2 files changed, 4 insertions(+)
 
-diff --git a/testcases/kernel/syscalls/perf_event_open/perf_event_open02.c b/testcases/kernel/syscalls/perf_event_open/perf_event_open02.c
-index e38c3f133..1e100982e 100644
---- a/testcases/kernel/syscalls/perf_event_open/perf_event_open02.c
-+++ b/testcases/kernel/syscalls/perf_event_open/perf_event_open02.c
-@@ -174,26 +174,6 @@ static int count_hardware_counters(void)
+diff --git a/testcases/kernel/controllers/memcg/memcontrol03.c b/testcases/kernel/controllers/memcg/memcontrol03.c
+index 25b84c24e..73d1e7e04 100644
+--- a/testcases/kernel/controllers/memcg/memcontrol03.c
++++ b/testcases/kernel/controllers/memcg/memcontrol03.c
+@@ -243,6 +243,8 @@ static void cleanup(void)
  }
- #endif /* __s390__ */
  
--static void bind_to_current_cpu(void)
--{
--#ifdef HAVE_SCHED_GETCPU
--	int cpu = sched_getcpu();
--	size_t mask_size;
--	cpu_set_t *mask;
--
--	if (cpu == -1)
--		tst_brk(TBROK | TERRNO, "sched_getcpu() failed");
--
--	mask = CPU_ALLOC(cpu + 1);
--	mask_size = CPU_ALLOC_SIZE(cpu + 1);
--	CPU_ZERO_S(mask_size, mask);
--	CPU_SET(cpu, mask);
--	if (sched_setaffinity(0, mask_size, mask) == -1)
--		tst_brk(TBROK | TERRNO, "sched_setaffinity() failed");
--	CPU_FREE(mask);
--#endif
--}
--
- static void setup(void)
- {
- 	int i;
-@@ -214,7 +194,7 @@ static void setup(void)
- 	if (access(PATH_KERN_PERF_EVENT_PARANOID, F_OK) == -1)
- 		tst_brk(TCONF, "Kernel doesn't have perf_event support");
+ static struct tst_test test = {
++	/* reduce per CPU stocks for more stable results */
++	.setup = tst_bind_to_current_cpu,
+ 	.cleanup = cleanup,
+ 	.test_all = test_memcg_min,
+ 	.mount_device = 1,
+diff --git a/testcases/kernel/controllers/memcg/memcontrol04.c b/testcases/kernel/controllers/memcg/memcontrol04.c
+index f1e136df4..462782d6d 100644
+--- a/testcases/kernel/controllers/memcg/memcontrol04.c
++++ b/testcases/kernel/controllers/memcg/memcontrol04.c
+@@ -242,6 +242,8 @@ static void cleanup(void)
+ }
  
--	bind_to_current_cpu();
-+	tst_bind_to_current_cpu();
- #ifdef __s390__
- 	/*
- 	 * On s390 the "time_enabled" and "time_running" values are always the
+ static struct tst_test test = {
++	/* reduce per CPU stocks for more stable results */
++	.setup = tst_bind_to_current_cpu,
+ 	.cleanup = cleanup,
+ 	.test_all = test_memcg_low,
+ 	.mount_device = 1,
 -- 
 2.55.0
 
