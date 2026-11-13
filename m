@@ -2,103 +2,107 @@ Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C49D606A31C
-	for <ltp@archiver.kernel.org>; Fri, 13 Nov 2026 04:13:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBD6E606A31C
+	for <ltp@archiver.kernel.org>; Fri, 13 Nov 2026 04:38:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=lists.linux.it header.i=@lists.linux.it header.a=rsa-sha256 header.s=picard header.b=fRXsY9WZ;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=suse.com header.i=@suse.com header.a=rsa-sha256 header.s=google header.b=O4+iGGqF
+	dkim=pass (1024-bit key, unprotected) header.d=lists.linux.it header.i=@lists.linux.it header.a=rsa-sha256 header.s=picard header.b=H0+4B7K+;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=suse.com header.i=@suse.com header.a=rsa-sha256 header.s=google header.b=Cm/bkJtA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1794543196; h=to : date :
- message-id : in-reply-to : references : mime-version : subject :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1794544696; h=date : to :
+ message-id : references : mime-version : in-reply-to : subject :
  list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : content-type :
+ list-subscribe : from : reply-to : cc : content-type :
  content-transfer-encoding : sender : from;
- bh=KBrKOha3SoO1WEucF4Iz+qeKjSAwhtKy1w2dSXuk6Og=;
- b=fRXsY9WZKO8Yn9vE5nziRpdHm/YFXpuYO3UplqcBErEshV9BtfWPg9ZM/qmRWFcjhVvG4
- R4x1ydfkOMy/0MmQhISIEq5HsLmAH5p35Y+D5V5R++Zcw1LDscnoYcEAfhUqzYa441OjMlA
- Yi+yAT+6R2CEMc7Kjxqm08TeI/rfUmw=
+ bh=b8yT/vaW0lvbRbmKHFdg4VEU/nPAE3Mw6NTrmvxYhLM=;
+ b=H0+4B7K+bSWhhXV/BRBJGojmmhhBx4xqw8cbeGtkC/6Jp6bW3+BhX+UPrWxn6ef/f/bCj
+ U/fuv6nrpT+Dhzhv13h/rS8+Qd1OOgajcA0kxwS4uCT8Tv2VED2OUT9GA7WvrbAfux7B2yA
+ piytFN1K5RmEY/+EJ7pj6cxS9xnQp6w=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D0DB33EBC66
-	for <ltp@archiver.kernel.org>; Fri, 13 Nov 2026 05:13:16 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id F26E23EBD0F
+	for <ltp@archiver.kernel.org>; Fri, 13 Nov 2026 05:38:15 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 642FE3EB52A
- for <ltp@lists.linux.it>; Fri, 13 Nov 2026 05:11:50 +0100 (CET)
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com
- [IPv6:2a00:1450:4864:20::331])
+ by picard.linux.it (Postfix) with ESMTPS id C40783EBC5F
+ for <ltp@lists.linux.it>; Fri, 13 Nov 2026 05:37:55 +0100 (CET)
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com
+ [IPv6:2a00:1450:4864:20::435])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 784961A0064E
- for <ltp@lists.linux.it>; Fri, 13 Nov 2026 05:11:44 +0100 (CET)
-Received: by mail-wm1-x331.google.com with SMTP id
- 5b1f17b1804b1-4a60f9474c4so8160945e9.0
- for <ltp@lists.linux.it>; Thu, 12 Nov 2026 20:11:44 -0800 (PST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 2F9FD200AD6
+ for <ltp@lists.linux.it>; Fri, 13 Nov 2026 05:37:55 +0100 (CET)
+Received: by mail-wr1-x435.google.com with SMTP id
+ ffacd0b85a97d-492f0a1b685so453723f8f.0
+ for <ltp@lists.linux.it>; Thu, 12 Nov 2026 20:37:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1794543104; x=1795147904; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to:content-type;
- bh=C0FxmcselojaFFSsSvWVqydtZlXinplP2VyH4V/dKkA=;
- b=O4+iGGqFCKqO54PQGjIV4I0Lt8xlOQt7YETMwBDo7Z9/EyhEFdOcjZp3GzsA+TGaBS
- 5qWyzLnIyqqWpe286zzTNy43fgnXxnrGbErt1kaSyNL5o146cp8aAUq+lES/2McG4eTR
- crtjziubxfNYt65YWAMmAzTY7BmZQvuO0i0uW8y5IH7mnX07Zb9FbJotCG3t9nNoSLx/
- WvkFzFc1vwDs3hKvmHCGr3Oc1ie1BF6ZntHfgmfTuywmM50YsDQVIuO2ZmVVUJ43++QU
- SsCbNVcSz3nQnCdT2zQtP+I76EOtdAN58QpHjVcUWzMg5D2OVf9V64G7dOUN88uYcmRn
- TCBg==
+ d=suse.com; s=google; t=1794544674; x=1795149474; darn=lists.linux.it;
+ h=in-reply-to:content-transfer-encoding:content-disposition
+ :content-type:mime-version:references:message-id:subject:cc:to:from
+ :date:from:to:cc:subject:date:message-id:reply-to:content-type;
+ bh=Dmq7JQ83L5StaqGtIhfK2XbTOOZIuw7U3z7mEPc6tA4=;
+ b=Cm/bkJtAL4+9OeBzZRhIH0KwjKAXJscJhvS9EUAmPW2VPIRFt7QC8jIwG0Sh6/HCN2
+ MhgMSgD/em95oe0FV3FmQ6FUAejRnkykDUrKUrTv6BNnN1RxcOUhT/8Tf41B6t7SBN7G
+ I+zTEu7JMKKGftPXVgbXkNUmuJWGf8bGk2nJqtTNtz/STB0L5RyVBd0abf31Ys83m+iB
+ 2/HfVhHAyzegYcbnirz2NrAuyznSe1NxkkwVC2Z5p7BDTD6AM6lEmW42h38y7rzY8AhN
+ RtItlNOGxpD8xWyiC89iGzVhccQSldyCaOcPM22zQ8jLnaWvlYjYpiRZJKANwyIt4bWL
+ 6ZBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20260707; t=1794543104; x=1795147904;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to:content-type;
- bh=C0FxmcselojaFFSsSvWVqydtZlXinplP2VyH4V/dKkA=;
- b=DyEwl5YBAv5r/r/EW4GNAgtn3pJf9c19Jsy1Hf9oVzfgJpPaGTDUrzXljFj76kx/b8
- SLQno6DdTupYpHcT7PlLyfcaQ2J7Qard0cC0WPL+RcZpRUaAn5OIL6Gqbf4zywgV/vsx
- mxlA5x4d0ZbPmUK3c5HmCljjkfbkKr0P/uR8DE2HPcD4lbBzbMk9GP911aJnd8aY9B+C
- Zk01zixMFu6EHQf4us3H7ubLqyElq/q3mo40O56wYXfHJqZ0XxTIM4X9IHdJUeYZ5QIC
- L/lUR11NGlZL65vXTc8Kamz+L2gZBO8Us3l15vlv8dtHnmKXDRmSnFHUflItUeQWq16R
- +hLw==
-X-Gm-Message-State: APuU4Z8VoEvFRqssCP0SGjdinQ0FSKHi6zipEXCgJIiftUJ+1QdSojy/
- FT13suO/TsCFx1jmuhv3Ch1j8Ly5/EImuzABcnw70AdlpS6pvmhR/iP7i4NA+dwTfV1Zv0cOS97
- qpA8Bzg==
-X-Gm-Gg: AYBFou2OK/VbgSjarltHxAF/L7rZGa64DqQqSChQKJP00Xa83rtAMg6FT0jYqLDP3x8
- yA3HRv4C0r8gUVWJ5ILK2c8zFvL6QukPNhIqK8qrEsP1ehyzSr8Z9NHCSFX3apIese6HaowUM+v
- DdhLjHI20QA/hGCtdJQusuFw4rCzHpt9H3TZ/vvRQhXq9sa1WBuxEIc8XZbZ+P1qLXU4Cx1itFu
- xdt0ZBnrafgBr+Ni5T7bqxUlznw5M9jsqYMOyqIVxHWEtcnk2ZY5VnecNM3ktcKlR1TLJZRBMaT
- 50mmgZM11SiRq3vjcJuyUM1cWz5eDQ9Q7VDSB3hp9HCFKZjB+ilioQkfBWn/U/llS8u/MzU067D
- hCFKXj8vg9MY5k8NH3MGYGa2VpzQPVGLiV919v9+W7kmIkI8rjV6D/hCe126zxCzeqgTM/dnHJu
- Aw0WWEKbOVCOMxxRiAlllIlp4qrmjVCdNi4Rd8UbW1FTELRy7nJUTgeo/tS+AdjQgdTQQYniEs8
- PvdofGDaclMe4rdph9I0e8oM+PbUnEyGnGpPPr4PKOgBUMEz3/A/PPLvuMlnUk3mPWlnCrB8jR2
- Xp3No/s3eDxG298mtkZS2h+6cJr1j2/JONCahRTZ2TmR805nzCDqhTqgSBZauS3LuVFv5T4FEYU
- SQXoBX2YmJ4YyL4aaJImvbGWdgMZ93e3NWvs=
-X-Received: by 2002:a05:600c:6309:b0:4a2:5267:3cd4 with SMTP id
- 5b1f17b1804b1-4bb559f3bb9mr24419115e9.3.1794543103654; 
- Thu, 12 Nov 2026 20:11:43 -0800 (PST)
-Received: from localhost ([2a07:de40:b240:0:2ad6:ed42:2ad6:ed42])
- by smtp.gmail.com with UTF8SMTPSA id
- 5b1f17b1804b1-4bb56f8d054sm11734565e9.3.2026.11.12.20.11.43
+ d=1e100.net; s=20260707; t=1794544674; x=1795149474;
+ h=in-reply-to:content-transfer-encoding:content-disposition
+ :content-type:mime-version:references:message-id:subject:cc:to:from
+ :date:x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to:content-type;
+ bh=Dmq7JQ83L5StaqGtIhfK2XbTOOZIuw7U3z7mEPc6tA4=;
+ b=cYMZLe6bXu4ezr7XpFNpfPZATFm+iYiRmWh4Akd6Z0R5NU6JiWQfwDB2pX6h8fyqcX
+ 2AU508kNlJgYdJeFJF52nqjua5w3fTfVUFUvlhkfdnBJhXmJgCO9X7UgRVmLSqjG76ZQ
+ YB/M+RxlxOcyXtiMumzMHuzbCJWBvC+YgyJ3bizzcukMwZWhLqjfKAeuR2UrGiWuc0Mb
+ jpSN9TwtKx8m030401aYsI9lYDsMNiAcRrAbgQmclHTfnE8iOos9tAXycdSsH80SZOFW
+ +pHx4AnjYwPzZKjZAMNB9SD2R3ncuaUWF5SITKQr39SPlxf+36M3ZJk+fVCizpjh/uc2
+ QkAw==
+X-Gm-Message-State: APuU4Z+dthxRXmqN1dpTO+75SfsbVljKesG2jBasU37w4gQOqSqdQtIz
+ uEmJE9z1y2hYNr7zM94oqrwuN5RTEwEJvZm35KvJte6SpKVI3r08QRWJAx/sQhp1Rpx5AKo02LW
+ 6fI1EbQ==
+X-Gm-Gg: AYBFou2mrgPtqCQC8C3FkaP3i5s1+O0SuNgBqZKk6atz5RxVgvp/zmqy5+3/sTrf0mU
+ lfO1IxvKHpsJDi76FoSMHp4gMMbSoT9WvbTcwOGIxeEvqN9qCATBbBW9jpoJ/Iu4SC2wIkkfvve
+ XBCgJ+8Oykb1UuCq9JXeG1yaJNOJ9q7Ltrpy5HkkUQ4P4LXHs+NdfEIAdd3K5FGMbRW+l/tnRMT
+ 3xhpSOkeyfzk9RHW+eMqDKr1R9/lbT5+snLEfufTOl8Y2JmAWxW2f32Qid1a24JMIdyfOeNpS1J
+ yQPX9JBtaKMWuFQ+Swy0jyaiXPn+EHV07hoINFkvg020Bmt9pX7fkdAOp90ojQCtlX8yboqKpqy
+ SuJB2/H/4qXFU91LrBZavgMxWJOD6p88LZ0v4O3LWqv/Gn1Dv3BcADHKt7fVbateQpriC8c22P5
+ NK4e4WF8IiUv0kI/5OJukz8cW7jRX9jBgmTYYHhCw/TAn28Z/g4egfGUyiPh0abK8gEU4QcpPxn
+ jdaNri5ZTJQ8a6h+zItSuIdtDQoAlSk48nRl/M6w8tj3QxmJoiidj+Pv0dR/pkTGH3N/V8bqetw
+ lawxdUnfeP36/nnsfn7T5ktfQ3QxG/zWVIV3kJ+PiYIpsPCi8I3rUBoxDQ+Q0A6XlPoPWtZlmjY
+ RuvLF07ApHbNXn66HYCFGMRJsjhv2+CzP/wgnpEveiY2X7jU7GuS7MTmAsGB3ZLU=
+X-Received: by 2002:a05:6000:610:b0:48d:e696:8a65 with SMTP id
+ ffacd0b85a97d-49c72ab0c18mr2914385f8f.46.1794544674563; 
+ Thu, 12 Nov 2026 20:37:54 -0800 (PST)
+Received: from autotest-wegao.qe.prg2.suse.org
+ ([2a07:de40:b240:0:2ad6:ed42:2ad6:ed42])
+ by smtp.gmail.com with ESMTPSA id
+ ffacd0b85a97d-49c5d03b10fsm3346121f8f.1.2026.11.12.20.37.54
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 12 Nov 2026 20:11:43 -0800 (PST)
-To: ltp@lists.linux.it
-Date: Fri, 13 Nov 2026 04:11:32 +0000
-Message-ID: <20261113041136.17102-4-wegao@suse.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20261113041136.17102-1-wegao@suse.com>
-References: <20261113041136.17102-1-wegao@suse.com>
+ Thu, 12 Nov 2026 20:37:54 -0800 (PST)
+Date: Fri, 13 Nov 2026 04:37:52 +0000
+To: Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+Message-ID: <avaUINSz3FG0JUwo@autotest-wegao.qe.prg2.suse.org>
+References: <20260929022340.524-1-wegao@suse.com>
+ <20260930035332.3360-1-wegao@suse.com>
+ <20260930035332.3360-2-wegao@suse.com>
+ <atmrQp-ahBUw6x-W@autotest-wegao.qe.prg2.suse.org>
+ <avM3ieRhvyhTOCOE@localhost.localdomain>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-19.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_PASS,SPF_PASS,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
+Content-Disposition: inline
+In-Reply-To: <avM3ieRhvyhTOCOE@localhost.localdomain>
+X-Spam-Status: No, score=-6.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,MAILING_LIST_MULTI,
+	SPF_HELO_PASS,SPF_PASS autolearn=no autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3 3/4] getrusage03: Use tst_bind_to_current_cpu()
+Subject: Re: [LTP] [PATCH v2 1/2] memcontrol: Add bind_to_current_cpu()
  helper
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
@@ -111,78 +115,42 @@ List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 From: Wei Gao via ltp <ltp@lists.linux.it>
 Reply-To: Wei Gao <wegao@suse.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Replace the local duplicate pin_to_current_cpu() implementation
-with the tst_bind_to_current_cpu() library helper.
+On Tue, Nov 10, 2026 at 04:26:15PM +0100, Michal Koutn=FD wrote:
+> On Thu, Oct 22, 2026 at 06:20:50AM +0000, Wei Gao <wegao@suse.com> wrote:
+> > Hi Michal
+> =
 
-Signed-off-by: Wei Gao <wegao@suse.com>
----
- .../kernel/syscalls/getrusage/getrusage03.c   | 32 +------------------
- 1 file changed, 1 insertion(+), 31 deletions(-)
+> Hello Wei.
+> =
 
-diff --git a/testcases/kernel/syscalls/getrusage/getrusage03.c b/testcases/kernel/syscalls/getrusage/getrusage03.c
-index d4dca8070..090c46dfc 100644
---- a/testcases/kernel/syscalls/getrusage/getrusage03.c
-+++ b/testcases/kernel/syscalls/getrusage/getrusage03.c
-@@ -18,8 +18,6 @@
- #include <stdlib.h>
- 
- #include "tst_test.h"
--#include "lapi/cpuset.h"
--#include "lapi/sched.h"
- #include "getrusage03.h"
- 
- #define TESTBIN "getrusage03_child"
-@@ -33,34 +31,6 @@ static const char *const resource[] = {
- 	NULL,
- };
- 
--/*
-- * Pin the test to the CPU it runs on. Every forked or exec'd child inherits
-- * the affinity, so only that CPU can hold RSS counter updates outside the
-- * fast percpu_counter read.
-- */
--static void pin_to_current_cpu(void)
--{
--	unsigned int cpu;
--	cpu_set_t *set;
--	size_t size;
--
--	if (getcpu(&cpu, NULL))
--		tst_brk(TBROK | TERRNO, "getcpu() failed");
--
--	set = CPU_ALLOC(cpu + 1);
--	if (!set)
--		tst_brk(TBROK | TERRNO, "CPU_ALLOC() failed");
--
--	size = CPU_ALLOC_SIZE(cpu + 1);
--	CPU_ZERO_S(size, set);
--	CPU_SET_S(cpu, size, set);
--	if (sched_setaffinity(0, size, set))
--		tst_brk(TBROK | TERRNO, "sched_setaffinity() failed");
--
--	CPU_FREE(set);
--	tst_res(TINFO, "Pinned to CPU %u", cpu);
--}
--
- /*
-  * The pinned CPU can still hold up to one percpu_counter batch,
-  * max(32, 2 * online CPUs) pages, outside the fast RSS read.
-@@ -80,7 +50,7 @@ static void setup(void)
- 	tst_res(TINFO, "%li online CPUs, lower RSS allowance %li KiB",
- 		online_cpus, lower_allowance);
- 
--	pin_to_current_cpu();
-+	tst_bind_to_current_cpu();
- }
- 
- static void check_maxrss(long actual, long expected, const char *name,
--- 
-2.55.0
+> > =
+
+> > Could you help check this patch? I already change to pinning to the
+> > single CPU for all arch.
+> =
+
+> I have nothing more to add to the patch. (Cyril hints better how to
+> integrate it with existing helpers.)
+> =
+
+> Maybe I'd add a comment right next to the setup to explain
+> 	/* reduce per CPU stocks for more stable results */
+> =
+
+Thanks, new patch has been sent:
+https://patchwork.kernel.org/project/ltp/patch/20261113041136.17102-5-wegao=
+@suse.com/
+> =
+
+> Michal
 
 
--- 
+
+-- =
+
 Mailing list info: https://lists.linux.it/listinfo/ltp
