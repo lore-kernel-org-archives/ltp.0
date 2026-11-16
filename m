@@ -2,93 +2,71 @@ Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 216F8606A31C
-	for <ltp@archiver.kernel.org>; Mon, 16 Nov 2026 12:16:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=Zdzn7YdI
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08504606A329
+	for <ltp@archiver.kernel.org>; Mon, 16 Nov 2026 12:52:06 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id CEA1F3E96BD
-	for <ltp@archiver.kernel.org>; Mon, 16 Nov 2026 13:16:43 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 8B7BF3E97B3
+	for <ltp@archiver.kernel.org>; Mon, 16 Nov 2026 13:52:04 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 29B5F3C9C7E
- for <ltp@lists.linux.it>; Mon, 16 Nov 2026 13:16:25 +0100 (CET)
-Received: from mail-yx2-x06.google.com (mail-yx2-x06.google.com
- [IPv6:2607:f8b0:4864:41::6])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id E96393E1908
+ for <ltp@lists.linux.it>; Mon, 16 Nov 2026 13:51:49 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id CE40E200922
- for <ltp@lists.linux.it>; Mon, 16 Nov 2026 13:16:24 +0100 (CET)
-Received: by mail-yx2-x06.google.com with SMTP id
- 00721157ae682-8b4d009162bso4843147b3.1
- for <ltp@lists.linux.it>; Mon, 16 Nov 2026 04:16:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20260707; t=1794831383; x=1795436183; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to:content-type;
- bh=/VqzmTr2lEo1q3+y66qXxzzEM23iMJ7E2IQdQV4m6Ro=;
- b=Zdzn7YdIr/tUZZ6wdw68vazEV2AT0VT7C7CQAFlTlHGg3n4c2kJs9pJ3xcgbSfZikZ
- fOBSUASGiOQ1O9AcaJoQ2aB8fds6Z8ca5A+ONC5pGlcGg/gCUrsv30NBtdx6+tYLnw+w
- ulHvU1GXG2YentIQ9cqJ0oFY+6zkL79tj0XmwYlNHjq4W6fzDrqAPttp0HGvg2xroQbq
- JRgxIHejY2GCbO+ouzvgI11CNOTtDJbpJrBVOneUNLPEcU1Khy+ZEQRYtaatQ50CG8xH
- /y7IVEejChG36SzP7IjTKIZEO5H+qdNUGI7g/+MqrDDTCb02I3nS8hhNnlTZJAeLV1xV
- XPhQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20260707; t=1794831383; x=1795436183;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to:content-type;
- bh=/VqzmTr2lEo1q3+y66qXxzzEM23iMJ7E2IQdQV4m6Ro=;
- b=B8TRmAZLipwsQLOzvNf0t5Kt99j5PcGTLlqFGtfvDv9oqOQAEHR/HOj2jPDn0z/aFH
- MVYQOOHnvQYWpb+yLJmZAoGFLZrg/YD8kuxPgf3xIkf+hhgdqjdFJABSNJGs97Vf1DuG
- EBrBVFwO/7PKM/K8rDQuumxKLbGh+SBtvHE4HooTNsaHPKlqZoYNS4T454rIJ7Oq3RRC
- G4AdluHBVhWB/V4/6e9yN1TDv2G3HbWiY4mPHA+CJ4GWbhPoqsUGVb5BrxyuMyBL+pLm
- KO1KQUxaH9CRLjFdp3K51e2IXypyG5BWorKUtKE4F0wnTvNn0SI7o+EYr7AZCdYe/TLf
- mfxw==
-X-Gm-Message-State: APuU4Z/XKmcxicQi1Tvg085nFltvYAD6uFbI8XtNyXTIsXtwF70jArxU
- fk6j8XsujnAr4Sq6K9LY/6o7TX9DruOEPrnN/yAWdmDIWCImhWDLEmbG
-X-Gm-Gg: AZFdTZeUPmFmhtAgWbPb/qjgWpjT7BSY/p+mJ++5/8mgjOBe5Xoow9PX/86QXyZFVh5
- HyximXkR8GvwXq7jrAeHC0dmswhThxF8ywVoJJxbMCJzMgMGjGaQEFW8Adt78hcxMEsrLLW4Cj1
- BONMslR7Hyc6X90izbxnkUubyTNCryJ/WlG8HnoT4acEHUqReIMFzzXlzSNsUDAepE8GPznEgZ2
- YNJaJDIRWj7wsQfvWo2PJS2zAXiGlx59xmCfdyphoj2cPFvQBjXNGd4ts3UuOrL/r7ntZo0RoaS
- cecJ8WI6IOn8lm3u7LaV5RuhCsVXENq0O826301Npw19lR+5QF2iW06OGxz/WuOBFspy4udCjg7
- EOVj2xDhO6Z1rcGTlIPwebs9kbvTH4cKHumv8fCI7ejIfY9mGaECKYBVyzjK4zrHfC3xsF6bRJv
- 2AKXu+P87DJtZPgqHWZU6sEO/AGuhyIt2LVxfMCV2zAdJ1O5Il1Tgsg4oPugNkaxmBBHs3nmkY3
- tejkXIqrR0V8fjqTGyps9ZAVjCHUuxLHKlGpMUyziYNXGukoJsPI3fEJZbL9+4YNgv8L7j/2KFC
- NI3mew3TnLhYhaZIaRz4t6v83mEmg1Cmw/zixVPEL6lrr4dQJDDgyPITgoEdjZYE+4R28HG6vzQ
- LgvRUknF/ldcEnH0pv5UL2jY7RyWtevLlqxNKhyPFo0M=
-X-Received: by 2002:a05:690c:d82:b0:8b4:c71b:e4d8 with SMTP id
- 00721157ae682-8b4c71be972mr26229417b3.55.1794831383381; 
- Mon, 16 Nov 2026 04:16:23 -0800 (PST)
-Received: from
- runnervmccnms.ikcmrumbkutejmfa4rtzb3r0wa.ftyx.internal.cloudapp.net
- ([51.57.154.86]) by smtp.gmail.com with ESMTPSA id
- 00721157ae682-8b4aa9870f7sm83909097b3.24.2026.11.16.04.16.23
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 16 Nov 2026 04:16:23 -0800 (PST)
-From: linuxtestproject.agent@gmail.com
-To: Wei Gao <wegao@suse.com>
-Date: Mon, 16 Nov 2026 12:16:22 +0000
-Message-ID: <20261116121622.4337-1-linuxtestproject.agent@gmail.com>
-X-Mailer: git-send-email 2.56.1
-In-Reply-To: <20261116085612.20171-2-wegao@suse.com>
-References: <20261116085612.20171-2-wegao@suse.com>
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 9462A600807
+ for <ltp@lists.linux.it>; Mon, 16 Nov 2026 13:51:48 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 6A0B01F7E2;
+ Mon, 16 Nov 2026 12:51:47 +0000 (UTC)
+Authentication-Results: smtp-out2.suse.de;
+	none
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 44FDC1334C;
+ Mon, 16 Nov 2026 12:51:47 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id /tqhCGP8+mouAQAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Mon, 16 Nov 2026 12:51:47 +0000
+Date: Mon, 16 Nov 2026 13:52:11 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Huaisheng Ye <yehuaisheng@open-hieco.net>
+Message-ID: <avr8exdOSVwgjR3C@yuki.lan>
+References: <20261116101559.93229-1-yehuaisheng@open-hieco.net>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-3.6 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_INVALID,DKIM_SIGNED,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+Content-Disposition: inline
+In-Reply-To: <20261116101559.93229-1-yehuaisheng@open-hieco.net>
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	REPLY(-4.00)[]
+X-Spam-Score: -4.00
+X-Spam-Level: 
+X-Rspamd-Queue-Id: 6A0B01F7E2
+X-Rspamd-Pre-Result: action=no action; module=replies;
+ Message is reply to one we originated
+X-Rspamd-Action: no action
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_PASS,
-	SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no version=4.0.1
+	SPF_PASS autolearn=no autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] lib: Add tst_attach_loopdev()
+Subject: Re: [LTP] [PATCH] hugemmap10: Add linux-git tag for NUMA fix
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -103,22 +81,30 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Wei,
+Hi!
+> +/*
+> + * This test also covers the NUMA regression fixed by Linux commit
+> + * 21f514ad520459fbfa58ccdf171bb68148c2f5aa. If free huge pages are outside
+> + * the nodes allowed by the task's cpuset or MPOL_BIND policy, hugetlb must
+> + * account for the allowed-node shortfall when gathering surplus pages.
+> + * Otherwise mmap() may fail with ENOMEM even when nr_overcommit_hugepages
+> + * permits allocating surplus pages on the allowed nodes.
+> + *
+> + * The issue can be exercised on a system with two or more NUMA nodes, for
+> + * example with:
+> + *
+> + *   numactl --cpunodebind=0 --membind=1 ./hugemmap10
 
-On Mon Nov 16 08:56:04 2026 +0000, Wei Gao wrote:
-> lib: Add tst_attach_loopdev()
+If nothing else, this text should be part of the doc comment just above
+it so that it's properly exported to documentation.
 
-Verdict - Reviewed
+Also if the test needs to be bind to specific nodes to reproduce the
+problem, it would make sense (in a separate patch) to add a subtest to
+the test so that we can test it properly.
 
----
-Note:
-
-The agent can sometimes produce false positives although often its
-findings are genuine. If you find issues with the review, please
-comment this email or ignore the suggestions.
-
-Regards,
-LTP AI Reviewer
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
