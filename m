@@ -2,81 +2,82 @@ Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F414606A32A
-	for <ltp@archiver.kernel.org>; Mon, 16 Nov 2026 14:23:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7C30606A330
+	for <ltp@archiver.kernel.org>; Mon, 16 Nov 2026 14:23:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=lists.linux.it header.i=@lists.linux.it header.a=rsa-sha256 header.s=picard header.b=oNxFSVxB;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.a=rsa-sha256 header.s=20260707 header.b=k+wVd4be
+	dkim=pass (1024-bit key, unprotected) header.d=lists.linux.it header.i=@lists.linux.it header.a=rsa-sha256 header.s=picard header.b=RHrIwast;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.a=rsa-sha256 header.s=20260707 header.b=ZgkcypLX
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1794839014; h=date :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1794839033; h=date :
  in-reply-to : mime-version : references : message-id : to : subject :
  list-id : list-unsubscribe : list-archive : list-post : list-help :
  list-subscribe : from : reply-to : cc : content-type :
  content-transfer-encoding : sender : from;
- bh=9g23u9pkoKbzX0vJ7CY6NPQ/BtyCACAyo/6C+U0k5v8=;
- b=oNxFSVxB+kDUEo9KjnZV29JNi7FRUEiiZwIwwRNIeO0JramZcPasKd6461aRNp6wa4fcU
- qQ+bBDKnoZDN7t54QqyQeYojtTmAYzGjRfew/zWnioegd8BuFti5dZixQY9ZZ1ct8dm17gz
- uW52lkbXUWbBjoVfX6yug80Lm7/f/Cc=
+ bh=+8QYO13bxoCt6ivqqjoMJkg7YJqhWYGmONgA2rAvhYM=;
+ b=RHrIwastZYNFvGjhCyIp8Dfm82cmchbHZy6Qx+MmzL1Kng7N+imO7eD6Sn4cFjDE85fJw
+ TfY8UkUMcuyUVY/Es9vm3XJd/pZR674sLDg9axlp3Mkz4Yjrt3CcQP8+1BMpyMP+vfI9HwF
+ rjg0ZuVx1rC3VX0ufWfOS/kkS6aSYF8=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D15723EA9D7
-	for <ltp@archiver.kernel.org>; Mon, 16 Nov 2026 15:23:34 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 782D83EA9DA
+	for <ltp@archiver.kernel.org>; Mon, 16 Nov 2026 15:23:53 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 7AC693EAA1E
- for <ltp@lists.linux.it>; Mon, 16 Nov 2026 15:22:19 +0100 (CET)
-Received: from mail-dl1-x1248.google.com (mail-dl1-x1248.google.com
- [IPv6:2607:f8b0:4864:20::1248])
+ by picard.linux.it (Postfix) with ESMTPS id B967F3EAA17
+ for <ltp@lists.linux.it>; Mon, 16 Nov 2026 15:22:21 +0100 (CET)
+Received: from mail-pf1-x445.google.com (mail-pf1-x445.google.com
+ [IPv6:2607:f8b0:4864:20::445])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id B71282001B4
- for <ltp@lists.linux.it>; Mon, 16 Nov 2026 15:22:18 +0100 (CET)
-Received: by mail-dl1-x1248.google.com with SMTP id
- a92af1059eb24-1b3a348a6dbso2652722c88.1
- for <ltp@lists.linux.it>; Mon, 16 Nov 2026 06:22:18 -0800 (PST)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 722FF600828
+ for <ltp@lists.linux.it>; Mon, 16 Nov 2026 15:22:21 +0100 (CET)
+Received: by mail-pf1-x445.google.com with SMTP id
+ d2e1a72fcca58-89f84753b43so2376631b3a.1
+ for <ltp@lists.linux.it>; Mon, 16 Nov 2026 06:22:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=google.com; s=20260707; t=1794838937; x=1795443737; darn=lists.linux.it;
+ d=google.com; s=20260707; t=1794838940; x=1795443740; darn=lists.linux.it;
  h=content-type:cc:to:from:subject:message-id:references:mime-version
  :in-reply-to:date:from:to:cc:subject:date:message-id:reply-to
- :content-type; bh=B/YyFXE4Q4u5oMMLZQAB4E8w55phBQ4Gk36oP8hNOtc=;
- b=k+wVd4be1A3/E0u3bKnW3ugFvVkUC9hG7rDyI5h35FU1gwBeGSsIkjs0EQmUPEpS1/
- hQx7Hj9AQ0DKCJubd7yisigbbCqJPGrJbroL4sOEYaQXGW1sc9RlgKNHwUbUCROJ7tY+
- m21zk7dwMRPM8J2Mtp6t9yJWtBa97l16xXgJSv+OoGPwYbt8Gh8MLLm4qyQqR2SIYekS
- LjYXoko3jSYL44llgbriqPX4tECaz/Won1MypK0+2EVGzp53mPfbQddeq5dhMwsLMsSg
- i1clOBgqI3grGalwnXVerAs5QiBK9BIUsScjeORNjEDpD+xqAtzaeH4UC50WdmpFSBmY
- Qy6A==
+ :content-type; bh=hS9YYMdNOXUlIc3bZ4UnI6gc5Z3hMKNej5ZFVEbiVQQ=;
+ b=ZgkcypLXId8oNXl37+xo/Nw6xRiGJEYtumoZzG4OUa4SVrJwoeEgbuoflLBha5+mVQ
+ G98QnCY7JgGeKoxvzwM+SFees6ubkUdIA8y0HweqfYAJJ1ehf7/I2AbQh+VbxfAA27U/
+ NR2jKevpJLIRYbImK2M2HRwRTIgFyhaaHT3eG2++kOdzgIMKadmaj09CLw+UPjigig9/
+ lVgLfMgyV0BUI9nDQLFD9Imhbyrp0D/ofYAoJ52KYVe49xIdi7mNhEgzo/mhOH1STVc+
+ n1RH4rLMc8/WFaNRSo0N5k/fUAcjQ196MPb9TTspxKLfgt2xsfCuZpnwXS7yKvGAf6Vm
+ ygoQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20260707; t=1794838937; x=1795443737;
+ d=1e100.net; s=20260707; t=1794838940; x=1795443740;
  h=content-type:cc:to:from:subject:message-id:references:mime-version
  :in-reply-to:date:x-gm-message-state:from:to:cc:subject:date
  :message-id:reply-to:content-type;
- bh=B/YyFXE4Q4u5oMMLZQAB4E8w55phBQ4Gk36oP8hNOtc=;
- b=fp8IDRqYlByeEmAhcbq50tZCmwp2xPYXR+nAT/rHrHV8WVAED2k2cRP5puz4aW+iSX
- sO4eQ4QR/yx+YtNTZreGX5ymvpRVk43JwJ3lf8Thn1P2Umj6V83NffIXB74ct7uqIJ7A
- tK+LJFP+jjMEeVbdxX4yQm34+y+uZUWW1G5mKHOEyIi35z4OwSGlGCKsZkfphOEumCoC
- +lhEdU01ndkW97ax1mn+PFcHmSnBslKIXAWwU8PnRfj+G6+wVgYFQJ4WE7e3jhCJKCY3
- IXzNm8acHjvcfdGcLzKQU+zyvr/me/PjclsMP9aVBzp7yl1rc8GM4aNqp0wyaRokbwd8
- sBBA==
-X-Gm-Message-State: APuU4Z8Dh8WlDgHnTKzqa/noZPaS9yFzBQ0+osR7czlV09x1GYnMj6mr
- /1aY//eeod8QZGNMgBXYPffSauPwnn008HOAp6G2i5NixYkjlt6y3ERz3sx4IZUGqcCJW3uUse+
- +uVstNmOxab0+ycN6JwRdhdhIrMVc2KOYO2fD6anplLxxAJrt9dMSR7Wqy5k+OCz94dCDhMYuGL
- 0gfETn7JwfgU8klVIayNu0UXLvPw==
-X-Received: from dlaf14.prod.google.com ([2002:a05:701b:240e:b0:1b2:5589:f43a])
+ bh=hS9YYMdNOXUlIc3bZ4UnI6gc5Z3hMKNej5ZFVEbiVQQ=;
+ b=2uvT86/mRXaAr5t/ReGRXoF97ddy616RI5YefBAKW6X9KUbOyzWeaOM1kBHbhN0mLN
+ xABfmVcP8mbTWA1g8ZHWBx3Pfy5I68UCbBvpbdFwDPZEwYfHTDpe1SnBhyw/zbM76m+v
+ xWyOnIZir9CJC5EysJjqusohJBJVfAylfyf1VyCbMzVJaX0v4o7nNBVx3tuposOsldox
+ 1o3m28ajC8oOqHDS785uFazJ7EScsbRXI7CDR5vbxcySXqWuE1TKwc3EbQ4u++abIzIg
+ cUHx7KsqzK58J3oUVM90nU8Ar/H1h3IXEpjMo/SqrgcruXetAZbvbGjCC9xxV4CZkC54
+ zBfA==
+X-Gm-Message-State: APuU4Z/N5z2vCqG6xbJKizu9XpT8zGDsCo2Ag2ELA4A2e2RbpgVY7ve+
+ WccMfvTTHvrduzIfvC0gSbNAWVszyGDnC3Exquu29AkR4vug2avfUd/RWjXWUyXlojcIaE6NYQs
+ 4/lOTXJDEZxV7rGcym5r47dkRUiidlOd7tDjoud8kZbVLfWNb2iECQ2VtuBdds74woOsWWcYS8U
+ s85Axs3jgicKveYFtZPf5e/gf8ZQ==
+X-Received: from pfew2-n2.prod.google.com
+ ([2002:a05:6a00:c1c2:20b0:89d:3267:4348])
  (user=wakel job=prod-delivery.src-stubby-dispatcher) by
- 2002:a05:7022:2390:b0:18d:96e8:b913
- with SMTP id a92af1059eb24-1b503195191mr15107711c88.47.1794838936548; Mon, 16
- Nov 2026 06:22:16 -0800 (PST)
-Date: Mon, 16 Nov 2026 14:22:05 +0000
+ 2002:a05:6a00:2392:b0:8a0:3685:23a5
+ with SMTP id d2e1a72fcca58-8beb7d1c7dfmr9668489b3a.53.1794838939397; Mon, 16
+ Nov 2026 06:22:19 -0800 (PST)
+Date: Mon, 16 Nov 2026 14:22:06 +0000
 In-Reply-To: <20261116142206.3151308-1-wakel@google.com>
 X-Archived-By: <archiver.kernel.org>
 Mime-Version: 1.0
 References: <20261111093151.374731-1-wakel@google.com>
  <20261116142206.3151308-1-wakel@google.com>
 X-Mailer: git-send-email 2.56.0.611.g1030f0b940-goog
-Message-ID: <20261116142206.3151308-4-wakel@google.com>
+Message-ID: <20261116142206.3151308-5-wakel@google.com>
 To: ltp@lists.linux.it
 X-Spam-Status: No, score=-19.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,INCLUDES_CR_TRAILER,
@@ -84,10 +85,10 @@ X-Spam-Status: No, score=-19.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 3/4] ioctl10: Compare vma_page_size with
- KernelPageSize from smaps
+Subject: [LTP] [PATCH v2 4/4] signal06: Allocate the alternate signal stack
+ with mmap()
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -104,86 +105,83 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-PROCMAP_QUERY returns in vma_page_size the page size the kernel uses to
-back the VMA, i.e. vma_kernel_pagesize(), which /proc/$PID/smaps shows
-as KernelPageSize. The test compares it with getpagesize() instead,
-which is only correct as long as the kernel page size equals the page
-size reported to userspace.
+The test mprotect()s the alternate signal stack, which is a statically
+allocated array of 4096 * 10 bytes aligned to 4096 bytes. That only
+works if the page size is 4096 bytes. With a larger page size,
+mprotect() either fails with EINVAL because the stack is not page
+aligned or, since the length gets rounded up to the page size, also
+write protects the variables placed after the array. The main thread
+then faults on them over and over again and the test hangs until it
+times out.
 
-That is not the case with the 16K page size emulation that Android uses
-on x86_64, where the kernel keeps using 4K pages internally:
+That happens with the 16K page size emulation that Android uses on
+x86_64. With the stack at 0x53c000, mprotect() of its 40960 bytes
+covers memory up to 0x548000 and the main thread keeps faulting right
+after the end of the stack:
 
-  TFAIL: q->vma_page_size (4096) != getpagesize() (16384)
+  --- SIGSEGV {si_signo=SIGSEGV, si_code=SEGV_ACCERR, si_addr=0x546008}
 
-Compare it with KernelPageSize of the same VMA in /proc/self/smaps
-instead. This also cross-checks the two kernel interfaces, the same way
-the other fields are checked against /proc/self/maps. Nothing changes
-on kernels where both page sizes are equal.
+Allocate the stack with mmap() and size it based on getpagesize().
+Nothing changes with a 4096 byte page size.
 
 Signed-off-by: Wake Liu <wakel@google.com>
 ---
- testcases/kernel/syscalls/ioctl/ioctl10.c | 34 ++++++++++++++++++++++-
- 1 file changed, 33 insertions(+), 1 deletion(-)
+ testcases/kernel/syscalls/signal/signal06.c | 15 +++++++++++----
+ 1 file changed, 11 insertions(+), 4 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/ioctl/ioctl10.c b/testcases/kernel/syscalls/ioctl/ioctl10.c
-index 8a4f8ae40..5dd2a866d 100644
---- a/testcases/kernel/syscalls/ioctl/ioctl10.c
-+++ b/testcases/kernel/syscalls/ioctl/ioctl10.c
-@@ -28,6 +28,7 @@
- #include "lapi/ioctl.h"
+diff --git a/testcases/kernel/syscalls/signal/signal06.c b/testcases/kernel/syscalls/signal/signal06.c
+index cf0706ea4..e464fc661 100644
+--- a/testcases/kernel/syscalls/signal/signal06.c
++++ b/testcases/kernel/syscalls/signal/signal06.c
+@@ -48,6 +48,7 @@
+ #include <errno.h>
  
- #define PROC_MAP_PATH "/proc/self/maps"
-+#define PROC_SMAPS_PATH "/proc/self/smaps"
+ #include "test.h"
++#include "tso_safe_macros.h"
+ #include "lapi/syscalls.h"
  
- struct map_entry {
- 	unsigned long vm_start;
-@@ -86,6 +87,37 @@ static void parse_maps_file(const char *filename, const char *keyword, struct ma
- 	tst_brk(TFAIL, "parse maps file /proc/self/maps failed");
- }
+ char *TCID = "signal06";
+@@ -61,7 +62,8 @@ int TST_TOTAL = 5;
+ volatile double D;
+ volatile int FLAGE;
  
-+/*
-+ * vma_page_size is the page size the kernel uses to back the VMA, which is
-+ * reported as KernelPageSize in /proc/self/smaps. It is not necessarily
-+ * equal to getpagesize(), e.g. for hugetlb mappings or when the kernel
-+ * reports a larger page size to userspace than it uses internally.
-+ */
-+static unsigned long get_kernel_page_size(unsigned long vm_start)
-+{
-+	FILE *fp = SAFE_FOPEN(PROC_SMAPS_PATH, "r");
-+	unsigned long start, end, size_kb;
-+	char line[1024];
-+	int found = 0;
-+
-+	while (fgets(line, sizeof(line), fp)) {
-+		if (sscanf(line, "%lx-%lx ", &start, &end) == 2) {
-+			found = start == vm_start;
-+			continue;
-+		}
-+
-+		if (found && sscanf(line, "KernelPageSize: %lu kB", &size_kb) == 1) {
-+			SAFE_FCLOSE(fp);
-+			return size_kb * 1024;
-+		}
-+	}
-+
-+	SAFE_FCLOSE(fp);
-+	tst_brk(TBROK, "KernelPageSize of %lx not found in %s",
-+		vm_start, PROC_SMAPS_PATH);
-+	return 0;
-+}
-+
- static void verify_ioctl(void)
+-char altstack[4096 * 10] __attribute__((aligned(4096)));
++static char *altstack;
++static size_t altstack_size;
+ 
+ void test(void)
  {
- 	struct map_entry entry;
-@@ -107,7 +139,7 @@ static void verify_ioctl(void)
- 	TST_EXP_EQ_LU(q->vma_flags, entry.vm_flags);
- 	TST_EXP_EQ_LU(q->vma_start, entry.vm_start);
- 	TST_EXP_EQ_LU(q->vma_end, entry.vm_end);
--	TST_EXP_EQ_LU(q->vma_page_size, getpagesize());
-+	TST_EXP_EQ_LU(q->vma_page_size, get_kernel_page_size(entry.vm_start));
- 	TST_EXP_EQ_LU(q->vma_offset, entry.vm_pgoff);
- 	TST_EXP_EQ_LU(q->inode, entry.vm_inode);
- 	TST_EXP_EQ_LU(q->dev_major, entry.vm_major);
+@@ -99,12 +101,12 @@ void *tfunc(void *arg LTP_ATTRIBUTE_UNUSED)
+ 
+ 	for (i = -1; ; i *= -1) {
+ 		if (i == -1) {
+-			TEST(mprotect(altstack, sizeof(altstack), PROT_READ));
++			TEST(mprotect(altstack, altstack_size, PROT_READ));
+ 			if (TEST_RETURN == -1)
+ 				tst_brkm(TBROK | TTERRNO, NULL, "mprotect failed");
+ 		}
+ 
+-		TEST(mprotect(altstack, sizeof(altstack), PROT_READ | PROT_WRITE));
++		TEST(mprotect(altstack, altstack_size, PROT_READ | PROT_WRITE));
+ 		if (TEST_RETURN == -1)
+ 			tst_brkm(TBROK | TTERRNO, NULL, "mprotect failed");
+ 
+@@ -120,9 +122,14 @@ int main(int ac, char **av)
+ 
+ 	tst_parse_opts(ac, av, NULL, NULL);
+ 
++	/* mprotect() needs the stack to be aligned to the runtime page size */
++	altstack_size = getpagesize() * 10;
++	altstack = SAFE_MMAP(NULL, NULL, altstack_size, PROT_READ | PROT_WRITE,
++			     MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
++
+ 	stack_t st = {
+ 		.ss_sp = altstack,
+-		.ss_size = sizeof(altstack),
++		.ss_size = altstack_size,
+ 		.ss_flags = SS_ONSTACK,
+ 	};
+ 
 -- 
 2.56.0.611.g1030f0b940-goog
 
