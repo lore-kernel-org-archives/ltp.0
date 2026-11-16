@@ -1,91 +1,93 @@
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD597606A31C
-	for <ltp@archiver.kernel.org>; Mon, 16 Nov 2026 14:22:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F941606A331
+	for <ltp@archiver.kernel.org>; Mon, 16 Nov 2026 14:22:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=lists.linux.it header.i=@lists.linux.it header.a=rsa-sha256 header.s=picard header.b=Quw8o1qN;
-	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=google.com header.i=@google.com header.a=rsa-sha256 header.s=20260707 header.b=lIwrxNaH
+	dkim=pass (1024-bit key, unprotected) header.d=lists.linux.it header.i=@lists.linux.it header.a=rsa-sha256 header.s=picard header.b=YJklURo0;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.a=rsa-sha256 header.s=20260707 header.b=cCH+OiHf
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1794838952; h=date :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1794838971; h=date :
  in-reply-to : mime-version : references : message-id : to : subject :
  list-id : list-unsubscribe : list-archive : list-post : list-help :
  list-subscribe : from : reply-to : cc : content-type :
  content-transfer-encoding : sender : from;
- bh=Ok43+B6L1qNUvUYFm4AK+98TUs4vjk7kQn+09tsWZBs=;
- b=Quw8o1qNgLDPGBYYsDLsAPWvr55PBKujhMnqWJcyjUjkxwdya6tmr28id9czYGCeN2VMw
- ktw/OjxyMNg1+TEqDlBYfX/ydwTyKg3stTAksQ57x6k9LZsdsXOp5jXaTI5biZZfr/lGNBT
- zhVMqz6mYpm9uEiCkK3HQ93UKlTAdPE=
+ bh=kKj737pI0kMkJPpt4OVeWaMYUwbcI99HOIhF2y23+Tk=;
+ b=YJklURo0SNWoLnDPdly/fyCXtWLfRO+EEceAMY1Toq1+Z+R9heFFk/tfNOsi8QZPcw5GK
+ biIo3Nb+7HrEliTYs06LL8uBYx/xsmsvKfM9SUg6k4CwaSX7ioZ3XPPX6O0qcwfm++FnFkn
+ 9tdpQw7q+mWhsWNiZW+w/4/SFODtmzk=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 29B143E595E
-	for <ltp@archiver.kernel.org>; Mon, 16 Nov 2026 15:22:32 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id BCD623EA9DB
+	for <ltp@archiver.kernel.org>; Mon, 16 Nov 2026 15:22:51 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D47E33E595E
- for <ltp@lists.linux.it>; Mon, 16 Nov 2026 15:22:11 +0100 (CET)
-Received: from mail-pf1-x445.google.com (mail-pf1-x445.google.com
- [IPv6:2607:f8b0:4864:20::445])
+ by picard.linux.it (Postfix) with ESMTPS id 5B3583EA9DD
+ for <ltp@lists.linux.it>; Mon, 16 Nov 2026 15:22:14 +0100 (CET)
+Received: from mail-pl1-x646.google.com (mail-pl1-x646.google.com
+ [IPv6:2607:f8b0:4864:20::646])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 16B3A1000234
- for <ltp@lists.linux.it>; Mon, 16 Nov 2026 15:22:11 +0100 (CET)
-Received: by mail-pf1-x445.google.com with SMTP id
- d2e1a72fcca58-8b847ab3fd3so1551512b3a.2
- for <ltp@lists.linux.it>; Mon, 16 Nov 2026 06:22:11 -0800 (PST)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id AD48C10002BE
+ for <ltp@lists.linux.it>; Mon, 16 Nov 2026 15:22:13 +0100 (CET)
+Received: by mail-pl1-x646.google.com with SMTP id
+ d9443c01a7336-2ed00709df0so32521605ad.0
+ for <ltp@lists.linux.it>; Mon, 16 Nov 2026 06:22:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=google.com; s=20260707; t=1794838929; x=1795443729; darn=lists.linux.it;
+ d=google.com; s=20260707; t=1794838932; x=1795443732; darn=lists.linux.it;
  h=content-type:cc:to:from:subject:message-id:references:mime-version
  :in-reply-to:date:from:to:cc:subject:date:message-id:reply-to
- :content-type; bh=Wc+GaO4B0uqeDDy8B4cEgoLECW5rZooO8ZVisSZzBcA=;
- b=lIwrxNaHh8u778CDHY2elmTj6OyUpF+m/DYlHHcnSAKnueF9ae+sHQ3UEHW+vEdeqg
- N0dc6Gb4aTzCs8P4gj4LRLf3WtNW6w5M/6b73sZqCUOsvRcIvFaHJt7zZDIrNAKs8COE
- TacImbc96NU5HeDq21uDzDWkmMWy+YYoHduiFnWdp9RuJf6jPlqCNhXwDCRbBBcFyqZ2
- p4G5G9DAzwXwwMM6l5COSn/kBUvMH7ZPv8ve2diOqdoscpysosQFmYSJsPrNxWRhdZIl
- tl9kBEWwppGZ/5CsptRA2uAxjqFLqC/02HBadcTVQxFz06Syo2/aouB5gKH66A7bOFpi
- Yzfg==
+ :content-type; bh=Liidu/M2TpGHnX9uEsle361nTjXkyObUTOFDICMqKOU=;
+ b=cCH+OiHfBw36NNV1/9bY+P5+fjnyaTH61BXV6DZFGkVuurcVssG9+Yyn3gijhzjHvg
+ yU+C2t3GAZEkY5RFCn/NIax108wruAb+08ueWQXwakEmFkBvO+MfuA01tUJQtA7ZiUAZ
+ OckBJy7r2KcqhHK4BqvT8PSVKHhqTb7KAEdkLMhIPmUYo6y4R+y9YNQbtp/6ooaPJ2fp
+ vBcnWEJ7w4STtsKOY8MPhQkmllH09OGCMH/hQ8B3Opbd0QVBOfc6ziIky50BRro+33M8
+ N364iw7qk8WX8FFEM1Yt7EdBX/hIlYvgvCElh+/fo4jVEPAeqZX0mvTrPo/WtKzNgm6c
+ k/GQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20260707; t=1794838929; x=1795443729;
+ d=1e100.net; s=20260707; t=1794838932; x=1795443732;
  h=content-type:cc:to:from:subject:message-id:references:mime-version
  :in-reply-to:date:x-gm-message-state:from:to:cc:subject:date
  :message-id:reply-to:content-type;
- bh=Wc+GaO4B0uqeDDy8B4cEgoLECW5rZooO8ZVisSZzBcA=;
- b=Ml+vzZ33SAIZ6r2vIwR3N1A+z0TJU17gbqK76Dr4X6n3i+D5D5ppQ1xmXVInLFT66S
- qK93UNsKQ11D5OaoiWpJf+uFrbdYGt0cYh3FCeJQ13l1YmG0jVBxDdznlqEl/fMra8Lq
- D1QnnIUU3UFq3mjRm2UeofKn+LxtflZGpRd+dNXM0Eb5KgexV1lEXxLMrWrIv1+JNtCT
- 6bmpeEFiEGKR+A/UYmu2lTR7wuCCT9Wb/Lw0lirvAveqwpcIQC6G/PtU4E+/nqwEwGMc
- hQTNlNuJEh7Bme7Myqd3Fe5T/sjLxTvP3JJ62F7tk+CEyzntgMZuJ6ESr0Qe4z6Qz/fZ
- IC2w==
-X-Gm-Message-State: APuU4Z/DXiNIppP1+TBifBzgCc3FTr6KskRe5Pi+Ok7Th6oYOh3/RczX
- EQhOYrJKU+t9D0+UOP7gXDfJR9q9dJNZ0bC01t+Hs+horKL6KSdSnxktYQ3ROP0IlxppaC59olI
- RBrQsxc7zKdD9DTB+Ge6j5r6DI97msXtcCDPQaWc9P4aF7ORXOEkZI9sa/Tl1jjnsFrm9P41d+v
- AsoQELpUvzOmnibq8SgWB9VgYkAg==
-X-Received: from pfbge4.prod.google.com ([2002:a05:6a00:8384:b0:88f:dade:52e])
+ bh=Liidu/M2TpGHnX9uEsle361nTjXkyObUTOFDICMqKOU=;
+ b=ufl9sPZwPga8vyEXjf/TfRJ1SBPecQE0V1rNSrDFbUF/ero01KgzKODphNiu0Le4qp
+ 72o3FfnrLsVqkoJ8AyIgT40Q2uF9oV9rFsBhbHpOJHsB91xFiW0WelZOF38UdHqZOMBe
+ jX2qED7adbMsjmyKFV6a3qCMMBTi6ILHmhdYJA5zhSjZMxeqkSbpKuX7Ug0ce1Hs8Riz
+ Fo0HZnnzE84FT2ReP+Ta4/LaaZIbA0wn3Ei/Kj1PR7SDyC790ok+cY8zOiOnYYdZOaB2
+ BvprGBnj9sXK/7ltJ7NTENcIzAYRRNmAm/PQOUFe/V0RN+kvDLq1RXi0jddUQyQ7wfK6
+ yQsw==
+X-Gm-Message-State: APuU4Z9Q/KkAUtkN+tJbwfkTBfduvdAfps2xvHgOazdHIPYSNz1cUvaZ
+ MQBzz3zd4h4kAFw+9yqzciXxzaIB/DORpAhh/npR2YN/102dCr7slXn/cCKgj3aDrpFvoE/KZwv
+ DiNCOS6nXta8T8MUKCnT4q49s4/sZbI9dibV9bjpt26AQKMs1BWP08Tij/HPQBqGoK1SVzTMZl6
+ EKD42xAv6nbmdHe3uxZUQ9EvKjrA==
+X-Received: from plble3.prod.google.com ([2002:a17:902:fb03:b0:2ee:2d8e:3c1d])
  (user=wakel job=prod-delivery.src-stubby-dispatcher) by
- 2002:aa7:88d1:0:b0:8a0:5da1:2264
- with SMTP id d2e1a72fcca58-8beb792923amr10216506b3a.47.1794838929019; Mon, 16
- Nov 2026 06:22:09 -0800 (PST)
-Date: Mon, 16 Nov 2026 14:22:02 +0000
-In-Reply-To: <20261111093151.374731-1-wakel@google.com>
+ 2002:a17:902:e94c:b0:2ed:2776:4e5
+ with SMTP id d9443c01a7336-2ee0dcd18e8mr107403125ad.58.1794838931702; Mon, 16
+ Nov 2026 06:22:11 -0800 (PST)
+Date: Mon, 16 Nov 2026 14:22:03 +0000
+In-Reply-To: <20261116142206.3151308-1-wakel@google.com>
 X-Archived-By: <archiver.kernel.org>
 Mime-Version: 1.0
 References: <20261111093151.374731-1-wakel@google.com>
+ <20261116142206.3151308-1-wakel@google.com>
 X-Mailer: git-send-email 2.56.0.611.g1030f0b940-goog
-Message-ID: <20261116142206.3151308-1-wakel@google.com>
+Message-ID: <20261116142206.3151308-2-wakel@google.com>
 To: ltp@lists.linux.it
-X-Spam-Status: No, score=-14.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_PASS,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=4.0.1
+X-Spam-Status: No, score=-19.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_PASS,SPF_PASS,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 0/4] Don't derive kernel granularities from
- getpagesize()
+Subject: [LTP] [PATCH v2 1/4] epoll_wait06,
+ fcntl35: Don't assume a pipe buffer is getpagesize()
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -102,77 +104,111 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi,
+A pipe consists of pipe buffers of one kernel page each, but both tests
+assume that a pipe buffer is getpagesize() bytes.
 
-Several tests derive kernel internal granularities from getpagesize():
-the size of a pipe buffer, the granularity memory is faulted in and
-cached with, or the page size reported by PROCMAP_QUERY. On mainline
-kernels all of these are the same value, so the assumption never shows.
+epoll_wait06 sets the pipe capacity to getpagesize() and expects the
+pipe to consist of a single buffer, so that reading half of the data
+does not release a buffer and raise EPOLLOUT. fcntl35 sets
+pipe-max-size to getpagesize() and expects it to cap the capacity of a
+pipe created by an unprivileged user at that size, and it expects the
+default capacity of a pipe created by a privileged user, which is 16
+pipe buffers (PIPE_DEF_BUFFERS), to be 16 * getpagesize().
 
-Android runs LTP on x86_64 emulators that boot a 4K kernel with the
-page size emulation of the Android Common Kernels [1], enabled by
-page_shift=14 on the kernel command line. It is not part of mainline.
-The kernel reports a 16K page size to userspace through AT_PAGESZ and
-enforces 16K alignment for mmap() and friends, while it keeps using 4K
-pages internally. Interfaces that userspace commonly relies on, such as
-mincore() and /proc/pid/pagemap, are emulated as well, but pipe
-buffers, page fault, page cache and memcg accounting granularity, and
-the KernelPageSize reported in smaps and by PROCMAP_QUERY keep
-reflecting the real 4K kernel page size.
+None of this holds when the page size reported to userspace differs
+from the one the kernel uses internally. With the 16K page size
+emulation that Android uses on x86_64, the pipe of epoll_wait06
+consists of four 4K buffers, reading half of the data releases two of
+them, and the test fails with:
 
-Android has carried local workarounds for these tests so far. This
-series instead makes the tests rely on what the kernel reports, or
-populate memory independently of the page size, so that Android can run
-them unmodified. The patches are grouped by the assumption they remove.
-None of them alters the behavior on kernels where both page sizes are
-equal, and none adds emulation specific code to the tests.
+  TFAIL: SAFE_EPOLL_WAIT(epfd, &evt_receive, 1, 0) (1) != 0 (0)
 
-Changes in v2:
-- fcntl35: Use the pipe buffer size for the unprivileged case too, as
-  suggested by Kalesh. pipe-max-size can't be lower than a single pipe
-  buffer, so with 16K kernel pages and a 4K page size reported to
-  userspace, setting it to getpagesize() still allowed 16K pipes.
-- Rebased on current master.
+fcntl35 gets a default capacity of 65536 bytes instead of the expected
+262144. Conversely, with 16K kernel pages and a 4K page size reported
+to userspace, pipe-max-size is rounded up to a single 16K pipe buffer,
+so fcntl35 gets a capacity of 16384 bytes instead of the expected 4096
+for the unprivileged user.
 
-Tested on:
-- x86_64 with a 4K page size (Debian, 7.1 kernel), where epoll_wait06,
-  ioctl10 and signal06 pass before and after the series, and all
-  changed tests compile without warnings with gcc and clang.
-- An Android x86_64 emulator with a 4K page size (6.6 kernel), where
-  the results are the same before and after the series.
-- An Android x86_64 Cuttlefish device running 6.18.32-android17 with
-  page_shift=14, where all of the patched tests fail without the series
-  and pass with it.
+Get the size of a pipe buffer from the kernel instead, by shrinking a
+pipe to its minimum capacity with F_SETPIPE_SZ, and use it for both
+cases of fcntl35. Nothing changes on kernels where both page sizes are
+equal.
 
-For v2, fcntl35 and epoll_wait06 were also run as root on the same
-Cuttlefish device with getpagesize() and sysconf(_SC_PAGESIZE) wrapped
-to return 1K, to mimic kernel pages that are larger than the page size
-reported to userspace. Both fail there without the series, v1 still
-fails the unprivileged case of fcntl35, and v2 passes. epoll_wait06,
-ioctl10 and signal06 also pass with the series on the 4K x86_64 host
-with getpagesize() interposed to return 1K or 16K.
+Suggested-by: Kalesh Singh <kaleshsingh@google.com>
+Signed-off-by: Wake Liu <wakel@google.com>
+---
 
-v1: https://lore.kernel.org/ltp/20261111093151.374731-1-wakel@google.com/
+Notes:
+    Changes in v2:
+    - fcntl35: Use the pipe buffer size for the unprivileged case too, as
+      pipe-max-size can't be lower than a single pipe buffer (Kalesh)
 
-[1] https://source.android.com/docs/core/architecture/16kb-page-size/getting-started-cf-x86-64-pgagnostic
+ .../kernel/syscalls/epoll_wait/epoll_wait06.c | 15 ++++++++-----
+ testcases/kernel/syscalls/fcntl/fcntl35.c     | 21 ++++++++++++++++++-
+ 2 files changed, 30 insertions(+), 6 deletions(-)
 
-Wake Liu (4):
-  epoll_wait06, fcntl35: Don't assume a pipe buffer is getpagesize()
-  memcg, userfaultfd07: Populate whole pages instead of single bytes
-  ioctl10: Compare vma_page_size with KernelPageSize from smaps
-  signal06: Allocate the alternate signal stack with mmap()
-
- .../controllers/memcg/control/mem_process.c   | 11 +++---
- .../kernel/controllers/memcg/memcontrol02.c   | 13 +++----
- .../kernel/syscalls/epoll_wait/epoll_wait06.c | 15 +++++---
- testcases/kernel/syscalls/fcntl/fcntl35.c     | 21 +++++++++++-
- testcases/kernel/syscalls/ioctl/ioctl10.c     | 34 ++++++++++++++++++-
- testcases/kernel/syscalls/signal/signal06.c   | 15 +++++---
- .../syscalls/userfaultfd/userfaultfd07.c      | 11 ++++--
- 7 files changed, 96 insertions(+), 24 deletions(-)
-
-
-base-commit: c4be3107083cd11e4732884c4c8c5e9c6665e729
+diff --git a/testcases/kernel/syscalls/epoll_wait/epoll_wait06.c b/testcases/kernel/syscalls/epoll_wait/epoll_wait06.c
+index 622830d55..ce4e2d5bc 100644
+--- a/testcases/kernel/syscalls/epoll_wait/epoll_wait06.c
++++ b/testcases/kernel/syscalls/epoll_wait/epoll_wait06.c
+@@ -32,13 +32,18 @@ static int epfd;
+ 
+ static void setup(void)
+ {
+-	write_size = getpagesize();
+-	read_size = write_size / 2;
+-
+ 	SAFE_PIPE2(fds, O_NONBLOCK);
+ 
+-	/* EPOLLOUT will be raised when buffer became empty after becoming full */
+-	SAFE_FCNTL(fds[1], F_SETPIPE_SZ, write_size);
++	/*
++	 * EPOLLOUT will be raised when buffer became empty after becoming full.
++	 *
++	 * Shrink the pipe to its minimum capacity, which is a single pipe
++	 * buffer, so that reading only half of the data doesn't release any
++	 * buffer. Use the capacity reported by the kernel rather than
++	 * assuming it matches getpagesize().
++	 */
++	write_size = SAFE_FCNTL(fds[1], F_SETPIPE_SZ, 1);
++	read_size = write_size / 2;
+ }
+ 
+ static void cleanup(void)
+diff --git a/testcases/kernel/syscalls/fcntl/fcntl35.c b/testcases/kernel/syscalls/fcntl/fcntl35.c
+index d17812fd0..bec661509 100644
+--- a/testcases/kernel/syscalls/fcntl/fcntl35.c
++++ b/testcases/kernel/syscalls/fcntl/fcntl35.c
+@@ -44,9 +44,28 @@ static struct tcase {
+ 	{&test_max_priv, 0, "a privileged user"}
+ };
+ 
++/*
++ * The pipe capacity is a multiple of the size of a pipe buffer, which is one
++ * page of the kernel. Get it by shrinking a pipe to its minimum capacity,
++ * rather than assuming it matches getpagesize().
++ */
++static int get_pipe_buf_size(void)
++{
++	int fds[2], size;
++
++	SAFE_PIPE(fds);
++	size = SAFE_FCNTL(fds[1], F_SETPIPE_SZ, 1);
++	SAFE_CLOSE(fds[0]);
++	SAFE_CLOSE(fds[1]);
++
++	return size;
++}
++
+ static void setup(void)
+ {
+-	test_max_unpriv = getpagesize();
++	/* pipe-max-size can't be lower than a single pipe buffer */
++	test_max_unpriv = get_pipe_buf_size();
++	/* The default capacity is 16 pipe buffers (PIPE_DEF_BUFFERS) */
+ 	test_max_priv = test_max_unpriv * 16;
+ 
+ 	if (!access(PATH_FS_PIPE_MAX_SIZE, F_OK)) {
 -- 
 2.56.0.611.g1030f0b940-goog
 
