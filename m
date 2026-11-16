@@ -2,111 +2,94 @@ Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADB36606A329
-	for <ltp@archiver.kernel.org>; Mon, 16 Nov 2026 16:24:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4F6D606A33B
+	for <ltp@archiver.kernel.org>; Mon, 16 Nov 2026 22:35:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=suse.cz header.i=@suse.cz header.a=rsa-sha256 header.s=susede2_rsa header.b=aIUya0DC;
-	dkim=fail reason="signature verification failed" header.d=suse.cz header.i=@suse.cz header.a=ed25519-sha256 header.s=susede2_ed25519 header.b=PWZE6g2o;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=suse.cz header.i=@suse.cz header.a=rsa-sha256 header.s=susede2_rsa header.b=aIUya0DC;
-	dkim=neutral header.d=suse.cz header.i=@suse.cz header.a=ed25519-sha256 header.s=susede2_ed25519 header.b=PWZE6g2o
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=KODTq4Hu
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D86A73EAA26
-	for <ltp@archiver.kernel.org>; Mon, 16 Nov 2026 17:24:07 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id 0EA593EB426
+	for <ltp@archiver.kernel.org>; Mon, 16 Nov 2026 23:35:35 +0100 (CET)
 Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C91243C19BF
- for <ltp@lists.linux.it>; Mon, 16 Nov 2026 17:23:52 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 82A803C0960
+ for <ltp@lists.linux.it>; Mon, 16 Nov 2026 23:35:18 +0100 (CET)
+Received: from mail-pj2-x08.google.com (mail-pj2-x08.google.com
+ [IPv6:2607:f8b0:4864:39::8])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 8AEAB1400993
- for <ltp@lists.linux.it>; Mon, 16 Nov 2026 17:23:50 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id B0DE21FD6F;
- Mon, 16 Nov 2026 16:23:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1794846224; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=zijaWzruC6jY28tlJW50Z93ENFj8OCF99eSD99vJC+o=;
- b=aIUya0DCfT1wsR1g/6mpT34wC1TC7n5WoY6PsFo+1qRjW1x2MaNb4nWwHc3Su1zTRW9EyF
- GZng8TYvFqb4Zu0SGV8/8CGvZK8Gxy1r/QWmner9k4Ez3NE3fgKWl0SDv1eVO1mT5nHVR/
- 5Y8H4KEfvThhfyH+EYpY5OXhkXu10nk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1794846224;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=zijaWzruC6jY28tlJW50Z93ENFj8OCF99eSD99vJC+o=;
- b=PWZE6g2oM4lgr77kLdn/dJzi0wLo0ckvP/rueNWIp76s1yhjPlSkF6NFpFbNAyaPBp5Id/
- gGURFanKw5dC/QDw==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1794846224; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=zijaWzruC6jY28tlJW50Z93ENFj8OCF99eSD99vJC+o=;
- b=aIUya0DCfT1wsR1g/6mpT34wC1TC7n5WoY6PsFo+1qRjW1x2MaNb4nWwHc3Su1zTRW9EyF
- GZng8TYvFqb4Zu0SGV8/8CGvZK8Gxy1r/QWmner9k4Ez3NE3fgKWl0SDv1eVO1mT5nHVR/
- 5Y8H4KEfvThhfyH+EYpY5OXhkXu10nk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1794846224;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=zijaWzruC6jY28tlJW50Z93ENFj8OCF99eSD99vJC+o=;
- b=PWZE6g2oM4lgr77kLdn/dJzi0wLo0ckvP/rueNWIp76s1yhjPlSkF6NFpFbNAyaPBp5Id/
- gGURFanKw5dC/QDw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 704B71334C;
- Mon, 16 Nov 2026 16:23:44 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id nqXvDhAu+2rYagAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Mon, 16 Nov 2026 16:23:44 +0000
-Date: Mon, 16 Nov 2026 17:24:12 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Avinesh Kumar <avinesh.kumar@suse.com>
-Message-ID: <avsuLPpinUJg7a4l@yuki.lan>
-References: <20261116093659.828828-1-avinesh.kumar@suse.com>
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 064DD1400B8F
+ for <ltp@lists.linux.it>; Mon, 16 Nov 2026 23:35:18 +0100 (CET)
+Received: by mail-pj2-x08.google.com with SMTP id
+ 98e67ed59e1d1-3adc0ac3566so872617a91.1
+ for <ltp@lists.linux.it>; Mon, 16 Nov 2026 14:35:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20260707; t=1794868516; x=1795473316; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to:content-type;
+ bh=i/rhVBBM79autC5afarknOC2CxLZr7OzaAbUlPLEgTI=;
+ b=KODTq4HuIpk5UKrsKIg7TFk3Y4qXOF9Anqy88269/djAHR0CT3ugwl7q7aLEroHtgE
+ PhH3TpOIcJDvwd+IyH536gdHSdVSiGND/IeATGQudVbgA3S8K8soe9ndPt64oYtT8cin
+ RFK9CPtHqqewkVJIyL9qxck1hQfWpFKmt/Myx8m3kHwH7pydZiBL2ypIxdAzF1qT1u3N
+ f0rdNhq8MUO73Fc0E8Vm11/pgYoh3jMXgLemH/ekbRg/M58DsVJe+6YeIUWmJJQZfH8R
+ RSY7oouLu+Vxzxd3OD/Kxn305V/98pdc/7eK9Okov5zsZm6mpEgS6o6iHhDyyKUXR8La
+ OnyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20260707; t=1794868516; x=1795473316;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to:content-type;
+ bh=i/rhVBBM79autC5afarknOC2CxLZr7OzaAbUlPLEgTI=;
+ b=bQrD4YfL1mlwMN6zTtdm9lcmOoN1oCBF7Rdl9HghjZDCd3VLvvegBneAvqgymkcxKz
+ 86+pSNX+iGjb3pDERO1YjpfNkz/fXwSc2PCLGKIiwhaidgvBCZO3gmIXyoUfempbYM5O
+ Hyn1e7hzF90zAiFOaLBzaDA8EGoCO4AuSXFk19vLO/9RDZZczRkojJtneRjSobpdW1mU
+ 7kuAeUYZIkhabkQ3hNxEio2aw+NaJBisYT4Mr+/USsY6l/M0IVZQszy0oDZKCkmFLSjn
+ dpMoZHENIwRK2NOzjmzOXUavESf5ScI4ectPhD9XGmXVTf6FC0l19KwZQ+1PKOWRzItI
+ c+Gg==
+X-Gm-Message-State: APuU4Z/Nb2a+dP35iNhyT1ma5NQmMj0SKZyFv0TmubI+IiaSQccLFEXu
+ UR+2AXy/WeLPR9/kPAauQBWwGyX04phteOs3WnHNI4zycx5UP4JzdZX/46oUay5g
+X-Gm-Gg: AZFdTZfTqu5kMgY4cistKwgEXxpGMnfTjc5geyxfa6RQ/blNNC8WHPzkfjwh88+l+nE
+ DIypzu2oAn8dwXfKIK5oUx5esLA8mien9WC43XWSbcRCKYQhBG18tUhZYIIsh6lLxR5fTVLx6cT
+ Kwgwrc1Nvd/qre8FOq4BlgSC8Jf9wpYJap38vwNy0AmF4ZYniGtIJnE9ihE70JdCOkIUeVF6aVr
+ /yvuFCGZzEUiMmp5WRfj5X+9XdJhgxeeboc2ghChUrtTchiotjLVYQW6d1gC7+eIpKNDxgB50S3
+ 6CHs4Y7HY3/PTOpBYWTVgdjD7j4j4Plo62GFzQ4r0z5htI7YIa3X11vKszjXi0TJz2HRd5/kPP1
+ wBKQ4Zhf/4bNW6BupN3pfh8oo/KflpvLfAu9nCoBTKlBJhoQcRyOsbZHytkI0Ag0NyKLOp049PR
+ PUgeyv3d04g1lgBBAjHN7+CvUf0jaT8b1seEEBSdyBENT+sAxwjnXZFWGWj8HSa9GdzMFKcwOsw
+ iKgUIRRh9dv26Qjsea9TzgPXwAEJ1AG7p0V6VI5I93yCoQTsdAab0VobNUgR+QIOrFK6eX31oek
+ 4Dxpyx5UbQoMqWsvM0+7dbU0CzSjXNcBxIf+35w8BAC4pitG/YjbgwRm25wLFWPmHT/+zWWZeYQ
+ 2knZ6osY/95MXGAc392Wl/r5yl+LaVWmzbOdiV5AU4jA=
+X-Received: by 2002:a17:90b:5906:b0:3b0:934c:5e41 with SMTP id
+ 98e67ed59e1d1-3b1b0b4acecmr11162612a91.29.1794868516173; 
+ Mon, 16 Nov 2026 14:35:16 -0800 (PST)
+Received: from
+ runnervmccnms.tpeq4opckxkudcgvnjlaud5nje.xx.internal.cloudapp.net
+ ([20.120.230.197]) by smtp.gmail.com with ESMTPSA id
+ 98e67ed59e1d1-3b3abbad610sm1019631a91.2.2026.11.16.14.35.15
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 16 Nov 2026 14:35:15 -0800 (PST)
+From: linuxtestproject.agent@gmail.com
+To: Wake Liu <wakel@google.com>
+Date: Mon, 16 Nov 2026 22:35:14 +0000
+Message-ID: <20261116223514.4404-1-linuxtestproject.agent@gmail.com>
+X-Mailer: git-send-email 2.56.1
+In-Reply-To: <20261116142240.3153725-2-wakel@google.com>
+References: <20261116142240.3153725-2-wakel@google.com>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20261116093659.828828-1-avinesh.kumar@suse.com>
-X-Spam-Level: 
-X-Spamd-Result: default: False [-13.30 / 50.00]; SUSE_INTERNAL_BYPASS(-9.00)[];
- BAYES_HAM(-3.00)[100.00%]; NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- URIBL_BLOCKED(0.00)[suse.cz:email,suse.com:email,imap1.dmz-prg2.suse.org:helo];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FROM_HAS_DN(0.00)[]; ARC_NA(0.00)[]; RCPT_COUNT_TWO(0.00)[2];
- MIME_TRACE(0.00)[0:+]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- RCVD_TLS_ALL(0.00)[]; MISSING_XM_UA(0.00)[];
- FROM_EQ_ENVFROM(0.00)[]; TO_DN_SOME(0.00)[];
- RCVD_COUNT_TWO(0.00)[2]; RCVD_VIA_SMTP_AUTH(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email, imap1.dmz-prg2.suse.org:helo,
- suse.com:email]
-X-Spam-Score: -13.30
-X-Spam-Status: No, score=-13.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_PASS,SPF_PASS autolearn=ham
-	autolearn_force=no version=4.0.1
+X-Spam-Status: No, score=-3.6 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_INVALID,DKIM_SIGNED,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_PASS,
+	SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] pids.sh: Wait for killed tasks to leave the cgroup
+Subject: Re: [LTP] msync04: Check smaps when the page frame number is not
+ exposed
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -121,82 +104,22 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> pids_task1 leaves an orphaned child in the cgroup, so "wait" in
-> stop_pids_tasks_path() can't wait for it, and kill -9 only queues the
-> signal. The rmdir that follows can fail with EBUSY (unchecked), leaving
-> the child cgroup behind and breaking the cgroup cleanup:
-> 
->     rmdir: failed to remove '.../test-3200/child1': Device or resource busy
->     tst_cgroup.c:1052: TBROK: unlinkat(..., 'test-3200', AT_REMOVEDIR): EBUSY
-> 
-> Wait for the cgroup to become empty at the end of
-> stop_pids_tasks_path() and in cleanup() before the test cgroup is removed.
-> 
-> Fixes: dd2b901a9 ("controllers: Update pids.sh to use newer cgroup lib")
-> Signed-off-by: Avinesh Kumar <avinesh.kumar@suse.com>
-> ---
->  testcases/kernel/controllers/pids/pids.sh | 21 +++++++++++++++++++++
->  1 file changed, 21 insertions(+)
-> 
-> diff --git a/testcases/kernel/controllers/pids/pids.sh b/testcases/kernel/controllers/pids/pids.sh
-> index dd27b5616f0c..32434ab0dba0 100755
-> --- a/testcases/kernel/controllers/pids/pids.sh
-> +++ b/testcases/kernel/controllers/pids/pids.sh
-> @@ -32,11 +32,28 @@ OPTIONS
->  EOF
->  }
->  
-> +wait_cgroup_empty()
-> +{
-> +	local delay=1000
-> +
-> +	while [ -n "$(cat "$1/$task_list" 2>/dev/null)" ]; do
-> +		if [ $delay -gt 4000000 ]; then
-> +			# tst_brk() only warns in cleanup(), so return after it
-> +			tst_brk TBROK "cgroup $1 is not empty"
-> +			return
-> +		fi
-> +		tst_sleep ${delay}us
-> +		delay=$((delay * 2))
-> +	done
-> +}
-> +
->  cleanup()
->  {
->  	killall -9 pids_task2 >/dev/null 2>&1
->  	killall -9 pids_task1 >/dev/null 2>&1
->  
-> +	[ -n "$testpath" ] && wait_cgroup_empty "$testpath"
-> +
->  	cgroup_cleanup
->  }
->  
-> @@ -83,6 +100,10 @@ stop_pids_tasks_path()
->  		kill -9 $i 2>/dev/null
->  		wait $i 2>/dev/null
->  	done
-> +
-> +	# wait can't reap the orphaned pids_task1 children, so wait for them
-> +	# to leave the cgroup instead
-> +	wait_cgroup_empty "$path"
->  }
+Hi Wake,
 
-This is working around the real problem. The tst_cg_cleanup() function
-in lib/tst_cgroup.c that is eventually called from cgroup_cleanup
-(testcases/lib/tst_cgctl.c) makes sure there are no processes left
-before unlinking the cgroups.
+On Mon Nov 16 14:22:39 2026 +0000, Wake Liu <wakel@google.com> wrote:
+> msync04: Check smaps when the page frame number is not exposed
 
-The ugly part of the shell cgroup library is that it dumps the cgroup
-library state into a file and then re-loads it in each command. So my
-guess is that there is a bug somewhere in that code.
+Verdict - Reviewed
 
-And I also suppose that it would be easier to rewrite the test into C so
-that we can use the library natively than trying to find the problem.
+---
+Note:
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+The agent can sometimes produce false positives although often its
+findings are genuine. If you find issues with the review, please
+comment this email or ignore the suggestions.
+
+Regards,
+LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
