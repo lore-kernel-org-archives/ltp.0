@@ -2,80 +2,79 @@ Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D911A606A31C
-	for <ltp@archiver.kernel.org>; Mon, 16 Nov 2026 07:24:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E84A0606A31C
+	for <ltp@archiver.kernel.org>; Mon, 16 Nov 2026 07:24:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=lists.linux.it header.i=@lists.linux.it header.a=rsa-sha256 header.s=picard header.b=Xc9NJ5FZ;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.a=rsa-sha256 header.s=20260707 header.b=iGVtpDn6
+	dkim=pass (1024-bit key, unprotected) header.d=lists.linux.it header.i=@lists.linux.it header.a=rsa-sha256 header.s=picard header.b=R91zAZYX;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.a=rsa-sha256 header.s=20260707 header.b=XXP+ov9K
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1794813876; h=date :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1794813894; h=date :
  in-reply-to : mime-version : references : message-id : to : subject :
  list-id : list-unsubscribe : list-archive : list-post : list-help :
  list-subscribe : from : reply-to : cc : content-type :
  content-transfer-encoding : sender : from;
- bh=APU9gSI57+l5N2wefehaMWyWdtOKC1/RIYAgIsQuNLI=;
- b=Xc9NJ5FZDSxPm7ZCS8fbmw2JyaZJCvwBifufkP/ae778AHhr6Y3j8hmZZ9n9piCXinDnn
- WVj6rAPaGRMivH5E33p2EhZR15fri8fuy4EhK8IcpVMYY1Z7lEfOAPf2xb8bN/ti1pWCQgK
- HAQ3BEO0LGKS2Y2lMHs4qm6iQhUyOuQ=
+ bh=p6wBeCaCTWnVKRsQnHMLOZpHU4mxIvlWXOUWdzzLVxg=;
+ b=R91zAZYX9YiDnG4qhrs1Yt0hA+TN/8xcyuiXfLq8L6Piejrb6Piz25r1y/Bb/25bKlTs4
+ 1KahUpjWtNI+yVc32bZAY1VCq04OnBp+gKgLxV9atS1Rd/Gf9PtBTD9XfsLnRUBEI8RfFF7
+ 9O369DxBk2sDcZCc5eIroitEEpH0D6I=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8370A3E93FA
-	for <ltp@archiver.kernel.org>; Mon, 16 Nov 2026 08:24:36 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 775783E93F3
+	for <ltp@archiver.kernel.org>; Mon, 16 Nov 2026 08:24:54 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id BFD153CD3B4
- for <ltp@lists.linux.it>; Mon, 16 Nov 2026 08:23:53 +0100 (CET)
-Received: from mail-pj1-x1047.google.com (mail-pj1-x1047.google.com
- [IPv6:2607:f8b0:4864:20::1047])
+ by picard.linux.it (Postfix) with ESMTPS id B0F613D066B
+ for <ltp@lists.linux.it>; Mon, 16 Nov 2026 08:23:56 +0100 (CET)
+Received: from mail-pf1-x447.google.com (mail-pf1-x447.google.com
+ [IPv6:2607:f8b0:4864:20::447])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 54E1D60004C
- for <ltp@lists.linux.it>; Mon, 16 Nov 2026 08:23:53 +0100 (CET)
-Received: by mail-pj1-x1047.google.com with SMTP id
- 98e67ed59e1d1-3b10afdf947so3994236a91.0
- for <ltp@lists.linux.it>; Sun, 15 Nov 2026 23:23:53 -0800 (PST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 206CF200763
+ for <ltp@lists.linux.it>; Mon, 16 Nov 2026 08:23:56 +0100 (CET)
+Received: by mail-pf1-x447.google.com with SMTP id
+ d2e1a72fcca58-8b930598cf0so4396278b3a.1
+ for <ltp@lists.linux.it>; Sun, 15 Nov 2026 23:23:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=google.com; s=20260707; t=1794813832; x=1795418632; darn=lists.linux.it;
+ d=google.com; s=20260707; t=1794813834; x=1795418634; darn=lists.linux.it;
  h=content-type:cc:to:from:subject:message-id:references:mime-version
  :in-reply-to:date:from:to:cc:subject:date:message-id:reply-to
- :content-type; bh=EiKQEaSa/tpN8YK6uwfjNku9cj5usCSNA3WLal0RjcE=;
- b=iGVtpDn6eJugMljRFnQU5QYfgjxUxFwB5TZZUWo6k+KYD4TsO9qOFNfWz9SPrc0emc
- HCQ6u40Bv6Y1JALxkIZXGerpGj7/rqAW2/3rmN6NBE7w5K7Yt4nriVchTcC9XVfjJbTG
- LuO/jPA0an5ZTsGOkvjZBsUEHbYR5Y0JEGFZMQJk/LtrPmKzCEIZ9ElOBN4eXFJPQcAA
- SoVfhKCdkM38fA6BrAGEOWEJhdsxjk6RTaIpuUKt/eP46QK5nf7dQv2mLgKYT6hKvMwn
- SSqoafop0iI597NbYrj4pw+SVpHYMMvJzIBPJ++UDZC4olB9Swyo1eubqZ4dIhcIK3pz
- WOcA==
+ :content-type; bh=JCdfJvzDm3AmV6KyLjJCUnq+FbXo22p1dqljxg/MsuE=;
+ b=XXP+ov9Kq2hoesHGrw3pIn9qLeXu6ssFAvZ68eXM7X4LKIvTF5W7TF66Ti2eRgeAby
+ JTDsI0d386mffYCvJdO8mr087Zwp4B19mnPd7dMFnNWKmcXRZLSouC15V7rczTTLpAOk
+ tfusZgDqc9nqqdbBd6iPNVGKDk0STsZpCvWBcrskuXueje/wr5WbDMoXeLCjo42rdmHi
+ UF881rqKmVkEiJ3aPMnvTYIY4gwp+OI/c+KMuhI348rGFXIyCby914pKXzuFIgef1iB4
+ jOAnDD9UnI2SkAJOI0V66XDuw6D+TqD2ewaxUcmXRm42EmIoRStoO7rhPjwfLook12br
+ wlFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20260707; t=1794813832; x=1795418632;
+ d=1e100.net; s=20260707; t=1794813834; x=1795418634;
  h=content-type:cc:to:from:subject:message-id:references:mime-version
  :in-reply-to:date:x-gm-message-state:from:to:cc:subject:date
  :message-id:reply-to:content-type;
- bh=EiKQEaSa/tpN8YK6uwfjNku9cj5usCSNA3WLal0RjcE=;
- b=hgNRL4RfGD9O96LHB1S6B8sLP7z3TGbB+yhpF9WT8ITN6Qkzeme9oiZF/lG/CSqfS0
- x5w+4+tiuEXdnFe/r7+EZEaRjmz7pthlX7TGyZa97GryRw05OwpMk7adUIw4lLGwEwlh
- S4gFQFlzJtMnJf0B6AnDlOoCVM00cDy8+xI2s5Gk5zC24iCtD8mHacgp+EAe0e2vlpE8
- 41EpRxwiHcwMfbqxuZsyg/HESvMLdI1VJvojLPv3dppYl6ADjD7bg3PBVa/n3wBG3IBo
- W5CEOEaR3r07U2jhajX5azX/qV4GawzOWiHUoPP+wvYXtHD+6xqu1U+TZhwYvZkG9WKg
- UXig==
-X-Gm-Message-State: APuU4Z82D+BjKp7EDyLqkQxnDTW8N9FYp1XaaNyQwT3CbTozH2UKuIUN
- ek5xaG9wMWPP0Dn2Fn1XzmZOsocjNGA0h7Uf5zJ/6tDhvgLcaC3JFv0H5wzYyCVxS3bz9HzZJME
- R1Wxro5R2FI2aUJ4o9HKXgpaVvIcb7tP6gUq7HJPxetfBeeRMrFICG6RWcX8jWfO5x84BgK6Oee
- koLXgKuN+CJ+qVvHGjCezYa9GcrA==
-X-Received: from pjbgz6.prod.google.com ([2002:a17:90b:ec6:b0:3ad:9e7b:240f])
+ bh=JCdfJvzDm3AmV6KyLjJCUnq+FbXo22p1dqljxg/MsuE=;
+ b=0S2WYWol/MXv1IENXES/hMAysuaMcmRczZ6N4n5d/yZ7a3AyBCOPN+1kj82yLksf7g
+ 3dF2/tjo4kLcrDOaNQ7LcTig9Co4R1rEiRe4oyylwQ6Sow8ZwS2oRTn+9Uk8oo6G1Gjz
+ OfRoNLhXuFEFZSHt981YwoW/Ss2eWec4pSGNnMIsxIOiPxeQgJXdYtrDMhD2yx4nldUh
+ p6NLZrUgooNCbSy7xsGPBgzindECVBOtlP0mMxhD174AAAybTwXa+PGA+PVfV/llycK0
+ 6PxKh3rFjSQ+KQHx7B+e8ufKp4tyMkUmhJQ7nMjqaGYsb7mpZgai3bFzeisPSUX31oJo
+ I3Hw==
+X-Gm-Message-State: APuU4Z/40THScE0bYB3JbeRUNDaiydW+TXD+tJdjeMPynKT8yqqe5BY7
+ o/0Xe2Kd/B55bGKtT+k9D9wuyyO2B7NbK8TZDY05hSUutOLcnIEAhJB+e8ZS+bauwafiDtk26Wa
+ DKosLHcAHVUVLTQTMF5pKDaDV3QJecueIY5bIxvhzw0pG5z3rD0Ldrp4mUHEfc74wbeCh0RcARn
+ XSR+nTtmMb5ivAguVpNhZ6bh9rng==
+X-Received: from pfix4.prod.google.com ([2002:aa7:9a84:0:b0:898:802d:e5fa])
  (user=wakel job=prod-delivery.src-stubby-dispatcher) by
- 2002:a17:90b:5483:b0:3aa:412f:b0a7
- with SMTP id 98e67ed59e1d1-3b1b087e1c4mr6189166a91.5.1794813831469; Sun, 15
- Nov 2026 23:23:51 -0800 (PST)
-Date: Mon, 16 Nov 2026 07:23:45 +0000
+ 2002:a05:6a21:7e03:b0:3ee:954c:1567
+ with SMTP id adf61e73a8af0-3f7a73c5c5fmr6990476637.30.1794813834172; Sun, 15
+ Nov 2026 23:23:54 -0800 (PST)
+Date: Mon, 16 Nov 2026 07:23:46 +0000
 In-Reply-To: <20261116072346.2462510-1-wakel@google.com>
 X-Archived-By: <archiver.kernel.org>
 Mime-Version: 1.0
 References: <20261116072346.2462510-1-wakel@google.com>
 X-Mailer: git-send-email 2.56.0.611.g1030f0b940-goog
-Message-ID: <20261116072346.2462510-2-wakel@google.com>
+Message-ID: <20261116072346.2462510-3-wakel@google.com>
 To: ltp@lists.linux.it
 X-Spam-Status: No, score=-19.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,INCLUDES_CR_TRAILER,
@@ -83,10 +82,10 @@ X-Spam-Status: No, score=-19.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 1/2] msync04: Check smaps when the page frame number
- is not exposed
+Subject: [LTP] [PATCH 2/2] pipe2_04: Don't assume the minimum pipe size is
+ getpagesize()
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -103,102 +102,68 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-The test looks up the dirty flag of the mapped page in /proc/kpageflags,
-using the PFN it reads from /proc/self/pagemap. If the PFN is reported
-as zero, get_dirty_bit() returns 0 and the test falls back to checking
-the file content, which can end only with TCONF or TFAIL.
+F_SETPIPE_SZ rounds the requested size up to the minimum pipe capacity,
+which is a single pipe buffer of one kernel page. The test expects that
+to be equal to the page size reported to userspace.
 
-The PFN of a present page is reported as zero with the 16K page size
-emulation that Android uses on x86_64, where each entry of the emulated
-pagemap covers four 4K kernel pages and therefore carries no single PFN.
-The test then reports:
+That is not the case when the kernel reports a larger page size to
+userspace than it uses internally, as with the 16K page size emulation
+that Android uses on x86_64:
 
-  TCONF: Write was too fast, couldn't test msync()
+  TFAIL: Pipe size (4096) must be page size (16384)
 
-When the page is present but its PFN is not exposed, sum up the
-Shared_Dirty and Private_Dirty counters of the mapping in
-/proc/self/smaps instead. They account for both the dirty bit in the
-page table and the dirty flag of the page, and drop to zero once
-msync() has written the page back. Nothing changes on kernels that
-expose the PFN to root.
+Check that F_GETPIPE_SZ on the other end of the pipe returns the size
+set by F_SETPIPE_SZ, which is what the test is about, and that the
+minimum size does not exceed the page size. The rest of the test
+already uses the actual pipe size.
 
 Signed-off-by: Wake Liu <wakel@google.com>
 ---
- testcases/kernel/syscalls/msync/msync04.c | 46 ++++++++++++++++++++++-
- 1 file changed, 44 insertions(+), 2 deletions(-)
+ testcases/kernel/syscalls/pipe2/pipe2_04.c | 17 ++++++++++++-----
+ 1 file changed, 12 insertions(+), 5 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/msync/msync04.c b/testcases/kernel/syscalls/msync/msync04.c
-index 1251388b6..1ed56fec6 100644
---- a/testcases/kernel/syscalls/msync/msync04.c
-+++ b/testcases/kernel/syscalls/msync/msync04.c
-@@ -17,6 +17,7 @@
- #define _GNU_SOURCE
- #include <errno.h>
- #include "tst_test.h"
-+#include "tst_safe_stdio.h"
+diff --git a/testcases/kernel/syscalls/pipe2/pipe2_04.c b/testcases/kernel/syscalls/pipe2/pipe2_04.c
+index 3911f95b4..7b071a420 100644
+--- a/testcases/kernel/syscalls/pipe2/pipe2_04.c
++++ b/testcases/kernel/syscalls/pipe2/pipe2_04.c
+@@ -57,7 +57,7 @@ static void test_pipe2(void)
  
- static int test_fd;
- static char *mmaped_area;
-@@ -24,6 +25,39 @@ static long pagesize;
- 
- #define STRING_TO_WRITE	"AAAAAAAAAA"
- 
-+#define PM_PFRAME_MASK	((1ULL << 55) - 1)
-+#define PM_PRESENT	(1ULL << 63)
-+
-+/*
-+ * Returns the amount of dirty memory of the mapping starting at addr, as
-+ * accounted in /proc/self/smaps.
-+ */
-+static long get_smaps_dirty_kb(unsigned long addr)
-+{
-+	FILE *fp = SAFE_FOPEN("/proc/self/smaps", "r");
-+	unsigned long start, end;
-+	long dirty_kb = 0, kb;
-+	char line[1024];
-+	int found = 0;
-+
-+	while (fgets(line, sizeof(line), fp)) {
-+		if (sscanf(line, "%lx-%lx ", &start, &end) == 2) {
-+			found = start == addr;
-+			continue;
-+		}
-+
-+		if (!found)
-+			continue;
-+
-+		if (sscanf(line, "Shared_Dirty: %ld kB", &kb) == 1 ||
-+		    sscanf(line, "Private_Dirty: %ld kB", &kb) == 1)
-+			dirty_kb += kb;
-+	}
-+
-+	SAFE_FCLOSE(fp);
-+	return dirty_kb;
-+}
-+
- static uint64_t get_dirty_bit(void *data)
+ static void setup(void)
  {
- 	int pagemap_fd, pageflags_fd;
-@@ -37,9 +71,17 @@ static uint64_t get_dirty_bit(void *data)
- 	SAFE_READ(SAFE_READ_ALL, pagemap_fd, &pagemap_entry,
- 		  sizeof(pagemap_entry));
- 	SAFE_CLOSE(pagemap_fd);
--	pfn = pagemap_entry & ((1ULL << 55) - 1);
--	if (!pfn)
-+	pfn = pagemap_entry & PM_PFRAME_MASK;
-+	if (!pfn) {
-+		/*
-+		 * The PFN of a present page may not be exposed, check the
-+		 * dirty accounting of the mapping in smaps instead.
-+		 */
-+		if (pagemap_entry & PM_PRESENT)
-+			return get_smaps_dirty_kb(addr) > 0;
-+
- 		return 0;
-+	}
- 	pageflags_fd = SAFE_OPEN("/proc/kpageflags", O_RDONLY);
- 	index = pfn * sizeof(uint64_t);
- 	SAFE_LSEEK(pageflags_fd, index, SEEK_SET);
+-	int page_size, pipe_size;
++	int page_size, pipe_size, set_size;
+ 	char *write_buffer;
+ 
+ 	SAFE_PIPE2(fds, O_NONBLOCK);
+@@ -70,17 +70,24 @@ static void setup(void)
+ 	 * A pipe has two file descriptors.
+ 	 * But in the kernel these two file descriptors point to the same pipe.
+ 	 * So setting size from first file handle set size for the pipe.
++	 *
++	 * The size is rounded up to the minimum pipe capacity, i.e. a single
++	 * pipe buffer of one kernel page, which is not necessarily the same
++	 * as the page size reported to userspace.
+ 	 */
+-	SAFE_FCNTL(fds[0], F_SETPIPE_SZ, 0);
++	set_size = SAFE_FCNTL(fds[0], F_SETPIPE_SZ, 0);
++	if (set_size > page_size)
++		tst_res(TFAIL, "Minimum pipe size (%d) exceeds page size (%d)",
++				set_size, page_size);
+ 
+ 	/*
+ 	 * So getting size from the second file descriptor return the size of
+ 	 * the pipe which was changed before with first file descriptor.
+ 	 */
+ 	pipe_size = SAFE_FCNTL(fds[1], F_GETPIPE_SZ);
+-	if (pipe_size != page_size)
+-		tst_res(TFAIL, "Pipe size (%d) must be page size (%d)",
+-				pipe_size, page_size);
++	if (pipe_size != set_size)
++		tst_res(TFAIL, "Pipe size (%d) must be the size set (%d)",
++				pipe_size, set_size);
+ 
+ 	write_buffer = SAFE_MALLOC(pipe_size);
+ 	memset(write_buffer, 'x', pipe_size);
 -- 
 2.56.0.611.g1030f0b940-goog
 
