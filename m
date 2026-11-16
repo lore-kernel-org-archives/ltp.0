@@ -2,81 +2,81 @@ Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F824606A32A
-	for <ltp@archiver.kernel.org>; Mon, 16 Nov 2026 14:23:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F414606A32A
+	for <ltp@archiver.kernel.org>; Mon, 16 Nov 2026 14:23:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=lists.linux.it header.i=@lists.linux.it header.a=rsa-sha256 header.s=picard header.b=iodPkPgq;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.a=rsa-sha256 header.s=20260707 header.b=ISN9/1AR
+	dkim=pass (1024-bit key, unprotected) header.d=lists.linux.it header.i=@lists.linux.it header.a=rsa-sha256 header.s=picard header.b=oNxFSVxB;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.a=rsa-sha256 header.s=20260707 header.b=k+wVd4be
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1794838995; h=date :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1794839014; h=date :
  in-reply-to : mime-version : references : message-id : to : subject :
  list-id : list-unsubscribe : list-archive : list-post : list-help :
  list-subscribe : from : reply-to : cc : content-type :
  content-transfer-encoding : sender : from;
- bh=BYG49OVQ1jup5v00WB4N51Rp8LuOyNEvT7/t8eQQGV4=;
- b=iodPkPgqZ3COAMkXDmszYbVlf4Z732i+BRV28bJtxJbg75jDutk2Nqr87vLIm03xjeeTH
- HPIFSlfClOVbQ2EX8HJyFBWlinJvcJ/2vaG6BlGQ/SXmDq01bc5pfnQanPb2GE49JX0TSQf
- 8jJw8qJrno7pEi+ROQ9upGyeh9K785Y=
+ bh=9g23u9pkoKbzX0vJ7CY6NPQ/BtyCACAyo/6C+U0k5v8=;
+ b=oNxFSVxB+kDUEo9KjnZV29JNi7FRUEiiZwIwwRNIeO0JramZcPasKd6461aRNp6wa4fcU
+ qQ+bBDKnoZDN7t54QqyQeYojtTmAYzGjRfew/zWnioegd8BuFti5dZixQY9ZZ1ct8dm17gz
+ uW52lkbXUWbBjoVfX6yug80Lm7/f/Cc=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E6DD53EA0AE
-	for <ltp@archiver.kernel.org>; Mon, 16 Nov 2026 15:23:15 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id D15723EA9D7
+	for <ltp@archiver.kernel.org>; Mon, 16 Nov 2026 15:23:34 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 86AD03EA0AE
- for <ltp@lists.linux.it>; Mon, 16 Nov 2026 15:22:17 +0100 (CET)
-Received: from mail-pg1-x547.google.com (mail-pg1-x547.google.com
- [IPv6:2607:f8b0:4864:20::547])
+ by picard.linux.it (Postfix) with ESMTPS id 7AC693EAA1E
+ for <ltp@lists.linux.it>; Mon, 16 Nov 2026 15:22:19 +0100 (CET)
+Received: from mail-dl1-x1248.google.com (mail-dl1-x1248.google.com
+ [IPv6:2607:f8b0:4864:20::1248])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 34976600801
- for <ltp@lists.linux.it>; Mon, 16 Nov 2026 15:22:16 +0100 (CET)
-Received: by mail-pg1-x547.google.com with SMTP id
- 41be03b00d2f7-cddc4bde4b1so1227304a12.3
- for <ltp@lists.linux.it>; Mon, 16 Nov 2026 06:22:16 -0800 (PST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id B71282001B4
+ for <ltp@lists.linux.it>; Mon, 16 Nov 2026 15:22:18 +0100 (CET)
+Received: by mail-dl1-x1248.google.com with SMTP id
+ a92af1059eb24-1b3a348a6dbso2652722c88.1
+ for <ltp@lists.linux.it>; Mon, 16 Nov 2026 06:22:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=google.com; s=20260707; t=1794838934; x=1795443734; darn=lists.linux.it;
+ d=google.com; s=20260707; t=1794838937; x=1795443737; darn=lists.linux.it;
  h=content-type:cc:to:from:subject:message-id:references:mime-version
  :in-reply-to:date:from:to:cc:subject:date:message-id:reply-to
- :content-type; bh=KA641LrdmsHzwH9HaiV6SOUkyzgAxqgjuxE4K0UvaIU=;
- b=ISN9/1ARAO8k6oOgV89KaqCca1lhEe7/K5ZH/Ihnb1xEEhXipp6WBNPBJeYa0WpLlK
- qCLXgbChA+5Rwj4dYMu3/7oJr3HgHi1DeQqurRDhCzeO7yqBPaGfvjI20Ls0BFlMIvvZ
- +okaYR6WhBA2+t1BVNwpqw8BnDf3nY4I7nlwWkdjKzQLwgaXmfvvLZfM7TH/YyEFajrl
- uXRA5M3d6/tmCkkAjbY5/8UKqG47iMp5s4NMWLODdTGsi1qCktlf9a/WeBDRkoECLlns
- 8o8YwSO/MJwwDOyZDAD3X5Dd4ESd+G06zamZXL/uioT1ZrdzeAiJJRe0PFgWyxlcIoXJ
- a0wg==
+ :content-type; bh=B/YyFXE4Q4u5oMMLZQAB4E8w55phBQ4Gk36oP8hNOtc=;
+ b=k+wVd4be1A3/E0u3bKnW3ugFvVkUC9hG7rDyI5h35FU1gwBeGSsIkjs0EQmUPEpS1/
+ hQx7Hj9AQ0DKCJubd7yisigbbCqJPGrJbroL4sOEYaQXGW1sc9RlgKNHwUbUCROJ7tY+
+ m21zk7dwMRPM8J2Mtp6t9yJWtBa97l16xXgJSv+OoGPwYbt8Gh8MLLm4qyQqR2SIYekS
+ LjYXoko3jSYL44llgbriqPX4tECaz/Won1MypK0+2EVGzp53mPfbQddeq5dhMwsLMsSg
+ i1clOBgqI3grGalwnXVerAs5QiBK9BIUsScjeORNjEDpD+xqAtzaeH4UC50WdmpFSBmY
+ Qy6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20260707; t=1794838934; x=1795443734;
+ d=1e100.net; s=20260707; t=1794838937; x=1795443737;
  h=content-type:cc:to:from:subject:message-id:references:mime-version
  :in-reply-to:date:x-gm-message-state:from:to:cc:subject:date
  :message-id:reply-to:content-type;
- bh=KA641LrdmsHzwH9HaiV6SOUkyzgAxqgjuxE4K0UvaIU=;
- b=JwO7QYc+EVHap2LtmJIPNtGGSRfRD0zusGoE7e6nUEFOBTO9kefDKOFH4PU2YqN34F
- V85xPFzwf/+pqFMHnzLxb8AVEysrcSEirYHGINXEB4Z/fhwNQ/2sh6+6kE6Y2KyLnq1s
- d9/ru0gNYVLSCMCpbBeJg+zsCL6qgL/PcL6kytOOt0PovaVHGrEo56eGNctWE/O7bP8Y
- +YRdMIR1AIFvwVsrKhc/AxF7B1kn0wjfilz1leY5c0yBxKL3Ut0HPSQYnlQMTzZ7Gh7R
- 8pSuUJuftfqtPgc691dFPRh7B2i4VPUVNqsroxxH1ftQXVnuYwVHURv+l5akuLYglb39
- dCzg==
-X-Gm-Message-State: APuU4Z/f2JxSkX1DRk0XpKae+9VQhIVKKiwupz5+7aKiKux1JOhZhtwu
- eiPh3eUsffsGy7ooqp4LmxFcx7sxI2LVBRY93gQ+wwOpnE6j7oUtPgPW4CJarTiaGoeJ/yR6wmg
- Cv3UD9CMG/0SmCyIFhlskmg3Ij5E3hYIJMJA7P7oz4wecv19cc+chsvSPGtFzHsXfFE49ureme0
- qQBVviKRFAZBywjLRqlIN57pm3mA==
-X-Received: from pgqs26.prod.google.com ([2002:a65:691a:0:b0:cdb:91c5:5e0b])
+ bh=B/YyFXE4Q4u5oMMLZQAB4E8w55phBQ4Gk36oP8hNOtc=;
+ b=fp8IDRqYlByeEmAhcbq50tZCmwp2xPYXR+nAT/rHrHV8WVAED2k2cRP5puz4aW+iSX
+ sO4eQ4QR/yx+YtNTZreGX5ymvpRVk43JwJ3lf8Thn1P2Umj6V83NffIXB74ct7uqIJ7A
+ tK+LJFP+jjMEeVbdxX4yQm34+y+uZUWW1G5mKHOEyIi35z4OwSGlGCKsZkfphOEumCoC
+ +lhEdU01ndkW97ax1mn+PFcHmSnBslKIXAWwU8PnRfj+G6+wVgYFQJ4WE7e3jhCJKCY3
+ IXzNm8acHjvcfdGcLzKQU+zyvr/me/PjclsMP9aVBzp7yl1rc8GM4aNqp0wyaRokbwd8
+ sBBA==
+X-Gm-Message-State: APuU4Z8Dh8WlDgHnTKzqa/noZPaS9yFzBQ0+osR7czlV09x1GYnMj6mr
+ /1aY//eeod8QZGNMgBXYPffSauPwnn008HOAp6G2i5NixYkjlt6y3ERz3sx4IZUGqcCJW3uUse+
+ +uVstNmOxab0+ycN6JwRdhdhIrMVc2KOYO2fD6anplLxxAJrt9dMSR7Wqy5k+OCz94dCDhMYuGL
+ 0gfETn7JwfgU8klVIayNu0UXLvPw==
+X-Received: from dlaf14.prod.google.com ([2002:a05:701b:240e:b0:1b2:5589:f43a])
  (user=wakel job=prod-delivery.src-stubby-dispatcher) by
- 2002:a05:6372:a709:b0:3fa:bafe:61de
- with SMTP id adf61e73a8af0-3fabafe8c88mr3467001637.11.1794838934095; Mon, 16
- Nov 2026 06:22:14 -0800 (PST)
-Date: Mon, 16 Nov 2026 14:22:04 +0000
+ 2002:a05:7022:2390:b0:18d:96e8:b913
+ with SMTP id a92af1059eb24-1b503195191mr15107711c88.47.1794838936548; Mon, 16
+ Nov 2026 06:22:16 -0800 (PST)
+Date: Mon, 16 Nov 2026 14:22:05 +0000
 In-Reply-To: <20261116142206.3151308-1-wakel@google.com>
 X-Archived-By: <archiver.kernel.org>
 Mime-Version: 1.0
 References: <20261111093151.374731-1-wakel@google.com>
  <20261116142206.3151308-1-wakel@google.com>
 X-Mailer: git-send-email 2.56.0.611.g1030f0b940-goog
-Message-ID: <20261116142206.3151308-3-wakel@google.com>
+Message-ID: <20261116142206.3151308-4-wakel@google.com>
 To: ltp@lists.linux.it
 X-Spam-Status: No, score=-19.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,INCLUDES_CR_TRAILER,
@@ -84,10 +84,10 @@ X-Spam-Status: No, score=-19.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 2/4] memcg,
- userfaultfd07: Populate whole pages instead of single bytes
+Subject: [LTP] [PATCH v2 3/4] ioctl10: Compare vma_page_size with
+ KernelPageSize from smaps
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -104,146 +104,86 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-memcontrol02 and mem_process, the helper of memcg_control_test.sh,
-fault in their memory by writing one byte per getpagesize() bytes, and
-userfaultfd07 populates the page cache of its memfd by writing a single
-byte. All of them assume that this populates whole pages of
-getpagesize() bytes.
+PROCMAP_QUERY returns in vma_page_size the page size the kernel uses to
+back the VMA, i.e. vma_kernel_pagesize(), which /proc/$PID/smaps shows
+as KernelPageSize. The test compares it with getpagesize() instead,
+which is only correct as long as the kernel page size equals the page
+size reported to userspace.
 
-That is not the case when the kernel faults in and caches memory in
-smaller units than the page size it reports to userspace, as with the
-16K page size emulation that Android uses on x86_64. Only one in four
-4K pages gets populated there, so memcontrol02 sees only about a
-quarter of the expected 50M in memory.current, mem_process stays below
-the memory limit it is supposed to exceed, and UFFDIO_CONTINUE in
-userfaultfd07 fails for the part of the page that is not in the page
-cache:
+That is not the case with the 16K page size emulation that Android uses
+on x86_64, where the kernel keeps using 4K pages internally:
 
-  TBROK: ioctl(4,UFFDIO_CONTINUE,...) failed: EAGAIN/EWOULDBLOCK (11)
+  TFAIL: q->vma_page_size (4096) != getpagesize() (16384)
 
-Write the whole buffers instead. Nothing changes on kernels where both
-page sizes are equal.
+Compare it with KernelPageSize of the same VMA in /proc/self/smaps
+instead. This also cross-checks the two kernel interfaces, the same way
+the other fields are checked against /proc/self/maps. Nothing changes
+on kernels where both page sizes are equal.
 
 Signed-off-by: Wake Liu <wakel@google.com>
 ---
+ testcases/kernel/syscalls/ioctl/ioctl10.c | 34 ++++++++++++++++++++++-
+ 1 file changed, 33 insertions(+), 1 deletion(-)
 
-Notes:
-    alloc_anon() in memcontrol_common.h, used by memcontrol03 and
-    memcontrol04, writes one byte per page as well. It frees the buffer
-    right away, so GCC and Clang would drop a plain memset() there as a
-    dead store and it needs a different fix. I will look at it
-    separately.
-
- .../kernel/controllers/memcg/control/mem_process.c  | 11 ++++++-----
- testcases/kernel/controllers/memcg/memcontrol02.c   | 13 +++++++------
- .../kernel/syscalls/userfaultfd/userfaultfd07.c     | 11 +++++++++--
- 3 files changed, 22 insertions(+), 13 deletions(-)
-
-diff --git a/testcases/kernel/controllers/memcg/control/mem_process.c b/testcases/kernel/controllers/memcg/control/mem_process.c
-index 8ecabb272..f32189cc2 100644
---- a/testcases/kernel/controllers/memcg/control/mem_process.c
-+++ b/testcases/kernel/controllers/memcg/control/mem_process.c
-@@ -10,6 +10,7 @@
- #include <fcntl.h>
- #include <stdio.h>
- #include <stdlib.h>
-+#include <string.h>
- #include <unistd.h>
+diff --git a/testcases/kernel/syscalls/ioctl/ioctl10.c b/testcases/kernel/syscalls/ioctl/ioctl10.c
+index 8a4f8ae40..5dd2a866d 100644
+--- a/testcases/kernel/syscalls/ioctl/ioctl10.c
++++ b/testcases/kernel/syscalls/ioctl/ioctl10.c
+@@ -28,6 +28,7 @@
+ #include "lapi/ioctl.h"
  
- /*
-@@ -49,14 +50,14 @@ void process_options(int argc, char **argv)
+ #define PROC_MAP_PATH "/proc/self/maps"
++#define PROC_SMAPS_PATH "/proc/self/smaps"
  
- /*
-  * touch_memory: force physical memory allocation
-+ *
-+ * Write the whole area rather than one byte per getpagesize(), so that it
-+ * gets fully populated regardless of the granularity the kernel faults in
-+ * memory with.
-  */
- void touch_memory(char *p)
- {
--	int i;
--	int pagesize = getpagesize();
--
--	for (i = 0; i < (int)memsize; i += pagesize)
--		p[i] = 0xef;
-+	memset(p, 0xef, memsize);
+ struct map_entry {
+ 	unsigned long vm_start;
+@@ -86,6 +87,37 @@ static void parse_maps_file(const char *filename, const char *keyword, struct ma
+ 	tst_brk(TFAIL, "parse maps file /proc/self/maps failed");
  }
  
- void mem_map(void)
-diff --git a/testcases/kernel/controllers/memcg/memcontrol02.c b/testcases/kernel/controllers/memcg/memcontrol02.c
-index 52096f697..6687c6e84 100644
---- a/testcases/kernel/controllers/memcg/memcontrol02.c
-+++ b/testcases/kernel/controllers/memcg/memcontrol02.c
-@@ -27,7 +27,6 @@
- #define _GNU_SOURCE
- #include "memcontrol_common.h"
- 
--static size_t page_size;
- static struct tst_cg_group *cg_child;
- static int fd = -1;
- static int file_to_all_error = 10;
-@@ -35,14 +34,18 @@ static int file_to_all_error = 10;
- static void alloc_anon_50M_check(void)
++/*
++ * vma_page_size is the page size the kernel uses to back the VMA, which is
++ * reported as KernelPageSize in /proc/self/smaps. It is not necessarily
++ * equal to getpagesize(), e.g. for hugetlb mappings or when the kernel
++ * reports a larger page size to userspace than it uses internally.
++ */
++static unsigned long get_kernel_page_size(unsigned long vm_start)
++{
++	FILE *fp = SAFE_FOPEN(PROC_SMAPS_PATH, "r");
++	unsigned long start, end, size_kb;
++	char line[1024];
++	int found = 0;
++
++	while (fgets(line, sizeof(line), fp)) {
++		if (sscanf(line, "%lx-%lx ", &start, &end) == 2) {
++			found = start == vm_start;
++			continue;
++		}
++
++		if (found && sscanf(line, "KernelPageSize: %lu kB", &size_kb) == 1) {
++			SAFE_FCLOSE(fp);
++			return size_kb * 1024;
++		}
++	}
++
++	SAFE_FCLOSE(fp);
++	tst_brk(TBROK, "KernelPageSize of %lx not found in %s",
++		vm_start, PROC_SMAPS_PATH);
++	return 0;
++}
++
+ static void verify_ioctl(void)
  {
- 	const ssize_t size = MB(50);
--	char *buf, *ptr;
-+	char *buf;
- 	ssize_t anon, current;
- 	const char *const anon_key_fmt =
- 		TST_CG_VER_IS_V1(tst_cg, "memory") ? "rss %zd" : "anon %zd";
- 
- 	buf = SAFE_MALLOC(size);
--	for (ptr = buf; ptr < buf + size; ptr += page_size)
--		*ptr = 0;
-+	/*
-+	 * Write the whole buffer rather than one byte per getpagesize(), so
-+	 * that it gets fully populated regardless of the granularity the
-+	 * kernel faults in memory with.
-+	 */
-+	memset(buf, 1, size);
- 
- 	SAFE_CG_SCANF(cg_child, "memory.current", "%zd", &current);
- 	TST_EXP_EXPR(current >= size,
-@@ -113,8 +116,6 @@ static void test_memcg_current(unsigned int n)
- 
- static void setup(void)
- {
--	page_size = SAFE_SYSCONF(_SC_PAGESIZE);
--
- 	switch (tst_fs_type(TMPDIR)) {
- 	case TST_VFAT_MAGIC:
- 	case TST_EXFAT_MAGIC:
-diff --git a/testcases/kernel/syscalls/userfaultfd/userfaultfd07.c b/testcases/kernel/syscalls/userfaultfd/userfaultfd07.c
-index e0a1b0d23..dce6d8827 100644
---- a/testcases/kernel/syscalls/userfaultfd/userfaultfd07.c
-+++ b/testcases/kernel/syscalls/userfaultfd/userfaultfd07.c
-@@ -32,7 +32,7 @@ static void setup(void)
- 
- static void set_pages(void)
- {
--	char ch = 'A';
-+	char *buf;
- 
- 	page_size = SAFE_SYSCONF(_SC_PAGE_SIZE);
- 
-@@ -45,8 +45,15 @@ static void set_pages(void)
- 	/*
- 	 * Populate page cache so that after MADV_DONTNEED the next access
- 	 * can generate a MINOR fault rather than a MISSING fault.
-+	 *
-+	 * Write the whole page, as UFFDIO_CONTINUE needs the page cache to
-+	 * cover the whole range and the kernel may cache memory in units
-+	 * smaller than getpagesize().
- 	 */
--	SAFE_PWRITE(1, memfd, &ch, 1, 0);
-+	buf = SAFE_MALLOC(page_size);
-+	memset(buf, 'A', page_size);
-+	SAFE_PWRITE(1, memfd, buf, page_size, 0);
-+	free(buf);
- 
- 	page = SAFE_MMAP(NULL, page_size, PROT_READ, MAP_SHARED, memfd, 0);
- }
+ 	struct map_entry entry;
+@@ -107,7 +139,7 @@ static void verify_ioctl(void)
+ 	TST_EXP_EQ_LU(q->vma_flags, entry.vm_flags);
+ 	TST_EXP_EQ_LU(q->vma_start, entry.vm_start);
+ 	TST_EXP_EQ_LU(q->vma_end, entry.vm_end);
+-	TST_EXP_EQ_LU(q->vma_page_size, getpagesize());
++	TST_EXP_EQ_LU(q->vma_page_size, get_kernel_page_size(entry.vm_start));
+ 	TST_EXP_EQ_LU(q->vma_offset, entry.vm_pgoff);
+ 	TST_EXP_EQ_LU(q->inode, entry.vm_inode);
+ 	TST_EXP_EQ_LU(q->dev_major, entry.vm_major);
 -- 
 2.56.0.611.g1030f0b940-goog
 
