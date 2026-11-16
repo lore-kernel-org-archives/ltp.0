@@ -2,81 +2,81 @@ Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F941606A331
-	for <ltp@archiver.kernel.org>; Mon, 16 Nov 2026 14:22:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F824606A32A
+	for <ltp@archiver.kernel.org>; Mon, 16 Nov 2026 14:23:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=lists.linux.it header.i=@lists.linux.it header.a=rsa-sha256 header.s=picard header.b=YJklURo0;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.a=rsa-sha256 header.s=20260707 header.b=cCH+OiHf
+	dkim=pass (1024-bit key, unprotected) header.d=lists.linux.it header.i=@lists.linux.it header.a=rsa-sha256 header.s=picard header.b=iodPkPgq;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.a=rsa-sha256 header.s=20260707 header.b=ISN9/1AR
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1794838971; h=date :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1794838995; h=date :
  in-reply-to : mime-version : references : message-id : to : subject :
  list-id : list-unsubscribe : list-archive : list-post : list-help :
  list-subscribe : from : reply-to : cc : content-type :
  content-transfer-encoding : sender : from;
- bh=kKj737pI0kMkJPpt4OVeWaMYUwbcI99HOIhF2y23+Tk=;
- b=YJklURo0SNWoLnDPdly/fyCXtWLfRO+EEceAMY1Toq1+Z+R9heFFk/tfNOsi8QZPcw5GK
- biIo3Nb+7HrEliTYs06LL8uBYx/xsmsvKfM9SUg6k4CwaSX7ioZ3XPPX6O0qcwfm++FnFkn
- 9tdpQw7q+mWhsWNiZW+w/4/SFODtmzk=
+ bh=BYG49OVQ1jup5v00WB4N51Rp8LuOyNEvT7/t8eQQGV4=;
+ b=iodPkPgqZ3COAMkXDmszYbVlf4Z732i+BRV28bJtxJbg75jDutk2Nqr87vLIm03xjeeTH
+ HPIFSlfClOVbQ2EX8HJyFBWlinJvcJ/2vaG6BlGQ/SXmDq01bc5pfnQanPb2GE49JX0TSQf
+ 8jJw8qJrno7pEi+ROQ9upGyeh9K785Y=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id BCD623EA9DB
-	for <ltp@archiver.kernel.org>; Mon, 16 Nov 2026 15:22:51 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id E6DD53EA0AE
+	for <ltp@archiver.kernel.org>; Mon, 16 Nov 2026 15:23:15 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 5B3583EA9DD
- for <ltp@lists.linux.it>; Mon, 16 Nov 2026 15:22:14 +0100 (CET)
-Received: from mail-pl1-x646.google.com (mail-pl1-x646.google.com
- [IPv6:2607:f8b0:4864:20::646])
+ by picard.linux.it (Postfix) with ESMTPS id 86AD03EA0AE
+ for <ltp@lists.linux.it>; Mon, 16 Nov 2026 15:22:17 +0100 (CET)
+Received: from mail-pg1-x547.google.com (mail-pg1-x547.google.com
+ [IPv6:2607:f8b0:4864:20::547])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id AD48C10002BE
- for <ltp@lists.linux.it>; Mon, 16 Nov 2026 15:22:13 +0100 (CET)
-Received: by mail-pl1-x646.google.com with SMTP id
- d9443c01a7336-2ed00709df0so32521605ad.0
- for <ltp@lists.linux.it>; Mon, 16 Nov 2026 06:22:13 -0800 (PST)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 34976600801
+ for <ltp@lists.linux.it>; Mon, 16 Nov 2026 15:22:16 +0100 (CET)
+Received: by mail-pg1-x547.google.com with SMTP id
+ 41be03b00d2f7-cddc4bde4b1so1227304a12.3
+ for <ltp@lists.linux.it>; Mon, 16 Nov 2026 06:22:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=google.com; s=20260707; t=1794838932; x=1795443732; darn=lists.linux.it;
+ d=google.com; s=20260707; t=1794838934; x=1795443734; darn=lists.linux.it;
  h=content-type:cc:to:from:subject:message-id:references:mime-version
  :in-reply-to:date:from:to:cc:subject:date:message-id:reply-to
- :content-type; bh=Liidu/M2TpGHnX9uEsle361nTjXkyObUTOFDICMqKOU=;
- b=cCH+OiHfBw36NNV1/9bY+P5+fjnyaTH61BXV6DZFGkVuurcVssG9+Yyn3gijhzjHvg
- yU+C2t3GAZEkY5RFCn/NIax108wruAb+08ueWQXwakEmFkBvO+MfuA01tUJQtA7ZiUAZ
- OckBJy7r2KcqhHK4BqvT8PSVKHhqTb7KAEdkLMhIPmUYo6y4R+y9YNQbtp/6ooaPJ2fp
- vBcnWEJ7w4STtsKOY8MPhQkmllH09OGCMH/hQ8B3Opbd0QVBOfc6ziIky50BRro+33M8
- N364iw7qk8WX8FFEM1Yt7EdBX/hIlYvgvCElh+/fo4jVEPAeqZX0mvTrPo/WtKzNgm6c
- k/GQ==
+ :content-type; bh=KA641LrdmsHzwH9HaiV6SOUkyzgAxqgjuxE4K0UvaIU=;
+ b=ISN9/1ARAO8k6oOgV89KaqCca1lhEe7/K5ZH/Ihnb1xEEhXipp6WBNPBJeYa0WpLlK
+ qCLXgbChA+5Rwj4dYMu3/7oJr3HgHi1DeQqurRDhCzeO7yqBPaGfvjI20Ls0BFlMIvvZ
+ +okaYR6WhBA2+t1BVNwpqw8BnDf3nY4I7nlwWkdjKzQLwgaXmfvvLZfM7TH/YyEFajrl
+ uXRA5M3d6/tmCkkAjbY5/8UKqG47iMp5s4NMWLODdTGsi1qCktlf9a/WeBDRkoECLlns
+ 8o8YwSO/MJwwDOyZDAD3X5Dd4ESd+G06zamZXL/uioT1ZrdzeAiJJRe0PFgWyxlcIoXJ
+ a0wg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20260707; t=1794838932; x=1795443732;
+ d=1e100.net; s=20260707; t=1794838934; x=1795443734;
  h=content-type:cc:to:from:subject:message-id:references:mime-version
  :in-reply-to:date:x-gm-message-state:from:to:cc:subject:date
  :message-id:reply-to:content-type;
- bh=Liidu/M2TpGHnX9uEsle361nTjXkyObUTOFDICMqKOU=;
- b=ufl9sPZwPga8vyEXjf/TfRJ1SBPecQE0V1rNSrDFbUF/ero01KgzKODphNiu0Le4qp
- 72o3FfnrLsVqkoJ8AyIgT40Q2uF9oV9rFsBhbHpOJHsB91xFiW0WelZOF38UdHqZOMBe
- jX2qED7adbMsjmyKFV6a3qCMMBTi6ILHmhdYJA5zhSjZMxeqkSbpKuX7Ug0ce1Hs8Riz
- Fo0HZnnzE84FT2ReP+Ta4/LaaZIbA0wn3Ei/Kj1PR7SDyC790ok+cY8zOiOnYYdZOaB2
- BvprGBnj9sXK/7ltJ7NTENcIzAYRRNmAm/PQOUFe/V0RN+kvDLq1RXi0jddUQyQ7wfK6
- yQsw==
-X-Gm-Message-State: APuU4Z9Q/KkAUtkN+tJbwfkTBfduvdAfps2xvHgOazdHIPYSNz1cUvaZ
- MQBzz3zd4h4kAFw+9yqzciXxzaIB/DORpAhh/npR2YN/102dCr7slXn/cCKgj3aDrpFvoE/KZwv
- DiNCOS6nXta8T8MUKCnT4q49s4/sZbI9dibV9bjpt26AQKMs1BWP08Tij/HPQBqGoK1SVzTMZl6
- EKD42xAv6nbmdHe3uxZUQ9EvKjrA==
-X-Received: from plble3.prod.google.com ([2002:a17:902:fb03:b0:2ee:2d8e:3c1d])
+ bh=KA641LrdmsHzwH9HaiV6SOUkyzgAxqgjuxE4K0UvaIU=;
+ b=JwO7QYc+EVHap2LtmJIPNtGGSRfRD0zusGoE7e6nUEFOBTO9kefDKOFH4PU2YqN34F
+ V85xPFzwf/+pqFMHnzLxb8AVEysrcSEirYHGINXEB4Z/fhwNQ/2sh6+6kE6Y2KyLnq1s
+ d9/ru0gNYVLSCMCpbBeJg+zsCL6qgL/PcL6kytOOt0PovaVHGrEo56eGNctWE/O7bP8Y
+ +YRdMIR1AIFvwVsrKhc/AxF7B1kn0wjfilz1leY5c0yBxKL3Ut0HPSQYnlQMTzZ7Gh7R
+ 8pSuUJuftfqtPgc691dFPRh7B2i4VPUVNqsroxxH1ftQXVnuYwVHURv+l5akuLYglb39
+ dCzg==
+X-Gm-Message-State: APuU4Z/f2JxSkX1DRk0XpKae+9VQhIVKKiwupz5+7aKiKux1JOhZhtwu
+ eiPh3eUsffsGy7ooqp4LmxFcx7sxI2LVBRY93gQ+wwOpnE6j7oUtPgPW4CJarTiaGoeJ/yR6wmg
+ Cv3UD9CMG/0SmCyIFhlskmg3Ij5E3hYIJMJA7P7oz4wecv19cc+chsvSPGtFzHsXfFE49ureme0
+ qQBVviKRFAZBywjLRqlIN57pm3mA==
+X-Received: from pgqs26.prod.google.com ([2002:a65:691a:0:b0:cdb:91c5:5e0b])
  (user=wakel job=prod-delivery.src-stubby-dispatcher) by
- 2002:a17:902:e94c:b0:2ed:2776:4e5
- with SMTP id d9443c01a7336-2ee0dcd18e8mr107403125ad.58.1794838931702; Mon, 16
- Nov 2026 06:22:11 -0800 (PST)
-Date: Mon, 16 Nov 2026 14:22:03 +0000
+ 2002:a05:6372:a709:b0:3fa:bafe:61de
+ with SMTP id adf61e73a8af0-3fabafe8c88mr3467001637.11.1794838934095; Mon, 16
+ Nov 2026 06:22:14 -0800 (PST)
+Date: Mon, 16 Nov 2026 14:22:04 +0000
 In-Reply-To: <20261116142206.3151308-1-wakel@google.com>
 X-Archived-By: <archiver.kernel.org>
 Mime-Version: 1.0
 References: <20261111093151.374731-1-wakel@google.com>
  <20261116142206.3151308-1-wakel@google.com>
 X-Mailer: git-send-email 2.56.0.611.g1030f0b940-goog
-Message-ID: <20261116142206.3151308-2-wakel@google.com>
+Message-ID: <20261116142206.3151308-3-wakel@google.com>
 To: ltp@lists.linux.it
 X-Spam-Status: No, score=-19.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,INCLUDES_CR_TRAILER,
@@ -84,10 +84,10 @@ X-Spam-Status: No, score=-19.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 1/4] epoll_wait06,
- fcntl35: Don't assume a pipe buffer is getpagesize()
+Subject: [LTP] [PATCH v2 2/4] memcg,
+ userfaultfd07: Populate whole pages instead of single bytes
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -104,111 +104,146 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-A pipe consists of pipe buffers of one kernel page each, but both tests
-assume that a pipe buffer is getpagesize() bytes.
+memcontrol02 and mem_process, the helper of memcg_control_test.sh,
+fault in their memory by writing one byte per getpagesize() bytes, and
+userfaultfd07 populates the page cache of its memfd by writing a single
+byte. All of them assume that this populates whole pages of
+getpagesize() bytes.
 
-epoll_wait06 sets the pipe capacity to getpagesize() and expects the
-pipe to consist of a single buffer, so that reading half of the data
-does not release a buffer and raise EPOLLOUT. fcntl35 sets
-pipe-max-size to getpagesize() and expects it to cap the capacity of a
-pipe created by an unprivileged user at that size, and it expects the
-default capacity of a pipe created by a privileged user, which is 16
-pipe buffers (PIPE_DEF_BUFFERS), to be 16 * getpagesize().
+That is not the case when the kernel faults in and caches memory in
+smaller units than the page size it reports to userspace, as with the
+16K page size emulation that Android uses on x86_64. Only one in four
+4K pages gets populated there, so memcontrol02 sees only about a
+quarter of the expected 50M in memory.current, mem_process stays below
+the memory limit it is supposed to exceed, and UFFDIO_CONTINUE in
+userfaultfd07 fails for the part of the page that is not in the page
+cache:
 
-None of this holds when the page size reported to userspace differs
-from the one the kernel uses internally. With the 16K page size
-emulation that Android uses on x86_64, the pipe of epoll_wait06
-consists of four 4K buffers, reading half of the data releases two of
-them, and the test fails with:
+  TBROK: ioctl(4,UFFDIO_CONTINUE,...) failed: EAGAIN/EWOULDBLOCK (11)
 
-  TFAIL: SAFE_EPOLL_WAIT(epfd, &evt_receive, 1, 0) (1) != 0 (0)
+Write the whole buffers instead. Nothing changes on kernels where both
+page sizes are equal.
 
-fcntl35 gets a default capacity of 65536 bytes instead of the expected
-262144. Conversely, with 16K kernel pages and a 4K page size reported
-to userspace, pipe-max-size is rounded up to a single 16K pipe buffer,
-so fcntl35 gets a capacity of 16384 bytes instead of the expected 4096
-for the unprivileged user.
-
-Get the size of a pipe buffer from the kernel instead, by shrinking a
-pipe to its minimum capacity with F_SETPIPE_SZ, and use it for both
-cases of fcntl35. Nothing changes on kernels where both page sizes are
-equal.
-
-Suggested-by: Kalesh Singh <kaleshsingh@google.com>
 Signed-off-by: Wake Liu <wakel@google.com>
 ---
 
 Notes:
-    Changes in v2:
-    - fcntl35: Use the pipe buffer size for the unprivileged case too, as
-      pipe-max-size can't be lower than a single pipe buffer (Kalesh)
+    alloc_anon() in memcontrol_common.h, used by memcontrol03 and
+    memcontrol04, writes one byte per page as well. It frees the buffer
+    right away, so GCC and Clang would drop a plain memset() there as a
+    dead store and it needs a different fix. I will look at it
+    separately.
 
- .../kernel/syscalls/epoll_wait/epoll_wait06.c | 15 ++++++++-----
- testcases/kernel/syscalls/fcntl/fcntl35.c     | 21 ++++++++++++++++++-
- 2 files changed, 30 insertions(+), 6 deletions(-)
+ .../kernel/controllers/memcg/control/mem_process.c  | 11 ++++++-----
+ testcases/kernel/controllers/memcg/memcontrol02.c   | 13 +++++++------
+ .../kernel/syscalls/userfaultfd/userfaultfd07.c     | 11 +++++++++--
+ 3 files changed, 22 insertions(+), 13 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/epoll_wait/epoll_wait06.c b/testcases/kernel/syscalls/epoll_wait/epoll_wait06.c
-index 622830d55..ce4e2d5bc 100644
---- a/testcases/kernel/syscalls/epoll_wait/epoll_wait06.c
-+++ b/testcases/kernel/syscalls/epoll_wait/epoll_wait06.c
-@@ -32,13 +32,18 @@ static int epfd;
+diff --git a/testcases/kernel/controllers/memcg/control/mem_process.c b/testcases/kernel/controllers/memcg/control/mem_process.c
+index 8ecabb272..f32189cc2 100644
+--- a/testcases/kernel/controllers/memcg/control/mem_process.c
++++ b/testcases/kernel/controllers/memcg/control/mem_process.c
+@@ -10,6 +10,7 @@
+ #include <fcntl.h>
+ #include <stdio.h>
+ #include <stdlib.h>
++#include <string.h>
+ #include <unistd.h>
  
- static void setup(void)
+ /*
+@@ -49,14 +50,14 @@ void process_options(int argc, char **argv)
+ 
+ /*
+  * touch_memory: force physical memory allocation
++ *
++ * Write the whole area rather than one byte per getpagesize(), so that it
++ * gets fully populated regardless of the granularity the kernel faults in
++ * memory with.
+  */
+ void touch_memory(char *p)
  {
--	write_size = getpagesize();
--	read_size = write_size / 2;
+-	int i;
+-	int pagesize = getpagesize();
 -
- 	SAFE_PIPE2(fds, O_NONBLOCK);
- 
--	/* EPOLLOUT will be raised when buffer became empty after becoming full */
--	SAFE_FCNTL(fds[1], F_SETPIPE_SZ, write_size);
-+	/*
-+	 * EPOLLOUT will be raised when buffer became empty after becoming full.
-+	 *
-+	 * Shrink the pipe to its minimum capacity, which is a single pipe
-+	 * buffer, so that reading only half of the data doesn't release any
-+	 * buffer. Use the capacity reported by the kernel rather than
-+	 * assuming it matches getpagesize().
-+	 */
-+	write_size = SAFE_FCNTL(fds[1], F_SETPIPE_SZ, 1);
-+	read_size = write_size / 2;
+-	for (i = 0; i < (int)memsize; i += pagesize)
+-		p[i] = 0xef;
++	memset(p, 0xef, memsize);
  }
  
- static void cleanup(void)
-diff --git a/testcases/kernel/syscalls/fcntl/fcntl35.c b/testcases/kernel/syscalls/fcntl/fcntl35.c
-index d17812fd0..bec661509 100644
---- a/testcases/kernel/syscalls/fcntl/fcntl35.c
-+++ b/testcases/kernel/syscalls/fcntl/fcntl35.c
-@@ -44,9 +44,28 @@ static struct tcase {
- 	{&test_max_priv, 0, "a privileged user"}
- };
+ void mem_map(void)
+diff --git a/testcases/kernel/controllers/memcg/memcontrol02.c b/testcases/kernel/controllers/memcg/memcontrol02.c
+index 52096f697..6687c6e84 100644
+--- a/testcases/kernel/controllers/memcg/memcontrol02.c
++++ b/testcases/kernel/controllers/memcg/memcontrol02.c
+@@ -27,7 +27,6 @@
+ #define _GNU_SOURCE
+ #include "memcontrol_common.h"
  
-+/*
-+ * The pipe capacity is a multiple of the size of a pipe buffer, which is one
-+ * page of the kernel. Get it by shrinking a pipe to its minimum capacity,
-+ * rather than assuming it matches getpagesize().
-+ */
-+static int get_pipe_buf_size(void)
-+{
-+	int fds[2], size;
-+
-+	SAFE_PIPE(fds);
-+	size = SAFE_FCNTL(fds[1], F_SETPIPE_SZ, 1);
-+	SAFE_CLOSE(fds[0]);
-+	SAFE_CLOSE(fds[1]);
-+
-+	return size;
-+}
-+
+-static size_t page_size;
+ static struct tst_cg_group *cg_child;
+ static int fd = -1;
+ static int file_to_all_error = 10;
+@@ -35,14 +34,18 @@ static int file_to_all_error = 10;
+ static void alloc_anon_50M_check(void)
+ {
+ 	const ssize_t size = MB(50);
+-	char *buf, *ptr;
++	char *buf;
+ 	ssize_t anon, current;
+ 	const char *const anon_key_fmt =
+ 		TST_CG_VER_IS_V1(tst_cg, "memory") ? "rss %zd" : "anon %zd";
+ 
+ 	buf = SAFE_MALLOC(size);
+-	for (ptr = buf; ptr < buf + size; ptr += page_size)
+-		*ptr = 0;
++	/*
++	 * Write the whole buffer rather than one byte per getpagesize(), so
++	 * that it gets fully populated regardless of the granularity the
++	 * kernel faults in memory with.
++	 */
++	memset(buf, 1, size);
+ 
+ 	SAFE_CG_SCANF(cg_child, "memory.current", "%zd", &current);
+ 	TST_EXP_EXPR(current >= size,
+@@ -113,8 +116,6 @@ static void test_memcg_current(unsigned int n)
+ 
  static void setup(void)
  {
--	test_max_unpriv = getpagesize();
-+	/* pipe-max-size can't be lower than a single pipe buffer */
-+	test_max_unpriv = get_pipe_buf_size();
-+	/* The default capacity is 16 pipe buffers (PIPE_DEF_BUFFERS) */
- 	test_max_priv = test_max_unpriv * 16;
+-	page_size = SAFE_SYSCONF(_SC_PAGESIZE);
+-
+ 	switch (tst_fs_type(TMPDIR)) {
+ 	case TST_VFAT_MAGIC:
+ 	case TST_EXFAT_MAGIC:
+diff --git a/testcases/kernel/syscalls/userfaultfd/userfaultfd07.c b/testcases/kernel/syscalls/userfaultfd/userfaultfd07.c
+index e0a1b0d23..dce6d8827 100644
+--- a/testcases/kernel/syscalls/userfaultfd/userfaultfd07.c
++++ b/testcases/kernel/syscalls/userfaultfd/userfaultfd07.c
+@@ -32,7 +32,7 @@ static void setup(void)
  
- 	if (!access(PATH_FS_PIPE_MAX_SIZE, F_OK)) {
+ static void set_pages(void)
+ {
+-	char ch = 'A';
++	char *buf;
+ 
+ 	page_size = SAFE_SYSCONF(_SC_PAGE_SIZE);
+ 
+@@ -45,8 +45,15 @@ static void set_pages(void)
+ 	/*
+ 	 * Populate page cache so that after MADV_DONTNEED the next access
+ 	 * can generate a MINOR fault rather than a MISSING fault.
++	 *
++	 * Write the whole page, as UFFDIO_CONTINUE needs the page cache to
++	 * cover the whole range and the kernel may cache memory in units
++	 * smaller than getpagesize().
+ 	 */
+-	SAFE_PWRITE(1, memfd, &ch, 1, 0);
++	buf = SAFE_MALLOC(page_size);
++	memset(buf, 'A', page_size);
++	SAFE_PWRITE(1, memfd, buf, page_size, 0);
++	free(buf);
+ 
+ 	page = SAFE_MMAP(NULL, page_size, PROT_READ, MAP_SHARED, memfd, 0);
+ }
 -- 
 2.56.0.611.g1030f0b940-goog
 
