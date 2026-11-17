@@ -2,97 +2,96 @@ Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF8E2606A31C
-	for <ltp@archiver.kernel.org>; Tue, 17 Nov 2026 13:38:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4026F606A31C
+	for <ltp@archiver.kernel.org>; Tue, 17 Nov 2026 23:21:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=lists.linux.it header.i=@lists.linux.it header.a=rsa-sha256 header.s=picard header.b=e2au5JO1;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.a=rsa-sha256 header.s=mimecast20190719 header.b=g/jK3RGL
+	dkim=pass (1024-bit key, unprotected) header.d=lists.linux.it header.i=@lists.linux.it header.a=rsa-sha256 header.s=picard header.b=HKX2QY+u;
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.a=rsa-sha256 header.s=mimecast20190719 header.b=fh0YOGwV
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1794922679; h=to : date :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1794957667; h=to : date :
  message-id : mime-version : subject : list-id : list-unsubscribe :
  list-archive : list-post : list-help : list-subscribe : from :
  reply-to : cc : content-type : content-transfer-encoding : sender :
- from; bh=gXTbsS6IC+oUZSbyl04TcUZ1mKEBHbyH92nF806telw=;
- b=e2au5JO1J9sEDn6Z4PTwdJCrpcdCNaYv8fNHQN8KmDYxSWd3lo5giMneL3IBLFvRo+noO
- q2R5JoZ8xCtPuch2K/PdL9cKN0CF4EoB8pr61nodjrQ75hkxp1JivymAUyeDp2lFGP7S8SH
- FuxO6ZQWMKWZx6d0mfhrdnfdBqkgxfo=
+ from; bh=Dy1m0qJ2eriXDsuP9nHifE8gDFjzVDZ6K+dVRBljLMM=;
+ b=HKX2QY+uh1dLlUsVK9aXrAwkr34dBBM39edayoXtTI4hqb3vimBT71MFPtr1agkpWqsjt
+ I3EgfWdgA62Mw8r9vokp3z2y3HhiL1opaBGJfHqIDEcxvWwxBolpeZOWKegmoBTKPs+22jq
+ NvcIMeJ83/nI1vOYQLByWcvTpy5yqS0=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9FA9E3EBB09
-	for <ltp@archiver.kernel.org>; Tue, 17 Nov 2026 14:37:59 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 893673EC317
+	for <ltp@archiver.kernel.org>; Wed, 18 Nov 2026 00:21:07 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id CDD203EB40B
- for <ltp@lists.linux.it>; Tue, 17 Nov 2026 14:37:40 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 982F73E210E
+ for <ltp@lists.linux.it>; Wed, 18 Nov 2026 00:20:47 +0100 (CET)
 Received: from us-smtp-delivery-124.mimecast.com
  (us-smtp-delivery-124.mimecast.com [170.10.129.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id D7FD61400BFD
- for <ltp@lists.linux.it>; Tue, 17 Nov 2026 14:37:39 +0100 (CET)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id AC9E0140020B
+ for <ltp@lists.linux.it>; Wed, 18 Nov 2026 00:20:45 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1794922657;
+ s=mimecast20190719; t=1794957644;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding;
- bh=M9XHhPikf49X1c7h6zI8vAInQBmAnSJ3xu0qnVtfJ1o=;
- b=g/jK3RGLiFv74KmFitrGGDaiRan4ezkMJp40AxYhoBKSIx0xmXjB/2zV4OetDDQbenZwdh
- 1esKAh6fTERXgcH/V4CDBE/9KK+26TCdrqHz9uu3O9UUSTZFesGCZBWthpZkv6BhNWfEIx
- bBOpB2G2auK8MV62pvh/rYrgWUxMuek=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ bh=6u2ST0OK722fIWgQSIbyMLL+PsPTLlN415dsorYqz1s=;
+ b=fh0YOGwVVvxm7e0RDUx2qa87/iFvp8Zh+WPOajs2kU1O8XqP9mr4jzQU+82FbUAjwA78To
+ xh57x7j95mDU5RqKV7Mp3XRq0zwszVPPPEcV1RcZJokJUU4efsnqqaNEfGk3vh+H4C1JPZ
+ mCRZJTRV3M8PQrisjEfD6Gp5TMmV124=
+Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
+ [209.85.222.197]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-433-X5tENAAEN4Csfy5qWprIFA-1; Tue, 17 Nov 2026 08:37:36 -0500
-X-MC-Unique: X5tENAAEN4Csfy5qWprIFA-1
-X-Mimecast-MFC-AGG-ID: X5tENAAEN4Csfy5qWprIFA_1794922656
-Received: by mail-qk1-f198.google.com with SMTP id
- af79cd13be357-9495af07676so669994985a.2
- for <ltp@lists.linux.it>; Tue, 17 Nov 2026 05:37:36 -0800 (PST)
+ us-mta-515-znRI_5xANGmfxdbIW74xGw-1; Tue, 17 Nov 2026 18:20:41 -0500
+X-MC-Unique: znRI_5xANGmfxdbIW74xGw-1
+X-Mimecast-MFC-AGG-ID: znRI_5xANGmfxdbIW74xGw_1794957641
+Received: by mail-qk1-f197.google.com with SMTP id
+ af79cd13be357-945b0154705so59290685a.3
+ for <ltp@lists.linux.it>; Tue, 17 Nov 2026 15:20:41 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20260707; t=1794922656; x=1795527456;
+ d=1e100.net; s=20260707; t=1794957641; x=1795562441;
  h=content-transfer-encoding:mime-version:message-id:date:subject:cc
  :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
  :message-id:reply-to:content-type;
- bh=M9XHhPikf49X1c7h6zI8vAInQBmAnSJ3xu0qnVtfJ1o=;
- b=LUm2qzHaopT0DqiA3iHHoOV4odxioUn0hAmqNMo+qHwdVQMcEp43MjT/lGk5BfdCJl
- TOEuex+085FjkWvZ4kG8Pr6oJVR5Ueqp7qKse9TEsh4JKKyglmvUJ/mFU5rOnI25d/fi
- 1NUzqnCmW/5zxDmrvdt4Qnt2VzEaAeSsEOaBdGhJxtqLc/qxxusS3AN7jfSG/Px03avS
- Et4JK+ptyrn/obdTYNFu7fssljSv2xDgjPwgFPkkL3vwE/StSFxwLlFPT8PhBkaUjxO+
- OK4293u51Me/zFCNj6o4lBS9T7eR/IDm8qVCLX/ltW4NCUuuHjKmbmy+IzczVVZbgf/t
- GCdA==
-X-Gm-Message-State: APuU4Z9h6IrOHNpDZXLrhn0BgCNszxvJ7M7b6EmE1dJOMKVsEmQKzME6
- 1DTqhpbNxr16kHk08nF9PPGNy6+COy/op+0aPQjfOQS8ASUwBGQ6jwhlznmx5sM6JjLxqQz8CVX
- +Bk76FWAQHvjO2saf4Ex+jg/5OHv1AAXDGEPvX75gifu5P/LuZifx55cq3HxNvstAwc+TeX/AvC
- rwvXfBtsTxBaWsnnOuygqy8TVSjHyog6NQKKAq
-X-Gm-Gg: AYBFou3aAMXmFTigELYLOapEEDlI+HaA5Lzd7QIFxfxVk1Y21z7ohMMuf8+rI0u0xyh
- iLIN2xfQefI29nrGjUz4ROAhN3ITFx28ZCQ7cMwFIs6iQKp0nXSEvVA3ccomdLpNS2gRDFyKmlI
- sDIM/FSjd+NlLf3WUMgFE3f6MVs4lB07Y2A44frOKcZTS89+QQ/7beKO5ZIDLJxhVFi6+MV80tZ
- TpHj7YMuE/rQRXffjRORA99i8IyuFHfaS0UKeOaq+pjxLaDC8rWZDDh4I2NP97c758DkggK61T3
- lHgo1ohaGZ/leTwkK7rx05Y4aVD59jU23djyBO5DcgEDojd4Gn4XwZ3gNrDgF2i3ZlxTBr28HYM
- JLu6jAioXdWk9nIyKYPTX4SB/5U4kdv1G0mrFd0A4SnCJSQGl25MqIxlqBca5Yd4i6TjmLmDXEm
- WDe4gK
-X-Received: by 2002:a05:620a:a89c:10b0:949:61c5:73b8 with SMTP id
- af79cd13be357-94961c57b7fmr1270231385a.44.1794922655698; 
- Tue, 17 Nov 2026 05:37:35 -0800 (PST)
-X-Received: by 2002:a05:620a:a89c:10b0:949:61c5:73b8 with SMTP id
- af79cd13be357-94961c57b7fmr1270228685a.44.1794922655062; 
- Tue, 17 Nov 2026 05:37:35 -0800 (PST)
+ bh=6u2ST0OK722fIWgQSIbyMLL+PsPTLlN415dsorYqz1s=;
+ b=UqvxUMtkVsCIRjqYkuHhhmIGO/Q7k6Q11gJKIlffm9uSFR/F7diwWOt/Tn2uZFmTkM
+ QuP0+54axuWF/c12i7jkTY5Jke6VgtGYTb6uWkBQuV+NCg7qq/S63PrFQ9Jyxp8JYCv4
+ VHMVTElIHxwJ0Bp3MxAgr+xBI3AWxGySQt9qmEwtShXQG3cN7nrAxQUrsJt7gavH/n+L
+ rYO4iZZtW9mq+3H42b7wsCrfvnOcdMknToJnDU3D+6tbaUASbIiAiXUHBMTg1+s6LURE
+ 8Z4LFPYBRjGJMFbkWO2W+GqEoYd4ilMWealXy5PH4YjDjDKmI2nYVW9shoq7My0F+XpQ
+ GriQ==
+X-Gm-Message-State: APuU4Z94Hkjfyz/cWYW5xsB3RHGJ4PGFBuKXG7a5CeTZGUoJZieQD4LU
+ 8YNAC9GJdn+OHqa/f89T0VTPVuAIi7lFnGKa0Kd3pN2fIqIKJtKoi4/YpnCi7RhKzFxqJTnI6dN
+ r0ewgvM3fdI7bauDqjKd21JJ0X/1n0GLt/nnCnzhqXzjRXnwAyjSXSmDtjfDtx10ahuPquS3RbK
+ UTSJgAUa6znguT6auI/yhiDE+fVaRFWu7Hpdsu
+X-Gm-Gg: AYBFou1zFzfx7V6fjLnLDrnKI4+Z5pJ77FE+EoFAzEjymR/b3lUwLFM5uC4kmaJrSQr
+ kSSYT9MWAteU3cB6rC7lupFlsomSukR19IDNy4k1hUPDUhsSRx6OQrAucWdYEXrLn5nzkekgIyv
+ u9ceYzUGSfxDIyn8SSwPU/fY61nCDnq4A3kGdZU2pvgUAdgehFEE1mH1PupZedRcTaVY4xnTuNX
+ moO9ZEGYVc2JPxbnVy+MA91H6uH9mSOzbDRSRNPlzFzYc3hCE2p7PsBKT3bpOv0XRfaY30VmuLD
+ icbsyu+sJNLpqHIsccXckVTZ7BjNH8z/y+kPjn9yG7V0aztBTwSTLX6Vn1zjUHP2jmcVcOo7KbY
+ +9tF7mExT1MRlPSohc9EJGlo/9/f9fDe3Gkj3NHz9ugVDuIbNanquiK+3Kgi+dkbOCcvN1OfJt2
+ F7AmU=
+X-Received: by 2002:a05:620a:2685:b0:949:8106:3ee3 with SMTP id
+ af79cd13be357-94999623e12mr218033985a.69.1794957640916; 
+ Tue, 17 Nov 2026 15:20:40 -0800 (PST)
+X-Received: by 2002:a05:620a:2685:b0:949:8106:3ee3 with SMTP id
+ af79cd13be357-94999623e12mr218029185a.69.1794957640041; 
+ Tue, 17 Nov 2026 15:20:40 -0800 (PST)
 Received: from sbertram-thinkpadp1gen5.redhat.corp ([67.189.222.97])
  by smtp.gmail.com with ESMTPSA id
- af79cd13be357-9494c836f62sm1094354785a.23.2026.11.17.05.37.34
+ af79cd13be357-9499b7ad72csm40428185a.29.2026.11.17.15.20.39
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 17 Nov 2026 05:37:34 -0800 (PST)
+ Tue, 17 Nov 2026 15:20:39 -0800 (PST)
 To: ltp@lists.linux.it
-Date: Tue, 17 Nov 2026 08:37:20 -0500
-Message-ID: <20261117133731.1035637-1-sbertram@redhat.com>
+Date: Tue, 17 Nov 2026 18:20:34 -0500
+Message-ID: <20261117232036.1228445-1-sbertram@redhat.com>
 X-Mailer: git-send-email 2.56.0
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
 X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: XOfjsskRybndXKVJdntYXGV0o78RXMnfbSmo0Tiwzec_1794922656
+X-Mimecast-MFC-PROC-ID: GJBHoRFY4uaYrol7Jvk1mXPK3vp0QvMbdi4biUqd0HU_1794957641
 X-Mimecast-Originator: redhat.com
 X-Spam-Status: No, score=-19.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,INCLUDES_CR_TRAILER,
@@ -102,8 +101,7 @@ X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v1] sound/snd_timer02: Detect CVE-2026-74503 from the
- fallback timer
+Subject: [LTP] [PATCH v1] network/sockets: Add handshake01
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -122,338 +120,289 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 From: Stephen Bertram <sbertram@redhat.com>
 
-Open HRTIMER instances until SELECT returns EBUSY, move the queue to
-the system timer, then drop one slot and switch the queue back to
-HRTIMER. The matching slave makes snd_timer_check_master() fail, so
-snd_seq_timer_open() reuses the instance for the system-timer fallback.
+Add a regression test for CVE-2026-74270 (81246a65303d "handshake:
+Require admin permission for DONE command"). Verify that
+HANDSHAKE_CMD_DONE returns -EPERM for a sender without CAP_NET_ADMIN,
+while root reaches the handler and gets -EINVAL for the missing sockfd.
 
-snd_timer_start1() rejects the start while SNDRV_TIMER_IFLG_DEAD is
-set, so an unfixed kernel leaves the queue stopped. Point linux-git
-at c2744d5f3aea.
+Register it as cve-2026-74270 in runtest/cve.
 
+Reviewed and tested before submission: builds, passes check-handshake01,
+fails on the unfixed kernel and passes on the fixed kernel.
+
+Assisted-by: ClaudeCode:DeepSeek-V4.1-Flash
 Signed-off-by: Stephen Bertram <sbertram@redhat.com>
 ---
- runtest/cve                          |   1 +
- testcases/kernel/sound/.gitignore    |   1 +
- testcases/kernel/sound/snd_timer02.c | 292 +++++++++++++++++++++++++++
- 3 files changed, 294 insertions(+)
- create mode 100644 testcases/kernel/sound/snd_timer02.c
+ runtest/cve                             |   1 +
+ testcases/network/sockets/.gitignore    |   1 +
+ testcases/network/sockets/handshake01.c | 243 ++++++++++++++++++++++++
+ 3 files changed, 245 insertions(+)
+ create mode 100644 testcases/network/sockets/handshake01.c
 
 diff --git a/runtest/cve b/runtest/cve
-index 0fe25cd83..71d8e3bce 100644
+index 0fe25cd83..fb31cd76f 100644
 --- a/runtest/cve
 +++ b/runtest/cve
-@@ -91,6 +91,7 @@ cve-2023-52879 fanotify25
- cve-2026-43499 ghostlock
- cve-2026-53362 setsockopt11
- cve-2026-64600 refluxfs
-+cve-2026-74503 snd_timer02
- cve-2026-99999 pwnescape
- # Tests below may cause kernel memory leak
- cve-2020-25704 perf_event_open03
-diff --git a/testcases/kernel/sound/.gitignore b/testcases/kernel/sound/.gitignore
-index e33480fb6..b2e4041df 100644
---- a/testcases/kernel/sound/.gitignore
-+++ b/testcases/kernel/sound/.gitignore
-@@ -1,2 +1,3 @@
- snd_timer01
-+snd_timer02
- /snd_seq01
-diff --git a/testcases/kernel/sound/snd_timer02.c b/testcases/kernel/sound/snd_timer02.c
+@@ -105,3 +105,4 @@ cve-2026-46300 xfrm02
+ cve-2026-46300-skb-segment xfrm03
+ cve-2026-46331 cve-2026-46331
+ cve-2026-64564 sctphantom
++cve-2026-74270 handshake01
+diff --git a/testcases/network/sockets/.gitignore b/testcases/network/sockets/.gitignore
+index 3e8962bbf..c7d784d36 100644
+--- a/testcases/network/sockets/.gitignore
++++ b/testcases/network/sockets/.gitignore
+@@ -1,3 +1,4 @@
++/handshake01
+ /xfrm01
+ /xfrm02
+ /xfrm03
+diff --git a/testcases/network/sockets/handshake01.c b/testcases/network/sockets/handshake01.c
 new file mode 100644
-index 000000000..673ea96b6
+index 000000000..68384edec
 --- /dev/null
-+++ b/testcases/kernel/sound/snd_timer02.c
-@@ -0,0 +1,292 @@
++++ b/testcases/network/sockets/handshake01.c
+@@ -0,0 +1,243 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
-+ * Copyright (C) 2026 Red Hat, Inc.
++ * Copyright (c) 2026 Red Hat, Inc.
 + */
 +
 +/*\
-+ * Test for CVE-2026-74503.
++ * Test for CVE-2026-74270 fixed by:
++ * 81246a65303d ("handshake: Require admin permission for DONE command")
 + *
-+ * snd_timer_close_locked() sets SNDRV_TIMER_IFLG_DEAD and returns
-+ * immediately when that flag is already set. remove_slave_links() used
-+ * to leave the flag set, so snd_seq_timer_open() could reuse the same
-+ * instance for its fallback open and a later close would free an object
-+ * that was still on timer->open_list_head.
++ * The handshake generic netlink family exposes the ACCEPT and DONE downcalls
++ * for the trusted handshake agent (tlshd). ACCEPT requires GENL_ADMIN_PERM;
++ * DONE had no privilege check. An unprivileged process that knows a socket
++ * with a pending handshake could send a forged DONE and make the kernel
++ * consumer proceed as if the handshake succeeded, or tear down a legitimate
++ * handshake with a non-zero status.
 + *
-+ * Fill the HRTIMER global timer to one below its instance limit and
-+ * register a pending slave whose key matches the sequencer queue. Switching
-+ * the queue onto HRTIMER then fails in snd_timer_check_master() and the
-+ * fallback opens the system timer on that same instance. A fixed kernel
-+ * clears SNDRV_TIMER_IFLG_DEAD, so the queue timer starts. An unfixed
-+ * kernel still has the flag set, and snd_timer_start1() rejects the start.
++ * The test resolves the ``handshake`` family and sends ``HANDSHAKE_CMD_DONE``
++ * without attributes. The generic netlink permission check runs before
++ * attribute parsing, so no pending handshake is needed: the kernel rejects
++ * the request with ``-EPERM`` for a sender without ``CAP_NET_ADMIN``. A root
++ * control must instead reach the handler and fail with ``-EINVAL`` because
++ * ``HANDSHAKE_A_DONE_SOCKFD`` is missing.
 + *
-+ * Fixed by c2744d5f3aea ("ALSA: timer: Clear SNDRV_TIMER_IFLG_DEAD once the
-+ * close completes").
++ * On an unfixed kernel the unprivileged request reaches the handler and
++ * returns ``-EINVAL`` as well, so the test fails.
 + */
 +
-+#include <stdio.h>
-+#include <string.h>
-+#include <sys/ioctl.h>
++#include <linux/genetlink.h>
++#include <pwd.h>
 +
 +#include "tst_test.h"
-+#include "tst_safe_stdio.h"
-+
-+#include <sound/asound.h>
-+#include <sound/asequencer.h>
-+
-+#define TIMER_DEV	"/dev/snd/timer"
-+#define SEQ_DEV		"/dev/snd/seq"
-+#define PROC_TIMERS	"/proc/asound/timers"
-+
-+static int seq_fd = -1;
-+static int slave_fd = -1;
-+static int *fill_fds;
-+static unsigned int fill_n;
-+static int queue_id = -1;
-+
-+static int open_snd(const char *path)
-+{
-+	int fd = open(path, O_RDWR);
-+
-+	if (fd >= 0)
-+		return fd;
-+
-+	if (errno == ENOENT || errno == ENODEV || errno == EACCES)
-+		tst_brk(TCONF | TERRNO, "open(%s)", path);
-+
-+	tst_brk(TBROK | TERRNO, "open(%s)", path);
-+	return -1;
-+}
-+
-+static void raise_nofile(void)
-+{
-+	struct rlimit rl;
-+
-+	SAFE_GETRLIMIT(RLIMIT_NOFILE, &rl);
-+	if (rl.rlim_cur >= rl.rlim_max) {
-+		tst_brk(TCONF, "RLIMIT_NOFILE %llu cannot hold the HRTIMER instances",
-+			(unsigned long long)rl.rlim_cur);
-+	}
-+
-+	rl.rlim_cur = rl.rlim_max;
-+	SAFE_SETRLIMIT(RLIMIT_NOFILE, &rl);
-+}
-+
-+static int select_timer(int fd, int dev_class, int dev_sclass, int device)
-+{
-+	struct snd_timer_select ts = {
-+		.id.dev_class = dev_class,
-+		.id.dev_sclass = dev_sclass,
-+		.id.card = -1,
-+		.id.device = device,
-+	};
-+
-+	return ioctl(fd, SNDRV_TIMER_IOCTL_SELECT, &ts);
-+}
++#include "tst_netlink.h"
 +
 +/*
-+ * Open HRTIMER instances until SELECT returns EBUSY, which is
-+ * num_instances >= max_instances in snd_timer_open(). The caller drops
-+ * one so the sequencer open is the one that reaches the limit.
++ * Values from include/uapi/linux/handshake.h. Define them locally so the
++ * test builds against kernel headers older than 6.7.
 + */
-+static void fill_hrtimer(void)
-+{
-+	int raised = 0;
-+	struct snd_timer_select ts = {
-+		.id.dev_class = SNDRV_TIMER_CLASS_GLOBAL,
-+		.id.dev_sclass = SNDRV_TIMER_SCLASS_NONE,
-+		.id.card = -1,
-+		.id.device = SNDRV_TIMER_GLOBAL_HRTIMER,
-+	};
++#ifndef HANDSHAKE_FAMILY_NAME
++# define HANDSHAKE_FAMILY_NAME "handshake"
++#endif
++#ifndef HANDSHAKE_FAMILY_VERSION
++# define HANDSHAKE_FAMILY_VERSION 1
++#endif
++#ifndef HANDSHAKE_CMD_DONE
++# define HANDSHAKE_CMD_DONE 3
++#endif
 +
-+	for (;;) {
-+		int fd = open(TIMER_DEV, O_RDWR);
-+
-+		if (fd < 0) {
-+			if (errno == EMFILE && !raised) {
-+				raise_nofile();
-+				raised = 1;
-+				continue;
-+			}
-+			tst_brk(TBROK | TERRNO, "open(%s)", TIMER_DEV);
-+		}
-+
-+		if (ioctl(fd, SNDRV_TIMER_IOCTL_SELECT, &ts) < 0) {
-+			int err = errno;
-+
-+			SAFE_CLOSE(fd);
-+			errno = err;
-+			if (err == EBUSY)
-+				break;
-+			if (!fill_n)
-+				tst_brk(TCONF | TERRNO, "HRTIMER global timer not available");
-+			tst_brk(TBROK | TERRNO, "SNDRV_TIMER_IOCTL_SELECT");
-+		}
-+
-+		fill_fds = SAFE_REALLOC(fill_fds, (fill_n + 1) * sizeof(*fill_fds));
-+		fill_fds[fill_n++] = fd;
-+	}
-+
-+	if (!fill_n)
-+		tst_brk(TCONF, "HRTIMER global timer is already at max_instances");
-+
-+	tst_res(TINFO, "opened %u HRTIMER instances before EBUSY", fill_n);
-+}
-+
-+static void release_hrtimer(void)
-+{
-+	unsigned int i;
-+
-+	for (i = 0; i < fill_n; i++)
-+		SAFE_CLOSE(fill_fds[i]);
-+	free(fill_fds);
-+	fill_fds = NULL;
-+	fill_n = 0;
-+}
-+
-+static void set_queue_timer(int device)
-+{
-+	struct snd_seq_queue_timer qt = {
-+		.queue = queue_id,
-+		.type = SNDRV_SEQ_TIMER_ALSA,
-+		.u.alsa.id.dev_class = SNDRV_TIMER_CLASS_GLOBAL,
-+		.u.alsa.id.dev_sclass = SNDRV_TIMER_SCLASS_NONE,
-+		.u.alsa.id.card = -1,
-+		.u.alsa.id.device = device,
-+	};
-+
-+	SAFE_IOCTL(seq_fd, SNDRV_SEQ_IOCTL_SET_QUEUE_TIMER, &qt);
-+}
++static int nl_family_id;
++static uid_t nobody_uid;
++static gid_t nobody_gid;
 +
 +static void setup(void)
 +{
-+	struct snd_seq_queue_info qinfo = {};
++	struct passwd *pw = SAFE_GETPWNAM("nobody");
 +
-+	if (access(TIMER_DEV, F_OK) && errno == ENOENT)
-+		tst_brk(TCONF, "%s not present", TIMER_DEV);
-+	if (access(SEQ_DEV, F_OK) && errno == ENOENT)
-+		tst_brk(TCONF, "%s not present", SEQ_DEV);
-+
-+	seq_fd = open_snd(SEQ_DEV);
-+	SAFE_IOCTL(seq_fd, SNDRV_SEQ_IOCTL_CREATE_QUEUE, &qinfo);
-+	queue_id = qinfo.queue;
-+
-+	/*
-+	 * The default queue timer is often HRTIMER. Move it off that timer
-+	 * before filling, or SET_QUEUE_TIMER closes the queue's own slot and
-+	 * the following open is no longer the one that reaches the limit.
-+	 *
-+	 * snd_timer_user keeps a slave's dev_sclass. snd_seq_timer_open()
-+	 * forces the master slave_class to SNDRV_TIMER_SCLASS_SEQUENCER and
-+	 * passes the queue id as slave_id.
-+	 */
-+	set_queue_timer(SNDRV_TIMER_GLOBAL_SYSTEM);
-+
-+	slave_fd = open_snd(TIMER_DEV);
-+	if (select_timer(slave_fd, SNDRV_TIMER_CLASS_SLAVE,
-+			 SNDRV_TIMER_SCLASS_SEQUENCER, queue_id) < 0)
-+		tst_brk(TBROK | TERRNO, "SNDRV_TIMER_IOCTL_SELECT slave");
++	nobody_uid = pw->pw_uid;
++	nobody_gid = pw->pw_gid;
 +}
 +
-+static void start_queue(void)
++static int resolve_family(const char *name)
 +{
-+	struct snd_seq_event ev = {
-+		.type = SNDRV_SEQ_EVENT_START,
-+		.flags = SNDRV_SEQ_EVENT_LENGTH_FIXED,
-+		.queue = SNDRV_SEQ_QUEUE_DIRECT,
-+		.dest.client = SNDRV_SEQ_CLIENT_SYSTEM,
-+		.dest.port = SNDRV_SEQ_PORT_SYSTEM_TIMER,
-+		.data.queue.queue = queue_id,
++	struct tst_netlink_context *ctx;
++	struct tst_netlink_message *msgs, *m;
++	struct nlmsghdr nlh = {
++		.nlmsg_type = GENL_ID_CTRL,
++		.nlmsg_flags = NLM_F_REQUEST,
 +	};
++	struct genlmsghdr gh = {
++		.cmd = CTRL_CMD_GETFAMILY,
++		.version = 1,
++	};
++	char *p;
++	int id = -1, rem;
++	uint16_t fid;
 +
-+	SAFE_WRITE(SAFE_WRITE_ALL, seq_fd, &ev, sizeof(ev));
-+}
++	ctx = NETLINK_CREATE_CONTEXT(NETLINK_GENERIC);
++	NETLINK_ADD_MESSAGE(ctx, &nlh, &gh, sizeof(gh));
++	NETLINK_ADD_ATTR_STRING(ctx, CTRL_ATTR_FAMILY_NAME, name);
 +
-+static void check_queue_timer(void)
-+{
-+	char buf[256];
-+	char expect[64];
-+	FILE *fp;
-+	int dev = -1;
-+	int found = 0;
-+	int running = 0;
++	if (NETLINK_SEND(ctx) < 0)
++		tst_brk(TBROK | TERRNO, "send(CTRL_CMD_GETFAMILY) failed");
 +
-+	snprintf(expect, sizeof(expect), "sequencer queue %d :", queue_id);
-+	fp = SAFE_FOPEN(PROC_TIMERS, "r");
++	if (NETLINK_WAIT(ctx) <= 0)
++		tst_brk(TBROK, "no response to CTRL_CMD_GETFAMILY");
 +
-+	while (fgets(buf, sizeof(buf), fp)) {
-+		int gdev;
++	msgs = NETLINK_RECV(ctx);
++	if (!msgs)
++		tst_brk(TBROK, "no response to CTRL_CMD_GETFAMILY");
 +
-+		if (sscanf(buf, "G%d:", &gdev) == 1) {
-+			dev = gdev;
++	for (m = msgs; m->header; m++) {
++		if (m->err) {
++			if (m->err->error == -ENOENT)
++				tst_brk(TCONF, "family '%s' is not available", name);
++			if (m->err->error)
++				tst_brk(TBROK, "CTRL_CMD_GETFAMILY failed: %s",
++					strerror(-m->err->error));
 +			continue;
 +		}
 +
-+		if (!strstr(buf, expect))
++		if (m->header->nlmsg_type != GENL_ID_CTRL)
++			continue;
++		if (m->payload_size < GENL_HDRLEN)
 +			continue;
 +
-+		found = 1;
-+		running = strstr(buf, "running") != NULL;
-+		break;
-+	}
-+	SAFE_FCLOSE(fp);
++		p = (char *)m->payload + GENL_HDRLEN;
++		rem = (int)m->payload_size - GENL_HDRLEN;
 +
-+	if (!found) {
-+		tst_brk(TBROK, "queue %d timer missing from %s",
-+			queue_id, PROC_TIMERS);
++		while (rem >= (int)sizeof(struct nlattr)) {
++			struct nlattr *a = (struct nlattr *)p;
++			int alen;
++
++			if (a->nla_len < NLA_HDRLEN)
++				break;
++
++			alen = NLA_ALIGN(a->nla_len);
++			if (alen > rem)
++				break;
++
++			if ((a->nla_type & NLA_TYPE_MASK) == CTRL_ATTR_FAMILY_ID) {
++				if (a->nla_len < NLA_HDRLEN + (int)sizeof(fid))
++					break;
++
++				memcpy(&fid, (char *)a + NLA_HDRLEN, sizeof(fid));
++				id = fid;
++				break;
++			}
++
++			p += alen;
++			rem -= alen;
++		}
++
++		if (id >= 0)
++			break;
 +	}
 +
-+	if (dev != SNDRV_TIMER_GLOBAL_SYSTEM) {
-+		tst_brk(TBROK,
-+			"queue %d is on timer G%d, fallback to the system timer did not run",
-+			queue_id, dev);
++	NETLINK_FREE_MESSAGE(msgs);
++	NETLINK_DESTROY_CONTEXT(ctx);
++
++	if (id < 0)
++		tst_brk(TBROK, "CTRL_ATTR_FAMILY_ID not found for '%s'", name);
++
++	return id;
++}
++
++static int send_done(void)
++{
++	struct tst_netlink_context *ctx;
++	struct nlmsghdr nlh = {
++		.nlmsg_type = nl_family_id,
++		.nlmsg_flags = NLM_F_REQUEST | NLM_F_ACK,
++	};
++	struct genlmsghdr gh = {
++		.cmd = HANDSHAKE_CMD_DONE,
++		.version = HANDSHAKE_FAMILY_VERSION,
++	};
++	int ret;
++
++	ctx = NETLINK_CREATE_CONTEXT(NETLINK_GENERIC);
++	NETLINK_ADD_MESSAGE(ctx, &nlh, &gh, sizeof(gh));
++
++	ret = NETLINK_SEND_VALIDATE(ctx);
++	NETLINK_DESTROY_CONTEXT(ctx);
++
++	if (ret)
++		return 0;
++
++	/* No ACK and no error means the kernel never replied. */
++	if (!tst_netlink_errno)
++		return -ETIMEDOUT;
++
++	return -tst_netlink_errno;
++}
++
++static int unprivileged_done(void)
++{
++	int fds[2], err = 0;
++	pid_t pid;
++
++	SAFE_PIPE(fds);
++	pid = SAFE_FORK();
++
++	if (!pid) {
++		int ret;
++
++		SAFE_CLOSE(fds[0]);
++
++		SAFE_SETGROUPS(0, NULL);
++		SAFE_SETGID(nobody_gid);
++		SAFE_SETUID(nobody_uid);
++
++		ret = send_done();
++
++		SAFE_WRITE(SAFE_WRITE_ALL, fds[1], &ret, sizeof(ret));
++		_exit(0);
 +	}
 +
-+	if (!running) {
-+		tst_res(TFAIL, "queue %d timer did not start", queue_id);
-+		return;
-+	}
++	SAFE_CLOSE(fds[1]);
++	SAFE_READ(SAFE_READ_ALL, fds[0], &err, sizeof(err));
++	SAFE_CLOSE(fds[0]);
++	SAFE_WAITPID(pid, NULL, 0);
 +
-+	if (tst_taint_check())
-+		tst_res(TFAIL, "kernel tainted after the queue timer started");
-+	else
-+		tst_res(TPASS, "queue %d timer is running", queue_id);
++	return err;
 +}
 +
 +static void run(void)
 +{
-+	/*
-+	 * Fill HRTIMER to its instance limit, drop one, then point the
-+	 * queue at it. The open passes the max_instances check and
-+	 * snd_timer_check_master() fails while adopting the matching
-+	 * slave. That close sets IFLG_DEAD and the fallback open reuses
-+	 * the instance on the system timer.
-+	 */
-+	fill_hrtimer();
-+	SAFE_CLOSE(fill_fds[--fill_n]);
-+	set_queue_timer(SNDRV_TIMER_GLOBAL_HRTIMER);
-+	start_queue();
-+	check_queue_timer();
-+}
++	int root_err, child_err;
 +
-+static void cleanup(void)
-+{
-+	if (slave_fd >= 0)
-+		SAFE_CLOSE(slave_fd);
++	nl_family_id = resolve_family(HANDSHAKE_FAMILY_NAME);
 +
-+	release_hrtimer();
++	root_err = send_done();
++	if (root_err == -EPERM)
++		tst_brk(TBROK, "root was denied HANDSHAKE_CMD_DONE");
++	if (root_err != -EINVAL)
++		tst_brk(TBROK,
++			"root HANDSHAKE_CMD_DONE returned %d (%s), expected EINVAL",
++			root_err, strerror(-root_err));
 +
-+	if (seq_fd >= 0)
-+		SAFE_CLOSE(seq_fd);
++	child_err = unprivileged_done();
++
++	if (child_err == -EPERM)
++		tst_res(TPASS, "unprivileged HANDSHAKE_CMD_DONE rejected with EPERM");
++	else
++		tst_res(TFAIL,
++			"unprivileged HANDSHAKE_CMD_DONE returned %d (%s), expected EPERM",
++			child_err, strerror(-child_err));
 +}
 +
 +static struct tst_test test = {
 +	.setup = setup,
-+	.cleanup = cleanup,
 +	.test_all = run,
-+	.taint_check = TST_TAINT_W | TST_TAINT_D,
++	.needs_root = 1,
++	.forks_child = 1,
++	.needs_kconfigs = (const char *[]) {
++		"CONFIG_NET_HANDSHAKE",
++		NULL
++	},
 +	.tags = (const struct tst_tag[]) {
-+		{"linux-git", "c2744d5f3aea474513fd2298daecb94a952ce441"},
-+		{"CVE", "2026-74503"},
++		{"linux-git", "81246a65303d9635266b1334490142caaf86a11f"},
++		{"CVE", "2026-74270"},
 +		{}
 +	},
 +};
