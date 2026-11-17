@@ -1,107 +1,89 @@
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4026F606A31C
-	for <ltp@archiver.kernel.org>; Tue, 17 Nov 2026 23:21:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D231F606A31C
+	for <ltp@archiver.kernel.org>; Tue, 17 Nov 2026 23:59:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=lists.linux.it header.i=@lists.linux.it header.a=rsa-sha256 header.s=picard header.b=HKX2QY+u;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.a=rsa-sha256 header.s=mimecast20190719 header.b=fh0YOGwV
+	dkim=pass (1024-bit key, unprotected) header.d=lists.linux.it header.i=@lists.linux.it header.a=rsa-sha256 header.s=picard header.b=Pr0jzpyl;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.a=rsa-sha256 header.s=20260707 header.b=n2uM2uAK
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1794957667; h=to : date :
- message-id : mime-version : subject : list-id : list-unsubscribe :
- list-archive : list-post : list-help : list-subscribe : from :
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1794959953; h=date :
+ mime-version : message-id : to : subject : list-id : list-unsubscribe
+ : list-archive : list-post : list-help : list-subscribe : from :
  reply-to : cc : content-type : content-transfer-encoding : sender :
- from; bh=Dy1m0qJ2eriXDsuP9nHifE8gDFjzVDZ6K+dVRBljLMM=;
- b=HKX2QY+uh1dLlUsVK9aXrAwkr34dBBM39edayoXtTI4hqb3vimBT71MFPtr1agkpWqsjt
- I3EgfWdgA62Mw8r9vokp3z2y3HhiL1opaBGJfHqIDEcxvWwxBolpeZOWKegmoBTKPs+22jq
- NvcIMeJ83/nI1vOYQLByWcvTpy5yqS0=
+ from; bh=/ti2VLHjjwoXhAoMhUXnKlA4Lz8TqSDr7I9JoZU0iEs=;
+ b=Pr0jzpylgde6gskGhkUxEN5ILaBqt6fGk4RGLoBO5ywiiQEcUmN+izy1u+uWXnBncWs7p
+ pQxLTAMEn/1DntUvcDeYMb14QW14kLX6fRo57Wm56ArtQilLu+bI73jtco4zCsK+53Ed0uo
+ Zwhr1gRljtyPTH5FlHtUdLLB/QV8hp8=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 893673EC317
-	for <ltp@archiver.kernel.org>; Wed, 18 Nov 2026 00:21:07 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 1F04E3EA9C3
+	for <ltp@archiver.kernel.org>; Wed, 18 Nov 2026 00:59:13 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 982F73E210E
- for <ltp@lists.linux.it>; Wed, 18 Nov 2026 00:20:47 +0100 (CET)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 5365A3E2323
+ for <ltp@lists.linux.it>; Wed, 18 Nov 2026 00:58:52 +0100 (CET)
+Received: from mail-pf1-x447.google.com (mail-pf1-x447.google.com
+ [IPv6:2607:f8b0:4864:20::447])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id AC9E0140020B
- for <ltp@lists.linux.it>; Wed, 18 Nov 2026 00:20:45 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1794957644;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=6u2ST0OK722fIWgQSIbyMLL+PsPTLlN415dsorYqz1s=;
- b=fh0YOGwVVvxm7e0RDUx2qa87/iFvp8Zh+WPOajs2kU1O8XqP9mr4jzQU+82FbUAjwA78To
- xh57x7j95mDU5RqKV7Mp3XRq0zwszVPPPEcV1RcZJokJUU4efsnqqaNEfGk3vh+H4C1JPZ
- mCRZJTRV3M8PQrisjEfD6Gp5TMmV124=
-Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
- [209.85.222.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-515-znRI_5xANGmfxdbIW74xGw-1; Tue, 17 Nov 2026 18:20:41 -0500
-X-MC-Unique: znRI_5xANGmfxdbIW74xGw-1
-X-Mimecast-MFC-AGG-ID: znRI_5xANGmfxdbIW74xGw_1794957641
-Received: by mail-qk1-f197.google.com with SMTP id
- af79cd13be357-945b0154705so59290685a.3
- for <ltp@lists.linux.it>; Tue, 17 Nov 2026 15:20:41 -0800 (PST)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 7CCC0100046C
+ for <ltp@lists.linux.it>; Wed, 18 Nov 2026 00:58:52 +0100 (CET)
+Received: by mail-pf1-x447.google.com with SMTP id
+ d2e1a72fcca58-8a065e2933fso430622b3a.3
+ for <ltp@lists.linux.it>; Tue, 17 Nov 2026 15:58:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=google.com; s=20260707; t=1794959931; x=1795564731; darn=lists.linux.it;
+ h=content-type:cc:to:from:subject:message-id:mime-version:date:from
+ :to:cc:subject:date:message-id:reply-to:content-type;
+ bh=LmTbMP9ihbNI9VjJcGquUQMeVL9d6FdrNoX+35RwR20=;
+ b=n2uM2uAKNWjFgEOi88MqUmcUH6BcwTGvD/gFxJXj1GY/2Ca7b3DvSa7sxvAtoFumsp
+ tppBxufgv7J+O+eU6ZoI91dgAtHFNzSzKFUfacBnEGJikBJ4FAvQWZFIDZCUNqpW6qZI
+ PGsgg6hqWfe/H4WZ4i5Wp4A9Ij7rOyg9Iqt7ILlM78A/E95JUpLsO6PnEHGcWCJqk51M
+ wVBjbEEhIe89OdWTOynh4kG1YbgA++Xxjz7RYvXFmHexrz1ntU4lXL60wFTVVCuqNStX
+ G6IsvW2eXbjVMYzHkDUXyH3aWKQag9jnoMZtPTHDaKit9cSCH29xW7RW2nDmhIKH5tpg
+ DDeg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20260707; t=1794957641; x=1795562441;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
- :message-id:reply-to:content-type;
- bh=6u2ST0OK722fIWgQSIbyMLL+PsPTLlN415dsorYqz1s=;
- b=UqvxUMtkVsCIRjqYkuHhhmIGO/Q7k6Q11gJKIlffm9uSFR/F7diwWOt/Tn2uZFmTkM
- QuP0+54axuWF/c12i7jkTY5Jke6VgtGYTb6uWkBQuV+NCg7qq/S63PrFQ9Jyxp8JYCv4
- VHMVTElIHxwJ0Bp3MxAgr+xBI3AWxGySQt9qmEwtShXQG3cN7nrAxQUrsJt7gavH/n+L
- rYO4iZZtW9mq+3H42b7wsCrfvnOcdMknToJnDU3D+6tbaUASbIiAiXUHBMTg1+s6LURE
- 8Z4LFPYBRjGJMFbkWO2W+GqEoYd4ilMWealXy5PH4YjDjDKmI2nYVW9shoq7My0F+XpQ
- GriQ==
-X-Gm-Message-State: APuU4Z94Hkjfyz/cWYW5xsB3RHGJ4PGFBuKXG7a5CeTZGUoJZieQD4LU
- 8YNAC9GJdn+OHqa/f89T0VTPVuAIi7lFnGKa0Kd3pN2fIqIKJtKoi4/YpnCi7RhKzFxqJTnI6dN
- r0ewgvM3fdI7bauDqjKd21JJ0X/1n0GLt/nnCnzhqXzjRXnwAyjSXSmDtjfDtx10ahuPquS3RbK
- UTSJgAUa6znguT6auI/yhiDE+fVaRFWu7Hpdsu
-X-Gm-Gg: AYBFou1zFzfx7V6fjLnLDrnKI4+Z5pJ77FE+EoFAzEjymR/b3lUwLFM5uC4kmaJrSQr
- kSSYT9MWAteU3cB6rC7lupFlsomSukR19IDNy4k1hUPDUhsSRx6OQrAucWdYEXrLn5nzkekgIyv
- u9ceYzUGSfxDIyn8SSwPU/fY61nCDnq4A3kGdZU2pvgUAdgehFEE1mH1PupZedRcTaVY4xnTuNX
- moO9ZEGYVc2JPxbnVy+MA91H6uH9mSOzbDRSRNPlzFzYc3hCE2p7PsBKT3bpOv0XRfaY30VmuLD
- icbsyu+sJNLpqHIsccXckVTZ7BjNH8z/y+kPjn9yG7V0aztBTwSTLX6Vn1zjUHP2jmcVcOo7KbY
- +9tF7mExT1MRlPSohc9EJGlo/9/f9fDe3Gkj3NHz9ugVDuIbNanquiK+3Kgi+dkbOCcvN1OfJt2
- F7AmU=
-X-Received: by 2002:a05:620a:2685:b0:949:8106:3ee3 with SMTP id
- af79cd13be357-94999623e12mr218033985a.69.1794957640916; 
- Tue, 17 Nov 2026 15:20:40 -0800 (PST)
-X-Received: by 2002:a05:620a:2685:b0:949:8106:3ee3 with SMTP id
- af79cd13be357-94999623e12mr218029185a.69.1794957640041; 
- Tue, 17 Nov 2026 15:20:40 -0800 (PST)
-Received: from sbertram-thinkpadp1gen5.redhat.corp ([67.189.222.97])
- by smtp.gmail.com with ESMTPSA id
- af79cd13be357-9499b7ad72csm40428185a.29.2026.11.17.15.20.39
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 17 Nov 2026 15:20:39 -0800 (PST)
-To: ltp@lists.linux.it
-Date: Tue, 17 Nov 2026 18:20:34 -0500
-Message-ID: <20261117232036.1228445-1-sbertram@redhat.com>
-X-Mailer: git-send-email 2.56.0
+ d=1e100.net; s=20260707; t=1794959931; x=1795564731;
+ h=content-type:cc:to:from:subject:message-id:mime-version:date
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+ :content-type;
+ bh=LmTbMP9ihbNI9VjJcGquUQMeVL9d6FdrNoX+35RwR20=;
+ b=w8RWWtaqaB7MgvPjcnLZEoSA6Z8idWUQZagDWdSbYzK2buvB6FF48H08dWpmyIn+iR
+ bzr1+2fSgjTo33yEOtJM60y1si0tSB+m+9yPbNByh0ZwJU4zpOfxrQaPu6Xs5xHR7XUe
+ vgLMAfXi4+7auaWteDeOGj4WE27mNpT8A6bx4eef9ZpX+MRA/9lRXx7MNfQIXVgEOfcX
+ 5Okk/ysx1V6szBqNoQ1N2gF1rSyXZqf6J3skw8KUK7aMahPy7Rfo/NHhngQe97sx92Af
+ z3crM89cj6FRjkHsXJk08bh1wXgHutjAErlgmyM/F1pz65GNXdfd3x3v5JfTpgCGBn9D
+ xhQg==
+X-Gm-Message-State: APuU4Z8CqvO9RBm9irjSVSpmMFcwq75qrloJUzueaO1Jh1f1YK5uSzzR
+ W4GnMbrJSE4uAZttsjBEbvR009c1T1VzHkop2Rr7eYLmQtrKHWiMMKebVumYIreOx+ucTwl2Wwe
+ c1WDYx8sbFQ5eBlwfddtYouLzl0BxxUzF9+0pNAn8poZUAqBiYZ/yqTzZrvSwKjkAMlreH0ukCE
+ Ntj8WjQf+Xo1acKhLyuuuNUR1Dng==
+X-Received: from pfbdu11.prod.google.com
+ ([2002:a05:6a00:2b4b:b0:8b6:c93c:12fa])
+ (user=wakel job=prod-delivery.src-stubby-dispatcher) by
+ 2002:a05:6a00:4005:b0:8b5:7fc8:8679
+ with SMTP id d2e1a72fcca58-8c5d344038emr718655b3a.21.1794959930334; Tue, 17
+ Nov 2026 15:58:50 -0800 (PST)
+Date: Tue, 17 Nov 2026 23:58:48 +0000
 X-Archived-By: <archiver.kernel.org>
-MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: GJBHoRFY4uaYrol7Jvk1mXPK3vp0QvMbdi4biUqd0HU_1794957641
-X-Mimecast-Originator: redhat.com
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.56.1.703.gf848ed807c-goog
+Message-ID: <20261117235848.2975548-1-wakel@google.com>
+To: ltp@lists.linux.it
 X-Spam-Status: No, score=-19.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,INCLUDES_CR_TRAILER,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_PASS,SPF_PASS,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v1] network/sockets: Add handshake01
+Subject: [LTP] [PATCH] sys_rtc01: Report TCONF on system time mismatch when
+ STA_UNSYNC is set
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -111,303 +93,93 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Stephen Bertram via ltp <ltp@lists.linux.it>
-Reply-To: Stephen Bertram <sbertram@redhat.com>
-Cc: Stephen Bertram <sbertram@redhat.com>
+From: Wake Liu via ltp <ltp@lists.linux.it>
+Reply-To: Wake Liu <wakel@google.com>
+Cc: Wake Liu <wakel@google.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Stephen Bertram <sbertram@redhat.com>
+For the primary RTC (where hctosys == 1, or rtc0 as fallback), sys_rtc01
+asserts that since_epoch is within slack of the current system time(2).
 
-Add a regression test for CVE-2026-74270 (81246a65303d "handshake:
-Require admin permission for DONE command"). Verify that
-HANDSHAKE_CMD_DONE returns -EPERM for a sender without CAP_NET_ADMIN,
-while root reaches the handler and gets -EINVAL for the missing sockfd.
+When a system boots with an RTC that is off the current time and
+userspace later steps CLOCK_REALTIME via clock_settime(2) or
+settimeofday(2) (for example via date(1)) without updating /dev/rtcN,
+do_settimeofday64() sets STA_UNSYNC in the kernel NTP status. While
+STA_UNSYNC is set, the kernel's CONFIG_RTC_SYSTOHC (sync_hw_clock())
+does not write CLOCK_REALTIME back to the RTC, yet /sys/class/rtc/rtc0
+still reports hctosys == 1 from boot. As noted in the test comment,
+since_epoch and system time legitimately diverge in this state.
 
-Register it as cve-2026-74270 in runtest/cve.
+Query adjtimex(2) when since_epoch differs from system time by more than
+slack and report TCONF instead of TFAIL if STA_UNSYNC is set.
 
-Reviewed and tested before submission: builds, passes check-handshake01,
-fails on the unfixed kernel and passes on the fixed kernel.
-
-Assisted-by: ClaudeCode:DeepSeek-V4.1-Flash
-Signed-off-by: Stephen Bertram <sbertram@redhat.com>
+Fixes: 79d62f4cf62f ("testcases: sysfs: Add sys_rtc01")
+Signed-off-by: Wake Liu <wakel@google.com>
 ---
- runtest/cve                             |   1 +
- testcases/network/sockets/.gitignore    |   1 +
- testcases/network/sockets/handshake01.c | 243 ++++++++++++++++++++++++
- 3 files changed, 245 insertions(+)
- create mode 100644 testcases/network/sockets/handshake01.c
+ testcases/kernel/sysfs/class/rtc/sys_rtc01.c | 25 +++++++++++++++++---
+ 1 file changed, 22 insertions(+), 3 deletions(-)
 
-diff --git a/runtest/cve b/runtest/cve
-index 0fe25cd83..fb31cd76f 100644
---- a/runtest/cve
-+++ b/runtest/cve
-@@ -105,3 +105,4 @@ cve-2026-46300 xfrm02
- cve-2026-46300-skb-segment xfrm03
- cve-2026-46331 cve-2026-46331
- cve-2026-64564 sctphantom
-+cve-2026-74270 handshake01
-diff --git a/testcases/network/sockets/.gitignore b/testcases/network/sockets/.gitignore
-index 3e8962bbf..c7d784d36 100644
---- a/testcases/network/sockets/.gitignore
-+++ b/testcases/network/sockets/.gitignore
-@@ -1,3 +1,4 @@
-+/handshake01
- /xfrm01
- /xfrm02
- /xfrm03
-diff --git a/testcases/network/sockets/handshake01.c b/testcases/network/sockets/handshake01.c
-new file mode 100644
-index 000000000..68384edec
---- /dev/null
-+++ b/testcases/network/sockets/handshake01.c
-@@ -0,0 +1,243 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2026 Red Hat, Inc.
-+ */
-+
-+/*\
-+ * Test for CVE-2026-74270 fixed by:
-+ * 81246a65303d ("handshake: Require admin permission for DONE command")
-+ *
-+ * The handshake generic netlink family exposes the ACCEPT and DONE downcalls
-+ * for the trusted handshake agent (tlshd). ACCEPT requires GENL_ADMIN_PERM;
-+ * DONE had no privilege check. An unprivileged process that knows a socket
-+ * with a pending handshake could send a forged DONE and make the kernel
-+ * consumer proceed as if the handshake succeeded, or tear down a legitimate
-+ * handshake with a non-zero status.
-+ *
-+ * The test resolves the ``handshake`` family and sends ``HANDSHAKE_CMD_DONE``
-+ * without attributes. The generic netlink permission check runs before
-+ * attribute parsing, so no pending handshake is needed: the kernel rejects
-+ * the request with ``-EPERM`` for a sender without ``CAP_NET_ADMIN``. A root
-+ * control must instead reach the handler and fail with ``-EINVAL`` because
-+ * ``HANDSHAKE_A_DONE_SOCKFD`` is missing.
-+ *
-+ * On an unfixed kernel the unprivileged request reaches the handler and
-+ * returns ``-EINVAL`` as well, so the test fails.
-+ */
-+
-+#include <linux/genetlink.h>
-+#include <pwd.h>
-+
-+#include "tst_test.h"
-+#include "tst_netlink.h"
-+
-+/*
-+ * Values from include/uapi/linux/handshake.h. Define them locally so the
-+ * test builds against kernel headers older than 6.7.
-+ */
-+#ifndef HANDSHAKE_FAMILY_NAME
-+# define HANDSHAKE_FAMILY_NAME "handshake"
-+#endif
-+#ifndef HANDSHAKE_FAMILY_VERSION
-+# define HANDSHAKE_FAMILY_VERSION 1
-+#endif
-+#ifndef HANDSHAKE_CMD_DONE
-+# define HANDSHAKE_CMD_DONE 3
-+#endif
-+
-+static int nl_family_id;
-+static uid_t nobody_uid;
-+static gid_t nobody_gid;
-+
-+static void setup(void)
+diff --git a/testcases/kernel/sysfs/class/rtc/sys_rtc01.c b/testcases/kernel/sysfs/class/rtc/sys_rtc01.c
+index 89141f2fa..0e1c69f95 100644
+--- a/testcases/kernel/sysfs/class/rtc/sys_rtc01.c
++++ b/testcases/kernel/sysfs/class/rtc/sys_rtc01.c
+@@ -43,9 +43,12 @@
+  * test performs, so on a long-running system a purely fixed slack would
+  * eventually produce false failures even on perfectly healthy hardware.
+  *
+- * The check may still fail if the system was booted with RTC that is fairly
+- * off the current time and the system was later synced with NTP. This is out
+- * of scope of this test.
++ * If the system was booted with an RTC that was off the current time and the
++ * system clock was later stepped in userspace via :manpage:`clock_settime(2)`
++ * or :manpage:`settimeofday(2)` without updating the RTC, the kernel sets
++ * STA_UNSYNC and CONFIG_RTC_SYSTOHC does not write the system clock back to
++ * the RTC while hctosys remains 1. Report TCONF instead of TFAIL when
++ * since_epoch diverges from system time while STA_UNSYNC is set.
+  *
+  * Under virtualization the slack is additionally multiplied, since a VM's
+  * clock (and thus its emulated RTC) commonly lags real time by tens of
+@@ -61,6 +64,7 @@
+ #include <limits.h>
+ #include <time.h>
+ #include <sys/sysinfo.h>
++#include <sys/timex.h>
+ #include "tst_test.h"
+ #include "tst_sysfs_assert.h"
+ #include "tst_path_defs.h"
+@@ -108,6 +112,16 @@ static long read_hctosys(const char *name)
+ 	return TST_SYSFS_READ_LI(PATH_CLASS_RTC "/%s/hctosys", name);
+ }
+ 
++static int is_clock_unsynced(void)
 +{
-+	struct passwd *pw = SAFE_GETPWNAM("nobody");
++	struct timex tx = { .modes = 0 };
 +
-+	nobody_uid = pw->pw_uid;
-+	nobody_gid = pw->pw_gid;
++	if (adjtimex(&tx) == -1)
++		tst_brk(TBROK | TERRNO, "adjtimex() failed");
++
++	return !!(tx.status & STA_UNSYNC);
 +}
 +
-+static int resolve_family(const char *name)
-+{
-+	struct tst_netlink_context *ctx;
-+	struct tst_netlink_message *msgs, *m;
-+	struct nlmsghdr nlh = {
-+		.nlmsg_type = GENL_ID_CTRL,
-+		.nlmsg_flags = NLM_F_REQUEST,
-+	};
-+	struct genlmsghdr gh = {
-+		.cmd = CTRL_CMD_GETFAMILY,
-+		.version = 1,
-+	};
-+	char *p;
-+	int id = -1, rem;
-+	uint16_t fid;
-+
-+	ctx = NETLINK_CREATE_CONTEXT(NETLINK_GENERIC);
-+	NETLINK_ADD_MESSAGE(ctx, &nlh, &gh, sizeof(gh));
-+	NETLINK_ADD_ATTR_STRING(ctx, CTRL_ATTR_FAMILY_NAME, name);
-+
-+	if (NETLINK_SEND(ctx) < 0)
-+		tst_brk(TBROK | TERRNO, "send(CTRL_CMD_GETFAMILY) failed");
-+
-+	if (NETLINK_WAIT(ctx) <= 0)
-+		tst_brk(TBROK, "no response to CTRL_CMD_GETFAMILY");
-+
-+	msgs = NETLINK_RECV(ctx);
-+	if (!msgs)
-+		tst_brk(TBROK, "no response to CTRL_CMD_GETFAMILY");
-+
-+	for (m = msgs; m->header; m++) {
-+		if (m->err) {
-+			if (m->err->error == -ENOENT)
-+				tst_brk(TCONF, "family '%s' is not available", name);
-+			if (m->err->error)
-+				tst_brk(TBROK, "CTRL_CMD_GETFAMILY failed: %s",
-+					strerror(-m->err->error));
-+			continue;
-+		}
-+
-+		if (m->header->nlmsg_type != GENL_ID_CTRL)
-+			continue;
-+		if (m->payload_size < GENL_HDRLEN)
-+			continue;
-+
-+		p = (char *)m->payload + GENL_HDRLEN;
-+		rem = (int)m->payload_size - GENL_HDRLEN;
-+
-+		while (rem >= (int)sizeof(struct nlattr)) {
-+			struct nlattr *a = (struct nlattr *)p;
-+			int alen;
-+
-+			if (a->nla_len < NLA_HDRLEN)
-+				break;
-+
-+			alen = NLA_ALIGN(a->nla_len);
-+			if (alen > rem)
-+				break;
-+
-+			if ((a->nla_type & NLA_TYPE_MASK) == CTRL_ATTR_FAMILY_ID) {
-+				if (a->nla_len < NLA_HDRLEN + (int)sizeof(fid))
-+					break;
-+
-+				memcpy(&fid, (char *)a + NLA_HDRLEN, sizeof(fid));
-+				id = fid;
-+				break;
-+			}
-+
-+			p += alen;
-+			rem -= alen;
-+		}
-+
-+		if (id >= 0)
-+			break;
-+	}
-+
-+	NETLINK_FREE_MESSAGE(msgs);
-+	NETLINK_DESTROY_CONTEXT(ctx);
-+
-+	if (id < 0)
-+		tst_brk(TBROK, "CTRL_ATTR_FAMILY_ID not found for '%s'", name);
-+
-+	return id;
-+}
-+
-+static int send_done(void)
-+{
-+	struct tst_netlink_context *ctx;
-+	struct nlmsghdr nlh = {
-+		.nlmsg_type = nl_family_id,
-+		.nlmsg_flags = NLM_F_REQUEST | NLM_F_ACK,
-+	};
-+	struct genlmsghdr gh = {
-+		.cmd = HANDSHAKE_CMD_DONE,
-+		.version = HANDSHAKE_FAMILY_VERSION,
-+	};
-+	int ret;
-+
-+	ctx = NETLINK_CREATE_CONTEXT(NETLINK_GENERIC);
-+	NETLINK_ADD_MESSAGE(ctx, &nlh, &gh, sizeof(gh));
-+
-+	ret = NETLINK_SEND_VALIDATE(ctx);
-+	NETLINK_DESTROY_CONTEXT(ctx);
-+
-+	if (ret)
-+		return 0;
-+
-+	/* No ACK and no error means the kernel never replied. */
-+	if (!tst_netlink_errno)
-+		return -ETIMEDOUT;
-+
-+	return -tst_netlink_errno;
-+}
-+
-+static int unprivileged_done(void)
-+{
-+	int fds[2], err = 0;
-+	pid_t pid;
-+
-+	SAFE_PIPE(fds);
-+	pid = SAFE_FORK();
-+
-+	if (!pid) {
-+		int ret;
-+
-+		SAFE_CLOSE(fds[0]);
-+
-+		SAFE_SETGROUPS(0, NULL);
-+		SAFE_SETGID(nobody_gid);
-+		SAFE_SETUID(nobody_uid);
-+
-+		ret = send_done();
-+
-+		SAFE_WRITE(SAFE_WRITE_ALL, fds[1], &ret, sizeof(ret));
-+		_exit(0);
-+	}
-+
-+	SAFE_CLOSE(fds[1]);
-+	SAFE_READ(SAFE_READ_ALL, fds[0], &err, sizeof(err));
-+	SAFE_CLOSE(fds[0]);
-+	SAFE_WAITPID(pid, NULL, 0);
-+
-+	return err;
-+}
-+
-+static void run(void)
-+{
-+	int root_err, child_err;
-+
-+	nl_family_id = resolve_family(HANDSHAKE_FAMILY_NAME);
-+
-+	root_err = send_done();
-+	if (root_err == -EPERM)
-+		tst_brk(TBROK, "root was denied HANDSHAKE_CMD_DONE");
-+	if (root_err != -EINVAL)
-+		tst_brk(TBROK,
-+			"root HANDSHAKE_CMD_DONE returned %d (%s), expected EINVAL",
-+			root_err, strerror(-root_err));
-+
-+	child_err = unprivileged_done();
-+
-+	if (child_err == -EPERM)
-+		tst_res(TPASS, "unprivileged HANDSHAKE_CMD_DONE rejected with EPERM");
-+	else
-+		tst_res(TFAIL,
-+			"unprivileged HANDSHAKE_CMD_DONE returned %d (%s), expected EPERM",
-+			child_err, strerror(-child_err));
-+}
-+
-+static struct tst_test test = {
-+	.setup = setup,
-+	.test_all = run,
-+	.needs_root = 1,
-+	.forks_child = 1,
-+	.needs_kconfigs = (const char *[]) {
-+		"CONFIG_NET_HANDSHAKE",
-+		NULL
-+	},
-+	.tags = (const struct tst_tag[]) {
-+		{"linux-git", "81246a65303d9635266b1334490142caaf86a11f"},
-+		{"CVE", "2026-74270"},
-+		{}
-+	},
-+};
+ static void read_rtc_snapshot(const char *name, char *date, size_t date_size,
+ 			      char *rtc_time, size_t time_size,
+ 			      time_t *since_epoch)
+@@ -203,6 +217,11 @@ static void check_rtc(const char *name, int any_hctosys)
+ 			"%s: since_epoch (%lld), system time (%lld), diff %llds <= slack %lds",
+ 			name, (long long)since_epoch, (long long)sys_epoch,
+ 			diff, slack);
++	} else if (is_clock_unsynced()) {
++		tst_res(TCONF,
++			"%s: since_epoch (%lld), system time (%lld), diff %llds > slack %lds (STA_UNSYNC is set)",
++			name, (long long)since_epoch, (long long)sys_epoch,
++			diff, slack);
+ 	} else {
+ 		tst_res(TFAIL,
+ 			"%s: since_epoch (%lld), system time (%lld), diff %llds > slack %lds",
 -- 
-2.56.0
+2.56.0.679.gc527c65306-goog
 
 
 -- 
