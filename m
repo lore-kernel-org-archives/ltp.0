@@ -1,94 +1,89 @@
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DFCC606A31C
-	for <ltp@archiver.kernel.org>; Wed, 18 Nov 2026 04:51:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48EE9606A31C
+	for <ltp@archiver.kernel.org>; Wed, 18 Nov 2026 06:35:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=eaV6eCz4
+	dkim=pass (1024-bit key, unprotected) header.d=lists.linux.it header.i=@lists.linux.it header.a=rsa-sha256 header.s=picard header.b=qX1IK0bB;
+	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=google.com header.i=@google.com header.a=rsa-sha256 header.s=20260707 header.b=KlyDjNYQ
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1794983711; h=date :
+ mime-version : message-id : to : subject : list-id : list-unsubscribe
+ : list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : content-type : content-transfer-encoding : sender : from;
+ bh=m4zr53YR97s1FrG9KGMqIlpyd4l1nKUTzMvny6XY9/E=;
+ b=qX1IK0bBHuCQNaq6zgkm76AMt9x4E2Q/tuYysA2KYDPz/IK4S9lzOiG1XJOFMEPqgEZPB
+ +HoXW7osPumVMVuEH3z8obO2oCDYibgfJY+/E9y5eLXFHOfs9SGQlJ8jRnkND+lRUxaemjY
+ PbcXafawKvp5NtBaUMT3HEYRoDMp8Ro=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 372953EC36A
-	for <ltp@archiver.kernel.org>; Wed, 18 Nov 2026 05:51:39 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id C4B3F3E92D8
+	for <ltp@archiver.kernel.org>; Wed, 18 Nov 2026 07:35:11 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9C85E3EC2A2
- for <ltp@lists.linux.it>; Wed, 18 Nov 2026 05:51:23 +0100 (CET)
-Received: from mail-dy2-x01.google.com (mail-dy2-x01.google.com
- [IPv6:2607:f8b0:4864:36::1])
+ by picard.linux.it (Postfix) with ESMTPS id 0AA6D3CEBFE
+ for <ltp@lists.linux.it>; Wed, 18 Nov 2026 07:34:52 +0100 (CET)
+Received: from mail-pj1-x1045.google.com (mail-pj1-x1045.google.com
+ [IPv6:2607:f8b0:4864:20::1045])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id F3E646006D7
- for <ltp@lists.linux.it>; Wed, 18 Nov 2026 05:51:22 +0100 (CET)
-Received: by mail-dy2-x01.google.com with SMTP id
- 5a478bee46e88-36f758312e0so112657eec.0
- for <ltp@lists.linux.it>; Tue, 17 Nov 2026 20:51:22 -0800 (PST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 694871400058
+ for <ltp@lists.linux.it>; Wed, 18 Nov 2026 07:34:52 +0100 (CET)
+Received: by mail-pj1-x1045.google.com with SMTP id
+ 98e67ed59e1d1-3b191f8a9b3so876316a91.1
+ for <ltp@lists.linux.it>; Tue, 17 Nov 2026 22:34:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20260707; t=1794977481; x=1795582281; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to:content-type;
- bh=ZS4XI6+12llJHLkHDShuNSIUStP6SDNZStHE+mmqcoA=;
- b=eaV6eCz4GJ0b5QKFftKveQhG6StF3VmerAoZgQDXzMUgNV8XTeJiTzLCKdbkMnQQiW
- MZapirFZjixxkxBXMJHiauH///Be5hxk78BCeT1t6QHdJiFHU8EVLQ5uhrofARu8IVtO
- 9gKJoZJS/2a+4uSbFJ+ELO7/1nXQqBki0x1DQj1seoDFjtqSyKXcgWJRQs4OB8awqjs2
- cco/Kjuq9hbEEsBv6PDoWkrewSr2vGh/54DoDQmtxzhDw4BdfM/OouUBZMFEnmjL54of
- NejdXAGVwgdzVTaGjBJsrGCdpPFYM9wYwQJDq5RGeslFcqZYU+cz7X3OwDGzgcx02JEl
- VQNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20260707; t=1794977481; x=1795582281;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ d=google.com; s=20260707; t=1794983690; x=1795588490; darn=lists.linux.it;
+ h=content-type:cc:to:from:subject:message-id:mime-version:date:from
  :to:cc:subject:date:message-id:reply-to:content-type;
- bh=ZS4XI6+12llJHLkHDShuNSIUStP6SDNZStHE+mmqcoA=;
- b=ujHLcDHft5Ied3rVII8cB2zveP+5/ly42UwMVNuYhYUHufZkENX9R9tVcMxo5yn+uA
- VE/x4DMEmDd8nFaPZRqjUhlYKvjAQ6BquTk4o2MIWfkZeQ7NZ7rJmyvgsxABuf5Pnxxe
- 2ZSEpvVaiq93LribCutbAkzR79Z74yYm3XWY1v+Tm/ivwSYWVDih7u3j4TpUjD+AeeiG
- 4RyK06Fv8F2Wdmwn8KowLVqhps1VAcY4ZmHJ+WjJb3d3A3cDh+X+mfMGmTclRmswKi6l
- ev9lGdU1SePuaGJ3rdXV3zfZkOCVxt8xp06Nrr4xKhqsnODlDBhFWq3NuWDYqlsKSdfy
- HTLg==
-X-Gm-Message-State: APuU4Z8AzTxvCW2lGflFxceXTnKOPpHpQlw3kFVeSLhFjAYMQXeAsBlc
- fWNArgdf5Jvd3USIB+22Myl51KM7FuVlJf2pXETzkAsEUv1YtQt6CJKd
-X-Gm-Gg: AZFdTZcF25broLjBtTJugf0266/i0Om4Z4nr6bmCuhrBIEEI8FybAdV4UyM0jQiQflr
- vZ/PuACQFY77/HtrAnS5gKha2R2hdOZiODvJGar+fXN3wh1R8jWjqHCUL5195K+eYk/NiJzAd7N
- sYCeG3on2LcnYm/fDfsNIeppVt6oTwBTgfSMIXfAfdFmWa0ndKv911unsVn2o04nr4mklcEJ97m
- 3/sQWh93upIhXRGKGQ+yOjJ0Usw7yatq2TtzHRHYd3XVecjZkEi7J4jxs9y1rIGRML97ilK3n+5
- eHREPZhHCzi5ZW05EyZRH1ToqoxVHC0pUBrBqJqRIThMQ/oDGCjNg0fipwueORRYuyZFT6IGtWx
- pGCzSTzNXWsp+Pvto00MqALTIXg0BqLFDqDnNRXw0vCe0Tlvo5fab0jbl0Y+mzrmzkOx/thD7OG
- juU1TIuZ5LJc6FxscYrIf7Knfxrhn+mGjxcHlY49FkW5k93lQz4Ik2CN22e6HwKv9wVSn7FV2xs
- 47QoHUi8TETS9l2XYTfiHg911KT6Cw8STtjp8UE1MrXGxSyvFDO2Pl2L7C90OE25DDAMUmlga2+
- ureacJHPqZnIAp+OXytLUuZw5X3xJd3Sktjes2m3AjAU+VuwQOEazG9WyLwt31r4NbMwjyrnmkL
- i2KjXSdIzxfCK8QihVOptjebe7qG6sx1uPiauixYgmA==
-X-Received: by 2002:a05:7300:fc14:b0:36f:5746:3364 with SMTP id
- 5a478bee46e88-38281215bb8mr1461007eec.28.1794977481007; 
- Tue, 17 Nov 2026 20:51:21 -0800 (PST)
-Received: from
- runnervmccnms.ra0ajkgn5sserj5qestw0c00tb.dx.internal.cloudapp.net
- ([52.250.243.99]) by smtp.gmail.com with ESMTPSA id
- 5a478bee46e88-382a75d401fsm2882368eec.20.2026.11.17.20.51.20
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 17 Nov 2026 20:51:20 -0800 (PST)
-From: linuxtestproject.agent@gmail.com
-To: Stephen Bertram <sbertram@redhat.com>
-Date: Wed, 18 Nov 2026 04:51:19 +0000
-Message-ID: <20261118045119.4764-1-linuxtestproject.agent@gmail.com>
-X-Mailer: git-send-email 2.56.1
-In-Reply-To: <20261117232036.1228445-1-sbertram@redhat.com>
-References: <20261117232036.1228445-1-sbertram@redhat.com>
+ bh=E6BqEGY5+17jQrrOCxDxsPZ/5OrheYqb4sgvR3NaLO8=;
+ b=KlyDjNYQ8H7jVh60iX5hZUSTwS5duHGKtBZmexQ5dybRSosf91ucTSSpewEiWgzJBd
+ rZku8brUvjVusOhgawdmm2O5Q7k3VmfYohQeKZjRuTrmBDDUUxek3ql9Ww85dBVd101h
+ QgNY8xW5g0U+44iDpGByL3j7oWJCmYmXqet2KGLL7fuVXDMRTJMrskqkU9P6RIEAwjjT
+ z4vTJscs+NXnO7iIZFwz7Y+WcwJI80w2VWeqjXzSBdcBF0nvyhFokWaY2pD+F8cZ2N1m
+ tiQLlE9hPkha8Ff4AT9G67/n21z75U2wmVFAgdbMVSlkm8JCELJsqEPCmBBv3zcHsr+X
+ FrUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20260707; t=1794983690; x=1795588490;
+ h=content-type:cc:to:from:subject:message-id:mime-version:date
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+ :content-type;
+ bh=E6BqEGY5+17jQrrOCxDxsPZ/5OrheYqb4sgvR3NaLO8=;
+ b=00AQ/prL4rR/C2QvLZZ/KFs7zYAh+LclHuHwF/EAHRGss/E8uvfAdsVQ3KTcgCwu9Z
+ 6lF8/CTkvUGwbuAaw3HERvXp6lDY2zBixJ8/Toe/uP+C4pfYm1yHDZKVodZJmDNjeO1H
+ A/ULfI6g12WgbxlmqWkcguyqrFxoRyhLUf1mCFZmleiRZ6LhIkpAosmTn1+0Jkaf+Xei
+ Y1eenAlJXvcpPbMb/yhSHnUcH49Z8syMFvlylru1RjhwOdF2WaJeadpUBQLWPofxRSGk
+ kV4lcoT3+TdhEDIv2FvY+kh9Pzu/lw8wbY/tpWYrPPAij79mOarw1qRD2eoIsVLUDqnt
+ 08uQ==
+X-Gm-Message-State: APuU4Z/kQZwu9wzy4e9mOH308NkUWwc7RY49k1OnbiyxMW0wLH0pjsaD
+ BIMTE/GovQ4V5eFW+DT6zLU4ckpPyIb7z7FYuuuexZi6uDJn1QGy+ywW7NjB3RVqEAxIzh1FHh1
+ C8KwCvyqwrfWM9te+34uidyGcFQCGWHT2LYMCtKT5tECUJTZh9sigWhefnoNmZJWpv5d7waOO/T
+ NUldEoftjkTUrowE6oDw5tgPi5YZ7P6QZnrxPuwMgEYXozxrI=
+X-Received: from pjblp12.prod.google.com ([2002:a17:90b:4a8c:b0:3b0:f7d8:3b91])
+ (user=chihsheng job=prod-delivery.src-stubby-dispatcher) by
+ 2002:a17:90b:4490:b0:3ad:c4e9:7beb with SMTP id
+ 98e67ed59e1d1-3b3d07aab52mr1744096a91.43.1794983690209; 
+ Tue, 17 Nov 2026 22:34:50 -0800 (PST)
+Date: Wed, 18 Nov 2026 06:34:45 +0000
 X-Archived-By: <archiver.kernel.org>
-MIME-Version: 1.0
-X-Spam-Status: No, score=-3.6 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_INVALID,DKIM_SIGNED,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_PASS,
-	SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no version=4.0.1
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.56.1.703.gf848ed807c-goog
+Message-ID: <20261118063445.2137150-1-chihsheng@google.com>
+To: ltp@lists.linux.it
+X-Spam-Status: No, score=-19.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_PASS,SPF_PASS,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] network/sockets: Add handshake01
+Subject: [LTP] [PATCH] sys_block_queue01: Accept plain "none" in
+ queue/scheduler
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -98,73 +93,106 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+From: Darren Chang via ltp <ltp@lists.linux.it>
+Reply-To: Darren Chang <chihsheng@google.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Stephen,
+On kernels older than 6.5, bio-based block devices (such as dm, ram,
+zram, and pmem) expose queue/scheduler with plain "none" (without
+brackets). Kernels before 6.14 also output plain "none" for blk-mq
+devices with BLK_MQ_F_NO_SCHED.
 
-On Tue, Nov 17, 2026, Stephen Bertram <sbertram@redhat.com> wrote:
-> network/sockets: Add handshake01
+These cases were removed in kernel 6.5 (commit 6d85ebf95c44) and
+kernel 6.14 (commit e7602bb4f3a1), but older kernels still fail the
+test because TST_SYSFS_ASSERT_CHOICE() expects one bracketed token:
 
-> +static int unprivileged_done(void)
-> +{
-> +	int fds[2], err = 0;
-> +	pid_t pid;
-> +
-> +	SAFE_PIPE(fds);
-> +	pid = SAFE_FORK();
-> +
-> +	if (!pid) {
-> +		int ret;
-> +
-> +		SAFE_CLOSE(fds[0]);
-> +
-> +		SAFE_SETGROUPS(0, NULL);
-> +		SAFE_SETGID(nobody_gid);
-> +		SAFE_SETUID(nobody_uid);
-> +
-> +		ret = send_done();
-> +
-> +		SAFE_WRITE(SAFE_WRITE_ALL, fds[1], &ret, sizeof(ret));
-> +		_exit(0);
-> +	}
-> +
-> +	SAFE_CLOSE(fds[1]);
-> +	SAFE_READ(SAFE_READ_ALL, fds[0], &err, sizeof(err));
-> +	SAFE_CLOSE(fds[0]);
-> +	SAFE_WAITPID(pid, NULL, 0);
-> +
-> +	return err;
-> +}
+  TFAIL: /sys/block/dm-87/queue/scheduler has 0 selected tokens, expected exactly 1
 
-Call tst_res() directly in the child process and terminate with exit(0)
-instead of _exit(0) rather than sending the result over a pipe to the
-parent. Drop SAFE_PIPE() and SAFE_WAITPID(), as the LTP library propagates
-child results via shared memory and reaps children automatically.
+Read queue/scheduler first and pass if the value is exact "none".
+Keep TCONF when the file is missing, and use TST_SYSFS_ASSERT_CHOICE()
+for all other values.
 
-> +static void run(void)
-> +{
-> +	int root_err, child_err;
-> +
-> +	nl_family_id = resolve_family(HANDSHAKE_FAMILY_NAME);
-
-Move nl_family_id = resolve_family(HANDSHAKE_FAMILY_NAME) to setup() so the
-static family ID resolution and TCONF check run once instead of on every -i
-iteration.
-
-Verdict - Needs revision
-
+Fixes: f35242c9cc22 ("testcases: sysfs: Add sys_block_queue01")
+Signed-off-by: Darren Chang <chihsheng@google.com>
 ---
-Note:
+ .../kernel/sysfs/block/sys_block_queue01.c    | 38 ++++++++++++++++---
+ 1 file changed, 33 insertions(+), 5 deletions(-)
 
-The agent can sometimes produce false positives although often its
-findings are genuine. If you find issues with the review, please
-comment this email or ignore the suggestions.
+diff --git a/testcases/kernel/sysfs/block/sys_block_queue01.c b/testcases/kernel/sysfs/block/sys_block_queue01.c
+index 38564139a..ce1f945fd 100644
+--- a/testcases/kernel/sysfs/block/sys_block_queue01.c
++++ b/testcases/kernel/sysfs/block/sys_block_queue01.c
+@@ -16,7 +16,13 @@
+  * - read_ahead_kb, nr_requests and discard_max_bytes are non-negative
+  * - nr_requests is greater than zero
+  * - rotational, add_random, iostats are boolean (0 or 1)
+- * - scheduler is a valid bracketed-choice file with exactly one active scheduler
++ * - scheduler is a valid bracketed-choice file with exactly one active
++ *   scheduler, or plain ``none`` without brackets for devices that do not
++ *   support I/O schedulers (bio-based devices such as dm, ram, zram, pmem on
++ *   kernels prior to 6.5 before commit 6d85ebf95c44 "blk-sysfs: add a new
++ *   attr_group for blk_mq", and blk-mq queues with BLK_MQ_F_NO_SCHED prior to
++ *   6.14 before commit e7602bb4f3a1 "block: remove BLK_MQ_F_NO_SCHED", where
++ *   elv_iosched_show() emits "none\n")
+  *
+  * All checks skip gracefully with TCONF when a particular attribute is not
+  * present, since the set of exported queue attributes differs between kernel
+@@ -36,6 +42,31 @@ static const char *const sched_allowed[] = {
+ 	"kyber", "bfq", "anticipatory", NULL
+ };
+ 
++static void check_scheduler(const char *dev)
++{
++	char sched[64];
++
++	if (!TST_SYSFS_READ_STR(sched, sizeof(sched),
++				PATH_SYS_BLOCK "/%s/queue/scheduler", dev)) {
++		tst_res(TCONF, PATH_SYS_BLOCK "/%s/queue/scheduler does not exist",
++			dev);
++		return;
++	}
++
++	/*
++	 * elv_iosched_show() emits plain "none\n" without brackets for queues
++	 * that do not support I/O schedulers (bio-based devices prior to 6.5,
++	 * and BLK_MQ_F_NO_SCHED devices prior to 6.14).
++	 */
++	if (!strcmp(sched, "none")) {
++		tst_res(TPASS, PATH_SYS_BLOCK "/%s/queue/scheduler = 'none'", dev);
++		return;
++	}
++
++	TST_SYSFS_ASSERT_CHOICE(sched_allowed, NULL, 0,
++				PATH_SYS_BLOCK "/%s/queue/scheduler", dev);
++}
++
+ static void check_cross(const char *dev)
+ {
+ 	TST_SYSFS_ASSERT_LE_SUFFIX("logical_block_size", "physical_block_size",
+@@ -50,8 +81,6 @@ static void check_cross(const char *dev)
+ 
+ static void check_device(const char *dev)
+ {
+-	char sched[64];
+-
+ 	tst_res(TINFO, "Checking block device '%s'", dev);
+ 
+ 	TST_SYSFS_ASSERT_POW2(PATH_SYS_BLOCK "/%s/queue/logical_block_size", dev);
+@@ -68,8 +97,7 @@ static void check_device(const char *dev)
+ 	TST_SYSFS_ASSERT_BOOL(PATH_SYS_BLOCK "/%s/queue/add_random", dev);
+ 	TST_SYSFS_ASSERT_BOOL(PATH_SYS_BLOCK "/%s/queue/iostats", dev);
+ 
+-	TST_SYSFS_ASSERT_CHOICE(sched_allowed, sched, sizeof(sched),
+-				PATH_SYS_BLOCK "/%s/queue/scheduler", dev);
++	check_scheduler(dev);
+ 
+ 	check_cross(dev);
+ }
+-- 
+2.56.1.703.gf848ed807c-goog
 
-Regards,
-LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
