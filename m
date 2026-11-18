@@ -2,52 +2,94 @@ Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A482606A325
-	for <ltp@archiver.kernel.org>; Wed, 18 Nov 2026 02:02:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2C1C606A884
+	for <ltp@archiver.kernel.org>; Wed, 18 Nov 2026 04:49:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=uy950WiP
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6AD3D3EC332
-	for <ltp@archiver.kernel.org>; Wed, 18 Nov 2026 03:02:34 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 92EC13EC335
+	for <ltp@archiver.kernel.org>; Wed, 18 Nov 2026 05:49:34 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 68E463E2323
- for <ltp@lists.linux.it>; Wed, 18 Nov 2026 03:02:18 +0100 (CET)
-Received: from out28-147.mail.aliyun.com (out28-147.mail.aliyun.com
- [115.124.28.147])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 043643EC2A2
+ for <ltp@lists.linux.it>; Wed, 18 Nov 2026 05:49:17 +0100 (CET)
+Received: from mail-pj2-x0b.google.com (mail-pj2-x0b.google.com
+ [IPv6:2607:f8b0:4864:39::b])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 479A26000F2
- for <ltp@lists.linux.it>; Wed, 18 Nov 2026 03:02:13 +0100 (CET)
-X-Alimail-AntiSpam: AC=CONTINUE; BC=0.1067066|-1; CH=green; DM=|CONTINUE|false|;
- DS=CONTINUE|ham_system_inform|0.00818566-0.00032939-0.991485;
- FP=6501118265245922273|0|0|0|0|-1|-1|-1; HT=maildocker-contentspam033037071049;
- MF=yehuaisheng@open-hieco.net; NM=1; PH=DS; RN=4; RT=4; SR=0;
- TI=SMTPD_---.k4NUuW7_1794967328; 
-Received: from 172.18.25.140(mailfrom:yehuaisheng@open-hieco.net
- fp:SMTPD_---.k4NUuW7_1794967328 cluster:ay29) by smtp.aliyun-inc.com;
- Wed, 18 Nov 2026 10:02:09 +0800
-Message-ID: <c8a71028-339f-4a83-a4b9-dde95ce58117@open-hieco.net>
-Date: Wed, 18 Nov 2026 10:02:08 +0800
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 9708E1000932
+ for <ltp@lists.linux.it>; Wed, 18 Nov 2026 05:49:17 +0100 (CET)
+Received: by mail-pj2-x0b.google.com with SMTP id
+ 98e67ed59e1d1-3b3d125637aso91792a91.0
+ for <ltp@lists.linux.it>; Tue, 17 Nov 2026 20:49:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20260707; t=1794977356; x=1795582156; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to:content-type;
+ bh=eeCBMG909S7MRsVKwrk67mv2UXzMeaUY/FPOYSkSm60=;
+ b=uy950WiPjkmMXtjT1TVKjO9RV4AGBNTmBwgP/XvwaiAgAWjKAWYOffTeHX8B/V0a6Z
+ qWbnQoakYQ3Si1yxRyuPVnsQfjD2JvcmmVNkEU1fCsGQXh0W21qXTd/j64qyEKa8IwRi
+ XNcwhF0jK6kZsnm2/k2hAl0tyfgoOTkrfxvmu1nOcOsIM8a/xHaei/rMm2vgVvNEDHu5
+ /PDh+Rpzm/uXban/YViW6qeH6HOmGaNjNI6BBgIiC/ThdQSSXUxyVFTQJU8Ygub7XSjg
+ tgiQdaZeOe+lpPFPVpnhYQ0nRsg/jGF4bQpZdlqoVhW1C2Jv+DnCv5axIhsuB/I6vNBJ
+ seBQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20260707; t=1794977356; x=1795582156;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to:content-type;
+ bh=eeCBMG909S7MRsVKwrk67mv2UXzMeaUY/FPOYSkSm60=;
+ b=u5+Ea86BcFkzLCNBG7RnpTwkjv1gk4JAbfBMKTy77hV0yxkBgHiDc7R5993BJj4wMk
+ cPqWXE3equjdMYZ6fGNR69QUMsjjYHKTW9urQSsoE+7prIgO6wOmzF6u91hbt5UxXOBZ
+ 4+wy3i15vVsa+fdZn5DN4wx7bKD4aRJKbjl0x791CHnRikUcf3drcrWo99ayT4VUwzp3
+ 0zL9L7ErWxED4eaKMJDUGH++dthdvpu1+oiOR0wc1P4XjX9hNrHw2vFhk0RBr5yr5Su3
+ VVh1G0p1swd0Xuafht4+G2TkyQDuKtQGDHNrjaYXwXRVNsjZ3nnPCmr6e28vITpK59Ek
+ Vgew==
+X-Gm-Message-State: APuU4Z92mtdl4mFTY8CnFq2hfPQ2jST7SsEozuDaXUvtOzbp33dj5A1C
+ W0Mj3xNxV6hzrqAOeKTmZwFsF3F37yiuj5ATIC8j9IUN82WDtO8T7Ads
+X-Gm-Gg: AZFdTZfSic3MZCXuPfXWRZwD0tcI3IbIGKInGQDPbuyquNOEuIIJB0ye7zMw0jK8jzb
+ EisnhaaHlfB27p6UHjEBB9rQvup1r8+AyNH1TiR5o83qnbo/GQl2Jd4TtDU92OWvpgnQlCZZstx
+ mZ6sz62KRVYVMS1pIw/YWLtjJnyac27HJ186mSr0MisYCJZQOLGpLXuOXGp1bEfCnzYAoTk6q65
+ ISK0Tom36MNOr++zTCXACv6JEticJDiYaB4OWER9cvIw7Wk+GwVngTQLc8D5I+snIML5QnSHW4k
+ 7dK2rjCjRqspfCtDWzEwydeLZxpoLT/RFQj6cmRroG5Vl/pyxq2MPQ4KsKVCuEoCAnNh4UYyJGp
+ lubTi6jPme0Hh3sBrUL4+VJ/svQSIupKbrAj+N6eGjomA+m8SN1JT4Qj1x61NylHTSThvy4hHTB
+ 5gPFC3FOHINRZaEU+PvpeWAQaASCCESmvunh9IgaKnwRSJwxWcal/zmREjZVxp+lxfnJMJ3bmL3
+ Eo8dOL7c5C3Jwzvub3rh/Uqgrk1waE8wvfzz1HXMnWTP+qN+3imUUOpHY0gIjLagz10hnvwq6U/
+ 48Se9cebxNqVMO4WV8HOFWORgrEGVAMjPXatBpJr6Zvjp3z4ldgTBe6fDiJToHo5Y6TISaUAZp3
+ aCyr5RJxcrHBwtvSRMpZrDGmiyz8Zj71JFZyUpss=
+X-Received: by 2002:a17:90b:1e4f:b0:3ac:8741:e2e4 with SMTP id
+ 98e67ed59e1d1-3b3d07e0309mr1626763a91.52.1794977355775; 
+ Tue, 17 Nov 2026 20:49:15 -0800 (PST)
+Received: from
+ runnervmccnms.m0crtnpzqczephvj2uvkmxfcme.xx.internal.cloudapp.net
+ ([4.242.63.37]) by smtp.gmail.com with ESMTPSA id
+ 98e67ed59e1d1-3b3ac4cff6fsm7098638a91.12.2026.11.17.20.49.15
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 17 Nov 2026 20:49:15 -0800 (PST)
+From: linuxtestproject.agent@gmail.com
+To: Wake Liu <wakel@google.com>
+Date: Wed, 18 Nov 2026 04:49:14 +0000
+Message-ID: <20261118044914.3815-1-linuxtestproject.agent@gmail.com>
+X-Mailer: git-send-email 2.56.1
+In-Reply-To: <20261117235848.2975548-1-wakel@google.com>
+References: <20261117235848.2975548-1-wakel@google.com>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Cyril Hrubis <chrubis@suse.cz>
-References: <20261116101559.93229-1-yehuaisheng@open-hieco.net>
- <avr8exdOSVwgjR3C@yuki.lan>
-Content-Language: en-US
-From: Huaisheng Ye <yehuaisheng@open-hieco.net>
-In-Reply-To: <avr8exdOSVwgjR3C@yuki.lan>
-X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-3.6 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_INVALID,DKIM_SIGNED,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_PASS,
-	SPF_PASS,UNPARSEABLE_RELAY,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=4.0.1
+	SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] hugemmap10: Add linux-git tag for NUMA fix
+Subject: Re: [LTP] sys_rtc01: Report TCONF on system time mismatch when
+ STA_UNSYNC is set
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -58,37 +100,42 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
+Hi Wake,
 
+On Tue, Nov 17, 2026, Wake Liu <wakel@google.com> wrote:
+> sys_rtc01: Report TCONF on system time mismatch when STA_UNSYNC is set
 
-On 11/16/2026 8:52 PM, Cyril Hrubis wrote:
-> Hi!
->> +/*
->> + * This test also covers the NUMA regression fixed by Linux commit
->> + * 21f514ad520459fbfa58ccdf171bb68148c2f5aa. If free huge pages are outside
->> + * the nodes allowed by the task's cpuset or MPOL_BIND policy, hugetlb must
->> + * account for the allowed-node shortfall when gathering surplus pages.
->> + * Otherwise mmap() may fail with ENOMEM even when nr_overcommit_hugepages
->> + * permits allocating surplus pages on the allowed nodes.
->> + *
->> + * The issue can be exercised on a system with two or more NUMA nodes, for
->> + * example with:
->> + *
->> + *   numactl --cpunodebind=0 --membind=1 ./hugemmap10
-> If nothing else, this text should be part of the doc comment just above
-> it so that it's properly exported to documentation.
-Got it.
+> +	} else if (is_clock_unsynced()) {
+> +		tst_res(TCONF,
+> +			"%s: since_epoch (%lld), system time (%lld), diff %llds > slack %lds (STA_UNSYNC is set)",
+> +			name, (long long)since_epoch, (long long)sys_epoch,
+> +			diff, slack);
 
-> Also if the test needs to be bind to specific nodes to reproduce the
-> problem, it would make sense (in a separate patch) to add a subtest to
-> the test so that we can test it properly.
->
-Noted for later action, thanks.
+STA_UNSYNC is already set at boot by ntp_init() and rtc_hctosys() (via
+do_settimeofday64() -> ntp_clear()), and it is only ever cleared when a
+userspace NTP daemon calls adjtimex(2) with ADJ_STATUS. On any system without
+an active NTP daemon, is_clock_unsynced() always returns 1 even if the clock
+was never stepped after boot, making the TFAIL branch unreachable and masking
+real RTC vs system time mismatches. Conversely, when an NTP daemon is active
+and clears STA_UNSYNC after syncing a system booted with a wrong RTC, the RTC
+can still diverge if CONFIG_RTC_SYSTOHC is disabled or unsupported by the
+driver.
 
-Huaisheng Ye
+Verdict - Needs revision
+
+---
+Note:
+
+The agent can sometimes produce false positives although often its
+findings are genuine. If you find issues with the review, please
+comment this email or ignore the suggestions.
+
+Regards,
+LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
