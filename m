@@ -1,93 +1,94 @@
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A6DA606A31C
-	for <ltp@archiver.kernel.org>; Wed, 18 Nov 2026 13:18:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C92A606A320
+	for <ltp@archiver.kernel.org>; Wed, 18 Nov 2026 13:33:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=lists.linux.it header.i=@lists.linux.it header.a=rsa-sha256 header.s=picard header.b=Occ8J54b;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.a=rsa-sha256 header.s=20260707 header.b=m41qr9s5
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1795007914; h=date :
- in-reply-to : mime-version : references : message-id : to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=rVP4y/Fyj1kr2YQcP6OJqTxRgRTSSxRNyuQpta8nvlY=;
- b=Occ8J54bSgzqqeRdHOSo3YL5a8z6OCaM7Jd976CgZ2Xpiw56pWrdzbMwKmXvz4MNRwdDA
- DZhSNAD3YhuZ1I5dzezSoR2YedUs9BP05d97WrCZYTnEXUuAZuNlpaPkxc+SwGOKSyaT/ou
- pUT7T9vQi1iK0yQ4IcH+ZGw0siY+oEM=
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=uVTSUHiQ
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 3BD693C0960
-	for <ltp@archiver.kernel.org>; Wed, 18 Nov 2026 14:18:34 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id DA0383EA9BD
+	for <ltp@archiver.kernel.org>; Wed, 18 Nov 2026 14:33:14 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A4B493E9332
- for <ltp@lists.linux.it>; Wed, 18 Nov 2026 14:18:13 +0100 (CET)
-Received: from mail-pf1-x445.google.com (mail-pf1-x445.google.com
- [IPv6:2607:f8b0:4864:20::445])
+ by picard.linux.it (Postfix) with ESMTPS id BB0433E304D
+ for <ltp@lists.linux.it>; Wed, 18 Nov 2026 14:33:01 +0100 (CET)
+Received: from mail-dy1-x1336.google.com (mail-dy1-x1336.google.com
+ [IPv6:2607:f8b0:4864:20::1336])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 0FA37200245
- for <ltp@lists.linux.it>; Wed, 18 Nov 2026 14:18:13 +0100 (CET)
-Received: by mail-pf1-x445.google.com with SMTP id
- d2e1a72fcca58-8a065e2933fso1241638b3a.3
- for <ltp@lists.linux.it>; Wed, 18 Nov 2026 05:18:12 -0800 (PST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 1759F1A00996
+ for <ltp@lists.linux.it>; Wed, 18 Nov 2026 14:33:01 +0100 (CET)
+Received: by mail-dy1-x1336.google.com with SMTP id
+ 5a478bee46e88-37198ed3727so2460838eec.0
+ for <ltp@lists.linux.it>; Wed, 18 Nov 2026 05:33:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=google.com; s=20260707; t=1795007891; x=1795612691; darn=lists.linux.it;
- h=content-type:cc:to:from:subject:message-id:references:mime-version
- :in-reply-to:date:from:to:cc:subject:date:message-id:reply-to
- :content-type; bh=lHgPNr+CGt2oXh535tsKAkUlt/th1dyW2Of2XybCAyE=;
- b=m41qr9s5eOnoty3RywMj9aRz/saeOQ66N380pe+HkD5/NWZCGgtT9opMT+omaolu4s
- W89li+neT6UHZwqBb+pz6bIpacvqGXE+D7iobEkNw+8CzW4dVRc7RCYEUATTv0CHi+mx
- 8NSWeFdmeyEl1PhmVsqpPVERrjUkHoz0u/zXe1KVDzEfnDIgACxTsOYaDbkfaUXnOd7F
- pmTo6Xj4xK8+Rz1GSPeImlhGbJP9H223sprE/d6t59nMqrsxaSlRAftfqu0XsUp23sZX
- NK3+YSZ+GnVmPwc9shS6Um+X6s8SSdI2RijQ71NUaHVOtJu+2Ik80mwal2ajXNLC+smH
- X3AQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20260707; t=1795007891; x=1795612691;
- h=content-type:cc:to:from:subject:message-id:references:mime-version
- :in-reply-to:date:x-gm-message-state:from:to:cc:subject:date
+ d=gmail.com; s=20260707; t=1795008779; x=1795613579; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to:content-type;
- bh=lHgPNr+CGt2oXh535tsKAkUlt/th1dyW2Of2XybCAyE=;
- b=kF+u8nzzl1EKUGPD3/BhUcreruFwwIfTfk23+qN8nUNm54MKIsuJArBizyZO/Xj/pk
- uJ0gWTp4To/+q/9/ISmlxYDiwl/nZvoRPvpnlUJw8j1n7hcNmZbBQt660YYRX4ujEbWE
- ND+o8DnI4ixoUt0boEIcy9NB9E7iV9mVA3A/NNnyQIQUOtUbDh56uRi9HRbw4cEwULC3
- YMmM2mDNRhnjCLWgNsuV+m45WUUyg6EkbMjYKfbpJ9ZQ2ZiZad/B/wNqsAoawjQdWM9X
- EgQkaTf5D389P6D4V3QMYPDctRUyAI+He6n2Jk4oDn7A6DnzIZ2yBjZgoS28k4cJlmcE
- e+Uw==
-X-Gm-Message-State: APuU4Z+iDywnQy9BZWNapgW1Oi8rhu1nWpAFK1Ai4discWTzmQV/j5EC
- EHMp3jKGuifMQWZK9NyKvu0vgNW9sbtJHUyNxYfXH4HrdIc19DQP3dmf6GU7d+jKXWhyKOFV/dI
- cLQ==
-X-Received: from pffm11-n1.prod.google.com
- ([2002:a05:6a00:c30b:10b0:8c5:614:d2c8])
- (user=wakel job=prod-delivery.src-stubby-dispatcher) by
- 2002:a05:6a00:a244:b0:892:e080:4ed8
- with SMTP id d2e1a72fcca58-8c5d48d82b8mr2286130b3a.47.1795007890954; Wed, 18
- Nov 2026 05:18:10 -0800 (PST)
-Date: Wed, 18 Nov 2026 13:18:08 +0000
-In-Reply-To: <av16AqIo5sj10FEv@yuki.lan>
-X-Archived-By: <archiver.kernel.org>
-Mime-Version: 1.0
-References: <20261117235848.2975548-1-wakel@google.com>
- <20261118044914.3815-1-linuxtestproject.agent@gmail.com>
- <av16AqIo5sj10FEv@yuki.lan>
-X-Mailer: git-send-email 2.56.1.703.gf848ed807c-goog
-Message-ID: <20261118131808.682117-1-wakel@google.com>
+ bh=Ma1UrJhEMw3tOQrw/5Jc5au68IDTzDiFc1VLI2lEE6c=;
+ b=uVTSUHiQjSMTAiMMI9PG60EJtnm39DKnNieFEKNmVPasOwKn/+eLlxcvh9vgIdaY0k
+ dALhNOJW2be3X23uKxq60UZuL1PWXKJUMOZoIkQcb1C+9LlAzgn4KQhvXAQyajphlt0o
+ 7PU0FF9fCSNeziQmm3NDS0Mgvp52UHvK1+sxDsSzbMPSlCgcgTYvTJQRtD/8QGFWIHQg
+ rELkDYJDI31XLDAPBQBpR5Mrp3V5mPGvKLkmW2TJ1frH/xOBkL6pHA4ubmdaBmvww0Na
+ xgf+A3tLHKj4Vj1eYger4OzuLP1xgF2iFEhGqNcxH9tYEm7lNS4MHG596axlNhW428Wi
+ hemA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20260707; t=1795008779; x=1795613579;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to:content-type;
+ bh=Ma1UrJhEMw3tOQrw/5Jc5au68IDTzDiFc1VLI2lEE6c=;
+ b=tRwaVHiw9l10LHgNkeE0HKSE85mBO+PhTzYsr8kYCLWzl11P2ZpjGN1IuxXhK0QnBh
+ nVk5YaV9TdrWcZwkbU1AvJ+WnI3B0dgtccSR71e73GwY0iufamZtvHkWhqJhjv+ZUYqB
+ z23oDbqgoxr9XNnG52gEvi6TAd4neUyc41Nj8hy3MgHbO1zZGcxhxTomTPJT4jn7cWFv
+ 559TdIqtpZ2k88Wiom/I+CK+zJQtrPO3JL4Yx2TIUji9LFjbZrau3dPAwh+RsJ3Opp4f
+ 5JVSrE4zNyPrqpFT8EM8zCodqjM4UAXX3CrhmCtw02SmZyLX1L/yHduy8cm6G6XnHQgh
+ H7sw==
+X-Gm-Message-State: APuU4Z+lWznC3KnPqr8uyD7Wyn8OI8vEF1K23S/LRfAkYbuxC0mTiHoh
+ NdhSKoPZ8Mvn5zxo2IKTqOH0uRqA5w2WkWBS+wTMzhKlUjmsMrlJbdce
+X-Gm-Gg: AZFdTZceO5faevwrlqa7MmHxsqW4/Clx+M7ZqRIWQQE9GyTtd4FaL3Vkn//ODTB+nRs
+ eUwHOIGtuLgPph5FS5evHvmxDxtUrJ+XStpKaD6fN/aQYb3A+QCoa3CvhCAb0Dv8sgFubXl6GYD
+ E3tASGTQzLRet+bzEvNxutL6RLvCguYOUZ6BaT04F7qSJcR64CK2NSXLJ1PgikKK5Lo09/CkZRD
+ shZhynBOjw9jCrhkQJmmA9WsVM7mha/Rh7taf1NphlCIae6xDFQTgHKw/SxCV9qwO9wKzHV+g+G
+ WxdtwzQxsT5wfT3Buk5QC9H3yeNpN07TM+RSu5jJbn40ZMdm8kNqcanK/4GC1xwOI3CH7+Xq/dH
+ OP+yN93KDayQzvFZCYNbNKVy45MwdU4JROAERZh5CdCBiuwxOI+tmZDS8gZAxb8YVt8eLwISf0T
+ 6ARz+bpWcOacgVWvw9NTnhlKGiseDwLUbOkePXr0wHG2Fi1AeG1Yl7c8JeXGS+I2jNijZDfyTAf
+ 0Ykfps03Cs64lJlFkxkImNKPOyb/MDwhLcDxx3C68oFZdbr5FBIGuLkWLH24O67fPbSBjCmJ5su
+ KCsbwXs7BJ3Xx5NBf92EtZhl6c6hB2A2Xiazas/eB647zqlAY75kJQi13EskPyuCxX5sFtdZM8p
+ /aggzaOLfUpCf/hojzfrMEp0aF4n1O8lALR9PHkUj
+X-Received: by 2002:a05:7301:460d:b0:383:6f73:eb34 with SMTP id
+ 5a478bee46e88-3836f83337emr644965eec.2.1795008779084; 
+ Wed, 18 Nov 2026 05:32:59 -0800 (PST)
+Received: from
+ runnervmccnms.2hnxei5tfybu1e0bbkcnqnq4pe.phxx.internal.cloudapp.net
+ ([4.236.89.29]) by smtp.gmail.com with ESMTPSA id
+ 5a478bee46e88-382a45260a8sm14160362eec.3.2026.11.18.05.32.58
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 18 Nov 2026 05:32:58 -0800 (PST)
+From: linuxtestproject.agent@gmail.com
 To: Cyril Hrubis <chrubis@suse.cz>
-X-Spam-Status: No, score=-9.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,MAILING_LIST_MULTI,
-	SPF_HELO_PASS,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=4.0.1
+Date: Wed, 18 Nov 2026 13:32:57 +0000
+Message-ID: <20261118133257.3734-1-linuxtestproject.agent@gmail.com>
+X-Mailer: git-send-email 2.56.1
+In-Reply-To: <20261118101720.2838268-1-chrubis@suse.cz>
+References: <20261118101720.2838268-1-chrubis@suse.cz>
+X-Archived-By: <archiver.kernel.org>
+MIME-Version: 1.0
+X-Spam-Status: No, score=-3.6 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_INVALID,DKIM_SIGNED,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_PASS,
+	SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
-X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] sys_rtc01: Report TCONF on system time mismatch when
- STA_UNSYNC is set
+Subject: Re: [LTP] sys_rtc01: TCONF on system time mismatch when STA_UNSYNC
+ is unset
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -97,59 +98,27 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Wake Liu via ltp <ltp@lists.linux.it>
-Reply-To: Wake Liu <wakel@google.com>
-Cc: Wake Liu <wakel@google.com>, ltp@lists.linux.it,
- linuxtestproject.agent@gmail.com
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi Cyril,
 
-> Hmm, I guess that the logic should be the other way, if STA_UNSYNC is
-> not set the clock was modified by NTP and the test should be skipped:
+On Wed Nov 18 11:17:20 2026 +0100, Cyril Hrubis <chrubis@suse.cz> wrote:
+> sys_rtc01: TCONF on system time mismatch when STA_UNSYNC is unset
 
-I think the logic in 3d11e5dd622e as applied is the right way around;
-inverting it would bring back the failure this patch fixes.
+Verdict - Reviewed
 
-In kernel/time/ntp.c, the kernel writes the system time back to the RTC
-only while STA_UNSYNC is clear: sync_hw_clock() returns early if
-!ntp_synced(), and do_adjtimex() queues sync_work via
-ntp_notify_cmos_timer() once an NTP daemon clears STA_UNSYNC. With
-CONFIG_RTC_SYSTOHC=y on a writable RTC, the NTP-corrected time is
-written to the RTC within a few seconds and then every 11 minutes, so
-since_epoch is expected to match system time. (That is also how
-leapsec01 ended up writing its fake 23:59:58 into rtc0 when it cleared
-STA_UNSYNC [1].)
+---
+Note:
 
-Conversely, STA_UNSYNC set is the state where nothing keeps the RTC in
-sync: it is set at boot, and every clock_settime(), settimeofday(), or
-ADJ_SETOFFSET sets it again via ntp_clear(). On Android test devices,
-for example, the harness sets the clock with date(1) after boot and no
-NTP daemon clears STA_UNSYNC, so rtc0 stays at its boot-time offset
-("diff 24441s > slack 10s"). chronyd without rtcsync behaves the same
-way: it disciplines the system clock while leaving STA_UNSYNC set. With
-the inverted check, all of these would hit TFAIL again, while systems
-actively syncing the RTC via SYSTOHC would report TCONF.
+The agent can sometimes produce false positives although often its
+findings are genuine. If you find issues with the review, please
+comment this email or ignore the suggestions.
 
-The reviewer is right on two limitations:
-1. When STA_UNSYNC is set, userspace cannot tell a broken RTC apart
-   from a system clock stepped after boot, though the since_epoch vs
-   date/time check still runs on all systems.
-2. When STA_UNSYNC is clear, the RTC can still diverge if
-   CONFIG_RTC_SYSTOHC is disabled (or points to a different RTC), or if
-   the RTC driver is read-only / does not support set_time.
-
-Do you think it is worth sending a follow-up to also check
-CONFIG_RTC_SYSTOHC / CONFIG_RTC_SYSTOHC_DEVICE (when kernel config is
-available), or would you prefer to keep 3d11e5dd622e as-is and just
-note the read-only / non-SYSTOHC case in the comment?
-
-[1] https://lore.kernel.org/ltp/20261116064205.2360040-1-wakel@google.com/
-
-Best regards,
-Wake
+Regards,
+LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
