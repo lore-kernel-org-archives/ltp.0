@@ -1,118 +1,100 @@
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB46E606A320
-	for <ltp@archiver.kernel.org>; Thu, 19 Nov 2026 13:01:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30D30606A32F
+	for <ltp@archiver.kernel.org>; Thu, 19 Nov 2026 13:41:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=lists.linux.it header.i=@lists.linux.it header.a=rsa-sha256 header.s=picard header.b=klbYXgTG;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=suse.com header.i=@suse.com header.a=rsa-sha256 header.s=google header.b=WDz5QtyX
+	dkim=pass (1024-bit key, unprotected) header.d=lists.linux.it header.i=@lists.linux.it header.a=rsa-sha256 header.s=picard header.b=g6MWoOol;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=suse.com header.i=@suse.com header.a=rsa-sha256 header.s=google header.b=VcNQBWs2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1795093314; h=mime-version :
- references : in-reply-to : date : message-id : to : subject : list-id
- : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=G1ZDuzTla5uspF/97MtET8rWylhpyfLVVSdXO7V+mx4=;
- b=klbYXgTGihHtI8lHAiLZnp6eRv5cnwfi9NOBecqPQnjXff4UFeks2RyDa55IAFYP2xFGj
- 2xZoW/WQwhLI4k/CfbdsoxyAshMaE7dQdMEAz6pJwGxiElCBczy6fOfd1E4SbdjWKTur1WB
- 7CN7ugrqKwx6r5a2HAPhRrfAOR5OkDE=
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1795095673; h=to : date :
+ message-id : mime-version : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : content-type : content-transfer-encoding : sender : from;
+ bh=iIP21Vqa39EmlpxWFb1+ZT6PaXj7Zb+wSy69nDQS9M0=;
+ b=g6MWoOoltYocuBVxGNHojGnMtWXFmLK+P+lQa+t0oG39fVZ/2waHJ5xCzLaM9EUdkwUw9
+ wah/7/6aRBtXLwRf+hWdta6mqiW2qsC1ZU3HTg9VYyElfCUVNIig8g69gtAmWzAM/mr7pz/
+ s9qxm5h0MnT8faCe0VQHUmBfSkzA1ZA=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 1D6B03EA008
-	for <ltp@archiver.kernel.org>; Thu, 19 Nov 2026 14:01:54 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 935393E935E
+	for <ltp@archiver.kernel.org>; Thu, 19 Nov 2026 14:41:13 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id BDA2B3E2398
- for <ltp@lists.linux.it>; Thu, 19 Nov 2026 14:01:33 +0100 (CET)
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com
- [IPv6:2a00:1450:4864:20::531])
+ by picard.linux.it (Postfix) with ESMTPS id F22353C9E88
+ for <ltp@lists.linux.it>; Thu, 19 Nov 2026 14:40:51 +0100 (CET)
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com
+ [IPv6:2a00:1450:4864:20::336])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 06EF7600A29
- for <ltp@lists.linux.it>; Thu, 19 Nov 2026 14:01:32 +0100 (CET)
-Received: by mail-ed1-x531.google.com with SMTP id
- 4fb4d7f45d1cf-6b8b20b2538so1871610a12.3
- for <ltp@lists.linux.it>; Thu, 19 Nov 2026 05:01:32 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1795093292; cv=none;
- d=google.com; s=arc-20260327;
- b=nR3lrXeBH4DPIEYMEfVW2naB0tAXKT8i94QIg4Q8cv/qsBlYwgFyfgfvcWCV9QUZSX
- ++JQ9ejlocDOt4u19MMb4/yByWfxzRAEfPkN2OVFe7FSkp3aZaqI7MNVHayh7Z3VXFVT
- uTCdof4eqRESCk+j6Sp0WUi+Ab7GeEW0qN8mt1aLN+MAP0xULn1WXY9VTTm+KKF0gkI+
- eS/FIam9hO0QKykX2VYRLkaMfcsR79/MfA1qEoHyus7uMbYyaMFyq4dy59n9zjj1tOwS
- Ea9JQ2+/KWj9TMgXZHnwU88Gs/XuhJw17GD3gCgKybyqm3UTLCHJwB1cmCtv6hROe0c3
- plyw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com;
- s=arc-20260327; 
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:dkim-signature;
- bh=gfVaVOaUXG08/ZKbgV79iR04a5Nf4TltLrYMX/SH6nU=;
- fh=NYWoMbyO/aDAi3xXJVbGUsABdVCG9A3++E34W6l7Zss=;
- b=nYR4Ch1/Y6JETITgryRx1wI3+kcdRauCbIb2sWbdk9HRTm+TV+NMlkg+051idK/Ihi
- FFGio5Y+cBszYqcWPvhu1pdxwHKCqqeLhbkm1BeVkU9bn4Punq2LvquJaIlLgUfbVT2a
- tWKKZ1lSevE+8eMOFCv7Vlx/YqskA3nXqLKb+87zkdvq6bCaT0nsjycGpG4eNkYkWERR
- BNx8/3fKJc1Rn2wJAtMDCNJgBs8iljGUhVmUP+yhJO+XbYD31c4Ypu4BOelmwRyRmQBI
- sFWVP9dzrq2aQWhTkt8d6LQ5Gw+xOv20KR4QZ0n0tJVkwxPDjTXdP52RpfvEuH3YePx6
- CNfQ==; darn=lists.linux.it
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 4154610009E9
+ for <ltp@lists.linux.it>; Thu, 19 Nov 2026 14:40:51 +0100 (CET)
+Received: by mail-wm1-x336.google.com with SMTP id
+ 5b1f17b1804b1-4a210470b49so20888315e9.2
+ for <ltp@lists.linux.it>; Thu, 19 Nov 2026 05:40:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1795093292; x=1795698092; darn=lists.linux.it;
- h=content-type:cc:to:subject:message-id:date:from:in-reply-to
- :references:mime-version:from:to:cc:subject:date:message-id:reply-to
- :content-type; bh=gfVaVOaUXG08/ZKbgV79iR04a5Nf4TltLrYMX/SH6nU=;
- b=WDz5QtyXUXrXnaOs8kF+CK8pvMmuoL8kCex9cOHxIWWuGDZU+VbXNCjypnA9QpZsJ+
- wqGvHXLqN1WAR/U8X561vk9BA7NmHzP+qWJCL8ViDeXgoSa3yZJJ25KgBG182jP+odZT
- nrXnrgtidlS3GQ2q4KD8ER7VhsmBnpZFleSykg7kejz+yAaXRcJDw6ViBlcPbzKCwXCl
- w0l904h6+PMdthidLLyHEn7qnlvNV/9seySFaGWBfo78WZeSUqnnpYvVcnZDx7oylNde
- 4vexZrab5G+0DhX8SVmv7zm1IS3u47hz+QIsBS+F+KBZ2ObvY05q88Y8ZM69NPr/cuy0
- aRog==
+ d=suse.com; s=google; t=1795095651; x=1795700451; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:to
+ :from:from:to:cc:subject:date:message-id:reply-to:content-type;
+ bh=gcbedqIyrp3A6pBnKtv8dA/K/gdizI0CfZGG2pub19Y=;
+ b=VcNQBWs2yz/hwr+Xc3xhWW8voee1Tgrh7ki6ty8itiOtZ8ZF9iMNzvbdShCs4wpsnH
+ yB/mjHS1mOcYBzI+67Nn1S/EMVBuy+iJrv2u3U6pZyn1OwgDx1fWHNSASB9dffmDMcxl
+ zJVgbLhfyAMZr+19KmTBY4YgjWevY3VuOSrq2VNYwxmnwcGcDJMjec42J4OZVwy9tZaX
+ dx3GCfvAQeJdbedPhp4dgDxlORIJ47UUEfekOrvCHr6sAGJwsd2GfQRTW5b7zOscb7Wo
+ b9MQ9JzzyJrl97pQ5KDrzbAQnX1lFVaIFSIYPagfqEk0X/kunAUCLpY/EkrZHkTI6O3V
+ 4Ihw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20260707; t=1795093292; x=1795698092;
- h=content-type:cc:to:subject:message-id:date:from:in-reply-to
- :references:mime-version:x-gm-gg:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to:content-type;
- bh=gfVaVOaUXG08/ZKbgV79iR04a5Nf4TltLrYMX/SH6nU=;
- b=Jj3fKgvE63q0H+gVPi7PpE2mTKlEqiUHqK2m9G4bNy6uZkb1o2fo3HZZp32v0npd+F
- AuafP8GEVNi6IVloHJJqJeFMjHubi186or0uqfwmL3rTfMxO660rpzJIPwctAh7QE8SI
- h3vceQAeAdn2ZDC79tPqFjdAPByO7aRqiNejIqlKPYeFD9x83zieDmWdrlSibU07rg3k
- nkMCfFbNkGY+V8yb+aKk2AAbffnHyBE2Ds8CsS3wn54J3erPrJjB5Pgm0zgg6D+XLXxm
- PI/zzz+VupNy4LxBx6YYPOW0BKYr7W0JYhMIZzAyh7vSNIfOQXpuU1K6+42+OvQ8yMS/
- iSxg==
-X-Forwarded-Encrypted: i=1;
- AL+hErHMsO6Cu/BLBW3XI59DvFjXyuL0b2fNWJFiZt3Wfu8F0ckSXs6zDf3OzPsZdOt8bqwO2g8=@lists.linux.it
-X-Gm-Message-State: APuU4Z95awaciwkCXlgQma6XzNwtZL7GffpHiPuAFeQmCoHi8NmTDY1V
- lGLU5gO4bd0rFFc75Xoc5Jp0VdBlzv06qZq5WEoCihHfkMfUvUbTJNyUMcTYNYyQJGQVeTuiYMD
- pKlQ8C4qOg2+LMpl8jNt2y5sFbARt6sP9Ey76Xr5O7w==
-X-Gm-Gg: AYBFou0WRntsKDA4Nk55NWhG39NqTZWU9yNfbW9g/H7W6C+hNzq5UfCQOj9MxuIR/Df
- MeYc/yKcAiIaIWtECndFs/SACTdu0dAn5kRIckXP3jH+h7ny03SFb4laj2CMs6Gy9Uzvqf4KFGR
- zQw0zWRl0kpWxObCFhmruIkwZwtIAtTlXWE2V8uF4bSuk9sM89LjnTymmBKjHxsASBOfWVA+vfW
- NZaKiUJImNu9nd1FOFL1xV8ZRBowit3idt1MNRvl8sMta0t2FvzxGI2yoS6LhcOpEQ/3mT06tNZ
- YkBbZVDg/nFMiJJ5JKNNKwMNSzAQXrsv4zbJ58zdTj2Lchcp+5W0pan14qSRstvwaBBtazxuP9F
- yJ4OtoIKcb85MIhxdq6iptUSB1tCINqjzqUH5PA==
-X-Received: by 2002:a17:907:1611:b0:c41:266:68a7 with SMTP id
- a640c23a62f3a-c510e22ac27mr539976266b.10.1795093292184; Thu, 19 Nov 2026
- 05:01:32 -0800 (PST)
+ d=1e100.net; s=20260707; t=1795095651; x=1795700451;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:to
+ :from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to:content-type;
+ bh=gcbedqIyrp3A6pBnKtv8dA/K/gdizI0CfZGG2pub19Y=;
+ b=N1hXm+3YjiVmJdN3r4yIgT9K9ekKWwRHL9HReFnIJtrryXxsX7Zw9M+/6U+MY2GpmB
+ vnUWkdS8RZAhPuwRRj5GA2RyRrJ3rlwFB+sb3S1RoAMiLCfvGL0cJzKq4DcNJpMc9kOj
+ 6piK/U2Iggz5teIyDB/D43m7cYppXHJ4LK3tB4FDeKKy5UKeh1LHLix/cJ4i9xAyJeZ6
+ x6oXRnSZfnL1UpVGEEOdzaGXUQYgPFKpMVot6Z6WBy0oponyLzDG6Ek63yGRp9jTc7rE
+ RvDaRUWbM8fNIDY37e/1H90YLy5Zsa4xIdt9Ykc+C831Renju64iwgpeunXrzU4K4K/v
+ NjSw==
+X-Gm-Message-State: APuU4Z8E/sg7Tn6ZNfvz87iEsipUyiE7LzhA8l27q6zf/a8QtDGzomxc
+ vTMXJE4/z42Cjb3RGkL71H3jFRZz8lyELjimorQ6XJDmK18iwVRdrvYbd8S9r1a/rUHunJdiFqU
+ vvJdHpxU=
+X-Gm-Gg: AYBFou2PGcshhF3y8oob6FBxwkKePoyeYBtxhQBf6QBXlxBshznCcD+ojpxEFkUuSFu
+ CTBAZ4b7S35vniSVzNFxZZuJ7d1JhglluxPkDj07XRF0nFU8wdoUCOQw1nVapuKhhtk1qgWwrv5
+ EGxw3VQxtWgJS4cafDWLCYylcr0Oblg/0HLAGiJQSNZ0+72ZayO3gpOvF9/N96eTsVUe/9Sqm49
+ yJW2ZewTy/BuQtzDgInKF5WqCY3zs95dxMP59OZiaHLSAlbChLShdrGKrplRmUKUqze0qD1JlD8
+ 3cIbGB8nVw+6Bj9w9YVLoMxJIyUyAL16Fl4jDPrqokEs58/bSrk+Ngdo0SawUMs0k5D0nFLYzLa
+ D9pCqqXvUxfYeWwNCbF7zZLdxDzcgrSUl0geKsqvKncXOi4/nr/X650TqJOYfniBZr3Ss2x2B/E
+ YozFUGvTzhs7ioVqKqjn48pdbjBN4VLQWy88ocaCISYRiPPHOmLyjAID+IlStblKi7h364hoNxu
+ 5SFzEvU19dgoOeEcMmiJWyRc7RQCD0vZMArMvSCWb1RaaGvEcqt4wWyP2V0ce7ApS1omqaBthIq
+ /cqtsY2NyGLwvpjxRlLwfjfES/Rz
+X-Received: by 2002:a05:600c:620c:b0:4bb:665c:a078 with SMTP id
+ 5b1f17b1804b1-4bb7da4917bmr115720105e9.28.1795095650544; 
+ Thu, 19 Nov 2026 05:40:50 -0800 (PST)
+Received: from localhost ([176.114.240.8]) by smtp.gmail.com with ESMTPSA id
+ 5b1f17b1804b1-4bb84e50512sm21445235e9.3.2026.11.19.05.40.50
+ for <ltp@lists.linux.it>
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Thu, 19 Nov 2026 05:40:50 -0800 (PST)
+To: ltp@lists.linux.it
+Date: Thu, 19 Nov 2026 14:40:45 +0100
+Message-ID: <20261119134049.272956-1-avinesh.kumar@suse.com>
+X-Mailer: git-send-email 2.56.0
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-References: <20261117125658.1743505-1-wakel@google.com>
-In-Reply-To: <20261117125658.1743505-1-wakel@google.com>
-Date: Thu, 19 Nov 2026 14:01:21 +0100
-X-Gm-Features: AclHuK9-aePwii1_lSieQuY-0NpTAMg24dQl6N4Tsvf9fOn1Mi-m76W2NHGC2tI
-Message-ID: <CAGp7zX6g1F04g50OcY9L9JVt0jH7NdtcSPtNXjtYSCs98=y2fA@mail.gmail.com>
-To: Wake Liu <wakel@google.com>
-X-Spam-Status: No, score=-16.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-19.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_PASS,SPF_PASS autolearn=ham
-	autolearn_force=no version=4.0.1
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_PASS,SPF_PASS,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] inode01: Drop redundant 512MB dev_min_size
- requirement
+Subject: [LTP] [PATCH] pwnescape: Send untagged frames on kernels without
+ nested VLAN 0 support
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -124,88 +106,202 @@ List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 From: Avinesh Kumar via ltp <ltp@lists.linux.it>
 Reply-To: Avinesh Kumar <avinesh.kumar@suse.com>
-Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi,
+From: Avinesh Kumar <avinesh.kumar@suse.com>
 
-On 11/17/26 1:56 PM, Wake Liu via ltp wrote:
-> Commit ecf418722780 ("inode01: increase dev_min_size to fit the peak
-> usage in parallel scenario") raised dev_min_size from the default 300MB
-> to 512MB because mkfs.exfat defaulted to a 32KB cluster size on volumes
-> larger than 256MB, providing only ~9,600 clusters on a 300MB device for
-> the ~10,925 objects created across the 5 parallel workers.
->
-> Subsequently, commit 4bf4da8c6fda ("inode01: Configure 4KB cluster size
-> on exfat to prevent ENOSPC") explicitly configured mkfs.exfat with a 4KB
-> cluster size (-c 4K). With 4KB clusters, the 10,925 objects consume
-> under 50MB at peak, and the default 300MB loop device provides ~76,800
-> clusters on exfat, which is more than sufficient for all supported
-> filesystems.
->
-> Drop the redundant .dev_min_size = 512 setting so inode01 uses the
-> default 300MB device size and avoids unnecessary ENOSPC failures when
-> allocating the loop backing file on storage-constrained systems.
->
-> Signed-off-by: Wake Liu <wakel@google.com>
-> ---
->   testcases/kernel/fs/inode/inode01.c | 1 -
->   1 file changed, 1 deletion(-)
->
-> diff --git a/testcases/kernel/fs/inode/inode01.c b/testcases/kernel/fs/inode/inode01.c
-> index e7190fc99..09e0e9da0 100644
-> --- a/testcases/kernel/fs/inode/inode01.c
-> +++ b/testcases/kernel/fs/inode/inode01.c
-> @@ -260,7 +260,6 @@ static struct tst_test test = {
->               {}
->       },
->       .needs_root = 1,
-> -     .dev_min_size = 512,
->       .forks_child = 1,
->       .needs_checkpoints = 1,
->       .timeout = 300,
+The test wraps every frame in two VID 0 VLAN tags so that csum_start can
+point at the IPv4 header on kernels with the csum_start check in the TAP
+driver (added in v6.12), which reject checksum metadata starting less
+than sizeof(struct iphdr) bytes into the frame.
 
-Unfortunately this change breaks things on tmpfs on systems with 64k
-pagesize, as library sets
-        if (!tst_test->dev_min_size)
-                tmpfs_size = 32;
+Kernels without the nested VID 0 tag handling (added in v5.2) drop such
+frames in __netif_receive_skb_core(), so the control datagram is never
+forwarded and the test ends with TBROK before it exercises the bug.
 
-tst_test.c:2005: TINFO: === Testing on tmpfs ===
-tst_test.c:1305: TINFO: Skipping mkfs for TMPFS filesystem
-tst_test.c:1281: TINFO: Limiting tmpfs size to 32MB
-tst_test.c:1317: TINFO: Mounting ltp-tmpfs to
-/var/tmp/LTP_inourxWrA/mntpoint fstyp=tmpfs flags=0
-inode01.c:241: TINFO: Testing single-process small tree (depth=3
-fanout=4 repetitions=100 workers=1)
-inode01.c:228: TPASS: Created and verified 28 objects in mntpoint/inode.5861
-inode01.c:241: TINFO: Testing parallel larger trees (depth=6 fanout=6
-repetitions=8 workers=5)
-inode01.c:61: TBROK: write(3,0x7ffffd679118,73) failed: ENOSPC (28)
+pwnescape.c:219: TBROK: control datagram was not forwarded back
 
+Such kernels typically lack the csum_start check in the TAP driver as
+well, so the same frames can be sent without the tags.
 
-so either we need to revert this patch or we can do this lib change
+Probe the framing in setup(): send the control datagram with the tags
+and, if it is not forwarded back, retry without them and use that framing
+for all following frames. The vulnerable path is unchanged, only the L2
+framing and the matching csum_start differ.
 
-(lib/tst_test.c)
+Fixes: 02173646c ("cve: add pwnescape reproducer")
+Signed-off-by: Avinesh Kumar <avinesh.kumar@suse.com>
+---
+ testcases/cve/pwnescape.c | 84 ++++++++++++++++++++++++++++++---------
+ 1 file changed, 65 insertions(+), 19 deletions(-)
 
--       if (!tst_test->dev_min_size)
--               tmpfs_size = 32;
--       else
-+       if (!tst_test->dev_min_size) {
-+               /*
-+                * tmpfs charges its size in whole pages, so 32MB is only 512
-+                * pages with 64kB pages instead of 8192 with 4kB ones. Scale
-+                * it to keep the same page budget on every architecture.
-+                */
-+               tmpfs_size = 32 * MAX(getpagesize() / 4096, 1);
-+       } else {
-                 tmpfs_size = tdev.size;
-+       }
+diff --git a/testcases/cve/pwnescape.c b/testcases/cve/pwnescape.c
+index 12963382f718..5a3a382548d7 100644
+--- a/testcases/cve/pwnescape.c
++++ b/testcases/cve/pwnescape.c
+@@ -21,11 +21,16 @@
+  * The test loads the tun module when run as root and runs inside a
+  * private network namespace so that it needs no other privileges.
+  *
+- * The frames carry two VID 0 VLAN tags because the TAP driver rejects
+- * checksum metadata starting less than ``sizeof(struct iphdr)`` bytes into
+- * the frame. Without the tags the IPv4 header would start at frame offset
+- * 14, so ``csum_start`` could not point at it. With the tags it starts at
+- * offset 22.
++ * The frames carry two VID 0 VLAN tags because TAP drivers with the
++ * csum_start check (added in v6.12) reject checksum metadata starting less
++ * than ``sizeof(struct iphdr)`` bytes into the frame. Without the tags the
++ * IPv4 header would start at frame offset 14, so ``csum_start`` could not
++ * point at it. With the tags it starts at offset 22.
++ *
++ * Kernels without the nested VID 0 tag handling (added in v5.2) drop such
++ * frames before they reach the IPv4 layer. They typically lack the
++ * csum_start check in the TAP driver as well, so the test sends the frames
++ * without the VLAN tags there, with the IPv4 header at frame offset 14.
+  *
+  * [Algorithm]
+  *
+@@ -37,12 +42,16 @@
+  *   device
+  * - send a 320 byte control IPv4 datagram behind two VID 0 VLAN tags
+  *   with checksum metadata at the transport header (frame offset 42)
+- *   and verify its fragments are forwarded with an intact header
++ *   and verify its fragments are forwarded; if they are not, retry
++ *   without the VLAN tags (frame offset 34) and send all following frames
++ *   without them
++ * - send the control datagram again and verify its fragments carry an
++ *   intact header
+  * - send the test datagram with csum_start on the IPv4 header (frame
+- *   offset 22) and a payload word chosen so that completing the bogus
+- *   checksum writes 0x4f (version 4, IHL 15) at the start of the IPv4
+- *   header, then check whether the emitted fragments carry the
+- *   corrupted header
++ *   offset 22, or 14 without VLAN tags) and a payload word chosen so
++ *   that completing the bogus checksum writes 0x4f (version 4, IHL 15)
++ *   at the start of the IPv4 header, then check whether the emitted
++ *   fragments carry the corrupted header
+  */
+ 
+ #include <stddef.h>
+@@ -79,7 +88,6 @@ struct vlan_tag {
+ 
+ struct pkt_frame {
+ 	struct ethhdr eth;
+-	struct vlan_tag vlan[2];
+ 	struct iphdr ip;
+ 	uint16_t csum_adj;
+ 	uint8_t payload[PAYLOAD_LEN - sizeof(uint16_t)];
+@@ -87,6 +95,7 @@ struct pkt_frame {
+ 
+ static int tap_fd = -1;
+ static int cap_fd = -1;
++static int vlan_tagged;
+ 
+ static struct pkt_frame ctrl_frame;
+ static struct pkt_frame test_frame;
+@@ -115,9 +124,7 @@ static void build_frame(struct pkt_frame *fr, uint16_t id, int corrupt_iph)
+ 
+ 	memcpy(fr->eth.h_dest, tap_mac, ETH_ALEN);
+ 	memcpy(fr->eth.h_source, src_mac, ETH_ALEN);
+-	fr->eth.h_proto = htons(ETH_P_8021Q);
+-	fr->vlan[0].proto = htons(ETH_P_8021Q);
+-	fr->vlan[1].proto = htons(ETH_P_IP);
++	fr->eth.h_proto = htons(ETH_P_IP);
+ 
+ 	fr->ip.version = 4;
+ 	fr->ip.ihl = GOOD_IHL;
+@@ -139,20 +146,32 @@ static void build_frame(struct pkt_frame *fr, uint16_t id, int corrupt_iph)
+ }
+ 
+ /* write a frame to the TAP device with a virtio_net_hdr that asks
+- * for checksum completion at the given frame-relative csum_start
++ * for checksum completion at the given csum_start, which is relative
++ * to the start of the frame without VLAN tags
+  */
+ static void send_datagram(struct pkt_frame *fr, uint16_t csum_start)
+ {
++	struct vlan_tag vlan[] = {
++		{.proto = htons(ETH_P_8021Q)},
++		{.proto = htons(ETH_P_IP)},
++	};
++	size_t vlan_len = vlan_tagged ? sizeof(vlan) : 0;
++	struct ethhdr eth = fr->eth;
+ 	struct virtio_net_hdr vnet_hdr = {
+ 		.flags = VIRTIO_NET_HDR_F_NEEDS_CSUM,
+-		.csum_start = csum_start,
++		.csum_start = csum_start + vlan_len,
+ 		.csum_offset = 0,
+ 	};
+ 	struct iovec iov[] = {
+ 		{.iov_base = &vnet_hdr, .iov_len = sizeof(vnet_hdr)},
+-		{.iov_base = fr, .iov_len = sizeof(*fr)},
++		{.iov_base = &eth, .iov_len = sizeof(eth)},
++		{.iov_base = vlan, .iov_len = vlan_len},
++		{.iov_base = &fr->ip, .iov_len = sizeof(*fr) - sizeof(eth)},
+ 	};
+ 
++	if (vlan_tagged)
++		eth.h_proto = htons(ETH_P_8021Q);
++
+ 	SAFE_WRITEV(SAFE_WRITE_ALL, tap_fd, iov, ARRAY_SIZE(iov));
+ }
+ 
+@@ -208,14 +227,39 @@ static int capture_fragment(uint16_t id, unsigned int *ihl)
+ 	return 0;
+ }
+ 
++static int send_control(unsigned int *ihl)
++{
++	send_datagram(&ctrl_frame, offsetof(struct pkt_frame, csum_adj));
++
++	return capture_fragment(CTRL_ID, ihl);
++}
++
++/* kernels older than v5.2 drop the frames with nested VID 0 tags, so send
++ * the frames without the tags if the control datagram does not make it
++ * through with them
++ */
++static void select_framing(void)
++{
++	unsigned int ihl;
++
++	vlan_tagged = 1;
++	if (send_control(&ihl))
++		return;
++
++	tst_res(TINFO, "VLAN tagged control datagram was not forwarded back, retrying without VLAN tags");
++
++	vlan_tagged = 0;
++	if (!send_control(&ihl))
++		tst_brk(TBROK, "control datagram was not forwarded back with or without VLAN tags");
++}
++
+ static void run(void)
+ {
+ 	unsigned int ihl;
+ 
+ 	drain_capture();
+ 
+-	send_datagram(&ctrl_frame, offsetof(struct pkt_frame, csum_adj));
+-	if (!capture_fragment(CTRL_ID, &ihl))
++	if (!send_control(&ihl))
+ 		tst_brk(TBROK, "control datagram was not forwarded back");
+ 	if (ihl != GOOD_IHL)
+ 		tst_brk(TBROK, "control datagram IHL corrupted (%u)", ihl);
+@@ -293,6 +337,8 @@ static void setup(void)
+ 
+ 	build_frame(&ctrl_frame, CTRL_ID, 0);
+ 	build_frame(&test_frame, TEST_ID, 1);
++
++	select_framing();
+ }
+ 
+ static void cleanup(void)
+-- 
+2.56.0
 
-
---
-Avinesh
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
