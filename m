@@ -1,60 +1,110 @@
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9993E606A325
-	for <ltp@archiver.kernel.org>; Fri, 20 Nov 2026 08:57:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18FED606A325
+	for <ltp@archiver.kernel.org>; Fri, 20 Nov 2026 09:39:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key, unprotected) header.d=linux.dev header.i=@linux.dev header.a=rsa-sha256 header.s=key1 header.b=qPBqXv3K
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=suse.cz header.i=@suse.cz header.a=rsa-sha256 header.s=susede2_rsa header.b=ir6jpuyz;
+	dkim=fail reason="signature verification failed" header.d=suse.cz header.i=@suse.cz header.a=ed25519-sha256 header.s=susede2_ed25519 header.b=FMpDv4an;
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=suse.cz header.i=@suse.cz header.a=rsa-sha256 header.s=susede2_rsa header.b=gBpyl1ka;
+	dkim=neutral header.d=suse.cz header.i=@suse.cz header.a=ed25519-sha256 header.s=susede2_ed25519 header.b=jceKTSpo
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 95B403E9FB9
-	for <ltp@archiver.kernel.org>; Fri, 20 Nov 2026 09:57:02 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 85FF73E9283
+	for <ltp@archiver.kernel.org>; Fri, 20 Nov 2026 10:39:07 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6D9193E9256
- for <ltp@lists.linux.it>; Fri, 20 Nov 2026 09:56:47 +0100 (CET)
-Received: from mta0.migadu.com (out-63.mta0.migadu.com
- [IPv6:2001:41d0:1004:224b::3f])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 140843C00F2
+ for <ltp@lists.linux.it>; Fri, 20 Nov 2026 10:38:50 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 192391A00362
- for <ltp@lists.linux.it>; Fri, 20 Nov 2026 09:56:44 +0100 (CET)
-X-Envelope-To: ltp@lists.linux.it
-DKIM-Signature: a=rsa-sha256; bh=YN8/y4gr5fyzdEobi9tPVJFl228jdVLg82DuXQgUHHE=; 
- c=simple/simple; d=linux.dev;
- h=from:to:subject:date:message-id:mime-version:content-type; s=key1;
- t=1795165003; v=1; x=1795769803;
- b=qPBqXv3KlvJjbVDcDvArNY53X7PypzLcbx1gBJ9SI+kDKALNdqU5J6zUFTSo/cMAMBMDflBH
- AzZ5EP0zSyoVxW5p2UmfeZVb24GZBAQ74AXB1gJeUZaKbPthumEWL4JIlf1E5+2mC88Uy6wJo9I
- PQd5RzFP3lc37Wx5O5xcDGIw=
-X-Envelope-To: ltp@lists.linux.it
-Received: by smtp.migadu.com with ESMTPS id 51b19a1ea42a5eff;
- Fri, 20 Nov 2026 08:56:43 +0000
-X-Mizu-Trace-ID: 51b19a1ea42a5eff
-X-Migadu-Flow: FLOW_OUT
-Date: Fri, 20 Nov 2026 16:56:34 +0800
-From: Li Wang <li.wang@linux.dev>
-To: Yu Miao <yumiao@kylinos.cn>
-Message-ID: <awALQmqJEzv_pCXv@linux.dev>
-Mail-Followup-To: Yu Miao <yumiao@kylinos.cn>, ltp@lists.linux.it
-References: <20261116013147.69993-1-yumiao@kylinos.cn>
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 4BB8014010C8
+ for <ltp@lists.linux.it>; Fri, 20 Nov 2026 10:38:49 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id D42251F390;
+ Fri, 20 Nov 2026 09:38:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1795167529; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=J8PLn4pE6sMLYoo/xrw3CZEujNKoMPPw22ybdvcYffg=;
+ b=ir6jpuyzT3jWi2ThAS3Ei2nLa8XhlmffiD/EeVkejCsHzNfQ6GGxbW0isaprVODW90eho+
+ q03PscC1WBkVxvWYrdWAIOEVep5QCVDUjqeZ2FnubXdO9sMzdyBDwkMgWbIdABhSyYNMn9
+ +qrAd6HFWFkb/cYVww0gfGMn8Zges5M=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1795167529;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=J8PLn4pE6sMLYoo/xrw3CZEujNKoMPPw22ybdvcYffg=;
+ b=FMpDv4anrD41+okfkyPjSmm3c5ebvY7IwTD3nLUy1BluzrEf4nD5MT5J77hnhJ39QCyucD
+ cJLpFBFU5igRjWCg==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1795167528; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=J8PLn4pE6sMLYoo/xrw3CZEujNKoMPPw22ybdvcYffg=;
+ b=gBpyl1kao54AFD08tmN0RcLzPRaAshYxNYwsm/z8lnBqeL3tKPk8p+Qwec6EBYTeXb5KZE
+ Rnczs0XyfPwTA2RIYL1JlJecxm5jIzy5VLVyNc78Y+a5/P4d8jf3aARa7Snq/wZ8MxD0Lf
+ fqyGApSPR5/zLqQK10BXa8yWGkOOoI0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1795167528;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=J8PLn4pE6sMLYoo/xrw3CZEujNKoMPPw22ybdvcYffg=;
+ b=jceKTSpoTWU5f9u/hkwUY4srQkMNc5YXg8dZV6jrB8xXlD7v7bB6T97KnryKO3TdCPtUfm
+ Zn1X11LbyOt5vvDA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A47F21348F;
+ Fri, 20 Nov 2026 09:38:48 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id YSHlHSgVAGvoAgAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Fri, 20 Nov 2026 09:38:48 +0000
+Date: Fri, 20 Nov 2026 10:39:17 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Wake Liu <wakel@google.com>
+Message-ID: <awAVRaKnbeUCpaCm@yuki.lan>
+References: <20261119103711.3002153-1-chrubis@suse.cz>
+ <20261119150619.449861-1-wakel@google.com>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20261116013147.69993-1-yumiao@kylinos.cn>
-X-Spam-Status: No, score=-8.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_PASS,SPF_PASS autolearn=ham
-	autolearn_force=no version=4.0.1
+In-Reply-To: <20261119150619.449861-1-wakel@google.com>
+X-Spamd-Result: default: False [-17.30 / 50.00]; SUSE_INTERNAL_BYPASS(-9.00)[];
+ REPLY(-4.00)[]; BAYES_HAM(-3.00)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MISSING_XM_UA(0.00)[]; MIME_TRACE(0.00)[0:+];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; ARC_NA(0.00)[];
+ RCPT_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
+ FROM_EQ_ENVFROM(0.00)[]; RCVD_COUNT_TWO(0.00)[2];
+ TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo]
+X-Spam-Score: -17.30
+X-Spam-Level: 
+X-Spam-Status: No, score=-3.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_PASS,SPF_PASS autolearn=no autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] memcg_lib.sh: poll for expected values in
- check_mem_stat()
+Subject: Re: [LTP] [PATCH] sys_rtc01: Rewrite the RTC check
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -69,62 +119,14 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> Reading memory.stat does not always return up-to-date values: the
-> kernel only flushes the pending stats updates synchronously when they
-> exceed a threshold (MEMCG_CHARGE_BATCH * num_online_cpus()), otherwise
-> the updates are applied by the periodic async flusher, so the values
-> can be stale for up to 2 seconds.
-> 
-> The tests only touch 65 pages (260KiB), which may generate fewer
-> stat updates than the threshold on machines with multiple CPUs, so
-> the checks right after the memory has been touched may read stale
-> values and fail, e.g. on 7.3.0 with 4 CPUs:
-> 
->     memcg_stat_rss 1 TFAIL: rss is 0, 266240 expected
-> 
-> Poll for the expected value with a 3s timeout instead, which follows
-> the polling pattern already used by signal_memcg_process() in this
-> file.
+Hi!
+> Two small things I noticed while reviewing and testing the patch:
 
-Patch merged, with some minor polishing:
-
---- a/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
-+++ b/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
-@@ -160,15 +160,17 @@ shmmax_cleanup()
- check_mem_stat()
- {
-        local item_size
--       local cms_iter
-+       local loops=30
-
--       for cms_iter in $(seq 30); do
-+       while [ $loops -gt 0 ]; do
-                if [ -e $1 ]; then
-                        item_size=$(cat $1)
-                else
-                        item_size=$(grep -w $1 memory.stat | cut -d " " -f 2)
-                fi
-
-+               [ -z "$item_size" ] && break
-+
-                if [ "$3" ]; then
-                        if [ $item_size -ge $2 ] && [ $item_size -le $3 ]; then
-                                tst_res TPASS "$1 is ${2}-${3} as expected"
-@@ -179,7 +181,8 @@ check_mem_stat()
-                        return
-                fi
-
--               tst_sleep 100ms
-+               loops=$((loops - 1))
-+               [ $loops -gt 0 ] && tst_sleep 100ms
-        done
-
-        if [ "$3" ]; then
-
+Both good catches, applied and pushed. Thanks for the review.
 
 -- 
-Regards,
-Li Wang
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
