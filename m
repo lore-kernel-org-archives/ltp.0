@@ -2,110 +2,67 @@ Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FF16606A31E
-	for <ltp@archiver.kernel.org>; Mon, 23 Nov 2026 10:51:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 062F5606A31A
+	for <ltp@archiver.kernel.org>; Mon, 23 Nov 2026 11:57:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=suse.cz header.i=@suse.cz header.a=rsa-sha256 header.s=susede2_rsa header.b=HjRcHgd6;
-	dkim=fail reason="signature verification failed" header.d=suse.cz header.i=@suse.cz header.a=ed25519-sha256 header.s=susede2_ed25519 header.b=tErH92li;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=suse.cz header.i=@suse.cz header.a=rsa-sha256 header.s=susede2_rsa header.b=QFyAfwTB;
-	dkim=neutral header.d=suse.cz header.i=@suse.cz header.a=ed25519-sha256 header.s=susede2_ed25519 header.b=dWivYxwO
+	dkim=pass (1024-bit key, unprotected) header.d=lists.linux.it header.i=@lists.linux.it header.a=rsa-sha256 header.s=picard header.b=cfBLWTBo;
+	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=bytedance.com header.i=@bytedance.com header.a=rsa-sha256 header.s=2212171451 header.b=pfgHCxHt
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1795435045; h=references :
+ date : to : message-id : mime-version : in-reply-to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-type :
+ content-transfer-encoding : sender : from;
+ bh=iL/shJuShXl7xTVgjIufgaK7HNU/O6BLj45mWtLI7L0=;
+ b=cfBLWTBo4j0ejErvqGXXCr9zpaZd7J2fuynvP/JMvgQbLhg4wKoLiDwAPfuJqnClKPNaK
+ qBjIscqRFqWkIYJQE4APn+h5P3lIZNK9balDaoTX/xfwtbBN2BBx7sXEXlHDvIIzXD0+UNr
+ P/F4+5RcqalMmH58Ed5Bxm8ilY8vZJ4=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A8B813E98DB
-	for <ltp@archiver.kernel.org>; Mon, 23 Nov 2026 11:51:35 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 19DAA3E98DB
+	for <ltp@archiver.kernel.org>; Mon, 23 Nov 2026 12:57:25 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id CC3113E9167
- for <ltp@lists.linux.it>; Mon, 23 Nov 2026 11:51:20 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id DE9FB3C7C23
+ for <ltp@lists.linux.it>; Mon, 23 Nov 2026 12:57:03 +0100 (CET)
+Received: from lf-1-131.ptr.blmpb.com (lf-1-131.ptr.blmpb.com
+ [103.149.242.131])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 0BF1D1A007EB
- for <ltp@lists.linux.it>; Mon, 23 Nov 2026 11:51:19 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id D32271F445;
- Mon, 23 Nov 2026 10:51:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1795431077; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=E7tvw/xYBRHMikeDh9C8t/UCkLxHfRKtopcr9NO+H+8=;
- b=HjRcHgd6QuZhWlkW8GxxpVJdWtFKcIUhMgTJ3CkQZHZAiVb4TyvniOEsE/3qmOuqVMHdrS
- MHkHt7Ur1S+C23h02osXDsklWPfZg2v350ABUHMIhHaoeE2CF+PnFUqPpAmJlmiktDSB+0
- +n5B7RJBrCEEEZFFURJCgrhb4lShT7o=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1795431077;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=E7tvw/xYBRHMikeDh9C8t/UCkLxHfRKtopcr9NO+H+8=;
- b=tErH92li2D33Jl/SBc3NVk4hR4t9/qq2XPGJUWExYRxbGyrvLJT1K7vhy3y3Q+Iq/UkNun
- u43Iu22lWzEb4hBw==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1795431076; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=E7tvw/xYBRHMikeDh9C8t/UCkLxHfRKtopcr9NO+H+8=;
- b=QFyAfwTB0NRgj33OfOLBjteajga0yudd++5YldzuPz0ggEqra3ah5JrrY4LMch3P0tVqMN
- hUVoK/hvoFVVnm6myv2KC6L8fI2e9i4csd4hyPMfu51s1fULu8P3esKio/l3435xr4ARgn
- h6oiI/NCo8ia1WReWOMmkr7Wm/N1pMk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1795431076;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=E7tvw/xYBRHMikeDh9C8t/UCkLxHfRKtopcr9NO+H+8=;
- b=dWivYxwOeFRvCfz/9mGk0aKTnC8I7EIg1B1mHMLlz+u0izUuyp3UDKy8S1NKWBs6AJmzjA
- G3puH6K4ofIhDhAw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A4D4513510;
- Mon, 23 Nov 2026 10:51:16 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 6jF1H6QaBGt8dwAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Mon, 23 Nov 2026 10:51:16 +0000
-Date: Mon, 23 Nov 2026 11:51:42 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Wei Gao <wegao@suse.com>
-Message-ID: <awQavtEBYYht-HIP@yuki.lan>
-References: <20261116085612.20171-1-wegao@suse.com>
- <20261116085612.20171-2-wegao@suse.com>
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id DCFAD10007C3
+ for <ltp@lists.linux.it>; Mon, 23 Nov 2026 12:57:01 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ s=2212171451; d=bytedance.com; t=1795435013; h=from:subject:
+ mime-version:from:date:message-id:subject:to:cc:reply-to:content-type:
+ mime-version:in-reply-to:message-id;
+ bh=MssX9FGxV/jxkWYuBNy5pFCnuQivZ9yySJ8FZ/Nzjas=;
+ b=pfgHCxHtM8U+TsMjjS0mmGHCjAk7ODfU+ATXEJBxPN0KupDNY13bJuhQOzAfxI3jHlnDua
+ V+8Tx+FPcpfQJ3M7Ve9R+Mgrxy5SZRFPTUQu/mzDEKYkJ0j8O2RAsCUJRbRrPymrxIl3HO
+ yvBty5dXwcFkQlAZ/zNlvbmc1kN//YDyW0wqOMXOYIsINP8O98tS4wHalNrx//c+T9Xa5k
+ hmp3qZ+iPyJK1aW9Dq0DKjbUoajNUD+OIx7XDJxxQUKOzp3lbtHq5fDLi7obWFC0h/jyIj
+ pi7IGNKDwbkf0eMvpQsZSsAZOPnNXwpiVTFJQeyLMc6DoeonVYG6XvfJgE/CpA==
+References: <20261116073956.98789-1-zhaogongyi@bytedance.com>
+Date: Mon, 23 Nov 2026 19:56:36 +0800
+X-Original-From: Zhao Gongyi <zhaogongyi@bytedance.com>
+To: <ltp@lists.linux.it>
+Message-Id: <20261123115636.34935-1-zhaogongyi@bytedance.com>
 X-Archived-By: <archiver.kernel.org>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20261116085612.20171-2-wegao@suse.com>
-X-Spam-Level: 
-X-Spamd-Result: default: False [-13.30 / 50.00]; SUSE_INTERNAL_BYPASS(-9.00)[];
- BAYES_HAM(-3.00)[100.00%]; NEURAL_HAM_LONG(-1.00)[-1.000];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RCVD_TLS_ALL(0.00)[]; FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
- FROM_EQ_ENVFROM(0.00)[]; RCPT_COUNT_THREE(0.00)[3];
- RCVD_COUNT_TWO(0.00)[2]; MISSING_XM_UA(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo]
-X-Spam-Score: -13.30
-X-Spam-Status: No, score=-8.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_PASS,SPF_PASS autolearn=ham
-	autolearn_force=no version=4.0.1
+Mime-Version: 1.0
+X-Lms-Return-Path: <lba+26b042a03+2a9e0d+lists.linux.it+zhaogongyi@bytedance.com>
+In-Reply-To: <20261116073956.98789-1-zhaogongyi@bytedance.com>
+X-Mailer: git-send-email 2.39.5 (Apple Git-154)
+X-Spam-Status: No, score=-19.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_PASS,SPF_PASS,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v19 1/3] lib: Add tst_attach_loopdev()
+Subject: [LTP] [PATCH v2] fanotify13: clean overlay workdir when restoring
+ lower objects
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -115,144 +72,68 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+From: Zhao Gongyi via ltp <ltp@lists.linux.it>
+Reply-To: Zhao Gongyi <zhaogongyi@bytedance.com>
+Cc: amir73il@gmail.com, jack@suse.cz
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> +static int attach_device(const char *dev, const char *file, int warn_on_ebusy)
->  {
->  	int dev_fd, file_fd;
->  	struct loop_info loopinfo;
-> @@ -168,7 +168,8 @@ int tst_attach_device(const char *dev, const char *file)
->  
->  	dev_fd = TST_RETRY_FN_EXP_BACKOFF(open(dev, O_RDWR), TST_RETVAL_GE0, 1);
->  	if (dev_fd < 0) {
-> -		tst_resm(TWARN | TERRNO, "open('%s', O_RDWR) failed", dev);
-> +		if (warn_on_ebusy || errno != EBUSY)
-> +			tst_resm(TWARN | TERRNO, "open('%s', O_RDWR) failed", dev);
->  		return 1;
->  	}
->  
-> @@ -180,10 +181,16 @@ int tst_attach_device(const char *dev, const char *file)
->  	}
->  
->  	if (ioctl(dev_fd, LOOP_SET_FD, file_fd) < 0) {
-> +		int err = errno;
-> +
->  		close(dev_fd);
->  		close(file_fd);
-> -		tst_resm(TWARN | TERRNO, "ioctl(%s, LOOP_SET_FD, %s) failed",
-> -			 dev, file);
-> +		errno = err;
+The FAN_DELETE_SELF test case removes test files. For lower variants,
+overlayfs creates upper whiteouts to hide the lower objects. The current
+clean_upper_dir() helper unmounts overlayfs and removes only the object
+names from OVL_UPPER before remounting overlayfs.
 
-This errno needs to be restored right before the return, the tst_resm()
-still may clobber the errno.
+When overlayfs is mounted with nfs_export/index enabled by default,
+deleting lower objects may also leave index entries under OVL_WORK.
+Removing only the upper whiteouts can leave stale index state. On remount,
+collecting the recreated object ids may then fail with:
 
-> +		if (warn_on_ebusy || errno != EBUSY) {
-> +			tst_resm(TWARN | TERRNO, "ioctl(%s, LOOP_SET_FD, %s) failed",
-> +				 dev, file);
-> +		}
->  		return 1;
->  	}
->  
-> @@ -207,6 +214,64 @@ int tst_attach_device(const char *dev, const char *file)
->  	return 0;
->  }
->  
-> +int tst_attach_device(const char *dev, const char *file)
-> +{
-> +	return attach_device(dev, file, 1);
-> +}
-> +
-> +static int attach_loopdev(char *dev, size_t dev_len, const char *file)
-> +{
-> +	if (tst_find_free_loopdev(dev, dev_len) == -1)
-> +		return -1;
-> +
-> +	if (attach_device(dev, file, 0) == 0)
-> +		return 0;
-> +
-> +	if (errno == EBUSY)
-> +		return 1;
-> +
-> +	return -1;
-> +}
-> +
-> +char *tst_attach_loopdev(const char *file)
-> +{
-> +	char dev[PATH_MAX];
-> +	unsigned int delay = 1;
-> +	unsigned int max_delay = tst_multiply_timeout(1000000);
-> +	int ret;
-> +
-> +	for (;;) {
-> +		ret = attach_loopdev(dev, sizeof(dev), file);
-> +		if (ret <= 0)
-> +			break;
-> +
-> +		if (delay < max_delay) {
-> +			usleep(delay);
-> +			delay *= 2;
-> +		} else {
-> +			ret = -1;
-> +			break;
-> +		}
-> +	}
-> +
-> +	if (ret == 0)
-> +		return strdup(dev);
+  overlayfs: bad index found (... ftype=2000, origin ftype=8000)
+  fanotify.h:85: TBROK: statfs(tstmnt/file_one, ...) failed: EIO (5)
 
-It's unlikely, but the strdup() can fail. So I guess this should be
-at least TBROK on NULL.
+Purge both OVL_UPPER and OVL_WORK before remounting overlayfs so the
+lower-variant restore starts from a clean overlay upper/work state.
 
-> +	return NULL;
-> +}
-> +
-> +char *safe_attach_loopdev(const char *file, const int lineno, const char *file_path)
-> +{
-> +	char *dev = tst_attach_loopdev(file_path);
-> +
-> +	if (!dev) {
-> +		tst_brkm_(file, lineno, TBROK, NULL,
-> +			  "Failed to attach %s to loop device", file_path);
-> +	}
-> +
-> +	return dev;
-> +}
-> +
->  uint64_t tst_get_device_size(const char *dev_path)
->  {
->  	int fd;
-> @@ -386,17 +451,20 @@ int tst_dev_sync(int fd)
->  const char *tst_acquire_loop_device(unsigned int size, const char *filename)
->  {
->  	unsigned int acq_dev_size = size ? size : DEV_SIZE_MB;
-> +	char *dev;
->  
->  	if (tst_prealloc_file(filename, 1024 * 1024, acq_dev_size)) {
->  		tst_resm(TWARN | TERRNO, "Failed to create %s", filename);
->  		return NULL;
->  	}
->  
-> -	if (tst_find_free_loopdev(dev_path, sizeof(dev_path)) == -1)
-> +	dev = tst_attach_loopdev(filename);
-> +	if (!dev)
->  		return NULL;
->  
-> -	if (tst_attach_device(dev_path, filename))
-> -		return NULL;
-> +	strncpy(dev_path, dev, sizeof(dev_path) - 1);
-> +	dev_path[sizeof(dev_path) - 1] = '\0';
-> +	free(dev);
+Signed-off-by: Zhao Gongyi <zhaogongyi@bytedance.com>
+Reviewed-by: Amir Goldstein <amir73il@gmail.com>
+---
+Changes in v2:
+- Drop the no-op blank-line changes noted by Amir Goldstein.
+- Add Amir's Reviewed-by tag.
 
-Given that we allocate the path now, we can drop the dev_path global and
-just return the allocated string instead.
+ testcases/kernel/syscalls/fanotify/fanotify13.c | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
 
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify13.c b/testcases/kernel/syscalls/fanotify/fanotify13.c
+index a43fae8..fde765e 100644
+--- a/testcases/kernel/syscalls/fanotify/fanotify13.c
++++ b/testcases/kernel/syscalls/fanotify/fanotify13.c
+@@ -142,15 +142,16 @@ static void delete_objects(void)
+ 
+ static void clean_upper_dir(void)
+ {
+-	unsigned int i;
+-
+ 	SAFE_UMOUNT(MOUNT_PATH);
+ 	SAFE_UMOUNT(OVL_MNT);
+ 
+-	SAFE_MOUNT(OVL_UPPER, MOUNT_PATH, "none", MS_BIND, NULL);
+-	for (i = 0; i < ARRAY_SIZE(objects); i++)
+-		SAFE_UNLINK(objects[i].path);
+-	SAFE_UMOUNT(MOUNT_PATH);
++	/*
++	 * FAN_DELETE_SELF on lower objects creates whiteouts in upper and,
++	 * with nfs_export/index enabled, index entries under workdir. Remove
++	 * both trees before remounting overlayfs to avoid stale index state.
++	 */
++	tst_purge_dir(OVL_UPPER);
++	tst_purge_dir(OVL_WORK);
+ 
+ 	SAFE_MOUNT_OVERLAY();
+ 	SAFE_MOUNT(OVL_MNT, MOUNT_PATH, "none", MS_BIND, NULL);
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.39.5 (Apple Git-154)
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
