@@ -1,139 +1,111 @@
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93CC7606A33D
-	for <ltp@archiver.kernel.org>; Mon, 23 Nov 2026 10:11:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FF16606A31E
+	for <ltp@archiver.kernel.org>; Mon, 23 Nov 2026 10:51:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=lists.linux.it header.i=@lists.linux.it header.a=rsa-sha256 header.s=picard header.b=MsZJiX5u;
-	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=Nvidia.com header.i=@Nvidia.com header.a=rsa-sha256 header.s=selector2 header.b=LQlwMX/O
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1795428680; h=to : date :
- message-id : in-reply-to : references : mime-version : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=3jMNOhfEfHoaYmaJRHEsI0taKMpnQm4WArmHjoMSaMU=;
- b=MsZJiX5uI2QuAZ9PycL1GR7FaI6nuFqyg7jZjv/EcuHo0fQWJVIAAljWZHkgtzMZY2a0j
- v1MUh04nD77xZUIv9ZYxu01Zz4GJUnZt4cyXcCk3s3LD+NMIQMi5TotcXYQDQOMAephjV3W
- aY6sPLne3rguru7OcI8W17QK+JDMs28=
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=suse.cz header.i=@suse.cz header.a=rsa-sha256 header.s=susede2_rsa header.b=HjRcHgd6;
+	dkim=fail reason="signature verification failed" header.d=suse.cz header.i=@suse.cz header.a=ed25519-sha256 header.s=susede2_ed25519 header.b=tErH92li;
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=suse.cz header.i=@suse.cz header.a=rsa-sha256 header.s=susede2_rsa header.b=QFyAfwTB;
+	dkim=neutral header.d=suse.cz header.i=@suse.cz header.a=ed25519-sha256 header.s=susede2_ed25519 header.b=dWivYxwO
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E035E3E917B
-	for <ltp@archiver.kernel.org>; Mon, 23 Nov 2026 11:11:20 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id A8B813E98DB
+	for <ltp@archiver.kernel.org>; Mon, 23 Nov 2026 11:51:35 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id ED5DD3E9FAE
- for <ltp@lists.linux.it>; Sat, 21 Nov 2026 01:37:12 +0100 (CET)
-Received: from SN4PR0501CU005.outbound.protection.outlook.com
- (mail-southcentralusazlp170110003.outbound.protection.outlook.com
- [IPv6:2a01:111:f403:c10d::3])
+ by picard.linux.it (Postfix) with ESMTPS id CC3113E9167
+ for <ltp@lists.linux.it>; Mon, 23 Nov 2026 11:51:20 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange ECDHE (secp384r1) server-signature RSA-PSS (2048 bits)
- server-digest SHA256) (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 5D5CA600D3F
- for <ltp@lists.linux.it>; Sat, 21 Nov 2026 01:37:12 +0100 (CET)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=l2EEIlWlOrYeGUb7R3CWk0mS3QGe/FpMknqooc9WyM30muWxATIuPP+k1jMlIuUkuTN7LWw9pPWmoIrjKZo7Omacsd6pV6IF08dPoCk7W6t56wDJkuxSv1j0VEMQ+yGSIz4uiqHdSSNxag4xaEZbkSFTQ/FJtgDuB+8RSzLclk6xjpiR2OISGSqRbdsUguojalP3Y8y33D/NkIgTNsYC8EsAzVXdL4lBOhSA+Z4JLYjXoNjWsHXK4n3cAcgCP5WDYJhpngpH7/WEP05WRp9pwZyWdOcDJaPFroCJfOFLljSBQqumN6zvAJvrcRHwWJLVAdqLP8E92uuM4aTfHoD1oQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=paGNkqs6uxm6+LPQj8M5Yc/P7kGSpnP7egJuW6QO/d0=;
- b=hcnuCaa2tfEh1/cRYHnHnDmiA6kfIsH+UxfXvmv5+pWUDtp+8OZ4C0B/pYy+9E1/PxnVfWDdinBHGBBFlwbPotRJIhvGBeO8iAYUcT+N9dNM6/khNf38/3l7MPkYTKM6rYlKOh6uGaFjnig3IsDmJVM1xcPPMz/nTrpwU2N9h9G7dkaWyaqkuf6eFftaXbm8dy82x2XWRl6kA6KxUoq+vtOZ2P3WeBNu/KcxuKieQ6o59HiPABJBqwI1qUoFLt67HWR6WCPPCqCm1bF26AAAHEBXX5owsyhNORRs6NjksxNBfXs8aIO73Pxt2RbxjH4EwSWnAViqfBf8KZ5dV5wVWA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=paGNkqs6uxm6+LPQj8M5Yc/P7kGSpnP7egJuW6QO/d0=;
- b=LQlwMX/O5WiiKuNuznf4G/0HSdUb+GKwI4wg9XzjBndhtxg9CBTH607OVUrUNrBv6St194kcVsoi5REoISpK8j5GmJ3fEOrS3dW7XPXv+NxT3Y8yFioNHNG6JcoSwYVsR0oiTYqfnN/H+AGVBt2D76BEuMylugOn9FGJPZBbNVdBDpzfLGcm2Nb1wenaJqdkpwIGy9X+1XBO+UAotWZKBfd4QCc1kwlYcxDaC6JsUfeqMUjb/61F9R6bUC9AcNaKzUP0ecb4KrMaS/qQxhAH0NjRTMttmzVboV14rYN3IK5yJ91CGn0Rs+vNI0jwMQdzYP0sepA678fBa4qPoFJ3fw==
-Authentication-Results: mx.microsoft.com 1; dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from MN0PR12MB5786.namprd12.prod.outlook.com (2603:10b6:208:375::13)
- by DM4PR12MB6661.namprd12.prod.outlook.com (2603:10b6:8:b7::6) with
- Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.21.615.10; Sat, 21 Nov 2026 00:37:07 +0000
-Received: from MN0PR12MB5786.namprd12.prod.outlook.com
- ([fe80::ae61:c9b4:847b:4854]) by MN0PR12MB5786.namprd12.prod.outlook.com
- ([fe80::ae61:c9b4:847b:4854%5]) with mapi id 15.21.0639.011; Sat, 21 Nov 2026
- 00:37:07 +0000
-To: ltp@lists.linux.it
-Date: Fri, 20 Nov 2026 16:36:53 -0800
-Message-ID: <20261121003653.179935-3-bmak@nvidia.com>
-X-Mailer: git-send-email 2.53.0
-In-Reply-To: <20261121003653.179935-1-bmak@nvidia.com>
-References: <20261121003653.179935-1-bmak@nvidia.com>
-X-ClientProxiedBy: MW4PR04CA0297.namprd04.prod.outlook.com
- (2603:10b6:303:89::32) To MN0PR12MB5786.namprd12.prod.outlook.com
- (2603:10b6:208:375::13)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 0BF1D1A007EB
+ for <ltp@lists.linux.it>; Mon, 23 Nov 2026 11:51:19 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id D32271F445;
+ Mon, 23 Nov 2026 10:51:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1795431077; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=E7tvw/xYBRHMikeDh9C8t/UCkLxHfRKtopcr9NO+H+8=;
+ b=HjRcHgd6QuZhWlkW8GxxpVJdWtFKcIUhMgTJ3CkQZHZAiVb4TyvniOEsE/3qmOuqVMHdrS
+ MHkHt7Ur1S+C23h02osXDsklWPfZg2v350ABUHMIhHaoeE2CF+PnFUqPpAmJlmiktDSB+0
+ +n5B7RJBrCEEEZFFURJCgrhb4lShT7o=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1795431077;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=E7tvw/xYBRHMikeDh9C8t/UCkLxHfRKtopcr9NO+H+8=;
+ b=tErH92li2D33Jl/SBc3NVk4hR4t9/qq2XPGJUWExYRxbGyrvLJT1K7vhy3y3Q+Iq/UkNun
+ u43Iu22lWzEb4hBw==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1795431076; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=E7tvw/xYBRHMikeDh9C8t/UCkLxHfRKtopcr9NO+H+8=;
+ b=QFyAfwTB0NRgj33OfOLBjteajga0yudd++5YldzuPz0ggEqra3ah5JrrY4LMch3P0tVqMN
+ hUVoK/hvoFVVnm6myv2KC6L8fI2e9i4csd4hyPMfu51s1fULu8P3esKio/l3435xr4ARgn
+ h6oiI/NCo8ia1WReWOMmkr7Wm/N1pMk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1795431076;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=E7tvw/xYBRHMikeDh9C8t/UCkLxHfRKtopcr9NO+H+8=;
+ b=dWivYxwOeFRvCfz/9mGk0aKTnC8I7EIg1B1mHMLlz+u0izUuyp3UDKy8S1NKWBs6AJmzjA
+ G3puH6K4ofIhDhAw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A4D4513510;
+ Mon, 23 Nov 2026 10:51:16 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 6jF1H6QaBGt8dwAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Mon, 23 Nov 2026 10:51:16 +0000
+Date: Mon, 23 Nov 2026 11:51:42 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Wei Gao <wegao@suse.com>
+Message-ID: <awQavtEBYYht-HIP@yuki.lan>
+References: <20261116085612.20171-1-wegao@suse.com>
+ <20261116085612.20171-2-wegao@suse.com>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN0PR12MB5786:EE_|DM4PR12MB6661:EE_
-X-MS-Office365-Filtering-Correlation-Id: fb38ef7e-6ef2-4906-82c3-08df4767924c
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
- ARA:13230040|1800799024|366016|23010399003|376014|18002099003|22082099003|261009223027099003|11063799006|261026121527099003|261026140227099003|56012099006|261022105027099003|261021123027099003|261021121427099003|261028144727099003|261022115727099003|10067099003|261102123227099003;
-X-Microsoft-Antispam-Message-Info: lXsqI8qv7pezVe2m1JrV6/JiGfdORN7xhHkhQ/9fxO3sryQ4rRN32iusvvliBNK3gggzoVkXpTKaDEv1FXYPC+Tt9Vh5+QsQG9GubdVmQqxCh6Qzk090O3s5+L1TzyReNJ5vfdp4ix2p53+0+8FTGF+GK2hUWlvmsS8qd4lP58HTWEStySFbrpPPyPWk6FctWQspYEdeK+cg3+ck6miTNqMhuA16yH7LTfL2yvpqhDpiia/gYvsFxhpj6oV0t0Vt0aXpvEvnk2MMnuFYIvqO6CxDx+WfPCNRPre6OnZyiEYIIC6Rn/nFrbxPKZEIV5WyA3wT6LvE8gOjCYajEBxTRzXTTnXbAM10j+XH2OFh2AHWvU13idA1zZk+iThD4UiKx+rquzTzHAp/gsbw7wVVCFoqnpFP3D5HoUmRBflppWYhFW22FR90KZeP/VZWj47qlfSxf7rQgvsq9XpeDJiJuSfcKYZ3cGh3RLPtFd1LC7mc4F/uD3UUinjPr6JNLwZemgUEX7bkvf0FZpY0dU6f6jdmfBNTXUy+btLGmWeWQSE+uQhh1+JwLcbRTdr47WRwja627L2epWS4GRCeEtxE4ppTy2qlz4lrphxZentYlg+2EJ7h/ww/lsSdXCh3lZpKtqj5yrJDqowL4vKRgYY0EtMiCBLrY/leJs+A73TWUYY=
-X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:MN0PR12MB5786.namprd12.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(13230040)(1800799024)(366016)(23010399003)(376014)(18002099003)(22082099003)(261009223027099003)(11063799006)(261026121527099003)(261026140227099003)(56012099006)(261022105027099003)(261021123027099003)(261021121427099003)(261028144727099003)(261022115727099003)(10067099003)(261102123227099003);
- DIR:OUT; SFP:1101; 
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?NvbBtO8EsAK9xpe0AIdDmCLd9gHfad7EEOG3KWgVYAK72Zxuhdvv4EsEL01K?=
- =?us-ascii?Q?FkRCJoLC7ROkhdo7EjJYwlw0e/FA5StUkCVBCCAqdUteqSDtuQCZbotB+MUU?=
- =?us-ascii?Q?e2UXmTKzH0/E0HL0TiK0XdixwAspBnHh3BKJX6w4zusfRhOijx9hTze2VqN6?=
- =?us-ascii?Q?vbi3KhF/ENaCk2xnjbuFBrwyAevXTG0dmuShuw486HpMqgoUVjC3FbgS4tNT?=
- =?us-ascii?Q?og1fKeYC9ynaJpFd6Cz7iGQ7ZlGgfOdvZOV+6YDEkKPHbO9mQRJHrIWWbcC/?=
- =?us-ascii?Q?Br/pp42WwfB3YVrJ0tmym+iveH9vSvLTnUpUOJWAfMSOtgFx3MOB07eeMLaU?=
- =?us-ascii?Q?GUmkFQ+7QYzYEBAMg05wEwZuy8P370GM2yboT5QgkEoIp71r9O/O+Qo1WAc1?=
- =?us-ascii?Q?v9Yy8LxMZ4X+ZxrSmaGB5k0AwLCeXYVFMJ/Uz8KsSL4YWiue1Jy7YrTVtSxw?=
- =?us-ascii?Q?igYZikwEsTD96XYOu7g0UlTvZjMJpYBnfa/735b0RCJqLeD5dqvZa7KL1ism?=
- =?us-ascii?Q?HMY9swGZarQdYHuSWd3lErRlgOS+K2jL7+0DtgFB0nn1vI7cQnuEbZ+cHemD?=
- =?us-ascii?Q?kElnR0dM3APqpeGSx/ey2GqDM+EUbCmEzt5ZkjwO/uScKbSxK1bi3IvesDtH?=
- =?us-ascii?Q?EUNJ/Sg/NnvCx2rEDyhAzdlGq6vnPFguKG0zKUa+5nYFIH6FnkcS+tcojiV9?=
- =?us-ascii?Q?JhIHOXR1K/LRcy1atGP4tZNdQivxlG2E9PnxKymLLnVzyL8C8nSGtcDPBVBE?=
- =?us-ascii?Q?NnJcnshONdfx7cMc5CvbqXtHug3X/cmjAWMnupk2ue9AVwn4bTERDrZHDXwD?=
- =?us-ascii?Q?ejh+otHaAduU+Ztpdqg7rmi+gYjjz43A+pefdtQ9iMqenJjz0kwHIcV6AAZc?=
- =?us-ascii?Q?1lJqEBtUqBbi6veTN0x/HQIailZkzdfMlgY9ay/1/GWEKbqWWLpjci9z/C1k?=
- =?us-ascii?Q?OcDLRZey0lZJYquZp51pXD1d95J/lKJ9K714GNjFkczJjKMs6Sd6y1jmJI8f?=
- =?us-ascii?Q?wB3lmeOX1kNTlOYfeoilLB/mOQZ1ZeN4BWWCEs5O5LPvdKrAXIzTdSKFDc49?=
- =?us-ascii?Q?dC5JKpNQD0gHC4stjk2lPohSzODfRa2n05VpyW3FLIQyiOPllq+CGwbQrMYr?=
- =?us-ascii?Q?ER8CDcKpAqB2eKJvgwk6M2L3OKythGSZmVdji8UHkRIcCYsPF7B8t0TYc/h9?=
- =?us-ascii?Q?JY2R0i9xmEz9f2aBMWKnfN45Fu+0Fyud0TCROZ5CMPnC2Y3Ak53sBo5QCg1U?=
- =?us-ascii?Q?xm5Yo43U/uqIQirPwEtK4BGhWdwi2kIqFQr1pfc0hrygB/tqV6B8NVI/xi6Z?=
- =?us-ascii?Q?X2wQEeH95EHnFQb1viZorzi6SEfYRI+h8c3/f3yZBuR4DtpVunXKUTejQjP5?=
- =?us-ascii?Q?HWvu5/Sxce1slSIvLJGQtYWFqGUSeQnOCU3mjherb1LqfzF+y6Ssv0oK7qCQ?=
- =?us-ascii?Q?Ndw9e2oKQzkR175jBJWprYfVRkd7VvbR4ycSscBLTaXuFpNiNtHuIKOCaJVQ?=
- =?us-ascii?Q?jilO+IdoUjsxP2JSIUovzFD5mNRH5wHqqcgVHB3GyWexOtaFFhCYSn2EQJq2?=
- =?us-ascii?Q?cBNL4I8S2DWhG/YKD2SAFXXeyg+jJFaA1oQQnVDKR7LnIyiUcwhvme/o43jR?=
- =?us-ascii?Q?uuKMSGGJ5wdQoSZOgDH4Bbg237mzGsSwFOBPFrmBFe5NRDpRC+E1E93stYvz?=
- =?us-ascii?Q?acxc7MaRgDDT0djP49qi6e5n5wL/eG4VJOD9jFqS8PqXfzcA3QTjbiRQGd9q?=
- =?us-ascii?Q?z+dRCLN8Lw=3D=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fb38ef7e-6ef2-4906-82c3-08df4767924c
-X-MS-Exchange-CrossTenant-AuthSource: MN0PR12MB5786.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Nov 2026 00:37:07.3420 (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: +EvL8vvPmN6odmreMpRNKekJTLPJNaoKD2647MeKR5iiZu+2SpwQrb16kKo4EVw+
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB6661
-X-Spam-Status: No, score=-19.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_PASS,SPF_PASS,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
+Content-Disposition: inline
+In-Reply-To: <20261116085612.20171-2-wegao@suse.com>
+X-Spam-Level: 
+X-Spamd-Result: default: False [-13.30 / 50.00]; SUSE_INTERNAL_BYPASS(-9.00)[];
+ BAYES_HAM(-3.00)[100.00%]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ RCVD_TLS_ALL(0.00)[]; FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
+ FROM_EQ_ENVFROM(0.00)[]; RCPT_COUNT_THREE(0.00)[3];
+ RCVD_COUNT_TWO(0.00)[2]; MISSING_XM_UA(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo]
+X-Spam-Score: -13.30
+X-Spam-Status: No, score=-8.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_PASS,SPF_PASS autolearn=ham
+	autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Mailman-Approved-At: Mon, 23 Nov 2026 11:10:24 +0100
-Subject: [LTP] [PATCH 2/2] tse_swap: Fill swapfile with zeroes on ntfs3
+Subject: Re: [LTP] [PATCH v19 1/3] lib: Add tst_attach_loopdev()
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -143,63 +115,144 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Brian Mak via ltp <ltp@lists.linux.it>
-Reply-To: Brian Mak <bmak@nvidia.com>
-Cc: Brian Mak <bmak@nvidia.com>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On ntfs3, fallocate() allocates clusters but does not change the valid
-data length.
+Hi!
+> +static int attach_device(const char *dev, const char *file, int warn_on_ebusy)
+>  {
+>  	int dev_fd, file_fd;
+>  	struct loop_info loopinfo;
+> @@ -168,7 +168,8 @@ int tst_attach_device(const char *dev, const char *file)
+>  
+>  	dev_fd = TST_RETRY_FN_EXP_BACKOFF(open(dev, O_RDWR), TST_RETVAL_GE0, 1);
+>  	if (dev_fd < 0) {
+> -		tst_resm(TWARN | TERRNO, "open('%s', O_RDWR) failed", dev);
+> +		if (warn_on_ebusy || errno != EBUSY)
+> +			tst_resm(TWARN | TERRNO, "open('%s', O_RDWR) failed", dev);
+>  		return 1;
+>  	}
+>  
+> @@ -180,10 +181,16 @@ int tst_attach_device(const char *dev, const char *file)
+>  	}
+>  
+>  	if (ioctl(dev_fd, LOOP_SET_FD, file_fd) < 0) {
+> +		int err = errno;
+> +
+>  		close(dev_fd);
+>  		close(file_fd);
+> -		tst_resm(TWARN | TERRNO, "ioctl(%s, LOOP_SET_FD, %s) failed",
+> -			 dev, file);
+> +		errno = err;
 
-ntfs3 has no ->swap_activate(), so swapon() maps the file with
-generic_swapfile_activate() and ->bmap(). Since ntfs3 was converted to
-iomap in v7.0, ntfs_bmap() calls iomap_bmap(), which only returns a
-block number for IOMAP_MAPPED extents, while ntfs3 reports the range
-beyond the valid data length as IOMAP_UNWRITTEN. swapon() therefore
-rejects the file, and swapon01-03 and swapoff01-02 fail on ntfs3 with:
+This errno needs to be restored right before the return, the tst_resm()
+still may clobber the errno.
 
-  swapon: swapfile has holes
-  tse_swap.c:228: TFAIL: swapon() on unknown failed: EINVAL (22)
+> +		if (warn_on_ebusy || errno != EBUSY) {
+> +			tst_resm(TWARN | TERRNO, "ioctl(%s, LOOP_SET_FD, %s) failed",
+> +				 dev, file);
+> +		}
+>  		return 1;
+>  	}
+>  
+> @@ -207,6 +214,64 @@ int tst_attach_device(const char *dev, const char *file)
+>  	return 0;
+>  }
+>  
+> +int tst_attach_device(const char *dev, const char *file)
+> +{
+> +	return attach_device(dev, file, 1);
+> +}
+> +
+> +static int attach_loopdev(char *dev, size_t dev_len, const char *file)
+> +{
+> +	if (tst_find_free_loopdev(dev, dev_len) == -1)
+> +		return -1;
+> +
+> +	if (attach_device(dev, file, 0) == 0)
+> +		return 0;
+> +
+> +	if (errno == EBUSY)
+> +		return 1;
+> +
+> +	return -1;
+> +}
+> +
+> +char *tst_attach_loopdev(const char *file)
+> +{
+> +	char dev[PATH_MAX];
+> +	unsigned int delay = 1;
+> +	unsigned int max_delay = tst_multiply_timeout(1000000);
+> +	int ret;
+> +
+> +	for (;;) {
+> +		ret = attach_loopdev(dev, sizeof(dev), file);
+> +		if (ret <= 0)
+> +			break;
+> +
+> +		if (delay < max_delay) {
+> +			usleep(delay);
+> +			delay *= 2;
+> +		} else {
+> +			ret = -1;
+> +			break;
+> +		}
+> +	}
+> +
+> +	if (ret == 0)
+> +		return strdup(dev);
 
-Fill the swapfile with zeroes on ntfs3, as is already done for old XFS,
-so that the whole file is written before mkswap and swapon().
+It's unlikely, but the strdup() can fail. So I guess this should be
+at least TBROK on NULL.
 
-Signed-off-by: Brian Mak <bmak@nvidia.com>
----
- libs/swap/tse_swap.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+> +	return NULL;
+> +}
+> +
+> +char *safe_attach_loopdev(const char *file, const int lineno, const char *file_path)
+> +{
+> +	char *dev = tst_attach_loopdev(file_path);
+> +
+> +	if (!dev) {
+> +		tst_brkm_(file, lineno, TBROK, NULL,
+> +			  "Failed to attach %s to loop device", file_path);
+> +	}
+> +
+> +	return dev;
+> +}
+> +
+>  uint64_t tst_get_device_size(const char *dev_path)
+>  {
+>  	int fd;
+> @@ -386,17 +451,20 @@ int tst_dev_sync(int fd)
+>  const char *tst_acquire_loop_device(unsigned int size, const char *filename)
+>  {
+>  	unsigned int acq_dev_size = size ? size : DEV_SIZE_MB;
+> +	char *dev;
+>  
+>  	if (tst_prealloc_file(filename, 1024 * 1024, acq_dev_size)) {
+>  		tst_resm(TWARN | TERRNO, "Failed to create %s", filename);
+>  		return NULL;
+>  	}
+>  
+> -	if (tst_find_free_loopdev(dev_path, sizeof(dev_path)) == -1)
+> +	dev = tst_attach_loopdev(filename);
+> +	if (!dev)
+>  		return NULL;
+>  
+> -	if (tst_attach_device(dev_path, filename))
+> -		return NULL;
+> +	strncpy(dev_path, dev, sizeof(dev_path) - 1);
+> +	dev_path[sizeof(dev_path) - 1] = '\0';
+> +	free(dev);
 
-diff --git a/libs/swap/tse_swap.c b/libs/swap/tse_swap.c
-index ae3c19313..a19e97556 100644
---- a/libs/swap/tse_swap.c
-+++ b/libs/swap/tse_swap.c
-@@ -145,6 +145,7 @@ int make_swapfile(const char *file, const int lineno,
- 	unsigned int blocks = 0;
- 	size_t pg_size = sysconf(_SC_PAGESIZE);
- 	char mnt_path[PATH_MAX];
-+	long fs_type;
- 
- 	safe_statvfs(file, lineno, ".", &fs_info);
- 
-@@ -177,8 +178,11 @@ int make_swapfile(const char *file, const int lineno,
- 	if (prealloc_contiguous_file(swapfile, blk_size, blocks) != 0)
- 		tst_brk_(file, lineno, TBROK, "Failed to create swapfile");
- 
--	/* Fill the file if needed (specific to old xfs filesystems) */
--	if (tst_fs_type(swapfile) == TST_XFS_MAGIC) {
-+	/*
-+	 * Fill the file if needed (specific to old XFS and ntfs3)
-+	 */
-+	fs_type = tst_fs_type(swapfile);
-+	if (fs_type == TST_XFS_MAGIC || fs_type == TST_NTFS3_MAGIC) {
- 		if (tst_fill_file(swapfile, 0, blk_size, blocks) != 0)
- 			tst_brk_(file, lineno, TBROK, "Failed to fill swapfile");
- 	}
+Given that we allocate the path now, we can drop the dev_path global and
+just return the allocated string instead.
+
 -- 
-2.53.0
-
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
