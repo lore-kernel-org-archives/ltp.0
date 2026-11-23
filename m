@@ -2,93 +2,92 @@ Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9235F606A31E
-	for <ltp@archiver.kernel.org>; Mon, 23 Nov 2026 20:38:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B07D606A31E
+	for <ltp@archiver.kernel.org>; Mon, 23 Nov 2026 20:44:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=ZzPVDmPi
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=tUHRSQ+h
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 2586E3E9C44
-	for <ltp@archiver.kernel.org>; Mon, 23 Nov 2026 21:38:41 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 8FB253E9F10
+	for <ltp@archiver.kernel.org>; Mon, 23 Nov 2026 21:43:59 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 3E55F3E990E
- for <ltp@lists.linux.it>; Mon, 23 Nov 2026 21:38:26 +0100 (CET)
-Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com
- [IPv6:2607:f8b0:4864:20::f43])
+ by picard.linux.it (Postfix) with ESMTPS id 01B713C2978
+ for <ltp@lists.linux.it>; Mon, 23 Nov 2026 21:43:44 +0100 (CET)
+Received: from mail-oi2-x08.google.com (mail-oi2-x08.google.com
+ [IPv6:2607:f8b0:4864:32::8])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id AC9051A00250
- for <ltp@lists.linux.it>; Mon, 23 Nov 2026 21:38:25 +0100 (CET)
-Received: by mail-qv1-xf43.google.com with SMTP id
- 6a1803df08f44-92106d5371dso47565106d6.1
- for <ltp@lists.linux.it>; Mon, 23 Nov 2026 12:38:25 -0800 (PST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 5BCC92000C3
+ for <ltp@lists.linux.it>; Mon, 23 Nov 2026 21:43:44 +0100 (CET)
+Received: by mail-oi2-x08.google.com with SMTP id
+ 5614622812f47-545a4fb8d5dso1017960b6e.1
+ for <ltp@lists.linux.it>; Mon, 23 Nov 2026 12:43:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20260707; t=1795466304; x=1796071104; darn=lists.linux.it;
+ d=gmail.com; s=20260707; t=1795466623; x=1796071423; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to:content-type;
- bh=i15IYcDFLGkhnRd80w/RIJUOhXJc25J9jyG/+McVSw8=;
- b=ZzPVDmPiWLVDqMBqYXJIJa3YJEH81m6iMvvTVDv7Z3LzJNOTkdOatKzfvD6VCA2MbW
- pNjyCXrl1/WrAgbkxM2Cprnfj7g9qZFUi8tfRVtOAJK3iOnVm9LRyjU4WFvqQmgPajNG
- 2uY17FNMFOS0IjnM+JxqoBQ37kI849fszr9QMOnAe/aG5RNWw7TrUE2Ond5Zxnzs1KFL
- khcTD+IR5/d/SvC0rN5zjQCNcKAcgJxkLXoFdayHuaJTMmrIdfNRdrGyXgefHoWHScb1
- x0pSxL0MYQcl9qYKuLx9DtB7eCLg2OR2m+p7oFzcx71HdsLKVkKMXxDz9JYgUKdi6mcK
- ZbOQ==
+ bh=8NvuNZgh8jJNmNK/x405z54z2E3bQB+13f1OT9fP+BM=;
+ b=tUHRSQ+hN7pyEch6AcVUdrLBUn1uuj6D5Qwb1mTe1zEdVTf6UvHlYj/IbNSCwDhj7L
+ HuvnmYHahU1IZpx46S9WnddxNw0BAEKr2I9y9jadJ1CIAtmHTvqEeeYNybz1z5LsGIvN
+ 5ZVHt+7Nijeu8DGyUU+QDymTgre769a5SQxzELrmgYN+Pa8vLWn8elFqQU1d/XFVCann
+ Qm9tJlvQ4JPip9oR7u4T/RDsDEKmQKysQkTQAfra7CuXMF4gqndfAEr4+2fdkRBHVSB7
+ DZHc8JE9rt8oHCOm3mjEROq1/51+jXsmDWGTMijiMhEuAth6EovKlctltYxUPNraJvQf
+ kfTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20260707; t=1795466304; x=1796071104;
+ d=1e100.net; s=20260707; t=1795466623; x=1796071423;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to:content-type;
- bh=i15IYcDFLGkhnRd80w/RIJUOhXJc25J9jyG/+McVSw8=;
- b=AQ2fEJKyFmD6AIQ0152StnvomfBXya19zf7197om9GDRIrvw5Rn7v2CbuUR/iGnLCt
- xPis2uMDGioH1K2FVASikcLsWk1ERLM/aKpOQjNtTZraOmvVzm1CBK9kRZm6lt8d44vz
- r6P0Np3XyuAfRcKK/J8rtnS8WO2d5fJShPc0jPJY8P+Ky7zcKIBxdD79/ZUnkYEyIH+N
- WOJ3Ugn7Tm/cN7cq+gQ40XGdnKZOJXoQ9Yq/gfQ21th3gaiG2kqVNkj/AtA/VAGO2wMy
- 1O3wiGMfDFmFAErsyG3aemJjn6TeacFggjPKSPL8BXD6naYf8Seza7ZsejqIkigiNV/P
- biyQ==
-X-Gm-Message-State: APuU4Z/CCwgw2b3RAiPAXRLWDjl5auFHGZk2gINNgTJbuj3WAAER2dyA
- he/w9WjKwaWtuUPPTQjXpYP2XkL4Nghzjgb1CZMD5W4lTt2pj5dem+xL
-X-Gm-Gg: AZFdTZeML2WmItyU0NJ2r5tdcxUVAKVEO5SRn+rcfdXR6NZSDFOfdCji1G5vmUE87LT
- BKSJ9byJ2Rrleg2E2ZAZH3WP8B/n6BfLhDEKgElIZc9gdRCtrVoa0nxGk5crSOUPcEHsnbAQO9A
- 1uf95hwAcW819+2xn1P8UWaIaDn6XgZ1wrUyTbrhhTjH6kjearhDWebkKtITVGTH7dIc7hdvyGb
- qGuzlGyV3k3Ikk67dKg7pFum1ZEpIwHEDI9dSicGxFK4GrnxIPnsRfrms//nXbz2CngKF4qRY0J
- YN00o7RrZPxBr/uIq/8sOYCTzTeuq+xEHkasYo0TQuza6+UnnjdxH9lLIhUDYKM99IKjShndVVu
- 4M1jOFg3TQVZR+ctKvj4CpX9fH08Gdr0vCKfec57wErnJB9NvgnF8iVXmHXH8LmESCzc1UysYCo
- WqTPuA1ogYAC1d6JuOyH51iEaWA/gtOL0nxnMIIklRMQEvQQGCKV0tFzBxO31KaF8jI6IPyP0De
- 60Xy5hyIY3HK29Mu7lWi/TVIY0UPnCLhs8AOyn83mTpsUzFOtrsLMKnf2xv2KtxgupEJ4eFxe5i
- akirsU6e0a+8sX9Rp05z28tCvrvTLEeLqjRZR6grqz/qi2Va2o84n4xwqB1IbWIorcKQDAFs5Kd
- BBnZZhtl6Os4MXcdZSezfqbsrTgAYmoh7qkg/20gCaRM=
-X-Received: by 2002:ad4:5c49:0:b0:91f:3063:6b2f with SMTP id
- 6a1803df08f44-9212e0b6d3cmr233334836d6.17.1795466304395; 
- Mon, 23 Nov 2026 12:38:24 -0800 (PST)
+ bh=8NvuNZgh8jJNmNK/x405z54z2E3bQB+13f1OT9fP+BM=;
+ b=KVXDsjoL8GMtl7y4geTm5AheoOsMqAWhat2HMdKnaWGVcM43auBvoM+GmS0W7ALrgK
+ Bt/Dvo2PLEVQPOId4uXkXXR1ruJ7VWLA6gv+k+Dvv7lTwmuFzmIfwz0DCOOHa9oacTG3
+ Vvk3a7xGUB5BO4eZATLfOS/dpfbCsEkyRLqGBazD3KcIfJSkTtMyfY13RaIF5XhT67M8
+ CvLpG5GznRbfOoku1MiOYgfzChGk7DhIumEKmvWU1MYnU+Fh8wl/WmPdXkBdqSDpXUdn
+ Us3IzAKx0A6u4JpBzdfX6gb1kxTpt0aemaepQ1S83lBhsVO03npJNjCSS7tdYZXIXC7S
+ 17Vg==
+X-Gm-Message-State: APuU4Z98XoflvqIE1YbLCguVyRK4muW9T1D1G+PtHG8eVf0WcqoAuQHc
+ VG38rzPCOCZftBGqCdguU9zmZFONJAT39AzsZOp8cOeLBKpjJpYgUAtGzXdLxXkf
+X-Gm-Gg: AZFdTZeKsWwaIs4MkMyCuFbZNGqyC2MWUf/wQAObB2m4NXJBclnspocWK1rkvCtC+Wg
+ U6CTXaAFG4p+ms8O2x5OTQLjQMfbj/U19hz7kvfH9pNY4evxIn915+dRS8FcCVGPdKEVGhFQ8PS
+ MHAGYyCDrdLAvRjgwsfdm8P7cv42qyFeLwcQuPSaFyUMyXBSos5Yx1SU1ZyervblH21Nid7WhOj
+ 4bnQICjuzjuddC0MWvl8uvrgLgacce8O2lTpB1b0bgaU/54C4zDIgO+om3Dnz8AAGKUY2RwUQ7L
+ TKy8/LxNInPKMqP13Q+xYSUF02sI+6iKuQ6nUb5K8DZrt9TF3zlUDeMCePUhJ0MUx6xoJX0Pags
+ rrKdWX5rd/UMIa9st0AzZ/GySRLqcvQrHQIKPNBxOsbwIHjcdqM2LoLiKSmrK8gajr4UhgeYZ82
+ AKHshiKdcvWeQHHkX6Uqyz9ldOWyrxd7csK2kD90Xra8mjoKZsde0WFmMumXIwp3/ucTEnXv2XR
+ 0VwJgrHFeqFNWNvA44oqGtVXPE/E2X4MeMGJAgqieZktGjM3bB5td57Z50fHRNLsss3DhGD4oSY
+ nmRgRVYvt5Y8YRRSuU0tJorezt1oY4WVnw+AMhWP5MJ5SJ7JSk+ehBS2zyTtwiOSLhylw/Q8efi
+ iQbareRm/zXVBMp5huXNoC7i9uI2z8yoET/TJ2GWf1CDNVSDTA9xhnyG6sW3n1Bg=
+X-Received: by 2002:a05:6808:1484:b0:4b3:7b31:8df7 with SMTP id
+ 5614622812f47-57a0a93091bmr13970048b6e.14.1795466622949; 
+ Mon, 23 Nov 2026 12:43:42 -0800 (PST)
 Received: from
- runnervm0hi8g.4jqpsrdllcqevabc4shomduahf.bx.internal.cloudapp.net
- ([48.217.226.160]) by smtp.gmail.com with ESMTPSA id
- 6a1803df08f44-92134a0f5d7sm116157666d6.37.2026.11.23.12.38.24
+ runnervm0hi8g.depkc2g5bqbunhyfaphfdnoarh.gx.internal.cloudapp.net
+ ([135.119.23.13]) by smtp.gmail.com with ESMTPSA id
+ 586e51a60fabf-4bc60491337sm11689415fac.12.2026.11.23.12.43.42
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 23 Nov 2026 12:38:24 -0800 (PST)
+ Mon, 23 Nov 2026 12:43:42 -0800 (PST)
 From: linuxtestproject.agent@gmail.com
-To: Wake Liu <wakel@google.com>
-Date: Mon, 23 Nov 2026 20:38:23 +0000
-Message-ID: <20261123203823.3864-1-linuxtestproject.agent@gmail.com>
+To: Huaisheng Ye <yehuaisheng@open-hieco.net>
+Date: Mon, 23 Nov 2026 20:43:41 +0000
+Message-ID: <20261123204341.4031-1-linuxtestproject.agent@gmail.com>
 X-Mailer: git-send-email 2.56.1
-In-Reply-To: <20261123123626.1499705-1-wakel@google.com>
-References: <20261123123626.1499705-1-wakel@google.com>
+In-Reply-To: <20261123080537.20122-2-yehuaisheng@open-hieco.net>
+References: <20261123080537.20122-2-yehuaisheng@open-hieco.net>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.6 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_INVALID,DKIM_SIGNED,FORGED_GMAIL_RCVD,FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_PASS,SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no
-	version=4.0.1
+X-Spam-Status: No, score=-3.6 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_INVALID,DKIM_SIGNED,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_PASS,
+	SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] swapoff01: Create 64MB swapfile instead of 65536 blocks
+Subject: Re: [LTP] hugemmap10: Add linux-git tag for NUMA fix
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -103,10 +102,10 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Wake,
+Hi Huaisheng,
 
-On Mon Nov 23 12:36:24 2026 +0000, Wake Liu <wakel@google.com> wrote:
-> swapoff01: Create 64MB swapfile instead of 65536 blocks
+On Mon Nov 23 16:05:35 2026 +0800, Huaisheng Ye wrote:
+> hugemmap10: Add linux-git tag for NUMA fix
 
 Verdict - Reviewed
 
