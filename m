@@ -2,90 +2,57 @@ Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B729C606A322
-	for <ltp@archiver.kernel.org>; Tue, 24 Nov 2026 08:43:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 093D0606A321
+	for <ltp@archiver.kernel.org>; Tue, 24 Nov 2026 09:07:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=lists.linux.it header.i=@lists.linux.it header.a=rsa-sha256 header.s=picard header.b=LMr1ZQGz;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.a=rsa-sha256 header.s=20260707 header.b=VnOSzmzA
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1795509818; h=date :
- in-reply-to : mime-version : references : message-id : to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-type :
- content-transfer-encoding : sender : from;
- bh=6rvMHfZHx3gNyQ5uaRkn0Bu6xiB6M4KuaQx757DwHkk=;
- b=LMr1ZQGzVsN3PD9zUpjGWiJTnafZaqbq3Np7trNMt+nTu4VJGvJo9K8sK/PJKVLYejQdd
- WK32xMpu1kvLbp//ne53MXYYrQHkxdC+pjyO5X9wgwuBSN5Z8RhxtlrRi3GTi1/HTCq/eyx
- tpo8vVl+eIvfihnNk+QyVHD4hcAQdkQ=
+	dkim=fail reason="signature verification failed" (1024-bit key, unprotected) header.d=linux.dev header.i=@linux.dev header.a=rsa-sha256 header.s=key1 header.b=N976Q0bb
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 425373E91BC
-	for <ltp@archiver.kernel.org>; Tue, 24 Nov 2026 09:43:38 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id DE7E53E9167
+	for <ltp@archiver.kernel.org>; Tue, 24 Nov 2026 10:07:03 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 01D513E928B
- for <ltp@lists.linux.it>; Tue, 24 Nov 2026 09:42:46 +0100 (CET)
-Received: from mail-pf1-x445.google.com (mail-pf1-x445.google.com
- [IPv6:2607:f8b0:4864:20::445])
+ by picard.linux.it (Postfix) with ESMTPS id E488A3C9D7E
+ for <ltp@lists.linux.it>; Tue, 24 Nov 2026 10:06:48 +0100 (CET)
+Received: from mta0.migadu.com (out-226.mta0.migadu.com
+ [IPv6:2001:41d0:1004:224b::e2])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id BE7721400770
- for <ltp@lists.linux.it>; Tue, 24 Nov 2026 09:42:45 +0100 (CET)
-Received: by mail-pf1-x445.google.com with SMTP id
- d2e1a72fcca58-8b69d1f2a18so2952678b3a.1
- for <ltp@lists.linux.it>; Tue, 24 Nov 2026 00:42:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=google.com; s=20260707; t=1795509764; x=1796114564; darn=lists.linux.it;
- h=content-type:cc:to:from:subject:message-id:references:mime-version
- :in-reply-to:date:from:to:cc:subject:date:message-id:reply-to
- :content-type; bh=lJeZ3UAm4P3u/Vm7cCxun3mf049dYPbGAsJ12ohJ5zI=;
- b=VnOSzmzAvPFo3AE2qcodOZsEvUGZSBL35CUa6fhn4S1K9d5BWaKt4ZiUs+ZFJh/En9
- W1jYUmWJtHSfUmib3+pwBMXEAALj8LAkxlyF7V1r0cUtMS3f8OPTpeuxs1gv0jJGe5wt
- OAkZt0PJ14JU+e43W+FNtCBsEMTsA36pC4JkyRSW1VMi0rGZGtskxsoZBuHHRx6/0IvU
- jHDWWS6vw9MyP/OCOw6UcHcripWTYo/fRmQxcCDSeYY/Pu9SQofXx3e+2Okda+IeuYtR
- swnDgHPkLOBne/d3loxlMF7lXofeju+F4nEctK8nOaqzYhhCenh87HsP6ShcPS9mx4HH
- 8XBg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20260707; t=1795509764; x=1796114564;
- h=content-type:cc:to:from:subject:message-id:references:mime-version
- :in-reply-to:date:x-gm-message-state:from:to:cc:subject:date
- :message-id:reply-to:content-type;
- bh=lJeZ3UAm4P3u/Vm7cCxun3mf049dYPbGAsJ12ohJ5zI=;
- b=ZnI9VvoRPyJ8fAfvHVLxoo0+iQmPCVfo/2boYh+e9uLl1ozaWe2vD97PM5HmzlbbDh
- 4RI712I+Qet8JkAMIa+ays+cY4ApFoGLMa4Iig2ewmKzuTK6ybuoggVHrcio+IUk9bT8
- WOTPCJZEHMbN1TuJo27FkvffGItMS3R1Lk1rGd2m1Vsa/+Vyt+AL3A5GhQyFEhP3CVox
- phYQOx+dz41C+Pbs8DE+JLmUh+0hafAGlbIKgn2/z1igg0mryHwZqWE7zAvfXn+NsfeZ
- hixZJ/JNBt0T6DV0VSuZbv/l0aZAKemJryImZA9Z2A/kUPjk4zZFRIxPuxvcoKKC3SCp
- cHCw==
-X-Gm-Message-State: APuU4Z914CL8FoFQm5OVqlCZok+OqQVESTVqWNHwPbJXe5FEysbkxUfx
- 6Twoooz/P2KS7MA7aZKGXSODUzNr9014LlfvTxElmWetQl9oHb1jlu5iCpk52rWEw+3464ntoUI
- wQmrAEEyaCgz3iwmT/29p0ega6sCWYNl2fKqQNjmbqFKsyZhZXca8D1YNCVkgCrqEzadAhz/3dJ
- Y22HYR5gGWff7faXC0s7H4tT5Pig==
-X-Received: from pfbfa6.prod.google.com ([2002:a05:6a00:2d06:b0:8a0:3cd8:22d6])
- (user=wakel job=prod-delivery.src-stubby-dispatcher) by
- 2002:a05:6a00:891:b0:8a0:465d:38ba
- with SMTP id d2e1a72fcca58-8c7dd9d67d6mr10035907b3a.24.1795509763450; Tue, 24
- Nov 2026 00:42:43 -0800 (PST)
-Date: Tue, 24 Nov 2026 08:42:40 +0000
-In-Reply-To: <20261113134113.2822581-1-wakel@google.com>
-X-Archived-By: <archiver.kernel.org>
-Mime-Version: 1.0
-References: <20261113134113.2822581-1-wakel@google.com>
-X-Mailer: git-send-email 2.56.1.809.ga0b61035b5-goog
-Message-ID: <20261124084240.2967915-1-wakel@google.com>
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id BB0EF200161
+ for <ltp@lists.linux.it>; Tue, 24 Nov 2026 10:06:47 +0100 (CET)
+X-Envelope-To: ltp@lists.linux.it
+DKIM-Signature: a=rsa-sha256; bh=Lz4CWZuIMPRHV2attBT4giUCYF//E4BfIGrsjiO5Wpg=; 
+ c=simple/simple; d=linux.dev;
+ h=from:to:subject:date:message-id:mime-version:content-type; s=key1;
+ t=1795511206; v=1; x=1796116006;
+ b=N976Q0bbJDyj/l6Jb0F9BWBPxT3qAsybtn4TXhG45wDlYSEf5bA+3yi16dkUZiHDyck+LMx0
+ k7lOdQf6z5B+FWIOM54bOaI6xbucp4Z9yjc9sOmbOa9dFdrFKb8i0pvisIRAlhNFi7vtte1QUAy
+ cgCAumjauXewnx0FKjT+c5xw=
+X-Envelope-To: ltp@lists.linux.it
+Received: by mta12.migadu.com with ESMTPS id 308a4adc125f0a85;
+ Tue, 24 Nov 2026 09:06:46 +0000
+X-Mizu-Trace-ID: 308a4adc125f0a85
+X-Migadu-Flow: FLOW_OUT
+From: "Li Wang (Hieco)" <li.wang@linux.dev>
 To: ltp@lists.linux.it
-X-Spam-Status: No, score=-9.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,MAILING_LIST_MULTI,
-	SPF_HELO_PASS,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=4.0.1
+Date: Tue, 24 Nov 2026 17:06:30 +0800
+Message-ID: <20261124090633.840656-1-li.wang@linux.dev>
+X-Mailer: git-send-email 2.56.1
+X-Archived-By: <archiver.kernel.org>
+MIME-Version: 1.0
+X-Spam-Status: No, score=-16.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_PASS,SPF_PASS,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
-X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] tst_test_macros: Avoid re-evaluating arguments in
- TST_EXP_{EQ, LE}_*()
+Subject: [LTP] [PATCH v4 0/3] Speedup LTP compile time by ~20% on
+ multi-machine
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -95,31 +62,59 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Wake Liu via ltp <ltp@lists.linux.it>
-Reply-To: Wake Liu <wakel@google.com>
-Cc: Wake Liu <wakel@google.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Cyril, Andrea, Petr,
+The following results show how this optimization moves compile times
+really far from what we have now. With a single threaded build, LTP
+would take approximately 12 minutes to compile. With a multi-threaded
+build on 16 CPUs, this drops down to ~46 seconds.
 
-Gentle ping on this patch:
-https://patchwork.kernel.org/project/ltp/patch/20261113134113.2822581-1-wakel@google.com/
+time make -j16
 
-Please let me know if you have any comments.
+Executed in   45.96 secs    fish           external
+   usr time  519.11 secs    0.24 millis  519.11 secs
+   sys time  167.13 secs    1.08 millis  167.13 secs
 
-Thanks,
-Wake
+Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+---
+Changes in v4:
+- Mark library targets .PHONY so library source changes are rebuilt
+- Also build libkerntest.a when make is run from testcases/
+- Remove the old $(LIBLTP) rule from testcases.mk (overriding recipe warning)
+- Refactoring the patchset in clean code
+- Link to v3: https://lore.kernel.org/all/20261021-build_system_optimize-v3-0-71a3c4c6f937@suse.com/
 
-On Fri, Nov 13, 2026 at 01:41:13PM +0000, Wake Liu wrote:
-> Commit 1759ad9f3f0b ("Add silent macros for TST_EXP_EQ_*") split the
-> TPASS message out of TST_EXP_EQ_SILENT_() and printed VAL_A directly in
-> TST_EXP_EQ_LI(), TST_EXP_EQ_LU(), TST_EXP_EQ_SZ() and TST_EXP_EQ_SSZ()
-> because tst_tmp_a__ was no longer in scope. As a result, VAL_A is
-> evaluated a second time whenever the check passes. Commit 1b0395338108
-> ("tst_test_macros: Add TST_EXP_LE_LU*()") followed the same pattern and
-> evaluates both VAL_A and VAL_B a second time on TPASS.
+Changes in v3:
+- added libs-all ordering to avoid races
+- Link to v2: https://lore.kernel.org/20261020-build_system_optimize-v2-0-b527ac7cf835@suse.com
+
+Changes in v2:
+- fix build race condition
+- Link to v1: https://lore.kernel.org/20261020-build_system_optimize-v1-1-744f9fa88908@suse.com
+
+Andrea Cervesato (2):
+  build: Fix library prerequisites in testcases.mk
+  build: Build shared libraries once when make runs in testcases/
+
+Li Wang (Hieco) (1):
+  build: Recurse into trunk subdirectories in parallel
+
+ Makefile                            |  2 ++
+ include/mk/generic_leaf_target.inc  |  2 ++
+ include/mk/generic_lib_deps.inc     | 34 ++++++++++++++++++++++++
+ include/mk/generic_trunk_target.inc | 40 ++++++++++++++++++++++++-----
+ include/mk/testcases.mk             | 15 +++++------
+ testcases/kernel/Makefile           |  6 +++++
+ testcases/kernel/include/lib.mk     |  6 +++--
+ testcases/network/rpc/Makefile      |  5 ++++
+ 8 files changed, 93 insertions(+), 17 deletions(-)
+ create mode 100644 include/mk/generic_lib_deps.inc
+
+-- 
+2.56.1
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
