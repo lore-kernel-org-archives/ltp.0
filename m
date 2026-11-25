@@ -1,59 +1,97 @@
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34649606A333
-	for <ltp@archiver.kernel.org>; Wed, 25 Nov 2026 03:07:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8904606A32A
+	for <ltp@archiver.kernel.org>; Wed, 25 Nov 2026 08:48:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key, unprotected) header.d=linux.dev header.i=@linux.dev header.a=rsa-sha256 header.s=key1 header.b=G4eO+mgu
+	dkim=pass (1024-bit key, unprotected) header.d=lists.linux.it header.i=@lists.linux.it header.a=rsa-sha256 header.s=picard header.b=jeyizbuq;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=suse.com header.i=@suse.com header.a=rsa-sha256 header.s=google header.b=COTj1RSC
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1795596490; h=to : date :
+ message-id : mime-version : subject : list-id : list-unsubscribe :
+ list-archive : list-post : list-help : list-subscribe : from :
+ reply-to : content-type : content-transfer-encoding : sender : from;
+ bh=U1Km9P5xfj+jGZqCIMYUdYJbkjinkHTtSeFxm6QQ6/Y=;
+ b=jeyizbuq0TiKA6jb2+u/lAv+K0akOQj+vByiuxA4SYUXp5NKYPDYtPN06f875OXs3Qcxi
+ sQRZtcVZwLC/opXZorSOZkkNZg4cG4COXYv13rRxcVLYTSAePAUIqVT11jeX+hdjz8EQFBK
+ sDIArPYZfsu93mtm0RxyHnzR4XrNnCw=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E34B23EA965
-	for <ltp@archiver.kernel.org>; Wed, 25 Nov 2026 04:06:58 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 3BCCA3E92E1
+	for <ltp@archiver.kernel.org>; Wed, 25 Nov 2026 09:48:10 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 80A273E9ED4
- for <ltp@lists.linux.it>; Wed, 25 Nov 2026 04:05:53 +0100 (CET)
-Received: from mta1.migadu.com (out-5.mta1.migadu.com [95.215.58.5])
+ by picard.linux.it (Postfix) with ESMTPS id 89BB03C9D7E
+ for <ltp@lists.linux.it>; Wed, 25 Nov 2026 09:47:48 +0100 (CET)
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com
+ [IPv6:2a00:1450:4864:20::32f])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id E35921A009A9
- for <ltp@lists.linux.it>; Wed, 25 Nov 2026 04:05:52 +0100 (CET)
-X-Envelope-To: ltp@lists.linux.it
-DKIM-Signature: a=rsa-sha256; bh=JoVJPeGPPT8R+fdbZhMr+P6p6CyBtVRxrstmYGoHYhc=; 
- c=simple/simple; d=linux.dev;
- h=from:to:subject:date:message-id:mime-version:content-type; s=key1;
- t=1795575951; v=1; x=1796180751;
- b=G4eO+mgu73jhY2mScvcOeQAOU5evq+NI+WURyrRhMlaNhgsk88U0d7orPU4ug3J9Q0Vwc82e
- UWQN1t6aw0DsyF+gzJHFatFMJoZLivOFL8NoRCVuOyTpOpCDp8+4DreIJZCGonVi9Ft1phRYa2E
- piAW+uTR/0zbO9uplN3Nhx38=
-X-Envelope-To: ltp@lists.linux.it
-Received: by mta12.migadu.com with ESMTPS id f7312680d343e16b;
- Wed, 25 Nov 2026 03:05:51 +0000
-X-Mizu-Trace-ID: f7312680d343e16b
-X-Migadu-Flow: FLOW_OUT
-From: "Li Wang (Hieco)" <li.wang@linux.dev>
-To: chrubis@suse.cz,
-	wakel@google.com
-Date: Wed, 25 Nov 2026 11:05:29 +0800
-Message-ID: <20261125030529.907385-5-li.wang@linux.dev>
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 020896009A4
+ for <ltp@lists.linux.it>; Wed, 25 Nov 2026 09:47:47 +0100 (CET)
+Received: by mail-wm1-x32f.google.com with SMTP id
+ 5b1f17b1804b1-4bba5e17cbeso3663215e9.1
+ for <ltp@lists.linux.it>; Wed, 25 Nov 2026 00:47:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1795596467; x=1796201267; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+ bh=JVj/9TihgUfNGmo/Zz8zx3rA0ob7zrrtxIhczJjtbek=;
+ b=COTj1RSCwu+OfEWFPHKfxzMwwPngjEqOQE019PJzBN3acKCZqgQ4Eyfy+480w+Z/Z+
+ LYNDPIunWElnuD6FtOKy66zt6oBbcTPoeUYUj4sHgqY8yOBPnD7ulVcefYKu6GbgE35S
+ 48rzp8Vn2NWiaC8vLDJZJ7+QRksgNXdv/8sj0aC043wceDLpGoHaKR66OrPnmnLWqTuu
+ E7y0nqy9SIwSVM56+m9yu0z0M2J2mscBD7wBg7dravrNrCXhuAKC38NJ+Sty51N0Gnq2
+ ueNvZIxRepG8qfSu1yWMBMcmStqQ+GdkmYXJ0SPc7tv9ZYjRAQHpXKC+OPp0v2LmcqRk
+ avbA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20260707; t=1795596467; x=1796201267;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to:content-type;
+ bh=JVj/9TihgUfNGmo/Zz8zx3rA0ob7zrrtxIhczJjtbek=;
+ b=I/41zbuZ3RuO6FBzz1YBlINerTviK/XhkVlqMjX3di6V0upukr9sVR008Ec5UYbbOo
+ 0l2Hxvm4UVhRMzsdjjl8ryb7nn9EGc/mWpwPverBjRbPui0Q3IzGgRQfYZ6sX2WGQFt4
+ xCw/b3+ozDMuutHvfa4sZadYQYoukyWLBDig6PJRbWNkdahSiGdiqaR99TSfdhb8UqGf
+ QaHyUe6LenW3F93w8eK3/GqPOCvMPpOem5m5XPeMfog5pB7Ikl8CRdJ/pvTNnXiPsaNL
+ ArtHxVXqo6ZzoSY7xvIX3AbjXjN9j8BvWbrFxgm85KY4e/f/x7ia1f0DXm2bHhiTAmhi
+ dxSA==
+X-Gm-Message-State: APuU4Z/0PMF06qeixzslWyekMxAHE2QsrYQq16bO/ZX4A/1UmeJMgy6Y
+ /uF0yOctx9kV4OuClHHW0bsVPSvdbzrDc+NVu+dc75e1fqrYKuDVhuzqLjk0KiGU2f7/pAh+7iW
+ iyyu+iJ4=
+X-Gm-Gg: AZFdTZfnVNLUAJ2YOc4MBqxJnsiO1FwbNOjWZvWzwAI/66REDx+YMDLFcyIxl9xj+PI
+ 6PRrWUadxKK5BAFmlGP9QXWi3w0oL5eeIgw+5zXJz31skcU2FRqmr7p8bckysDJ4mGThPmwIf5L
+ QSrWcufl068JVhqesQWJFwL2chGohLPq7PwRkLErds8nL1jrj4Y6ydR1JNGwgYVAPjcT1dOzQGC
+ jbMET8XpCc8Q8Qkzc+JgqsledtF0L037wYf/4gGjYwZEgbSv5x/Ovj35HKADVv6j0PcBcJN3tyk
+ z6mUoeZgjSYL5LVFQ6cQlbdlG+SeFOUykw1Opjk0zZgBpLLCt0Dj9Qa9JKLexeqv2fI6ewodx4R
+ GPFpp3u0R9nKDNAr6pFsMt/Njhrf+MbFEHZnZ1y/BSDnTNFou0f5dy38XwnzKd/CapJEQN8vnh0
+ Odf+hyh5xdCUvOTzXmIERK4zmB3GhGS7a2cNz9sHRwniwihhKT7SJh/xOTgJApnUl0LP5kNF3jo
+ y+sD7TuxJdSba2gi5UacJ0nFrN9D++GRlqsh4s1AU5cbhulBP6PIIbjw86h+BdouoPRkXK4xZns
+ i6AgQCGx4RWppiAdV6//BncqJMC1xYk9jdGUCV/Eo5QsFYv/nw==
+X-Received: by 2002:a05:600c:3113:b0:4bb:5f45:c97f with SMTP id
+ 5b1f17b1804b1-4bb88816b2bmr368166625e9.27.1795596467342; 
+ Wed, 25 Nov 2026 00:47:47 -0800 (PST)
+Received: from localhost ([176.114.240.8]) by smtp.gmail.com with ESMTPSA id
+ ffacd0b85a97d-4ab69bf61e8sm34206066f8f.11.2026.11.25.00.47.46
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 25 Nov 2026 00:47:47 -0800 (PST)
+To: ltp@lists.linux.it
+Date: Wed, 25 Nov 2026 09:47:45 +0100
+Message-ID: <20261125084746.122593-1-avinesh.kumar@suse.com>
 X-Mailer: git-send-email 2.56.1
-In-Reply-To: <20261125030529.907385-1-li.wang@linux.dev>
-References: <20261125030529.907385-1-li.wang@linux.dev>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-16.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+X-Spam-Status: No, score=-19.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,INCLUDES_CR_TRAILER,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_PASS,SPF_PASS,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
-X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v8 4/4] testcases: drop manual tst_modprobe() now
- handled by tst_kconfig
+Subject: [LTP] [PATCH] build: Build libltp before 'make modules'
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -63,161 +101,42 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+From: Avinesh Kumar via ltp <ltp@lists.linux.it>
+Reply-To: Avinesh Kumar <avinesh.kumar@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Now that tst_kconfig loads the modules for every CONFIG_*=m entry
-listed in config_module_maps[] and unloads them again at cleanup
-time, tests no longer have to call tst_modprobe() from setup().
+From: Avinesh Kumar <avinesh.kumar@suse.com>
 
-Drop the explicit tst_modprobe() calls, and the now unused
-tst_module.h includes, from:
+Since 3cb6144e0834, libltp.a is only built on demand when make is
+started inside testcases/. 'make modules' runs each module directory in
+a sub-make, so on a clean tree the userspace binaries there (acpi,
+uaccess, fw_load, init_module, ...) fail to link with
+"cannot find -lltp".
 
-- cve-2026-46331.c: sch_ingress, cls_matchall, act_pedit
-- sctphantom.c: sctp
-- keyctl23.c: x509_key_parser
-- keyctl29.c: x509_key_parser
-- keyctl30.c: pkcs8_key_parser
+Make 'modules' depend on lib-all, as 'test' already does, so libltp.a is
+built once before any module directory is entered.
 
-All tests already declare the matching configs in .needs_kconfigs,
-so tst_kconfig takes care of loading the modules before setup()
-runs and unloading them once the test finishes.
-
-BTW, with KCONFIG_SKIP_CHECK=1 the config check returns early,
-so the automatic module loading is skipped as well. Users who set
-that variable are expected to ensure the required modules are
-loaded themselves.
-
-Signed-off-by: Li Wang (Hieco) <li.wang@linux.dev>
+Fixes: 3cb6144e0834 ("build: Build shared libraries once when make runs in testcases/")
+Signed-off-by: Avinesh Kumar <avinesh.kumar@suse.com>
 ---
- testcases/cve/cve-2026-46331.c              | 7 -------
- testcases/cve/sctphantom.c                  | 3 ---
- testcases/kernel/syscalls/keyctl/keyctl23.c | 6 ++----
- testcases/kernel/syscalls/keyctl/keyctl29.c | 3 ---
- testcases/kernel/syscalls/keyctl/keyctl30.c | 3 ---
- 5 files changed, 2 insertions(+), 20 deletions(-)
+ Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/testcases/cve/cve-2026-46331.c b/testcases/cve/cve-2026-46331.c
-index 439b1280a..e5a81c833 100644
---- a/testcases/cve/cve-2026-46331.c
-+++ b/testcases/cve/cve-2026-46331.c
-@@ -44,7 +44,6 @@
- #include <linux/rtnetlink.h>
+diff --git a/Makefile b/Makefile
+index 0abb5c6b4f67..e2c8bf37bf29 100644
+--- a/Makefile
++++ b/Makefile
+@@ -222,7 +222,7 @@ MODULE_DIRS :=  $(shell \
  
- #include "tst_test.h"
--#include "tst_module.h"
- #include "tst_net.h"
- #include "tst_netdevice.h"
- #include "lapi/if_ether.h"
-@@ -136,12 +135,6 @@ static void setup(void)
- {
- 	struct sockaddr_in addr;
- 	struct passwd *pw;
--	static const char *const mods[] = {
--		"sch_ingress", "cls_matchall", "act_pedit"
--	};
--
--	for (unsigned int i = 0; i < ARRAY_SIZE(mods); i++)
--		tst_modprobe(mods[i], NULL);
  
- 	/* Drop privileges so the reproducer runs as an unprivileged user */
- 	pw = SAFE_GETPWNAM("nobody");
-diff --git a/testcases/cve/sctphantom.c b/testcases/cve/sctphantom.c
-index 83834b848..bdbe40286 100644
---- a/testcases/cve/sctphantom.c
-+++ b/testcases/cve/sctphantom.c
-@@ -50,7 +50,6 @@
-  */
- 
- #include "tst_test.h"
--#include "tst_module.h"
- #include "tst_checksum.h"
- #include "tst_safe_net.h"
- 
-@@ -205,8 +204,6 @@ static void setup(void)
- 	};
- 	const struct tst_path_val *sysctl;
- 
--	tst_modprobe("sctp", NULL);
--
- 	for (sysctl = sysctls; sysctl->path; sysctl++)
- 		tst_sys_conf_save(sysctl);
- 
-diff --git a/testcases/kernel/syscalls/keyctl/keyctl23.c b/testcases/kernel/syscalls/keyctl/keyctl23.c
-index cf90210d2..adfb1197a 100644
---- a/testcases/kernel/syscalls/keyctl/keyctl23.c
-+++ b/testcases/kernel/syscalls/keyctl/keyctl23.c
-@@ -6,7 +6,8 @@
- /*\
-  * Test ``KEYCTL_RESTRICT_KEYRING`` builtin_trusted of :manpage:`keyctl(2)`.
-  *
-- * Requires root (CAP_SYS_MODULE) to load the ``x509_key_parser`` module.
-+ * Requires root (CAP_SYS_MODULE) so that the test library can load the
-+ * ``x509_key_parser`` module.
-  *
-  * [Algorithm]
-  *
-@@ -16,7 +17,6 @@
-  */
- 
- #include "keyctl_common.h"
--#include "tst_module.h"
- 
- #define PAYLOAD		"payload"
- 
-@@ -89,8 +89,6 @@ static void setup(void)
- {
- 	SAFE_KEYCTL(KEYCTL_JOIN_SESSION_KEYRING, 0, 0, 0, 0);
- 
--	tst_modprobe("x509_key_parser", NULL);
--
- 	ring_builtin = SAFE_NEW_RING("ltpkeyctl23_builtin");
- 
- 	user_key = SAFE_NEW_USER_KEY("k", PAYLOAD, sizeof(PAYLOAD),
-diff --git a/testcases/kernel/syscalls/keyctl/keyctl29.c b/testcases/kernel/syscalls/keyctl/keyctl29.c
-index afc0a093c..e66b39bcb 100644
---- a/testcases/kernel/syscalls/keyctl/keyctl29.c
-+++ b/testcases/kernel/syscalls/keyctl/keyctl29.c
-@@ -23,7 +23,6 @@
- 
- #include "keyctl_common.h"
- #include "keyctl_pkey_data.h"
--#include "tst_module.h"
- 
- static key_serial_t cert_key;
- static struct keyctl_pkey_query *query_buf;
-@@ -32,8 +31,6 @@ static void setup(void)
- {
- 	SAFE_KEYCTL(KEYCTL_JOIN_SESSION_KEYRING, 0, 0, 0, 0);
- 
--	tst_modprobe("x509_key_parser", NULL);
--
- 	cert_key = add_asymmetric_key_or_tconf("cert", rsa2048_cert,
- 					       sizeof(rsa2048_cert),
- 					       "CONFIG_X509_CERTIFICATE_PARSER");
-diff --git a/testcases/kernel/syscalls/keyctl/keyctl30.c b/testcases/kernel/syscalls/keyctl/keyctl30.c
-index ef51bba33..4f43007e0 100644
---- a/testcases/kernel/syscalls/keyctl/keyctl30.c
-+++ b/testcases/kernel/syscalls/keyctl/keyctl30.c
-@@ -20,7 +20,6 @@
- 
- #include "keyctl_common.h"
- #include "keyctl_pkey_data.h"
--#include "tst_module.h"
- 
- static key_serial_t priv_key;
- static struct keyctl_pkey_query *query_buf;
-@@ -29,8 +28,6 @@ static void setup(void)
- {
- 	SAFE_KEYCTL(KEYCTL_JOIN_SESSION_KEYRING, 0, 0, 0, 0);
- 
--	tst_modprobe("pkcs8_key_parser", NULL);
--
- 	priv_key = add_asymmetric_key_or_tconf("priv", rsa2048_pkcs8,
- 					       sizeof(rsa2048_pkcs8),
- 					       "CONFIG_PKCS8_PRIVATE_KEY_PARSER");
+ .PHONY: modules modules-clean modules-install
+-modules:
++modules: lib-all
+ 	@$(foreach dir,$(MODULE_DIRS),\
+ 		echo "Build $(dir)";\
+ 		$(MAKE) -C $(dir) || exit $$?; \
 -- 
 2.56.1
 
