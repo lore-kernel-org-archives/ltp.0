@@ -2,44 +2,43 @@ Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7235606A321
-	for <ltp@archiver.kernel.org>; Wed, 25 Nov 2026 03:06:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE10D606A323
+	for <ltp@archiver.kernel.org>; Wed, 25 Nov 2026 03:06:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key, unprotected) header.d=linux.dev header.i=@linux.dev header.a=rsa-sha256 header.s=key1 header.b=aJ3pVOJ0
+	dkim=fail reason="signature verification failed" (1024-bit key, unprotected) header.d=linux.dev header.i=@linux.dev header.a=rsa-sha256 header.s=key1 header.b=N1ksdmyU
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7AF503E9831
-	for <ltp@archiver.kernel.org>; Wed, 25 Nov 2026 04:06:17 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 936003EA027
+	for <ltp@archiver.kernel.org>; Wed, 25 Nov 2026 04:06:31 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2A0493C8523
+ by picard.linux.it (Postfix) with ESMTPS id B5AE63E9ED5
  for <ltp@lists.linux.it>; Wed, 25 Nov 2026 04:05:49 +0100 (CET)
-Received: from mta0.migadu.com (out-192.mta0.migadu.com
- [IPv6:2001:41d0:1004:224b::c0])
+Received: from mta1.migadu.com (out-1.mta1.migadu.com [95.215.58.1])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 2D06C60095D
- for <ltp@lists.linux.it>; Wed, 25 Nov 2026 04:05:47 +0100 (CET)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 31751140033C
+ for <ltp@lists.linux.it>; Wed, 25 Nov 2026 04:05:48 +0100 (CET)
 X-Envelope-To: ltp@lists.linux.it
-DKIM-Signature: a=rsa-sha256; bh=gwzYH+5iHMxobXABFNSZxUiMUYh5n00ur2RHyDQg5YM=; 
+DKIM-Signature: a=rsa-sha256; bh=nJCJnWs39QeeQ8XE0FnZ5R56OnOmFRNxoRb8VQbSlRs=; 
  c=simple/simple; d=linux.dev;
  h=from:to:subject:date:message-id:mime-version:content-type; s=key1;
- t=1795575946; v=1; x=1796180746;
- b=aJ3pVOJ0Tx0RaTM/4dfk1/CfRmCs7d4RBZ5NdRhAhv/hzFIP75w7ggaD8DoJzzStMcne5cAl
- 8OWU5Hq7G0ADCjmfUWuiX8Rd3d6NChJFb/0iCy7PoHXDr9DmFQD/u1U2fgi+Ao/0Z//y7Qxbskb
- 0o7BVEAvmnQD5/8DSXAwCkk0=
+ t=1795575948; v=1; x=1796180748;
+ b=N1ksdmyUcOnyUtUKKnsgpDtTUkET/KhYcdYkU31Dg8y3nhBUxdYwCQg0YZGzHdNn4IgoRZO8
+ CeZDe+TtSSbDrA3oCedQMo1fI7ofnaJcG/rIX6H6wnBru1veQRRV2msmIyIrUcoxDcBtPSX11ID
+ fbusW4OJ7MdL4uu7O70ucLZA=
 X-Envelope-To: ltp@lists.linux.it
-Received: by mta12.migadu.com with ESMTPS id 2361a51bc7b5861b;
- Wed, 25 Nov 2026 03:05:46 +0000
-X-Mizu-Trace-ID: 2361a51bc7b5861b
+Received: by mta12.migadu.com with ESMTPS id ef2265a3e4dfcc7a;
+ Wed, 25 Nov 2026 03:05:48 +0000
+X-Mizu-Trace-ID: ef2265a3e4dfcc7a
 X-Migadu-Flow: FLOW_OUT
 From: "Li Wang (Hieco)" <li.wang@linux.dev>
 To: chrubis@suse.cz,
 	wakel@google.com
-Date: Wed, 25 Nov 2026 11:05:26 +0800
-Message-ID: <20261125030529.907385-2-li.wang@linux.dev>
+Date: Wed, 25 Nov 2026 11:05:27 +0800
+Message-ID: <20261125030529.907385-3-li.wang@linux.dev>
 X-Mailer: git-send-email 2.56.1
 In-Reply-To: <20261125030529.907385-1-li.wang@linux.dev>
 References: <20261125030529.907385-1-li.wang@linux.dev>
@@ -51,9 +50,10 @@ X-Spam-Status: No, score=-16.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v8 1/4] lib: add module is loaded check
+Subject: [LTP] [PATCH v8 2/4] tst_kconfig: load and unload kernel modules
+ for CONFIG_*=m
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -68,81 +68,224 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Add a helper that checks whether a kernel module is loaded by
-looking it up in /proc/modules. Module names are normalized so that
-hyphens match the underscores used by the kernel.
+Tests that depend on a config set to =m must currently load the
+module themselves, and may fail with misleading errors when it is
+not loaded, e.g. bind() returning EADDRNOTAVAIL for AF_VSOCK when
+vsock_loopback is missing.
+
+Record the module for every config_module_maps[] entry seen as =m
+and not already loaded while parsing the kernel config. When
+needs_kconfigs is set, load them via tst_modprobe() after a
+successful tst_kconfig_check(), and unload them in reverse order
+from do_cleanup(). Only modules that were actually loaded are
+unloaded; modules still in use are skipped. Dependencies pulled in
+by modprobe are not unloaded.
+
+Modules are only loaded when running as root.
 
 Signed-off-by: Li Wang (Hieco) <li.wang@linux.dev>
 ---
- include/tst_module.h |  1 +
- lib/tst_module.c     | 39 +++++++++++++++++++++++++++++++++++++++
- 2 files changed, 40 insertions(+)
+ include/tst_kconfig.h | 21 ++++++++++
+ lib/tst_kconfig.c     | 91 +++++++++++++++++++++++++++++++++++++++++++
+ lib/tst_test.c        | 13 +++++--
+ 3 files changed, 122 insertions(+), 3 deletions(-)
 
-diff --git a/include/tst_module.h b/include/tst_module.h
-index e55321d19..9b789e289 100644
---- a/include/tst_module.h
-+++ b/include/tst_module.h
-@@ -49,5 +49,6 @@ static inline void tst_requires_module_signature_disabled(void)
- 
- void tst_modprobe(const char *mod_name, char *const argv[]);
- void tst_module_reload(const char *mod_name, char *const argv[]);
-+bool tst_module_is_loaded(const char *mod_name);
- 
- #endif /* TST_MODULE_H */
-diff --git a/lib/tst_module.c b/lib/tst_module.c
-index cbd2415d5..db341ec57 100644
---- a/lib/tst_module.c
-+++ b/lib/tst_module.c
-@@ -21,6 +21,7 @@
+diff --git a/include/tst_kconfig.h b/include/tst_kconfig.h
+index c454f3467..d603919d9 100644
+--- a/include/tst_kconfig.h
++++ b/include/tst_kconfig.h
+@@ -105,4 +105,25 @@ void tst_kcmdline_parse(struct tst_kcmdline_var params[], size_t params_len);
   */
+ int tst_has_slow_kconfig(void);
  
- #define _GNU_SOURCE
-+#include <ctype.h>
- #include <stdio.h>
- #include <stdlib.h>
- #include <unistd.h>
-@@ -174,3 +175,41 @@ void tst_module_reload(const char *mod_name, char *const argv[])
- 	tst_module_unload_(NULL, mod_name);
- 	tst_modprobe(mod_name, argv);
- }
++/**
++ * tst_kconfig_module_load() - Load kernel modules for CONFIG_*=m entries.
++ *
++ * Loads the modules for CONFIG_* options found as =m in the kernel config
++ * that are not already loaded, in the order they were found.
++ * Does nothing when not running as root.
++ */
++void tst_kconfig_module_load(void);
 +
-+bool tst_module_is_loaded(const char *mod_name)
-+{
-+	char line[4096];
-+	size_t mod_len = strlen(mod_name);
-+	FILE *file;
++/**
++ * tst_kconfig_module_unload() - Unload modules loaded by
++ *                               tst_kconfig_module_load().
++ *
++ * Unloads, in reverse order, only the modules that were actually loaded.
++ * Modules still in use are skipped silently. Dependencies pulled in by
++ * modprobe are not unloaded.
++ *
++ * Called from do_cleanup(), so it runs regardless of the test result.
++ */
++void tst_kconfig_module_unload(void);
 +
-+	file = fopen("/proc/modules", "r");
-+	if (!file)
-+		return false;
+ #endif	/* TST_KCONFIG_H__ */
+diff --git a/lib/tst_kconfig.c b/lib/tst_kconfig.c
+index f055c2e5f..8b4d0e2ef 100644
+--- a/lib/tst_kconfig.c
++++ b/lib/tst_kconfig.c
+@@ -16,8 +16,16 @@
+ #include "tst_bool_expr.h"
+ #include "tst_safe_stdio.h"
+ 
++#include "lapi/syscalls.h"
++#include "tst_module.h"
+ #include "tst_kconfig_checks.h"
+ 
++#define MAX_LOADED_MODULES 32
 +
-+	while (fgets(line, sizeof(line), file)) {
-+		char *p = line;
-+		size_t i;
++static const char *loaded_modules[MAX_LOADED_MODULES];
++static unsigned int module_count;
++static unsigned int loaded_module_count;
 +
-+		while (*p && !isspace(*p))
-+			p++;
-+
-+		if ((size_t)(p - line) != mod_len)
-+			continue;
-+
-+		for (i = 0; i < mod_len; i++) {
-+			char a = (line[i] == '-') ? '_' : line[i];
-+			char b = (mod_name[i] == '-') ? '_' : mod_name[i];
-+
-+			if (a != b)
-+				break;
+ static int kconfig_skip_check(void)
+ {
+ 	char *skipped = getenv("KCONFIG_SKIP_CHECK");
+@@ -178,6 +186,12 @@ static void kconfig_module_check(struct tst_kconfig_var *var)
+ 		if (strcmp(config_module_maps[i].config, var->id))
+ 			continue;
+ 
++		if (strchr(config_module_maps[i].module_name, '-')) {
++			tst_brk(TBROK, "config_module_maps[]: module '%s' "
++					"must use '_' instead of '-'",
++					config_module_maps[i].module_name);
 +		}
 +
-+		if (i == mod_len) {
-+			fclose(file);
-+			return true;
+ 		tst_res(TDEBUG, "Running module check for '%s'", var->id);
+ 
+ 		if (tst_check_module_driver(config_module_maps[i].module_name)) {
+@@ -189,6 +203,38 @@ static void kconfig_module_check(struct tst_kconfig_var *var)
+ 	}
+ }
+ 
++static void kconfig_module_record(struct tst_kconfig_var *var)
++{
++	unsigned int i;
++	const char *mod = NULL;
++
++	if (var->choice != 'm')
++		return;
++
++	for (i = 0; config_module_maps[i].config; i++) {
++		if (!strcmp(config_module_maps[i].config, var->id)) {
++			mod = config_module_maps[i].module_name;
++			break;
 +		}
 +	}
 +
-+	fclose(file);
-+	return false;
++	if (!mod)
++		return;
++
++	if (tst_module_is_loaded(mod))
++		return;
++
++	for (i = 0; i < module_count; i++) {
++		if (!strcmp(loaded_modules[i], mod))
++			return;
++	}
++
++	if (module_count >= MAX_LOADED_MODULES)
++		tst_brk(TBROK, "Too many modules, increase MAX_LOADED_MODULES");
++
++	loaded_modules[module_count++] = mod;
 +}
++
+ static inline int kconfig_parse_line(const char *line,
+                                      struct tst_kconfig_var *vars,
+                                      unsigned int vars_len)
+@@ -268,6 +314,7 @@ out:
+ 				vars[i].choice = 'm';
+ 				kconfig_runtime_check(&vars[i]);
+ 				kconfig_module_check(&vars[i]);
++				kconfig_module_record(&vars[i]);
+ 				return 1;
+ 			}
+ 		}
+@@ -300,6 +347,50 @@ exit:
+ 	close_kconfig(fp);
+ }
+ 
++void tst_kconfig_module_load(void)
++{
++	unsigned int i;
++
++	if (geteuid() != 0)
++		return;
++
++	for (i = 0; i < module_count; i++) {
++		tst_res(TDEBUG, "Loading module '%s'", loaded_modules[i]);
++		tst_modprobe(loaded_modules[i], NULL);
++
++		loaded_module_count++;
++	}
++}
++
++void tst_kconfig_module_unload(void)
++{
++	const char *name;
++
++	if (!loaded_module_count)
++		return;
++
++	while (loaded_module_count > 0) {
++		name = loaded_modules[--loaded_module_count];
++
++		tst_res(TDEBUG, "Unloading module '%s'", name);
++
++		if (!syscall(__NR_delete_module, name, O_NONBLOCK))
++			continue;
++
++		switch (errno) {
++		case ENOENT:		/* already unloaded */
++		case EWOULDBLOCK:	/* in use */
++		case EBUSY:		/* still loading or unloading */
++		case ENOSYS:		/* no CONFIG_MODULE_UNLOAD */
++			break;
++		default:
++			tst_res(TWARN | TERRNO, "Failed to unload module '%s'", name);
++		}
++	}
++
++	loaded_module_count = 0;
++}
++
+ static size_t array_len(const char *const kconfigs[])
+ {
+ 	size_t i = 0;
+diff --git a/lib/tst_test.c b/lib/tst_test.c
+index 10ff73397..a9e679bee 100644
+--- a/lib/tst_test.c
++++ b/lib/tst_test.c
+@@ -1471,12 +1471,16 @@ static void do_setup(int argc, char *argv[])
+ 
+ 	check_supported_kver();
+ 
+-	if (tst_test->needs_kconfigs && tst_kconfig_check(tst_test->needs_kconfigs))
+-		tst_brk(TCONF, "Aborting due to unsuitable kernel config, see above!");
+-
+ 	if (tst_test->needs_root && geteuid() != 0)
+ 		tst_brk(TCONF, "Test needs to be run as root");
+ 
++	if (tst_test->needs_kconfigs) {
++		if (tst_kconfig_check(tst_test->needs_kconfigs))
++			tst_brk(TCONF, "Aborting due to unsuitable kernel config, see above!");
++
++		tst_kconfig_module_load();
++	}
++
+ 	if (tst_test->min_kver)
+ 		check_kver(tst_test->min_kver, 1);
+ 
+@@ -1690,6 +1694,9 @@ static void do_cleanup(void)
+ 	if (tst_test->restore_wallclock)
+ 		tst_wallclock_restore();
+ 
++	if (tst_test->needs_kconfigs)
++		tst_kconfig_module_unload();
++
+ 	cleanup_ipc();
+ }
+ 
 -- 
 2.56.1
 
