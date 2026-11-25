@@ -2,70 +2,89 @@ Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00536606A33A
-	for <ltp@archiver.kernel.org>; Wed, 25 Nov 2026 12:22:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8563C606A31E
+	for <ltp@archiver.kernel.org>; Wed, 25 Nov 2026 21:09:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256 header.s=google header.b=UkCXWoyz
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 2DF863E9C34
-	for <ltp@archiver.kernel.org>; Wed, 25 Nov 2026 13:21:59 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id B02643EA95F
+	for <ltp@archiver.kernel.org>; Wed, 25 Nov 2026 22:09:52 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 89C7A3E1541
- for <ltp@lists.linux.it>; Wed, 25 Nov 2026 13:21:44 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 853FD3E9149
+ for <ltp@lists.linux.it>; Wed, 25 Nov 2026 22:09:37 +0100 (CET)
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com
+ [IPv6:2a00:1450:4864:20::62b])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id EBE6310000F2
- for <ltp@lists.linux.it>; Wed, 25 Nov 2026 13:21:43 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 417031F45A;
- Wed, 25 Nov 2026 12:21:43 +0000 (UTC)
-Authentication-Results: smtp-out2.suse.de;
-	none
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 10845134CA;
- Wed, 25 Nov 2026 12:21:43 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id RXy+NtbSBmtNXwAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Wed, 25 Nov 2026 12:21:43 +0000
-Date: Wed, 25 Nov 2026 13:22:06 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Ricardo Branco <rbranco@suse.de>
-Message-ID: <awbS7qkrPNhm7Kfq@yuki.lan>
-References: <20261124180149.614825-1-rbranco@suse.de>
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id C3807200A08
+ for <ltp@lists.linux.it>; Wed, 25 Nov 2026 22:09:36 +0100 (CET)
+Received: by mail-ej1-x62b.google.com with SMTP id
+ a640c23a62f3a-c50692e6c0aso100653666b.3
+ for <ltp@lists.linux.it>; Wed, 25 Nov 2026 13:09:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=linaro.org; s=google; t=1795640976; x=1796245776; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+ bh=pvlKi9bGUBDxvK3FA8unbMieQ9TzqC6CPiWeZedQdik=;
+ b=UkCXWoyzRLxhzkwZbjrDGeP0PiQUr82V3sHVJChqsYf1iSSWKCjqZZXRh5t2jC5anO
+ bQS/icd54whvX4cH7tjvnoLbBxTxk8aUJmCfKGvFxHq+e9gWGBM41MMLFd0qvVfnNmVN
+ fylgupt9CcNMVcHli3jqJbpzMo7rTiiaI8LT2YKXuUYJMCZjIH3HWxR0zwl/mvbHkda9
+ Zb7ALKwdzpUPu5o63ey0jgjN2DavpN0c/6TTAmXpGnh6NplBBjWNlc8w+JiYSK8zXbfD
+ r7ZRZ3Hl4QwsQ1gyexYHs0UeZvHttB3rjJuZueqVbzeBgg9X0T4XXoIvyuUdyg28dHgT
+ YxdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20260707; t=1795640976; x=1796245776;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to:content-type;
+ bh=pvlKi9bGUBDxvK3FA8unbMieQ9TzqC6CPiWeZedQdik=;
+ b=dQMpGGmuGXASxddq9a7QNMfPBgqafYMH7LQDIdqdvctK5xI5KlJVx+LEBD+uGoie76
+ TKh07U6Ie0hRdfBRw6XFK7YOoXqNWkLgLTAyWFCcddDZiDBNRj20ubxKGPVnIm/DwJUo
+ kWpMIHC3A6Hzz8J+qIFATJT3FxtZn+3h2wfrvYugTxSRzNKFd9YhtOohlkSSCtWV7IXT
+ jXp35giZtK27eK1/K+mhfKEG1LkJ5wONYBBfCc3B+97F6LPpJfwBUoJcYr2VqOZ96rGN
+ c+RnQS+s9N9TvFOKJMN7ZPozICSkQOEEWqy6dL36Vky8Gi119X48zBdT9pJoe+I024kM
+ vRZg==
+X-Gm-Message-State: APuU4Z9PK6gw9ewgkIeaezYKD8RTmm3hCzs9wUuTTfIQ90WRv6UpkRb3
+ gLrma+O1SCseFik7pLDXMyA6h4mzlEedg7DLiavXRNhFdHc2djRmNIzXqmu36f3kDY3qKEzFruW
+ 93MCZ
+X-Gm-Gg: AZFdTZf3e58/nQb8F+ynK93okqPaJTyEXtoQqN785VafsIS7DkRoIvCBIYZ18D+kUa7
+ JNQcf4mCoeeZpdU6Onpw6W1au+bJOi9aaZa6DlADcDrvb/3hP6qkWVDiCefI25ZyeOcY3J7F/q+
+ ODfXFKG0GvErwf3mFJBQ4rZQRDZkSD+mX9g5MxGHnxPYCtVdi4ZQYJGQj6z/mLavFN0Pd1kgpZH
+ hmoWWVfG7D659mtNJGTlb7ni4zcGk/bxzd649JZzF+rpzuArgdjFO057+SNPu/PRx3E+PpElvd1
+ aPWD6hh0m+CckDHpZOqPxOoXe1dgeL+2iZMSw2co3A1H3tFJ5kmcmIBoqEk8kLiUnzVkqiqSv8n
+ bmpRiyQ2iNmKDqkjsVMEj4X8/8dl6v8gJYNnUwNibK2KDQUjW4tl273fhq5GV6I1j0PW7N71czP
+ ZZ8VaBMN7+OJ7BJOS/Hd0Aox5RxUplcohiOuGcIg1ZKjJameDVnLY/zTlKgsYLScDjN/FCyDiRg
+ raIDp/loa+325VP22pk2KNbojUAP/M6zYmGp5tGiyrrn38VNyYEJEUfiMIaFh0fXR94Sis6TRyy
+ NQ3JK5l5nL6/CJMkpID/0eaukvtFUncXSZblq+37M94aL9boSNpdFk/Qx67x/XlH
+X-Received: by 2002:a17:907:9017:b0:c2e:8801:9139 with SMTP id
+ a640c23a62f3a-c513a39d096mr1248718966b.1.1795640976059; 
+ Wed, 25 Nov 2026 13:09:36 -0800 (PST)
+Received: from localhost (c-85-229-7-191.bbcust.telenor.se. [85.229.7.191])
+ by smtp.gmail.com with ESMTPSA id
+ a640c23a62f3a-c513ae6841asm703529766b.24.2026.11.25.13.09.35
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 25 Nov 2026 13:09:35 -0800 (PST)
+From: Anders Roxell <anders.roxell@linaro.org>
+To: ltp@lists.linux.it,
+	pvorel@suse.cz
+Date: Wed, 25 Nov 2026 22:09:29 +0100
+Message-ID: <20261125210933.2913177-1-anders.roxell@linaro.org>
+X-Mailer: git-send-email 2.53.0
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20261124180149.614825-1-rbranco@suse.de>
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	REPLY(-4.00)[]
-X-Spam-Score: -4.00
-X-Spam-Level: 
-X-Rspamd-Queue-Id: 417031F45A
-X-Rspamd-Pre-Result: action=no action; module=replies;
- Message is reply to one we originated
-X-Rspamd-Action: no action
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_PASS,
-	SPF_PASS autolearn=no autolearn_force=no version=4.0.1
+X-Spam-Status: No, score=-11.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_PASS,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
-X-Virus-Scanned: clamav-milter 1.0.9 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v4] userfaultfd: Add tests for UFFDIO_RWPROTECT
- and UFFDIO_SET_MODE
+Subject: [LTP] [PATCH v3 0/4] openposix: Run the Open POSIX tests with kirk
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -75,95 +94,77 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: "Claude Opus 5.5" <noreply@anthropic.com>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> +static void run(unsigned int n)
-> +{
-> +	pthread_t thr;
-> +	struct uffdio_api uffdio_api = { .api = UFFD_API };
-> +	struct uffdio_register uffdio_register;
-> +	struct uffdio_set_mode uffdio_set_mode = {
-> +		.disable = UFFD_FEATURE_RWP_ASYNC,
-> +	};
-> +	struct pollfd pollfd;
-> +	unsigned char val;
-> +
-> +	uffdio_api.features = UFFD_FEATURE_RWP;
-> +	if (n) {
-> +		CHECK_UFFD_FEATURE(UFFD_FEATURE_RWP_ASYNC);
-> +		uffdio_api.features |= UFFD_FEATURE_RWP_ASYNC;
-> +	}
-> +
-> +	set_page();
-> +	rwp_fault_seen = 0;
-> +
-> +	uffd = SAFE_USERFAULTFD(O_CLOEXEC | O_NONBLOCK, false);
-> +
-> +	SAFE_IOCTL(uffd, UFFDIO_API, &uffdio_api);
-> +
-> +	uffdio_register.range.start = (unsigned long)page;
-> +	uffdio_register.range.len = page_size;
-> +	uffdio_register.mode = UFFDIO_REGISTER_MODE_RWP;
-> +
-> +	SAFE_IOCTL(uffd, UFFDIO_REGISTER, &uffdio_register);
-> +
-> +	if (n) {
-> +		/* Async mode is active, access must auto-resolve. */
-> +		rwprotect((unsigned long)page, UFFDIO_RWPROTECT_MODE_RWP);
-> +
-> +		val = page[0];
-> +
-> +		if (val != PAGE_BYTE) {
-> +			tst_res(TFAIL, "Async access corrupted content: got 0x%02x, expected 0x%02x",
-> +				val, PAGE_BYTE);
-> +			goto out;
-> +		}
-> +
-> +		pollfd.fd = uffd;
-> +		pollfd.events = POLLIN;
-> +		if (SAFE_POLL(&pollfd, 1, 0) != 0) {
-> +			tst_res(TFAIL, "Unexpected pagefault message in async mode");
-> +			goto out;
-> +		}
-> +
-> +		/* Switch to sync mode via UFFDIO_SET_MODE. */
-> +		SAFE_IOCTL(uffd, UFFDIO_SET_MODE, &uffdio_set_mode);
-> +	}
-> +
-> +	rwprotect((unsigned long)page, UFFDIO_RWPROTECT_MODE_RWP);
-> +
-> +	SAFE_PTHREAD_CREATE(&thr, NULL, handle_thread, NULL);
-> +
-> +	/* Try to read the RWP-protected page. */
-> +	val = page[0];
-> +
-> +	SAFE_PTHREAD_JOIN(thr, NULL);
-> +
-> +	if (!rwp_fault_seen) {
-> +		tst_res(TFAIL, "No RWPROTECT pagefault observed");
-> +		goto out;
-> +	}
-> +
-> +	if (val != PAGE_BYTE) {
-> +		tst_res(TFAIL, "Page content corrupted: got 0x%02x, expected 0x%02x",
-> +			val, PAGE_BYTE);
-> +		goto out;
-> +	}
+Hi,
 
-Shouldn't this part be in else branch? Otherwise we run both tests for n
-= 1.
+There are no runtest files for the Open POSIX tests, so kirk can not
+run them.
 
-I suppose that we would have to run the handle_thread in the first if
-branch as well, but not as a thread, since it's asynchronous we can run
-it as a normal function.
+Patch 1 and 2 make the two mqueues_multi_send_rev tests use one thread
+by default and remove the .args files. Patch 3 rebuilds run.sh when
+the Makefile changes. Patch 4 generates runtest/openposix-* at install
+time. Each line calls a small wrapper that maps the Open POSIX exit
+codes to the LTP ones.
+
+Changes in v3:
+- Drop "openposix: Install the .args files". Instead use one thread by
+  default in multi_send_rev_1 and multi_send_rev_2, and remove the
+  .args files and the code in run-tests.sh that reads them. (Petr)
+- The runtest files do not read .args files any more.
+- New patch: rebuild run.sh when the Makefile changes.
+
+Changes in v2:
+- Take the list of tests from the installed run.sh files. v1 used all
+  the files in DESTDIR, so it picked up old tests left from an earlier
+  install, like pthread_detach_1-2. (LTP AI Reviewer)
+
+This does not cover a removed test directory: its old run.sh stays in
+DESTDIR, so its tests are still listed.
+
+openposix_run.sh does not use t0 like run-tests.sh does. So a hung test
+is stopped by the kirk timeout and not after 300 seconds. The kirk
+default is 1h for one test and also 1h for the whole suite.
+
+I ran all three runtest files with kirk on qemu-arm64, with a 6.18.54
+kernel and a Debian forky rootfs. 1735 tests ran in about 17 minutes:
+1694 pass, 40 TCONF and 1 fail (pthread_rwlock_unlock_3-1). The
+mqueues_multi_send_rev tests pass with the default of one thread.
+
+v2: https://lore.kernel.org/ltp/20261104225051.402911-1-anders.roxell@linaro.org/
+v1: https://lore.kernel.org/ltp/20261023123436.1274448-1-anders.roxell@linaro.org/
+
+Cheers,
+Anders
+
+Anders Roxell (4):
+  openposix: mqueues: Use one thread by default
+  openposix: Remove the .args files
+  openposix: Rebuild run.sh when the Makefile changes
+  openposix: Add runtest files for kirk
+
+ testcases/open_posix_testsuite/Makefile       | 11 +++++-
+ testcases/open_posix_testsuite/bin/Makefile   |  6 +++-
+ .../open_posix_testsuite/bin/openposix_run.sh | 29 +++++++++++++++
+ .../open_posix_testsuite/bin/run-tests.sh     |  2 +-
+ .../include/mk/config.mk.in                   |  3 ++
+ .../scripts/generate-makefiles.sh             |  2 +-
+ .../scripts/generate-runtest.sh               | 35 +++++++++++++++++++
+ .../mqueues/mqueues_multi_send_rev_1.args     |  1 -
+ .../mqueues/mqueues_multi_send_rev_2.args     |  1 -
+ .../stress/mqueues/multi_send_rev_1.c         |  8 +++--
+ .../stress/mqueues/multi_send_rev_2.c         |  8 +++--
+ 11 files changed, 94 insertions(+), 12 deletions(-)
+ create mode 100755 testcases/open_posix_testsuite/bin/openposix_run.sh
+ create mode 100755 testcases/open_posix_testsuite/scripts/generate-runtest.sh
+ delete mode 100644 testcases/open_posix_testsuite/stress/mqueues/mqueues_multi_send_rev_1.args
+ delete mode 100644 testcases/open_posix_testsuite/stress/mqueues/mqueues_multi_send_rev_2.args
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.53.0
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
