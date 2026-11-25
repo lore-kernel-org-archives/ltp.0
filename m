@@ -2,93 +2,56 @@ Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF7E4606A31E
-	for <ltp@archiver.kernel.org>; Wed, 25 Nov 2026 01:10:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F25E606A33C
+	for <ltp@archiver.kernel.org>; Wed, 25 Nov 2026 03:06:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=sw+FZ1iK
+	dkim=fail reason="signature verification failed" (1024-bit key, unprotected) header.d=linux.dev header.i=@linux.dev header.a=rsa-sha256 header.s=key1 header.b=vXR3y9Jy
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D0BC33EA02B
-	for <ltp@archiver.kernel.org>; Wed, 25 Nov 2026 02:10:46 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 8379F3E9F3B
+	for <ltp@archiver.kernel.org>; Wed, 25 Nov 2026 04:06:03 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9DEAC3E9197
- for <ltp@lists.linux.it>; Wed, 25 Nov 2026 02:10:31 +0100 (CET)
-Received: from mail-oo2-x05.google.com (mail-oo2-x05.google.com
- [IPv6:2607:f8b0:4864:31::5])
+ by picard.linux.it (Postfix) with ESMTPS id 5BEB33C8523
+ for <ltp@lists.linux.it>; Wed, 25 Nov 2026 04:05:47 +0100 (CET)
+Received: from mta1.migadu.com (out-250.mta1.migadu.com [95.215.58.250])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 31A996008B9
- for <ltp@lists.linux.it>; Wed, 25 Nov 2026 02:10:31 +0100 (CET)
-Received: by mail-oo2-x05.google.com with SMTP id
- 006d021491bc7-7033e26cb19so1626448eaf.0
- for <ltp@lists.linux.it>; Tue, 24 Nov 2026 17:10:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20260707; t=1795569030; x=1796173830; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to:content-type;
- bh=hYnnFFlGrlqu173L2qV2EB9eE04XzLQbZCpBVVTAaE8=;
- b=sw+FZ1iKl00abvXrz5glZPIr7ap4g0vVxn7y9rNPP44i4JAkLvxv2WLaCevFJ0JT+B
- fC416LTuqtOPpgCOPNhTQNkC0kETlstv4CZZZWGXC7r0BGSL2Xm/gHDtRPPe0ocnq9VS
- +YLIYdDffdhjDougEn7rCHHf6yduu4tkuJn4TJQJ39jmLAEoaOpaqL9410djnU9ITlaS
- uUbXu2Oab0EJGeiy3UcCuxlkW7xZf0O61exaa0cr3Ee8EWF6Uc2uuU18EKVkRKrq7SpD
- qdinDOq4HeffJNM7Of6cHMsWVEb8FzPUDE6qZ6ZXfhgqWXuykHA7KTBxGATF3c/tEf4M
- 7b5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20260707; t=1795569030; x=1796173830;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
- :to:cc:subject:date:message-id:reply-to:content-type;
- bh=hYnnFFlGrlqu173L2qV2EB9eE04XzLQbZCpBVVTAaE8=;
- b=fExGmKn86wEiYk5mXjH49NWOeGm8bj5dp36EQYlxlFbawMLBn76tVjrtkQIHwUx618
- S4y9v5Pg6zWRHeKd/agr9FXIfyoNFHYXz2CuR7aEtoKgAybiD90H1lMhGgmtGTnO+9yJ
- YGaijAzzuNt658G6I/qmenX2Rh+4RbGSgkJN63Vx7oy+KcMjpTvGWdnT34j/OkveNZqQ
- 754s457JQ5eSR361ghYfe8UwEhthvDHB+glFjvI+Ldp+SEIZRJnAvQmBXXLrZFTpLcXW
- fFWEhkH6yRoJdpdM2KkBnoHgFN1cnKEoW4oPzWFPGWqW2I4wNTRz9dRt7rY0pbCLdvLS
- cNkw==
-X-Gm-Message-State: APuU4Z+j6XhbWusHLvPo9DuAINhvazE1Azra0SSwu3an38hRjZ/7U5Xj
- zyCWhjkD09eOtgsIpJWM+8xRzEIcJys4ucDIfXSWyJ1zEkbvBgDBuMJy
-X-Gm-Gg: AZFdTZc0yscFP2B0s29jI6f0FIEXedG1t9+Lx2UJ9Da/UQzNN0aO5MTqZcJjyMpm4BS
- qoJ5vhL3EjsZ1wGivj5I1PaWnZCvQ8XWo+BUqqAUee91Z79Ch9pCRu9ATo/ylWnFb8S6/phh3hV
- mwwmUgU3iWbKkPwtr2QJPiU0p0g5Y2tNX+k5P9wbLehFx753R8VD1KIMhc9P4LTUkT2uPDTS8dE
- G+OcTcH6qRARynBAzhZ++G0O+5j6NTi1ZUXubLVGbalHw3wdfVcD9CAT2Vna7PrszPURG4Bz9w2
- zPfdUB/6k/qz0SirJ96OCSQBbIpV/rFj+m0KIIP3fhg+zv3fyVyGTXzrtGk56t9BtiOg29hV2zV
- pUGsKSQhUcHFM8VvoNnV5qCBWTbX5vfSncpKVFxyUwVH1QQrlkFNAPgOLn8lckQQT9v9Hwchs9g
- Fv6YJlMsKlAJmPiiuwHlRBVwaA074NLQqJQQjqfrBElfcuKoto5eb+wYeIvbyHomq6d3wY1tfGE
- TzHZpOmGOrqWtS0nDJxnZbC4U22IXhNjoOeMn3RPHDdopT+6N3MnEBoZgkbJEKdHrobCtZw32BG
- fFeEdDWoH+pessddFzS3bQXpz08keS5AlfCdl7YMrehOjTcgL5ybPbVhVTWB2FtO7REQGsCOu0j
- u8PQcuijlk3cp+oydIdCoZ0uQPJA9t2WzMkZv7yIXCb+t
-X-Received: by 2002:a05:6820:c2c8:10b0:71a:e7ba:8ae8 with SMTP id
- 006d021491bc7-71b39261f6emr9674355eaf.1.1795569029720; 
- Tue, 24 Nov 2026 17:10:29 -0800 (PST)
-Received: from
- runnervm0hi8g.uf2q4bgxt5yeljnr0owifoj32f.gx.internal.cloudapp.net
- ([128.203.198.121]) by smtp.gmail.com with ESMTPSA id
- 006d021491bc7-71b3806fc45sm10457959eaf.8.2026.11.24.17.10.29
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 24 Nov 2026 17:10:29 -0800 (PST)
-From: linuxtestproject.agent@gmail.com
-To: Ricardo Branco <rbranco@suse.de>
-Date: Wed, 25 Nov 2026 01:10:28 +0000
-Message-ID: <20261125011028.3809-1-linuxtestproject.agent@gmail.com>
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 3F23B1A009A7
+ for <ltp@lists.linux.it>; Wed, 25 Nov 2026 04:05:45 +0100 (CET)
+X-Envelope-To: ltp@lists.linux.it
+DKIM-Signature: a=rsa-sha256; bh=0qCGlyXCSLRrgYraygzwSKVptXNd5Z+vcnuhLF5peoc=; 
+ c=simple/simple; d=linux.dev;
+ h=from:to:subject:date:message-id:mime-version:content-type; s=key1;
+ t=1795575944; v=1; x=1796180744;
+ b=vXR3y9JyRIoPt3uzbIA+HwQsQFb/sIXTYH2KYgoq3ep3TMA5PbyVJT2rtmu+RXgRJW3lIjzg
+ KnFMlD9G4VcdDsFQbGBXfcucLDyk8nVi7CLBTwNHAm67doCjKXqNYSsUv9/D2ruVKMfykor3qDc
+ RxPaymmu2L6NO+DqqBxFDIB0=
+X-Envelope-To: ltp@lists.linux.it
+Received: by mta12.migadu.com with ESMTPS id 777b1e9e145c4cfe;
+ Wed, 25 Nov 2026 03:05:35 +0000
+X-Mizu-Trace-ID: 777b1e9e145c4cfe
+X-Migadu-Flow: FLOW_OUT
+From: "Li Wang (Hieco)" <li.wang@linux.dev>
+To: chrubis@suse.cz,
+	wakel@google.com
+Date: Wed, 25 Nov 2026 11:05:25 +0800
+Message-ID: <20261125030529.907385-1-li.wang@linux.dev>
 X-Mailer: git-send-email 2.56.1
-In-Reply-To: <20261124180149.614825-1-rbranco@suse.de>
-References: <20261124180149.614825-1-rbranco@suse.de>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-3.6 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_INVALID,DKIM_SIGNED,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_PASS,
-	SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no version=4.0.1
+X-Spam-Status: No, score=-11.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_PASS,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] userfaultfd: Add tests for UFFDIO_RWPROTECT and
- UFFDIO_SET_MODE
+Subject: [LTP] [PATCH v8 0/4] tst_kconfig: automatic module load/unload for
+ CONFIG_*=m
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -103,22 +66,83 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Ricardo,
+Tests that depend on a config set to =m currently load the module
+themselves, and may fail with misleading errors when it is missing,
+e.g. bind() returning EADDRNOTAVAIL for AF_VSOCK without vsock_loopback.
 
-On Tue Nov 24 19:01:47 2026 +0100, Ricardo Branco <rbranco@suse.de> wrote:
-> userfaultfd: Add tests for UFFDIO_RWPROTECT and UFFDIO_SET_MODE
+This series makes tst_kconfig record the module for every
+config_module_maps[] entry seen as =m, load them once the kernel
+config check passes, and unload them at cleanup time.
 
-Verdict - Reviewed
+Changes in v8:
+- Enforce '_' in config_module_maps[] module names (suggested by Cyril)
+- Drop the '-' -> '_' conversion and the name copy in tst_kconfig_module_unload()
 
----
-Note:
+Changes in v7:
+- Split module_count and loaded_module_count: the former is the number
+  of recorded modules, the latter the number successfully loaded.
+- Add TERRNO to the TWARN message in tst_kconfig_module_unload().
+- Fix the malformed reST bullet "* * Requires root" in keyctl23.c.
 
-The agent can sometimes produce false positives although often its
-findings are genuine. If you find issues with the review, please
-comment this email or ignore the suggestions.
+Changes in v6:
+- Rename tst_kconfig_module_unload_all to tst_kconfig_module_unload.
+- Unload modules with delete_module(O_NONBLOCK) instead of tst_modprobe().
+- Drop the redundant modules_loaded flag.
+- Reword keyctl23 root note instead of removing it.
 
-Regards,
-LTP AI Reviewer
+Changes in v5:
+- cve-2025-21756.c: merge drop_privileges into setup and drop cleanup.
+- keyctl23.c: remove tst_modprobe() so it can run on Android.
+
+Changes in v4:
+- tst_kconfig: fold module_name_for_config() into
+  kconfig_module_record()
+- tst_kconfig: move the choice == 'm' gate into
+  kconfig_module_record() and pass struct tst_kconfig_var * instead
+  of the raw config name.
+
+Changes in v3:
+- Queue only configs that stay 'm' after kconfig_module_check(),
+  so a module downgraded to 'n' does not abort an otherwise
+  runnable test.
+- Unload with "modprobe -r" instead of "rmmod" to also remove
+  dependencies pulled in by modprobe.
+- Drop the redundant geteuid() check in the unload path.
+- Raise MAX_LOADED_MODULES from 16 to 32.
+- cve-2025-21756: drop privileges to nobody after module loading
+  and regain root in cleanup(), so the reproducer runs from a
+  non-root context while the framework can still unload modules.
+
+Changes in v2:
+- Add tst_module_is_loaded() helper.
+- Only load/unload modules that are not already loaded.
+- Skip automatic loading when KCONFIG_SKIP_CHECK=1, keeping the
+  semantics consistent with skipping the config check.
+- Document the KCONFIG_SKIP_CHECK=1 behaviour for keyctl29/keyctl30
+  and the vsock/vsock_loopback mapping.
+
+Li Wang (Hieco) (4):
+  lib: add module is loaded check
+  tst_kconfig: load and unload kernel modules for CONFIG_*=m
+  tst_kconfig: add module mappings for vsock/vsock_loopback
+  testcases: drop manual tst_modprobe() now handled by tst_kconfig
+
+ include/tst_kconfig.h                       | 21 +++++
+ include/tst_module.h                        |  1 +
+ lib/tst_kconfig.c                           | 93 +++++++++++++++++++++
+ lib/tst_module.c                            | 39 +++++++++
+ lib/tst_test.c                              | 13 ++-
+ testcases/cve/cve-2025-21756.c              | 17 ++++
+ testcases/cve/cve-2026-46331.c              |  7 --
+ testcases/cve/sctphantom.c                  |  3 -
+ testcases/kernel/syscalls/keyctl/keyctl23.c |  6 +-
+ testcases/kernel/syscalls/keyctl/keyctl29.c |  3 -
+ testcases/kernel/syscalls/keyctl/keyctl30.c |  3 -
+ 11 files changed, 183 insertions(+), 23 deletions(-)
+
+-- 
+2.56.1
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
