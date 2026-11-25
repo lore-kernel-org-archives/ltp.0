@@ -2,79 +2,79 @@ Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 691C7606A31E
-	for <ltp@archiver.kernel.org>; Wed, 25 Nov 2026 21:10:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E0D7606A329
+	for <ltp@archiver.kernel.org>; Wed, 25 Nov 2026 21:10:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256 header.s=google header.b=pKAMFDbX
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256 header.s=google header.b=utll3F40
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 1DDE03EAC2E
-	for <ltp@archiver.kernel.org>; Wed, 25 Nov 2026 22:10:31 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 316703EAC2C
+	for <ltp@archiver.kernel.org>; Wed, 25 Nov 2026 22:10:50 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 8C8753EA95C
- for <ltp@lists.linux.it>; Wed, 25 Nov 2026 22:09:40 +0100 (CET)
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com
- [IPv6:2a00:1450:4864:20::62f])
+ by picard.linux.it (Postfix) with ESMTPS id D7F993E9EB7
+ for <ltp@lists.linux.it>; Wed, 25 Nov 2026 22:09:41 +0100 (CET)
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com
+ [IPv6:2a00:1450:4864:20::631])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 0B9D5600964
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 267821400DC4
  for <ltp@lists.linux.it>; Wed, 25 Nov 2026 22:09:40 +0100 (CET)
-Received: by mail-ej1-x62f.google.com with SMTP id
- a640c23a62f3a-c5187b42a2dso48204066b.3
+Received: by mail-ej1-x631.google.com with SMTP id
+ a640c23a62f3a-c50537f731eso88900966b.1
  for <ltp@lists.linux.it>; Wed, 25 Nov 2026 13:09:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=linaro.org; s=google; t=1795640979; x=1796245779; darn=lists.linux.it;
+ d=linaro.org; s=google; t=1795640978; x=1796245778; darn=lists.linux.it;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to:content-type;
- bh=AZv0Tng18TDfZ7kV0Qxgb/RRjK2vgUBsPq2Rx/Lc8sE=;
- b=pKAMFDbX+g/0SGTK4y+twDZ0GBjK/bq1KrBEqFnko7DiDuNLtZqw/1cMyKFCZnwDdu
- 3me9mmC5zKM5LUrd5pYOrtyd7VFCN2ldgB69TedxfrqBiGcMDAUoF+HpEwgx6KnSxqN4
- H0SSoOO37UlTZRYCCgiPKtT8sGWW5KMEyCB8PSjF9K/mU2lgPTvmlvKfDeMVWFzlpYrd
- bDxJbdKZvIDDpEDgiO2vZfiau9c/gzcQ+JJQ7JB9/7MfbzlwH5Mdadnnf/2SSc9Olduw
- v7v4kurDACfcJUCU6otyvWVO40yRZYBQnmwEW+vMXyIdmq/WYv4Exd71KP5maiET5VIw
- W8dw==
+ bh=80jQFiVkaTNjHC+edv0PHjSyBWCTyi4nWu3EuvmDCQo=;
+ b=utll3F40CMXqsPmLjd12Baqerp/4RoATxqH18D/9HiLXrO/7WgGLuN5H/rZND+L/nS
+ 38TI+hg/VtlFDp/5ES95wUOatDI3UpMVzAVs2RUiWRsfnxYvhwws5+7aIUE6Q/Da3bIe
+ jelCNfMFQrwAPr1bR6tE8zYbqSUjIyFQA8Cr3zOmLlOliA3r4WLWObOTL+lB0qt+ae53
+ hYWZe2kefdGRY00z/Avuoi6h7UwWSd3nGm1AA8xL71vR9VVL4e1/WBHSuffadKIWjRB8
+ kKDRjTU+m1vuDQndEcJQdW6qZQAyKV81kJUul/vQww303FSrK8rtCWjnd9Jq5aubzZnP
+ VVHQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20260707; t=1795640979; x=1796245779;
+ d=1e100.net; s=20260707; t=1795640978; x=1796245778;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
  :to:cc:subject:date:message-id:reply-to:content-type;
- bh=AZv0Tng18TDfZ7kV0Qxgb/RRjK2vgUBsPq2Rx/Lc8sE=;
- b=lRrKms+uGSum2JS5k9zzmZmEK7nMIje6aU0zUq2K9IpSAbEAxt+GisnRcVNoIU0sI7
- SnlQXQo/6VMMtxQsrexGp5H7T7URcEz0tsnXRZJL398Vw8KOyfbD+WYcg4c1bkSMBALj
- Hlxp4rEmGsfiEMY0StKw7W9z/i67e4/66Hv76GMrB5dcFOCcgkMk1qIY0cNNUN8Ix7jx
- NTH/iNDy9vRWP2mEWOul9XR5zSBPwuoLoQYrCK/yU1bJyUWNI/MLf1Ts+uiwGa1faMQJ
- mZnkR9IAFd5k1ERsoqB1KH1tkY87O83Uri3nGpW2gpBNYEb6UC7YGg48sgOgWZtIh78x
- k4gw==
-X-Gm-Message-State: APuU4Z+l+etM1/2AAZqJpwErSgyec7dsaLtm3j9YpwOBai568KGMG5zW
- s8pdh2ViOZyv4ON0G5rPgXrLEMZAmT/UIzRwyLzZtZUq4dNLj8KP+p23i9zgRQmbcHF3Rwepqqk
- VGU0q
-X-Gm-Gg: AZFdTZdSzsS3Vb73s+lNc3BnCJxxFNqY8Xcl+1Wuf3tjCEnk7HoXhk1mdGyyo1p7t3X
- Un23XMjOPNWKnpOCHoRkcnssHwh0LULl8gMWDcGkacrBUQsNCZKBQ/L0L1Ed5H+8jvX5m9IIpsp
- fJwxCkKJy1DZp+sLvNgKVaEUgyG9Wprk4oy5/eJxOoGST4VXoB1695YdBvGqdzBlOIK0t/td1km
- 2lneveO8aUExgsYizCnreKbdHjnpJ9fWFrs4c+maElaFxPd2dJphi+0cfn1VX8fxeNz+QpY3roG
- WDxSAAt9MsDAXXbvK2utWkif2CCDKo5nQUQjs+hcls73f5WWe77v89h62SPF3LEVcPgxB1VUWSH
- j45ASGIF1ham5WEdu1HMIqWMsTkiTgzd+kQI0nQLmGum9pcvKtn894VHuLOG7i2v5H8hWo4KewJ
- xjqaivle38V27pgRkb3wBLyHm2rQAMIBFJypMsOyHA+iBBG7XXRXxojP0HDsEql7a0msFlSG3Ck
- sPrY2RnmHzWBxtfXe/0lK9cxes5Fyxa290BaNXrFzPi5W51/AaeZFR+Oyep5PlLtQ0X8tvUZmmC
- 4bMghoAtSs3sZiFwn5DA/f+O1GCY36fYSzvet+5TPzbihj0i5qUv65tgbnYMYWrJZlDaR7ucjqi
- vMYFVgD1x/Q==
-X-Received: by 2002:a17:906:68d5:b0:c51:4fd:1aef with SMTP id
- a640c23a62f3a-c513a50ab80mr1540355066b.2.1795640979371; 
- Wed, 25 Nov 2026 13:09:39 -0800 (PST)
+ bh=80jQFiVkaTNjHC+edv0PHjSyBWCTyi4nWu3EuvmDCQo=;
+ b=ROQ7HdFcAZswTEhi5Aep1QvgoXmSS5CUzu5234hWsW1JOPZ/zrZ02SEKoLWWBNYCJe
+ 0jfk38YidLS0pOyhAJNWaRKlEJKiNsZ9ABhp/v0smgs28gzsPD6i6s983UevFpIpfZKH
+ ig2mUXjBK0FjV0pE1RX+G7QYykPVUJD7KpWHrFAvDz8lgOovqSJ32gYJJJkjT93LAakH
+ KD4B3IvFdMSKGAPpbQqjSFftCi1JBkXtg2Nvy5JFUp1OlZVsIB6XpkFyG/4P1JZ0VIoT
+ a7WJbSsBru1aldGPMNJuaKZFSehEX9SPFfyXW4EFDu6Olwy7pG8vUkB90ciERgXIHCKe
+ uN8w==
+X-Gm-Message-State: APuU4Z/dmGR+OL+HZsFzHc2LLbS0ftupAFyqCkIPh8lr+VEqIdWOagAK
+ hf20GAvzg04mpNKQfl5UWWeH2/HEpXeUaD9MpkNcowJBINGjr2UYZnjU0NZpdsgrjWp8cfhYuPv
+ QX+Vl
+X-Gm-Gg: AZFdTZdj9XTqBXmAxegV1ifoYVhBFeFogFY3pAFa4MpcQrxv3D6GEOXhb/pz/VWPySl
+ BZfjXTiiIq0+jGdejVpjLaTeYN3ZpRqezXZnUDxGplw8VJXbGRCNxeCogzE+wUyilikFKq7VuZw
+ pCIhle4ODBFQLIOM1nMO1oRiUpa1sIYB010g+/2ckzV/xujpm5atgOsgj3vkfEphADfa7P4hpbu
+ vsUP59IGP/CoykvBZbXoqWSlOzyCWyfcEPlh3Vs+vs3qc5EbPtVsng9njDVzS2Ntf+gZsjdd5XW
+ F3N/Y4D7EI6CQZlfVRq2Y4oVRv/a2SHLKJllB2AZjScIgQ5kgHdX1tCzHT973U7XAfTozfyAxIN
+ PM0lEg+3iF407/XDiPH86IICjJNRuwBuDtd11AfzWKIhIFl6yVgU2zfDhsuJ2TxU3CTDesx6Ej6
+ L4qPYYfYoDcwkSK3eB6sT+Vxk1Li1ElB2aiHjbHUPbU9ZTdEnVR7RChYITqx2cfeEC6QbLV+rOf
+ s7q8ZyPJJGoxy4QGyXbsnBultTXM4ytVqEMvJXarKGsKzz7mtJWULuSiU57weLkDHfwuMrim9o0
+ FiyIAbbvmvuZk1r0w5P6DtSoVyKDhkggFGgxmShbVwZl/Vcnd0oWRdwsFmbjQOj4
+X-Received: by 2002:a17:906:fcb7:b0:c50:d900:8536 with SMTP id
+ a640c23a62f3a-c513a3a33dcmr1538756566b.1.1795640978578; 
+ Wed, 25 Nov 2026 13:09:38 -0800 (PST)
 Received: from localhost (c-85-229-7-191.bbcust.telenor.se. [85.229.7.191])
  by smtp.gmail.com with ESMTPSA id
- a640c23a62f3a-c513afc5396sm685527066b.58.2026.11.25.13.09.39
+ a640c23a62f3a-c513ae6872asm672506166b.13.2026.11.25.13.09.38
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 25 Nov 2026 13:09:39 -0800 (PST)
+ Wed, 25 Nov 2026 13:09:38 -0800 (PST)
 From: Anders Roxell <anders.roxell@linaro.org>
 To: ltp@lists.linux.it,
 	pvorel@suse.cz
-Date: Wed, 25 Nov 2026 22:09:33 +0100
-Message-ID: <20261125210933.2913177-5-anders.roxell@linaro.org>
+Date: Wed, 25 Nov 2026 22:09:32 +0100
+Message-ID: <20261125210933.2913177-4-anders.roxell@linaro.org>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20261125210933.2913177-1-anders.roxell@linaro.org>
 References: <20261125210933.2913177-1-anders.roxell@linaro.org>
@@ -86,9 +86,10 @@ X-Spam-Status: No, score=-16.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
-X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3 4/4] openposix: Add runtest files for kirk
+Subject: [LTP] [PATCH v3 3/4] openposix: Rebuild run.sh when the Makefile
+ changes
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -102,176 +103,29 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Kirk can not run the Open POSIX tests, because they have no runtest
-files.
+run.sh has no prerequisites, so it keeps an old list of tests after
+tests are added or removed. Only make clean fixes it.
 
-Generate one for each suite at install time. The list comes from the
-installed run.sh files, so old test binaries left in DESTDIR are not
-listed. The speculative tests are left out like in run.sh, and a run.sh
-without a run-tests.sh line fails the install.
-
-Each line calls openposix_run.sh. It runs the test from its own
-directory and maps PTS_UNSUPPORTED and PTS_UNTESTED to TCONF, so kirk
-does not report them as TWARN and TFAIL.
-
-A removed test directory is still listed, because its old run.sh stays
-in DESTDIR.
+Make run.sh depend on the Makefile that lists the tests.
 
 Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
 ---
- testcases/open_posix_testsuite/Makefile       | 11 +++++-
- testcases/open_posix_testsuite/bin/Makefile   |  6 +++-
- .../open_posix_testsuite/bin/openposix_run.sh | 29 +++++++++++++++
- .../include/mk/config.mk.in                   |  3 ++
- .../scripts/generate-runtest.sh               | 35 +++++++++++++++++++
- 5 files changed, 82 insertions(+), 2 deletions(-)
- create mode 100755 testcases/open_posix_testsuite/bin/openposix_run.sh
- create mode 100755 testcases/open_posix_testsuite/scripts/generate-runtest.sh
+ testcases/open_posix_testsuite/scripts/generate-makefiles.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/testcases/open_posix_testsuite/Makefile b/testcases/open_posix_testsuite/Makefile
-index 4bead182170d..ce41643686d5 100644
---- a/testcases/open_posix_testsuite/Makefile
-+++ b/testcases/open_posix_testsuite/Makefile
-@@ -74,7 +74,7 @@ generate-makefiles: distclean-makefiles
- 		$(top_srcdir)/scripts/generate-makefiles.sh
+diff --git a/testcases/open_posix_testsuite/scripts/generate-makefiles.sh b/testcases/open_posix_testsuite/scripts/generate-makefiles.sh
+index 1c12a456cc41..b9df91e14b62 100755
+--- a/testcases/open_posix_testsuite/scripts/generate-makefiles.sh
++++ b/testcases/open_posix_testsuite/scripts/generate-makefiles.sh
+@@ -200,7 +200,7 @@ EOF
  
- .PHONY: install
--install: bin-install conformance-install functional-install stress-install
-+install: bin-install conformance-install functional-install stress-install runtest-install
- 
- .PHONY: test
- test: conformance-test functional-test stress-test
-@@ -119,6 +119,15 @@ stress-test:
- 	@rm -f `if echo "$(LOGFILE)" | grep -q '^/'; then echo "$(LOGFILE)"; else echo "\`pwd\`/$(LOGFILE)"; fi`.$@
- 	@$(TEST_MAKE) -C stress test
- 
-+.PHONY: runtest-install
-+runtest-install: $(addsuffix -install,$(SUBDIRS))
-+	@mkdir -p $(DESTDIR)/$(runtestdir)
-+	@set -e; for suite in $(SUBDIRS); do \
-+		$(top_srcdir)/scripts/generate-runtest.sh \
-+			$(DESTDIR)/$(testdir) "$(testdir_rel)" $$suite \
-+			> $(DESTDIR)/$(runtestdir)/openposix-$$suite; \
-+	done
-+
- # Tools build and install targets.
- .PHONY: bin-install
- bin-install:
-diff --git a/testcases/open_posix_testsuite/bin/Makefile b/testcases/open_posix_testsuite/bin/Makefile
-index 262a6567c5b6..5dfff99effcb 100644
---- a/testcases/open_posix_testsuite/bin/Makefile
-+++ b/testcases/open_posix_testsuite/bin/Makefile
-@@ -16,7 +16,7 @@ clean:
- 	@rm -f t0.val
- 
- .PHONY: install
--install: clean $(DESTDIR)/$(bindir) $(DESTDIR)/$(testdir_bin)
-+install: clean $(DESTDIR)/$(bindir) $(DESTDIR)/$(testdir_bin) $(DESTDIR)/$(ltp_bindir)
- 	set -e; for file in $(INSTALL_BIN_TARGETS); do           \
- 		install -m 00755 $$file $(DESTDIR)/$(bindir)/$$file; \
- 	done
-@@ -27,9 +27,13 @@ install: clean $(DESTDIR)/$(bindir) $(DESTDIR)/$(testdir_bin)
- 		install -m 00755 $$file $(DESTDIR)/$(testdir_bin)/$$file; \
- 	done
- 
-+	install -m 00755 openposix_run.sh $(DESTDIR)/$(ltp_bindir)/
- 
- $(DESTDIR)/$(bindir):
- 	mkdir -p $@
- 
- $(DESTDIR)/$(testdir_bin):
- 	mkdir -p $@
-+
-+$(DESTDIR)/$(ltp_bindir):
-+	mkdir -p $@
-diff --git a/testcases/open_posix_testsuite/bin/openposix_run.sh b/testcases/open_posix_testsuite/bin/openposix_run.sh
-new file mode 100755
-index 000000000000..43c52a38d956
---- /dev/null
-+++ b/testcases/open_posix_testsuite/bin/openposix_run.sh
-@@ -0,0 +1,29 @@
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (c) 2026 Linaro Limited
-+
-+LTPROOT=${LTPROOT:-$(cd "$(dirname "$0")/../.." && pwd)}
-+
-+if [ $# -lt 1 ]; then
-+	echo "Usage: $(basename "$0") <test path relative to LTPROOT> [args]" >&2
-+	exit 2
-+fi
-+
-+test_path=$LTPROOT/$1
-+test_file=${test_path##*/}
-+shift
-+
-+if [ ! -x "$test_path" ]; then
-+	echo "$test_path is missing or not executable" >&2
-+	exit 2
-+fi
-+
-+cd "${test_path%/*}" || exit 2
-+
-+./"$test_file" "$@"
-+ret=$?
-+
-+case $ret in
-+4|5) exit 32 ;;
-+*) exit $ret ;;
-+esac
-diff --git a/testcases/open_posix_testsuite/include/mk/config.mk.in b/testcases/open_posix_testsuite/include/mk/config.mk.in
-index 20422e0f1047..fae80116bbf7 100644
---- a/testcases/open_posix_testsuite/include/mk/config.mk.in
-+++ b/testcases/open_posix_testsuite/include/mk/config.mk.in
-@@ -14,4 +14,7 @@ testdir_rel := @testdir@
- testdir     := ${prefix}/${testdir_rel}
- testdir_bin := ${testdir}/bin
- 
-+ltp_bindir  := ${prefix}/testcases/bin
-+runtestdir  := ${prefix}/runtest
-+
- CFLAGS  += -std=c99 -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -Wall -Wextra
-diff --git a/testcases/open_posix_testsuite/scripts/generate-runtest.sh b/testcases/open_posix_testsuite/scripts/generate-runtest.sh
-new file mode 100755
-index 000000000000..d523fa483bb6
---- /dev/null
-+++ b/testcases/open_posix_testsuite/scripts/generate-runtest.sh
-@@ -0,0 +1,35 @@
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (c) 2026 Linaro Limited
-+
-+if [ $# -ne 3 ]; then
-+	echo "Usage: $(basename "$0") <installed testdir> <testdir relative to LTPROOT> <suite>" >&2
-+	exit 1
-+fi
-+
-+installed_testdir=$1
-+testdir_rel=$2
-+suite=$3
-+
-+cd "$installed_testdir" || exit 1
-+
-+if [ ! -d "$suite" ]; then
-+	echo "$installed_testdir/$suite does not exist" >&2
-+	exit 1
-+fi
-+
-+run_tests_line='^[^ ]*/run-tests\.sh [^ ]* '
-+
-+find "$suite" -name speculative -prune -o -name run.sh -print | sort | \
-+while read -r run_sh; do
-+	if ! grep -q "$run_tests_line" "$run_sh"; then
-+		echo "$run_sh has no run-tests.sh line" >&2
-+		exit 1
-+	fi
-+	dir=${run_sh%/run.sh}
-+	tests=$(sed -n "s,$run_tests_line,,p" "$run_sh")
-+	for test_name in $tests; do
-+		[ -f "$dir/$test_name" ] || continue
-+		echo "${test_name%.*} openposix_run.sh ${testdir_rel:+$testdir_rel/}$dir/$test_name"
-+	done
-+done
+ 	if ! grep -q '^run.sh' "$makefile.3"; then
+ 		cat >> "$makefile.3" <<EOF
+-run.sh:
++run.sh: Makefile
+ 	@echo '#!/bin/sh' > \$@
+ 	@echo "\$(top_srcdir)/bin/run-tests.sh \$(subdir) \$(INSTALL_TARGETS)" >> \$@
+ 	@chmod +x run.sh
 -- 
 2.53.0
 
