@@ -1,105 +1,94 @@
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DCF8606A321
-	for <ltp@archiver.kernel.org>; Wed, 25 Nov 2026 21:17:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B62D6606A326
+	for <ltp@archiver.kernel.org>; Thu, 26 Nov 2026 03:11:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=suse.de header.i=@suse.de header.a=rsa-sha256 header.s=susede2_rsa header.b=a7G8KhD1;
-	dkim=fail reason="signature verification failed" header.d=suse.de header.i=@suse.de header.a=ed25519-sha256 header.s=susede2_ed25519 header.b=vvk/+xtj;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=suse.de header.i=@suse.de header.a=rsa-sha256 header.s=susede2_rsa header.b=a7G8KhD1;
-	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256 header.s=susede2_ed25519 header.b=vvk/+xtj
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=jQNWcISE
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 2160F3E9FCA
-	for <ltp@archiver.kernel.org>; Wed, 25 Nov 2026 22:17:42 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 00B623EA99F
+	for <ltp@archiver.kernel.org>; Thu, 26 Nov 2026 04:11:40 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A7B933C774A
- for <ltp@lists.linux.it>; Wed, 25 Nov 2026 22:17:24 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 928733C774A
+ for <ltp@lists.linux.it>; Thu, 26 Nov 2026 04:11:23 +0100 (CET)
+Received: from mail-oo2-x05.google.com (mail-oo2-x05.google.com
+ [IPv6:2607:f8b0:4864:31::5])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 1436C600567
- for <ltp@lists.linux.it>; Wed, 25 Nov 2026 22:17:23 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 6B9742243C;
- Wed, 25 Nov 2026 21:17:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1795641443; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=Pv3KtI3/YVjzJgCOY07eV2c8jfU8F35XFOLEpyz5mY4=;
- b=a7G8KhD1aS5Rb1FZyey6UZsxcISkhL5AAlXdwrdX71uJQq+tFOikw3SPd5tR9DD58lNXgp
- VRKToe9eyVbchyymYR5rQeI+iaHN+OiyqQKvsXQNkDhvuL+RyX16jfcVY5cPCni6YFMefV
- eFwl4pvO/s2IkP4yFmWPrApqBlOvJ78=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1795641443;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=Pv3KtI3/YVjzJgCOY07eV2c8jfU8F35XFOLEpyz5mY4=;
- b=vvk/+xtjMyrh0iICTLzW6yQt+fOs97FQJa4YsLOXgu67ehGmFTJXtonNQdG64c+7ZVIvq7
- SMNHP/x3gVbvu7DQ==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1795641443; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=Pv3KtI3/YVjzJgCOY07eV2c8jfU8F35XFOLEpyz5mY4=;
- b=a7G8KhD1aS5Rb1FZyey6UZsxcISkhL5AAlXdwrdX71uJQq+tFOikw3SPd5tR9DD58lNXgp
- VRKToe9eyVbchyymYR5rQeI+iaHN+OiyqQKvsXQNkDhvuL+RyX16jfcVY5cPCni6YFMefV
- eFwl4pvO/s2IkP4yFmWPrApqBlOvJ78=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1795641443;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=Pv3KtI3/YVjzJgCOY07eV2c8jfU8F35XFOLEpyz5mY4=;
- b=vvk/+xtjMyrh0iICTLzW6yQt+fOs97FQJa4YsLOXgu67ehGmFTJXtonNQdG64c+7ZVIvq7
- SMNHP/x3gVbvu7DQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 250B4134CA;
- Wed, 25 Nov 2026 21:17:23 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id kB7wOmJQB2vrBwAAD6G6ig
- (envelope-from <rbranco@suse.de>); Wed, 25 Nov 2026 21:17:23 +0000
-From: Ricardo Branco <rbranco@suse.de>
-To: ltp@lists.linux.it
-Date: Wed, 25 Nov 2026 22:17:16 +0100
-Message-ID: <20261125211719.759525-1-rbranco@suse.de>
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 11A2B600961
+ for <ltp@lists.linux.it>; Thu, 26 Nov 2026 04:11:23 +0100 (CET)
+Received: by mail-oo2-x05.google.com with SMTP id
+ 006d021491bc7-7033e26cb19so1961722eaf.0
+ for <ltp@lists.linux.it>; Wed, 25 Nov 2026 19:11:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20260707; t=1795662681; x=1796267481; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to:content-type;
+ bh=8jBw9lE3KbU37V7GIcSPrHmj7nF5l3iwondiTqBKzxA=;
+ b=jQNWcISEwmZrYpI36odGKRXWuH5IOSMdC6eyq1eJkNc4ZtddH+QlyQLEjK+O0dOlMO
+ cKlgDD7uJE8mJU6mPwI3ipub5YvQj4LYVikKANfPnT7VvaozJJk6RFov12+jLjzUViB2
+ 2/erBPoP+HjsKi+W9fUgTAFzoqnWJo8oaWaBpDOA5kpHqVj4XsuA90AqR+3z9Pmsv4ZI
+ bDw/WQUrMbOEXeSkaA8iIGePxevycy5f28pq7iZNlzTVf5aelE3jmpMFgZwQIyuKd/cD
+ mR9jLb3Uz59JWfmcgSwfnpRT+ZNabEUjjer4fNKrIZTR0dn8oEqbAfoRf2uGVaqT+0QN
+ QdtQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20260707; t=1795662681; x=1796267481;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+ :to:cc:subject:date:message-id:reply-to:content-type;
+ bh=8jBw9lE3KbU37V7GIcSPrHmj7nF5l3iwondiTqBKzxA=;
+ b=1RTu1ZWn7cgxvKinZZqRO8jkpNEJf92xYwoR5NUuqNa+IcE4hXQYDmcU39+yarOyFN
+ Q1edDfaqqonLFg+kc1+BH5YCIASkw7ASfJgfccs8H/OUjBP5VYIBmQdNIyjC1tsKyHEv
+ xlYIOcaY/JHHwps5pFx/w87Pe5xtpbCFJvYfYRJ2B7lcbmT+iMrlkOX6slV/lyvdZ5vu
+ MaQUoiSdGo5nLCJcYZ78T0RHyo11ktemVH0SWFt5ShpVQqan45lxA6ANRFyynlSEC22b
+ YV2kkpoxPA0OgJss1mj0bPuuiddljEaIAKflDxejv7l5sNqwe3aJMUzdYC+XQyt4ppCm
+ Hd3g==
+X-Gm-Message-State: APuU4Z93j5aw7Eu5VHpsaEMnquvGIUtGuT7E8eMFJXUkv0ZtifqtDawZ
+ gXF7k1jX4i5ou8dkBtyIRgwoW+VS5C3SI0uDv2POwOKhBNNq8h5VfHOS
+X-Gm-Gg: AZFdTZfXn9O3TCMaNMBrargmWQRI6YU1VTUx9VRjKN2o4v+TAVJ6lSyKiuLSQTRj9qU
+ ASOMMj5e4I0m/A90cG/RF2F/1heh0Uubk9Tf5de/SiUJOm2OyfsbQjl+SJVoXp8TAH8LswYDHpE
+ tGPyT+6EtuB+nB+93LEp/NoQY7FM4BoyLzftw6TnL03US8+kFNJDF0c/AkZ58fPgfFeGk/1cMgt
+ mRHWAKXIM/wG7+zVjyTBm/UX0J5bTeXD/ioaH7UoTDNtgrEa9WcQ1xI+aAOY1hx9n7akhocu0I7
+ QcXTdgJdxOXVhmJA4Ag3UaZnS7PoJ+ywMAcciroGovOy1mRM/iN3uWOKvDZiXVcHS7zXi8Ae35S
+ Amng3WHqo4RBVgLYrrtwms+ww+mZ2BCHZ+6KQwWjxOsCxhG7vHUjS7m3GWtYAAaWKSCuO4n2ibp
+ NctxhN4rOLQDoUy+g+XqqsHLlrESbtrWz0QPFP2+3MLmJV8FU2UYs9DX2Pbz1LvkFZ4XVENDr2U
+ i/JKKUVzlHv1VBIi8GPQSTDsLo0t1PQxDhx3rtt9tvDAOxsY+DTpCnjDZxwarReNULoL0vAYABO
+ CDdL35pK9tjiu2ltddYovH+LpTq6utC6tLvIW/DttszTjoKvHRF11GcfOTkYknLmuL479LSIndI
+ z6nRtlKsIhOo5B84nuv19t1ORSpMRYIM/3PoygsdFM1ht5DN2QULYXkUWP8X6
+X-Received: by 2002:a05:6820:a74b:10b0:71a:fe9a:6e91 with SMTP id
+ 006d021491bc7-71b395fe3d3mr11540386eaf.84.1795662681543; 
+ Wed, 25 Nov 2026 19:11:21 -0800 (PST)
+Received: from
+ runnervm0hi8g.qh5nfne4lk5ubgjehfayj2ylnh.gx.internal.cloudapp.net
+ ([9.234.7.244]) by smtp.gmail.com with ESMTPSA id
+ 46e09a7af769-863168f784fsm14447619a34.16.2026.11.25.19.11.20
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 25 Nov 2026 19:11:21 -0800 (PST)
+From: linuxtestproject.agent@gmail.com
+To: Ricardo Branco <rbranco@suse.de>
+Date: Thu, 26 Nov 2026 03:11:19 +0000
+Message-ID: <20261126031119.3813-1-linuxtestproject.agent@gmail.com>
 X-Mailer: git-send-email 2.56.1
+In-Reply-To: <20261125211719.759525-1-rbranco@suse.de>
+References: <20261125211719.759525-1-rbranco@suse.de>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-X-Spam-Level: 
-X-Spamd-Result: default: False [-11.80 / 50.00]; SUSE_INTERNAL_BYPASS(-9.00)[];
- BAYES_HAM(-3.00)[100.00%]; MID_CONTAINS_FROM(1.00)[];
- NEURAL_HAM_LONG(-1.00)[-1.000]; R_MISSING_CHARSET(0.50)[];
- NEURAL_HAM_SHORT(-0.20)[-0.999]; MIME_GOOD(-0.10)[text/plain];
- MIME_TRACE(0.00)[0:+]; RCVD_VIA_SMTP_AUTH(0.00)[];
- TO_DN_SOME(0.00)[]; ARC_NA(0.00)[];
- DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- URIBL_BLOCKED(0.00)[anthropic.com:email,suse.de:email,suse.com:email];
- FROM_EQ_ENVFROM(0.00)[]; FROM_HAS_DN(0.00)[];
- RCPT_COUNT_THREE(0.00)[3]; RCVD_COUNT_TWO(0.00)[2];
- TO_MATCH_ENVRCPT_ALL(0.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email,suse.com:email,imap1.dmz-prg2.suse.org:helo];
- RCVD_TLS_ALL(0.00)[]
-X-Spam-Score: -11.80
-X-Spam-Status: No, score=-16.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_PASS,SPF_PASS,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
+X-Spam-Status: No, score=-3.6 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_INVALID,DKIM_SIGNED,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_PASS,
+	SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
-X-Virus-Scanned: clamav-milter 1.0.9 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.9 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v5] userfaultfd: Add tests for UFFDIO_RWPROTECT and
+Subject: Re: [LTP] userfaultfd: Add tests for UFFDIO_RWPROTECT and
  UFFDIO_SET_MODE
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
@@ -110,350 +99,27 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: "Claude Opus 5.5" <noreply@anthropic.com>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Add userfaultfd08 with two variants to exercise UFFDIO_RWPROTECT and
-UFFDIO_SET_MODE.
+Hi Ricardo,
 
-The first variant registers a page with UFFDIO_REGISTER_MODE_RWP,
-protects it with UFFDIO_RWPROTECT_MODE_RWP, and verifies that a plain
-read from a second thread raises a UFFD_PAGEFAULT_FLAG_RWP fault
-(without UFFD_PAGEFAULT_FLAG_WRITE) that is resolved by clearing the
-RWP mode, preserving page contents.
+On Wed, Nov 25, 2026 at 10:17:16PM +0100, Ricardo Branco wrote:
+> userfaultfd: Add tests for UFFDIO_RWPROTECT and UFFDIO_SET_MODE
 
-The second variant exercises UFFDIO_SET_MODE toggling
-UFFD_FEATURE_RWP_ASYNC at runtime: with async mode enabled at
-UFFDIO_API time, a protected page is accessed and auto-resolved with
-no fault message delivered; UFFDIO_SET_MODE then disables async mode,
-and the same access on a freshly protected page now blocks and is
-delivered as a fault, handled from a second thread as above.
+Verdict - Reviewed
 
-Add the UFFDIO_RWPROTECT and UFFDIO_SET_MODE ioctls, their associated
-structs, and the UFFD_FEATURE_RWP/UFFD_FEATURE_RWP_ASYNC feature bits
-to lapi/userfaultfd.h for systems whose kernel headers predate them.
-
-Signed-off-by: Ricardo Branco <rbranco@suse.de>
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 ---
- configure.ac                                  |   2 +
- include/lapi/userfaultfd.h                    |  28 +++
- runtest/syscalls                              |   1 +
- .../kernel/syscalls/userfaultfd/.gitignore    |   1 +
- .../kernel/syscalls/userfaultfd/Makefile      |   1 +
- .../syscalls/userfaultfd/userfaultfd08.c      | 216 ++++++++++++++++++
- 6 files changed, 249 insertions(+)
- create mode 100644 testcases/kernel/syscalls/userfaultfd/userfaultfd08.c
+Note:
 
-diff --git a/configure.ac b/configure.ac
-index d75e94162..359a584f5 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -298,6 +298,8 @@ AC_CHECK_TYPES([struct sockaddr_vm],,,[
- 
- AC_CHECK_TYPES([struct uffdio_move],,,[#include <linux/userfaultfd.h>])
- AC_CHECK_TYPES([struct uffdio_poison],,,[#include <linux/userfaultfd.h>])
-+AC_CHECK_TYPES([struct uffdio_rwprotect],,,[#include <linux/userfaultfd.h>])
-+AC_CHECK_TYPES([struct uffdio_set_mode],,,[#include <linux/userfaultfd.h>])
- AC_CHECK_TYPES([struct uffdio_writeprotect],,,[#include <linux/userfaultfd.h>])
- 
- AC_CHECK_TYPES([struct keyctl_dh_params, struct keyctl_kdf_params,
-diff --git a/include/lapi/userfaultfd.h b/include/lapi/userfaultfd.h
-index 4a25e7338..a4b3d0763 100644
---- a/include/lapi/userfaultfd.h
-+++ b/include/lapi/userfaultfd.h
-@@ -247,6 +247,34 @@ struct uffdio_poison {
- };
- #endif	/* HAVE_STRUCT_UFFDIO_POISON */
- 
-+#ifndef HAVE_STRUCT_UFFDIO_RWPROTECT
-+#define UFFD_FEATURE_RWP			(1<<17)
-+#define UFFD_FEATURE_RWP_ASYNC			(1<<18)
-+#define UFFD_PAGEFAULT_FLAG_RWP			(1<<3)
-+#define UFFDIO_REGISTER_MODE_RWP		((__u64)1<<3)
-+#define _UFFDIO_RWPROTECT			(0x09)
-+#define UFFDIO_RWPROTECT	_IOWR(UFFDIO, _UFFDIO_RWPROTECT, \
-+				      struct uffdio_rwprotect)
-+
-+struct uffdio_rwprotect {
-+	struct uffdio_range range;
-+#define UFFDIO_RWPROTECT_MODE_RWP		((__u64)1<<0)
-+#define UFFDIO_RWPROTECT_MODE_DONTWAKE		((__u64)1<<1)
-+	__u64 mode;
-+};
-+#endif	/* HAVE_STRUCT_UFFDIO_RWPROTECT */
-+
-+#ifndef HAVE_STRUCT_UFFDIO_SET_MODE
-+#define _UFFDIO_SET_MODE			(0x0A)
-+#define UFFDIO_SET_MODE	_IOW(UFFDIO, _UFFDIO_SET_MODE, \
-+				     struct uffdio_set_mode)
-+
-+struct uffdio_set_mode {
-+	__u64 enable;
-+	__u64 disable;
-+};
-+#endif	/* HAVE_STRUCT_UFFDIO_SET_MODE */
-+
- #define SAFE_USERFAULTFD(flags, retry) \
- 	safe_userfaultfd(__FILE__, __LINE__, (flags), (retry))
- 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 7b6a7d376..dadf076f8 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -1849,6 +1849,7 @@ userfaultfd04 userfaultfd04
- userfaultfd05 userfaultfd05
- userfaultfd06 userfaultfd06
- userfaultfd07 userfaultfd07
-+userfaultfd08 userfaultfd08
- 
- ustat01 ustat01
- ustat02 ustat02
-diff --git a/testcases/kernel/syscalls/userfaultfd/.gitignore b/testcases/kernel/syscalls/userfaultfd/.gitignore
-index 3478a162e..d5734bb68 100644
---- a/testcases/kernel/syscalls/userfaultfd/.gitignore
-+++ b/testcases/kernel/syscalls/userfaultfd/.gitignore
-@@ -5,3 +5,4 @@
- /userfaultfd05
- /userfaultfd06
- /userfaultfd07
-+/userfaultfd08
-diff --git a/testcases/kernel/syscalls/userfaultfd/Makefile b/testcases/kernel/syscalls/userfaultfd/Makefile
-index 257249e88..8c757c030 100644
---- a/testcases/kernel/syscalls/userfaultfd/Makefile
-+++ b/testcases/kernel/syscalls/userfaultfd/Makefile
-@@ -18,3 +18,4 @@ userfaultfd04: CFLAGS += -pthread
- userfaultfd05: CFLAGS += -pthread
- userfaultfd06: CFLAGS += -pthread
- userfaultfd07: CFLAGS += -pthread
-+userfaultfd08: CFLAGS += -pthread
-diff --git a/testcases/kernel/syscalls/userfaultfd/userfaultfd08.c b/testcases/kernel/syscalls/userfaultfd/userfaultfd08.c
-new file mode 100644
-index 000000000..74454e830
---- /dev/null
-+++ b/testcases/kernel/syscalls/userfaultfd/userfaultfd08.c
-@@ -0,0 +1,216 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2026 SUSE LLC
-+ * Author: Ricardo Branco <rbranco@suse.com>
-+ */
-+
-+/*\
-+ * Force a pagefault event and handle it using :manpage:`userfaultfd(2)`
-+ * from a different thread testing UFFDIO_RWPROTECT.
-+ *
-+ * - Sync: a read of an RWP-protected page blocks and is delivered as a fault.
-+ * - Async: with UFFD_FEATURE_RWP_ASYNC the access resolves automatically,
-+ *   then UFFDIO_SET_MODE disables async mode and the access is delivered
-+ *   as a fault again.
-+ */
-+
-+#include "config.h"
-+#include <poll.h>
-+#include "tst_test.h"
-+#include "tst_safe_macros.h"
-+#include "tst_safe_pthread.h"
-+#include "lapi/userfaultfd.h"
-+
-+#define PAGE_BYTE 0x5a
-+
-+static long page_size;
-+static char *page;
-+static int uffd = -1;
-+static volatile int rwp_fault_seen;
-+
-+static void setup(void)
-+{
-+	CHECK_UFFD_FEATURE(UFFD_FEATURE_RWP);
-+	page_size = SAFE_SYSCONF(_SC_PAGE_SIZE);
-+}
-+
-+static void set_page(void)
-+{
-+	page = SAFE_MMAP(NULL, page_size, PROT_READ | PROT_WRITE,
-+			MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-+
-+	memset(page, PAGE_BYTE, page_size);
-+}
-+
-+static void reset_page(void)
-+{
-+	if (page) {
-+		SAFE_MUNMAP(page, page_size);
-+		page = NULL;
-+	}
-+	if (uffd != -1)
-+		SAFE_CLOSE(uffd);
-+}
-+
-+static void rwprotect(unsigned long start, uint64_t mode)
-+{
-+	struct uffdio_rwprotect uffdio_rwprotect = {
-+		.range.start = start,
-+		.range.len = page_size,
-+		.mode = mode,
-+	};
-+
-+	SAFE_IOCTL(uffd, UFFDIO_RWPROTECT, &uffdio_rwprotect);
-+}
-+
-+static void *handle_thread(void *arg LTP_ATTRIBUTE_UNUSED)
-+{
-+	static struct uffd_msg msg;
-+	struct pollfd pollfd = {
-+		.fd = uffd,
-+		.events = POLLIN,
-+	};
-+
-+	SAFE_POLL(&pollfd, 1, -1);
-+
-+	SAFE_READ(SAFE_READ_ALL, uffd, &msg, sizeof(msg));
-+
-+	if (msg.event != UFFD_EVENT_PAGEFAULT)
-+		tst_brk(TFAIL, "Received unexpected UFFD_EVENT %d", msg.event);
-+
-+	if (!(msg.arg.pagefault.flags & UFFD_PAGEFAULT_FLAG_RWP)) {
-+		tst_brk(TFAIL, "Expected RWP fault, got flags=0x%llx",
-+			(unsigned long long)msg.arg.pagefault.flags);
-+	}
-+
-+	/* The access is a read, so WRITE must not be set. */
-+	if (msg.arg.pagefault.flags & UFFD_PAGEFAULT_FLAG_WRITE)
-+		tst_brk(TFAIL, "Unexpected WRITE flag on a read-only access");
-+
-+	rwp_fault_seen = 1;
-+
-+	/* Resolve the fault by clearing RWP so the reader can resume. */
-+	rwprotect(msg.arg.pagefault.address & ~((unsigned long)page_size - 1), 0);
-+
-+	return NULL;
-+}
-+
-+/*
-+ * Protect the page and read it. The read must block and be delivered as an
-+ * RWP fault to the handler thread, which resolves it.
-+ */
-+static int check_sync_fault(void)
-+{
-+	pthread_t thr;
-+	unsigned char val;
-+
-+	rwp_fault_seen = 0;
-+	rwprotect((unsigned long)page, UFFDIO_RWPROTECT_MODE_RWP);
-+
-+	SAFE_PTHREAD_CREATE(&thr, NULL, handle_thread, NULL);
-+
-+	/* Try to read the RWP-protected page. */
-+	val = page[0];
-+
-+	SAFE_PTHREAD_JOIN(thr, NULL);
-+
-+	if (!rwp_fault_seen) {
-+		tst_res(TFAIL, "No RWPROTECT pagefault observed");
-+		return 1;
-+	}
-+
-+	if (val != PAGE_BYTE) {
-+		tst_res(TFAIL, "Page content corrupted: got 0x%02x, expected 0x%02x",
-+			val, PAGE_BYTE);
-+		return 1;
-+	}
-+
-+	return 0;
-+}
-+
-+/*
-+ * Protect the page and read it with RWP_ASYNC enabled. The read must resolve
-+ * automatically without queueing a fault message.
-+ */
-+static int check_async_access(void)
-+{
-+	struct pollfd pollfd = {
-+		.fd = uffd,
-+		.events = POLLIN,
-+	};
-+	unsigned char val;
-+
-+	rwprotect((unsigned long)page, UFFDIO_RWPROTECT_MODE_RWP);
-+
-+	val = page[0];
-+
-+	if (val != PAGE_BYTE) {
-+		tst_res(TFAIL, "Async access corrupted content: got 0x%02x, expected 0x%02x",
-+			val, PAGE_BYTE);
-+		return 1;
-+	}
-+
-+	if (SAFE_POLL(&pollfd, 1, 0) != 0) {
-+		tst_res(TFAIL, "Unexpected pagefault message in async mode");
-+		return 1;
-+	}
-+
-+	return 0;
-+}
-+
-+static void run(unsigned int n)
-+{
-+	struct uffdio_api uffdio_api = {
-+		.api = UFFD_API,
-+		.features = UFFD_FEATURE_RWP,
-+	};
-+	struct uffdio_register uffdio_register;
-+	struct uffdio_set_mode uffdio_set_mode = {
-+		.disable = UFFD_FEATURE_RWP_ASYNC,
-+	};
-+
-+	if (n) {
-+		CHECK_UFFD_FEATURE(UFFD_FEATURE_RWP_ASYNC);
-+		uffdio_api.features |= UFFD_FEATURE_RWP_ASYNC;
-+	}
-+
-+	set_page();
-+
-+	uffd = SAFE_USERFAULTFD(O_CLOEXEC | O_NONBLOCK, false);
-+
-+	SAFE_IOCTL(uffd, UFFDIO_API, &uffdio_api);
-+
-+	uffdio_register.range.start = (unsigned long)page;
-+	uffdio_register.range.len = page_size;
-+	uffdio_register.mode = UFFDIO_REGISTER_MODE_RWP;
-+
-+	SAFE_IOCTL(uffd, UFFDIO_REGISTER, &uffdio_register);
-+
-+	if (!n) {
-+		if (!check_sync_fault())
-+			tst_res(TPASS, "RWPROTECT pagefault handled!");
-+		goto out;
-+	}
-+
-+	if (check_async_access())
-+		goto out;
-+
-+	/*
-+	 * Disable RWP_ASYNC at runtime. The sync check below is what verifies
-+	 * that UFFDIO_SET_MODE took effect.
-+	 */
-+	SAFE_IOCTL(uffd, UFFDIO_SET_MODE, &uffdio_set_mode);
-+
-+	if (!check_sync_fault())
-+		tst_res(TPASS, "UFFDIO_SET_MODE disabled RWP_ASYNC, RWPROTECT pagefault handled!");
-+
-+out:
-+	reset_page();
-+}
-+
-+static struct tst_test test = {
-+	.setup = setup,
-+	.test = run,
-+	.tcnt = 2,
-+	.cleanup = reset_page,
-+};
--- 
-2.56.1
+The agent can sometimes produce false positives although often its
+findings are genuine. If you find issues with the review, please
+comment this email or ignore the suggestions.
 
+Regards,
+LTP AI Reviewer
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
